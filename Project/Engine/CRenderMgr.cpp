@@ -1,0 +1,363 @@
+#include "pch.h"
+#include "CRenderMgr.h"
+
+#include "CKeyMgr.h"
+
+#include "CDevice.h"
+#include "CConstBuffer.h"
+#include "CCamera.h"
+#include "CTransform.h"
+#include "CLight2D.h"
+#include "CLight3D.h"
+
+#include "CStructuredBuffer.h"
+
+#include "CMeshRender.h"
+#include "CAssetMgr.h"
+#include "CTimeMgr.h"
+
+#include "CMRT.h"
+#include "CMaterial.h"
+
+CRenderMgr::CRenderMgr()
+    : m_arrMRT{}
+      , m_EditorCam(nullptr)
+      , m_Light2DBuffer(nullptr)
+      , m_DbgObj(nullptr)
+      , m_IsEditor(false)
+      , m_DebugRender(false)
+{
+    m_Light2DBuffer = new CStructuredBuffer;
+    m_Light2DBuffer->Create(sizeof(tLight2DInfo), 2, SRV_ONLY, true);
+
+    m_Light3DBuffer = new CStructuredBuffer;
+    m_Light3DBuffer->Create(sizeof(tLight3DInfo), 2, SRV_ONLY, true);
+}
+
+CRenderMgr::~CRenderMgr()
+{
+    DELETE(m_DbgObj);
+    DELETE(m_Light2DBuffer);
+    DELETE(m_Light3DBuffer);
+
+    for (UINT i = 0; i < static_cast<UINT>(MRT_TYPE::END); ++i)
+    {
+        DELETE(m_arrMRT[i]);
+    }
+}
+
+
+void CRenderMgr::Render()
+{
+    if (KEY_TAP(KEY::F9))
+    {
+        m_DebugRender ? m_DebugRender = false : m_DebugRender = true;
+    }
+
+    // ������ ����
+    RenderStart();
+
+    if (m_IsEditor)
+    {
+        Render_Editor();
+    }
+    else
+    {
+        Render_Play();
+    }
+
+    // DebugRender
+    Render_Debug();
+
+    // ���ҽ� Ŭ����
+    Render_Clear();
+}
+
+void CRenderMgr::RenderStart()
+{
+    ClearMRT();
+
+    Binding();
+}
+
+
+void CRenderMgr::ClearMRT()
+{
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->Clear();
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->ClearRenderTargets();
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->ClearRenderTargets();
+}
+
+void CRenderMgr::Binding()
+{
+    static CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::GLOBAL);
+
+    g_Data.Light2DCount = static_cast<int>(m_vecLight2D.size());
+    g_Data.Light3DCount = static_cast<int>(m_vecLight3D.size());
+
+    pCB->SetData(&g_Data);
+    pCB->Binding();
+    pCB->Binding_CS();
+
+    // 2D ���� ���� ���ε�
+    static vector<tLight2DInfo> vecLight2DInfo;
+    for (size_t i = 0; i < m_vecLight2D.size(); ++i)
+    {
+        vecLight2DInfo.push_back(m_vecLight2D[i]->GetLight2DInfo());
+    }
+
+    // �����͸� ���� ����ȭ������ ũ�Ⱑ ���ڶ��, Resize �Ѵ�.
+    if (m_Light2DBuffer->GetElementCount() < vecLight2DInfo.size())
+    {
+        m_Light2DBuffer->Create(sizeof(tLight2DInfo), static_cast<UINT>(vecLight2DInfo.size()),
+                                SRV_ONLY, true);
+    }
+
+    // ���� 1�� �̻��� ��� ����ȭ ���۷� ������ �̵�
+    if (!vecLight2DInfo.empty())
+    {
+        m_Light2DBuffer->SetData(vecLight2DInfo.data(), vecLight2DInfo.size());
+        m_Light2DBuffer->Binding(13);
+    }
+    vecLight2DInfo.clear();
+
+
+    // 3D ���� ���� ���ε�
+    static vector<tLight3DInfo> vecLight3DInfo;
+    for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+    {
+        vecLight3DInfo.push_back(m_vecLight3D[i]->GetLight3DInfo());
+    }
+
+    // �����͸� ���� ����ȭ������ ũ�Ⱑ ���ڶ��, Resize �Ѵ�.
+    if (m_Light3DBuffer->GetElementCount() < vecLight3DInfo.size())
+    {
+        m_Light3DBuffer->Create(sizeof(tLight3DInfo), static_cast<UINT>(vecLight3DInfo.size()),
+                                SRV_ONLY, true);
+    }
+
+    // ���� 1�� �̻��� ��� ����ȭ ���۷� ������ �̵�
+    if (!vecLight3DInfo.empty())
+    {
+        m_Light3DBuffer->SetData(vecLight3DInfo.data(), vecLight3DInfo.size());
+        m_Light3DBuffer->Binding(14);
+    }
+    vecLight3DInfo.clear();
+}
+
+
+void CRenderMgr::Render_Debug()
+{
+    auto iter = m_DbgList.begin();
+
+    for (; iter != m_DbgList.end();)
+    {
+        if (m_DebugRender)
+        {
+            // ��� ����
+            switch (iter->Shape)
+            {
+            case DEBUG_SHAPE::RECT:
+                m_DbgObj->MeshRender()->SetMesh(
+                    CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));
+                m_DbgObj->MeshRender()->SetMaterial(
+                    CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+                break;
+            case DEBUG_SHAPE::CIRCLE:
+                m_DbgObj->MeshRender()->SetMesh(
+                    CAssetMgr::GetInst()->FindAsset<CMesh>(L"CircleMesh_Debug"));
+                m_DbgObj->MeshRender()->SetMaterial(
+                    CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+                break;
+            case DEBUG_SHAPE::CROSS:
+                m_DbgObj->MeshRender()->SetMaterial(
+                    CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+                break;
+            case DEBUG_SHAPE::LINE:
+                {
+                    m_DbgObj->MeshRender()->SetMesh(
+                        CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
+                    m_DbgObj->MeshRender()->SetMaterial(
+                        CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeLineMtrl"), 0);
+                    m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_1, iter->WorldPos);
+                    m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_2, iter->Scale);
+                }
+                break;
+            case DEBUG_SHAPE::CUBE:
+                m_DbgObj->MeshRender()->SetMesh(
+                    CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh_Debug"));
+                m_DbgObj->MeshRender()->SetMaterial(
+                    CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+                break;
+            case DEBUG_SHAPE::SPHERE:
+                m_DbgObj->MeshRender()->SetMesh(
+                    CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+                m_DbgObj->MeshRender()->SetMaterial(
+                    CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeSphereMtrl"), 0);
+                break;
+            }
+
+            // ��ġ����
+            if (iter->matWorld == XMMatrixIdentity())
+            {
+                m_DbgObj->Transform()->SetRelativePos(iter->WorldPos);
+                m_DbgObj->Transform()->SetRelativeScale(iter->Scale);
+                m_DbgObj->Transform()->SetRelativeRotation(iter->Rotation);
+                m_DbgObj->Transform()->FinalTick();
+            }
+            else
+            {
+                m_DbgObj->Transform()->SetWorldMat(iter->matWorld);
+            }
+
+            // ���� ����
+            m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_0, iter->Color);
+
+            if (iter->DepthTest)
+            {
+                m_DbgObj->MeshRender()->GetMaterial(0)->GetShader()->SetDSState(DS_TYPE::NO_WRITE);
+            }
+            else
+            {
+                m_DbgObj->MeshRender()->GetMaterial(0)->GetShader()->SetDSState(
+                    DS_TYPE::NO_TEST_NO_WRITE);
+            }
+
+            // ����
+            m_DbgObj->Render();
+        }
+
+        iter->Time += EngineDT;
+        if (iter->Duration <= iter->Time)
+            iter = m_DbgList.erase(iter);
+        else
+            ++iter;
+    }
+}
+
+void CRenderMgr::Render_Play()
+{
+    // ���� ���� ī�޶�� ���� ������
+    for (size_t i = 0; i < m_vecCam.size(); ++i)
+    {
+        m_vecCam[i]->SortObject();
+        //m_vecCam[i]->Render();
+    }
+}
+
+void CRenderMgr::Render_Editor()
+{
+    m_EditorCam->SortObject();
+
+    g_Trans.matView = m_EditorCam->GetViewMat();
+    g_Trans.matProj = m_EditorCam->GetProjMat();
+
+    // Deferred	
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+    m_EditorCam->render_deferred();
+
+    // Decal
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::DECAL)]->OMSet();
+    m_EditorCam->render_decal();
+
+    // Lighting
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
+    for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+    {
+        m_vecLight3D[i]->Render();
+    }
+
+    // SwapChain	
+    m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+
+    // Deferred MRT �� �׷��� ������ SwapChain ���� �̵�
+    MergeDeferredTarget();
+
+    m_EditorCam->render_forward();
+    m_EditorCam->render_effect();
+    m_EditorCam->render_particle();
+    m_EditorCam->render_postprocess();
+    m_EditorCam->render_clear();
+
+    // Ư�� Ÿ������ SwapChain �� �����
+    MergeSpecifyTarget();
+}
+
+void CRenderMgr::Render_Clear()
+{
+    m_vecLight2D.clear();
+    m_vecLight3D.clear();
+}
+
+void CRenderMgr::MergeDeferredTarget()
+{
+    Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+    m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+    m_MergeMtrl->
+        SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+    m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+    m_MergeMtrl->
+        SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+    m_MergeMtrl->
+        SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+    m_MergeMtrl->SetScalarParam(INT_0, 0);
+    m_MergeMtrl->Binding();
+    pRectMesh->Render(0);
+
+    for (int i = 0; i < 8; ++i)
+    {
+        CTexture::Clear(i);
+    }
+}
+
+void CRenderMgr::MergeSpecifyTarget()
+{
+    if (nullptr != m_SpecifyTarget)
+    {
+        Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+        m_MergeMtrl->SetTexParam(TEX_0, m_SpecifyTarget);
+        m_MergeMtrl->SetScalarParam(INT_0, 1);
+        m_MergeMtrl->Binding();
+
+        pRectMesh->Render(0);
+
+        for (int i = 0; i < 8; ++i)
+        {
+            CTexture::Clear(i);
+        }
+    }
+}
+
+void CRenderMgr::RegisterCamera(CCamera* _Cam, UINT _Priority)
+{
+    if (-1 == _Priority)
+    {
+        auto iter = m_vecCam.begin();
+        for (; iter != m_vecCam.end(); ++iter)
+        {
+            if (*iter == _Cam)
+            {
+                m_vecCam.erase(iter);
+                return;
+            }
+        }
+    }
+
+    else
+    {
+        if (m_vecCam.size() <= _Priority)
+        {
+            m_vecCam.resize(_Priority + 1);
+        }
+
+        assert(!m_vecCam[_Priority]);
+
+        m_vecCam[_Priority] = _Cam;
+    }
+}
+
+void CRenderMgr::CopyRenderTarget()
+{
+    Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
+    CONTEXT->CopyResource(m_PostProcessTex->GetTex2D().Get(), pRTTex->GetTex2D().Get());
+}
