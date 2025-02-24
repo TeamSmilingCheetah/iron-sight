@@ -1,4 +1,4 @@
-/*$ preserve start $*/
+﻿/*$ preserve start $*/
 
 /* ================================================================================================== */
 /* FMOD Studio - Error string header file. Copyright (c), Firelight Technologies Pty, Ltd. 2004-2018. */

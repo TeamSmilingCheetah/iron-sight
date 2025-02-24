@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "SE_Detail.h"
 
 #include "SE_AtlasView.h"

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ConstBuffer
 enum class CB_TYPE

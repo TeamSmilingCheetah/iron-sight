@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 
 void CreateObject(class CGameObject* _NewObj, int LayerIdx, bool _bChildMove);

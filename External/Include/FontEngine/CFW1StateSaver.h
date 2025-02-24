@@ -1,4 +1,4 @@
-// CFW1StateSaver.h
+﻿// CFW1StateSaver.h
 
 #ifndef IncludeGuard__FW1_CFW1StateSaver
 #define IncludeGuard__FW1_CFW1StateSaver

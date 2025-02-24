@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "PathMgr.h"
 
 wchar_t CPathMgr::g_szSolutionPath[255] = L"";
@@ -11,7 +11,7 @@ wchar_t CPathMgr::g_szExt[50] = L"";
 
 void CPathMgr::init()
 {
-	// Resources Æú´õ±îÁöÀÇ °æ·Î¸¦ ±¸ÇÑ´Ù.
+	// Resources ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 	GetCurrentDirectory(255, g_szSolutionPath);
 	
 	size_t iCount = 1;
@@ -33,7 +33,7 @@ void CPathMgr::init()
 	// -> bin -> Resources
 	wcscat_s(g_szResPath, L"\\OutputFile\\content\\");
 	
-	// Inc Æú´õ °æ·Î 
+	// Inc ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 
 	GetCurrentDirectory(255, g_szIncPath);
 	
 	iCount = 1;
@@ -52,7 +52,7 @@ void CPathMgr::init()
 	wcscat_s(g_szIncPath, L"\\External\\Include\\");
 
 
-	// Proj Æú´õ °æ·Î 
+	// Proj ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 
 	GetCurrentDirectory(255, g_szProjPath);
 
 	iCount = 1;

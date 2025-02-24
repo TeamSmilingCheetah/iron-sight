@@ -1,4 +1,4 @@
-// CFW1ColorRGBA.h
+﻿// CFW1ColorRGBA.h
 
 #ifndef IncludeGuard__FW1_CFW1ColorRGBA
 #define IncludeGuard__FW1_CFW1ColorRGBA

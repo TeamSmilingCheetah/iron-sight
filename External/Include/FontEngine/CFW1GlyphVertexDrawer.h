@@ -1,4 +1,4 @@
-// CFW1GlyphVertexDrawer.h
+﻿// CFW1GlyphVertexDrawer.h
 
 #ifndef IncludeGuard__FW1_CFW1GlyphVertexDrawer
 #define IncludeGuard__FW1_CFW1GlyphVertexDrawer

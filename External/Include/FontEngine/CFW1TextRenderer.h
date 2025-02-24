@@ -1,4 +1,4 @@
-// CFW1TextRenderer.h
+﻿// CFW1TextRenderer.h
 
 #ifndef IncludeGuard__FW1_CFW1TextRenderer
 #define IncludeGuard__FW1_CFW1TextRenderer

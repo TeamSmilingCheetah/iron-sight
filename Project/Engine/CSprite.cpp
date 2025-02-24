@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CSprite.h"
 
 #include "CDevice.h"

@@ -1,4 +1,4 @@
-// CFW1GlyphAtlas.h
+﻿// CFW1GlyphAtlas.h
 
 #ifndef IncludeGuard__FW1_CFW1GlyphAtlas
 #define IncludeGuard__FW1_CFW1GlyphAtlas

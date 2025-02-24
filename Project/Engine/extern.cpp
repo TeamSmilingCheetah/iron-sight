@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Common/global.h"
 
 TransInfo g_Trans = {};

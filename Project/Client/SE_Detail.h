@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "SE_Sub.h"
 
 #include <Engine/CTexture.h>

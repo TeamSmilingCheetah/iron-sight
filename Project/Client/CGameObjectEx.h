@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Engine/CGameObject.h>
 
 class CGameObjectEx :
