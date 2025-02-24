@@ -1,4 +1,4 @@
-// CFW1DWriteRenderTarget.h
+﻿// CFW1DWriteRenderTarget.h
 
 #ifndef IncludeGuard__FW1_CFW1DWriteRenderTarget
 #define IncludeGuard__FW1_CFW1DWriteRenderTarget

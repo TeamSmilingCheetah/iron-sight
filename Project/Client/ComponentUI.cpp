@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ComponentUI.h"
 
 ComponentUI::ComponentUI(const string& _ID, COMPONENT_TYPE _Type)

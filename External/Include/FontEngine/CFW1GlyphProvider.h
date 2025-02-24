@@ -1,4 +1,4 @@
-// CFW1GlyphProvider.h
+﻿// CFW1GlyphProvider.h
 
 #ifndef IncludeGuard__FW1_CFW1GlyphProvider
 #define IncludeGuard__FW1_CFW1GlyphProvider

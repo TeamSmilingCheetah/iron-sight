@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CEntity.h"
 
 UINT CEntity::g_NextID = 0;

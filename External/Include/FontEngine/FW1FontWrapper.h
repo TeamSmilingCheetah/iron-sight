@@ -1,4 +1,4 @@
-// FW1FontWrapper.h
+﻿// FW1FontWrapper.h
 
 // v1.1, October 2011
 // Written by Erik Rufelt

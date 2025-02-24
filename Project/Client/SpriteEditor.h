@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "EditorUI.h"
 
 class SE_AtlasView;

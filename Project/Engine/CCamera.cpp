@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CCamera.h"
 
 #include "CDevice.h"

@@ -1,4 +1,4 @@
-// CFW1Object.h
+﻿// CFW1Object.h
 
 #ifndef IncludeGuard__FW1_CFW1Object
 #define IncludeGuard__FW1_CFW1Object

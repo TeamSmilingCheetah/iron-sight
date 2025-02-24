@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CFlipbook.h"
 
 #include "CPathMgr.h"

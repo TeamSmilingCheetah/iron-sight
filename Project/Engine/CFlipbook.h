@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CAsset.h"
 
 #include "CSprite.h"

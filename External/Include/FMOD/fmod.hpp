@@ -1,4 +1,4 @@
-/* ========================================================================================== */
+﻿/* ========================================================================================== */
 /* FMOD Studio - C++ header file. Copyright (c), Firelight Technologies Pty, Ltd. 2004-2018.  */
 /*                                                                                            */
 /* Use this header in conjunction with fmod_common.h (which contains all the constants /      */

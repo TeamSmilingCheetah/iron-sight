@@ -1,4 +1,4 @@
-// CFW1FontWrapper.h
+﻿// CFW1FontWrapper.h
 
 #ifndef IncludeGuard__FW1_CFW1FontWrapper
 #define IncludeGuard__FW1_CFW1FontWrapper
