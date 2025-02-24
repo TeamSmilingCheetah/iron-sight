@@ -1,24 +1,18 @@
 #include "pch.h"
 #include "TestLevel.h"
 
-#include <Engine/CLevelMgr.h>
 #include <Engine/CLevel.h>
 #include <Engine/CLayer.h>
 #include <Engine/CGameObject.h>
 #include <Engine/components.h>
-
 #include <Engine/CAssetMgr.h>
-#include <Engine/assets.h>
-
-#include <Engine/CCollisionMgr.h>
 
 #include <Scripts/CPlayerScript.h>
-#include <Scripts/CMissileScript.h>
 #include <Scripts/CCameraScript.h>
 
 void TestLevel::CreateTestLevel()
 {
-    // Texture �ε��ϱ�
+    // Texture 로딩하기
     Ptr<CTexture> pTex = CAssetMgr::GetInst()->Load<CTexture>(
         L"PlayerTex", L"Texture//Character.png");
     Ptr<CTexture> pAtlasTex = CAssetMgr::GetInst()->Load<CTexture>(
@@ -26,7 +20,7 @@ void TestLevel::CreateTestLevel()
 
     auto pLevel = new CLevel;
 
-    // �׽�Ʈ ������ ���� ������ ����
+    // 테스트 레벨을 현재 레벨로 지정
     ChangeLevel(pLevel, LEVEL_STATE::STOP);
 
 
@@ -55,7 +49,7 @@ void TestLevel::CreateTestLevel()
     pLevel->AddObject(0, pObject, false);
 
     // =================
-    // ���� ������Ʈ �߰�
+    // 광원 오브젝트 추가
     // =================
     auto pLightObj = new CGameObject;
     pLightObj->SetName(L"Point Light");
@@ -78,7 +72,7 @@ void TestLevel::CreateTestLevel()
     Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
         L"Texture\\skybox\\Sky02.jpg");
 
-    // FrustumCheck ��Ȱ��ȭ
+    // FrustumCheck 비활성화
     pSkyBox->Transform()->SetFrustumCheck(false);
 
     pSkyBox->SkyBox()->SetMode(SPHERE);

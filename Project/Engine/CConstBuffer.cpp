@@ -22,7 +22,7 @@ int CConstBuffer::Create(UINT _BufferSize)
     m_Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     m_Desc.Usage = D3D11_USAGE_DYNAMIC;
 
-    // ���ؽ� �뵵�� ID3D11Buffer ��ü ����
+    // 버텍스 용도의 ID3D11Buffer 객체 생성
     if (FAILED(DEVICE->CreateBuffer(&m_Desc, nullptr, m_CB.GetAddressOf())))
     {
         return E_FAIL;

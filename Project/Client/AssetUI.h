@@ -1,7 +1,7 @@
 #pragma once
 #include "EditorUI.h"
 
-#include <Engine/Ptr.h>
+#include <Common/Ptr.h>
 #include <Engine/assets.h>
 
 class AssetUI :

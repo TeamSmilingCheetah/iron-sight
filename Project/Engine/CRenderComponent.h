@@ -6,16 +6,16 @@
 
 struct tMtrlSet
 {
-    Ptr<CMaterial> pSharedMtrl; // ���� ���׸���
-    Ptr<CMaterial> pDynamicMtrl; // ���� ���׸����� ���纻    
-    Ptr<CMaterial> pCurMtrl; // ���� ��� �� ���׸���
+    Ptr<CMaterial> pSharedMtrl; // 공유 메테리얼
+    Ptr<CMaterial> pDynamicMtrl; // 공유 메테리얼의 복사본
+    Ptr<CMaterial> pCurMtrl; // 현재 사용 할 메테리얼
 };
 
 class CRenderComponent :
     public CComponent
 {
     Ptr<CMesh> m_Mesh;
-    vector<tMtrlSet> m_vecMtrls; // ���� 
+    vector<tMtrlSet> m_vecMtrls; // 재질
 
 
 public:

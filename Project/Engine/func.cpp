@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "func.h"
+#include "Common/func.h"
 
 #include "CRenderMgr.h"
 #include "CTaskMgr.h"

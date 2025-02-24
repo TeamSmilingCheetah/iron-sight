@@ -27,11 +27,11 @@ TreeNode::~TreeNode()
 
 void TreeNode::Render_Update()
 {
-    // �⺻ �ɼ�
+    // 기본 옵션
     int Flag = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
     string padding;
 
-    // �߰� �ɼ�
+    // 추가 옵션
     if (m_vecChild.empty())
         Flag |= ImGuiTreeNodeFlags_Leaf;
     if (m_Frame)
@@ -46,7 +46,7 @@ void TreeNode::Render_Update()
 
     bool Open = ImGui::TreeNodeEx(Name.c_str(), Flag);
 
-    // ��带 Ŭ���ϸ�, ���� ���·� ����� �ش�.
+    // 노드를 클릭하면, 선택 상태로 만들어 준다.
     if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
     {
         m_Selected = true;
@@ -61,7 +61,7 @@ void TreeNode::Render_Update()
         ImGui::Text(m_Name.c_str());
         ImGui::EndDragDropSource();
 
-        // TreeUI �� Drag ���
+        // TreeUI 에 Drag 등록
         m_Owner->SetDraggedNode(this);
     }
 
@@ -74,7 +74,7 @@ void TreeNode::Render_Update()
                 const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
                 TreeNode* pDragNode = *static_cast<TreeNode**>(pPayload->Data);
 
-                // TreeUI �� Drop ��� ���
+                // TreeUI 에 Drop 노드 등록
                 m_Owner->SetDroppedNode(this);
             }
 
@@ -124,7 +124,7 @@ void TreeUI::Render_Update()
     if (nullptr == m_Root)
         return;
 
-    // ��Ʈ������ ��� ���� RenderUpdate
+    // 루트노드부터 모든 노드들 RenderUpdate
     if (m_ShowRoot)
         m_Root->Render_Update();
     else
@@ -136,16 +136,16 @@ void TreeUI::Render_Update()
     }
 
 
-    // �巡�� ��尡 �ְ�, ����� ��嵵 �ִ�
-    // �巡�� ��尡 �ְ�, ���콺 ������ ������.
+    // 드래그 노드가 있고, 드랍된 노드도 있다
+    // 드래그 노드가 있고, 마우스 왼쪽이 떼어졌다면
     if ((m_DraggedNode && m_DroppedNode) || (m_DraggedNode && ImGui::IsMouseReleased(
         ImGuiMouseButton_Left)))
     {
-        // ��ϵ� dragdrop delegate �� �ִٸ�
+        // 등록된 dragdrop delegate 가 있다면
         if (m_SelfDragDropInst && m_SelfDragDropFunc)
         {
-            (m_SelfDragDropInst->*m_SelfDragDropFunc)(static_cast<DWORD_PTR>(m_DraggedNode),
-                                                      static_cast<DWORD_PTR>(m_DroppedNode));
+            (m_SelfDragDropInst->*m_SelfDragDropFunc)((DWORD_PTR)m_DraggedNode,
+                                                      (DWORD_PTR)m_DroppedNode);
         }
 
         m_DraggedNode = nullptr;
@@ -169,10 +169,10 @@ void TreeUI::AddSelectedNode(TreeNode* _Node)
         m_vecSelected.push_back(_Node);
     }
 
-    // ���� �ֱٿ� ���õ� ��忡 ���ؼ� Delegate �� ȣ���Ų��.
+    // 가장 최근에 선택된 노드에 대해서 Delegate 를 호출시킨다.
     if (m_SelectedInst && m_SelectedFunc)
     {
-        (m_SelectedInst->*m_SelectedFunc)(static_cast<DWORD_PTR>(m_vecSelected.back()));
+        (m_SelectedInst->*m_SelectedFunc)((DWORD_PTR)m_vecSelected.back());
     }
 }
 
@@ -192,10 +192,10 @@ TreeNode* TreeUI::AddItem(TreeNode* _ParentNode, const string& _Name, DWORD_PTR 
     pNode->m_Data = _Data;
     pNode->m_Frame = _Frame;
 
-    // _ParentNode �� nullptr �� ���
+    // _ParentNode 가 nullptr 인 경우
     if (nullptr == _ParentNode)
     {
-        // Tree �� �߰��ϴ� �׸��� ��Ʈ�� �� ���̴�.
+        // Tree 에 추가하는 항목이 루트가 될 것이다.
         assert(!m_Root);
         m_Root = pNode;
     }

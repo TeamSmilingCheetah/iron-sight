@@ -36,7 +36,7 @@ void Inspector::Render_Update()
 
 void Inspector::SetTargetObject(CGameObject* _Target)
 {
-    // �ڽ� UI �鿡�� TargetObject �� ã�Ƽ� �˷��ش�.
+    // 자식 UI 들에게 TargetObject 를 찾아서 알려준다.
     m_TargetObject = _Target;
 
     for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
@@ -47,7 +47,7 @@ void Inspector::SetTargetObject(CGameObject* _Target)
         m_arrComUI[i]->SetTargetObject(m_TargetObject);
     }
 
-    // ������Ʈ�� ������ Script �� �����ϴ� ScriptUI �� �����ؼ� ��Ī�����ش�.
+    // 오브젝트가 소유한 Script 에 대응하는 ScriptUI 를 생성해서 매칭시켜준다.
     if (nullptr == m_TargetObject)
     {
         for (size_t i = 0; i < m_vecScriptUI.size(); ++i)
@@ -76,7 +76,7 @@ void Inspector::SetTargetObject(CGameObject* _Target)
         }
     }
 
-    // AssetUI �� ��Ȱ��ȭ
+    // AssetUI 는 비활성화
     if (nullptr != _Target)
         SetTargetAsset(nullptr);
 }
@@ -116,7 +116,7 @@ void Inspector::SetTargetAsset(Ptr<CAsset> _Asset)
 
 void Inspector::CreateComponentUI()
 {
-    // InspectorUI �� �ڽ�UI �߰�
+    // InspectorUI 의 자식UI 추가
     m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::TRANSFORM)] = static_cast<ComponentUI*>(AddChildUI(
         new TransformUI));
     m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::TRANSFORM)]->SetChildSize(ImVec2(0.f, 150.f));

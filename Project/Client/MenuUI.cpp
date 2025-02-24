@@ -66,7 +66,7 @@ void MenuUI::File()
             CLevel* pLoadedLevel = CLevelSaveLoad::LoadLevel(strFilePath);
             ChangeLevel(pLoadedLevel, LEVEL_STATE::STOP);
 
-            // ������ �ε�ɶ� Inspector ���� �����ִ� ������ ���� �����Ѵ�. (������ ��ü�� ����Ű�� ���� �� �ֱ� ����)
+            // 레벨이 로드될때 Inspector 에서 보여주던 정보를 전부 제거한다. (삭제된 객체를 가리키고 있을 수 있기 때문)
             auto pInspector = static_cast<Inspector*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
             pInspector->SetTargetObject(nullptr);
         }
@@ -104,7 +104,7 @@ void MenuUI::Level()
 
         if (ImGui::MenuItem("Stop", nullptr, nullptr, IsPlay || IsPause))
         {
-            // ������ �����ɶ� Inspector ���� �����ִ� ������ ���� �����Ѵ�. (������ ��ü�� ����Ű�� ���� �� �ֱ� ����)
+            // 레벨이 정지될때 Inspector 에서 보여주던 정보를 전부 제거한다. (삭제된 객체를 가리키고 있을 수 있기 때문)
             auto pInspector = static_cast<Inspector*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
             pInspector->SetTargetObject(nullptr);
 
@@ -219,16 +219,16 @@ void MenuUI::SelectRenderTarget(const string& _ItemName, const wstring& _TargetK
 
 wstring MenuUI::GetNextMaterialName()
 {
-    wchar_t Bufff[255] = {};
+    wchar_t Buff[255] = {};
 
     UINT i = 0;
     while (true)
     {
-        wsprintf(Bufff, L"Material\\Default Material %d.mtrl", i++);
+        wsprintf(Buff, L"Material\\Default Material %d.mtrl", i++);
 
-        if (nullptr == CAssetMgr::GetInst()->FindAsset<CMaterial>(Bufff))
+        if (nullptr == CAssetMgr::GetInst()->FindAsset<CMaterial>(Buff))
             break;
     }
 
-    return Bufff;
+    return Buff;
 }

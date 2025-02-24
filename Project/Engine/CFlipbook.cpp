@@ -19,11 +19,11 @@ int CFlipbook::Save(const wstring& _strFilePath)
     _wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
     assert(pFile);
 
-    // ��������Ʈ ����
+    // 스프라이트 개수
     size_t SpriteCount = m_vecSprite.size();
     fwrite(&SpriteCount, sizeof(size_t), 1, pFile);
 
-    // �� ��������Ʈ ����
+    // 각 스프라이트 정보
     for (size_t i = 0; i < SpriteCount; ++i)
     {
         SaveAssetRef(m_vecSprite[i], pFile);
@@ -48,12 +48,12 @@ int CFlipbook::Load(const wstring& _FilePath)
     _wfopen_s(&pFile, _FilePath.c_str(), L"rb");
     assert(pFile);
 
-    // ��������Ʈ ����
+    // 스프라이트 개수
     size_t SpriteCount = 0;
     fread(&SpriteCount, sizeof(size_t), 1, pFile);
     m_vecSprite.resize(SpriteCount);
 
-    // �� ��������Ʈ ����
+    // 각 스프라이트 정보
     for (size_t i = 0; i < SpriteCount; ++i)
     {
         LoadAssetRef(m_vecSprite[i], pFile);

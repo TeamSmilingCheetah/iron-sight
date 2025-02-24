@@ -12,7 +12,7 @@ void CLandScape::Init()
 
     CreateComputeShader();
 
-    // BrushTexture �߰�	
+    // BrushTexture 추가	
     AddBrushTexture(
         CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\TX_GlowScene_2.png"));
     AddBrushTexture(
@@ -22,7 +22,7 @@ void CLandScape::Init()
     AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\TX_Twirl02.png"));
     AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\FX_Flare.png"));
 
-    // Raycasting ����� �޴� �뵵�� ����ȭ����
+    // Raycasting 결과를 받는 용도의 구조화버퍼
     m_RaycastOut = new CStructuredBuffer;
     m_RaycastOut->Create(sizeof(tRaycastOut), 1, SRV_UAV, true);
 }
@@ -74,7 +74,7 @@ void CLandScape::CreateMesh()
                   static_cast<UINT>(vecIdx.size()));
     SetMesh(pMesh);
 
-    // Mesh �� �����ϸ�, ������ �缳�����־�� ��
+    // Mesh 를 변경하면, 재질을 재설정해주어야 함
     CreateMaterial();
 }
 
@@ -112,7 +112,7 @@ void CLandScape::CreateMaterial()
     pMtrl->SetShader(pShader);
     CAssetMgr::GetInst()->AddAsset<CMaterial>(L"LandScapeMtrl", pMtrl);
 
-    // Material ����
+    // Material 세팅
     SetMaterial(pMtrl, 0);
 }
 
@@ -124,11 +124,12 @@ void CLandScape::CreateComputeShader()
 
     m_WeightMapCS = new CWeightMapCS;
 
-    // ����ġ WeightMap �� StructuredBuffer
+    // 가중치 WeightMap 용 StructuredBuffer
     m_WeightMap = new CStructuredBuffer;
     m_WeightWidth = 1024;
     m_WeightHeight = 1024;
-    m_WeightMap->Create(sizeof(tWeight8), m_WeightWidth * m_WeightHeight, SRV_UAV, true, nullptr);
+    m_WeightMap->Create(sizeof(tWeight8), m_WeightWidth * m_WeightHeight, SRV_UAV, true,
+                        nullptr);
 }
 
 

@@ -2,7 +2,7 @@
 #include "FlipbookUI.h"
 
 FlipbookUI::FlipbookUI()
-    : AssetUI("Flipbook", ASSET_TYPE::FLIPBOOK)
+    : AssetUI("Flipbook", FLIPBOOK)
 {
 }
 

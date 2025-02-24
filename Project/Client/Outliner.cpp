@@ -90,7 +90,7 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
     {
         pDropObj = (CGameObject*)pDropped->GetData();
 
-        // �巡�� �� ������Ʈ�� ������ ������Ʈ�� ���� �� �ϳ����, �� ��Ȳ�� �����Ѵ�.
+        // 드래그 된 오브젝트가 목적지 오브젝트의 조상 중 하나라면, 그 상황을 방지한다.
         if (pDropObj->IsAncestor(pDragObj))
             return;
     }

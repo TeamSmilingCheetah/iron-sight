@@ -54,7 +54,7 @@ void CRenderMgr::Render()
         m_DebugRender ? m_DebugRender = false : m_DebugRender = true;
     }
 
-    // ������ ����
+    // 렌더링 시작
     RenderStart();
 
     if (m_IsEditor)
@@ -69,7 +69,7 @@ void CRenderMgr::Render()
     // DebugRender
     Render_Debug();
 
-    // ���ҽ� Ŭ����
+    // 리소스 클리어
     Render_Clear();
 }
 
@@ -99,21 +99,21 @@ void CRenderMgr::Binding()
     pCB->Binding();
     pCB->Binding_CS();
 
-    // 2D ���� ���� ���ε�
+    // 2D 광원 정보 바인딩
     static vector<tLight2DInfo> vecLight2DInfo;
     for (size_t i = 0; i < m_vecLight2D.size(); ++i)
     {
         vecLight2DInfo.push_back(m_vecLight2D[i]->GetLight2DInfo());
     }
 
-    // �����͸� ���� ����ȭ������ ũ�Ⱑ ���ڶ��, Resize �Ѵ�.
+    // 데이터를 받을 구조화버퍼의 크기가 모자라면, Resize 한다.
     if (m_Light2DBuffer->GetElementCount() < vecLight2DInfo.size())
     {
         m_Light2DBuffer->Create(sizeof(tLight2DInfo), static_cast<UINT>(vecLight2DInfo.size()),
                                 SRV_ONLY, true);
     }
 
-    // ���� 1�� �̻��� ��� ����ȭ ���۷� ������ �̵�
+    // 광원 1개 이상인 경우 구조화 버퍼로 데이터 이동
     if (!vecLight2DInfo.empty())
     {
         m_Light2DBuffer->SetData(vecLight2DInfo.data(), vecLight2DInfo.size());
@@ -122,21 +122,21 @@ void CRenderMgr::Binding()
     vecLight2DInfo.clear();
 
 
-    // 3D ���� ���� ���ε�
+    // 3D 광원 정보 바인딩
     static vector<tLight3DInfo> vecLight3DInfo;
     for (size_t i = 0; i < m_vecLight3D.size(); ++i)
     {
         vecLight3DInfo.push_back(m_vecLight3D[i]->GetLight3DInfo());
     }
 
-    // �����͸� ���� ����ȭ������ ũ�Ⱑ ���ڶ��, Resize �Ѵ�.
+    // 데이터를 받을 구조화버퍼의 크기가 모자라면, Resize 한다.
     if (m_Light3DBuffer->GetElementCount() < vecLight3DInfo.size())
     {
         m_Light3DBuffer->Create(sizeof(tLight3DInfo), static_cast<UINT>(vecLight3DInfo.size()),
                                 SRV_ONLY, true);
     }
 
-    // ���� 1�� �̻��� ��� ����ȭ ���۷� ������ �̵�
+    // 광원 1개 이상인 경우 구조화 버퍼로 데이터 이동
     if (!vecLight3DInfo.empty())
     {
         m_Light3DBuffer->SetData(vecLight3DInfo.data(), vecLight3DInfo.size());
@@ -154,7 +154,7 @@ void CRenderMgr::Render_Debug()
     {
         if (m_DebugRender)
         {
-            // ��� ����
+            // 모양 설정
             switch (iter->Shape)
             {
             case DEBUG_SHAPE::RECT:
@@ -179,7 +179,8 @@ void CRenderMgr::Render_Debug()
                         CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
                     m_DbgObj->MeshRender()->SetMaterial(
                         CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeLineMtrl"), 0);
-                    m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_1, iter->WorldPos);
+                    m_DbgObj->MeshRender()->GetMaterial(0)->
+                              SetScalarParam(VEC4_1, iter->WorldPos);
                     m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_2, iter->Scale);
                 }
                 break;
@@ -197,7 +198,7 @@ void CRenderMgr::Render_Debug()
                 break;
             }
 
-            // ��ġ����
+            // 위치설정
             if (iter->matWorld == XMMatrixIdentity())
             {
                 m_DbgObj->Transform()->SetRelativePos(iter->WorldPos);
@@ -210,7 +211,7 @@ void CRenderMgr::Render_Debug()
                 m_DbgObj->Transform()->SetWorldMat(iter->matWorld);
             }
 
-            // ���� ����
+            // 색상 설정
             m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_0, iter->Color);
 
             if (iter->DepthTest)
@@ -223,7 +224,7 @@ void CRenderMgr::Render_Debug()
                     DS_TYPE::NO_TEST_NO_WRITE);
             }
 
-            // ����
+            // 렌더
             m_DbgObj->Render();
         }
 
@@ -237,7 +238,7 @@ void CRenderMgr::Render_Debug()
 
 void CRenderMgr::Render_Play()
 {
-    // ���� ���� ī�޶�� ���� ������
+    // 레벨 내에 카메라로 레벨 렌더링
     for (size_t i = 0; i < m_vecCam.size(); ++i)
     {
         m_vecCam[i]->SortObject();
@@ -270,7 +271,7 @@ void CRenderMgr::Render_Editor()
     // SwapChain	
     m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 
-    // Deferred MRT �� �׷��� ������ SwapChain ���� �̵�
+    // Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
     MergeDeferredTarget();
 
     m_EditorCam->render_forward();
@@ -279,7 +280,7 @@ void CRenderMgr::Render_Editor()
     m_EditorCam->render_postprocess();
     m_EditorCam->render_clear();
 
-    // Ư�� Ÿ������ SwapChain �� �����
+    // 특정 타겟으로 SwapChain 을 덮어쓰기
     MergeSpecifyTarget();
 }
 

@@ -11,7 +11,7 @@ CPathMgr::~CPathMgr()
 
 void CPathMgr::Init()
 {
-    // ���� �۾� ���͸��� �˾Ƴ���. (�����Ų *.exe ���� ��ġ OR ������Ʈ �۾����͸� ��ġ)
+    // 현재 작업 디렉터리를 알아낸다. (실행시킨 *.exe 파일 위치 OR 프로젝트 작업 디렉터리 위치)
     wchar_t szCurDir[256];
     GetCurrentDirectory(256, szCurDir);
 
@@ -28,7 +28,7 @@ void CPathMgr::Init()
 
     m_BinPath = szCurDir;
     m_ContentPath = m_BinPath + L"Content\\";
-    m_BinPath += L"bin\\";
+    m_BinPath += L"Bin\\";
 }
 
 

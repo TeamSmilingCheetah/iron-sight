@@ -41,7 +41,8 @@ void SE_Detail::Atlas()
     ImGui::Text("Atlas Texture");
     ImGui::SameLine(120);
     ImGui::SetNextItemWidth(150.f);
-    ImGui::InputText("##AtlasTex", (char*)TexName.c_str(), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##AtlasTex", (char*)TexName.c_str(),
+                     ImGuiInputTextFlags_ReadOnly);
 
     if (ImGui::BeginDragDropTarget())
     {
@@ -50,7 +51,7 @@ void SE_Detail::Atlas()
         {
             const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
             TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-            Ptr<CAsset> pAsset = static_cast<CAsset*>(pNode->GetData());
+            Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
 
             if (pAsset->GetAssetType() == TEXTURE)
             {
@@ -64,7 +65,7 @@ void SE_Detail::Atlas()
     ImGui::SameLine();
     if (ImGui::Button("##AtlasTexBtn", ImVec2(18.f, 18.f)))
     {
-        ListUI* pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
+        auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
         pListUI->SetName("Texture");
         vector<wstring> vecTexNames;
         CAssetMgr::GetInst()->GetAssetNames(TEXTURE, vecTexNames);
@@ -77,7 +78,7 @@ void SE_Detail::Atlas()
 
 void SE_Detail::AtlasInfo()
 {
-    // �ػ�
+    // 해상도
     UINT width = 0;
     UINT height = 0;
 
@@ -102,7 +103,7 @@ void SE_Detail::AtlasInfo()
 
 void SE_Detail::SelectTexture(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 {
-    // ����Ʈ���� ����ų���� �׸��� �̸��� �޾ƿ´�.
+    // 리스트에서 더블킬릭한 항목의 이름을 받아온다.
     auto pListUI = (ListUI*)_ListUI;
     auto pStr = (string*)_SelectString;
 
@@ -112,7 +113,7 @@ void SE_Detail::SelectTexture(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
         return;
     }
 
-    // �ش� �׸� ������ ã�Ƽ�, MeshRenderComponent �� �ش� �޽ø� �����ϰ� �Ѵ�.
+    // 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
     Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
         wstring(pStr->begin(), pStr->end()));
     if (nullptr == pTex)

@@ -35,24 +35,24 @@ void CMeshRender::Render()
             if (nullptr == GetMaterial(i))
                 continue;
 
-            GetMaterial(i)->SetAnim3D(true); // Animation Mesh �˸���
+            GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
             GetMaterial(i)->SetBoneCount(Animator3D()->GetBoneCount());
         }
     }
 
-    // ��ġ����
+    // 위치정보
     Transform()->Binding();
 
-    // �޽��� ��� Subset(����, �ε�������) �� �������Ѵ�.
+    // 메쉬의 모든 Subset(부위, 인덱스버퍼) 를 렌더링한다.
     for (int i = 0; i < GetMesh()->GetSubsetCount(); ++i)
     {
         if (nullptr == GetMaterial(i))
             continue;
 
-        // ����� ���̴�
+        // 사용할 쉐이더
         GetMaterial(i)->Binding();
 
-        // ������
+        // 렌더링
         GetMesh()->Render(i);
     }
 

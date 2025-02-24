@@ -1,5 +1,5 @@
 #pragma once
-#include "global.h"
+#include "Common/global.h"
 
 //===============
 // Struct of FBX 
@@ -35,7 +35,7 @@ struct tContainer
     vector<vector<UINT>> vecIdx;
     vector<tFbxMaterial> vecMtrl;
 
-    // Animation ���� ����
+    // Animation 관련 정보
     bool bAnimation;
     vector<vector<tWeightsAndIndices>> vecWI;
 
@@ -61,9 +61,9 @@ struct tKeyFrame
 struct tBone
 {
     wstring strBoneName;
-    int iDepth; // �������� ����
-    int iParentIndx; // �θ� Bone �� �ε���
-    FbxAMatrix matOffset; // Offset ���( -> �Ѹ� -> Local)
+    int iDepth; // 계층구조 깊이
+    int iParentIndx; // 부모 Bone 의 인덱스
+    FbxAMatrix matOffset; // Offset 행렬( -> 뿌리 -> Local)
     FbxAMatrix matBone;
     vector<tKeyFrame> vecKeyFrame;
 };
@@ -107,8 +107,8 @@ private:
     void LoadMesh(FbxMesh* _pFbxMesh);
     void LoadMaterial(FbxSurfaceMaterial* _pMtrlSur);
 
-    void GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
     void GetBinormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
+    void GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
     void GetNormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
     void GetUV(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
 

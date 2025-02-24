@@ -29,20 +29,20 @@ struct tWeight8
 class CLandScape :
     public CRenderComponent
 {
-    UINT m_FaceX; // ���� ���� �� ����
-    UINT m_FaceZ; // ���� ���� �� ����
+    UINT m_FaceX; // 지형 가로 면 개수
+    UINT m_FaceZ; // 지형 세로 면 개수
 
-    Ptr<CTexture> m_HeightMap; // ������ �����ų ���̸�
-    Ptr<CHeightMapCS> m_HeightMapCS; // ���̸� ������ ��ǻƮ ���̴�
+    Ptr<CTexture> m_HeightMap; // 지형에 적용시킬 높이맵
+    Ptr<CHeightMapCS> m_HeightMapCS; // 높이맵 수정용 컴퓨트 쉐이더
 
     // Raycasting
     Ptr<CRaycastCS> m_RaycastCS;
-    CStructuredBuffer* m_RaycastOut; // ���콺 ��ŷ ��ġ
-    tRaycastOut m_Out; // ���콺 ��ŷ ��ġ
+    CStructuredBuffer* m_RaycastOut; // 마우스 픽킹 위치
+    tRaycastOut m_Out; // 마우스 픽킹 위치
 
     vector<Ptr<CTexture>> m_vecBrush;
-    Vec2 m_BrushScale; // �귯�� ũ��
-    UINT m_BrushIdx; // �귯�� �ε���
+    Vec2 m_BrushScale; // 브러쉬 크기
+    UINT m_BrushIdx; // // 브러쉬 인덱스
 
     // WeightMap
     Ptr<CTexture> m_ColorTex;
@@ -53,7 +53,7 @@ class CLandScape :
     Ptr<CWeightMapCS> m_WeightMapCS;
     int m_WeightIdx;
 
-    // LandScape ���
+    // LandScape 모드
     LANDSCAPE_MODE m_Mode;
 
 public:

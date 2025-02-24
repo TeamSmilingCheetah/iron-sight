@@ -19,7 +19,7 @@ CTexture::~CTexture()
 
 int CTexture::Load(const wstring& _FilePath)
 {
-    // ���� -> SystemMem
+    // 파일 -> SystemMem
     wchar_t szExt[50] = {};
     _wsplitpath_s(_FilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, szExt, 50);
     wstring strExt = szExt;
@@ -45,23 +45,23 @@ int CTexture::Load(const wstring& _FilePath)
 
     if (FAILED(hr))
     {
-        MessageBox(nullptr, L"�ؽ��� �ε� ����", L"���ҽ� �ε� ����", MB_OK);
+        MessageBox(nullptr, L"텍스쳐 로딩 실패", L"리소스 로딩 실패", MB_OK);
         return E_FAIL;
     }
 
     // System -> GPU
     // m_Image -> m_Tex2D
-    // Texture2D ��ü�� ����
-    // Texture2D �� �����Ҷ� ����� ShaderResourceView
+    // Texture2D 객체를 만듬
+    // Texture2D 를 전달할때 사용할 ShaderResourceView
     CreateShaderResourceView(DEVICE
                              , m_Image.GetImages()
                              , m_Image.GetImageCount()
                              , m_Image.GetMetadata(), m_SRV.GetAddressOf());
 
-    // ������ ShaderResourveView �� �̿��ؼ� ���� ��ü(Texture2D) �� �˾Ƴ���.
+    // 생성된 ShaderResourveView 를 이용해서 원본 객체(Texture2D) 를 알아낸다.
     m_SRV->GetResource((ID3D11Resource**)m_Tex2D.GetAddressOf());
 
-    // ������ Texture2D �� Desc ������ �˾Ƴ���.
+    // 생성된 Texture2D 의 Desc 정보를 알아낸다.
     m_Tex2D->GetDesc(&m_Desc);
 
     return S_OK;
@@ -108,10 +108,10 @@ int CTexture::Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _
     m_Desc.ArraySize = 1;
     m_Desc.Format = _PixelFormat;
 
-    // �ؽ����� �뵵
+    // 텍스쳐의 용도
     m_Desc.BindFlags = _BindFlag;
 
-    // CPU ���� ���� ���Ŀ� ������ �������� �ɼ�
+    // CPU 에서 생성 이후에 접근이 가능한지 옵션
     m_Desc.Usage = _Usage;
 
     if (m_Desc.Usage == D3D11_USAGE_DYNAMIC)
@@ -119,7 +119,7 @@ int CTexture::Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _
     else if (m_Desc.Usage == D3D11_USAGE_STAGING)
         m_Desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-    // �Ӹ� ������ 1 ==> ������ ������ 
+    // 밉맵 개수가 1 ==> 원본만 존재함 
     m_Desc.MipLevels = 1;
 
     m_Desc.MiscFlags = 0;
@@ -132,7 +132,7 @@ int CTexture::Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _
     }
 
 
-    // View ����	
+    // View 생성	
     if (m_Desc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
     {
         if (FAILED(DEVICE->CreateDepthStencilView(m_Tex2D.Get(), nullptr, m_DSV.GetAddressOf())))
@@ -181,7 +181,7 @@ int CTexture::Create(ComPtr<ID3D11Texture2D> _Tex2D)
     m_Tex2D = _Tex2D;
     m_Tex2D->GetDesc(&m_Desc);
 
-    // View ����	
+    // View 생성	
     if (m_Desc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
     {
         if (FAILED(DEVICE->CreateDepthStencilView(m_Tex2D.Get(), nullptr, m_DSV.GetAddressOf())))
@@ -226,7 +226,7 @@ int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
         return E_FAIL;
     }
 
-    // ���� �� �ؽ��ĸ� ������ �迭 �ؽ����� �� ĭ���� �����Ų��.
+    // 원본 각 텍스쳐를 생성된 배열 텍스쳐의 각 칸으로 복사시킨다.
     for (size_t i = 0; i < _vecTex.size(); ++i)
     {
         UINT Offset = D3D11CalcSubresource(0, i, 1);
@@ -237,7 +237,7 @@ int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
                                    , _vecTex[i]->GetSlicePitch());
     }
 
-    // Shader Resrouce View ����
+    // Shader Resrouce View 생성
     D3D11_SHADER_RESOURCE_VIEW_DESC tSRVDesc = {};
 
     tSRVDesc.Format = m_Desc.Format;
@@ -254,7 +254,7 @@ int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
 
 int CTexture::GenerateMip(UINT _Level)
 {
-    // CubeTexture �� Mipmap ���� ����
+    // CubeTexture 는 Mipmap 생성 금지
     assert(false == m_Desc.MiscFlags & D3D11_SRV_DIMENSION_TEXTURECUBE);
 
     m_Tex2D = nullptr;

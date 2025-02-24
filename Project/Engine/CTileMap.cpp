@@ -22,7 +22,7 @@ CTileMap::CTileMap()
     SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
     SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"TileMapMtrl"), 0);
 
-    // ����ȭ���� ��ü ����
+    // 구조화버퍼 객체 생성
     m_Buffer = new CStructuredBuffer;
 }
 
@@ -39,7 +39,7 @@ CTileMap::CTileMap(const CTileMap& _Origin)
       , m_TileAtlasRow(_Origin.m_TileAtlasRow)
       , m_vecTileInfo(_Origin.m_vecTileInfo)
 {
-    // ����ȭ���� ��ü ����
+    // 구조화버퍼 객체 생성
     m_Buffer = new CStructuredBuffer;
 }
 
@@ -66,7 +66,7 @@ void CTileMap::SetTileColRow(UINT _Col, UINT _Row)
 
     CalcObjectScale();
 
-    // ���� �� ����ȭ���� ũ�� ����
+    // 벡터 및 구조화버퍼 크기 조정
     if (m_vecTileInfo.size() != m_Col * m_Row)
         m_vecTileInfo.resize(m_Col * m_Row);
 
@@ -75,7 +75,7 @@ void CTileMap::SetTileColRow(UINT _Col, UINT _Row)
         assert(nullptr);
     }
 
-    // �ӽ� �ڵ�
+    // 임시 코드
     for (size_t i = 0; i < m_vecTileInfo.size(); ++i)
     {
         tTileInfo info = {};
@@ -125,10 +125,10 @@ void CTileMap::CalcObjectScale()
 
 void CTileMap::Render()
 {
-    // ��ġ����
+    // 위치정보
     Transform()->Binding();
 
-    // ���� ����
+    // 재질 정보
     Vec2 vLeftTopUV = Vec2(static_cast<float>(m_TileAtlasSizeX) * 6.f, 0.f) / Vec2(
         m_TileAtlas->GetWidth(), m_TileAtlas->GetHeight());
     auto vTileSliceUV = Vec2(
@@ -139,14 +139,14 @@ void CTileMap::Render()
     GetMaterial(0)->SetScalarParam(INT_1, m_Row);
     GetMaterial(0)->Binding();
 
-    // ����ȭ ���� ���ε�
+    // 구조화 버퍼 바인딩
     m_Buffer->SetData(m_vecTileInfo.data());
     m_Buffer->Binding(16);
 
-    // ������
+    // 렌더링
     GetMesh()->Render(0);
 
-    // ���� ���ε� ����
+    // 버퍼 바인딩 해제
     m_Buffer->Clear(16);
 }
 

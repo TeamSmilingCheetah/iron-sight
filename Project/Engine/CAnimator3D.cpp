@@ -49,7 +49,7 @@ CAnimator3D::~CAnimator3D()
 void CAnimator3D::FinalTick()
 {
     m_CurTime = 0.f;
-    // ���� ������� Clip �� �ð��� �����Ѵ�.
+    // 현재 재생중인 Clip 의 시간을 진행한다.
     m_vecClipUpdateTime[m_CurClip] += EngineDT;
 
     if (m_vecClipUpdateTime[m_CurClip] >= m_vecClip->at(m_CurClip).dTimeLength)
@@ -59,20 +59,20 @@ void CAnimator3D::FinalTick()
 
     m_CurTime = m_vecClip->at(m_CurClip).dStartTime + m_vecClipUpdateTime[m_CurClip];
 
-    // ���� ������ �ε��� ���ϱ�
+    // 현재 프레임 인덱스 구하기
     double dFrameIdx = m_CurTime * static_cast<double>(m_FrameCount);
     m_FrameIdx = static_cast<int>(dFrameIdx);
 
-    // ���� ������ �ε���
+    // 다음 프레임 인덱스
     if (m_FrameIdx >= m_vecClip->at(0).iFrameLength - 1)
-        m_NextFrameIdx = m_FrameIdx; // ���̸� ���� �ε����� ����
+        m_NextFrameIdx = m_FrameIdx; // 끝이면 현재 인덱스를 유지
     else
         m_NextFrameIdx = m_FrameIdx + 1;
 
-    // �����Ӱ��� �ð��� ���� ������ �����ش�.
+    // 프레임간의 시간에 따른 비율을 구해준다.
     m_Ratio = static_cast<float>(dFrameIdx - (double)m_FrameIdx);
 
-    // ��ǻƮ ���̴� ���꿩��
+    // 컴퓨트 쉐이더 연산여부
     m_bFinalMatUpdate = false;
 }
 
@@ -81,7 +81,7 @@ void CAnimator3D::SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip)
     m_vecClip = _vecAnimClip;
     m_vecClipUpdateTime.resize(m_vecClip->size());
 
-    // �׽�Ʈ �ڵ�
+    // 테스트 코드
     /*static float fTime = 0.f;
     fTime += 1.f;
     m_vecClipUpdateTime[0] = fTime;*/
@@ -109,13 +109,13 @@ void CAnimator3D::Binding()
         pBoneMatCS->SetNextFrameIdx(m_NextFrameIdx);
         pBoneMatCS->SetFrameRatio(m_Ratio);
 
-        // ������Ʈ ���̴� ����
+        // 업데이트 쉐이더 실행
         pBoneMatCS->Execute();
 
         m_bFinalMatUpdate = true;
     }
 
-    // t17 �������Ϳ� ������� ������(��������) ���ε�		
+    // t17 레지스터에 최종행렬 데이터(구조버퍼) 바인딩		
     m_BoneFinalMatBuffer->Binding(17);
 }
 
@@ -131,7 +131,7 @@ void CAnimator3D::ClearData()
         if (nullptr == pMtrl)
             continue;
 
-        pMtrl->SetAnim3D(false); // Animation Mesh �˸���
+        pMtrl->SetAnim3D(false); // Animation Mesh 알리기
         pMtrl->SetBoneCount(0);
     }
 }

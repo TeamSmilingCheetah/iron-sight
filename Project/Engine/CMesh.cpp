@@ -73,14 +73,14 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
     pMesh->m_VBDesc = tVtxDesc;
     pMesh->m_VtxSysMem = pSys;
 
-    // �ε��� ����
+    // 인덱스 정보
     UINT iIdxBufferCount = static_cast<UINT>(container->vecIdx.size());
     D3D11_BUFFER_DESC tIdxDesc = {};
 
     for (UINT i = 0; i < iIdxBufferCount; ++i)
     {
         tIdxDesc.ByteWidth = static_cast<UINT>(container->vecIdx[i].size()) * sizeof(UINT);
-        // Index Format �� R32_UINT �̱� ����
+        // Index Format 이 R32_UINT 이기 때문
         tIdxDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
         tIdxDesc.Usage = D3D11_USAGE_DEFAULT;
         if (D3D11_USAGE_DYNAMIC == tIdxDesc.Usage)
@@ -177,10 +177,10 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
         pMesh->m_vecAnimClip.push_back(tClip);
     }
 
-    // Animation �� �ִ� Mesh ��� structuredbuffer �����α�
+    // Animation 이 있는 Mesh 경우 structuredbuffer 만들어두기
     if (pMesh->IsAnimMesh())
     {
-        // BoneOffet ���
+        // BoneOffet 행렬
         vector<Matrix> vecOffset;
         vector<tFrameTrans> vecFrameTrans;
         vecFrameTrans.resize(static_cast<UINT>(pMesh->m_vecBones.size()) * iFrameCount);
@@ -222,38 +222,38 @@ int CMesh::Create(Vtx* _Vtx, UINT _VtxCount, UINT* _pIdx, UINT _IdxCount)
     memcpy(m_VtxSysMem, _Vtx, sizeof(Vtx) * m_VtxCount);
 
 
-    // ���� �����͸� SysMem -> GPU Mem �� �̵�
+    // 정점 데이터를 SysMem -> GPU Mem 로 이동
     m_VBDesc.ByteWidth = sizeof(Vtx) * _VtxCount;
     m_VBDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     m_VBDesc.CPUAccessFlags = 0;
     m_VBDesc.Usage = D3D11_USAGE_DEFAULT;
 
-    // ������ų ������ �ʱⵥ���� ���޿�
+    // 생성시킬 버퍼의 초기데이터 전달용
     D3D11_SUBRESOURCE_DATA tSub = {};
     tSub.pSysMem = _Vtx;
 
-    // ���ؽ� �뵵�� ID3D11Buffer ��ü ����
+    // 버텍스 용도의 ID3D11Buffer 객체 생성
     if (FAILED(DEVICE->CreateBuffer(&m_VBDesc, &tSub, m_VB.GetAddressOf())))
     {
         return E_FAIL;
     }
 
-    // �ε��� ���� ����
+    // 인덱스 버퍼 생성
     tIndexInfo IndexInfo = {};
     IndexInfo.IdxCount = _IdxCount;
 
     IndexInfo.tIBDesc.ByteWidth = sizeof(UINT) * _IdxCount;
 
-    // ���� ���� ���Ŀ���, ������ ������ ���� �� �� �ִ� �ɼ�
+    // 버퍼 생성 이후에도, 버퍼의 내용을 수정 할 수 있는 옵션
     IndexInfo.tIBDesc.CPUAccessFlags = 0;
     IndexInfo.tIBDesc.Usage = D3D11_USAGE_DEFAULT;
 
-    // ������ �����ϴ� ������ ���� ���� �˸�
+    // 정점을 저장하는 목적의 버퍼 임을 알림
     IndexInfo.tIBDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     IndexInfo.tIBDesc.MiscFlags = 0;
     IndexInfo.tIBDesc.StructureByteStride = 0;
 
-    // �ʱ� �����͸� �Ѱ��ֱ� ���� ���� ����ü	
+    // 초기 데이터를 넘겨주기 위한 정보 구조체	
     tSub.pSysMem = _pIdx;
 
     if (FAILED(DEVICE->CreateBuffer(&IndexInfo.tIBDesc, &tSub, IndexInfo.IB.GetAddressOf())))
@@ -261,7 +261,7 @@ int CMesh::Create(Vtx* _Vtx, UINT _VtxCount, UINT* _pIdx, UINT _IdxCount)
         assert(nullptr);
     }
 
-    // �ý��� �޸𸮿� ����
+    // 시스템 메모리에 저장
     IndexInfo.IdxSysMem = new UINT[IndexInfo.IdxCount];
     memcpy(IndexInfo.IdxSysMem, _pIdx, sizeof(UINT) * IndexInfo.IdxCount);
 
@@ -296,26 +296,26 @@ void CMesh::Render_Particle(UINT _Count)
 
 int CMesh::Save(const wstring& _FilePath)
 {
-    // ����� ����
+    // 상대경로 저장
     wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(_FilePath);
     SetRelativePath(strRelativePath);
 
-    // ���� ������� ����
+    // 파일 쓰기모드로 열기
     FILE* pFile = nullptr;
     errno_t err = _wfopen_s(&pFile, _FilePath.c_str(), L"wb");
     assert(pFile);
 
-    // Ű��, ��� ���	
+    // 키값, 상대 경로	
     SaveWString(GetName(), pFile);
     SaveWString(GetKey(), pFile);
     SaveWString(GetRelativePath(), pFile);
 
-    // ���� ������ ����				
+    // 정점 데이터 저장				
     int iByteSize = m_VBDesc.ByteWidth;
     fwrite(&iByteSize, sizeof(int), 1, pFile);
     fwrite(m_VtxSysMem, iByteSize, 1, pFile);
 
-    // �ε��� ����
+    // 인덱스 정보
     UINT iMtrlCount = static_cast<UINT>(m_vecIdxInfo.size());
     fwrite(&iMtrlCount, sizeof(int), 1, pFile);
 
@@ -328,7 +328,7 @@ int CMesh::Save(const wstring& _FilePath)
                , 1, pFile);
     }
 
-    // Animation3D ���� 
+    // Animation3D 정보 
     UINT iCount = static_cast<UINT>(m_vecAnimClip.size());
     fwrite(&iCount, sizeof(int), 1, pFile);
     for (UINT i = 0; i < iCount; ++i)
@@ -371,11 +371,11 @@ int CMesh::Save(const wstring& _FilePath)
 
 int CMesh::Load(const wstring& _FilePath)
 {
-    // �б���� ���Ͽ���
+    // 읽기모드로 파일열기
     FILE* pFile = nullptr;
     _wfopen_s(&pFile, _FilePath.c_str(), L"rb");
 
-    // Ű��, �����
+    // 키값, 상대경로
     wstring strName, strKey, strRelativePath;
     LoadWString(strName, pFile);
     LoadWString(strKey, pFile);
@@ -385,7 +385,7 @@ int CMesh::Load(const wstring& _FilePath)
     SetKey(strKey);
     SetRelativePath(strRelativePath);
 
-    // ����������
+    // 정점데이터
     UINT iByteSize = 0;
     fread(&iByteSize, sizeof(int), 1, pFile);
 
@@ -406,7 +406,7 @@ int CMesh::Load(const wstring& _FilePath)
         assert(nullptr);
     }
 
-    // �ε��� ����
+    // 인덱스 정보
     UINT iMtrlCount = 0;
     fread(&iMtrlCount, sizeof(int), 1, pFile);
 
@@ -432,7 +432,7 @@ int CMesh::Load(const wstring& _FilePath)
     }
 
 
-    // Animation3D ���� �б�
+    // Animation3D 정보 읽기
     int iCount = 0;
     fread(&iCount, sizeof(int), 1, pFile);
     for (int i = 0; i < iCount; ++i)
@@ -475,12 +475,12 @@ int CMesh::Load(const wstring& _FilePath)
         }
     }
 
-    // Animation �� �ִ� Mesh ��� Bone StructuredBuffer �����
+    // Animation 이 있는 Mesh 경우 Bone StructuredBuffer 만들기
     if (m_vecAnimClip.size() > 0 && m_vecBones.size() > 0)
     {
         wstring strBone = GetName();
 
-        // BoneOffet ���
+        // BoneOffet 행렬
         vector<Matrix> vecOffset;
         vector<tFrameTrans> vecFrameTrans;
         vecFrameTrans.resize(static_cast<UINT>(m_vecBones.size()) * _iFrameCount);

@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ContentUI.h"
 
 #include <Engine/CTaskMgr.h>
@@ -18,10 +18,10 @@ ContentUI::ContentUI()
     m_Tree->ShowRoot(false);
     m_Tree->AddDynamicSelect(this, static_cast<EUI_DELEGATE_1>(&ContentUI::SelectAsset));
 
-    // Content �����ȿ� �ִ� ��� ������ �޸𸮷� �ε�
+    // Content 폴더안에 있는 모든 에셋을 메모리로 로딩
     ReloadContent();
 
-    // ���� CAssetMgr �� �ε��� ������ ������ Tree �� ���
+    // 현재 CAssetMgr 에 로딩된 에셋의 정보를 Tree 에 출력
     RenewContent();
 }
 
@@ -67,7 +67,7 @@ void ContentUI::RenewContent()
 
 void ContentUI::ReloadContent()
 {
-    // Content ���� �ȿ��ִ� ��� ������ ��θ� ã�Ƴ���.
+    // Content 폴더 안에있는 모든 에셋의 경로를 찾아낸다.
     m_vecAssetPath.clear();
     FindAssetPath(CPathMgr::GetInst()->GetContentPath());
 
@@ -104,8 +104,7 @@ void ContentUI::ReloadContent()
         }
     }
 
-
-    // ������ ���� ������ �����ϴ��� üũ
+    // 에셋의 원본 파일이 존재하는지 체크
     for (UINT i = 0; i < END; ++i)
     {
         wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
@@ -115,17 +114,17 @@ void ContentUI::ReloadContent()
 
         for (const auto& pair : mapAsset)
         {
-            // Engine Asset �� ���, ���������� �������� �����Ƿ�, �ǳʶڴ�.
+            // Engine Asset 인 경우, 원본파일이 존재하지 않으므로, 건너뛴다.
             if (pair.second->IsEngineAsset())
                 continue;
 
-            // �޸𸮿� �ε��� ������ �������� ��� ���
+            // 메모리에 로딩된 에셋의 원본파일 경로 계산
             wstring strFilePath = ContentPath + pair.second->GetRelativePath();
 
-            // ���������� ������(�����Ǿ�����), �޸𸮻� �ش� ���µ� ������Ų��.
+            // 원본파일이 없으면(삭제되었으면), 메모리상에 해당 에셋도 삭제시킨다.
             if (false == exists(strFilePath.c_str()))
             {
-                MessageBox(nullptr, L"������ ���������� ������", L"���� ���� ���� ����", MB_OK);
+                MessageBox(nullptr, L"에셋의 원본 파일이 삭제됨", L"에셋 파일 삭제 감지", MB_OK);
 
                 tTask task = {TASK_TYPE::DELETE_ASSET, (DWORD_PTR)pair.second.Get()};
                 CTaskMgr::GetInst()->AddTask(task);
@@ -144,10 +143,10 @@ void ContentUI::FindAssetPath(const wstring& _FolderPath)
 
     while (FindNextFile(hHandle, &FindData))
     {
-        // ã�� ������ ����Ÿ���� ���
+        // 찾은 파일이 폴더타입인 경우
         if (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
-            // .. ������ ����
+            // .. 폴더는 제외
             if (!wcscmp(FindData.cFileName, L".."))
             {
                 continue;
@@ -156,10 +155,10 @@ void ContentUI::FindAssetPath(const wstring& _FolderPath)
             FindAssetPath(_FolderPath + FindData.cFileName + L"\\");
         }
 
-        // ã�� ������ ����Ÿ���� �ƴѰ��
+        // 찾은 파일이 폴더타입이 아닌경우
         else
         {
-            // ����θ� ����ؼ� ����
+            // 상대경로를 계산해서 저장
             wstring FilePath = _FolderPath + FindData.cFileName;
             wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
             wstring RelativePath = FilePath.substr(ContentPath.length(), FilePath.length());

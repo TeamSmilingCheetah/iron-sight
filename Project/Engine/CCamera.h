@@ -8,32 +8,32 @@ class CCamera :
 {
     CFrustum* m_Frustum;
 
-    // ����
-    PROJ_TYPE m_ProjType; // ���� ���
-    float m_Far; // �þ� �ִ� �Ÿ�
-    float m_AspectRatio; // ���� ������ ���� ��Ⱦ��, ���� / ����
-    UINT m_LayerCheck; // ī�޶� ���� ���̾� ��Ʈ üũ
-    int m_Priority; // ī�޶� �켱����, 0 : MainCamera, -1 : �̵��
+    // 공통
+    PROJ_TYPE m_ProjType; // 투영 방식
+    float m_Far; // 시야 최대 거리
+    float m_AspectRatio; // 투영 범위에 대한 종횡비, 가로 / 세로
+    UINT m_LayerCheck; // 카메라가 찍을 레이어 비트 체크
+    int m_Priority; // 카메라 우선순위, 0 : MainCamera, -1 : 미등록
 
-    // ��������(Perspective)
-    float m_FOV; // FOV(Field Of View) �þ߰�
+    // 원근투영(Perspective)
+    float m_FOV; // FOV(Field Of View) 시야각
 
-    // ��������(Orthographic)
-    float m_Width; // �������� ���α���
-    float m_Scale; // �������� ����
+    // 직교투영(Orthographic)
+    float m_Width; // 직교투영 가로길이
+    float m_Scale; // 직교투영 배율
 
-    // ī�޶� �ٶ󺸴� ȭ�鿡�� ���콺�� ���ϴ� ����
+    // 카메라가 바라보는 화면에서 마우스를 향하는 직선
     tRay m_Ray;
 
-    // ��ȯ���
-    Matrix m_matView; // View ���
-    Matrix m_matViewInv; // View �����
+    // 변환행렬
+    Matrix m_matView; // View 행렬
+    Matrix m_matViewInv; // View 역행렬
 
-    Matrix m_matProj; // Projection ���
-    Matrix m_matProjInv; // Projection �����
+    Matrix m_matProj; // Projection 행렬
+    Matrix m_matProjInv; // Projection 역행렬
 
 
-    // ��ü �з�
+    // 물체 분류
     vector<CGameObject*> m_vecDeferred;
     vector<CGameObject*> m_vecDecal;
     vector<CGameObject*> m_vecOpaque;
@@ -70,7 +70,6 @@ public:
     void LayerCheck(int _LayerIdx);
     void LayerCheckAll() { m_LayerCheck = 0xffffffff; }
     void LayerCheckClear() { m_LayerCheck = 0; }
-
 
     void Begin() override;
     void FinalTick() override;

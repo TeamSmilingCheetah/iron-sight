@@ -1,20 +1,11 @@
 #include "pch.h"
 #include "CLevelMgr.h"
-
 #include "CLevel.h"
 #include "CLayer.h"
-#include "CCollisionMgr.h"
 #include "CRenderMgr.h"
-
 #include "CGameObject.h"
 #include "components.h"
-
-#include "CAssetMgr.h"
-#include "assets.h"
 #include "CDevice.h"
-
-#include "CClearColorCS.h"
-#include "CStructuredBuffer.h"
 
 CLevelMgr::CLevelMgr()
     : m_CurLevel(nullptr)
@@ -67,7 +58,7 @@ void CLevelMgr::ChangeLevelState(LEVEL_STATE _NextState)
         return;
 
     // Play or None ->  Pause 
-    //			    ��> Stop	
+    //			    ㄴ> Stop	
     if (_NextState == LEVEL_STATE::PAUSE || _NextState == LEVEL_STATE::STOP)
     {
         CTimeMgr::GetInst()->SetStopMode(true);
@@ -105,7 +96,7 @@ void CLevelMgr::ChangeLevel(CLevel* _NextLevel, LEVEL_STATE _NextLevelState)
 
     ChangeLevelState(_NextLevelState);
 
-    // ���� ������ ����
+    // 이전 레벨은 삭제
     if (nullptr != pPrevLevel)
         delete pPrevLevel;
 }

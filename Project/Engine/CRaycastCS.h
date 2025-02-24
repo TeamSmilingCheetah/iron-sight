@@ -1,5 +1,6 @@
 #pragma once
 #include "CComputeShader.h"
+#include "CTexture.h"
 
 class CStructuredBuffer;
 

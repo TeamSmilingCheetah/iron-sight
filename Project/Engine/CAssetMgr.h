@@ -1,6 +1,6 @@
 #pragma once
 
-#include "singleton.h"
+#include "Common/singleton.h"
 #include "assets.h"
 
 #include "CPathMgr.h"
@@ -9,6 +9,7 @@ class CAssetMgr :
     public singleton<CAssetMgr>
 {
     SINGLE(CAssetMgr);
+
     map<wstring, Ptr<CAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];
     bool m_bAssetChanged;
 
@@ -130,10 +131,10 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
     if (nullptr != pAsset)
         return static_cast<T*>(pAsset.Get());
 
-    // �ؽ��� ���� ���
+    // 텍스쳐 파일 경로
     wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + _RelativePath;
 
-    // ���� ��ü ���� �� �ε�
+    // 에셋 객체 생성 및 로딩
     pAsset = new T;
     if (FAILED(pAsset->Load(strFilePath)))
     {
@@ -141,11 +142,11 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
         return nullptr;
     }
 
-    // �ε��� �Ϸ�� ���¿� ������ Key, RelativePath ����
+    // 로딩이 완료된 에셋에 본인의 Key, RelativePath 세팅
     pAsset->SetKey(_Key);
     pAsset->SetRelativePath(_RelativePath);
 
-    // ������ �ʿ� ���
+    // 에셋을 맵에 등록
     ASSET_TYPE Type = GetAssetType<T>();
     m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_Key, pAsset));
 

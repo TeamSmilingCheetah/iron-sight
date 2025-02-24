@@ -17,7 +17,7 @@ void CAssetMgr::CreateEngineMesh()
 
     // =========
     // Rect Mesh
-    // 4 ���� ������ ��ġ ����
+    // 4 개의 정점의 위치 설계
     // 0 -- 1
     // | \  |
     // 3 -- 2   
@@ -51,10 +51,10 @@ void CAssetMgr::CreateEngineMesh()
     arrVtx[3].vTangent = Vec3(1.f, 0.f, 0.f);
     arrVtx[3].vBinormal = Vec3(0.f, -1.f, 0.f);
 
-    // �ε���
+    // 인덱스
     UINT Idx[6] = {0, 2, 3, 2, 0, 1};
 
-    // Ŭ���� or ����ü + �����Լ�
+    // 클래스 or 구조체 + 가상함수
     const auto& info = typeid(CMesh);
     const char* pName = info.name();
 
@@ -64,7 +64,7 @@ void CAssetMgr::CreateEngineMesh()
 
     // ==============
     // RectMesh_Debug
-    // 4 ���� ������ ��ġ ����
+    // 4 개의 정점의 위치 설계
     // 0 -- 1
     // | \  |
     // 3 -- 2   
@@ -87,7 +87,7 @@ void CAssetMgr::CreateEngineMesh()
     float Radius = 0.5f;
     float Theta = 0.f;
 
-    // �߽���
+    // 중심점
     v.vPos = Vec3(0.f, 0.f, 0.f);
     v.vUV = Vec2(0.5f, 0.5f);
     vecVtx.push_back(v);
@@ -133,11 +133,11 @@ void CAssetMgr::CreateEngineMesh()
     // ========
     // CubeMesh
     // ========
-    // 24���� ������ �ʿ�
-    // ��� �ϳ��� ���� 4�� x 6�� = 24��
+    // 24개의 정점이 필요
+    // 평면 하나당 정점 4개 x 6면 = 24개
     Vtx arrCube[24] = {};
 
-    // ����
+    // 윗면
     arrCube[0].vPos = Vec3(-0.5f, 0.5f, 0.5f);
     arrCube[0].vColor = Vec4(1.f, 1.f, 1.f, 1.f);
     arrCube[0].vUV = Vec2(0.f, 0.f);
@@ -167,7 +167,7 @@ void CAssetMgr::CreateEngineMesh()
     arrCube[3].vBinormal = Vec3(0.f, 0.f, -1.f);
 
 
-    // �Ʒ� ��	
+    // 아랫 면	
     arrCube[4].vPos = Vec3(-0.5f, -0.5f, -0.5f);
     arrCube[4].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
     arrCube[4].vUV = Vec2(0.f, 0.f);
@@ -196,7 +196,7 @@ void CAssetMgr::CreateEngineMesh()
     arrCube[7].vNormal = Vec3(0.f, -1.f, 0.f);
     arrCube[7].vBinormal = Vec3(0.f, 0.f, 1.f);
 
-    // ���� ��
+    // 왼쪽 면
     arrCube[8].vPos = Vec3(-0.5f, 0.5f, 0.5f);
     arrCube[8].vColor = Vec4(0.f, 1.f, 0.f, 1.f);
     arrCube[8].vUV = Vec2(0.f, 0.f);
@@ -225,7 +225,7 @@ void CAssetMgr::CreateEngineMesh()
     arrCube[11].vNormal = Vec3(-1.f, 0.f, 0.f);
     arrCube[11].vBinormal = Vec3(0.f, -1.f, 0.f);
 
-    // ������ ��
+    // 오른쪽 면
     arrCube[12].vPos = Vec3(0.5f, 0.5f, -0.5f);
     arrCube[12].vColor = Vec4(0.f, 0.f, 1.f, 1.f);
     arrCube[12].vUV = Vec2(0.f, 0.f);
@@ -254,7 +254,7 @@ void CAssetMgr::CreateEngineMesh()
     arrCube[15].vNormal = Vec3(1.f, 0.f, 0.f);
     arrCube[15].vBinormal = Vec3(0.f, -1.f, 0.f);
 
-    // �� ��
+    // 뒷 면
     arrCube[16].vPos = Vec3(0.5f, 0.5f, 0.5f);
     arrCube[16].vColor = Vec4(1.f, 1.f, 0.f, 1.f);
     arrCube[16].vUV = Vec2(0.f, 0.f);
@@ -283,7 +283,7 @@ void CAssetMgr::CreateEngineMesh()
     arrCube[19].vNormal = Vec3(0.f, 0.f, 1.f);
     arrCube[19].vBinormal = Vec3(0.f, -1.f, 1.f);
 
-    // �� ��
+    // 앞 면
     arrCube[20].vPos = Vec3(-0.5f, 0.5f, -0.5f);
     arrCube[20].vColor = Vec4(1.f, 0.f, 1.f, 1.f);
     arrCube[20].vUV = Vec2(0.f, 0.f);
@@ -312,7 +312,7 @@ void CAssetMgr::CreateEngineMesh()
     arrCube[23].vNormal = Vec3(0.f, 0.f, -1.f);
     arrCube[23].vBinormal = Vec3(0.f, -1.f, 0.f);
 
-    // �ε���
+    // 인덱스
     for (int i = 0; i < 12; i += 2)
     {
         vecIdx.push_back(i * 2);
@@ -357,8 +357,8 @@ void CAssetMgr::CreateEngineMesh()
     vecVtx.push_back(v);
 
     // Body
-    UINT iStackCount = 40; // ���� ���� ����
-    UINT iSliceCount = 40; // ���� ���� ����
+    UINT iStackCount = 40; // 가로 분할 개수
+    UINT iSliceCount = 40; // 세로 분할 개수
 
     float fStackAngle = XM_PI / iStackCount;
     float fSliceAngle = XM_2PI / iSliceCount;
@@ -406,8 +406,8 @@ void CAssetMgr::CreateEngineMesh()
     v.vBinormal = Vec3(0.f, 0.f, -1.f);
     vecVtx.push_back(v);
 
-    // �ε���
-    // �ϱ���
+    // 인덱스
+    // 북극점
     for (UINT i = 0; i < iSliceCount; ++i)
     {
         vecIdx.push_back(0);
@@ -415,7 +415,7 @@ void CAssetMgr::CreateEngineMesh()
         vecIdx.push_back(i + 1);
     }
 
-    // ����
+    // 몸통
     for (UINT i = 0; i < iStackCount - 2; ++i)
     {
         for (UINT j = 0; j < iSliceCount; ++j)
@@ -436,7 +436,7 @@ void CAssetMgr::CreateEngineMesh()
         }
     }
 
-    // ������
+    // 남극점
     UINT iBottomIdx = static_cast<UINT>(vecVtx.size()) - 1;
     for (UINT i = 0; i < iSliceCount; ++i)
     {

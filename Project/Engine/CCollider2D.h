@@ -7,7 +7,7 @@ class CCollider2D :
     Vec2 m_Offset;
     Vec2 m_Scale;
     Vec2 m_FinalPos;
-    Matrix m_matColliderWorld; // ũ��, ȸ��, �̵�
+    Matrix m_matColliderWorld; // 크기, 회전, 이동
     bool m_IndependentScale;
 
     int m_OverlapCount;

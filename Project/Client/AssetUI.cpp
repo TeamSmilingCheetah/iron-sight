@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "AssetUI.h"
 
-
 AssetUI::AssetUI(const string& _ID, ASSET_TYPE _Type)
     : EditorUI(_ID)
       , m_Type(_Type)

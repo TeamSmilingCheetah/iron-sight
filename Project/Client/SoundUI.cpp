@@ -2,7 +2,7 @@
 #include "SoundUI.h"
 
 SoundUI::SoundUI()
-    : AssetUI("Sound", ASSET_TYPE::SOUND)
+    : AssetUI("Sound", SOUND)
 {
 }
 

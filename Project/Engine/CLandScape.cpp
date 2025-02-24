@@ -31,7 +31,7 @@ CLandScape::~CLandScape()
 
 void CLandScape::FinalTick()
 {
-    // ��� ��ȯ
+    // 모드 전환
     if (KEY_TAP(KEY::NUM_6))
     {
         if (HEIGHTMAP == m_Mode)
@@ -42,7 +42,7 @@ void CLandScape::FinalTick()
             m_Mode = HEIGHTMAP;
     }
 
-    // �귯�� �ٲٱ�
+    // 브러쉬 바꾸기
     if (KEY_TAP(KEY::NUM_7))
     {
         ++m_BrushIdx;
@@ -50,7 +50,7 @@ void CLandScape::FinalTick()
             m_BrushIdx = 0;
     }
 
-    // ����ġ �ε��� �ٲٱ�
+    // 가중치 인덱스 바꾸기
     if (KEY_TAP(KEY::NUM_8))
     {
         ++m_WeightIdx;
@@ -67,7 +67,7 @@ void CLandScape::FinalTick()
         {
             if (nullptr != m_HeightMap)
             {
-                // ���̸� ����
+                // 높이맵 설정
                 m_HeightMapCS->SetBrushPos(m_RaycastOut);
                 m_HeightMapCS->SetBrushScale(m_BrushScale);
                 m_HeightMapCS->SetHeightMap(m_HeightMap);
@@ -96,30 +96,30 @@ void CLandScape::Render()
 {
     Transform()->Binding();
 
-    GetMaterial(0)->SetScalarParam(INT_0, m_FaceX); // ������ �� ����
-    GetMaterial(0)->SetScalarParam(INT_1, m_FaceZ); // ������ �� ����
-    GetMaterial(0)->SetScalarParam(INT_2, static_cast<int>(m_Mode)); // ���� ���
+    GetMaterial(0)->SetScalarParam(INT_0, m_FaceX); // 지형의 면 개수
+    GetMaterial(0)->SetScalarParam(INT_1, m_FaceZ); // 지형의 면 개수
+    GetMaterial(0)->SetScalarParam(INT_2, static_cast<int>(m_Mode)); // 지형 모드
 
-    GetMaterial(0)->SetTexParam(TEX_0, m_HeightMap); // ���� ���̸�
+    GetMaterial(0)->SetTexParam(TEX_0, m_HeightMap); // 지형 높이맵
 
-    GetMaterial(0)->SetTexParam(TEX_ARR_0, m_ColorTex); // ���� ���� �ؽ���
-    GetMaterial(0)->SetTexParam(TEX_ARR_1, m_NormalTex); // ���� �븻 �ؽ���
+    GetMaterial(0)->SetTexParam(TEX_ARR_0, m_ColorTex); // 지형 색상 텍스쳐
+    GetMaterial(0)->SetTexParam(TEX_ARR_1, m_NormalTex); // 지형 노말 텍스쳐
     GetMaterial(0)->SetScalarParam(INT_3, static_cast<int>(m_ColorTex->GetArraySize()));
-    // �ؽ��� �迭 ����
+    // 텍스쳐 배열 개수
 
-    GetMaterial(0)->SetTexParam(TEX_1, m_vecBrush[m_BrushIdx]); // Brush �ؽ���
-    GetMaterial(0)->SetScalarParam(VEC2_0, m_BrushScale); // Brush ũ��
-    GetMaterial(0)->SetScalarParam(VEC2_1, m_Out.Location); // LayCast ��ġ
-    GetMaterial(0)->SetScalarParam(FLOAT_0, static_cast<float>(m_Out.Success)); // LayCast ��������
+    GetMaterial(0)->SetTexParam(TEX_1, m_vecBrush[m_BrushIdx]); // Brush 텍스쳐
+    GetMaterial(0)->SetScalarParam(VEC2_0, m_BrushScale); // Brush 크기
+    GetMaterial(0)->SetScalarParam(VEC2_1, m_Out.Location); // LayCast 위치
+    GetMaterial(0)->SetScalarParam(FLOAT_0, static_cast<float>(m_Out.Success)); // LayCast 성공여부
 
-    GetMaterial(0)->SetScalarParam(VEC2_2, Vec2(m_WeightWidth, m_WeightHeight)); // ����ġ �ػ�
+    GetMaterial(0)->SetScalarParam(VEC2_2, Vec2(m_WeightWidth, m_WeightHeight)); // 가중치 해상도
 
-    m_WeightMap->Binding(20); // WeightMap t20 ���ε�
-    GetMaterial(0)->Binding(); // ���� ���ε�
+    m_WeightMap->Binding(20); // WeightMap t20 바인딩
+    GetMaterial(0)->Binding(); // 재질 바인딩
 
-    GetMesh()->Render(0); // ������
+    GetMesh()->Render(0); // 렌더링
 
-    m_WeightMap->Clear(20); // WeightMap ���� ���ε� Ŭ����
+    m_WeightMap->Clear(20); // WeightMap 버퍼 바인딩 클리어
 }
 
 void CLandScape::SetFace(UINT _X, UINT _Z)
@@ -136,37 +136,37 @@ void CLandScape::SetFace(UINT _X, UINT _Z)
 
 int CLandScape::Raycasting()
 {
-    // ���� ���� ī�޶� ��������
+    // 현재 시점 카메라 가져오기
     CCamera* pCam = CRenderMgr::GetInst()->GetMainCamera();
     if (nullptr == pCam)
         return false;
 
-    // ����ȭ���� Ŭ����
+    // 구조화버퍼 클리어
     m_Out = {};
     m_Out.Distance = 0xffffffff;
     m_RaycastOut->SetData(&m_Out);
 
-    // ī�޶� �������� ���콺�� ���ϴ� Ray ������ ������
+    // 카메라가 시점에서 마우스를 향하는 Ray 정보를 가져옴
     tRay ray = pCam->GetRay();
 
-    // LandScape �� WorldInv ��� ������
+    // LandScape 의 WorldInv 행렬 가져옴
     const Matrix& matWorldInv = Transform()->GetWorldInvMat();
 
-    // ���� ���� Ray ������ LandScape �� Local �������� ������
+    // 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
     ray.vStart = XMVector3TransformCoord(ray.vStart, matWorldInv);
     ray.vDir = XMVector3TransformNormal(ray.vDir, matWorldInv);
     ray.vDir.Normalize();
 
-    // Raycast ��ǻƮ ���̴��� �ʿ��� ������ ����
+    // Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
     m_RaycastCS->SetRayInfo(ray);
     m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
     m_RaycastCS->SetOutBuffer(m_RaycastOut);
     m_RaycastCS->SetHeightMap(m_HeightMap);
 
-    // ��ǻƮ���̴� ����
+    // 컴퓨트쉐이더 실행
     m_RaycastCS->Execute();
 
-    // ��� Ȯ��
+    // 결과 확인
     m_RaycastOut->GetData(&m_Out);
 
     return m_Out.Success;

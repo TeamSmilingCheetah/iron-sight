@@ -20,15 +20,15 @@ CRenderComponent::CRenderComponent(const CRenderComponent& _Origin)
         m_vecMtrls[i].pCurMtrl = _Origin.m_vecMtrls[i].pCurMtrl;
         m_vecMtrls[i].pSharedMtrl = _Origin.m_vecMtrls[i].pSharedMtrl;
 
-        // ���� ������Ʈ�� ���������� �����ϰ� �ְ�, ���� ��������� ���������� �ƴѰ��
+        // 원본 오브젝트가 공유재질을 참조하고 있고, 현재 사용재질은 공유재질이 아닌경우
         if (_Origin.m_vecMtrls[i].pSharedMtrl != _Origin.m_vecMtrls[i].pCurMtrl)
         {
             assert(_Origin.m_vecMtrls[i].pDynamicMtrl.Get());
 
-            // ���� ���� ������Ʈ�� ������ ���������� �����Ѵ�.
+            // 복사 렌더 컴포넌트도 별도의 동적재질을 생성한다.
             GetDynamicMaterial(i);
 
-            // ���� ����������Ʈ�� �������� ���� ���� ������ ���������� �����Ѵ�.
+            // 원본 렌더컴포넌트의 동적재질 값을 현재 생성한 동적재질로 복사한다.
             *m_vecMtrls[i].pDynamicMtrl.Get() = *_Origin.m_vecMtrls[i].pDynamicMtrl.Get();
         }
         else
@@ -60,7 +60,7 @@ void CRenderComponent::SetMesh(Ptr<CMesh> _Mesh)
 
 void CRenderComponent::SetMaterial(Ptr<CMaterial> _Mtrl, UINT _idx)
 {
-    // ������ ����Ǹ� ������ ���纻 �޾Ƶ� DynamicMaterial �� �����Ѵ�.
+    // 재질이 변경되면 기존에 복사본 받아둔 DynamicMaterial 을 삭제한다.
     m_vecMtrls[_idx].pSharedMtrl = _Mtrl;
     m_vecMtrls[_idx].pCurMtrl = _Mtrl;
     m_vecMtrls[_idx].pDynamicMtrl = nullptr;
@@ -73,7 +73,7 @@ Ptr<CMaterial> CRenderComponent::GetMaterial(UINT _idx)
 
 Ptr<CMaterial> CRenderComponent::GetSharedMaterial(UINT _idx)
 {
-    // ���������� �������°����� ���� ��������� ������������ ȸ���ϵ��� �Ѵ�
+    // 공유재질을 가져오는것으로 현재 사용재질을 동적재질에서 회복하도록 한다
     m_vecMtrls[_idx].pCurMtrl = m_vecMtrls[_idx].pSharedMtrl;
 
     if (m_vecMtrls[_idx].pDynamicMtrl.Get())
@@ -90,7 +90,7 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _idx)
     if (pCurLevel->GetState() != LEVEL_STATE::PLAY)
         return nullptr;
 
-    // ���� ������ ���� -> Nullptr ��ȯ
+    // 원본 재질이 없다 -> Nullptr 반환
     if (nullptr == m_vecMtrls[_idx].pSharedMtrl)
     {
         m_vecMtrls[_idx].pCurMtrl = nullptr;
@@ -110,10 +110,10 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _idx)
 
 void CRenderComponent::SaveComponent(FILE* _File)
 {
-    // �޽� �������� ����
+    // 메쉬 참조정보 저장
     SaveAssetRef(m_Mesh, _File);
 
-    // ���� �������� ����
+    // 재질 참조정보 저장
     UINT iMtrlCount = GetMaterialCount();
     fwrite(&iMtrlCount, sizeof(UINT), 1, _File);
 
@@ -125,10 +125,10 @@ void CRenderComponent::SaveComponent(FILE* _File)
 
 void CRenderComponent::LoadComponent(FILE* _File)
 {
-    // �޽� �������� �ҷ�����
+    // 메쉬 참조정보 불러오기
     LoadAssetRef(m_Mesh, _File);
 
-    // ���� �������� �ҷ�����
+    // 재질 참조정보 불러오기
     UINT iMtrlCount = GetMaterialCount();
     fread(&iMtrlCount, sizeof(UINT), 1, _File);
 

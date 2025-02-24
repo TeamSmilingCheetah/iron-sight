@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "CComputeShader.h"
-
 #include "CDevice.h"
 #include "CConstBuffer.h"
 #include "CPathMgr.h"
@@ -43,14 +42,14 @@ int CComputeShader::CreateComputeShader(const wstring& _RelativePath, const stri
 
         if (2 == errNum || 3 == errNum)
         {
-            // �߸��� ���
-            MessageBoxA(nullptr, "���̴� ������ �������� �ʽ��ϴ�.", "���̴� ������ ����", MB_OK);
+            // 잘못된 경로
+            MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
         }
 
         else
         {
             auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-            MessageBoxA(nullptr, pErrMsg, "���̴� ������ ����", MB_OK);
+            MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
         }
 
         return E_FAIL;
@@ -65,24 +64,24 @@ int CComputeShader::CreateComputeShader(const wstring& _RelativePath, const stri
 
 int CComputeShader::Execute()
 {
-    // CS �� �����Ű�� ���ؼ� �ʿ��� ���ҽ����� ���ε��Ѵ�.
+    // CS 를 실행시키기 위해서 필요한 리소스들을 바인딩한다.
     if (FAILED(Binding()))
     {
         return E_FAIL;
     }
 
-    // �ʿ��� �׷� ���� ����Ѵ�.
+    // 필요한 그룹 수를 계산한다.
     CalcGroupCount();
 
-    // ��� �����͸� ������ۿ� ���� �� ���ε�
+    // 상수 데이터를 상수버퍼에 전달 및 바인딩
     static CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::MATERIAL);
     pCB->SetData(&m_Const);
     pCB->Binding_CS();
 
-    // ��ǻƮ ���̴� ����
+    // 컴퓨트 쉐이더 실행
     CONTEXT->CSSetShader(m_CS.Get(), nullptr, 0);
     CONTEXT->Dispatch(m_GroupX, m_GroupY, m_GroupZ);
 
-    // ���ε��� ���ҽ� ����
+    // 바인딩한 리소스 정리
     Clear();
 }

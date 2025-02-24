@@ -6,13 +6,13 @@
 class CFlipbookPlayer :
     public CComponent
 {
-    vector<Ptr<CFlipbook>> m_vecFlipbook; // ��� ��� Flipbook
-    Ptr<CFlipbook> m_CurFlipbook; // ������� Flipbook
-    int m_SpriteIdx; // ������� Sprite �ε���
-    bool m_Repeat; // �ݺ����
-    float m_FPS; // ����ӵ�
-    float m_Time; // ���� �ð�
-    bool m_Finish; // ��� ȸ���� ������ ��
+    vector<Ptr<CFlipbook>> m_vecFlipbook; // 재생 목록 Flipbook
+    Ptr<CFlipbook> m_CurFlipbook; // 재생중인 Flipbook
+    int m_SpriteIdx; // 재생중인 Sprite 인덱스
+    bool m_Repeat; // 반복모드
+    float m_FPS; // 재생속도
+    float m_Time; // 누적 시간
+    bool m_Finish; // 재생 회차가 끝났을 때
 
 
 public:

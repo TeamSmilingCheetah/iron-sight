@@ -41,11 +41,11 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 
 void CLight3D::FinalTick()
 {
-    // ��ġ���� ����
+    // 위치정보 갱신
     m_LightInfo.WorldPos = Transform()->GetWorldPos();
     m_LightInfo.Dir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 
-    // RenderMgr �� Light3D ���	
+    // RenderMgr 에 Light3D 등록	
     m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
 
     // DebugRender
@@ -60,7 +60,7 @@ void CLight3D::Render()
 {
     if (m_LightInfo.Type != LIGHT_TYPE::DIRECTIONAL)
     {
-        // �����޽� �ȿ� ��ü�� �����ϴ��� üũ�Ҷ� ����� �����
+        // 볼륨메쉬 안에 물체가 존재하는지 체크할때 사용할 역행렬
         CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCamera();
         Matrix matInv = pMainCam->GetViewInvMat() * Transform()->GetWorldInvMat();
         m_LightMtrl->SetScalarParam(MAT_0, matInv);

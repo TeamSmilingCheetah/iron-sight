@@ -22,7 +22,7 @@ int CRaycastCS::Binding()
     if (nullptr == m_OutBuffer)
         return E_FAIL;
 
-    // Raycasting �� ��Ȯ�ϰ� ����ϱ����ؼ� t0 �� ���̸ʵ� ����
+    // Raycasting 을 정확하게 계산하기위해서 t0 에 높이맵도 전달
     m_Const.bTex[0] = !!m_HeightMap.Get();
     m_HeightMap->Binding_SRV_CS(0);
 

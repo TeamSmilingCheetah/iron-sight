@@ -65,7 +65,7 @@ void CPlayerScript::Tick()
 
     Transform()->SetRelativePos(vPos);
 
-    // �̻��� �߻�
+    // 미사일 발사
     if (KEY_TAP(KEY::SPACE))
     {
         //DrawDebugCube(Vec4(0.f, 1.f, 0.f, 1.f), vPos, Vec3(100.f, 100.f, 100.f), Vec3(0.f, 0.f, 0.f), false, 3.f);

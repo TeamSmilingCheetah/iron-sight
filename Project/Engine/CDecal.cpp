@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "CDecal.h"
-
 #include "CRenderMgr.h"
 #include "CCamera.h"
 #include "CAssetMgr.h"
 #include "CTransform.h"
-
-#include "CTimeMgr.h"
 
 CDecal::CDecal()
     : CRenderComponent(COMPONENT_TYPE::DECAL)
@@ -38,10 +35,10 @@ void CDecal::Render()
         DestroyObject(GetOwner());
     }*/
 
-    // ��ġ����
+    // 위치정보
     Transform()->Binding();
 
-    // ���� ���ε�
+    // 재질 바인딩
     CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCamera();
     Matrix matInv = pMainCam->GetViewInvMat() * Transform()->GetWorldInvMat();
     GetMaterial(0)->SetScalarParam(MAT_0, matInv);
@@ -50,10 +47,10 @@ void CDecal::Render()
     GetMaterial(0)->SetScalarParam(INT_0, static_cast<int>(m_AsLight));
     GetMaterial(0)->Binding();
 
-    // ������
+    // 렌더링
     GetMesh()->Render(0);
 
-    // �ؽ��� Ŭ����
+    // 텍스쳐 클리어
     CTexture::Clear(0);
     CTexture::Clear(1);
 }
@@ -86,7 +83,7 @@ void CDecal::CreateMaterial()
 
     CAssetMgr::GetInst()->AddAsset<CMaterial>(L"DecalMtrl", pMtrl);
 
-    // Material ����
+    // Material 세팅
     SetMaterial(pMtrl, 0);
 }
 

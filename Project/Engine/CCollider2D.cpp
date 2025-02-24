@@ -27,7 +27,7 @@ CCollider2D::~CCollider2D()
 
 void CCollider2D::FinalTick()
 {
-    // ũ�� * ȸ�� * �̵�
+    // 크기 * 회전 * 이동
     Matrix matScale = XMMatrixScaling(m_Scale.x, m_Scale.y, 1.f);
     Matrix matTrans = XMMatrixTranslation(m_Offset.x, m_Offset.y, 0.f);
 
@@ -44,7 +44,7 @@ void CCollider2D::FinalTick()
         m_matColliderWorld = matScale * matTrans * GetOwner()->Transform()->GetWorldMat();
     }
 
-    // DebugRender ��û, �浹ü�� ȭ�鿡 ǥ���ϵ��� ��
+    // DebugRender 요청, 충돌체를 화면에 표시하도록 함
     if (m_OverlapCount)
     {
         DrawDebugRect(Vec4(1.f, 0.f, 0.f, 1.f), m_matColliderWorld, false, 0.f);

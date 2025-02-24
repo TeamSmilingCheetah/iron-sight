@@ -33,7 +33,7 @@ public:
 
     virtual void Init()
     {
-    }; // ������ ���� ���Ŀ�, GameObject �� AddComponent �� ���� ȣ��Ǵ� �Լ�
+    }; // 생성자 시점 이후에, GameObject 에 AddComponent 된 직후 호출되는 함수
     virtual void Begin()
     {
     };

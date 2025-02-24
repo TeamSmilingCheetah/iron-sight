@@ -34,7 +34,7 @@ void CMaterial::Binding()
     if (nullptr == m_Shader)
         return;
 
-    // Texture ���ε�
+    // Texture 바인딩
     for (UINT i = 0; i < TEX_END; ++i)
     {
         if (nullptr == m_arrTex[i])
@@ -48,7 +48,7 @@ void CMaterial::Binding()
         m_arrTex[i]->Binding(i);
     }
 
-    // ��� ������ ���ε�
+    // 상수 데이터 바인딩
     static CConstBuffer* pMtrlCB = CDevice::GetInst()->GetCB(CB_TYPE::MATERIAL);
     pMtrlCB->SetData(&m_Const);
     pMtrlCB->Binding();
@@ -103,9 +103,9 @@ CMaterial* CMaterial::Clone()
 
 int CMaterial::Save(const wstring& _FilePath)
 {
-    // m_SharedMtrl ���� ������ ����Ų�� == ���������̴�.
-    // ���� ������ �����Ϸ��� �ߴ�. ==> ����
-    // ���� ���� = ������ �÷��̵Ǵ� ���߿� �Ͻ������� ���� ���� ������ ����
+    // m_SharedMtrl 원형 재질을 가리킨다 == 동적재질이다.
+    // 동적 재질을 저장하려고 했다. ==> 에러
+    // 동적 재질 = 게임이 플레이되는 도중에 일시적으로 만들어서 쓰고 버리는 재질
     assert(!m_SharedMtrl.Get());
 
     FILE* pFile = nullptr;

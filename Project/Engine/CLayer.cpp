@@ -60,10 +60,10 @@ void CLayer::FinalTick()
 
 void CLayer::AddObject(CGameObject* _Object, bool _MoveWithChild)
 {
-    // 1. _Object �� ������ �ڽĵ鵵 ���� �ش� ���̾ �̵��ϴ� ���
-    // 2. _Object �� ������ �ڽĵ��� ���� ���̾ �����ϴ� ���
-    // 2-1 _Object �� ������ �ڽĵ� �߿��� ���̾ �Ҽӵ��� ���� ��� 
-    //	   �θ� ������Ʈ�� ���󰡰� �Ѵ�.
+    // 1. _Object 가 소유한 자식들도 같이 해당 레이어에 이동하는 경우
+    // 2. _Object 가 소유한 자식들은 본래 레이어를 유지하는 경우
+    // 2-1 _Object 가 소유한 자식들 중에서 레이어가 소속되지 않은 경우 
+    //	   부모 오브젝트를 따라가게 한다.
     static list<CGameObject*> queue;
     queue.clear();
     queue.push_back(_Object);
@@ -80,7 +80,7 @@ void CLayer::AddObject(CGameObject* _Object, bool _MoveWithChild)
             queue.push_back(vecChild[i]);
         }
 
-        // �ֻ��� �θ������Ʈ�� ���
+        // 최상위 부모오브젝트인 경우
         if (pObject == _Object)
         {
             m_vecParentObjects.push_back(pObject);

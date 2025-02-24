@@ -88,10 +88,10 @@ int CImGuiMgr::Init()
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
 
-    // Editor �뵵 UI ����
+    // Editor 용도 UI 생성
     CreateEditorUI();
 
-    // Content ������ �߻��ϴ� �������� �����ϴ� Ŀ�� ��ü ����
+    // Content 폴더에 발생하는 변경점을 감시하는 커널 객체 생성
     wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
 
     m_hNotify = FindFirstChangeNotification(ContentPath.c_str(), true
@@ -137,11 +137,11 @@ void CImGuiMgr::Render()
         pair.second->Render();
     }
 
-    // ȭ�� ���� UI �� ������
+    // 화면 내부 UI 들 렌더링
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    // ȭ�� �ܺη� ��� ������ �����쿡 �׷����� UI �� ������
+    // 화면 외부로 벗어난 별도의 윈도우에 그려지는 UI 들 렌더링
     if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         ImGui::UpdatePlatformWindows();
@@ -151,7 +151,7 @@ void CImGuiMgr::Render()
 
 EditorUI* CImGuiMgr::FindUI(const string& _ID)
 {
-    map<string, EditorUI*>::iterator iter = m_mapUI.find(_ID);
+    auto iter = m_mapUI.find(_ID);
 
     if (iter == m_mapUI.end())
         return nullptr;
@@ -165,7 +165,7 @@ void CImGuiMgr::ObserveContent()
 
     if (dwWaitStatus == WAIT_OBJECT_0)
     {
-        ContentUI* pUI = static_cast<ContentUI*>(FindUI("Content"));
+        auto pUI = static_cast<ContentUI*>(FindUI("Content"));
         pUI->Reset();
 
         FindNextChangeNotification(m_hNotify);

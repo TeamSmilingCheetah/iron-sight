@@ -27,10 +27,10 @@ void CTransform::FinalTick()
         * XMMatrixRotationZ(m_RelativeRotation.z);
     Matrix matTrans = XMMatrixTranslation(m_RelativePos.x, m_RelativePos.y, m_RelativePos.z);
 
-    // ũ�� * ȸ�� * �̵�
+    // 크기 * 회전 * 이동
     m_matWorld = matScale * matRotation * matTrans;
 
-    // ���⺤�� ����
+    // 방향벡터 갱신
     m_LocalDir[static_cast<UINT>(DIR_TYPE::RIGHT)] = Vec3(1.f, 0.f, 0.f);
     m_LocalDir[static_cast<UINT>(DIR_TYPE::UP)] = Vec3(0.f, 1.f, 0.f);
     m_LocalDir[static_cast<UINT>(DIR_TYPE::FRONT)] = Vec3(0.f, 0.f, 1.f);
@@ -40,18 +40,18 @@ void CTransform::FinalTick()
         m_WorldDir[i] = m_LocalDir[i] = XMVector3TransformNormal(m_LocalDir[i], matRotation);
     }
 
-    // �θ� �ִٸ�
+    // 부모가 있다면
     if (GetOwner()->GetParent())
     {
         const Matrix& matParentWorld = GetOwner()->GetParent()->Transform()->GetWorldMat();
 
-        // �ڽ� ������Ʈ�� �θ� ������Ʈ�� ũ�⿡ ������ �޴´�.
+        // 자식 오브젝트는 부모 오브젝트의 크기에 영향을 받는다.
         if (false == m_IndependentScale)
         {
             m_matWorld *= matParentWorld;
         }
 
-        // �ڽ� ������Ʈ�� �������� ũ�⸦ �����ϰ� ���� ���
+        // 자식 오브젝트가 독립적인 크기를 유지하고 싶은 경우
         else
         {
             Vec3 vParentWorldScale = GetOwner()->GetParent()->Transform()->GetWorldScale();
@@ -59,11 +59,11 @@ void CTransform::FinalTick()
                                                        vParentWorldScale.z);
             matParentScaleInv = XMMatrixInverse(nullptr, matParentScaleInv);
 
-            // �ڽ� LocalMat * �θ�ũ��-1 * �θ�������(�θ�ũ�� * �θ�ȸ�� * �θ��̵�)
+            // 자식 LocalMat * 부모크기-1 * 부모월드행렬(부모크기 * 부모회전 * 부모이동)
             m_matWorld = m_matWorld * matParentScaleInv * matParentWorld;
         }
 
-        // WorldDir ���ϱ�
+        // WorldDir 구하기
         m_WorldDir[static_cast<UINT>(DIR_TYPE::RIGHT)] = Vec3(1.f, 0.f, 0.f);
         m_WorldDir[static_cast<UINT>(DIR_TYPE::UP)] = Vec3(0.f, 1.f, 0.f);
         m_WorldDir[static_cast<UINT>(DIR_TYPE::FRONT)] = Vec3(0.f, 0.f, 1.f);
@@ -75,7 +75,7 @@ void CTransform::FinalTick()
         }
     }
 
-    // ������� �����
+    // 월드행렬 역행렬
     m_matWorldInv = XMMatrixInverse(nullptr, m_matWorld);
 }
 

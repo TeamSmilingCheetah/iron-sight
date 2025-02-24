@@ -33,13 +33,13 @@ int CStructuredBuffer::Create(UINT _ElementSize, UINT _ElementCount
     m_Type = _Type;
     m_SysMemMove = _SysMemMove;
 
-    // Desc ����
+    // Desc 설정
     m_Desc.ByteWidth = m_ElementSize * m_ElementCount;
     m_Desc.Usage = D3D11_USAGE_DEFAULT;
     m_Desc.CPUAccessFlags = 0;
     m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-    // UAV �߰�
+    // UAV 추가
     if (SRV_UAV == m_Type)
         m_Desc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
 
@@ -62,7 +62,7 @@ int CStructuredBuffer::Create(UINT _ElementSize, UINT _ElementCount
     if (FAILED(hr))
         return E_FAIL;
 
-    // ShaderResourceView ����
+    // ShaderResourceView 생성
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
 
     SRVDesc.BufferEx.NumElements = m_ElementCount;
@@ -73,7 +73,7 @@ int CStructuredBuffer::Create(UINT _ElementSize, UINT _ElementCount
         return E_FAIL;
     }
 
-    // UnorderedAccessView ����
+    // UnorderedAccessView 생성
     if (SRV_UAV == m_Type)
     {
         D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc = {};
@@ -112,41 +112,41 @@ int CStructuredBuffer::Create(UINT _ElementSize, UINT _ElementCount
 
 void CStructuredBuffer::SetData(void* _SystemMem, UINT _ElementCount)
 {
-    // SysMemMove ����� �����ִ��� Ȯ���Ѵ�.
+    // SysMemMove 기능이 켜져있는지 확인한다.
     assert(m_SysMemMove);
 
-    // ���� ���� ���۸� �����Ѵ�.
+    // 쓰기 전용 버퍼를 맵핑한다.
     D3D11_MAPPED_SUBRESOURCE tMapSub = {};
     CONTEXT->Map(m_SB_Write.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &tMapSub);
 
-    // �����͸� �����Ѵ�.
+    // 데이터를 복사한다.
     if (_ElementCount == 0)
         _ElementCount = m_ElementCount;
     memcpy(tMapSub.pData, _SystemMem, m_ElementSize * _ElementCount);
 
-    // �����͸� ���� ���۷� ������.
+    // 데이터를 쓰기 버퍼로 보낸다.
     CONTEXT->Unmap(m_SB_Write.Get(), 0);
 
-    // ������ۿ� ������ �����͸� Main ���۷� �ű��.
+    // 쓰기버퍼에 전달한 데이터를 Main 버퍼로 옮긴다.
     CONTEXT->CopyResource(m_SB_Main.Get(), m_SB_Write.Get());
 }
 
 void CStructuredBuffer::GetData(void* _SysDest)
 {
-    // SysMemMove ����� �����ִ��� Ȯ���Ѵ�.
+    // SysMemMove 기능이 켜져있는지 확인한다.
     assert(m_SysMemMove);
 
-    // Main ���ۿ� �ִ� ������ Read ���۷� �ű��.
+    // Main 버퍼에 있는 내용을 Read 버퍼로 옮긴다.
     CONTEXT->CopyResource(m_SB_Read.Get(), m_SB_Main.Get());
 
-    // Read ���۸� �����Ѵ�.
+    // Read 버퍼를 맵핑한다.
     D3D11_MAPPED_SUBRESOURCE tMapSub = {};
     CONTEXT->Map(m_SB_Read.Get(), 0, D3D11_MAP_READ, 0, &tMapSub);
 
-    // �����͸� �������� �����Ѵ�.	
+    // 데이터를 목적지로 복사한다.	
     memcpy(_SysDest, tMapSub.pData, m_ElementSize * m_ElementCount);
 
-    // ���� ����
+    // 맵핑 해제
     CONTEXT->Unmap(m_SB_Read.Get(), 0);
 }
 

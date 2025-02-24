@@ -1,5 +1,5 @@
 #pragma once
-#include <Engine/singleton.h>
+#include <Common/singleton.h>
 
 class CGameObjectEx;
 

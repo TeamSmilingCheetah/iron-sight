@@ -17,7 +17,7 @@ public:
 
     void RegisterClear()
     {
-        // ���������ӿ� ��Ϲ޾Ҵ� ������Ʈ ����� Clear �Ѵ�.
+        // 이전 프레임에 등록받았던 오브젝트 목록을 Clear한다.
         for (UINT i = 0; i < MAX_LAYER; ++i)
         {
             m_arrLayer[i].m_vecObjects.clear();

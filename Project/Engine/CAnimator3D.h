@@ -12,17 +12,17 @@ class CAnimator3D :
     const vector<tMTAnimClip>* m_vecClip;
 
     vector<float> m_vecClipUpdateTime;
-    vector<Matrix> m_vecFinalBoneMat; // �ؽ��Ŀ� ������ ���� �������
+    vector<Matrix> m_vecFinalBoneMat; // 텍스쳐에 전달할 최종 행렬정보
     int m_FrameCount; // 30
     double m_CurTime;
-    int m_CurClip; // Ŭ�� �ε���	
+    int m_CurClip; // 클립 인덱스	
 
-    int m_FrameIdx; // Ŭ���� ���� ������
-    int m_NextFrameIdx; // Ŭ���� ���� ������
-    float m_Ratio; // ������ ���� ����
+    int m_FrameIdx; // 클립의 현재 프레임
+    int m_NextFrameIdx; // 클립의 다음 프레임
+    float m_Ratio; // 프레임 사이 비율
 
-    CStructuredBuffer* m_BoneFinalMatBuffer; // Ư�� �������� ���� ���
-    bool m_bFinalMatUpdate; // ������� ���� ���࿩��
+    CStructuredBuffer* m_BoneFinalMatBuffer; // 특정 프레임의 최종 행렬
+    bool m_bFinalMatUpdate; // 최종행렬 연산 수행여부
 
 
 public:

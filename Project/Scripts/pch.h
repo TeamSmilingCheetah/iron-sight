@@ -11,12 +11,12 @@
 #include "framework.h"
 
 
-#include <Engine/global.h>
+#include <Common/global.h>
 
 #ifdef _DEBUG
-#pragma comment(lib, "Engine\\Engine_d")
+#pragma comment(lib, R"(Engine/Engine_d)")
 #else
-#pragma comment(lib, "Engine\\Engine")
+#pragma comment(lib, R"(Engine/Engine)")
 #endif
 
 #include "CScriptMgr.h"

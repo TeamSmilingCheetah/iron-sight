@@ -29,7 +29,7 @@ void CCollisionMgr::Tick()
             if (!(m_Matrix[Row] & (1 << Col)))
                 continue;
 
-            // Row , Col �� ���̾ �浹üũ�� �ؾ��Ѵ�.
+            // Row , Col 두 레이어가 충돌체크를 해야한다.
             CollisionBtwLayer(Row, Col);
         }
     }
@@ -42,7 +42,7 @@ void CCollisionMgr::CollisionBtwLayer(UINT _Left, UINT _Right)
     const vector<CGameObject*>& vecLeft = pCurLevel->GetLayer(_Left)->GetObjects();
     const vector<CGameObject*>& vecRight = pCurLevel->GetLayer(_Right)->GetObjects();
 
-    // �浹 �˻縦 �Ϸ��� �� ���̾ �ٸ� ���̾��ΰ��
+    // 충돌 검사를 하려는 두 레이어가 다른 레이어인경우
     if (_Left != _Right)
     {
         for (size_t i = 0; i < vecLeft.size(); ++i)
@@ -60,7 +60,7 @@ void CCollisionMgr::CollisionBtwLayer(UINT _Left, UINT _Right)
         }
     }
 
-    // �� ���̾ ������ ���
+    // 두 레이어가 동일한 경우
     else
     {
         for (size_t i = 0; i < vecLeft.size(); ++i)
@@ -87,24 +87,24 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
 
     auto iter = m_ColInfo.find(id.ID);
 
-    // �ѹ��� ��ϵ� ���� ������.
+    // 한번도 등록된 적이 없었다.
     if (iter == m_ColInfo.end())
     {
-        // �浹 ���� ���
+        // 충돌 조합 등록
         m_ColInfo.insert(make_pair(id.ID, false));
         iter = m_ColInfo.find(id.ID);
     }
 
-    // �� �浹ü�� �ϳ��� Dead �������� �ƴ���
+    // 두 충돌체중 하나라도 Dead 상태인지 아닌지
     bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
 
-    // ���� �����ִ�.
+    // 현재 겹쳐있다.
     if (IsCollision(_LeftCol, _RightCol))
     {
-        // �������� �����־���.
+        // 이전에도 겹쳐있었다.
         if (iter->second)
         {
-            // ���� �ϳ� �̻��� �� ���� �����̴�.
+            // 둘중 하나 이상이 곧 삭제 예정이다.
             if (IsDead)
             {
                 _LeftCol->EndOverlap(_RightCol);
@@ -112,13 +112,13 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
             }
             else
             {
-                // �浹���̴�.
+                // 충돌중이다.
                 _LeftCol->Overlap(_RightCol);
                 _RightCol->Overlap(_LeftCol);
             }
         }
 
-        // �������� �������־���.
+        // 이전에는 떨어져있었다.
         else
         {
             if (!IsDead)
@@ -130,10 +130,10 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
         }
     }
 
-    // ���� �������ִ�.
+    // 현재 떨어져있다.
     else
     {
-        // �������� �����־���.
+        // 이전에는 겹쳐있었다.
         if (iter->second)
         {
             _LeftCol->EndOverlap(_RightCol);
@@ -159,7 +159,7 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
     Matrix matColLeft = _Left->GetColliderWorldMat();
     Matrix matColRight = _Right->GetColliderWorldMat();
 
-    // ������ ���ϱ�, ������ == ������ ��ų ���
+    // 투영축 구하기, 투영축 == 투영을 시킬 대상
     Vec3 arrProj[4] = {};
     arrProj[0] = XMVector3TransformCoord(arrRect[1], matColLeft) - XMVector3TransformCoord(
         arrRect[0], matColLeft);
@@ -170,7 +170,7 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
     arrProj[3] = XMVector3TransformCoord(arrRect[3], matColRight) - XMVector3TransformCoord(
         arrRect[0], matColRight);
 
-    // ����������� �� �浹ü�� �߽��� ���� ����
+    // 월드공간에서 두 충돌체의 중심을 이은 벡터
     Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft) -
         XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
 

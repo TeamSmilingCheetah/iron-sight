@@ -16,28 +16,28 @@ class CStructuredBuffer;
 class CTileMap :
     public CRenderComponent
 {
-    // Ÿ�� ��� ����
+    // 타일 행렬 개수
     int m_Col;
     int m_Row;
 
-    // Ÿ�� 1���� ũ��
+    // 타일 1개의 크기
     float m_TileSizeX;
     float m_TileSizeY;
 
-    // Ÿ�� ��Ʋ��
+    // 타일 아틀라스
     Ptr<CTexture> m_TileAtlas;
 
-    // ��Ʋ�� �ؽ��Ŀ��� Ÿ�� 1���� �����ϴ� ũ��(Pixel)
+    // 아틀라스 텍스쳐에서 타일 1개가 차지하는 크기 (Pixel)
     UINT m_TileAtlasSizeX;
     UINT m_TileAtlasSizeY;
 
-    // ��Ʋ�� �ؽ��Ŀ��� Ÿ���� ���� ���� ��� ����
+    // 아틀라스 텍스쳐에서 타일이 가로 세로 행렬 개수
     UINT m_TileAtlasCol;
     UINT m_TileAtlasRow;
 
 
-    vector<tTileInfo> m_vecTileInfo; // Ÿ�� ������  
-    CStructuredBuffer* m_Buffer; // Ÿ�� �����͸� GPU �� ������ �� ��� �� ����
+    vector<tTileInfo> m_vecTileInfo; // 타일 데이터
+    CStructuredBuffer* m_Buffer; // 타일 데이터를 GPU로 전달할 때 사용 할 버퍼
 
 
 public:

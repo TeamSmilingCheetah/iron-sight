@@ -34,26 +34,27 @@ void CTimeMgr::Tick()
     QueryPerformanceCounter(&m_CurrentCount);
 
     m_fEngineDT = static_cast<float>(m_CurrentCount.QuadPart - m_PrevCount.QuadPart) / static_cast<
-        float>(m_Frequency.QuadPart);
+        float>(m_Frequency.
+        QuadPart);
 
-    // DT ����, 60 ���� 1 ���� ũ�� ���ϰ� ����
+    // DT 보정, 60 분의 1 보다 크지 못하게 보정
     if ((1.f / 60.f) < m_fEngineDT)
         m_fEngineDT = (1.f / 60.f);
 
-    // �ð� ����
+    // 시간 누적
     m_fEngineTime += m_fEngineDT;
 
-    // �ð� ����
+    // 시간 누적
     m_Second += m_fEngineDT;
 
-    // �Լ� ȣ��Ƚ��
+    // 함수 호출횟수
     ++m_FPS;
 
     if (1. < m_Second)
     {
         m_Second -= 1.;
 
-        // ������ Ÿ��Ʋ�� FPS �� DeltaTime ǥ��
+        // 윈도우 타이틀에 FPS 랑 DeltaTime 표시
         swprintf_s(m_TimeInfo, L"DeltaTime : %f, FPS : %d ", m_fEngineDT, m_FPS);
         m_FPS = 0;
     }
@@ -67,7 +68,7 @@ void CTimeMgr::Tick()
     }
 
 
-    // GlobalData ����
+    // GlobalData 갱신
     g_Data.DeltaTime = m_fDT;
     g_Data.Time = m_Time;
 

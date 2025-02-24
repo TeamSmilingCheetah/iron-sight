@@ -72,21 +72,21 @@ void CKeyMgr::Init()
 
 void CKeyMgr::Tick()
 {
-    // ��Ŀ������ �����찡 �ִ� ��쿡��
+    // 포커싱중인 윈도우가 있는 경우에만
     if (GetFocus())
     {
         for (size_t i = 0; i < m_vecKey.size(); ++i)
         {
-            // Ű�� �����ִ��� Ȯ��
+            // 키가 눌려있는지 확인
             if (GetAsyncKeyState(g_arrKeyValue[i]) & 0x8001)
             {
-                // Ű�� �����ְ�, �������� �������� �ʾҴ�.
+                // 키가 눌려있고, 이전에는 눌려있지 않았다.
                 if (false == m_vecKey[i].PrevPressed)
                 {
                     m_vecKey[i].State = KEY_STATE::TAP;
                 }
 
-                // Ű�� �����ְ�, �������� �����־���.
+                // 키가 눌려있고, 이전에도 눌려있었다.
                 else
                 {
                     m_vecKey[i].State = KEY_STATE::PRESSED;
@@ -95,10 +95,10 @@ void CKeyMgr::Tick()
                 m_vecKey[i].PrevPressed = true;
             }
 
-            // Ű�� �������� �ʴٸ�
+            // 키가 눌려있지 않다면
             else
             {
-                // �������� �����־���.
+                // 이전에는 눌려있었다.
                 if (m_vecKey[i].PrevPressed)
                 {
                     m_vecKey[i].State = KEY_STATE::RELEASED;
@@ -121,7 +121,7 @@ void CKeyMgr::Tick()
         m_MouseDir = m_MousePos - m_MousePrevPos;
     }
 
-    // ��Ŀ�� ���� �����찡 ������
+    // 포커싱 중인 윈도우가 없으면
     else
     {
         for (size_t i = 0; i < m_vecKey.size(); ++i)

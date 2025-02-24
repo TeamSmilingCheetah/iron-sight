@@ -28,14 +28,14 @@ void CFlipbookPlayer::FinalTick()
         m_Finish = false;
     }
 
-    // ��������Ʈ ������ ���� �ð�
+    // 스프라이트 프레임 간격 시간
     float Term = (1.f / m_FPS);
 
     if (Term < m_Time)
     {
         ++m_SpriteIdx;
 
-        // Sprite �ε��� �ʰ�
+        // Sprite 인덱스 초과
         if (m_CurFlipbook->GetMaxSprite() <= m_SpriteIdx)
         {
             m_SpriteIdx -= 1;

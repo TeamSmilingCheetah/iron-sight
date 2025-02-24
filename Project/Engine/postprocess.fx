@@ -54,17 +54,17 @@ VS_OUT VS_Distortion(VS_IN _in)
     return output;
 }
 
-// 1. ÇÈ¼¿½¦ÀÌ´õÀÇ ÇÈ¼¿ ÁÂÇ¥
-// 2. ·»´õ Å¸°Ù ÇØ»óµµ
+// 1. í”½ì…€ì‰ì´ë”ì˜ í”½ì…€ ì¢Œí‘œ
+// 2. ë Œë” íƒ€ê²Ÿ í•´ìƒë„
 
 float4 PS_Distortion(VS_OUT _in) : SV_Target
 {
     float4 vColor = (float4) 0.f;
     
-    // SV_Position -> Pixelshader (ÇÈ¼¿ÁÂÇ¥)
+    // SV_Position -> Pixelshader (í”½ì…€ì¢Œí‘œ)
     float2 vScreenUV = _in.vPosition.xy / g_RenderResolution;    
     
-    // NoiseTexture °¡ ÀÖÀ¸¸é
+    // NoiseTexture ê°€ ìžˆìœ¼ë©´
     if(g_btex_1)
     {
         float4 vNoise = g_tex_1.Sample(g_sam_0, vScreenUV + 0.05f * g_Time);
@@ -213,8 +213,5 @@ float4 PS_EffectMerge(VS_OUT _in) : SV_Target
     
     return vBloom;
 }
-
-
-
 
 #endif

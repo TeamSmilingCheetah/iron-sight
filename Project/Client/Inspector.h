@@ -1,8 +1,7 @@
 #pragma once
 #include "EditorUI.h"
 
-
-#include <Engine/Ptr.h>
+#include <Common/Ptr.h>
 #include <Engine/assets.h>
 
 class CGameObject;
@@ -18,7 +17,7 @@ class Inspector :
     vector<ScriptUI*> m_vecScriptUI;
 
     Ptr<CAsset> m_TargetAsset;
-    AssetUI* m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::END)];
+    AssetUI* m_arrAssetUI[static_cast<UINT>(END)];
 
 public:
     void SetTargetObject(CGameObject* _Target);
