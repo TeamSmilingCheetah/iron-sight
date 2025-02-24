@@ -11,26 +11,15 @@ CPathMgr::~CPathMgr()
 
 void CPathMgr::Init()
 {
-    // 현재 작업 디렉터리를 알아낸다. (실행시킨 *.exe 파일 위치 OR 프로젝트 작업 디렉터리 위치)
-    wchar_t szCurDir[256];
-    GetCurrentDirectory(256, szCurDir);
+	// 현재 작업 디렉터리 확인
+	wchar_t szExePath[MAX_PATH] = {};
+	GetModuleFileNameW(nullptr, szExePath, MAX_PATH);
+	path execute_path(szExePath);
+	path bin_dir = execute_path.parent_path();
 
-    int Len = wcslen(szCurDir);
-
-    for (int i = Len - 1; 0 < i; --i)
-    {
-        if (szCurDir[i] == L'\\')
-        {
-            szCurDir[i + 1] = L'\0';
-            break;
-        }
-    }
-
-    m_BinPath = szCurDir;
-    m_ContentPath = m_BinPath + L"Content\\";
-    m_BinPath += L"Bin\\";
+	m_BinPath = bin_dir.wstring() + L"\\";
+    m_ContentPath = bin_dir.parent_path().wstring() + L"\\Content\\";
 }
-
 
 wstring CPathMgr::GetRelativePath(const wstring& _FilePath)
 {
