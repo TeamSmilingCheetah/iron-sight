@@ -31,7 +31,7 @@ void CEditorMgr::Init()
 
     m_vecEditorObj.push_back(pObject);
 
-    // Editor �� ī�޶� ���
+    // Editor 용 카메라 등록
     CRenderMgr::GetInst()->RegisterEditorCamera(pObject->Camera());
 }
 

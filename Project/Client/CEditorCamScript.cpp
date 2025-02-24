@@ -90,7 +90,7 @@ void CEditorCamScript::CameraPerspectiveMove()
 
     Transform()->SetRelativePos(vPos);
 
-    // ���콺 ���⿡ ���� ������Ʈ ȸ��
+    // 마우스 방향에 따른 오브젝트 회전
     if (KEY_PRESSED(KEY::RBTN))
     {
         Vec3 vRot = Transform()->GetRelativeRotation();

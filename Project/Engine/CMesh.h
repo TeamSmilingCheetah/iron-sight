@@ -21,15 +21,15 @@ class CMesh :
     UINT m_VtxCount;
     Vtx* m_VtxSysMem;
 
-    // �ϳ��� ���ؽ����ۿ� �������� �ε������۰� ����
+    // 하나의 버텍스 버퍼에 여러개의 인덱스 버퍼가 연결
     vector<tIndexInfo> m_vecIdxInfo;
 
-    // Animation3D ����
+    // Animation3D 정보
     vector<tMTAnimClip> m_vecAnimClip;
     vector<tMTBone> m_vecBones;
 
-    CStructuredBuffer* m_BoneFrameData; // ��ü �� ������ ����(ũ��, �̵�, ȸ��) (������ ������ŭ)
-    CStructuredBuffer* m_BoneInverse; // �� ���� ���(��ȿȭ) ���(�� ���� ��ġ�� �ǵ����� ���) (1�� ¥��)
+    CStructuredBuffer* m_BoneFrameData; // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
+    CStructuredBuffer* m_BoneInverse; // 각 뼈의 상쇄(무효화) 행렬(각 뼈의 위치를 되돌리는 행렬) (1행 짜리)
 
     int Load(const wstring& _FilePath) override;
 
@@ -47,8 +47,8 @@ public:
     UINT GetBoneCount() { return static_cast<UINT>(m_vecBones.size()); }
     const vector<tMTAnimClip>* GetAnimClip() { return &m_vecAnimClip; }
     bool IsAnimMesh() { return !m_vecAnimClip.empty(); }
-    CStructuredBuffer* GetBoneFrameDataBuffer() { return m_BoneFrameData; } // ��ü �� ������ ����
-    CStructuredBuffer* GetBoneInverseBuffer() { return m_BoneInverse; } // �� Bone �� Inverse ���
+    CStructuredBuffer* GetBoneFrameDataBuffer() { return m_BoneFrameData; } // 전체 본 프레임 정보
+    CStructuredBuffer* GetBoneInverseBuffer() { return m_BoneInverse; } // 각 Bone 의 Inverse 행렬
 
     void Binding(UINT _Subset);
     void Render(UINT _Subset);

@@ -7,7 +7,7 @@ class CEngine
     HWND m_hMainWnd;
     Vec2 m_Resolution;
 
-    // FMOD ������ Ŭ����
+    // FMOD 관리자 클래스
     FMOD::System* m_FMODSystem;
 
 public:

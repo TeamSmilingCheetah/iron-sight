@@ -1,4 +1,4 @@
-    #pragma once
+#pragma once
 
 
 #include <Windows.h>
@@ -44,9 +44,9 @@ using namespace Microsoft::WRL;
 #include <DirectxTex/DirectXTex.h>
 
 #ifdef _DEBUG
-#pragma comment(lib, "DirectxTex\\DirectXTex_debug")
+#pragma comment(lib, "DirectxTex/DirectXTex_debug")
 #else
-#pragma comment(lib, "DirectxTex\\DirectXTex")
+#pragma comment(lib, "DirectxTex/DirectXTex")
 #endif
 
 // Fbx Loader

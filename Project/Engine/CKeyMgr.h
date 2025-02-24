@@ -53,10 +53,10 @@ enum class KEY
 
 enum class KEY_STATE
 {
-    TAP, // �� ���� ����
-    PRESSED, // ��� �����ִ� ����
-    RELEASED, // �� �� ����
-    NONE, // �������� ���� ����
+    TAP, // 막 눌린 상태
+    PRESSED, // 계속 눌려있는 상태
+    RELEASED, // 막 뗀 상태
+    NONE, // 눌려있지 않은 상태
 };
 
 
@@ -71,11 +71,12 @@ class CKeyMgr
     : public singleton<CKeyMgr>
 {
     SINGLE(CKeyMgr);
+
     vector<tKeyInfo> m_vecKey;
 
-    Vec2 m_MousePos; // ���� ���콺 ��ġ
-    Vec2 m_MousePrevPos; // ���� ������ ���콺 ��ġ
-    Vec2 m_MouseDir; // ���콺 ��ǥ�� �̵��� ����
+    Vec2 m_MousePos; // 현재 마우스 위치
+    Vec2 m_MousePrevPos; // 이전 프레임 마우스 위치
+    Vec2 m_MouseDir; // 마우스 좌표가 이동한 방향
 
 public:
     void Init();

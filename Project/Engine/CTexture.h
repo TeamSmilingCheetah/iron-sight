@@ -1,12 +1,12 @@
 #pragma once
 #include "CAsset.h"
-#include "global.h"
+#include "Common/global.h"
 
 class CTexture :
     public CAsset
 {
-    ScratchImage m_Image; // �̹��� ���� �ε� �� ������
-    ComPtr<ID3D11Texture2D> m_Tex2D; // (ScratchImage)SysMem -> GPUMem  
+    ScratchImage m_Image; // 이미지 파일 로딩 및 저장 기능
+    ComPtr<ID3D11Texture2D> m_Tex2D; // (ScratchImage)SysMem -> GPUMem
 
     ComPtr<ID3D11RenderTargetView> m_RTV;
     ComPtr<ID3D11DepthStencilView> m_DSV;

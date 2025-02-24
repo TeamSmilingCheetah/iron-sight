@@ -19,11 +19,11 @@ void CRenderMgr::Init()
 
     CreateRenderMtrl();
 
-    // DebugRender �� DummyObject
+    // DebugRender 용 DummyObject
     m_DbgObj = new CGameObject;
     m_DbgObj->AddComponent(new CMeshRender);
 
-    // PostProcess �� �ؽ���
+    // PostProcess 용 텍스쳐
     m_PostProcessTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"PostProcessTex");
 }
 
@@ -144,7 +144,7 @@ void CRenderMgr::CreateMRT()
 void CRenderMgr::CreateDebugMtrl()
 {
     // =================================
-    // DebugShapeShader : ����׿� ���̴�
+    // DebugShapeShader : 디버그용 쉐이더
     // =================================
     Ptr<CGraphicShader> pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\debug.fx", "VS_DebugShape");
@@ -184,7 +184,7 @@ void CRenderMgr::CreateDebugMtrl()
     pShader->CreateGeometryShader(L"Shader\\debug.fx", "GS_DebugShapeLine");
     pShader->CreatePixelShader(L"Shader\\debug.fx", "PS_DebugShapeLine");
     pShader->SetRSState(RS_TYPE::CULL_NONE);
-    pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST); // �Է� �޽� ����
+    pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST); // 입력 메쉬 기준
     CAssetMgr::GetInst()->AddAsset(L"DebugShapeLineShader", pShader);
 
     pMtrl = new CMaterial(true);

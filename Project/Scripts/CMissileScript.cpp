@@ -14,7 +14,7 @@ CMissileScript::~CMissileScript()
 
 void CMissileScript::Begin()
 {
-    // CAssetMgr �� ������ �����Ų ������ ����
+    // CAssetMgr 의 재질을 복사시킨 재질을 참조
     Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl");
     MeshRender()->SetMaterial(pMtrl, 0);
     MeshRender()->GetDynamicMaterial(0);

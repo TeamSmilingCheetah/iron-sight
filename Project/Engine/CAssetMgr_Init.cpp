@@ -44,7 +44,7 @@ void CAssetMgr::CreateEngineGraphicShader()
     Ptr<CGraphicShader> pShader = nullptr;
 
     // ===========================
-    // Std2DShader : ǥ�� 2D ���̴�
+    // Std2DShader : 표준 2D 쉐이더
     // ===========================
     pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\std2d.fx", "VS_Std2D");
@@ -62,7 +62,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 
     // ================================================
-    // Std2DAlphaBlendShader : ǥ�� ���ĺ����� 2D ���̴�
+    // Std2DAlphaBlendShader : 표준 알파블렌드 2D 쉐이더
     // ================================================
     pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\std2d.fx", "VS_Std2D");
@@ -74,7 +74,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 
     // ===========================
-    // Std3DShader : ǥ�� 3D ���̴�
+    // Std3DShader : 표준 3D 쉐이더
     // ===========================
     pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D");
@@ -87,7 +87,7 @@ void CAssetMgr::CreateEngineGraphicShader()
     GetInst()->AddAsset(L"Std3DShader", pShader);
 
     // ============================================
-    // Std3D_DeferredShader : ǥ�� 3D Deferred ���̴�
+    // Std3D_DeferredShader : 표준 3D Deferred 쉐이더
     // ============================================
     pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\std3d_deferred.fx", "VS_Std3D_Deferred");
@@ -97,7 +97,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 
     // =================================
-    // Std2D_PaperBurn : PaperBurn ���̴�
+    // Std2D_PaperBurn : PaperBurn 쉐이더
     // =================================
     pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\std2d.fx", "VS_Std2D");
@@ -111,7 +111,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 
     // ==================================
-    // TileMapShader : Ÿ�ϸ� ���� ���̴�
+    // TileMapShader : 타일맵 전용 쉐이더
     // ==================================
     pShader = new CGraphicShader;
     pShader->CreateVertexShader(L"Shader\\tilemap.fx", "VS_TileMap");
@@ -359,19 +359,19 @@ void CAssetMgr::CreateEngineSprite()
     //	wchar_t szKey[255] = {};
     //	swprintf_s(szKey, 255, L"Sprite\\LinkWalkDown_%d.sprite", i);
 
-    //	// Sprite ���
+    //	// Sprite 등록
     //	AddAsset(szKey, pSprite);
 
-    //	// flipbook �� Sprite �߰�
+    //	// flipbook 에 Sprite 추가
     //	pFlipbook->AddSprite(pSprite);
     //			
-    //	// Sprite ����
+    //	// Sprite 저장
     //	pSprite->Save(CPathMgr::GetInst()->GetContentPath() + pSprite->GetKey());
     //}
 
-    //// flipbook ���
+    //// flipbook 등록
     //AddAsset(L"Flipbook\\LinkWalkDown.flip", pFlipbook);
 
-    //// Flipbook ����
+    //// Flipbook 저장
     //pFlipbook->Save(CPathMgr::GetInst()->GetContentPath() + pFlipbook->GetKey());
 }

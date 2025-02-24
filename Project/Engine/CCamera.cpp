@@ -57,17 +57,17 @@ CCamera::~CCamera()
 
 void CCamera::Begin()
 {
-    // RenderMgr �� ���
+    // RenderMgr 에 등록
     CRenderMgr::GetInst()->RegisterCamera(this, m_Priority);
 }
 
 void CCamera::FinalTick()
 {
     // ViewSpace
-    // 1. ī�޶� �ִ°��� ����
-    // 2. ī�޶� �ٶ󺸴� ������ Z ��
+    // 1. 카메라가 있는곳이 원점
+    // 2. 카메라가 바라보는 방향이 Z 축
 
-    // View ��� ���
+    // View 행렬 계산
     Vec3 vWorldPos = Transform()->GetRelativePos();
     Matrix matTrans = XMMatrixTranslation(-vWorldPos.x, -vWorldPos.y, -vWorldPos.z);
 
@@ -91,7 +91,7 @@ void CCamera::FinalTick()
     m_matViewInv = XMMatrixInverse(nullptr, m_matView);
 
 
-    // Proj ��� ���
+    // Proj 행렬 계산
     if (ORTHOGRAPHIC == m_ProjType)
         m_matProj = XMMatrixOrthographicLH(m_Width * m_Scale, (m_Width / m_AspectRatio) * m_Scale,
                                            1.f, m_Far);
@@ -100,10 +100,10 @@ void CCamera::FinalTick()
 
     m_matProjInv = XMMatrixInverse(nullptr, m_matProj);
 
-    // ���콺���� Ray ���
+    // 마우스방향 Ray 계산
     CalcRay();
 
-    // Frustum ����
+    // Frustum 생성
     m_Frustum->FinalTick();
 }
 
@@ -124,7 +124,7 @@ void CCamera::SortObject()
             {
                 CRenderComponent* pRenderCom = vecObjects[j]->GetRenderComponent();
 
-                // �з� �������� �˻�
+                // 분류 예외조건 검사
                 if (nullptr == pRenderCom
                     || nullptr == pRenderCom->GetMesh()
                     || nullptr == pRenderCom->GetMaterial(0)
@@ -191,7 +191,7 @@ void CCamera::render_decal()
 
 void CCamera::render_forward()
 {
-    // ������
+    // 불투명
     for (size_t i = 0; i < m_vecOpaque.size(); ++i)
     {
         m_vecOpaque[i]->Render();
@@ -203,7 +203,7 @@ void CCamera::render_forward()
         m_vecMask[i]->Render();
     }
 
-    // ������
+    // 반투명
     for (size_t i = 0; i < m_vecTransparent.size(); ++i)
     {
         m_vecTransparent[i]->Render();
@@ -212,12 +212,12 @@ void CCamera::render_forward()
 
 void CCamera::render_effect()
 {
-    // ����Ÿ�� ����
+    // 렌더타겟 변경
     Ptr<CTexture> pEffectTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectTargetTex");
     Ptr<CTexture> pEffectDepth = CAssetMgr::GetInst()->FindAsset<
         CTexture>(L"EffectDepthStencilTex");
 
-    // Ŭ����
+    // 클리어
     CONTEXT->ClearRenderTargetView(pEffectTarget->GetRTV().Get(), Vec4(0.f, 0.f, 0.f, 0.f));
     CONTEXT->ClearDepthStencilView(pEffectDepth->GetDSV().Get(),
                                    D3D11_CLEAR_STENCIL | D3D11_CLEAR_DEPTH, 1.f, 0);
@@ -237,7 +237,7 @@ void CCamera::render_effect()
         m_vecEffect[i]->Render();
     }
 
-    // BlurTarget ���� ����
+    // BlurTarget 으로 변경
     Ptr<CTexture> pEffectBlurTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(
         L"EffectBlurTargetTex");
     Ptr<CMaterial> pBlurMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
@@ -255,7 +255,7 @@ void CCamera::render_effect()
     CTexture::Clear(0);
 
 
-    // ���� ����Ÿ������ ����
+    // 원래 렌더타겟으로 변경
     Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
     Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
     Ptr<CMaterial> pEffectMergeMtrl = CAssetMgr::GetInst()->FindAsset<
@@ -340,30 +340,30 @@ bool CCamera::FrustumCheck(CGameObject* _Object)
 
 void CCamera::CalcRay()
 {
-    // ViewPort ����
+    // ViewPort 정보
     CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
     if (nullptr == pSwapChainMRT)
         return;
 
-    // ���� MRT �� ViewPort ���� �����´�.
+    // 메인 MRT 의 ViewPort 값을 가져온다.
     const D3D11_VIEWPORT& VP = pSwapChainMRT->GetViewPort();
 
-    // ���� ���콺 ��ǥ
+    // 현재 마우스 좌표
     Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 
-    // ���콺�� ���ϴ� ������ ī�޶� ��ġ�� ������.
+    // 마우스를 향하는 직선은 카메라 위치를 지난다.
     m_Ray.vStart = Transform()->GetWorldPos();
 
-    // View ���� �󿡼� ī�޶󿡼� ���콺 ������ ���ϴ� ���⺤�͸� ���Ѵ�.
-    //  - ���콺�� �ִ� ��ǥ�� -1 ~ 1 ������ ����ȭ�� ��ǥ�� �ٲ۴�.
-    //  - ��������� _11, _22 �� �ִ� ���� Near ���󿡼� Near ���� ���� ���� ���̷� ������
-    //  - ���� ViewSpace �󿡼��� Near ����󿡼� ���콺�� �ִ� ������ ���ϴ� ��ġ�� ���ϱ� ���ؼ� ������ ����� 
-    //  - ���� Near ���󿡼� ���콺�� ���ϴ� ��ġ�� ��ǥ�� ����
+    // View 공간 상에서 카메라에서 마우스 방향을 향하는 방향벡터를 구한다.
+    //  - 마우스가 있는 좌표를 -1 ~ 1 사이의 정규화된 좌표로 바꾼다.
+    //  - 투영행렬의 _11, _22 에 있는 값은 Near 평면상에서 Near 값을 가로 세로 길이로 나눈값
+    //  - 실제 ViewSpace 상에서의 Near 평명상에서 마우스가 있는 지점을 향하는 위치를 구하기 위해서 비율을 나누어서 
+    //  - 실제 Near 평면상에서 마우스가 향하는 위치를 좌표를 구함
     m_Ray.vDir.x = (((vMousePos.x - VP.TopLeftX) * 2.f / VP.Width) - 1.f) / m_matProj._11;
     m_Ray.vDir.y = -(((vMousePos.y - VP.TopLeftY) * 2.f / VP.Height) - 1.f) / m_matProj._22;
     m_Ray.vDir.z = 1.f;
 
-    // ���� ���Ϳ� ViewMatInv �� ����, ����󿡼��� ������ �˾Ƴ���.
+    // 방향 벡터에 ViewMatInv 를 적용, 월드상에서의 방향을 알아낸다.
     m_Ray.vDir = XMVector3TransformNormal(m_Ray.vDir, m_matViewInv);
     m_Ray.vDir.Normalize();
 }

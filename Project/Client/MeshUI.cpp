@@ -2,7 +2,7 @@
 #include "MeshUI.h"
 
 MeshUI::MeshUI()
-    : AssetUI("Mesh", ASSET_TYPE::MESH)
+    : AssetUI("Mesh", MESH)
 {
 }
 

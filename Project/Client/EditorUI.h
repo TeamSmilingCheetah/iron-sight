@@ -46,7 +46,6 @@ public:
     void UseMenuBar(bool _Use) { m_UseMenuBar = _Use; }
     bool IsUseMenuBar() { return m_UseMenuBar; }
 
-
     virtual void Tick();
     virtual void Render();
     virtual void Render_Update() = 0;
@@ -71,7 +70,7 @@ public:
 };
 
 
-// �ɹ��Լ� ������Ÿ�� ������(EidtorUI �� �ɹ��Լ�, ���ڴ� void, ��ȯŸ�� void)
+// 맴버함수 포인터타입 재정의(EidtorUI 의 맴버함수, 인자는 void, 반환타입 void)
 using EUI_DELEGATE = void(EditorUI::*)(void);
 using EUI_DELEGATE_1 = void(EditorUI::*)(DWORD_PTR);
 using EUI_DELEGATE_2 = void(EditorUI::*)(DWORD_PTR, DWORD_PTR);

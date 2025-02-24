@@ -16,7 +16,7 @@ cbuffer Transform : register(b0)
 
 cbuffer Material : register(b1)
 {
-    // ÀçÁú °è¼ö
+    // ì¬ì§ˆ ê³„ìˆ˜
     float4           g_vDiff;
     float4           g_vSpec;
     float4           g_vAmb;
@@ -60,7 +60,7 @@ cbuffer Material : register(b1)
     int              g_btexcube_0;
     int              g_btexcube_1;
     
-    // 3D Animation Á¤º¸
+    // 3D Animation ì •ë³´
     int             g_iAnim;
     int             g_iBoneCount;
     int2            g_padding;
@@ -79,13 +79,13 @@ cbuffer SPRITE : register(b2)
 
 cbuffer GLOBAL : register(b3)
 {
-    float2  g_RenderResolution;   // ·»´õ¸µ ÇØ»óµµ
+    float2  g_RenderResolution;   // ë Œë”ë§ í•´ìƒë„
     float   g_DeltaTime;          // DT
-    float   g_Time;               // ´©Àû½Ã°£
+    float   g_Time;               // ëˆ„ì ì‹œê°„
     float   g_DT_Engine;          // DT
-    float   g_Time_Engine;        // ´©Àû½Ã°£
-    int     g_Light2DCount;       // 2D ±¤¿ø °³¼ö
-    int     g_Light3DCount;       // 3D ±¤¿ø °³¼ö
+    float   g_Time_Engine;        // ëˆ„ì ì‹œê°„
+    int     g_Light2DCount;       // 2D ê´‘ì› ê°œìˆ˜
+    int     g_Light3DCount;       // 3D ê´‘ì› ê°œìˆ˜
 }
 
 Texture2D       g_tex_0 : register(t0);
@@ -103,22 +103,22 @@ Texture2DArray  g_texarr_3 : register(t9);
 TextureCube     g_texcube_0 : register(t10);
 TextureCube     g_texcube_1 : register(t11);
 
-Texture2D       g_Atlas : register(t12);    // Sprite Àü¿ë ÅØ½ºÃÄ ·¹Áö½ºÅÍ
+Texture2D       g_Atlas : register(t12);    // Sprite ì „ìš© í…ìŠ¤ì³ ë ˆì§€ìŠ¤í„°
 
-StructuredBuffer<tLight2DInfo>   g_Light2DInfo : register(t13); // 2D ±¤¿ø Á¤º¸
-StructuredBuffer<tLight3DInfo>   g_Light3DInfo : register(t14); // 3D ±¤¿ø Á¤º¸
+StructuredBuffer<tLight2DInfo>   g_Light2DInfo : register(t13); // 2D ê´‘ì› ì •ë³´
+StructuredBuffer<tLight3DInfo>   g_Light3DInfo : register(t14); // 3D ê´‘ì› ì •ë³´
 
 // Animation3D Bone Matrix Buffer
 StructuredBuffer<Matrix>        g_arrBoneMat : register(t17);
 
-SamplerState    g_sam_0 : register(s0); // ÀÌ¹æ¼º ÇÊÅÍ¸µ
-SamplerState    g_sam_1 : register(s1); // MIN_MAG_POINT ÇÊÅÍ¸µ
+SamplerState    g_sam_0 : register(s0); // ì´ë°©ì„± í•„í„°ë§
+SamplerState    g_sam_1 : register(s1); // MIN_MAG_POINT í•„í„°ë§
 
 #define PI  3.1415926535f
 
 // 1. VertexBuffer
 // 2. IndexBuffer
-// 3. ConstBuffer(Å©±â¿¡ Á¦¾à, °¡º¯¼º)
-// 4. StructuredBuffer( ±¸Á¶È­ ¹öÆÛ )
+// 3. ConstBuffer(í¬ê¸°ì— ì œì•½, ê°€ë³€ì„±)
+// 4. StructuredBuffer( êµ¬ì¡°í™” ë²„í¼ )
 
 #endif

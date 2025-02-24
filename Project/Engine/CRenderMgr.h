@@ -1,6 +1,5 @@
 #pragma once
-#include "singleton.h"
-
+#include "Common/singleton.h"
 
 #include "CTexture.h"
 #include "CMaterial.h"
@@ -17,8 +16,8 @@ class CRenderMgr :
     SINGLE(CRenderMgr);
     CMRT* m_arrMRT[static_cast<UINT>(MRT_TYPE::END)];
 
-    vector<CCamera*> m_vecCam; // ���� ������ ������ ���� �ȿ��ִ� ī�޶��
-    CCamera* m_EditorCam; // ������ ������ ���� �ܺ� ī�޶�
+    vector<CCamera*> m_vecCam; // 현재 레벨로 지정된 레벨 안에있는 카메라들
+    CCamera* m_EditorCam; // 레벨에 속하지 않은 외부 카메라
 
     vector<CLight2D*> m_vecLight2D;
     CStructuredBuffer* m_Light2DBuffer;
@@ -26,14 +25,14 @@ class CRenderMgr :
     vector<CLight3D*> m_vecLight3D;
     CStructuredBuffer* m_Light3DBuffer;
 
-    list<tDebugShapeInfo> m_DbgList; // ����� ������ ����
-    class CGameObject* m_DbgObj; // ����� ������ ������Ʈ
+    list<tDebugShapeInfo> m_DbgList; // 디버그 랜더링 정보
+    class CGameObject* m_DbgObj; // 디버그 렌더링 오브젝트
 
-    Ptr<CTexture> m_PostProcessTex; // ��ó���� �ؽ���(����Ÿ�� ����뵵)
+    Ptr<CTexture> m_PostProcessTex; // 후처리용 텍스쳐(렌더타겟 복사용도)
 
-    bool m_IsEditor; // �����͸�� �� or �ΰ��� ��
+    bool m_IsEditor; // 에디터모드 뷰 or 인게임 뷰
 
-    Ptr<CTexture> m_SpecifyTarget; // ��½�ų ����Ÿ��
+    Ptr<CTexture> m_SpecifyTarget; // 출력시킬 지정타겟
     Ptr<CMaterial> m_MergeMtrl;
 
     bool m_DebugRender;

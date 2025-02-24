@@ -35,18 +35,16 @@ void ListUI::Render_Update()
 
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
-                // ����Ŭ���� �׸� ���ڿ� ���
+                // 더블클릭한 항목 문자열 기록
                 m_strSelected = m_vecList[i];
 
-                // ��ϵ� Delegate ȣ��
+                // 등록된 Delegate 호출
                 if (m_DbclickedInst && m_DbclickedFunc)
                 {
-                    (m_DbclickedInst->*m_DbclickedFunc)(static_cast<DWORD_PTR>(this),
-                                                        (DWORD_PTR) & m_strSelected);
+                    (m_DbclickedInst->*m_DbclickedFunc)((DWORD_PTR)this, (DWORD_PTR)&m_strSelected);
                 }
 
-
-                // ��Ȱ��ȭ
+                // 비활성화
                 SetActive(false);
             }
 

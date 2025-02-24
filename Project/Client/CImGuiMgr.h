@@ -8,10 +8,9 @@ class CImGuiMgr
     SINGLE(CImGuiMgr)
     map
     <
-    string
-    ,
-    EditorUI*
-    >
+        string
+        ,
+        EditorUI*>
     m_mapUI;
     HANDLE m_hNotify;
 

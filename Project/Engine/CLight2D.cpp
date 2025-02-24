@@ -17,11 +17,11 @@ CLight2D::~CLight2D()
 
 void CLight2D::FinalTick()
 {
-    // ��ġ���� ����
+    // 위치정보 갱신
     m_LightInfo.vWorldPos = Transform()->GetWorldPos();
     m_LightInfo.vDir = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 
-    // RenderMgr �� Light2D ���	
+    // RenderMgr 에 Light2D 등록	
     CRenderMgr::GetInst()->RegisterLight2D(this);
 }
 

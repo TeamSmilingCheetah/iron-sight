@@ -27,13 +27,13 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 {
     switch (_iScriptType)
     {
-    case static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT):
+    case static_cast<UINT>(CAMERASCRIPT):
         return new CCameraScript;
         break;
-    case static_cast<UINT>(SCRIPT_TYPE::MISSILESCRIPT):
+    case static_cast<UINT>(MISSILESCRIPT):
         return new CMissileScript;
         break;
-    case static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT):
+    case static_cast<UINT>(PLAYERSCRIPT):
         return new CPlayerScript;
         break;
     }

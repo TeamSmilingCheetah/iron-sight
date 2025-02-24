@@ -11,10 +11,10 @@ CGameObject::CGameObject()
     : m_arrCom{}
       , m_RenderCom(nullptr)
       , m_Parent(nullptr)
-      , m_LayerIdx(-1) // -1 == Ư�� ���̾ �Ҽ��� �ƴϴ� --> Level �ȿ� �������� ���� ����
+      , m_LayerIdx(-1) // -1 == 특정 레이어에 소속이 아니다 --> Level 안에 존재하지 않은 상태
       , m_Dead(false)
 {
-    // Transform ������Ʈ�� ������ ������ �Ǵ� �⺻ ������Ʈ
+    // Transform 컴포넌트는 무조건 가져야 되는 기본 컴포넌트
     AddComponent(new CTransform);
 }
 
@@ -122,7 +122,7 @@ void CGameObject::FinalTick()
         }
     }
 
-    // Layer ���
+    // Layer 등록
     CLevelMgr::GetInst()->RegisterObject(this);
 }
 
@@ -142,24 +142,24 @@ void CGameObject::AddComponent(CComponent* _Component)
     }
     else
     {
-        // �Է����� ������ ������Ʈ�� �̹� ������ ������Ʈ�� ������Ʈ�� ������ �ִ� ���
+        // 입력으로 들어오는 컴포넌트와 이미 동일한 컴포넌트를 오브젝트가 가지고 있는 경우
         assert(!m_arrCom[static_cast<UINT>(Type)]);
 
-        // �Էµ� ������Ʈ�� CRenderComponent �� �ڽ�Ŭ���� Ÿ������ Ȯ��
+        // 입력된 컴포넌트가 CRenderComponent 의 자식클래스 타입인지 확인
         if (dynamic_cast<CRenderComponent*>(_Component))
         {
             assert(!m_RenderCom);
             m_RenderCom = static_cast<CRenderComponent*>(_Component);
         }
 
-        // �Էµ� ������Ʈ�� �ּҸ� ����
+        // 입력된 컴포넌트의 주소를 저장
         m_arrCom[static_cast<UINT>(Type)] = _Component;
     }
 
-    // ������Ʈ�� ����������Ʈ�� ����
+    // 컴포넌트의 소유오브젝트를 세팅
     _Component->m_Owner = this;
 
-    // ������Ʈ �ʱ�ȭ
+    // 컴포넌트 초기화
     _Component->Init();
 }
 
@@ -186,7 +186,7 @@ bool CGameObject::IsAncestor(CGameObject* _Other)
 
 void CGameObject::DisconnectWithLayer()
 {
-    // �Ҽ� ���̾ ���ٸ�
+    // 소속 레이어가 없다면
     if (-1 == m_LayerIdx)
         return;
 
@@ -216,7 +216,7 @@ void CGameObject::DisconnecntWithParent()
 
 void CGameObject::RegisterAsParent()
 {
-    // �Ҽ� ���̾ ���ٸ�
+    // 소속 레이어가 없다면
     if (-1 == m_LayerIdx)
         return;
 

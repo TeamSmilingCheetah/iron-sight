@@ -1,14 +1,11 @@
 #pragma once
 #include "CShader.h"
 
-#include "Ptr.h"
-#include "CTexture.h"
-
 class CComputeShader :
     public CShader
 {
-    ComPtr<ID3DBlob> m_CSBlob; // HLSL �ڵ带 �������� ��� ����
-    ComPtr<ID3D11ComputeShader> m_CS; // ��ǻƮ ���̴� ��ü
+    ComPtr<ID3DBlob> m_CSBlob; // HLSL 코드를 컴파일한 결과 저장
+    ComPtr<ID3D11ComputeShader> m_CS; // 컴퓨트 쉐이더 객체
 
 protected:
     MtrlConst m_Const;
@@ -34,7 +31,7 @@ private:
 
 public:
     CLONE_DISABLE(CComputeShader);
-    CComputeShader(const wstring& _RelativeFilePath, const string& _FuncName
-                   , int _GroupPerX, int _GroupPerY, int _GroupPerZ);
+    CComputeShader(const wstring& _RelativeFilePath, const string& _FuncName,
+                   int _GroupPerX, int _GroupPerY, int _GroupPerZ);
     ~CComputeShader() override;
 };

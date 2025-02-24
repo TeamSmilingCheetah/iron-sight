@@ -2,7 +2,7 @@
 #include "SpriteUI.h"
 
 SpriteUI::SpriteUI()
-    : AssetUI("Sprite", ASSET_TYPE::SPRITE)
+    : AssetUI("Sprite", SPRITE)
 {
 }
 

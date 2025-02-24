@@ -9,7 +9,6 @@ void AddChild(CGameObject* _Parent, CGameObject* _Child);
 
 bool IsValid(class CGameObject*& _Object);
 
-
 void DrawDebugRect(Vec4 _Color, Vec3 _Pos, Vec2 _Scale, Vec3 _Rotation, bool _DepthTest,
                    float _Duration);
 void DrawDebugRect(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float _Duration);
@@ -25,12 +24,13 @@ void SaveWString(const wstring& _str, FILE* _File);
 void LoadWString(wstring& _str, FILE* _File);
 
 #include "Ptr.h"
-#include "CAsset.h"
+
+class CAssetMgr;
 
 template <typename T>
 void SaveAssetRef(Ptr<T> _Asset, FILE* _File)
 {
-    // ���¿� ���� ���� ������ ����
+    // 에셋에 대한 참조 정보를 저장
     bool bAsset = _Asset.Get();
     fwrite(&bAsset, sizeof(bool), 1, _File);
 
@@ -53,7 +53,7 @@ void LoadAssetRef(Ptr<T>& _Asset, FILE* _File)
         LoadWString(Key, _File);
         LoadWString(Path, _File);
 
-        _Asset = CAssetMgr::GetInst()->Load<T>(Key, Path);
+        _Asset = CAssetMgr::GetInst()->template Load<T>(Key, Path);
     }
 }
 
@@ -70,7 +70,7 @@ T* LoadAssetRef(FILE* _File)
         wstring Key, Path;
         LoadWString(Key, _File);
         LoadWString(Path, _File);
-        pAsset = CAssetMgr::GetInst()->Load<T>(Key, Path);
+        pAsset = CAssetMgr::GetInst()->template Load<T>(Key, Path);
     }
 
     return pAsset.Get();

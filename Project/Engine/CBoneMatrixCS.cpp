@@ -17,7 +17,7 @@ CBoneMatrixCS::~CBoneMatrixCS()
 
 int CBoneMatrixCS::Binding()
 {
-    // ����ȭ���� ����
+    // 구조화버퍼 전달
     m_FrameDataBuffer->Binding_CS_SRV(16); // t16
     m_OffsetMatBuffer->Binding_CS_SRV(17); // t17
     m_OutputBuffer->Binding_CS_UAV(0); // u0

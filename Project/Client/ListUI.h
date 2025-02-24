@@ -9,7 +9,7 @@ class ListUI :
     string m_strSelected;
     int m_SelectedIdx;
 
-    // DoubleClicked �� ȣ���ų Delegate
+    // DoubleClicked 시 호출시킬 Delegate
     EditorUI* m_DbclickedInst;
     EUI_DELEGATE_2 m_DbclickedFunc;
 

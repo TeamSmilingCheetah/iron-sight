@@ -28,7 +28,7 @@ void EditorUI::Render()
     if (!m_Active)
         return;
 
-    // �ֻ��� �θ� UI
+    // 최상위 부모 UI
     if (nullptr == m_ParentUI)
     {
         // Modalless
@@ -44,7 +44,7 @@ void EditorUI::Render()
         }
     }
 
-    // Child UI �� ���
+    // Child UI 인 경우
     else
     {
         Render_Child();
@@ -67,7 +67,7 @@ void EditorUI::Render_Modalless()
 
     ImGui::Begin(strID.c_str(), &Active, flag);
 
-    // ImGui �� X ��ư�� ���� ���
+    // ImGui 의 X 버튼을 누른 경우
     if (Active != m_Active)
         SetActive(Active);
 

@@ -11,7 +11,7 @@ class CMaterial :
     MtrlConst m_Const;
     Ptr<CTexture> m_arrTex[TEX_END];
 
-    // ���� ������ ����Ű�� ������(nullptr �� ��� �ڽ��� ����)
+    // 원본 재질을 가리키는 포인터(nullptr 인 경우 자신이 원본)
     Ptr<CMaterial> m_SharedMtrl;
 
 public:

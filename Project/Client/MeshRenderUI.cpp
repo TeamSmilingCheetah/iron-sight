@@ -62,19 +62,19 @@ void MeshRenderUI::Render_Update()
     ImGui::SameLine();
     if (ImGui::Button("##MeshBtn", ImVec2(18.f, 18.f)))
     {
-        // ListUI �� Ȱ��ȭ ��Ű��
+        // ListUI 를 활성화 시키기
         auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
         pListUI->SetName("Mesh");
         pListUI->SetActive(true);
 
-        // ListUI �� �־��� ���ڿ� ���� ��������
+        // ListUI 에 넣어줄 문자열 정보 가져오기
         pListUI->AddItem("None");
 
         vector<wstring> vecAssetNames;
         CAssetMgr::GetInst()->GetAssetNames(MESH, vecAssetNames);
         pListUI->AddItem(vecAssetNames);
 
-        // ���� Ŭ�� �� ȣ���ų �Լ� ���
+        // 더블 클릭 시 호출시킬 함수 등록
         pListUI->AddDynamicDoubleCliked(
             this, static_cast<EUI_DELEGATE_2>(&MeshRenderUI::SelectMesh));
     }
@@ -115,19 +115,19 @@ void MeshRenderUI::Render_Update()
     ImGui::SameLine();
     if (ImGui::Button("##MtrlBtn", ImVec2(18.f, 18.f)))
     {
-        // ListUI �� Ȱ��ȭ ��Ű��
+        // ListUI 를 활성화 시키기
         auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
         pListUI->SetName("Material");
         pListUI->SetActive(true);
 
-        // ListUI �� �־��� ���ڿ� ���� ��������
+        // ListUI 에 넣어줄 문자열 정보 가져오기
         pListUI->AddItem("None");
 
         vector<wstring> vecAssetNames;
         CAssetMgr::GetInst()->GetAssetNames(MATERIAL, vecAssetNames);
         pListUI->AddItem(vecAssetNames);
 
-        // ���� Ŭ�� �� ȣ���ų �Լ� ���
+        // 더블 클릭 시 호출시킬 함수 등록
         pListUI->AddDynamicDoubleCliked(
             this, static_cast<EUI_DELEGATE_2>(&MeshRenderUI::SelectMaterial));
     }
@@ -135,7 +135,7 @@ void MeshRenderUI::Render_Update()
 
 void MeshRenderUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 {
-    // ����Ʈ���� ����ų���� �׸��� �̸��� �޾ƿ´�.
+    // 리스트에서 더블킬릭한 항목의 이름을 받아온다.
     auto pListUI = (ListUI*)_ListUI;
     auto pStr = (string*)_SelectString;
 
@@ -145,7 +145,7 @@ void MeshRenderUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
         return;
     }
 
-    // �ش� �׸� ������ ã�Ƽ�, MeshRenderComponent �� �ش� �޽ø� �����ϰ� �Ѵ�.
+    // 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
     Ptr<CMesh> pMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(wstring(pStr->begin(), pStr->end()));
     if (nullptr == pMesh)
         return;
@@ -155,7 +155,7 @@ void MeshRenderUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 
 void MeshRenderUI::SelectMaterial(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 {
-    // ����Ʈ���� ����ų���� �׸��� �̸��� �޾ƿ´�.
+    // 리스트에서 더블킬릭한 항목의 이름을 받아온다.
     auto pListUI = (ListUI*)_ListUI;
     auto pStr = (string*)_SelectString;
 
@@ -165,7 +165,7 @@ void MeshRenderUI::SelectMaterial(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
         return;
     }
 
-    // �ش� �׸� ������ ã�Ƽ�, MeshRenderComponent �� �ش� �޽ø� �����ϰ� �Ѵ�.
+    // 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
     Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(
         wstring(pStr->begin(), pStr->end()));
     if (nullptr == pMtrl)

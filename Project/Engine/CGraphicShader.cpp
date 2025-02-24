@@ -22,7 +22,7 @@ CGraphicShader::~CGraphicShader()
 
 int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const string& _FuncName)
 {
-    // ���̴� ������
+    // 쉐이더 컴파일
     wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
     UINT Flag = D3DCOMPILE_DEBUG;
     HRESULT hr = S_OK;
@@ -37,14 +37,14 @@ int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const strin
 
         if (2 == errNum || 3 == errNum)
         {
-            // �߸��� ���
-            MessageBoxA(nullptr, "���̴� ������ �������� �ʽ��ϴ�.", "���̴� ������ ����", MB_OK);
+            // 잘못된 경로
+            MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
         }
 
         else
         {
             auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-            MessageBoxA(nullptr, pErrMsg, "���̴� ������ ����", MB_OK);
+            MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
         }
 
         return E_FAIL;
@@ -150,14 +150,14 @@ int CGraphicShader::CreateHullShader(const wstring& _RelativePath, const string&
 
         if (2 == errNum || 3 == errNum)
         {
-            // �߸��� ���
-            MessageBoxA(nullptr, "���̴� ������ �������� �ʽ��ϴ�.", "���̴� ������ ����", MB_OK);
+            // 잘못된 경로
+            MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
         }
 
         else
         {
             auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-            MessageBoxA(nullptr, pErrMsg, "���̴� ������ ����", MB_OK);
+            MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
         }
 
         return E_FAIL;
@@ -188,14 +188,14 @@ int CGraphicShader::CreateDomainShader(const wstring& _RelativePath, const strin
 
         if (2 == errNum || 3 == errNum)
         {
-            // �߸��� ���
-            MessageBoxA(nullptr, "���̴� ������ �������� �ʽ��ϴ�.", "���̴� ������ ����", MB_OK);
+            // 잘못된 경로
+            MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
         }
 
         else
         {
             auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-            MessageBoxA(nullptr, pErrMsg, "���̴� ������ ����", MB_OK);
+            MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
         }
 
         return E_FAIL;
@@ -226,14 +226,14 @@ int CGraphicShader::CreateGeometryShader(const wstring& _RelativePath, const str
 
         if (2 == errNum || 3 == errNum)
         {
-            // �߸��� ���
-            MessageBoxA(nullptr, "���̴� ������ �������� �ʽ��ϴ�.", "���̴� ������ ����", MB_OK);
+            // 잘못된 경로
+            MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
         }
 
         else
         {
             auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-            MessageBoxA(nullptr, pErrMsg, "���̴� ������ ����", MB_OK);
+            MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
         }
 
         return E_FAIL;
@@ -263,14 +263,14 @@ int CGraphicShader::CreatePixelShader(const wstring& _RelativePath, const string
 
         if (2 == errNum || 3 == errNum)
         {
-            // �߸��� ���
-            MessageBoxA(nullptr, "���̴� ������ �������� �ʽ��ϴ�.", "���̴� ������ ����", MB_OK);
+            // 잘못된 경로
+            MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
         }
 
         else
         {
             auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-            MessageBoxA(nullptr, pErrMsg, "���̴� ������ ����", MB_OK);
+            MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
         }
 
         return E_FAIL;
@@ -286,7 +286,7 @@ int CGraphicShader::CreatePixelShader(const wstring& _RelativePath, const string
 
 void CGraphicShader::Binding()
 {
-    CONTEXT->IASetPrimitiveTopology(m_Topology); // ������ ����(��ġ, ����)
+    CONTEXT->IASetPrimitiveTopology(m_Topology); // 도형의 위상(위치, 상태)
     CONTEXT->IASetInputLayout(m_Layout.Get());
 
     CONTEXT->VSSetShader(m_VS.Get(), nullptr, 0);
@@ -295,15 +295,15 @@ void CGraphicShader::Binding()
     CONTEXT->GSSetShader(m_GS.Get(), nullptr, 0);
     CONTEXT->PSSetShader(m_PS.Get(), nullptr, 0);
 
-    // Rstareizer ���ε�
+    // Rstareizer 바인딩
     ComPtr<ID3D11RasterizerState> pRSState = CDevice::GetInst()->GetRSState(m_RSType);
     CONTEXT->RSSetState(pRSState.Get());
 
-    // BlendState ���ε�
+    // BlendState 바인딩
     ComPtr<ID3D11BlendState> pBSState = CDevice::GetInst()->GetBSState(m_BSType);
     CONTEXT->OMSetBlendState(pBSState.Get(), nullptr, 0xffffffff);
 
-    // DepthStencilState ���ε�
+    // DepthStencilState 바인딩
     ComPtr<ID3D11DepthStencilState> pDSState = CDevice::GetInst()->GetDSState(m_DSType);
     CONTEXT->OMSetDepthStencilState(pDSState.Get(), m_StencilRef);
 }

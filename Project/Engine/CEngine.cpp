@@ -26,6 +26,7 @@ CEngine::~CEngine()
     if (nullptr != m_FMODSystem)
     {
         m_FMODSystem->release();
+        
         m_FMODSystem = nullptr;
     }
 }
@@ -38,7 +39,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
     m_Resolution.x = static_cast<float>(_Width);
     m_Resolution.y = static_cast<float>(_Height);
 
-    // GameObject Save Load �Լ� ������
+    // GameObject Save Load 함수 포인터
     CPrefab::g_ObjectSave = _SaveFunc;
     CPrefab::g_ObjectLoad = _LoadFunc;
 
@@ -51,14 +52,14 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
         return E_FAIL;
     }
 
-    // FMOD �ʱ�ȭ		
+    // FMOD 초기화		
     System_Create(&m_FMODSystem);
     assert(m_FMODSystem);
 
-    // 32�� ä�� ����
+    // 32개 채널 생성
     m_FMODSystem->init(32, FMOD_DEFAULT, nullptr);
 
-    // Manager �ʱ�ȭ
+    // Manager 초기화
     CPathMgr::GetInst()->Init();
     CKeyMgr::GetInst()->Init();
     CTimeMgr::GetInst()->Init();

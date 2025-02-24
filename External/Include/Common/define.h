@@ -1,13 +1,13 @@
 #pragma once
 
 
-typedef DirectX::SimpleMath::Vector2	Vec2;
-typedef DirectX::SimpleMath::Vector3	Vec3;
-typedef DirectX::SimpleMath::Vector4	Vec4;
-typedef DirectX::SimpleMath::Matrix		Matrix;
+using Vec2 = SimpleMath::Vector2;
+using Vec3 = SimpleMath::Vector3;
+using Vec4 = SimpleMath::Vector4;
+using Matrix = SimpleMath::Matrix;
 
-typedef int(*GAMEOBJECT_SAVE)(class CGameObject*, FILE*);
-typedef class CGameObject* (*GAMEOBJECT_LOAD)(FILE*);
+using GAMEOBJECT_SAVE = int(*)(class CGameObject*, FILE*);
+using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 
 #define RELEASE(Inst) if(nullptr != Inst) Inst->Release();

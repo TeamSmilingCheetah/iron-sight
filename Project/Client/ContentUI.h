@@ -5,7 +5,7 @@ class ContentUI :
     public EditorUI
 {
     class TreeUI* m_Tree;
-    vector<wstring> m_vecAssetPath; // Content ������ �ִ� ��� ���ҽ� ��� 
+    vector<wstring> m_vecAssetPath; // Content 폴더에 있는 모든 리소스 경로
 
 public:
     void Render_Update() override;

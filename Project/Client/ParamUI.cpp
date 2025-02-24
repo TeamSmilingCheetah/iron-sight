@@ -171,20 +171,20 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
         sprintf_s(szID, "##TexBtn_%d", g_ParamID++);
         if (ImGui::Button(szID, ImVec2(18.f, 18.f)))
         {
-            // ListUI �� Ȱ��ȭ ��Ű��
+            // ListUI 를 활성화 시키기
             auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
             pListUI->SetName("Texture");
             pListUI->SetActive(true);
 
-            // ListUI �� �־��� ���ڿ� ���� ��������
+            // ListUI 에 넣어줄 문자열 정보 가져오기
             pListUI->AddItem("None");
 
             vector<wstring> vecAssetNames;
             CAssetMgr::GetInst()->GetAssetNames(TEXTURE, vecAssetNames);
             pListUI->AddItem(vecAssetNames);
 
-            // ���� Ŭ�� �� ȣ���ų �Լ� ���
-            pListUI->AddDynamicDoubleCliked(_Inst, static_cast<EUI_DELEGATE_2>(_MemFunc));
+            // 더블 클릭 시 호출시킬 함수 등록
+            pListUI->AddDynamicDoubleCliked(_Inst, _MemFunc);
 
             return true;
         }
@@ -235,20 +235,20 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
         sprintf_s(szID, "##PrefabBtn_%d", g_ParamID++);
         if (ImGui::Button(szID, ImVec2(18.f, 18.f)))
         {
-            // ListUI �� Ȱ��ȭ ��Ű��
+            // ListUI 를 활성화 시키기
             auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
             pListUI->SetName("Prefab");
             pListUI->SetActive(true);
 
-            // ListUI �� �־��� ���ڿ� ���� ��������
+            // ListUI 에 넣어줄 문자열 정보 가져오기
             pListUI->AddItem("None");
 
             vector<wstring> vecAssetNames;
             CAssetMgr::GetInst()->GetAssetNames(PREFAB, vecAssetNames);
             pListUI->AddItem(vecAssetNames);
 
-            // ���� Ŭ�� �� ȣ���ų �Լ� ���
-            pListUI->AddDynamicDoubleCliked(_Inst, static_cast<EUI_DELEGATE_2>(_MemFunc));
+            // 더블 클릭 시 호출시킬 함수 등록
+            pListUI->AddDynamicDoubleCliked(_Inst, _MemFunc);
 
             return true;
         }

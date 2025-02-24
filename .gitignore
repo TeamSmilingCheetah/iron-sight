@@ -189,3 +189,4 @@ ipch/
 # User Ignore File
 OutputFile
 unity_*.cpp
+Intermediate/

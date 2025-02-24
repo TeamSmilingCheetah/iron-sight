@@ -78,12 +78,14 @@
         <IncludePath>$(SolutionDir)External\Include\;$(IncludePath)</IncludePath>
         <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
         <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+        <IntDir>$(SolutionDir)External\Library\$(ProjectName)\Intermediate\</IntDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
         <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
         <IncludePath>$(SolutionDir)External\Include\;$(IncludePath)</IncludePath>
         <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
         <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+        <IntDir>$(SolutionDir)External\Library\$(ProjectName)\Intermediate\</IntDir>
     </PropertyGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <ClCompile>
@@ -137,11 +139,6 @@
             </SubSystem>
             <GenerateDebugInformation>true</GenerateDebugInformation>
         </Link>
-        <PreBuildEvent>
-            <Command>cd $(SolutionDir)
-                call EngineHeaderCopy.bat
-            </Command>
-        </PreBuildEvent>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
         <ClCompile>
@@ -165,11 +162,6 @@
             <OptimizeReferences>true</OptimizeReferences>
             <GenerateDebugInformation>true</GenerateDebugInformation>
         </Link>
-        <PreBuildEvent>
-            <Command>cd $(SolutionDir)
-                call EngineHeaderCopy.bat
-            </Command>
-        </PreBuildEvent>
     </ItemDefinitionGroup>
     <ItemGroup>
         <ClInclude Include="assets.h"/>
@@ -229,15 +221,9 @@
         <ClInclude Include="CTransform.h"/>
         <ClInclude Include="CWeightMapCS.h"/>
         <ClInclude Include="define.h"/>
-        <ClInclude Include="enum.h"/>
         <ClInclude Include="framework.h"/>
-        <ClInclude Include="func.h"/>
-        <ClInclude Include="global.h"/>
         <ClInclude Include="pch.h"/>
-        <ClInclude Include="Ptr.h"/>
         <ClInclude Include="SimpleMath.h"/>
-        <ClInclude Include="singleton.h"/>
-        <ClInclude Include="struct.h"/>
     </ItemGroup>
     <ItemGroup>
         <ClCompile Include="CAnimator3D.cpp"/>

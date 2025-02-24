@@ -33,7 +33,7 @@ void CameraUI::Render_Update()
     float Far = pCamera->GetFar();
     ImGui::InputFloat("##Far", &Far);
 
-    // Far �� Near(1) ���� �۰ų� ������ �ȵȴ�. �þ߹����� Near ���� Far �����̱� ����
+    // Far 가 Near(1) 보다 작거나 같으면 안된다. 시야범위는 Near 에서 Far 사이이기 때문
     if (Far <= 1.f)
         Far = 1.1f;
     pCamera->SetFar(Far);
@@ -53,10 +53,10 @@ void CameraUI::Render_Update()
     ImGui::DragFloat("##AspectRatio", &AspectRatio, 0.01f);
     pCamera->SetAspectRatio(AspectRatio);
 
-    // ���� ī�޶� ���� �ɼ��� ���������̸� ��Ȱ��ȭ
+    // 현재 카메라 투영 옵션이 직교투영이면 비활성화
     ImGui::BeginDisabled(ProjType == static_cast<int>(PROJ_TYPE::ORTHOGRAPHIC));
 
-    // �������� ����
+    // 원근투영 전용
     ImGui::Text("Field Of View");
     ImGui::SameLine(120);
     FOV = (FOV * 180.f) / XM_PI;
@@ -67,10 +67,10 @@ void CameraUI::Render_Update()
     ImGui::EndDisabled();
 
 
-    // ���� ī�޶� ���� �ɼ��� ���������̸� ��Ȱ��ȭ
+    // 현재 카메라 투영 옵션이 직교투영이면 비활성화
     ImGui::BeginDisabled(ProjType == static_cast<int>(PROJ_TYPE::PERSPECTIVE));
 
-    // �������� ���� ����
+    // 직교투영 전용 변수
     float Scale = pCamera->GetScale();
 
     ImGui::Text("Scale");
@@ -79,7 +79,7 @@ void CameraUI::Render_Update()
     ImGui::DragFloat("##Scale", &Scale, 0.1f);
     FOV = (FOV * XM_PI) / 180.f;
 
-    // �������� ������ 0 ���Ϸ� �������� �ȵȴ�.
+    // 직교투영 배율이 0 이하로 내려가면 안된다.
     if (Scale <= 0.f)
         Scale = 0.1f;
 
@@ -87,7 +87,7 @@ void CameraUI::Render_Update()
 
     ImGui::EndDisabled();
 
-    // ����    
-    UINT m_LayerCheck; // ī�޶� ���� ���̾� ��Ʈ üũ
-    int m_Priority; // ī�޶� �켱����, 0 : MainCamera, -1 : �̵��
+    // 공통    
+    UINT m_LayerCheck; // 카메라가 찍을 레이어 비트 체크
+    int m_Priority; // 카메라 우선순위, 0 : MainCamera, -1 : 미등록
 }

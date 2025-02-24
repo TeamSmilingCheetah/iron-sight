@@ -30,7 +30,7 @@ int CSound::Play(int _iRoopCount, float _fVolume, bool _bOverlap)
         assert(nullptr);
     }
 
-    // ����ǰ� �ִ� ä���� �ִµ�, �ߺ������ ������� �ʾҴ� -> ��� ����
+    // 재생되고 있는 채널이 있는데, 중복재생을 허용하지 않았다 -> 재생 안함
     if (!_bOverlap && !m_listChannel.empty())
     {
         return E_FAIL;
@@ -41,7 +41,7 @@ int CSound::Play(int _iRoopCount, float _fVolume, bool _bOverlap)
     FMOD::Channel* pChannel = nullptr;
     CEngine::GetInst()->GetFMODSystem()->playSound(m_Sound, nullptr, false, &pChannel);
 
-    // ��� ����
+    // 재생 실패
     if (nullptr == pChannel)
         return E_FAIL;
 

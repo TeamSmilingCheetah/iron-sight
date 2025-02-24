@@ -5,7 +5,7 @@
 #include <Engine/CPathMgr.h>
 
 PrefabUI::PrefabUI()
-    : AssetUI("Prefab", ASSET_TYPE::PREFAB)
+    : AssetUI("Prefab", PREFAB)
 {
 }
 
@@ -23,8 +23,8 @@ void PrefabUI::Render_Update()
     ImGui::Text("Name");
     ImGui::SameLine(100);
 
-    string strKey = string(pAsset->GetKey().begin(), pAsset->GetKey().end());
-    ImGui::InputText("##PrefabName", static_cast<char*>(strKey.c_str()), strKey.length(),
+    auto strKey = string(pAsset->GetKey().begin(), pAsset->GetKey().end());
+    ImGui::InputText("##PrefabName", (char*)strKey.c_str(), strKey.length(),
                      ImGuiInputTextFlags_ReadOnly);
 
     if (ImGui::Button("Instantiate"))
@@ -37,7 +37,7 @@ void PrefabUI::Render_Update()
     {
         wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
-        // ���� ��� ���ڿ�
+        // 파일 경로 문자열
         wchar_t szFilePath[255] = {};
 
         OPENFILENAME Desc = {};

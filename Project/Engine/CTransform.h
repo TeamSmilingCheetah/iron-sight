@@ -15,7 +15,7 @@ class CTransform :
     Matrix m_matWorld;
     Matrix m_matWorldInv;
 
-    float m_FrustumRadius; // Frustum üũ�� �� ����� �ݰ�����
+    float m_FrustumRadius; // Frustum 체크할 때 사용할 반경 정보
 
     bool m_IndependentScale;
     bool m_FrustumCheck;

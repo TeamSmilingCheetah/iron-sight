@@ -10,14 +10,14 @@ class CGameObject :
     public CEntity
 {
     CComponent* m_arrCom[static_cast<UINT>(COMPONENT_TYPE::END)];
-    CRenderComponent* m_RenderCom; // 1���� ���ӿ�����Ʈ ��ü�� 1���� ����������Ʈ�� ���� �� �ִ�.
-    vector<CScript*> m_vecScripts; // ���� ��ũ��Ʈ��
+    CRenderComponent* m_RenderCom; // 1개의 게임오브젝트 객체는 1개의 렌더컴포넌트를 가질 수 있다.
+    vector<CScript*> m_vecScripts; // 보유 스크립트들
 
-    CGameObject* m_Parent; // �θ� ������Ʈ
-    vector<CGameObject*> m_vecChild; // �ڽ� ������Ʈ��
+    CGameObject* m_Parent; // 부모 오브젝트
+    vector<CGameObject*> m_vecChild; // 자식 오브젝트들
 
-    int m_LayerIdx; // ������Ʈ�� �����ִ� ���̾� �ε��� ��ȣ, -1 : ���Ҽ�
-    bool m_Dead; // ������Ʈ�� ���°� ���� ���� ��������
+    int m_LayerIdx; // 오브젝트가 속해있는 레이어 인덱스 번호, -1 : 무소속
+    bool m_Dead; // 오브젝트의 상태가 삭제 예정 상태인지
 
 public:
     void Begin();

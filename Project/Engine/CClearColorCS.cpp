@@ -15,14 +15,14 @@ int CClearColorCS::Binding()
     if (nullptr == m_TargetTex)
         return E_FAIL;
 
-    // ��ĥ�� Texture �� U0 �� ���ε�
+    // 색칠할 Texture 를 U0 에 바인딩
     m_TargetTex->Binding_UAV_CS(0);
 
-    // �ؽ��� �ػ� ���� ����
+    // 텍스쳐 해상도 정보 전달
     m_Const.iArr[0] = static_cast<int>(m_TargetTex->GetWidth());
     m_Const.iArr[1] = static_cast<int>(m_TargetTex->GetHeight());
 
-    // ��ĥ�� �������� ����
+    // 색칠할 색상정보 전달
     m_Const.v4Arr[0] = m_ClearColor;
 
     return S_OK;

@@ -1,18 +1,18 @@
 #pragma once
 
-#include <Engine/global.h>
+#include <Common/global.h>
 
 #ifdef _DEBUG
-#pragma comment(lib, "Engine\\Engine_d")
+#pragma comment(lib, R"(Engine/Engine_d)")
 #else
-#pragma comment(lib, "Engine\\Engine")
+#pragma comment(lib, R"(Engine/Engine)")
 #endif
 
 
 #ifdef _DEBUG
-#pragma comment(lib, "Scripts\\Scripts_d")
+#pragma comment(lib, R"(Scripts/Scripts_d)")
 #else
-#pragma comment(lib, "Scripts\\Scripts")
+#pragma comment(lib, R"(Scripts/Scripts)")
 #endif
 
 #include <set>

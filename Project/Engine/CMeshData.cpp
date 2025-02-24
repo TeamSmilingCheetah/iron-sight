@@ -33,7 +33,7 @@ CGameObject* CMeshData::Instantiate()
         pNewObj->MeshRender()->SetMaterial(m_vecMtrl[i], i);
     }
 
-    // Animation ��Ʈ �߰�
+    // Animation 파트 추가
     if (false == m_pMesh->IsAnimMesh())
         return pNewObj;
 
@@ -55,11 +55,11 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
     loader.init();
     loader.LoadFbx(strFullPath);
 
-    // �޽� ��������
+    // 메쉬 가져오기
     Ptr<CMesh> pMesh = nullptr;
     pMesh = CMesh::CreateFromContainer(loader);
 
-    // AssetMgr �� �޽� ���
+    // AssetMgr 에 메쉬 등록
     if (nullptr != pMesh)
     {
         wstring strMeshKey = L"Mesh\\";
@@ -68,23 +68,23 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 
         if (nullptr == CAssetMgr::GetInst()->FindAsset<CMesh>(strMeshKey))
         {
-            // �޽ø� ���� ���Ϸ� ����
+            // 메시를 실제 파일로 저장
             CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
             pMesh->Save(CPathMgr::GetInst()->GetContentPath() + strMeshKey);
         }
     }
     else
     {
-        // FBX �� �ε��ߴµ� �ű⼭ ���� �޽��� �̹� �޸�(���¸Ŵ���) �� �ε� �Ǿ��ִ� �޽����ٸ�
-        // pMesh �� ����Ʈ �����Ͷ� ���ٸ� ��ġ�� ���� �ʾƵ� ������� �޽��� �����ɰ�
+        // FBX 를 로딩했는데 거기서 나온 메쉬가 이미 메모리(에셋매니저) 에 로딩 되어있는 메쉬였다면
+        // pMesh 가 스마트 포인터라서 별다른 조치를 하지 않아도 만들어진 메쉬가 삭제될것
     }
 
     vector<Ptr<CMaterial>> vecMtrl;
 
-    // ���׸��� ��������
+    // 메테리얼 가져오기
     for (UINT i = 0; i < loader.GetContainer(0).vecMtrl.size(); ++i)
     {
-        // ����ó�� (material �̸��� �Է� �ȵǾ����� ���� �ִ�.)
+        // 예외처리 (material 이름이 입력 안되어있을 수도 있다.)
         Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(
             loader.GetContainer(0).vecMtrl[i].strMtrlName);
         assert(pMtrl.Get());
@@ -110,11 +110,11 @@ int CMeshData::Save(const wstring& _RelativePath)
     errno_t err = _wfopen_s(&pFile, strFilePath.c_str(), L"wb");
     assert(pFile);
 
-    // Mesh Key ����	
-    // Mesh Data ����
+    // Mesh Key 저장	
+    // Mesh Data 저장
     SaveAssetRef(m_pMesh, pFile);
 
-    // material ���� ����
+    // material 정보 저장
     UINT iMtrlCount = static_cast<UINT>(m_vecMtrl.size());
     fwrite(&iMtrlCount, sizeof(UINT), 1, pFile);
 
@@ -127,12 +127,12 @@ int CMeshData::Save(const wstring& _RelativePath)
         if (nullptr == m_vecMtrl[i])
             continue;
 
-        // Material �ε���, Key, Path ����
+        // Material 인덱스, Key, Path 저장
         fwrite(&i, sizeof(UINT), 1, pFile);
         SaveAssetRef(m_vecMtrl[i], pFile);
     }
 
-    i = -1; // ���� ��
+    i = -1; // 마감 값
     fwrite(&i, sizeof(UINT), 1, pFile);
 
     fclose(pFile);
@@ -151,7 +151,7 @@ int CMeshData::Load(const wstring& _FilePath)
     LoadAssetRef(m_pMesh, pFile);
     assert(m_pMesh.Get());
 
-    // material ���� �б�
+    // material 정보 읽기
     UINT iMtrlCount = 0;
     fread(&iMtrlCount, sizeof(UINT), 1, pFile);
 

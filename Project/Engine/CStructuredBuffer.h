@@ -21,8 +21,8 @@ class CStructuredBuffer :
 
     SB_TYPE m_Type;
 
-    UINT m_ElementCount; // ��� ����
-    UINT m_ElementSize; // ��Ҵ� ũ��
+    UINT m_ElementCount; // 요소 개수
+    UINT m_ElementSize; // 요소당 크기
 
     bool m_SysMemMove;
 

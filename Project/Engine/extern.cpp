@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "global.h"
+#include "Common/global.h"
 
 TransInfo g_Trans = {};
 GlobalData g_Data = {};

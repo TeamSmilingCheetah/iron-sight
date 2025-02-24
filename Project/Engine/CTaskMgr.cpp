@@ -41,7 +41,7 @@ void CTaskMgr::Tick()
                 auto pParent = (CGameObject*)task.Param0;
                 auto pChild = (CGameObject*)task.Param1;
 
-                // �������� ����
+                // 목적지가 없다
                 if (nullptr == pParent)
                 {
                     if (pChild->GetParent())
@@ -51,7 +51,7 @@ void CTaskMgr::Tick()
                     }
                 }
 
-                // �������� �ִ�.
+                // 목적지가 있다.
                 else
                 {
                     if (pChild->GetParent())

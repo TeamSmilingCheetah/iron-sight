@@ -33,9 +33,9 @@ class CGraphicShader :
     ComPtr<ID3D11InputLayout> m_Layout;
     D3D11_PRIMITIVE_TOPOLOGY m_Topology;
 
-    RS_TYPE m_RSType; // �����Ͷ����� ������Ʈ �ɼ�
-    BS_TYPE m_BSType; // ������ ������Ʈ �ɼ�
-    DS_TYPE m_DSType; // DepthStencilState �ɼ�
+    RS_TYPE m_RSType; // 레스터라이져 스테이트 옵션
+    BS_TYPE m_BSType; // 블랜드 스테이트 옵션
+    DS_TYPE m_DSType; // DepthStencilState 옵션
     UINT m_StencilRef;
 
 

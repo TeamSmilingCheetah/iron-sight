@@ -7,7 +7,7 @@
 CFrustum::CFrustum()
     : m_Owner(nullptr)
 {
-    // ���� ��ǥ�� �ִ� �þ� ���� 
+    // 투영 좌표계 최대 시야 범위
     //     4 ---- 5
     //    /|     /|
     //   / |    / |
@@ -37,15 +37,14 @@ void CFrustum::FinalTick()
 
     Matrix matInv = matProjInv * matViewInv;
 
-    // ���� �������� ī�޶� �þ� ��Ʈ�Ӹ� 8�� ���� ��ġ ���ϱ�
+    // 월드 공간에서 카메라 시야 끝트머리 8개 정점 위치 구하기
     Vec3 vWorldPos[8] = {};
     for (int i = 0; i < 8; ++i)
     {
         vWorldPos[i] = XMVector3TransformCoord(m_ProjPos[i], matInv);
     }
 
-
-    // ���� ��ǥ�� �ִ� �þ� ���� 
+    // 투영 좌표계 최대 시야 범위 
     //     4 ---- 5
     //    /|     /|
     //   / |    / |

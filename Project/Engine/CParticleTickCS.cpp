@@ -22,23 +22,23 @@ int CParticleTickCS::Binding()
     if (nullptr == m_ParticleBuffer || nullptr == m_SpawnCountBuffer)
         return E_FAIL;
 
-    // ��ƼŬ ���� u0 �� ���ε�
+    // 파티클 버퍼 u0 에 바인딩
     m_ParticleBuffer->Binding_CS_UAV(0);
 
-    // ���� ���� ���� u1 �� ���ε�
+    // 스폰 가능 개수 u1 에 바인딩
     m_SpawnCountBuffer->Binding_CS_UAV(1);
 
-    // Noise Texture t20 ���ε�
+    // Noise Texture t20 바인딩
     m_NoiseTex->Binding_SRV_CS(20);
 
-    // ��� ������ t21 �� ���ε�
+    // 모듈 데이터 t21 에 바인딩
     m_ModuleBuffer->Binding_CS_SRV(21);
 
 
-    // ��ƼŬ ��� ����(��ƼŬ ��)
+    // 파티클 요소 개수(파티클 수)
     m_Const.iArr[0] = static_cast<int>(m_ParticleBuffer->GetElementCount());
 
-    // ��ƼŬ ���� ������Ʈ �߽� ��ġ
+    // 파티클 게임 오브젝트 중심 위치
     m_Const.v4Arr[0] = m_ParticleWorldPos;
 
     return S_OK;

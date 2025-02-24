@@ -1,4 +1,3 @@
-#include "CSkyBox.h"
 #include "pch.h"
 #include "CSkyBox.h"
 
@@ -69,7 +68,7 @@ void CSkyBox::CreateMaterial()
     pMtrl->SetShader(pSkyBoxShader);
     CAssetMgr::GetInst()->AddAsset<CMaterial>(L"SkyBoxMtrl", pMtrl);
 
-    // Material ����
+    // Material 세팅
     SetMaterial(pMtrl, 0);
 }
 

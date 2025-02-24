@@ -2,7 +2,7 @@
 #include "GraphicShaderUI.h"
 
 GraphicShaderUI::GraphicShaderUI()
-    : AssetUI("GraphicShader", ASSET_TYPE::GRAPHIC_SHADER)
+    : AssetUI("GraphicShader", GRAPHIC_SHADER)
 {
 }
 

@@ -73,17 +73,19 @@
     </ImportGroup>
     <PropertyGroup Label="UserMacros"/>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-        <IncludePath>$(SolutionDir)External\Include\;$(IncludePath)</IncludePath>
+        <IncludePath>$(SolutionDir)External\Include\;$(IncludePath);$(SolutionDir)Project\</IncludePath>
         <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
         <TargetName>$(ProjectName)_d</TargetName>
         <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
         <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+        <IntDir>$(SolutionDir)External\Library\$(ProjectName)\Intermediate\</IntDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <IncludePath>$(SolutionDir)External\Include\;$(IncludePath)</IncludePath>
+        <IncludePath>$(SolutionDir)External\Include\;$(IncludePath);$(SolutionDir)Project\</IncludePath>
         <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
         <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
         <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+        <IntDir>$(SolutionDir)External\Library\$(ProjectName)\Intermediate\</IntDir>
     </PropertyGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <ClCompile>
@@ -137,11 +139,6 @@
             </SubSystem>
             <GenerateDebugInformation>true</GenerateDebugInformation>
         </Link>
-        <PreBuildEvent>
-            <Command>cd $(SolutionDir)
-                call ScriptsHeaderCopy.bat
-            </Command>
-        </PreBuildEvent>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
         <ClCompile>
@@ -165,11 +162,6 @@
             <OptimizeReferences>true</OptimizeReferences>
             <GenerateDebugInformation>true</GenerateDebugInformation>
         </Link>
-        <PreBuildEvent>
-            <Command>cd $(SolutionDir)
-                call ScriptsHeaderCopy.bat
-            </Command>
-        </PreBuildEvent>
     </ItemDefinitionGroup>
     <ItemGroup>
         <ClInclude Include="CCameraScript.h"/>

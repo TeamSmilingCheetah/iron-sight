@@ -43,7 +43,7 @@ CParticleSystem::CParticleSystem()
         Get());
 
 
-    // ��ƼŬ ���(���) ���� ����
+    // 파티클 기능(모듈) 정보 세팅
     // Spawn Module
     m_Module.Module[static_cast<UINT>(PARTICLE_MODULE::SPAWN)] = true;
     m_Module.SpawnRate = 100;
@@ -79,7 +79,7 @@ CParticleSystem::CParticleSystem()
     m_Module.AddMinSpeed = 100.f;
     m_Module.AddMaxSpeed = 500.f;
 
-    // Drag Module (����)
+    // Drag Module (감속)
     m_Module.Module[static_cast<UINT>(PARTICLE_MODULE::DRAG)] = false;
     m_Module.DestNormalizedAge = 0.2f;
     m_Module.LimitSpeed = 0.f;
@@ -136,7 +136,7 @@ void CParticleSystem::CaculateSpawnCount()
 
     if (m_Module.Module[static_cast<UINT>(PARTICLE_MODULE::SPAWN)])
     {
-        // SpawnRate �� ���� �̹� Tick ���� ������ų ��ƼŬ�� ��
+        // SpawnRate 에 따른 이번 Tick 에서 생성시킬 파티클의 수
         float Term = 1.f / static_cast<float>(m_Module.SpawnRate);
         UINT SpawnCount = 0;
 
@@ -170,13 +170,13 @@ void CParticleSystem::CaculateSpawnCount()
         count.SpawnCount += BurstCount;
     }
 
-    // SpawnCount �� Buffer �� ����	
+    // SpawnCount 를 Buffer 에 전달	
     m_SpawnCountBuffer->SetData(&count);
 }
 
 void CParticleSystem::FinalTick()
 {
-    // SpawnCount ���
+    // SpawnCount 계산
     CaculateSpawnCount();
 
     // ComputeShader
@@ -190,24 +190,24 @@ void CParticleSystem::FinalTick()
 
 void CParticleSystem::Render()
 {
-    // ��ġ���� ���ε�
+    // 위치정보 바인딩
     Transform()->Binding();
 
-    // ��ƼŬ ���� ���ε�
+    // 파티클 버퍼 바인딩
     m_ParticleBuffer->Binding(16); // t16
 
-    // ��� ���� ���ε�
+    // 모듈 버퍼 바인딩
     m_ModuleBuffer->SetData(&m_Module);
     m_ModuleBuffer->Binding(17); // t17
 
-    // �������� ���ε�
+    // 재질정보 바인딩
     GetMaterial(0)->SetTexParam(TEX_0, m_ParticleTex);
     GetMaterial(0)->Binding();
 
-    // ������
+    // 렌더링
     GetMesh()->Render_Particle(m_MaxParticleCount);
 
-    // ��ƼŬ ���� ���ε� ����
+    // 파티클 버퍼 바인딩 해제
     m_ParticleBuffer->Clear(16);
     m_ModuleBuffer->Clear(17);
 }

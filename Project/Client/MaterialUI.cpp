@@ -60,29 +60,29 @@ void MaterialUI::Render_Update()
     ImGui::SameLine();
     if (ImGui::Button("##ShaderBtn", ImVec2(18.f, 18.f)))
     {
-        // ListUI �� Ȱ��ȭ ��Ű��
+        // ListUI 를 활성화 시키기
         auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
         pListUI->SetName("GraphicShader");
         pListUI->SetActive(true);
 
-        // ListUI �� �־��� ���ڿ� ���� ��������
+        // ListUI 에 넣어줄 문자열 정보 가져오기
         pListUI->AddItem("None");
 
         vector<wstring> vecAssetNames;
         CAssetMgr::GetInst()->GetAssetNames(GRAPHIC_SHADER, vecAssetNames);
         pListUI->AddItem(vecAssetNames);
 
-        // ���� Ŭ�� �� ȣ���ų �Լ� ���
+        // 더블 클릭 시 호출시킬 함수 등록
         pListUI->AddDynamicDoubleCliked(
             this, static_cast<EUI_DELEGATE_2>(&MaterialUI::SelectGraphicShader));
     }
 
 
-    // Shader ���� ��û�ϴ� �Ķ���� ������ ������ش�.
+    // Shader 에서 요청하는 파라미터 정보를 출력해준다.
     ShaderParameter();
 
 
-    // ������ ���Ϸ� �����ϱ�
+    // 재질을 파일로 저장하기
     if (ImGui::Button("SAVE"))
     {
         Ptr<CMaterial> pMtrl = static_cast<CMaterial*>(GetAsset().Get());
@@ -186,7 +186,7 @@ void MaterialUI::ShaderParameter()
 
 void MaterialUI::SelectGraphicShader(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 {
-    // ����Ʈ���� ����ų���� �׸��� �̸��� �޾ƿ´�.
+    // 리스트에서 더블킬릭한 항목의 이름을 받아온다.
     auto pListUI = (ListUI*)_ListUI;
     auto pStr = (string*)_SelectString;
 
@@ -200,7 +200,7 @@ void MaterialUI::SelectGraphicShader(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
         return;
     }
 
-    // �ش� �׸� ������ ã�Ƽ�, MeshRenderComponent �� �ش� �޽ø� �����ϰ� �Ѵ�.
+    // 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
     Ptr<CGraphicShader> pShader = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(
         wstring(pStr->begin(), pStr->end()));
     if (nullptr == pShader)
@@ -211,7 +211,7 @@ void MaterialUI::SelectGraphicShader(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 
 void MaterialUI::SelectTexture(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 {
-    // ����Ʈ���� ����ų���� �׸��� �̸��� �޾ƿ´�.
+    // 리스트에서 더블킬릭한 항목의 이름을 받아온다.
     auto pListUI = (ListUI*)_ListUI;
     auto pStr = (string*)_SelectString;
     Ptr<CMaterial> pMtrl = static_cast<CMaterial*>(GetAsset().Get());
@@ -222,7 +222,7 @@ void MaterialUI::SelectTexture(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
         return;
     }
 
-    // �ش� �׸� ������ ã�Ƽ�, MeshRenderComponent �� �ش� �޽ø� �����ϰ� �Ѵ�.
+    // 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
     Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
         wstring(pStr->begin(), pStr->end()));
     if (nullptr == pTex)

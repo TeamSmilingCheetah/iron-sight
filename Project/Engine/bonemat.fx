@@ -222,7 +222,7 @@ void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
     if (BoneCount <= _iThreadIdx.x)
         return;
 
-    // ¿ÀÇÁ¼Â Çà·ÄÀ» °öÇÏ¿© ÃÖÁ¾ º»Çà·ÄÀ» ¸¸µé¾î³½´Ù.		
+    // ì˜¤í”„ì…‹ í–‰ë ¬ì„ ê³±í•˜ì—¬ ìµœì¢… ë³¸í–‰ë ¬ì„ ë§Œë“¤ì–´ë‚¸ë‹¤.		
     float4 vQZero = float4(0.f, 0.f, 0.f, 1.f);
     matrix matBone = (matrix) 0.f;
 
@@ -234,15 +234,15 @@ void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
     float4 vTrans = lerp(g_arrFrameTrans[iFrameDataIndex].vTranslate, g_arrFrameTrans[iNextFrameDataIdx].vTranslate, Ratio);
     float4 qRot = QuternionLerp(g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iNextFrameDataIdx].qRot, Ratio);
 
-    // ÃÖÁ¾ º»Çà·Ä ¿¬»ê
+    // ìµœì¢… ë³¸í–‰ë ¬ ì—°ì‚°
     MatrixAffineTransformation(vScale, vQZero, qRot, vTrans, matBone);
 
-    // ÃÖÁ¾ º»Çà·Ä ¿¬»ê    
+    // ìµœì¢… ë³¸í–‰ë ¬ ì—°ì‚°    
     //MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
 
     matrix matInverse = transpose(g_arrInverse[_iThreadIdx.x]);
 
-    // ±¸Á¶È­¹öÆÛ¿¡ °á°ú°ª ÀúÀå
+    // êµ¬ì¡°í™”ë²„í¼ì— ê²°ê³¼ê°’ ì €ìž¥
     g_arrFinelMat[_iThreadIdx.x] = mul(matInverse, matBone);
 }
 

@@ -17,25 +17,25 @@ int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)
     _wfopen_s(&pFile, _FilePath.c_str(), L"wb");
     assert(pFile);
 
-    // Level �̸� ����
+    // Level 이름 저장
     _Level->SaveToLevel(pFile);
 
-    // Level �� �����ϰ��ִ� 32���� ���̾ �����Ų��.
+    // Level 이 보유하고있는 32개의 레이어를 저장시킨다.
     for (UINT i = 0; i < MAX_LAYER; ++i)
     {
         CLayer* pLayer = _Level->GetLayer(i);
 
-        // ���̾� �̸� ����
+        // 레이어 이름 저장
         pLayer->SaveToLevel(pFile);
 
-        // ���̾ ������ ������Ʈ ���� ����
+        // 레이어가 소유한 오브젝트 정보 저장
         const vector<CGameObject*>& vecObjects = pLayer->GetParentObjects();
 
-        // ������Ʈ �� ����
+        // 오브젝트 총 개수
         size_t ObjectCount = vecObjects.size();
         fwrite(&ObjectCount, sizeof(size_t), 1, pFile);
 
-        // �� ������Ʈ�� ����
+        // 각 오브젝트의 정보
         for (size_t j = 0; j < vecObjects.size(); ++j)
         {
             SaveGameObject(vecObjects[j], pFile);
@@ -49,42 +49,42 @@ int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)
 
 int CLevelSaveLoad::SaveGameObject(CGameObject* _Object, FILE* _File)
 {
-    // ������Ʈ �̸�
+    // 오브젝트 이름
     _Object->SaveToLevel(_File);
 
-    // ������Ʈ ������Ʈ
+    // 오브젝트 컴포넌트
     for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
     {
         CComponent* pComponent = _Object->GetComponent(static_cast<COMPONENT_TYPE>(i));
         if (nullptr == pComponent)
             continue;
 
-        // ������Ʈ Ÿ�� ����
+        // 컴포넌트 타입 저장
         fwrite(&i, sizeof(UINT), 1, _File);
 
-        // ������Ʈ ������ ����
+        // 컴포넌트 데이터 저장
         _Object->GetComponent(static_cast<COMPONENT_TYPE>(i))->SaveToLevel(_File);
     }
     UINT End = static_cast<UINT>(COMPONENT_TYPE::END);
     fwrite(&End, sizeof(UINT), 1, _File);
 
 
-    // ������Ʈ ��ũ��Ʈ
+    // 오브젝트 스크립트
     const vector<CScript*>& vecScripts = _Object->GetScripts();
     size_t ScriptCount = vecScripts.size();
     fwrite(&ScriptCount, sizeof(size_t), 1, _File);
 
     for (size_t i = 0; i < vecScripts.size(); ++i)
     {
-        // Script Ŭ���� �̸� ����
+        // Script 클래스 이름 저장
         wstring ScriptName = CScriptMgr::GetScriptName(vecScripts[i]);
         SaveWString(ScriptName, _File);
 
-        // Script �� �����ؾ��� ������ ����
+        // Script 가 저장해야할 데이터 저장
         vecScripts[i]->SaveToLevel(_File);
     }
 
-    // �ڽ� ������Ʈ
+    // 자식 오브젝트
     const vector<CGameObject*>& vecChild = _Object->GetChild();
     size_t ChildCount = vecChild.size();
     fwrite(&ChildCount, sizeof(size_t), 1, _File);
@@ -106,25 +106,25 @@ CLevel* CLevelSaveLoad::LoadLevel(const wstring& _FilePath)
     _wfopen_s(&pFile, _FilePath.c_str(), L"rb");
     assert(pFile);
 
-    // Level �̸� �ҷ�����
+    // Level 이름 불러오기
     pNewLevel->LoadFromLevel(pFile);
 
-    // Level �� �����ϰ��ִ� 32���� ���̾ �ҷ��´�.
+    // Level 이 보유하고있는 32개의 레이어를 불러온다.
     for (UINT i = 0; i < MAX_LAYER; ++i)
     {
         CLayer* pLayer = pNewLevel->GetLayer(i);
 
-        // ���̾� �̸� �ҷ�����
+        // 레이어 이름 불러오기
         pLayer->LoadFromLevel(pFile);
 
-        // ���̾ ������ ������Ʈ �ҷ�����
+        // 레이어가 소유한 오브젝트 불러오기
         const vector<CGameObject*>& vecObjects = pLayer->GetParentObjects();
 
-        // ������Ʈ �� ����
+        // 오브젝트 총 개수
         size_t ObjectCount = 0;
         fread(&ObjectCount, sizeof(size_t), 1, pFile);
 
-        // �� ������Ʈ�� ����
+        // 각 오브젝트의 정보
         for (size_t j = 0; j < ObjectCount; ++j)
         {
             CGameObject* pNewObject = LoadGameObject(pFile);
@@ -141,14 +141,14 @@ CGameObject* CLevelSaveLoad::LoadGameObject(FILE* _File)
 {
     auto pObject = new CGameObject;
 
-    // ������Ʈ �̸�
+    // 오브젝트 이름
     pObject->LoadFromLevel(_File);
 
-    // ������Ʈ ������Ʈ
+    // 오브젝트 컴포넌트
     UINT ComponentType = 0;
     while (true)
     {
-        // ������Ʈ Ÿ�� �ε�
+        // 컴포넌트 타입 로딩
         fread(&ComponentType, sizeof(UINT), 1, _File);
 
         if (ComponentType == static_cast<UINT>(COMPONENT_TYPE::END))
@@ -161,29 +161,29 @@ CGameObject* CLevelSaveLoad::LoadGameObject(FILE* _File)
         else
             pObject->AddComponent(pComponent);
 
-        // ������Ʈ ������ ����
+        // 컴포넌트 데이터 저장
         pComponent->LoadFromLevel(_File);
     }
 
-    // ������Ʈ ��ũ��Ʈ	
+    // 오브젝트 스크립트	
     size_t ScriptCount = 0;
     fread(&ScriptCount, sizeof(size_t), 1, _File);
 
     for (size_t i = 0; i < ScriptCount; ++i)
     {
-        // Script Ŭ���� �̸��� �д´�.
+        // Script 클래스 이름을 읽는다.
         wstring ScriptName;
         LoadWString(ScriptName, _File);
 
-        // Script �̸����� �ش� ��ũ��Ʈ ��ü�� ���� �� GameObject �� �־��ش�.
+        // Script 이름으로 해당 스크립트 객체를 생성 후 GameObject 에 넣어준다.
         CScript* pScript = CScriptMgr::GetScript(ScriptName);
         pObject->AddComponent(pScript);
 
-        // Script �� ������ �����͸� �ٽ� ������Ų��.
+        // Script 가 저장한 데이터를 다시 복구시킨다.
         pScript->LoadFromLevel(_File);
     }
 
-    // �ڽ� ������Ʈ
+    // 자식 오브젝트
     size_t ChildCount = 0;
     fread(&ChildCount, sizeof(size_t), 1, _File);
 
