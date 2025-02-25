@@ -55,7 +55,7 @@ void TestLevel::CreateTestLevel()
     pLightObj->SetName(L"Point Light");
     pLightObj->AddComponent(new CLight3D);
     pLightObj->Transform()->SetRelativePos(0.f, -450.f, 0.f);
-    pLightObj->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+    pLightObj->Transform()->SetRelativeRotation(45.f, 45.f, 0.f);
     pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
     pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
     pLightObj->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
@@ -85,7 +85,6 @@ void TestLevel::CreateTestLevel()
     pObject = new CGameObject;
     pObject->SetName(L"Player");
     pObject->AddComponent(new CMeshRender);
-    pObject->AddComponent(new CPlayerScript);
 
     pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
     pObject->MeshRender()->SetMaterial(
@@ -140,7 +139,9 @@ void TestLevel::CreateTestLevel()
 
         pObj->Transform()->SetRelativePos(Vec3(500.f, -380.f, 500.f));
         pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-        pObj->Transform()->SetRelativeRotation(0.f, XM_PI / 2.f, 0.f);
+        pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+
+		pObj->AddComponent(new CPlayerScript);
 
         pLevel->AddObject(0, pObj, false);
     }
