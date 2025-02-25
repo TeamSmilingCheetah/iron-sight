@@ -10,26 +10,8 @@
     <ClInclude Include="CEngine.h">
       <Filter>02. Engine</Filter>
     </ClInclude>
-    <ClInclude Include="singleton.h">
-      <Filter>01. Header</Filter>
-    </ClInclude>
-    <ClInclude Include="global.h">
-      <Filter>01. Header</Filter>
-    </ClInclude>
-    <ClInclude Include="enum.h">
-      <Filter>01. Header</Filter>
-    </ClInclude>
-    <ClInclude Include="define.h">
-      <Filter>01. Header</Filter>
-    </ClInclude>
-    <ClInclude Include="struct.h">
-      <Filter>01. Header</Filter>
-    </ClInclude>
     <ClInclude Include="CDevice.h">
       <Filter>03. Device</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleMath.h">
-      <Filter>Module</Filter>
     </ClInclude>
     <ClInclude Include="CEntity.h">
       <Filter>Module</Filter>
@@ -49,9 +31,6 @@
     <ClInclude Include="CConstBuffer.h">
       <Filter>03. Device\ConstBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="Ptr.h">
-      <Filter>Module</Filter>
-    </ClInclude>
     <ClInclude Include="assets.h">
       <Filter>01. Header</Filter>
     </ClInclude>
@@ -69,9 +48,6 @@
     </ClInclude>
     <ClInclude Include="CMeshRender.h">
       <Filter>07. Component\RenderComponent\01. MeshRender</Filter>
-    </ClInclude>
-    <ClInclude Include="func.h">
-      <Filter>01. Header</Filter>
     </ClInclude>
     <ClInclude Include="CScript.h">
       <Filter>07. Component\Script</Filter>
@@ -198,6 +174,30 @@
     </ClInclude>
     <ClInclude Include="CBoneMatrixCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\define.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\enum.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\func.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\global.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\Ptr.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\SimpleMath.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\singleton.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External\Include\Common\struct.h">
+      <Filter>01. Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -586,11 +586,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SimpleMath.inl">
-      <Filter>Module</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="func.fx">
       <Filter>HLSL\01. Header</Filter>
     </FxCompile>
@@ -657,5 +652,10 @@
     <FxCompile Include="bonemat.fx">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\External\Include\Common\SimpleMath.inl">
+      <Filter>01. Header</Filter>
+    </None>
   </ItemGroup>
 </Project>
