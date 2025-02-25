@@ -242,7 +242,39 @@ void CRenderMgr::Render_Play()
     for (size_t i = 0; i < m_vecCam.size(); ++i)
     {
         m_vecCam[i]->SortObject();
-        //m_vecCam[i]->Render();
+
+		g_Trans.matView = m_vecCam[i]->GetViewMat();
+		g_Trans.matProj = m_vecCam[i]->GetProjMat();
+
+		// Deferred	
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+		m_vecCam[i]->render_deferred();
+
+		// Decal
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::DECAL)]->OMSet();
+		m_vecCam[i]->render_decal();
+
+		// Lighting
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
+		for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+		{
+			m_vecLight3D[i]->Render();
+		}
+
+		// SwapChain	
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+
+		// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
+		MergeDeferredTarget();
+
+		m_vecCam[i]->render_forward();
+		m_vecCam[i]->render_effect();
+		m_vecCam[i]->render_particle();
+		m_vecCam[i]->render_postprocess();
+		m_vecCam[i]->render_clear();
+
+		// 특정 타겟으로 SwapChain 을 덮어쓰기
+		MergeSpecifyTarget();
     }
 }
 

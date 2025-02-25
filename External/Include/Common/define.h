@@ -5,6 +5,7 @@ using Vec2 = SimpleMath::Vector2;
 using Vec3 = SimpleMath::Vector3;
 using Vec4 = SimpleMath::Vector4;
 using Matrix = SimpleMath::Matrix;
+using Quaternion = SimpleMath::Quaternion;
 
 using GAMEOBJECT_SAVE = int(*)(class CGameObject*, FILE*);
 using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);

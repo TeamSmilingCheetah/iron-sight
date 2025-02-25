@@ -38,15 +38,7 @@ void CPlayerScript::Tick()
 
     if (KEY_PRESSED(KEY::Z))
     {
-        Vec3 vRot = Transform()->GetRelativeRotation();
-        vRot.z += DT * XM_PI;
-        Transform()->SetRelativeRotation(vRot);
-        vPos.z += DT * 100.f;
-
-        /*Vec3 vScale = Transform()->GetRelativeScale();
-        vScale.x += 200.f * DT;
-        vScale.y += 200.f * DT;
-        Transform()->SetRelativeScale(vScale);*/
+		Transform()->RotateAxis(Vec3(1.f, 1.f, 1.f), 180.f * DT);
     }
 
     if (KEY_PRESSED(KEY::NUM_0))

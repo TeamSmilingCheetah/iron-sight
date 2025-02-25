@@ -175,6 +175,30 @@
     <ClInclude Include="CBoneMatrixCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </ClInclude>
+    <ClInclude Include="Common\define.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\enum.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\func.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\global.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Ptr.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SimpleMath.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\singleton.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\struct.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -560,5 +584,78 @@
     <Filter Include="HLSL\03. Compute\3DAnimation\BoneMatric">
       <UniqueIdentifier>{50fe577e-8d78-4e9e-8d70-1f0d23134900}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="func.fx">
+      <Filter>HLSL\01. Header</Filter>
+    </FxCompile>
+    <FxCompile Include="value.fx">
+      <Filter>HLSL\01. Header</Filter>
+    </FxCompile>
+    <FxCompile Include="debug.fx">
+      <Filter>HLSL\02. Render</Filter>
+    </FxCompile>
+    <FxCompile Include="postprocess.fx">
+      <Filter>HLSL\02. Render</Filter>
+    </FxCompile>
+    <FxCompile Include="struct.fx">
+      <Filter>HLSL\01. Header</Filter>
+    </FxCompile>
+    <FxCompile Include="test.fx">
+      <Filter>HLSL\03. Compute\ClearColor</Filter>
+    </FxCompile>
+    <FxCompile Include="particle.fx">
+      <Filter>HLSL\02. Render</Filter>
+    </FxCompile>
+    <FxCompile Include="particle_tick.fx">
+      <Filter>HLSL\03. Compute\ParticleTick</Filter>
+    </FxCompile>
+    <FxCompile Include="std2d.fx">
+      <Filter>HLSL\02. Render\2DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="tilemap.fx">
+      <Filter>HLSL\02. Render\2DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="std3d.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="skybox.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="std3d_deferred.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="merge.fx">
+      <Filter>HLSL\02. Render\Deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="light.fx">
+      <Filter>HLSL\02. Render\Deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="decal.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="tess.fx">
+      <Filter>HLSL\02. Render\3DShader\LandScape</Filter>
+    </FxCompile>
+    <FxCompile Include="landscape.fx">
+      <Filter>HLSL\02. Render\3DShader\LandScape</Filter>
+    </FxCompile>
+    <FxCompile Include="heightmap.fx">
+      <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
+    </FxCompile>
+    <FxCompile Include="raycast.fx">
+      <Filter>HLSL\03. Compute\LandScape\RayCast</Filter>
+    </FxCompile>
+    <FxCompile Include="weightmap.fx">
+      <Filter>HLSL\03. Compute\LandScape\WeightMap</Filter>
+    </FxCompile>
+    <FxCompile Include="bonemat.fx">
+      <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common\SimpleMath.inl">
+      <Filter>01. Header</Filter>
+    </None>
   </ItemGroup>
 </Project>
