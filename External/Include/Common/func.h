@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-
 void CreateObject(class CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
 void ChangeLevelState(LEVEL_STATE _NextState);
@@ -22,6 +21,8 @@ Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
 
 void SaveWString(const wstring& _str, FILE* _File);
 void LoadWString(wstring& _str, FILE* _File);
+
+string WStringToString(const wstring& _str);
 
 #include "Ptr.h"
 

@@ -187,6 +187,7 @@ ipch/
 *.lib
 
 # User Ignore File
-OutputFile
-unity_*.cpp
+OutputFile/
 Intermediate/
+unity_*.cpp
+imgui.ini
