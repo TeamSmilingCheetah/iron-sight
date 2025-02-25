@@ -40,11 +40,8 @@ void TransformUI::Render_Update()
     ImGui::Text("Rotation");
     ImGui::SameLine(100);
 
-    vRot = (vRot / XM_PI) * 180.f;
-
     if (ImGui::DragFloat3("##Rotation", vRot, 0.1f))
     {
-        vRot = (vRot / 180) * XM_PI;
         pTransform->SetRelativeRotation(vRot);
     }
 }
