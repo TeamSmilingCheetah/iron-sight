@@ -9,6 +9,8 @@ class CTransform :
     Vec3 m_RelativeScale;
     Vec3 m_RelativeRotation;
 
+	Quaternion m_Quaternion;
+
     Vec3 m_LocalDir[3];
     Vec3 m_WorldDir[3];
 
@@ -27,12 +29,9 @@ public:
     void SetRelativeScale(Vec3 _Scale) { m_RelativeScale = _Scale; }
     void SetRelativeScale(float _x, float _y, float _z) { m_RelativeScale = Vec3(_x, _y, _z); }
 
-    void SetRelativeRotation(Vec3 _Rotation) { m_RelativeRotation = _Rotation; }
-
-    void SetRelativeRotation(float _x, float _y, float _z)
-    {
-        m_RelativeRotation = Vec3(_x, _y, _z);
-    }
+	void SetRelativeRotation(Vec3 _Rotation);
+	void SetRelativeRotation(float _x, float _y, float _z);
+	void RotateAxis(Vec3 _Axis, float _Angle);
 
     void SetIndependentScale(bool _Scale) { m_IndependentScale = _Scale; }
 
