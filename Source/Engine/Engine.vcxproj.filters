@@ -175,28 +175,28 @@
     <ClInclude Include="CBoneMatrixCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </ClInclude>
-    <ClInclude Include="Common\define.h">
+    <ClInclude Include="..\..\External\Include\Common\define.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\enum.h">
+    <ClInclude Include="..\..\External\Include\Common\enum.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\func.h">
+    <ClInclude Include="..\..\External\Include\Common\func.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\global.h">
+    <ClInclude Include="..\..\External\Include\Common\global.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Ptr.h">
+    <ClInclude Include="..\..\External\Include\Common\Ptr.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\SimpleMath.h">
+    <ClInclude Include="..\..\External\Include\Common\SimpleMath.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\singleton.h">
+    <ClInclude Include="..\..\External\Include\Common\singleton.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="Common\struct.h">
+    <ClInclude Include="..\..\External\Include\Common\struct.h">
       <Filter>01. Header</Filter>
     </ClInclude>
   </ItemGroup>
@@ -654,7 +654,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Common\SimpleMath.inl">
+    <None Include="..\..\External\Include\Common\SimpleMath.inl">
       <Filter>01. Header</Filter>
     </None>
   </ItemGroup>
