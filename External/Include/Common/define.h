@@ -15,6 +15,7 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define DEVICE CDevice::GetInst()->GetDevice().Get()
 #define CONTEXT CDevice::GetInst()->GetContext().Get()
 
+#pragma warning(disable: 4005) // DELETE 재정의 경고 배제
 #define DELETE(p) if(nullptr != p) {delete p; p = nullptr;}
 #define DELETE_ARR(p) if(nullptr != p) {delete[] p; p = nullptr;}
 
