@@ -36,7 +36,7 @@ class CMesh :
 public:
     int Save(const wstring& _FilePath) override;
 
-    static CMesh* CreateFromContainer(CFBXLoader& _loader);
+    static CMesh* CreateFromContainer(CFBXLoader& _loader, int _ContainerIdx);
     int Create(Vtx* _pVtx, UINT _VtxCount, UINT* _pIdx, UINT _IdxCount);
 
     UINT GetVertexCount() { return m_VtxCount; }

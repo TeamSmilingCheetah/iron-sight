@@ -32,9 +32,9 @@ CMesh::~CMesh()
 }
 
 
-CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
+CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int _ContainerIdx)
 {
-    const tContainer* container = &_loader.GetContainer(0);
+    const tContainer* container = &_loader.GetContainer(_ContainerIdx);
 
     UINT iVtxCount = static_cast<UINT>(container->vecPos.size());
 
@@ -68,14 +68,17 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
         return nullptr;
     }
 
-    auto pMesh = new CMesh;
+	CMesh* pMesh = new CMesh;
     pMesh->m_VB = pVB;
     pMesh->m_VBDesc = tVtxDesc;
     pMesh->m_VtxSysMem = pSys;
+	pMesh->m_VtxCount = iVtxCount;
 
     // 인덱스 정보
     UINT iIdxBufferCount = static_cast<UINT>(container->vecIdx.size());
     D3D11_BUFFER_DESC tIdxDesc = {};
+
+	pMesh->m_vecIdxInfo.reserve(iIdxBufferCount);
 
     for (UINT i = 0; i < iIdxBufferCount; ++i)
     {
@@ -151,7 +154,7 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
             bone.vecKeyFrame.push_back(tKeyframe);
         }
 
-        iFrameCount = max(iFrameCount, (UINT)bone.vecKeyFrame.size());
+		iFrameCount = max(iFrameCount, static_cast<UINT>(bone.vecKeyFrame.size()));
 
         pMesh->m_vecBones.push_back(bone);
     }
