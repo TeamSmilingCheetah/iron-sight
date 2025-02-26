@@ -619,7 +619,7 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
         if (pSkin)
         {
             FbxSkin::EType eType = pSkin->GetSkinningType();
-            if (FbxSkin::eRigid == eType || FbxSkin::eLinear)
+            if (FbxSkin::eRigid == eType || FbxSkin::eLinear == eType)
             {
                 // Cluster 를 얻어온다
                 // Cluster == Joint == 관절
@@ -687,7 +687,7 @@ void CFBXLoader::CheckWeightAndIndices(FbxMesh* _pMesh, tContainer* _pContainer)
                 (*iter)[0].dWeight += revision;
             }
 
-            if (iter->size() >= 4)
+            if (iter->size() > 4)
             {
                 iter->erase(iter->begin() + 4, iter->end());
             }
