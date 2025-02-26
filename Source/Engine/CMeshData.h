@@ -7,8 +7,8 @@
 class CMeshData :
     public CAsset
 {
-    Ptr<CMesh> m_pMesh;
-    vector<Ptr<CMaterial>> m_vecMtrl;
+    vector<Ptr<CMesh>>				m_vecMesh;
+    vector<vector<Ptr<CMaterial>>>	m_vecMtrlSet;
 
 public:
     static CMeshData* LoadFromFBX(const wstring& _RelativePath);
