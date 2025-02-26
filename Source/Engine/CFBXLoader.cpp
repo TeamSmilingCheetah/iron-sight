@@ -234,8 +234,11 @@ void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
 void CFBXLoader::GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder)
 {
     int iTangentCnt = _pMesh->GetElementTangentCount();
-    if (1 != iTangentCnt)
-        assert(NULL); // 정점 1개가 포함하는 탄젠트 정보가 2개 이상이다.
+	if (1 != iTangentCnt)
+	{
+		_pMesh->GenerateTangentsData(0);
+	}
+        //assert(NULL); // 정점 1개가 포함하는 탄젠트 정보가 2개 이상이다.
 
     // 탄젠트 data 의 시작 주소
     FbxGeometryElementTangent* pTangent = _pMesh->GetElementTangent();
@@ -440,9 +443,10 @@ void CFBXLoader::LoadTexture()
                 }
             }
         }
-        path_origin = path_origin.parent_path();
-        remove_all(path_origin);
     }
+
+    path_origin = path_origin.parent_path();
+    remove_all(path_origin);
 }
 
 void CFBXLoader::CreateMaterial()
