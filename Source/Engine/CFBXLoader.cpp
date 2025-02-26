@@ -234,8 +234,11 @@ void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
 void CFBXLoader::GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder)
 {
     int iTangentCnt = _pMesh->GetElementTangentCount();
-    if (1 != iTangentCnt)
-        assert(NULL); // 정점 1개가 포함하는 탄젠트 정보가 2개 이상이다.
+	if (1 != iTangentCnt)
+	{
+		_pMesh->GenerateTangentsData(0);
+	}
+        //assert(NULL); // 정점 1개가 포함하는 탄젠트 정보가 2개 이상이다.
 
     // 탄젠트 data 의 시작 주소
     FbxGeometryElementTangent* pTangent = _pMesh->GetElementTangent();
@@ -440,9 +443,10 @@ void CFBXLoader::LoadTexture()
                 }
             }
         }
-        path_origin = path_origin.parent_path();
-        remove_all(path_origin);
     }
+
+    path_origin = path_origin.parent_path();
+    remove_all(path_origin);
 }
 
 void CFBXLoader::CreateMaterial()
@@ -567,7 +571,8 @@ void CFBXLoader::LoadAnimationClip()
         pAnimClip->tStartTime = pTakeInfo->mLocalTimeSpan.GetStart();
         pAnimClip->tEndTime = pTakeInfo->mLocalTimeSpan.GetStop();
 
-        pAnimClip->eMode = m_pScene->GetGlobalSettings().GetTimeMode();
+        //pAnimClip->eMode = m_pScene->GetGlobalSettings().GetTimeMode();
+		pAnimClip->eMode = FbxTime::EMode::eFrames30;
         pAnimClip->llTimeLength = pAnimClip->tEndTime.GetFrameCount(pAnimClip->eMode) - pAnimClip->
             tStartTime.GetFrameCount(pAnimClip->eMode);
 
@@ -614,7 +619,7 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
         if (pSkin)
         {
             FbxSkin::EType eType = pSkin->GetSkinningType();
-            if (FbxSkin::eRigid == eType || FbxSkin::eLinear)
+            if (FbxSkin::eRigid == eType || FbxSkin::eLinear == eType)
             {
                 // Cluster 를 얻어온다
                 // Cluster == Joint == 관절
@@ -682,7 +687,7 @@ void CFBXLoader::CheckWeightAndIndices(FbxMesh* _pMesh, tContainer* _pContainer)
                 (*iter)[0].dWeight += revision;
             }
 
-            if (iter->size() >= 4)
+            if (iter->size() > 4)
             {
                 iter->erase(iter->begin() + 4, iter->end());
             }
@@ -722,7 +727,8 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 
     m_vecBone[_iBoneIdx]->matBone = _matNodeTransform;
 
-    FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
+    //FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
+	FbxTime::EMode eTimeMode = FbxTime::EMode::eFrames30;
 
     FbxLongLong llStartFrame = m_vecAnimClip[0]->tStartTime.GetFrameCount(eTimeMode);
     FbxLongLong llEndFrame = m_vecAnimClip[0]->tEndTime.GetFrameCount(eTimeMode);

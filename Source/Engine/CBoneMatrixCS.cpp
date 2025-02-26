@@ -27,9 +27,9 @@ int CBoneMatrixCS::Binding()
 
 void CBoneMatrixCS::CalcGroupCount()
 {
-    UINT GroupX = (m_Const.iArr[0] / m_GroupPerThreadX) + 1;
-    UINT GroupY = 1;
-    UINT GroupZ = 1;
+    m_GroupX = (m_Const.iArr[0] / m_GroupPerThreadX) + 1;
+    m_GroupY = 1;
+    m_GroupZ = 1;
 }
 
 void CBoneMatrixCS::Clear()

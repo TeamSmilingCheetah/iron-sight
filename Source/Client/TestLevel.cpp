@@ -131,7 +131,7 @@ void TestLevel::CreateTestLevel()
         Ptr<CMeshData> pMeshData = nullptr;
         CGameObject* pObj = nullptr;
 
-        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Monster.fbx");
+        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep.fbx");
         //pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
         pObj = pMeshData->Instantiate();
