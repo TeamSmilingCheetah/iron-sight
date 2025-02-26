@@ -571,7 +571,8 @@ void CFBXLoader::LoadAnimationClip()
         pAnimClip->tStartTime = pTakeInfo->mLocalTimeSpan.GetStart();
         pAnimClip->tEndTime = pTakeInfo->mLocalTimeSpan.GetStop();
 
-        pAnimClip->eMode = m_pScene->GetGlobalSettings().GetTimeMode();
+        //pAnimClip->eMode = m_pScene->GetGlobalSettings().GetTimeMode();
+		pAnimClip->eMode = FbxTime::EMode::eFrames30;
         pAnimClip->llTimeLength = pAnimClip->tEndTime.GetFrameCount(pAnimClip->eMode) - pAnimClip->
             tStartTime.GetFrameCount(pAnimClip->eMode);
 
@@ -726,7 +727,8 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 
     m_vecBone[_iBoneIdx]->matBone = _matNodeTransform;
 
-    FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
+    //FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
+	FbxTime::EMode eTimeMode = FbxTime::EMode::eFrames30;
 
     FbxLongLong llStartFrame = m_vecAnimClip[0]->tStartTime.GetFrameCount(eTimeMode);
     FbxLongLong llEndFrame = m_vecAnimClip[0]->tEndTime.GetFrameCount(eTimeMode);
