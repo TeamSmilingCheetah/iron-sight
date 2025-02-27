@@ -65,6 +65,8 @@ enum class SHADER_DOMAIN
     DOMAIN_EFFECT, // 반투명 + 투명 + 블러
     DOMAIN_POSTPROCESS, // 후처리
 
+	DOMAIN_UI,			// UI
+
     DOMAIN_NONE, // 미정의
 };
 

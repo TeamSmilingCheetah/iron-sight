@@ -12,7 +12,7 @@
 #include "CCollisionMgr.h"
 #include "CTaskMgr.h"
 #include "CFontMgr.h"
-
+#include "CInstancingBuffer.h"
 #include "CPrefab.h"
 
 CEngine::CEngine()
@@ -67,6 +67,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
     CRenderMgr::GetInst()->Init();
     CLevelMgr::GetInst()->Init();
     CFontMgr::GetInst()->Init();
+	CInstancingBuffer::GetInst()->Init();
 
     return S_OK;
 }

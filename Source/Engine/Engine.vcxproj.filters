@@ -199,6 +199,12 @@
     <ClInclude Include="..\..\External\Include\Common\struct.h">
       <Filter>01. Header</Filter>
     </ClInclude>
+    <ClInclude Include="CCopyBoneCS.h">
+      <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
+    </ClInclude>
+    <ClInclude Include="CInstancingBuffer.h">
+      <Filter>04. Manager\09. InstancingBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -386,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="CBoneMatrixCS.cpp">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
+    </ClCompile>
+    <ClCompile Include="CCopyBoneCS.cpp">
+      <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
+    </ClCompile>
+    <ClCompile Include="CInstancingBuffer.cpp">
+      <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -584,6 +596,12 @@
     <Filter Include="HLSL\03. Compute\3DAnimation\BoneMatric">
       <UniqueIdentifier>{50fe577e-8d78-4e9e-8d70-1f0d23134900}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\03. Compute\3DAnimation\CopyBone">
+      <UniqueIdentifier>{a9223440-3418-4662-ac19-c5475725be1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Manager\09. InstancingBuffer">
+      <UniqueIdentifier>{e4ced7d0-9af4-474a-a391-54fb02f4bbe6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\func.fx">
@@ -651,6 +669,9 @@
     </FxCompile>
     <FxCompile Include="Shader\bonemat.fx">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\copybone.fx">
+      <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

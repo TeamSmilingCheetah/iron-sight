@@ -53,6 +53,7 @@ public:
     void SetShader(Ptr<CGraphicShader> _Shader) { m_Shader = _Shader; }
     Ptr<CGraphicShader> GetShader() { return m_Shader; }
     void Binding();
+	void Binding_Inst();
 
 
     int Save(const wstring& _FilePath) override;

@@ -306,11 +306,15 @@ void CRenderMgr::Render_Editor()
     // Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
     MergeDeferredTarget();
 
-    m_EditorCam->render_forward();
-    m_EditorCam->render_effect();
-    m_EditorCam->render_particle();
-    m_EditorCam->render_postprocess();
-    m_EditorCam->render_clear();
+	m_EditorCam->render_forward();
+	m_EditorCam->render_particle();
+	m_EditorCam->render_effect();
+	m_EditorCam->render_transparent();
+	m_EditorCam->render_postprocess();
+	m_EditorCam->render_ui();
+
+
+	m_EditorCam->render_clear();
 
     // 특정 타겟으로 SwapChain 을 덮어쓰기
     MergeSpecifyTarget();

@@ -212,6 +212,34 @@ struct tMTAnimClip
     FbxTime::EMode eMode;
 };
 
+// ===========
+// Instancing
+// ===========
+union uInstID
+{
+	struct {
+		UINT iMesh;
+		WORD iMtrl;
+		WORD iMtrlIdx;
+	};
+	ULONG64 llID;
+};
+
+class CGameObject;
+struct tInstObj
+{
+	CGameObject* pObj;
+	UINT		 iMtrlIdx;
+};
+
+struct tInstancingData
+{
+	Matrix matWorld;
+	Matrix matWV;
+	Matrix matWVP;
+	int    iRowIdx;
+};
+
 
 // ====================
 // 상수 버퍼 연동 구조체
