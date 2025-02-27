@@ -15,6 +15,7 @@ private:
     DWORD_PTR m_Data;
 
     bool m_Frame;
+	bool                m_FrameListMode;
     bool m_Selected;
 
 public:
@@ -75,8 +76,7 @@ public:
         m_SelfDragDropFunc = _MemFunc;
     }
 
-    TreeNode* AddItem(TreeNode* _ParentNode, const string& _Name, DWORD_PTR _Data,
-                      bool _Frame = false);
+	TreeNode* AddItem(TreeNode* _ParentNode, const string& _Name, DWORD_PTR _Data, bool _Frame = false, bool _Framenotile = false);
 
     void Clear()
     {

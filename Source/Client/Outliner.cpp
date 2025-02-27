@@ -38,21 +38,28 @@ void Outliner::Render_Update()
 
 void Outliner::RenewGameObject()
 {
-    m_Tree->Clear();
-    TreeNode* pRootNode = m_Tree->AddItem(nullptr, "RootNode", 0);
+	// 새로 만들기 전에 초기화
+	m_Tree->Clear();
 
-    CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	// 최상위 부모 노드생성
+	TreeNode* pRootNode = m_Tree->AddItem(nullptr, "RootNode", 0);
 
-    for (UINT i = 0; i < MAX_LAYER; ++i)
-    {
-        CLayer* pLayer = pCurLevel->GetLayer(i);
+	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
-        const vector<CGameObject*>& vecParents = pLayer->GetParentObjects();
-        for (size_t j = 0; j < vecParents.size(); ++j)
-        {
-            AddGameObject(pRootNode, vecParents[j]);
-        }
-    }
+	for (size_t i = 0; i < MAX_LAYER; ++i)
+	{
+		CLayer* pLayer = pCurLevel->GetLayer(i);
+		string LayerName = string(pLayer->GetName().begin(), pLayer->GetName().end());
+		TreeNode* pListNode = m_Tree->AddItem(pRootNode, LayerName, (DWORD_PTR)i, false, true);
+
+		const vector<CGameObject*>& vecParents = pLayer->GetParentObjects();
+		for (size_t j = 0; j < vecParents.size(); ++j)
+		{
+			AddGameObject(pListNode, vecParents[j]);
+		}
+
+	}
+
 }
 
 void Outliner::AddGameObject(TreeNode* _ParentNode, CGameObject* _Object)
@@ -71,29 +78,58 @@ void Outliner::AddGameObject(TreeNode* _ParentNode, CGameObject* _Object)
 
 void Outliner::SelectGameObject(DWORD_PTR _TreeNode)
 {
-    auto pNode = (TreeNode*)_TreeNode;
-    auto pTarget = (CGameObject*)pNode->GetData();
+	TreeNode* pNode = (TreeNode*)_TreeNode;
+	CGameObject* pTarget = reinterpret_cast<CGameObject*>(pNode->GetData());
 
-    auto pInspector = static_cast<Inspector*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
-    pInspector->SetTargetObject(pTarget);
+	// 100보다 작다면 이건 오브젝트 포인터가 아니다.
+	if (100 > (LONGLONG)pTarget)
+		return;
+
+	Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	pInspector->SetTargetObject(pTarget);
 }
 
 void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 {
-    auto pDragged = (TreeNode*)_DragNode;
-    auto pDropped = (TreeNode*)_DropNode;
+	TreeNode* pDragged = (TreeNode*)_DragNode;
+	TreeNode* pDropped = (TreeNode*)_DropNode;
 
-    auto pDragObj = (CGameObject*)pDragged->GetData();
-    CGameObject* pDropObj = nullptr;
+	CGameObject* pDragObj = reinterpret_cast<CGameObject*>(pDragged->GetData());
+	CGameObject* pDropObj = nullptr;
 
-    if (pDropped)
-    {
-        pDropObj = (CGameObject*)pDropped->GetData();
+	if (pDragged && !pDragObj)
+	{
+		// 드래그된 노드가 CGameObject가 아닌 경우 return
+		return;
+	}
 
-        // 드래그 된 오브젝트가 목적지 오브젝트의 조상 중 하나라면, 그 상황을 방지한다.
-        if (pDropObj->IsAncestor(pDragObj))
-            return;
-    }
+	if (pDropped)
+	{
+		// pDropped의 데이터를 DWORD_PTR에서 CGameObject*로 변환
+		DWORD_PTR DropData = pDropped->GetData();
 
-    AddChild(pDropObj, pDragObj);
+		// DropData가 CGameObject*인지 long long인지 구별하기 위한 확인
+		// 1000 보다 크면 포인터로 본다.
+		if (reinterpret_cast<void*>(DropData) > (void*)100)
+		{
+			pDropObj = reinterpret_cast<CGameObject*>(DropData);
+
+			if (pDropObj->IsAncestor(pDragObj))
+				return;
+		}
+		// DropData가 long long이라면
+		else
+		{
+			int LayerIdx = static_cast<int>(DropData);
+
+			tTask ptask;
+			ptask.Type = TASK_TYPE::CHANGE_LAYEROBJECT;
+			ptask.Param0 = reinterpret_cast<DWORD_PTR>(pDragObj);
+			ptask.Param1 = (DWORD_PTR)LayerIdx;
+			CTaskMgr::GetInst()->AddTask(ptask);
+		}
+	}
+
+	AddChild(pDropObj, pDragObj);
+
 }

@@ -14,6 +14,7 @@ TreeNode::TreeNode()
       , m_Data(0)
       , m_Frame(false)
       , m_Selected(false)
+	  , m_FrameListMode(false)
 {
     char buff[50] = {};
     sprintf_s(buff, 50, "##%d", g_GlobalID++);
@@ -36,6 +37,8 @@ void TreeNode::Render_Update()
         Flag |= ImGuiTreeNodeFlags_Leaf;
     if (m_Frame)
         Flag |= ImGuiTreeNodeFlags_Framed;
+	if (m_FrameListMode)
+		Flag |= ImGuiTreeNodeFlags_DefaultOpen;
     if (m_Selected)
         Flag |= ImGuiTreeNodeFlags_Selected;
 
@@ -183,7 +186,7 @@ void TreeUI::SetDroppedNode(TreeNode* _Node)
     m_DroppedNode = _Node;
 }
 
-TreeNode* TreeUI::AddItem(TreeNode* _ParentNode, const string& _Name, DWORD_PTR _Data, bool _Frame)
+TreeNode* TreeUI::AddItem(TreeNode* _ParentNode, const string& _Name, DWORD_PTR _Data, bool _Frame, bool _Framenotile)
 {
     auto pNode = new TreeNode;
 
@@ -191,6 +194,7 @@ TreeNode* TreeUI::AddItem(TreeNode* _ParentNode, const string& _Name, DWORD_PTR 
     pNode->m_Name = _Name;
     pNode->m_Data = _Data;
     pNode->m_Frame = _Frame;
+	pNode->m_FrameListMode = _Framenotile;
 
     // _ParentNode 가 nullptr 인 경우
     if (nullptr == _ParentNode)
