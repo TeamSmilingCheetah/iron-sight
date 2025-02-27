@@ -55,6 +55,8 @@ void CAnimator3D::FinalTick()
     if (m_vecClipUpdateTime[m_CurClip] >= m_vecClip->at(m_CurClip).dTimeLength)
     {
         m_vecClipUpdateTime[m_CurClip] = 0.f;
+
+		m_CurClip = (m_CurClip + 1) % m_vecClip->size();
     }
 
     m_CurTime = m_vecClip->at(m_CurClip).dStartTime + m_vecClipUpdateTime[m_CurClip];
@@ -64,7 +66,7 @@ void CAnimator3D::FinalTick()
     m_FrameIdx = static_cast<int>(dFrameIdx);
 
     // 다음 프레임 인덱스
-    if (m_FrameIdx >= m_vecClip->at(0).iFrameLength - 1)
+    if (m_FrameIdx >= m_vecClip->at(m_CurClip).iFrameLength - 1)
         m_NextFrameIdx = m_FrameIdx; // 끝이면 현재 인덱스를 유지
     else
         m_NextFrameIdx = m_FrameIdx + 1;

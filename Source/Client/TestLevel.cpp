@@ -131,18 +131,18 @@ void TestLevel::CreateTestLevel()
         Ptr<CMeshData> pMeshData = nullptr;
         CGameObject* pObj = nullptr;
 
-        //pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep.fbx");
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Monster.fbx");
+        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
         //pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
-		for (int i = 0; i < 10; ++i)
-		{
-			pObj = pMeshData->Instantiate();
-			pObj->SetName(L"Monster");
-			pObj->Transform()->SetRelativePos((i + 1) * 50.f, 200.f, 500.f);
-			pObj->Transform()->SetRelativeScale(1.f, 1.f, 1.f);
-			pObj->Transform()->SetFrustumCheck(false);
-			pLevel->AddObject(0, pObj, false);
-		}
+        pObj = pMeshData->Instantiate();
+        pObj->SetName(L"Monster");
+
+        pObj->Transform()->SetRelativePos(Vec3(500.f, -380.f, 500.f));
+        pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+        pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+
+		pObj->AddComponent(new CPlayerScript);
+
+        pLevel->AddObject(0, pObj, false);
     }
 }

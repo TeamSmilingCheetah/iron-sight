@@ -100,9 +100,9 @@ void DeleteVec(vector<T>& _vec)
 template <typename T1, typename T2>
 void DeleteMap(map<T1, T2>& _map)
 {
-    for (const auto& pair : _map)
+    for (auto& pair : _map)
     {
-        delete pair.second;
+        DELETE(pair.second);
     }
     _map.clear();
 }
