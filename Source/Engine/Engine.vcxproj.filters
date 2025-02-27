@@ -586,70 +586,70 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="func.fx">
+    <FxCompile Include="Shader\func.fx">
       <Filter>HLSL\01. Header</Filter>
     </FxCompile>
-    <FxCompile Include="value.fx">
+    <FxCompile Include="Shader\value.fx">
       <Filter>HLSL\01. Header</Filter>
     </FxCompile>
-    <FxCompile Include="debug.fx">
+    <FxCompile Include="Shader\debug.fx">
       <Filter>HLSL\02. Render</Filter>
     </FxCompile>
-    <FxCompile Include="postprocess.fx">
+    <FxCompile Include="Shader\postprocess.fx">
       <Filter>HLSL\02. Render</Filter>
     </FxCompile>
-    <FxCompile Include="struct.fx">
+    <FxCompile Include="Shader\struct.fx">
       <Filter>HLSL\01. Header</Filter>
     </FxCompile>
-    <FxCompile Include="test.fx">
+    <FxCompile Include="Shader\test.fx">
       <Filter>HLSL\03. Compute\ClearColor</Filter>
     </FxCompile>
-    <FxCompile Include="particle.fx">
+    <FxCompile Include="Shader\particle.fx">
       <Filter>HLSL\02. Render</Filter>
     </FxCompile>
-    <FxCompile Include="particle_tick.fx">
+    <FxCompile Include="Shader\particle_tick.fx">
       <Filter>HLSL\03. Compute\ParticleTick</Filter>
     </FxCompile>
-    <FxCompile Include="std2d.fx">
+    <FxCompile Include="Shader\std2d.fx">
       <Filter>HLSL\02. Render\2DShader</Filter>
     </FxCompile>
-    <FxCompile Include="tilemap.fx">
+    <FxCompile Include="Shader\tilemap.fx">
       <Filter>HLSL\02. Render\2DShader</Filter>
     </FxCompile>
-    <FxCompile Include="std3d.fx">
+    <FxCompile Include="Shader\std3d.fx">
       <Filter>HLSL\02. Render\3DShader</Filter>
     </FxCompile>
-    <FxCompile Include="skybox.fx">
+    <FxCompile Include="Shader\skybox.fx">
       <Filter>HLSL\02. Render\3DShader</Filter>
     </FxCompile>
-    <FxCompile Include="std3d_deferred.fx">
+    <FxCompile Include="Shader\std3d_deferred.fx">
       <Filter>HLSL\02. Render\3DShader</Filter>
     </FxCompile>
-    <FxCompile Include="merge.fx">
+    <FxCompile Include="Shader\merge.fx">
       <Filter>HLSL\02. Render\Deferred</Filter>
     </FxCompile>
-    <FxCompile Include="light.fx">
+    <FxCompile Include="Shader\light.fx">
       <Filter>HLSL\02. Render\Deferred</Filter>
     </FxCompile>
-    <FxCompile Include="decal.fx">
+    <FxCompile Include="Shader\decal.fx">
       <Filter>HLSL\02. Render\3DShader</Filter>
     </FxCompile>
-    <FxCompile Include="tess.fx">
+    <FxCompile Include="Shader\tess.fx">
       <Filter>HLSL\02. Render\3DShader\LandScape</Filter>
     </FxCompile>
-    <FxCompile Include="landscape.fx">
+    <FxCompile Include="Shader\landscape.fx">
       <Filter>HLSL\02. Render\3DShader\LandScape</Filter>
     </FxCompile>
-    <FxCompile Include="heightmap.fx">
+    <FxCompile Include="Shader\heightmap.fx">
       <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
     </FxCompile>
-    <FxCompile Include="raycast.fx">
+    <FxCompile Include="Shader\raycast.fx">
       <Filter>HLSL\03. Compute\LandScape\RayCast</Filter>
     </FxCompile>
-    <FxCompile Include="weightmap.fx">
+    <FxCompile Include="Shader\weightmap.fx">
       <Filter>HLSL\03. Compute\LandScape\WeightMap</Filter>
     </FxCompile>
-    <FxCompile Include="bonemat.fx">
+    <FxCompile Include="Shader\bonemat.fx">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </FxCompile>
   </ItemGroup>

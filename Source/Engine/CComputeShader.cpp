@@ -24,14 +24,15 @@ CComputeShader::~CComputeShader()
 {
 }
 
+// TODO(KHJ): Source 폴더로 변경해두었으나 Output만 가지고 실행할 수 없다는 문제가 있음, 결과물은 CSO에서 로드할 수 있도록 처리 필요
 int CComputeShader::CreateComputeShader(const wstring& _RelativePath, const string& _FuncName)
 {
-    wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
 
     HRESULT hr = S_OK;
     UINT Flag = D3DCOMPILE_DEBUG;
 
-    hr = D3DCompileFromFile(wstring(ContentPath + _RelativePath).c_str()
+    hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
                             , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
                             , _FuncName.c_str(), "cs_5_0", Flag, 0
                             , m_CSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());

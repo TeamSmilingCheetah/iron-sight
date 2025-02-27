@@ -24,7 +24,7 @@ CGameObject* CMeshData::Instantiate()
 {
 	CGameObject* pNewObj = new CGameObject;
 
-	int meshCnt = m_vecMesh.size();
+	int meshCnt = static_cast<int>(m_vecMesh.size());
 	assert(meshCnt > 0);
 
 	// 1개의 메쉬로 이루어진 경우 - 오브젝트에 바로 meshrenderer 부착
@@ -158,12 +158,12 @@ int CMeshData::Save(const wstring& _RelativePath)
 	assert(pFile);
 
 	// Mesh 개수 저장
-	int meshCnt = m_vecMesh.size();
+	int meshCnt = static_cast<int>(m_vecMesh.size());
 	fwrite(&meshCnt, sizeof(int), 1, pFile);
 
 	for (int idx = 0; idx < meshCnt; ++idx)
 	{
-		// Mesh Key 저장	
+		// Mesh Key 저장
 		// Mesh Data 저장
 		SaveAssetRef(m_vecMesh[idx], pFile);
 

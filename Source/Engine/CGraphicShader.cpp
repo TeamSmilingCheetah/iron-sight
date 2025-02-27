@@ -23,11 +23,11 @@ CGraphicShader::~CGraphicShader()
 int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const string& _FuncName)
 {
     // 쉐이더 컴파일
-    wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+    wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
     UINT Flag = D3DCOMPILE_DEBUG;
     HRESULT hr = S_OK;
 
-    hr = D3DCompileFromFile(wstring(ContentPath + _RelativePath).c_str()
+    hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
                             , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
                             , _FuncName.c_str(), "vs_5_0", Flag, 0
                             , m_VSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
@@ -134,12 +134,12 @@ int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const strin
 
 int CGraphicShader::CreateHullShader(const wstring& _RelativePath, const string& _FuncName)
 {
-    wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
 
     HRESULT hr = S_OK;
     UINT Flag = D3DCOMPILE_DEBUG;
 
-    hr = D3DCompileFromFile(wstring(ContentPath + _RelativePath).c_str()
+    hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
                             , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
                             , _FuncName.c_str(), "hs_5_0", Flag, 0
                             , m_HSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
@@ -172,12 +172,12 @@ int CGraphicShader::CreateHullShader(const wstring& _RelativePath, const string&
 
 int CGraphicShader::CreateDomainShader(const wstring& _RelativePath, const string& _FuncName)
 {
-    wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
 
     HRESULT hr = S_OK;
     UINT Flag = D3DCOMPILE_DEBUG;
 
-    hr = D3DCompileFromFile(wstring(ContentPath + _RelativePath).c_str()
+    hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
                             , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
                             , _FuncName.c_str(), "ds_5_0", Flag, 0
                             , m_DSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
@@ -210,12 +210,12 @@ int CGraphicShader::CreateDomainShader(const wstring& _RelativePath, const strin
 
 int CGraphicShader::CreateGeometryShader(const wstring& _RelativePath, const string& _FuncName)
 {
-    wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
 
     HRESULT hr = S_OK;
     UINT Flag = D3DCOMPILE_DEBUG;
 
-    hr = D3DCompileFromFile(wstring(ContentPath + _RelativePath).c_str()
+    hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
                             , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
                             , _FuncName.c_str(), "gs_5_0", Flag, 0
                             , m_GSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
@@ -248,12 +248,12 @@ int CGraphicShader::CreateGeometryShader(const wstring& _RelativePath, const str
 
 int CGraphicShader::CreatePixelShader(const wstring& _RelativePath, const string& _FuncName)
 {
-    wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
 
     HRESULT hr = S_OK;
     UINT Flag = D3DCOMPILE_DEBUG;
 
-    hr = D3DCompileFromFile(wstring(ContentPath + _RelativePath).c_str()
+    hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
                             , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
                             , _FuncName.c_str(), "ps_5_0", Flag, 0
                             , m_PSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());

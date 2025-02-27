@@ -19,6 +19,7 @@ void CPathMgr::Init()
 
 	m_BinPath = bin_dir.wstring() + L"\\";
     m_ContentPath = bin_dir.parent_path().wstring() + L"\\Content\\";
+	m_SourcePath = bin_dir.parent_path().parent_path().wstring() + L"\\Source\\Engine\\";
 }
 
 wstring CPathMgr::GetRelativePath(const wstring& _FilePath)
