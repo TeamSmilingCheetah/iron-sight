@@ -73,7 +73,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)External\Include\;$(IncludePath);$(SolutionDir)Source\</IncludePath>
+    <IncludePath>$(SolutionDir)Source\Engine\;$(SolutionDir)External\Include\;$(IncludePath);$(SolutionDir)Source\</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_d</TargetName>
     <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
@@ -81,7 +81,7 @@
     <IntDir>$(SolutionDir)External\Library\$(ProjectName)\Intermediate\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)External\Include\;$(IncludePath);$(SolutionDir)Source\</IncludePath>
+    <IncludePath>$(SolutionDir)Source\Engine\;$(SolutionDir)External\Include\;$(IncludePath);$(SolutionDir)Source\</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
     <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
@@ -164,25 +164,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CCameraScript.h" />
-    <ClInclude Include="CMissileScript.h" />
-    <ClInclude Include="CPlayerScript.h" />
-    <ClInclude Include="CScriptMgr.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GameObject\Public\CCameraScript.h" />
+    <ClInclude Include="GameObject\Public\CMissileScript.h" />
+    <ClInclude Include="GameObject\Public\CPlayerScript.h" />
+    <ClInclude Include="Manager\CScriptMgr.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CCameraScript.cpp" />
-    <ClCompile Include="CMissileScript.cpp" />
-    <ClCompile Include="CPlayerScript.cpp" />
-    <ClCompile Include="CScriptMgr.cpp" />
+    <ClCompile Include="GameObject\Private\CCameraScript.cpp" />
+    <ClCompile Include="GameObject\Private\CMissileScript.cpp" />
+    <ClCompile Include="GameObject\Private\CPlayerScript.cpp" />
+    <ClCompile Include="Manager\CScriptMgr.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Scripts.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

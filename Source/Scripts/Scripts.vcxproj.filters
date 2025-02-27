@@ -18,16 +18,16 @@
     <ClInclude Include="pch.h">
       <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="CCameraScript.h">
+    <ClInclude Include="GameObject\Public\CCameraScript.h">
       <Filter>02. Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="CMissileScript.h">
+    <ClInclude Include="GameObject\Public\CMissileScript.h">
       <Filter>02. Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayerScript.h">
+    <ClInclude Include="GameObject\Public\CPlayerScript.h">
       <Filter>02. Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="CScriptMgr.h">
+    <ClInclude Include="Manager\CScriptMgr.h">
       <Filter>01. ScriptMgr</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,19 +35,19 @@
     <ClCompile Include="pch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Default</Filter>
     </ClCompile>
-    <ClCompile Include="CCameraScript.cpp">
+    <ClCompile Include="GameObject\Private\CCameraScript.cpp">
       <Filter>02. Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="CMissileScript.cpp">
+    <ClCompile Include="GameObject\Private\CMissileScript.cpp">
       <Filter>02. Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="CPlayerScript.cpp">
+    <ClCompile Include="GameObject\Private\CPlayerScript.cpp">
       <Filter>02. Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="CScriptMgr.cpp">
+    <ClCompile Include="Manager\CScriptMgr.cpp">
       <Filter>01. ScriptMgr</Filter>
     </ClCompile>
   </ItemGroup>
