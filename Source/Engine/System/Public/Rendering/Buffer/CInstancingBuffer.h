@@ -1,33 +1,35 @@
 ﻿#pragma once
+#include "System/Public/Rendering/Shader/CCopyBoneCS.h"
 
-#include "CStructuredBuffer.h"
-#include "CTexture.h"
-#include "CCopyBoneCS.h"
+class CStructuredBuffer;
 
 class CInstancingBuffer
 	: public singleton<CInstancingBuffer>
 {
 	SINGLE(CInstancingBuffer);
+
 private:
-	ComPtr<ID3D11Buffer>		m_InstancingBuffer;
-	UINT						m_MaxCount;
-	vector<tInstancingData>		m_vecData;
+	ComPtr<ID3D11Buffer> m_InstancingBuffer;
+	UINT m_MaxCount;
+	vector<tInstancingData> m_vecData;
 
 	// anim3D 용도
-	vector<CStructuredBuffer*>	m_vecBoneMat;
-	int							m_AnimInstCount;
+	vector<CStructuredBuffer*> m_vecBoneMat;
+	int m_AnimInstCount;
 	CStructuredBuffer* m_BoneBuffer;
 
-	Ptr<CCopyBoneCS>			m_CopyShader;
+	Ptr<CCopyBoneCS> m_CopyShader;
 
 public:
 	void Init();
+
 	void Clear()
 	{
 		m_vecData.clear();
 		m_vecBoneMat.clear();
 		m_AnimInstCount = 0;
 	}
+
 	void AddInstancingData(tInstancingData& _tData) { m_vecData.push_back(_tData); }
 
 	UINT GetInstanceCount() { return (UINT)m_vecData.size(); }
@@ -41,4 +43,3 @@ public:
 private:
 	void Resize(UINT _iCount);
 };
-

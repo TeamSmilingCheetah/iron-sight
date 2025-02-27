@@ -57,6 +57,34 @@ void CMaterial::Binding()
 	m_Shader->Binding();
 }
 
+void CMaterial::Binding_Inst()
+{
+	if (nullptr == m_Shader)
+		return;
+
+	// Texture 바인딩
+	for (UINT i = 0; i < TEX_END; ++i)
+	{
+		if (nullptr == m_arrTex[i])
+		{
+			m_Const.bTex[i] = 0;
+			CTexture::Clear(i);
+			continue;
+		}
+
+		m_Const.bTex[i] = 1;
+		m_arrTex[i]->Binding(i);
+	}
+
+	// 상수 데이터 바인딩
+	static CConstBuffer* pMtrlCB = CDevice::GetInst()->GetCB(CB_TYPE::MATERIAL);
+	pMtrlCB->SetData(&m_Const);
+	pMtrlCB->Binding();
+
+	// Shader Binding
+	m_Shader->Binding_Inst();
+}
+
 void* CMaterial::GetScalarParam(SCALAR_PARAM _Type)
 {
 	switch (_Type)

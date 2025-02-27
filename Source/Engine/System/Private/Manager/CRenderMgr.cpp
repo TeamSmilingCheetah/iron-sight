@@ -304,9 +304,12 @@ void CRenderMgr::Render_Editor()
 	MergeDeferredTarget();
 
 	m_EditorCam->render_forward();
-	m_EditorCam->render_effect();
 	m_EditorCam->render_particle();
+	m_EditorCam->render_effect();
+	m_EditorCam->render_transparent();
 	m_EditorCam->render_postprocess();
+	m_EditorCam->render_ui();
+
 	m_EditorCam->render_clear();
 
 	// 특정 타겟으로 SwapChain 을 덮어쓰기

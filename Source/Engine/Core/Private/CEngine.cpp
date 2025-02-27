@@ -11,7 +11,7 @@
 #include "System/Public/Manager/CTaskMgr.h"
 #include "System/Public/Manager/CFontMgr.h"
 #include "System/Public/Asset/Prefab/CPrefab.h"
-#include "CInstancingBuffer.h"
+#include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
 CEngine::CEngine()
     : m_hMainWnd(nullptr)

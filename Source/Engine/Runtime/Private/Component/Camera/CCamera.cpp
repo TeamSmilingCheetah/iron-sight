@@ -11,10 +11,6 @@
 #include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/RenderTarget/CMRT.h"
 
-#include "CFlipbookPlayer.h"
-#include "CAnimator3D.h"
-#include "CInstancingBuffer.h"
-
 CCamera::CCamera()
     : CComponent(COMPONENT_TYPE::CAMERA)
       , m_Frustum(nullptr)
