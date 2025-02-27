@@ -69,7 +69,28 @@ void CTaskMgr::Tick()
                 m_LevelChanged = true;
             }
             break;
+		case TASK_TYPE::CHANGE_LAYEROBJECT:
+		{
+			CGameObject* pObject = (CGameObject*)task.Param0;
+			LONGLONG LayerIdx = (LONGLONG)task.Param1;
 
+			// 부모 오브젝트의 경우
+			if (nullptr == pObject->GetParent())
+			{
+				pObject->DisconnectWithLayer();
+				pObject->m_LayerIdx = (int)LayerIdx;
+				pObject->RegisterAsParent();
+			}
+
+			// 자식 오브젝트의 경우
+			else
+			{
+				pObject->m_LayerIdx = (int)LayerIdx;
+			}
+
+			m_LevelChanged = true;
+		}
+		break;
         case TASK_TYPE::CREATE_OBJECT:
             {
                 auto pNewObject = (CGameObject*)task.Param0;

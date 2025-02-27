@@ -196,6 +196,9 @@ enum class TASK_TYPE
     // 0 : Parent Address, 1 : Child Address
     ADD_CHILD,
 
+	// 0 : Object Address, 1 : Layer Idx
+	CHANGE_LAYEROBJECT,
+
     // 0 : Object Address, 1 : Layer Index, 2 : ChildMove
     CREATE_OBJECT,
 
