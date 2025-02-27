@@ -7,196 +7,196 @@
     <ClInclude Include="pch.h">
       <Filter>00. Default</Filter>
     </ClInclude>
-    <ClInclude Include="CEngine.h">
+    <ClInclude Include="Core\Public\CEngine.h">
       <Filter>02. Engine</Filter>
     </ClInclude>
-    <ClInclude Include="CDevice.h">
+    <ClInclude Include="System\Public\Rendering\Device\CDevice.cpp">
       <Filter>03. Device</Filter>
     </ClInclude>
-    <ClInclude Include="CEntity.h">
+    <ClInclude Include="Core\Public\CEntity.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="CAsset.h">
+    <ClInclude Include="System\Public\Asset\Base\CAsset.h">
       <Filter>08. Asset</Filter>
     </ClInclude>
-    <ClInclude Include="CMesh.h">
+    <ClInclude Include="System\Public\Asset\Mesh\CMesh.h">
       <Filter>08. Asset\01. Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="CShader.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CShader.h">
       <Filter>08. Asset\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="CGraphicShader.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CGraphicShader.h">
       <Filter>08. Asset\Shader\09. GraphicShader</Filter>
     </ClInclude>
-    <ClInclude Include="CConstBuffer.h">
+    <ClInclude Include="System\Public\Rendering\Buffer\CConstBuffer.h">
       <Filter>03. Device\ConstBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="assets.h">
+    <ClInclude Include="System\Public\Asset\Base\assets.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="CGameObject.h">
+    <ClInclude Include="Runtime\Public\Actor\CGameObject.h">
       <Filter>06. GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="CComponent.h">
+    <ClInclude Include="Runtime\Public\Component\Base\CComponent.h">
       <Filter>07. Component</Filter>
     </ClInclude>
-    <ClInclude Include="CTransform.h">
+    <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h">
       <Filter>07. Component\01. Transform</Filter>
     </ClInclude>
-    <ClInclude Include="components.h">
+    <ClInclude Include="Runtime\Public\Component\Base\components.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="CMeshRender.h">
+    <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h">
       <Filter>07. Component\RenderComponent\01. MeshRender</Filter>
     </ClInclude>
-    <ClInclude Include="CScript.h">
+    <ClInclude Include="Runtime\Public\Component\Script\CScript.h">
       <Filter>07. Component\Script</Filter>
     </ClInclude>
-    <ClInclude Include="CLevel.h">
+    <ClInclude Include="Runtime\Public\Actor\CLevel.h">
       <Filter>05. Level</Filter>
     </ClInclude>
-    <ClInclude Include="CPathMgr.h">
+    <ClInclude Include="System\Public\Manager\CPathMgr.h">
       <Filter>04. Manager\01. Path</Filter>
     </ClInclude>
-    <ClInclude Include="CTimeMgr.h">
+    <ClInclude Include="System\Public\Manager\CTimeMgr.h">
       <Filter>04. Manager\02. Time</Filter>
     </ClInclude>
-    <ClInclude Include="CKeyMgr.h">
+    <ClInclude Include="System\Public\Manager\CKeyMgr.h">
       <Filter>04. Manager\03. Key</Filter>
     </ClInclude>
-    <ClInclude Include="CAssetMgr.h">
+    <ClInclude Include="System\Public\Manager\CAssetMgr.h">
       <Filter>04. Manager\04. Asset</Filter>
     </ClInclude>
-    <ClInclude Include="CLevelMgr.h">
+    <ClInclude Include="System\Public\Manager\CLevelMgr.h">
       <Filter>04. Manager\05. Level</Filter>
     </ClInclude>
-    <ClInclude Include="CLayer.h">
+    <ClInclude Include="Runtime\Public\Actor\CLayer.h">
       <Filter>05. Level</Filter>
     </ClInclude>
-    <ClInclude Include="CCamera.h">
+    <ClInclude Include="Runtime\Public\Component\Camera\CCamera.h">
       <Filter>07. Component\02. Camera</Filter>
     </ClInclude>
-    <ClInclude Include="CRenderMgr.h">
+    <ClInclude Include="System\Public\Manager\CRenderMgr.h">
       <Filter>04. Manager\06. Render</Filter>
     </ClInclude>
-    <ClInclude Include="CTexture.h">
+    <ClInclude Include="System\Public\Asset\Texture\CTexture.h">
       <Filter>08. Asset\03. Texture</Filter>
     </ClInclude>
-    <ClInclude Include="CMaterial.h">
+    <ClInclude Include="System\Public\Rendering\Meterial\CMaterial.h">
       <Filter>08. Asset\08. Material</Filter>
     </ClInclude>
-    <ClInclude Include="CRenderComponent.h">
+    <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h">
       <Filter>07. Component\RenderComponent</Filter>
     </ClInclude>
-    <ClInclude Include="CCollider2D.h">
+    <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h">
       <Filter>07. Component\03. Collider2D</Filter>
     </ClInclude>
-    <ClInclude Include="CCollisionMgr.h">
+    <ClInclude Include="System\Public\Manager\CCollisionMgr.h">
       <Filter>04. Manager\06. Collision</Filter>
     </ClInclude>
-    <ClInclude Include="CTaskMgr.h">
+    <ClInclude Include="System\Public\Manager\CTaskMgr.h">
       <Filter>04. Manager\07. TaskMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CFlipbook.h">
+    <ClInclude Include="System\Public\Asset\Texture\CFlipbook.h">
       <Filter>08. Asset\06. FlipBook</Filter>
     </ClInclude>
-    <ClInclude Include="CSprite.h">
+    <ClInclude Include="System\Public\Asset\Texture\CSprite.h">
       <Filter>08. Asset\07. Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="CFlipbookPlayer.h">
+    <ClInclude Include="Runtime\Public\Component\Animation\CFlipbookPlayer.h">
       <Filter>07. Component\04. FlipbookPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="CTileMap.h">
+    <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h">
       <Filter>07. Component\RenderComponent\02. TileMap</Filter>
     </ClInclude>
-    <ClInclude Include="CStructuredBuffer.h">
+    <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h">
       <Filter>03. Device\StructuredBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="CLight2D.h">
+    <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h">
       <Filter>07. Component\05. Light2D</Filter>
     </ClInclude>
-    <ClInclude Include="CComputeShader.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CComputeShader.h">
       <Filter>08. Asset\Shader\10. ComputeShader</Filter>
     </ClInclude>
-    <ClInclude Include="CClearColorCS.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h">
       <Filter>HLSL\03. Compute\ClearColor</Filter>
     </ClInclude>
-    <ClInclude Include="CParticleSystem.h">
+    <ClInclude Include="Runtime\Public\Component\Rendering\CParticleSystem.h">
       <Filter>07. Component\RenderComponent\03. ParticleSystem</Filter>
     </ClInclude>
-    <ClInclude Include="CParticleTickCS.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CParticleTickCS.h">
       <Filter>HLSL\03. Compute\ParticleTick</Filter>
     </ClInclude>
-    <ClInclude Include="CPrefab.h">
+    <ClInclude Include="System\Public\Asset\Prefab\CPrefab.h">
       <Filter>08. Asset\05. Prefab</Filter>
     </ClInclude>
-    <ClInclude Include="CSound.h">
+    <ClInclude Include="System\Public\Asset\Audio\CSound.h">
       <Filter>08. Asset\04. Sound</Filter>
     </ClInclude>
-    <ClInclude Include="CFontMgr.h">
+    <ClInclude Include="System\Public\Manager\CFontMgr.h">
       <Filter>04. Manager\08. FontMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CLight3D.h">
+    <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h">
       <Filter>07. Component\06. Light3D</Filter>
     </ClInclude>
-    <ClInclude Include="CSkyBox.h">
+    <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h">
       <Filter>07. Component\RenderComponent\04. SkyBox</Filter>
     </ClInclude>
-    <ClInclude Include="CMRT.h">
+    <ClInclude Include="System\Public\Rendering\RenderTarget\CMRT.h">
       <Filter>04. Manager\06. Render\MRT</Filter>
     </ClInclude>
-    <ClInclude Include="CDecal.h">
+    <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h">
       <Filter>07. Component\RenderComponent\05. Decal</Filter>
     </ClInclude>
-    <ClInclude Include="CFrustum.h">
+    <ClInclude Include="Runtime\Public\Component\Camera\CFrustum.h">
       <Filter>07. Component\02. Camera\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="CLandScape.h">
+    <ClInclude Include="Runtime\Public\Component\Rendering\CLandScape.h">
       <Filter>07. Component\RenderComponent\06. LandScape</Filter>
     </ClInclude>
-    <ClInclude Include="CHeightMapCS.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CHeightMapCS.h">
       <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
     </ClInclude>
-    <ClInclude Include="CRaycastCS.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CRaycastCS.h">
       <Filter>HLSL\03. Compute\LandScape\RayCast</Filter>
     </ClInclude>
-    <ClInclude Include="CWeightMapCS.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CWeightMapCS.h">
       <Filter>HLSL\03. Compute\LandScape\WeightMap</Filter>
     </ClInclude>
-    <ClInclude Include="CFBXLoader.h">
+    <ClInclude Include="System\Public\Rendering\Tool\FBX\CFBXLoader.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="CMeshData.h">
+    <ClInclude Include="System\Public\Asset\Mesh\CMeshData.h">
       <Filter>08. Asset\02. MeshData</Filter>
     </ClInclude>
-    <ClInclude Include="CAnimator3D.h">
+    <ClInclude Include="Runtime\Public\Component\Animation\CAnimator3D.h">
       <Filter>07. Component\07. Animator3D</Filter>
     </ClInclude>
-    <ClInclude Include="CBoneMatrixCS.h">
+    <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\define.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\define.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\enum.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\enum.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\func.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\func.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\global.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\global.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\Ptr.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\Ptr.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\SimpleMath.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\SimpleMath.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\singleton.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\singleton.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\External\Include\Common\struct.h">
+    <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h">
       <Filter>01. Header</Filter>
     </ClInclude>
     <ClInclude Include="CCopyBoneCS.h">
@@ -212,190 +212,187 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>00. Default</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>00. Default</Filter>
     </ClCompile>
-    <ClCompile Include="CEngine.cpp">
+    <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp">
+      <Filter>01. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Private\CEngine.cpp">
       <Filter>02. Engine</Filter>
     </ClCompile>
-    <ClCompile Include="CDevice.cpp">
+    <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp">
       <Filter>03. Device</Filter>
     </ClCompile>
-    <ClCompile Include="CEntity.cpp">
+    <ClCompile Include="Core\Private\CEntity.cpp">
       <Filter>Module</Filter>
     </ClCompile>
-    <ClCompile Include="CAsset.cpp">
+    <ClCompile Include="System\Private\Asset\Base\CAsset.cpp">
       <Filter>08. Asset</Filter>
     </ClCompile>
-    <ClCompile Include="CMesh.cpp">
+    <ClCompile Include="System\Private\Asset\Mesh\CMesh.cpp">
       <Filter>08. Asset\01. Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="CShader.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CShader.cpp">
       <Filter>08. Asset\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="CGraphicShader.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CGraphicShader.cpp">
       <Filter>08. Asset\Shader\09. GraphicShader</Filter>
     </ClCompile>
-    <ClCompile Include="CConstBuffer.cpp">
+    <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp">
       <Filter>03. Device\ConstBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="CGameObject.cpp">
+    <ClCompile Include="Runtime\Private\Actor\CGameObject.cpp">
       <Filter>06. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="CComponent.cpp">
+    <ClCompile Include="Runtime\Private\Component\Base\CComponent.cpp">
       <Filter>07. Component</Filter>
     </ClCompile>
-    <ClCompile Include="CTransform.cpp">
+    <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp">
       <Filter>07. Component\01. Transform</Filter>
     </ClCompile>
-    <ClCompile Include="CMeshRender.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CMeshRender.cpp">
       <Filter>07. Component\RenderComponent\01. MeshRender</Filter>
     </ClCompile>
-    <ClCompile Include="CScript.cpp">
+    <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp">
       <Filter>07. Component\Script</Filter>
     </ClCompile>
-    <ClCompile Include="CLevel.cpp">
+    <ClCompile Include="Runtime\Private\Actor\CLevel.cpp">
       <Filter>05. Level</Filter>
     </ClCompile>
-    <ClCompile Include="CPathMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CPathMgr.cpp">
       <Filter>04. Manager\01. Path</Filter>
     </ClCompile>
-    <ClCompile Include="CTimeMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CTimeMgr.cpp">
       <Filter>04. Manager\02. Time</Filter>
     </ClCompile>
-    <ClCompile Include="CKeyMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CKeyMgr.cpp">
       <Filter>04. Manager\03. Key</Filter>
     </ClCompile>
-    <ClCompile Include="CAssetMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CAssetMgr.cpp">
       <Filter>04. Manager\04. Asset</Filter>
     </ClCompile>
-    <ClCompile Include="CLevelMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CLevelMgr.cpp">
       <Filter>04. Manager\05. Level</Filter>
     </ClCompile>
-    <ClCompile Include="CLayer.cpp">
+    <ClCompile Include="Runtime\Private\Actor\CLayer.cpp">
       <Filter>05. Level</Filter>
     </ClCompile>
-    <ClCompile Include="CCamera.cpp">
+    <ClCompile Include="Runtime\Private\Component\Camera\CCamera.cpp">
       <Filter>07. Component\02. Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CRenderMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CRenderMgr.cpp">
       <Filter>04. Manager\06. Render</Filter>
     </ClCompile>
-    <ClCompile Include="extern.cpp">
-      <Filter>01. Header</Filter>
-    </ClCompile>
-    <ClCompile Include="CTexture.cpp">
+    <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp">
       <Filter>08. Asset\03. Texture</Filter>
     </ClCompile>
-    <ClCompile Include="CMaterial.cpp">
+    <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp">
       <Filter>08. Asset\08. Material</Filter>
     </ClCompile>
-    <ClCompile Include="func.cpp">
-      <Filter>01. Header</Filter>
-    </ClCompile>
-    <ClCompile Include="CRenderComponent.cpp">
+    <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp">
       <Filter>07. Component\RenderComponent</Filter>
     </ClCompile>
-    <ClCompile Include="CCollider2D.cpp">
+    <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp">
       <Filter>07. Component\03. Collider2D</Filter>
     </ClCompile>
-    <ClCompile Include="CCollisionMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CCollisionMgr.cpp">
       <Filter>04. Manager\06. Collision</Filter>
     </ClCompile>
-    <ClCompile Include="CTaskMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CTaskMgr.cpp">
       <Filter>04. Manager\07. TaskMgr</Filter>
     </ClCompile>
-    <ClCompile Include="CFlipbook.cpp">
+    <ClCompile Include="System\Private\Asset\Texture\CFlipbook.cpp">
       <Filter>08. Asset\06. FlipBook</Filter>
     </ClCompile>
-    <ClCompile Include="CSprite.cpp">
+    <ClCompile Include="System\Private\Asset\Texture\CSprite.cpp">
       <Filter>08. Asset\07. Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="CFlipbookPlayer.cpp">
+    <ClCompile Include="Runtime\Private\Component\Animation\CFlipbookPlayer.cpp">
       <Filter>07. Component\04. FlipbookPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="CTileMap.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp">
       <Filter>07. Component\RenderComponent\02. TileMap</Filter>
     </ClCompile>
-    <ClCompile Include="CStructuredBuffer.cpp">
+    <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp">
       <Filter>03. Device\StructuredBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="CAssetMgr_Init.cpp">
+    <ClCompile Include="System\Private\Manager\CAssetMgr_Init.cpp">
       <Filter>04. Manager\04. Asset</Filter>
     </ClCompile>
-    <ClCompile Include="CLight2D.cpp">
+    <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp">
       <Filter>07. Component\05. Light2D</Filter>
     </ClCompile>
-    <ClCompile Include="CComputeShader.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CComputeShader.cpp">
       <Filter>08. Asset\Shader\10. ComputeShader</Filter>
     </ClCompile>
-    <ClCompile Include="CClearColorCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CClearColorCS.cpp">
       <Filter>HLSL\03. Compute\ClearColor</Filter>
     </ClCompile>
-    <ClCompile Include="CParticleSystem.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CParticleSystem.cpp">
       <Filter>07. Component\RenderComponent\03. ParticleSystem</Filter>
     </ClCompile>
-    <ClCompile Include="CParticleTickCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CParticleTickCS.cpp">
       <Filter>HLSL\03. Compute\ParticleTick</Filter>
     </ClCompile>
-    <ClCompile Include="CPrefab.cpp">
+    <ClCompile Include="System\Private\Asset\Prefab\CPrefab.cpp">
       <Filter>08. Asset\05. Prefab</Filter>
     </ClCompile>
-    <ClCompile Include="CSound.cpp">
+    <ClCompile Include="System\Private\Asset\Audio\CSound.cpp">
       <Filter>08. Asset\04. Sound</Filter>
     </ClCompile>
-    <ClCompile Include="CFontMgr.cpp">
+    <ClCompile Include="System\Private\Manager\CFontMgr.cpp">
       <Filter>04. Manager\08. FontMgr</Filter>
     </ClCompile>
-    <ClCompile Include="CAssetMgr_Mesh.cpp">
+    <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp">
       <Filter>04. Manager\04. Asset</Filter>
     </ClCompile>
-    <ClCompile Include="CLight3D.cpp">
+    <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp">
       <Filter>07. Component\06. Light3D</Filter>
     </ClCompile>
-    <ClCompile Include="CSkyBox.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp">
       <Filter>07. Component\RenderComponent\04. SkyBox</Filter>
     </ClCompile>
-    <ClCompile Include="CRenderMgr_Init.cpp">
+    <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp">
       <Filter>04. Manager\06. Render</Filter>
     </ClCompile>
-    <ClCompile Include="CMRT.cpp">
+    <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp">
       <Filter>04. Manager\06. Render\MRT</Filter>
     </ClCompile>
-    <ClCompile Include="CDecal.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp">
       <Filter>07. Component\RenderComponent\05. Decal</Filter>
     </ClCompile>
-    <ClCompile Include="CFrustum.cpp">
+    <ClCompile Include="Runtime\Private\Component\Camera\CFrustum.cpp">
       <Filter>07. Component\02. Camera\Frustum</Filter>
     </ClCompile>
-    <ClCompile Include="CLandScape.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape.cpp">
       <Filter>07. Component\RenderComponent\06. LandScape</Filter>
     </ClCompile>
-    <ClCompile Include="CLandScape_Init.cpp">
+    <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape_Init.cpp">
       <Filter>07. Component\RenderComponent\06. LandScape</Filter>
     </ClCompile>
-    <ClCompile Include="CHeightMapCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CHeightMapCS.cpp">
       <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
     </ClCompile>
-    <ClCompile Include="CRaycastCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CRaycastCS.cpp">
       <Filter>HLSL\03. Compute\LandScape\RayCast</Filter>
     </ClCompile>
-    <ClCompile Include="CWeightMapCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CWeightMapCS.cpp">
       <Filter>HLSL\03. Compute\LandScape\WeightMap</Filter>
     </ClCompile>
-    <ClCompile Include="CFBXLoader.cpp">
+    <ClCompile Include="System\Private\Rendering\Tool\FBX\CFBXLoader.cpp">
       <Filter>Module</Filter>
     </ClCompile>
-    <ClCompile Include="CMeshData.cpp">
+    <ClCompile Include="System\Private\Asset\Mesh\CMeshData.cpp">
       <Filter>08. Asset\02. MeshData</Filter>
     </ClCompile>
-    <ClCompile Include="CAnimator3D.cpp">
+    <ClCompile Include="Runtime\Private\Component\Animation\CAnimator3D.cpp">
       <Filter>07. Component\07. Animator3D</Filter>
     </ClCompile>
-    <ClCompile Include="CBoneMatrixCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </ClCompile>
     <ClCompile Include="CCopyBoneCS.cpp">
