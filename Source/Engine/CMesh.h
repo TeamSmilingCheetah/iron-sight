@@ -51,8 +51,11 @@ public:
     CStructuredBuffer* GetBoneInverseBuffer() { return m_BoneInverse; } // 각 Bone 의 Inverse 행렬
 
     void Binding(UINT _Subset);
+	void Binding_Inst(UINT _Subset);
+
     void Render(UINT _Subset);
     void Render_Particle(UINT _Count);
+	void Render_Instancing(UINT _iSubset);
 
     CLONE_DISABLE(CMesh);
     CMesh(bool _bEngineRes = false);

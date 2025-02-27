@@ -34,14 +34,16 @@ class CCamera :
 
 
     // 물체 분류
-    vector<CGameObject*> m_vecDeferred;
-    vector<CGameObject*> m_vecDecal;
-    vector<CGameObject*> m_vecOpaque;
-    vector<CGameObject*> m_vecMask;
-    vector<CGameObject*> m_vecTransparent;
-    vector<CGameObject*> m_vecEffect;
-    vector<CGameObject*> m_vecParticle;
-    vector<CGameObject*> m_vecPostprocess;
+	map<ULONG64, vector<tInstObj>>		m_mapInstGroup_D;	// Deferred
+	map<ULONG64, vector<tInstObj>>		m_mapInstGroup_F;	// Foward ( Opaque, Mask )	
+	map<INT_PTR, vector<tInstObj>>		m_mapSingleObj;		// Single Object
+
+	vector<CGameObject*>                m_vecDecal;         // Decal
+	vector<CGameObject*>                m_vecTransparent;   // 투명, 반투명
+	vector<CGameObject*>                m_vecEffect;
+	vector<CGameObject*>                m_vecParticle;      // 투명, 반투명, 입자 타입
+	vector<CGameObject*>                m_vecPostprocess;   // 후처리 오브젝트
+	vector<CGameObject*>                m_vecUI;            // UI
 
 public:
     void SetProjType(PROJ_TYPE _Type) { m_ProjType = _Type; }
@@ -78,12 +80,17 @@ public:
     void LoadComponent(FILE* _FILE) override;
 
     void SortObject();
+
     void render_deferred();
     void render_decal();
+
     void render_forward();
+
+	void render_transparent();
     void render_effect();
     void render_particle();
     void render_postprocess();
+	void render_ui();
     void render_clear();
 
 private:

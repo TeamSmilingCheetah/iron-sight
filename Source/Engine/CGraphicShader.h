@@ -19,18 +19,21 @@ class CGraphicShader :
     public CShader
 {
     ComPtr<ID3DBlob> m_VSBlob;
+	ComPtr<ID3DBlob> m_VSInstBlob;
     ComPtr<ID3DBlob> m_HSBlob;
     ComPtr<ID3DBlob> m_DSBlob;
     ComPtr<ID3DBlob> m_GSBlob;
     ComPtr<ID3DBlob> m_PSBlob;
 
     ComPtr<ID3D11VertexShader> m_VS;
+	ComPtr<ID3D11VertexShader> m_VSInst;
     ComPtr<ID3D11HullShader> m_HS;
     ComPtr<ID3D11DomainShader> m_DS;
     ComPtr<ID3D11GeometryShader> m_GS;
     ComPtr<ID3D11PixelShader> m_PS;
 
     ComPtr<ID3D11InputLayout> m_Layout;
+	ComPtr<ID3D11InputLayout> m_LayoutInst;
     D3D11_PRIMITIVE_TOPOLOGY m_Topology;
 
     RS_TYPE m_RSType; // 레스터라이져 스테이트 옵션
@@ -75,7 +78,14 @@ public:
 
 
     void Binding();
+	void Binding_Inst();
 
+	ComPtr<ID3D11VertexShader> GetVSInst() { return m_VSInst; }
+
+private:
+	int CreateInputLayout();
+
+public:
     CLONE_DISABLE(CGraphicShader);
     CGraphicShader();
     ~CGraphicShader() override;

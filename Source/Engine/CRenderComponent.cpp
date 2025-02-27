@@ -42,6 +42,20 @@ CRenderComponent::~CRenderComponent()
 {
 }
 
+void CRenderComponent::Render(UINT _iSubset)
+{
+	Render();
+}
+
+ULONG64 CRenderComponent::GetInstID(UINT _iMtrlIdx)
+{
+	if (m_Mesh == nullptr || m_vecMtrls[_iMtrlIdx].pCurMtrl == nullptr)
+		return 0;
+
+	uInstID id{ (UINT)m_Mesh->GetID(), (WORD)m_vecMtrls[_iMtrlIdx].pCurMtrl->GetID(), (WORD)_iMtrlIdx };
+	return id.llID;
+}
+
 
 void CRenderComponent::SetMesh(Ptr<CMesh> _Mesh)
 {

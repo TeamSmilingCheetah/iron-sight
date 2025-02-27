@@ -5,6 +5,7 @@
 #include "CPathMgr.h"
 
 #include "CStructuredBuffer.h"
+#include "CInstancingBuffer.h"
 
 CMesh::CMesh(bool _bEngineRes)
     : CAsset(MESH, _bEngineRes)
@@ -280,6 +281,28 @@ void CMesh::Binding(UINT _iSubset)
     UINT offset = 0;
     CONTEXT->IASetVertexBuffers(0, 1, m_VB.GetAddressOf(), &stride, &offset);
     CONTEXT->IASetIndexBuffer(m_vecIdxInfo[_iSubset].IB.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
+void CMesh::Binding_Inst(UINT _iSubset)
+{
+	if (_iSubset >= m_vecIdxInfo.size())
+		assert(nullptr);
+
+	ID3D11Buffer* arrBuffer[2] = { m_VB.Get(), CInstancingBuffer::GetInst()->GetBuffer().Get() };
+	UINT		  iStride[2] = { sizeof(Vtx), sizeof(tInstancingData) };
+	UINT		  iOffset[2] = { 0, 0 };
+
+	CONTEXT->IASetVertexBuffers(0, 2, arrBuffer, iStride, iOffset);
+	CONTEXT->IASetIndexBuffer(m_vecIdxInfo[_iSubset].IB.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
+
+void CMesh::Render_Instancing(UINT _Subset)
+{
+	Binding_Inst(_Subset);
+
+	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[_Subset].IdxCount
+		, CInstancingBuffer::GetInst()->GetInstanceCount(), 0, 0, 0);
 }
 
 void CMesh::Render(UINT _Subset)

@@ -30,8 +30,10 @@ public:
 
     UINT GetMaterialCount() { return static_cast<UINT>(m_vecMtrls.size()); }
 
+	ULONG64 GetInstID(UINT _iMtrlIdx);
 
     virtual void Render() = 0;
+	virtual void Render(UINT _Subset);
     void SaveComponent(FILE* _File) override;
     void LoadComponent(FILE* _FILE) override;
 
