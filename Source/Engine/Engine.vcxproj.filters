@@ -218,6 +218,9 @@
     <ClCompile Include="pch.cpp">
       <Filter>00. Default</Filter>
     </ClCompile>
+    <ClCompile Include="extern.cpp">
+      <Filter>01. Header</Filter>
+    </ClCompile>
     <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp">
       <Filter>01. Header</Filter>
     </ClCompile>

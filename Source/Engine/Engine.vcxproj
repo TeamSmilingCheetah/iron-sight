@@ -295,6 +295,7 @@
     <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp" />
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp" />
     <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp" />
+    <ClCompile Include="extern.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

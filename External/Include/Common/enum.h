@@ -96,7 +96,6 @@ enum ASSET_TYPE
 
 extern const char* ASSET_TYPE_STRING[];
 
-
 enum class LIGHT_TYPE
 {
     DIRECTIONAL, // 방향성 광원		태양광, 달
