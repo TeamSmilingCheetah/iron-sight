@@ -48,8 +48,8 @@ void Outliner::RenewGameObject()
 
 	for (size_t i = 0; i < MAX_LAYER; ++i)
 	{
-		CLayer* pLayer = pCurLevel->GetLayer(i);
-		string LayerName = string(pLayer->GetName().begin(), pLayer->GetName().end());
+		CLayer* pLayer = pCurLevel->GetLayer(static_cast<int>(i));
+		string LayerName = WStringToString(pLayer->GetName());
 		TreeNode* pListNode = m_Tree->AddItem(pRootNode, LayerName, (DWORD_PTR)i, false, true);
 
 		const vector<CGameObject*>& vecParents = pLayer->GetParentObjects();
