@@ -94,6 +94,16 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 	TreeNode* pDragged = (TreeNode*)_DragNode;
 	TreeNode* pDropped = (TreeNode*)_DropNode;
 
+	// 드래그된 노드의 데이터 가져오기
+	DWORD_PTR DragData = pDragged->GetData();
+
+	// 드래그된 항목이 레이어 노드인지 먼저 확인 (값이 1000보다 작으면 레이어 노드)
+	if (reinterpret_cast<void*>(DragData) <= (void*)1000)
+	{
+		// 레이어 노드는 드래그 앤 드롭 대상이 아님
+		return;
+	}
+
 	CGameObject* pDragObj = reinterpret_cast<CGameObject*>(pDragged->GetData());
 	CGameObject* pDropObj = nullptr;
 
