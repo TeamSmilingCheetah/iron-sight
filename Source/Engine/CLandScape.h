@@ -58,11 +58,26 @@ class CLandScape :
 
 public:
     void SetFace(UINT _X, UINT _Z);
-    void SetHeightMapTexture(Ptr<CTexture> _HeightMap) { m_HeightMap = _HeightMap; }
+	void SetMode(LANDSCAPE_MODE _Mode) { m_Mode = _Mode; }
+	void SetBrushIdx(UINT _Idx) { m_BrushIdx = _Idx; }
+	void SetWeightIdx(int _Idx) { m_WeightIdx = _Idx; }
+	void SetBrushScale(Vec2 _Scale) { m_BrushScale = _Scale; }
+
+	void SetHeightMapTexture(Ptr<CTexture> _HeightMap) { m_HeightMap = _HeightMap; }
     void CreateHeightMap(UINT _Width, UINT _Height);
     void AddBrushTexture(Ptr<CTexture> _BrushTex) { m_vecBrush.push_back(_BrushTex); }
     void SetColorTexture(Ptr<CTexture> _ArrTex);
     void SetNormalTexture(Ptr<CTexture> _ArrTex);
+
+	Vec2 GetFace() { return Vec2(static_cast<float>(m_FaceX), static_cast<float>(m_FaceZ));	}
+	Vec2 GetBrushScale() { return m_BrushScale; }
+	UINT GetBrushIdx() { return m_BrushIdx; }
+	UINT GetWeigtIdx() { return m_WeightIdx; }
+	int GetBrushSize() { return static_cast<int>(m_vecBrush.size()); }
+	int GetWeightSize() { return m_ColorTex->GetArraySize(); }
+	
+
+	LANDSCAPE_MODE GetMode() { return m_Mode; }
 
     void FinalTick() override;
     void Render() override;

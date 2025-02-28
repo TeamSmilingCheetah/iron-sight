@@ -31,13 +31,20 @@ public:
         m_vecBones = _vecBones;
         m_vecFinalBoneMat.resize(m_vecBones->size());
     }
-
+	void SetRatio(float _Ratio) { m_Ratio = _Ratio; }
     void SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip);
     void SetClipTime(int _iClipIdx, float _fTime) { m_vecClipUpdateTime[_iClipIdx] = _fTime; }
 
     CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
     UINT GetBoneCount() { return static_cast<UINT>(m_vecBones->size()); }
     void ClearData();
+
+	const vector<tMTBone>* GetvecBone() { return m_vecBones; }
+	const vector<tMTAnimClip>* GetvecClip() { return m_vecClip; }
+	int GetCurClipIdx() { return m_CurClip; }
+	int GetCurFrameIdx() { return m_FrameIdx; }
+	double GetCurClipTime() { return m_CurTime; }
+	float GetRatio() { return m_Ratio; }
 
     void Binding();
 
