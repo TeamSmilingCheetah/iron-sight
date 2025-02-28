@@ -159,6 +159,11 @@
     </ClInclude>
     <ClInclude Include="LandScapeUI.h">
       <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    <ClInclude Include="SkeletonUI.h">
+      <Filter>3. EditorUI\Inspector\AssetUI\12. SkeletonUI</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationUI.h">
+      <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +303,11 @@
     </Filter>
     <Filter Include="3. EditorUI\Inspector\ComponentUI\SkyBoxUI">
       <UniqueIdentifier>{0ac4f247-20fc-47b2-a5c5-508705823442}</UniqueIdentifier>
+    <Filter Include="3. EditorUI\Inspector\AssetUI\11. AnimationUI">
+      <UniqueIdentifier>{db1e4c4b-81a6-42aa-b441-44b06b49796c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\Inspector\AssetUI\12. SkeletonUI">
+      <UniqueIdentifier>{0833d19c-70fa-4572-8f10-9bf8e6cf3797}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +458,11 @@
     </ClCompile>
     <ClCompile Include="LandScapeUI.cpp">
       <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    <ClCompile Include="SkeletonUI.cpp">
+      <Filter>3. EditorUI\Inspector\AssetUI\12. SkeletonUI</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationUI.cpp">
+      <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

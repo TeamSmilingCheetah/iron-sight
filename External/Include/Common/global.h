@@ -7,6 +7,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 #include <typeinfo>
 
@@ -14,6 +15,7 @@ using std::vector;
 using std::list;
 using std::map;
 using std::make_pair;
+using std::set;
 using std::string;
 using std::wstring;
 

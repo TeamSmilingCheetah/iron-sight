@@ -64,11 +64,6 @@ public:
     void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
 };
 
-template <typename T1, typename T2>
-constexpr bool IsTypeSame = false;
-template <typename T>
-constexpr bool IsTypeSame<T, T> = true;
-
 template <typename T>
 ASSET_TYPE GetAssetType()
 {
@@ -76,23 +71,26 @@ ASSET_TYPE GetAssetType()
         return MESH;
     if constexpr (std::is_same_v<T, CGraphicShader>)
         return GRAPHIC_SHADER;
-    if constexpr (IsTypeSame<T, CComputeShader>)
+    if constexpr (std::is_same_v<T, CComputeShader>)
         return COMPUTE_SHADER;
-    if constexpr (IsTypeSame<T, CMeshData>)
+    if constexpr (std::is_same_v<T, CMeshData>)
         return MESH_DATA;
-    if constexpr (IsTypeSame<T, CMaterial>)
+    if constexpr (std::is_same_v<T, CMaterial>)
         return MATERIAL;
-    if constexpr (IsTypeSame<T, CPrefab>)
+    if constexpr (std::is_same_v<T, CPrefab>)
         return PREFAB;
-    if constexpr (IsTypeSame<T, CSound>)
+    if constexpr (std::is_same_v<T, CSound>)
         return SOUND;
-    if constexpr (IsTypeSame<T, CFlipbook>)
+    if constexpr (std::is_same_v<T, CFlipbook>)
         return FLIPBOOK;
-    if constexpr (IsTypeSame<T, CSprite>)
+    if constexpr (std::is_same_v<T, CSprite>)
         return SPRITE;
-    if constexpr (IsTypeSame<T, CTexture>)
+    if constexpr (std::is_same_v<T, CTexture>)
         return TEXTURE;
-
+	if constexpr (std::is_same_v<T, CAnimation>)
+		return ANIMATION;
+	if constexpr (std::is_same_v<T, CSkeleton>)
+		return SKELETON;
 
     return END;
 }

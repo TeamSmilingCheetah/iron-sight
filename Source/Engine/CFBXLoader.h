@@ -65,7 +65,7 @@ struct tBone
     int iParentIndx; // 부모 Bone 의 인덱스
     FbxAMatrix matOffset; // Offset 행렬( -> 뿌리 -> Local)
     FbxAMatrix matBone;
-    vector<tKeyFrame> vecKeyFrame;
+    vector<vector<tKeyFrame>> vecKeyFrame;
 };
 
 struct tAnimClip

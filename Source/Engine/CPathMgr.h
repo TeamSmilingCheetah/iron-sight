@@ -14,4 +14,6 @@ public:
 	const wstring& GetSrcPath() { return m_SourcePath; }
     wstring GetRelativePath(const wstring& _FilePath);
     void Init();
+
+	wstring MakeFileName(const wstring& _Name);
 };

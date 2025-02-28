@@ -150,9 +150,9 @@ void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float 
     CRenderMgr::GetInst()->AddDebugShape(info);
 }
 
-Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat)
+Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat)
 {
-    Matrix mat;
+	Matrix mat{};
     for (int i = 0; i < 4; ++i)
     {
         for (int j = 0; j < 4; ++j)
@@ -161,6 +161,16 @@ Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat)
         }
     }
     return mat;
+}
+
+Vec4 GetVectorFromFbxVector(const FbxDouble4& _Vec)
+{
+	Vec4 vec{};
+	for (int i = 0; i < 4; ++i)
+	{
+		vec[i] = static_cast<float>(_Vec.mData[i]);
+	}
+	return vec;
 }
 
 void SaveWString(const wstring& _str, FILE* _File)

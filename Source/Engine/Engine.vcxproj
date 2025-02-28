@@ -174,9 +174,11 @@
     <ClInclude Include="..\..\External\Include\Common\singleton.h" />
     <ClInclude Include="..\..\External\Include\Common\struct.h" />
     <ClInclude Include="assets.h" />
+    <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator3D.h" />
     <ClInclude Include="CAsset.h" />
     <ClInclude Include="CAssetMgr.h" />
+    <ClInclude Include="CSkeleton.h" />
     <ClInclude Include="CBoneMatrixCS.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CClearColorCS.h" />
@@ -235,11 +237,13 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator3D.cpp" />
     <ClCompile Include="CAsset.cpp" />
     <ClCompile Include="CAssetMgr.cpp" />
     <ClCompile Include="CAssetMgr_Init.cpp" />
     <ClCompile Include="CAssetMgr_Mesh.cpp" />
+    <ClCompile Include="CSkeleton.cpp" />
     <ClCompile Include="CBoneMatrixCS.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CClearColorCS.cpp" />

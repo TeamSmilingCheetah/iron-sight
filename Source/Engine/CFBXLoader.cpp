@@ -621,6 +621,8 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
                 // Cluster == Joint == 관절
                 int iClusterCount = pSkin->GetClusterCount();
 
+				FbxAMatrix matNodeTransform = GetTransform(_pMesh->GetNode());
+
                 for (int j = 0; j < iClusterCount; ++j)
                 {
                     FbxCluster* pCluster = pSkin->GetCluster(j);
@@ -633,10 +635,12 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
                     if (-1 == iBoneIdx)
                         assert(NULL);
 
-                    FbxAMatrix matNodeTransform = GetTransform(_pMesh->GetNode());
-
                     // Weights And Indices 정보를 읽는다.
                     LoadWeightsAndIndices(pCluster, iBoneIdx, _pContainer);
+
+					// 한 번 읽은 bone 정보는 더 이상 읽지 않는다.
+					if (m_vecBone[iBoneIdx]->vecKeyFrame.size() > 0)
+						continue;
 
                     // Bone 의 OffSet 행렬 구한다.
                     LoadOffsetMatrix(pCluster, matNodeTransform, iBoneIdx, _pContainer);
@@ -721,19 +725,19 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
     matReflect.mData[2] = v3;
     matReflect.mData[3] = v4;
 
-    m_vecBone[_iBoneIdx]->matBone = _matNodeTransform;
+	m_vecBone[_iBoneIdx]->vecKeyFrame.resize(m_vecAnimClip.size());
 
     //FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
 	FbxTime::EMode eTimeMode = FbxTime::EMode::eFrames30;
 
 	// 애니메이션 clip을 각각 추출
-	for (int animIdx = 0; animIdx < m_vecAnimClip.size(); ++animIdx)
+	for (int clipIdx = 0; clipIdx < m_vecAnimClip.size(); ++clipIdx)
 	{
-		FbxAnimStack* pCurAnimStack = m_pScene->FindMember<FbxAnimStack>(m_arrAnimName[animIdx]->Buffer());
+		FbxAnimStack* pCurAnimStack = m_pScene->FindMember<FbxAnimStack>(m_arrAnimName[clipIdx]->Buffer());
 		m_pScene->SetCurrentAnimationStack(pCurAnimStack);
 
-		FbxLongLong llStartFrame = m_vecAnimClip[animIdx]->tStartTime.GetFrameCount(eTimeMode);
-		FbxLongLong llEndFrame = m_vecAnimClip[animIdx]->tEndTime.GetFrameCount(eTimeMode);
+		FbxLongLong llStartFrame = m_vecAnimClip[clipIdx]->tStartTime.GetFrameCount(eTimeMode);
+		FbxLongLong llEndFrame = m_vecAnimClip[clipIdx]->tEndTime.GetFrameCount(eTimeMode);
 
 		for (FbxLongLong i = llStartFrame; i < llEndFrame; ++i)
 		{
@@ -750,11 +754,12 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 			tFrame.dTime = tTime.GetSecondDouble();
 			tFrame.matTransform = matCurTrans;
 
-			m_vecBone[_iBoneIdx]->vecKeyFrame.push_back(tFrame);
+			m_vecBone[_iBoneIdx]->vecKeyFrame[clipIdx].push_back(tFrame);
 		}
 	}
 
-    
+	FbxAnimStack* pCurAnimStack = m_pScene->FindMember<FbxAnimStack>(m_arrAnimName[0]->Buffer());
+	m_pScene->SetCurrentAnimationStack(pCurAnimStack);
 }
 
 void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
@@ -784,6 +789,7 @@ void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
     matOffset = matReflect * matOffset * matReflect;
 
     m_vecBone[_iBoneIdx]->matOffset = matOffset;
+	m_vecBone[_iBoneIdx]->matBone = _matNodeTransform;
 }
 
 

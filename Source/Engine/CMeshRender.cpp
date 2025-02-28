@@ -4,6 +4,7 @@
 #include "assets.h"
 #include "CTransform.h"
 #include "CFlipbookPlayer.h"
+#include "CAnimator3D.h"
 
 CMeshRender::CMeshRender()
     : CRenderComponent(COMPONENT_TYPE::MESHRENDER)
@@ -21,24 +22,35 @@ void CMeshRender::FinalTick()
 void CMeshRender::Render()
 {
     if (FlipbookPlayer())
-    {
         FlipbookPlayer()->Binding();
-    }
 
     // Animator3D Binding
-    if (Animator3D())
-    {
-        Animator3D()->Binding();
+	// 본인에게 붙어 있는 경우
+	CAnimator3D* pAnimator = Animator3D();
 
-        for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
-        {
-            if (nullptr == GetMaterial(i))
-                continue;
+	// 부모에게 붙어 있는 경우
+	if (!pAnimator && m_SkinRender)
+	{
+		pAnimator = GetOwner()->GetParent()->Animator3D();
+	}
 
-            GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
-            GetMaterial(i)->SetBoneCount(Animator3D()->GetBoneCount());
-        }
-    }
+	if (m_SkinRender)
+	{
+		if (pAnimator)
+		{
+			pAnimator->Binding();
+
+			for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
+			{
+				if (nullptr == GetMaterial(i))
+					continue;
+
+				GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
+				GetMaterial(i)->SetBoneCount(pAnimator->GetBoneCount());
+			}
+		}
+	}
+	
 
     // 위치정보
     Transform()->Binding();
@@ -57,7 +69,8 @@ void CMeshRender::Render()
     }
 
     if (FlipbookPlayer())
-    {
         FlipbookPlayer()->Clear();
-    }
+
+	if (pAnimator)
+		pAnimator->ClearData(this);
 }

@@ -8,6 +8,8 @@
 #include "CTransform.h"
 #include "CMeshRender.h"
 #include "CAnimator3D.h"
+#include "CAnimation.h"
+#include "CSkeleton.h"
 
 #include "CFBXLoader.h"
 
@@ -40,19 +42,31 @@ CGameObject* CMeshData::Instantiate()
 		}
 
 		// Animation 파트 추가
-		if (m_vecMesh[0]->IsAnimMesh())
+		if (!m_vecAnimSet.empty())
 		{
 			CAnimator3D* pAnimator = new CAnimator3D;
 			pNewObj->AddComponent(pAnimator);
 
-			pAnimator->SetBones(m_vecMesh[0]->GetBones());
-			pAnimator->SetAnimClip(m_vecMesh[0]->GetAnimClip());
+			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetCurClip(0);
 		}
 	}
 
 	// 2개 이상의 메쉬로 이루어진 경우. 한 empty 오브젝트 밑에 메쉬마다 자식으로 생성
 	else
 	{
+		// Animation 파트 추가
+		if (!m_vecAnimSet.empty())
+		{
+			CAnimator3D* pAnimator = new CAnimator3D;
+			pNewObj->AddComponent(pAnimator);
+
+			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetCurClip(0);
+		}
+
 		for (int idx = 0; idx < meshCnt; ++idx)
 		{
 			CGameObject* childObj = new CGameObject;
@@ -65,16 +79,12 @@ CGameObject* CMeshData::Instantiate()
 			for (UINT i = 0; i < m_vecMtrlSet[idx].size(); ++i)
 			{
 				childObj->MeshRender()->SetMaterial(m_vecMtrlSet[idx][i], i);
-			}
 
-			// Animation 파트 추가
-			if (m_vecMesh[idx]->IsAnimMesh())
-			{
-				CAnimator3D* pAnimator = new CAnimator3D;
-				childObj->AddComponent(pAnimator);
-
-				pAnimator->SetBones(m_vecMesh[idx]->GetBones());
-				pAnimator->SetAnimClip(m_vecMesh[idx]->GetAnimClip());
+				// 애니메이션을 사용한다면
+				if (!m_vecAnimSet.empty())
+				{
+					childObj->MeshRender()->SetSkinRender(true);
+				}
 			}
 
 			pNewObj->AddChild(childObj);
@@ -107,8 +117,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		// AssetMgr 에 메쉬 등록
 		if (nullptr != pMesh)
 		{
-			wstring strMeshKey = L"Mesh\\";
-			strMeshKey += path(strFullPath).stem();
+			wstring strMeshKey =  path(strFullPath).stem();
 			strMeshKey += L"_";
 			strMeshKey += Container.strName;
 			strMeshKey += L".mesh";
@@ -117,19 +126,21 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 			{
 				// 메시를 실제 파일로 저장
 				CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
-				pMesh->Save(CPathMgr::GetInst()->GetContentPath() + strMeshKey);
+
+				wstring strFilePath = L"Mesh\\" + strMeshKey;
+				pMesh->Save(strFilePath);
 			}
 		}
 		else
 		{
 			// FBX 를 로딩했는데 거기서 나온 메쉬가 이미 메모리(에셋매니저) 에 로딩 되어있는 메쉬였다면
 			// pMesh 가 스마트 포인터라서 별다른 조치를 하지 않아도 만들어진 메쉬가 삭제될것
-		}
+		}		
 
+		// 메테리얼 가져오기
 		vector<Ptr<CMaterial>> vecMtrl;
 		vecMtrl.reserve(Container.vecMtrl.size());
 
-		// 메테리얼 가져오기
 		for (UINT i = 0; i < Container.vecMtrl.size(); ++i)
 		{
 			// 예외처리 (material 이름이 입력 안되어있을 수도 있다.)
@@ -143,15 +154,22 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		pMeshData->m_vecMtrlSet.push_back(vecMtrl);
 	}
 
+	// Skeleton 로드하기
+	CSkeleton::LoadFromFBX(loader);
+
+	// Animation 로드하기
+	pMeshData->m_vecAnimSet = CAnimation::LoadFromFBX(loader);
+
 	return pMeshData;
 }
 
 
 int CMeshData::Save(const wstring& _RelativePath)
 {
-	SetRelativePath(_RelativePath);
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	SetRelativePath(strRelativePath);
 
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + _RelativePath;
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
 
 	FILE* pFile = nullptr;
 	errno_t err = _wfopen_s(&pFile, strFilePath.c_str(), L"wb");
@@ -187,6 +205,15 @@ int CMeshData::Save(const wstring& _RelativePath)
 
 		i = -1; // 마감 값 (underflow)
 		fwrite(&i, sizeof(UINT), 1, pFile);
+	}
+
+	// Animation set 저장
+	UINT animCount = static_cast<UINT>(m_vecAnimSet.size());
+	fwrite(&animCount, sizeof(UINT), 1, pFile);
+
+	for (UINT i = 0; i < animCount; ++i)
+	{
+		SaveAssetRef(m_vecAnimSet[i], pFile);
 	}
 
 	fclose(pFile);
@@ -227,6 +254,17 @@ int CMeshData::Load(const wstring& _FilePath)
 
 			LoadAssetRef(m_vecMtrlSet[idx][i], pFile);
 		}
+	}
+
+	// Animation set 로드
+	UINT animCount = 0;
+	fread(&animCount, sizeof(UINT), 1, pFile);
+
+	m_vecAnimSet.resize(animCount);
+
+	for (UINT i = 0; i < animCount; ++i)
+	{
+		LoadAssetRef(m_vecAnimSet[i], pFile);
 	}
 
 	fclose(pFile);

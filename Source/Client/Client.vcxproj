@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animator3DUI.h" />
+    <ClInclude Include="AnimationUI.h" />
     <ClInclude Include="AssetUI.h" />
     <ClInclude Include="CameraUI.h" />
     <ClInclude Include="CEditorCamScript.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="SE_Detail.h" />
     <ClInclude Include="SE_Sub.h" />
     <ClInclude Include="SkyBoxUI.h" />
+    <ClInclude Include="SkeletonUI.h" />
     <ClInclude Include="SoundUI.h" />
     <ClInclude Include="SpriteEditor.h" />
     <ClInclude Include="SpriteUI.h" />
@@ -215,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animator3DUI.cpp" />
+    <ClCompile Include="AnimationUI.cpp" />
     <ClCompile Include="AssetUI.cpp" />
     <ClCompile Include="CameraUI.cpp" />
     <ClCompile Include="CEditorCamScript.cpp" />
@@ -259,6 +262,7 @@
     <ClCompile Include="SE_Detail.cpp" />
     <ClCompile Include="SE_Sub.cpp" />
     <ClCompile Include="SkyBoxUI.cpp" />
+    <ClCompile Include="SkeletonUI.cpp" />
     <ClCompile Include="SoundUI.cpp" />
     <ClCompile Include="SpriteEditor.cpp" />
     <ClCompile Include="SpriteUI.cpp" />
