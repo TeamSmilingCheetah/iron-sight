@@ -10,3 +10,5 @@
 #include "CFlipbook.h"
 #include "CPrefab.h"
 #include "CSound.h"
+#include "CAnimation.h"
+#include "CSkeleton.h"

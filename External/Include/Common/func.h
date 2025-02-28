@@ -17,7 +17,8 @@ void DrawDebugCube(Vec4 _Color, Vec3 _Pos, Vec3 _Scale, Vec3 _Rotation, bool _De
 void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, float _Duration);
 void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float _Duration);
 
-Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
+Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat);
+Vec4 GetVectorFromFbxVector(const FbxDouble4& _vec);
 
 void SaveWString(const wstring& _str, FILE* _File);
 void LoadWString(wstring& _str, FILE* _File);
@@ -100,9 +101,9 @@ void DeleteVec(vector<T>& _vec)
 template <typename T1, typename T2>
 void DeleteMap(map<T1, T2>& _map)
 {
-    for (const auto& pair : _map)
+    for (auto& pair : _map)
     {
-        delete pair.second;
+        DELETE(pair.second);
     }
     _map.clear();
 }

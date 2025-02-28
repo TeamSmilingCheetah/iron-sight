@@ -4,14 +4,31 @@
 #include "assets.h"
 #include "CTransform.h"
 #include "CFlipbookPlayer.h"
+#include "CAnimator3D.h"
 
 CMeshRender::CMeshRender()
     : CRenderComponent(COMPONENT_TYPE::MESHRENDER)
+	, m_SkinRender(false)
 {
 }
 
 CMeshRender::~CMeshRender()
 {
+}
+
+CAnimator3D* CMeshRender::GetAnimator()
+{
+	if (!m_SkinRender)
+		return nullptr;
+
+	CAnimator3D* pAnimator = nullptr;
+
+	if (GetOwner()->GetParent())
+	{
+		pAnimator = GetOwner()->GetParent()->Animator3D();
+	}
+
+	return pAnimator;
 }
 
 void CMeshRender::FinalTick()
@@ -21,24 +38,24 @@ void CMeshRender::FinalTick()
 void CMeshRender::Render()
 {
     if (FlipbookPlayer())
-    {
         FlipbookPlayer()->Binding();
-    }
 
     // Animator3D Binding
-    if (Animator3D())
-    {
-        Animator3D()->Binding();
+	CAnimator3D* pAnimator = Animator3D();
 
-        for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
-        {
-            if (nullptr == GetMaterial(i))
-                continue;
+	if (pAnimator)
+	{
+		pAnimator->Binding(this);
 
-            GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
-            GetMaterial(i)->SetBoneCount(Animator3D()->GetBoneCount());
-        }
-    }
+		for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
+		{
+			if (nullptr == GetMaterial(i))
+				continue;
+
+			GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
+			GetMaterial(i)->SetBoneCount(pAnimator->GetBoneCount());
+		}
+	}
 
     // 위치정보
     Transform()->Binding();
@@ -57,7 +74,8 @@ void CMeshRender::Render()
     }
 
     if (FlipbookPlayer())
-    {
         FlipbookPlayer()->Clear();
-    }
+
+	if (pAnimator)
+		pAnimator->ClearData();
 }

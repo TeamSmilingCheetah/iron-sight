@@ -22,6 +22,27 @@ void CPathMgr::Init()
 	m_SourcePath = bin_dir.parent_path().parent_path().wstring() + L"\\Source\\Engine\\";
 }
 
+wstring CPathMgr::MakeFileName(const wstring& _Name)
+{
+	wstring strName = _Name;;
+
+	int Len = static_cast<int>(strName.length());
+
+	// 파일 명에 들어가면 안되는 문자들
+	constexpr std::wstring_view badChars = L"/:*?\"<>|";
+
+	for (int i = Len - 1; i >= 0; --i)
+	{
+		if (strName[i] == L'\\')
+			break;
+
+		if (badChars.find(strName[i]) != std::wstring::npos)  // `std::find()` 대체
+			strName[i] = L'_';
+	}
+
+	return strName;
+}
+
 wstring CPathMgr::GetRelativePath(const wstring& _FilePath)
 {
     size_t FindPos = _FilePath.find(m_ContentPath);

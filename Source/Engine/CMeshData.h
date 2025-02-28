@@ -3,12 +3,15 @@
 
 #include "CMesh.h"
 #include "CMaterial.h"
+#include "CAnimation.h"
 
 class CMeshData :
     public CAsset
 {
-    vector<Ptr<CMesh>>				m_vecMesh;
-    vector<vector<Ptr<CMaterial>>>	m_vecMtrlSet;
+private:
+    vector<Ptr<CMesh>>					m_vecMesh;
+    vector<vector<Ptr<CMaterial>>>		m_vecMtrlSet;
+	vector<Ptr<CAnimation>>				m_vecAnimSet;	// 같은 본을 사용하는 animation들의 모음
 
 public:
     static CMeshData* LoadFromFBX(const wstring& _RelativePath);

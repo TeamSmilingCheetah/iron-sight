@@ -13,6 +13,8 @@ const char* ASSET_TYPE_STRING[] =
     "SOUND",
     "PREFAB",
     "FLIPBOOK",
+	"ANIMATION",
+	"SKELETON",
     "SPRITE",
     "MATERIAL",
     "GRAPHIC_SHADER",

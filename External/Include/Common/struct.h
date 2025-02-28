@@ -194,22 +194,6 @@ struct tMTBone
     int iParentIndx;
     Matrix matOffset; // Inverse 행렬( Skin 정점을 -> 기본상태로 되돌림)
     Matrix matBone;
-    vector<tMTKeyFrame> vecKeyFrame;
-};
-
-struct tMTAnimClip
-{
-    wstring strAnimName;
-    int iStartFrame;
-    int iEndFrame;
-    int iFrameLength;
-
-    double dStartTime;
-    double dEndTime;
-    double dTimeLength;
-    float fUpdateTime; // 이거 안씀
-
-    FbxTime::EMode eMode;
 };
 
 // ===========
