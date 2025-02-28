@@ -17,6 +17,11 @@ CLandScape::CLandScape()
 	  , m_BrushScale(Vec2(0.25f, 0.25f))
 	  , m_BrushIdx(0)
 	  , m_Mode(NONE)
+	  , m_RaycastOut()
+	  , m_WeightHeight(0)
+	  , m_WeightIdx(0)
+	  , m_WeightMap()
+	  , m_WeightWidth()
 {
 }
 

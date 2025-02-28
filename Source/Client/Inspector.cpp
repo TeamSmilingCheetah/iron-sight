@@ -113,6 +113,10 @@ void Inspector::SetTargetAsset(Ptr<CAsset> _Asset)
 #include "CameraUI.h"
 #include "Light2DUI.h"
 #include "MeshRenderUI.h"
+#include "Light3DUI.h"
+#include "Animator3DUI.h"
+#include "SkyBoxUI.h"
+#include "LandScapeUI.h"
 
 void Inspector::CreateComponentUI()
 {
@@ -136,6 +140,22 @@ void Inspector::CreateComponentUI()
     m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESHRENDER)] = static_cast<ComponentUI*>(
         AddChildUI(new MeshRenderUI));
     m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESHRENDER)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LIGHT3D)] = static_cast<ComponentUI*>(
+		AddChildUI(new Light3DUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LIGHT3D)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::ANIMATOR3D)] = static_cast<ComponentUI*>(
+		AddChildUI(new Animator3DUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::ANIMATOR3D)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::SKYBOX)] = static_cast<ComponentUI*>(
+		AddChildUI(new SkyBoxUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::SKYBOX)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)] = static_cast<ComponentUI*>(
+		AddChildUI(new LandScapeUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)]->SetChildSize(ImVec2(0.f, 150.f));
 }
 
 #include "MeshUI.h"

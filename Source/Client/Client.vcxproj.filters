@@ -148,6 +148,18 @@
     <ClInclude Include="SE_AtlasView.h">
       <Filter>3. EditorUI\SpriteEditor\Sub\SE_AtlasView</Filter>
     </ClInclude>
+    <ClInclude Include="Animator3DUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Light3DUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
+    </ClInclude>
+    <ClInclude Include="LandScapeUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -274,6 +286,18 @@
     </Filter>
     <Filter Include="3. EditorUI\SpriteEditor\Sub\SE_AtlasView">
       <UniqueIdentifier>{fd45c3bd-866a-4905-a171-0430bfa47b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\Inspector\ComponentUI\Animator3DUI">
+      <UniqueIdentifier>{fa76a2cf-19dd-4dac-ace6-a9a8f3764214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\Inspector\ComponentUI\Light3D">
+      <UniqueIdentifier>{dbe13082-983b-49be-bed4-0d48d795c0fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\Inspector\ComponentUI\LandscapeUI">
+      <UniqueIdentifier>{6296cbcf-64e1-461a-9d8a-12541eb05c16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\Inspector\ComponentUI\SkyBoxUI">
+      <UniqueIdentifier>{0ac4f247-20fc-47b2-a5c5-508705823442}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +436,18 @@
     </ClCompile>
     <ClCompile Include="SE_AtlasView.cpp">
       <Filter>3. EditorUI\SpriteEditor\Sub\SE_AtlasView</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator3DUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Light3DUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LandScapeUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
