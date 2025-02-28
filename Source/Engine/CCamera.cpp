@@ -343,17 +343,110 @@ void CCamera::render_decal()
 
 void CCamera::render_forward()
 {
-    //// 불투명
-    //for (size_t i = 0; i < m_vecOpaque.size(); ++i)
-    //{
-    //    m_vecOpaque[i]->Render();
-    //}
+	for (auto& pair : m_mapSingleObj)
+	{
+		pair.second.clear();
+	}
 
-    //// Mask
-    //for (size_t i = 0; i < m_vecMask.size(); ++i)
-    //{
-    //    m_vecMask[i]->Render();
-    //}
+	// Forward rendering (OPAQUE, MASK)
+	tInstancingData tInstData = {};
+
+	for (auto& pair : m_mapInstGroup_F)
+	{
+		// 그룹 오브젝트가 없거나, 쉐이더가 없는 경우
+		if (pair.second.empty())
+			continue;
+
+		// Single Rendering 조건체크
+		// 1. instancing 개수 조건 미만이거나
+		// 2. FlipbookPlayer 오브젝트거나(스프라이트 애니메이션 오브젝트)
+		// 3. GraphicShader 가 Instancing 을 지원하지 않는경우
+		if (pair.second.size() <= 1
+			|| pair.second[0].pObj->FlipbookPlayer()
+			|| pair.second[0].pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx)->GetShader()->GetVSInst() == nullptr)
+		{
+			// 해당 물체들은 단일 랜더링으로 전환
+			for (UINT i = 0; i < pair.second.size(); ++i)
+			{
+				map<INT_PTR, vector<tInstObj>>::iterator iter
+					= m_mapSingleObj.find((INT_PTR)pair.second[i].pObj);
+
+				if (iter != m_mapSingleObj.end())
+					iter->second.push_back(pair.second[i]);
+				else
+				{
+					m_mapSingleObj.insert(make_pair((INT_PTR)pair.second[i].pObj, vector<tInstObj>{pair.second[i]}));
+				}
+			}
+			continue;
+		}
+
+		CGameObject* pObj = pair.second[0].pObj;
+		Ptr<CMesh> pMesh = pObj->GetRenderComponent()->GetMesh();
+		Ptr<CMaterial> pMtrl = pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx);
+
+		// Instancing 버퍼 클리어
+		CInstancingBuffer::GetInst()->Clear();
+
+		int iRowIdx = 0;
+		bool bHasAnim3D = false;
+		for (UINT i = 0; i < pair.second.size(); ++i)
+		{
+			tInstData.matWorld = pair.second[i].pObj->Transform()->GetWorldMat();
+			tInstData.matWV = tInstData.matWorld * m_matView;
+			tInstData.matWVP = tInstData.matWV * m_matProj;
+
+			if (pair.second[i].pObj->MeshRender()->IsSkinRender())
+			{
+				pair.second[i].pObj->Animator3D()->Binding(pObj->MeshRender());
+				tInstData.iRowIdx = iRowIdx++;
+				CInstancingBuffer::GetInst()->AddInstancingBoneMat(pair.second[i].pObj->Animator3D()->GetFinalBoneMat());
+				bHasAnim3D = true;
+			}
+			else
+				tInstData.iRowIdx = -1;
+
+			CInstancingBuffer::GetInst()->AddInstancingData(tInstData);
+		}
+
+		// 인스턴싱에 필요한 데이터를 세팅(SysMem -> GPU Mem)
+		CInstancingBuffer::GetInst()->SetData();
+
+		if (bHasAnim3D)
+		{
+			pMtrl->SetAnim3D(true); // Animation Mesh 알리기
+			pMtrl->SetBoneCount(pObj->Animator3D()->GetBoneCount());
+		}
+
+		pMtrl->Binding_Inst();
+		pMesh->Render_Instancing(pair.second[0].iMtrlIdx);
+
+		// 정리
+		if (bHasAnim3D)
+		{
+			pMtrl->SetAnim3D(false); // Animation Mesh 알리기
+			pMtrl->SetBoneCount(0);
+		}
+	}
+
+	// 개별 랜더링
+	for (auto& pair : m_mapSingleObj)
+	{
+		if (pair.second.empty())
+			continue;
+
+		pair.second[0].pObj->Transform()->Binding();
+
+		for (auto& instObj : pair.second)
+		{
+			instObj.pObj->GetRenderComponent()->Render(instObj.iMtrlIdx);
+		}
+
+		if (pair.second[0].pObj->Animator3D())
+		{
+			pair.second[0].pObj->Animator3D()->ClearData();
+		}
+	}
 }
 void CCamera::render_transparent()
 {
