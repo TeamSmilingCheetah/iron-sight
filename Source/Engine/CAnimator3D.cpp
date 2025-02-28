@@ -18,6 +18,7 @@ CAnimator3D::CAnimator3D()
       , m_Ratio(0.f)
       , m_BoneFinalMatBuffer(nullptr)
       , m_bFinalMatUpdate(false)
+	  , m_BindCaller(nullptr)
 {
     m_BoneFinalMatBuffer = new CStructuredBuffer;
 }
@@ -33,6 +34,7 @@ CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
       , m_Ratio(_origin.m_Ratio)
       , m_BoneFinalMatBuffer(nullptr)
       , m_bFinalMatUpdate(false)
+	  , m_BindCaller(nullptr)
 {
     m_BoneFinalMatBuffer = new CStructuredBuffer;
 }
@@ -77,7 +79,7 @@ void CAnimator3D::FinalTick()
 }
 
 
-void CAnimator3D::Binding()
+void CAnimator3D::Binding(CMeshRender* _Renderer)
 {
     if (!m_bFinalMatUpdate)
     {
@@ -109,6 +111,8 @@ void CAnimator3D::Binding()
         m_bFinalMatUpdate = true;
     }
 
+	m_BindCaller = _Renderer;
+
     // t17 레지스터에 최종행렬 데이터(구조버퍼) 바인딩		
     m_BoneFinalMatBuffer->Binding(17);
 }
@@ -134,21 +138,25 @@ void CAnimator3D::SetCurClip(int _Idx)
 	m_CurClip = _Idx;
 }
 
-void CAnimator3D::ClearData(CMeshRender* _Renderer)
+void CAnimator3D::ClearData()
 {
+	if (!m_BindCaller) return;
+
     m_BoneFinalMatBuffer->Clear(17);
 
-    UINT iMtrlCount = _Renderer->GetMaterialCount();
+    UINT iMtrlCount = m_BindCaller->GetMaterialCount();
     Ptr<CMaterial> pMtrl = nullptr;
     for (UINT i = 0; i < iMtrlCount; ++i)
     {
-        pMtrl = _Renderer->GetSharedMaterial(i);
+        pMtrl = m_BindCaller->GetSharedMaterial(i);
         if (nullptr == pMtrl)
             continue;
 
         pMtrl->SetAnim3D(false); // Animation Mesh 알리기
         pMtrl->SetBoneCount(0);
     }
+
+	m_BindCaller = nullptr;
 }
 
 void CAnimator3D::SaveComponent(FILE* _File)

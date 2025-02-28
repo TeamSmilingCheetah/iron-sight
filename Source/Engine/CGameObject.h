@@ -62,10 +62,8 @@ public:
     class CLight2D* Light2D() { return (CLight2D*)GetComponent(COMPONENT_TYPE::LIGHT2D); }
     class CLight3D* Light3D() { return (CLight3D*)GetComponent(COMPONENT_TYPE::LIGHT3D); }
 
-    class CAnimator3D* Animator3D()
-    {
-        return (CAnimator3D*)GetComponent(COMPONENT_TYPE::ANIMATOR3D);
-    }
+	class CAnimator3D* Animator3D();
+    
 
     class CParticleSystem* ParticleSystem()
     {

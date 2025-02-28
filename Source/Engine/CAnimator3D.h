@@ -5,6 +5,7 @@
 #include "CAnimation.h"
 
 class CStructuredBuffer;
+class CMeshRender;
 
 class CAnimator3D :
     public CComponent
@@ -24,26 +25,29 @@ class CAnimator3D :
     CStructuredBuffer* m_BoneFinalMatBuffer; // 특정 프레임의 최종 행렬
     bool m_bFinalMatUpdate; // 최종행렬 연산 수행여부
 
+private:
+	CMeshRender*	m_BindCaller;	// Bind를 호출한 MeshRenderer 기억
+
 public:
 	void AddAnimClip(Ptr<CAnimation> _pAnim);
 	void SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim);
     void SetClipTime(int _iClipIdx, float _fTime) { m_vecClipUpdateTime[_iClipIdx] = _fTime; }
+
+	int GetCurClipIdx() const { return m_CurClip; }
+	double GetCurClipTime() const { return m_CurTime; }
+	int GetCurFrameIdx() const { return m_FrameIdx; }
+	float GetRatio() const { return m_Ratio; }
+
+	const vector<Ptr<CAnimation>>& GetClips() const { return m_vecClip; }
 
 	void SetCurClip(int _Idx);
 
 	UINT GetBoneCount() const { return m_vecClip[m_CurClip]->GetBoneCount(); }
 
     CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
-    void ClearData(CMeshRender* _Renderer);
+    void ClearData();
 
-	const vector<tMTBone>* GetvecBone() { return m_vecBones; }
-	const vector<tMTAnimClip>* GetvecClip() { return m_vecClip; }
-	int GetCurClipIdx() { return m_CurClip; }
-	int GetCurFrameIdx() { return m_FrameIdx; }
-	double GetCurClipTime() { return m_CurTime; }
-	float GetRatio() { return m_Ratio; }
-
-    void Binding();
+    void Binding(CMeshRender* _Renderer);
 
 
 public:

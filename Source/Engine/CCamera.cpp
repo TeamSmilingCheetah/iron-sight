@@ -280,9 +280,9 @@ void CCamera::render_deferred()
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
 
-			if (pair.second[i].pObj->Animator3D())
+			if (pair.second[i].pObj->MeshRender()->IsSkinRender())
 			{
-				pair.second[i].pObj->Animator3D()->Binding();
+				pair.second[i].pObj->Animator3D()->Binding(pObj->MeshRender());
 				tInstData.iRowIdx = iRowIdx++;
 				CInstancingBuffer::GetInst()->AddInstancingBoneMat(pair.second[i].pObj->Animator3D()->GetFinalBoneMat());
 				bHasAnim3D = true;
@@ -299,7 +299,7 @@ void CCamera::render_deferred()
 		if (bHasAnim3D)
 		{
 			pMtrl->SetAnim3D(true); // Animation Mesh 알리기
-			pMtrl->SetBoneCount(pMesh->GetBoneCount());
+			pMtrl->SetBoneCount(pObj->Animator3D()->GetBoneCount());
 		}
 
 		pMtrl->Binding_Inst();

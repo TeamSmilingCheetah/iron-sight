@@ -20,9 +20,7 @@ void Animator3DUI::Render_Update()
 	CAnimator3D* pAnim3D = GetTargetObject()->Animator3D();
 	//CMesh* pMesh = GetTargetObject()->MeshRender()->GetM
 
-	const vector<tMTAnimClip>* vecClip = pAnim3D->GetvecClip();
-	const vector<tMTBone>* vecBone = pAnim3D->GetvecBone();
-
+	const vector<Ptr<CAnimation>> vecClip = pAnim3D->GetClips();
 
 	// ClipIdx
 	int ClipIdx = pAnim3D->GetCurClipIdx();
@@ -52,7 +50,7 @@ void Animator3DUI::Render_Update()
 
 
 	// CurClipName
-	wstring ClipstrName = vecClip->at(ClipIdx).strAnimName;
+	wstring ClipstrName = vecClip[ClipIdx]->GetName();
 
 	string ClipName;
 	ClipName = WStringToString(ClipstrName);
@@ -63,9 +61,9 @@ void Animator3DUI::Render_Update()
 	ImGui::InputText("##ClipName", (char*)ClipName.c_str(), ClipName.length(), ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly);
 
 
-	// BoneSize
-	int BoenSize = static_cast<int>(vecBone->size());
-	ImGui::Text("BoneSize:");
+	// BoneCount
+	int BoneCount = static_cast<int>(vecClip[ClipIdx]->GetBoneCount());
+	ImGui::Text("BoneCount:");
 	ImGui::SameLine();
-	ImGui::InputInt("##BoneSize", &BoenSize);
+	ImGui::InputInt("##BoneCount", &BoneCount);
 }

@@ -184,6 +184,16 @@ bool CGameObject::IsAncestor(CGameObject* _Other)
     return false;
 }
 
+CAnimator3D* CGameObject::Animator3D()
+{
+	CAnimator3D* pAnimator = (CAnimator3D*)GetComponent(COMPONENT_TYPE::ANIMATOR3D);
+
+	if (!pAnimator && MeshRender() && MeshRender()->IsSkinRender())
+		pAnimator = MeshRender()->GetAnimator();
+
+	return pAnimator;
+}
+
 void CGameObject::DisconnectWithLayer()
 {
     // 소속 레이어가 없다면

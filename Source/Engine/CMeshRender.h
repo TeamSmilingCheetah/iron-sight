@@ -12,6 +12,9 @@ private:
 public:
 	void SetSkinRender(bool _b) { m_SkinRender = _b; }
 
+	bool IsSkinRender() const { return m_SkinRender; }
+	CAnimator3D* GetAnimator();
+
 public:
     void FinalTick() override;
     void Render() override;

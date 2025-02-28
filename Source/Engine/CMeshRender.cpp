@@ -8,11 +8,27 @@
 
 CMeshRender::CMeshRender()
     : CRenderComponent(COMPONENT_TYPE::MESHRENDER)
+	, m_SkinRender(false)
 {
 }
 
 CMeshRender::~CMeshRender()
 {
+}
+
+CAnimator3D* CMeshRender::GetAnimator()
+{
+	if (!m_SkinRender)
+		return nullptr;
+
+	CAnimator3D* pAnimator = nullptr;
+
+	if (GetOwner()->GetParent())
+	{
+		pAnimator = GetOwner()->GetParent()->Animator3D();
+	}
+
+	return pAnimator;
 }
 
 void CMeshRender::FinalTick()
@@ -25,32 +41,21 @@ void CMeshRender::Render()
         FlipbookPlayer()->Binding();
 
     // Animator3D Binding
-	// 본인에게 붙어 있는 경우
 	CAnimator3D* pAnimator = Animator3D();
 
-	// 부모에게 붙어 있는 경우
-	if (!pAnimator && m_SkinRender)
+	if (pAnimator)
 	{
-		pAnimator = GetOwner()->GetParent()->Animator3D();
-	}
+		pAnimator->Binding(this);
 
-	if (m_SkinRender)
-	{
-		if (pAnimator)
+		for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
 		{
-			pAnimator->Binding();
+			if (nullptr == GetMaterial(i))
+				continue;
 
-			for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
-			{
-				if (nullptr == GetMaterial(i))
-					continue;
-
-				GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
-				GetMaterial(i)->SetBoneCount(pAnimator->GetBoneCount());
-			}
+			GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
+			GetMaterial(i)->SetBoneCount(pAnimator->GetBoneCount());
 		}
 	}
-	
 
     // 위치정보
     Transform()->Binding();
@@ -72,5 +77,5 @@ void CMeshRender::Render()
         FlipbookPlayer()->Clear();
 
 	if (pAnimator)
-		pAnimator->ClearData(this);
+		pAnimator->ClearData();
 }
