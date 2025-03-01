@@ -74,14 +74,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)OutputFile\Bin\</OutDir>
-    <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath);$(SolutionDir)Source\</IncludePath>
+    <IncludePath>$(SolutionDir)Source\Engine\;$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath);$(SolutionDir)Source\</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
     <IntDir>$(SolutionDir)OutputFile\Bin\Intermediate\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)OutputFile\Bin\</OutDir>
-    <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath);$(SolutionDir)Source\</IncludePath>
+    <IncludePath>$(SolutionDir)Source\Engine\;$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath);$(SolutionDir)Source\</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
     <IntDir>$(SolutionDir)OutputFile\Bin\Intermediate\</IntDir>
@@ -159,20 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Animator3DUI.h" />
-    <ClInclude Include="AnimationUI.h" />
-    <ClInclude Include="AssetUI.h" />
-    <ClInclude Include="CameraUI.h" />
-    <ClInclude Include="CEditorCamScript.h" />
-    <ClInclude Include="CEditorMgr.h" />
-    <ClInclude Include="CGameObjectEx.h" />
-    <ClInclude Include="CImGuiMgr.h" />
-    <ClInclude Include="CLevelSaveLoad.h" />
-    <ClInclude Include="Client.h" />
-    <ClInclude Include="ComputeShaderUI.h" />
-    <ClInclude Include="ContentUI.h" />
-    <ClInclude Include="FlipbookUI.h" />
-    <ClInclude Include="GraphicShaderUI.h" />
+    <ClInclude Include="Build\framework.h" />
+    <ClInclude Include="Build\Resource.h" />
+    <ClInclude Include="Build\targetver.h" />
+    <ClInclude Include="Core\Public\CEditorMgr.h" />
+    <ClInclude Include="Core\Public\CLevelSaveLoad.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx11.h" />
@@ -181,54 +172,45 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="LandScapeUI.h" />
-    <ClInclude Include="Light2DUI.h" />
-    <ClInclude Include="Collider2DUI.h" />
-    <ClInclude Include="ComponentUI.h" />
-    <ClInclude Include="EditorUI.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Inspector.h" />
-    <ClInclude Include="Light3DUI.h" />
-    <ClInclude Include="ListUI.h" />
-    <ClInclude Include="MaterialUI.h" />
-    <ClInclude Include="MenuUI.h" />
-    <ClInclude Include="MeshDataUI.h" />
-    <ClInclude Include="MeshRenderUI.h" />
-    <ClInclude Include="MeshUI.h" />
-    <ClInclude Include="Outliner.h" />
-    <ClInclude Include="ParamUI.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PrefabUI.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="ScriptUI.h" />
-    <ClInclude Include="SE_AtlasView.h" />
-    <ClInclude Include="SE_Detail.h" />
-    <ClInclude Include="SE_Sub.h" />
-    <ClInclude Include="SkyBoxUI.h" />
-    <ClInclude Include="SkeletonUI.h" />
-    <ClInclude Include="SoundUI.h" />
-    <ClInclude Include="SpriteEditor.h" />
-    <ClInclude Include="SpriteUI.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Rendering\Public\ComputeShaderUI.h" />
+    <ClInclude Include="Rendering\Public\GraphicShaderUI.h" />
+    <ClInclude Include="Script\Public\CEditorCamScript.h" />
+    <ClInclude Include="Script\Public\CGameObjectEx.h" />
+    <ClInclude Include="System\Public\CImGuiMgr.h" />
     <ClInclude Include="TestLevel.h" />
-    <ClInclude Include="TextureUI.h" />
-    <ClInclude Include="TransformUI.h" />
-    <ClInclude Include="TreeUI.h" />
+    <ClInclude Include="UI\Public\Asset\AssetUI.h" />
+    <ClInclude Include="UI\Public\Asset\FlipbookUI.h" />
+    <ClInclude Include="UI\Public\Asset\MaterialUI.h" />
+    <ClInclude Include="UI\Public\Asset\MeshDataUI.h" />
+    <ClInclude Include="UI\Public\Asset\MeshUI.h" />
+    <ClInclude Include="UI\Public\Asset\PrefabUI.h" />
+    <ClInclude Include="UI\Public\Asset\SoundUI.h" />
+    <ClInclude Include="UI\Public\Asset\SpriteUI.h" />
+    <ClInclude Include="UI\Public\Asset\TextureUI.h" />
+    <ClInclude Include="UI\Public\Component\CameraUI.h" />
+    <ClInclude Include="UI\Public\Component\Collider2DUI.h" />
+    <ClInclude Include="UI\Public\Component\ComponentUI.h" />
+    <ClInclude Include="UI\Public\Component\Light2DUI.h" />
+    <ClInclude Include="UI\Public\Component\MeshRenderUI.h" />
+    <ClInclude Include="UI\Public\Component\ScriptUI.h" />
+    <ClInclude Include="UI\Public\Component\TransformUI.h" />
+    <ClInclude Include="UI\Public\Editor\ContentUI.h" />
+    <ClInclude Include="UI\Public\Editor\EditorUI.h" />
+    <ClInclude Include="UI\Public\Editor\Inspector.h" />
+    <ClInclude Include="UI\Public\Editor\ListUI.h" />
+    <ClInclude Include="UI\Public\Editor\MenuUI.h" />
+    <ClInclude Include="UI\Public\Editor\Outliner.h" />
+    <ClInclude Include="UI\Public\Editor\ParamUI.h" />
+    <ClInclude Include="UI\Public\Editor\TreeUI.h" />
+    <ClInclude Include="UI\Public\SpriteEditor\SE_AtlasView.h" />
+    <ClInclude Include="UI\Public\SpriteEditor\SE_Detail.h" />
+    <ClInclude Include="UI\Public\SpriteEditor\SE_Sub.h" />
+    <ClInclude Include="UI\Public\SpriteEditor\SpriteEditor.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animator3DUI.cpp" />
-    <ClCompile Include="AnimationUI.cpp" />
-    <ClCompile Include="AssetUI.cpp" />
-    <ClCompile Include="CameraUI.cpp" />
-    <ClCompile Include="CEditorCamScript.cpp" />
-    <ClCompile Include="CEditorMgr.cpp" />
-    <ClCompile Include="CGameObjectEx.cpp" />
-    <ClCompile Include="CImGuiMgr.cpp" />
-    <ClCompile Include="CLevelSaveLoad.cpp" />
-    <ClCompile Include="ComputeShaderUI.cpp" />
-    <ClCompile Include="ContentUI.cpp" />
-    <ClCompile Include="FlipbookUI.cpp" />
-    <ClCompile Include="GraphicShaderUI.cpp" />
+    <ClCompile Include="Core\Private\CEditorMgr.cpp" />
+    <ClCompile Include="Core\Private\CLevelSaveLoad.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -236,50 +218,64 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="LandScapeUI.cpp" />
-    <ClCompile Include="Light2DUI.cpp" />
-    <ClCompile Include="Collider2DUI.cpp" />
-    <ClCompile Include="ComponentUI.cpp" />
-    <ClCompile Include="EditorUI.cpp" />
-    <ClCompile Include="Inspector.cpp" />
-    <ClCompile Include="Light3DUI.cpp" />
-    <ClCompile Include="ListUI.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MaterialUI.cpp" />
-    <ClCompile Include="MenuUI.cpp" />
-    <ClCompile Include="MeshDataUI.cpp" />
-    <ClCompile Include="MeshRenderUI.cpp" />
-    <ClCompile Include="MeshUI.cpp" />
-    <ClCompile Include="Outliner.cpp" />
-    <ClCompile Include="ParamUI.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PrefabUI.cpp" />
-    <ClCompile Include="ScriptUI.cpp" />
-    <ClCompile Include="SE_AtlasView.cpp" />
-    <ClCompile Include="SE_Detail.cpp" />
-    <ClCompile Include="SE_Sub.cpp" />
-    <ClCompile Include="SkyBoxUI.cpp" />
-    <ClCompile Include="SkeletonUI.cpp" />
-    <ClCompile Include="SoundUI.cpp" />
-    <ClCompile Include="SpriteEditor.cpp" />
-    <ClCompile Include="SpriteUI.cpp" />
+    <ClCompile Include="Rendering\Private\ComputeShaderUI.cpp" />
+    <ClCompile Include="Rendering\Private\GraphicShaderUI.cpp" />
+    <ClCompile Include="Script\Private\CEditorCamScript.cpp" />
+    <ClCompile Include="Script\Private\CGameObjectEx.cpp" />
+    <ClCompile Include="System\Private\CImGuiMgr.cpp" />
     <ClCompile Include="TestLevel.cpp" />
-    <ClCompile Include="TextureUI.cpp" />
-    <ClCompile Include="TransformUI.cpp" />
-    <ClCompile Include="TreeUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\AssetUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\FlipbookUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\MaterialUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\MeshDataUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\MeshUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\PrefabUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\SoundUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\SpriteUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\TextureUI.cpp" />
+    <ClCompile Include="UI\Private\Component\CameraUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Collider2DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\ComponentUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Light2DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\MeshRenderUI.cpp" />
+    <ClCompile Include="UI\Private\Component\ScriptUI.cpp" />
+    <ClCompile Include="UI\Private\Component\TransformUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\ContentUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\EditorUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\Inspector.cpp" />
+    <ClCompile Include="UI\Private\Editor\ListUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\MenuUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\Outliner.cpp" />
+    <ClCompile Include="UI\Private\Editor\ParamUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\TreeUI.cpp" />
+    <ClCompile Include="UI\Private\SpriteEditor\SE_AtlasView.cpp" />
+    <ClCompile Include="UI\Private\SpriteEditor\SE_Detail.cpp" />
+    <ClCompile Include="UI\Private\SpriteEditor\SE_Sub.cpp" />
+    <ClCompile Include="UI\Private\SpriteEditor\SpriteEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Client.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Client.ico" />
-    <Image Include="small.ico" />
+    <Image Include="Build\Client.ico" />
+    <Image Include="Build\small.ico" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="imgui\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Build\Client.rc">
+      <ResourceOutputFileName>C:\Users\Heejun Kim\Documents\GitHub\iron-sight\OutputFile\Bin\Intermediate\Client.res</ResourceOutputFileName>
+      <Culture>0x0409</Culture>
+      <TrackerLogDirectory>C:\Users\Heejun Kim\Documents\GitHub\iron-sight\OutputFile\Bin\Intermediate\Client.tlog\</TrackerLogDirectory>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <UseResponseFile>false</UseResponseFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <LinkCompiled>true</LinkCompiled>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

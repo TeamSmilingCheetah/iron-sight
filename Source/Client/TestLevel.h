@@ -3,5 +3,5 @@
 class TestLevel
 {
 public:
-    static void CreateTestLevel();
+	static void CreateTestLevel();
 };
