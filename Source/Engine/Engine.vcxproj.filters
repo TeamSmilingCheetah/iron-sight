@@ -205,6 +205,11 @@
     <ClInclude Include="CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimation.h" />
+    <ClInclude Include="CSkeleton.h" />
+    <ClInclude Include="CCollider3D.h">
+      <Filter>07. Component\08. Collider3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -398,6 +403,11 @@
     </ClCompile>
     <ClCompile Include="CInstancingBuffer.cpp">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp" />
+    <ClCompile Include="CSkeleton.cpp" />
+    <ClCompile Include="CCollider3D.cpp">
+      <Filter>07. Component\08. Collider3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -601,6 +611,9 @@
     </Filter>
     <Filter Include="04. Manager\09. InstancingBuffer">
       <UniqueIdentifier>{e4ced7d0-9af4-474a-a391-54fb02f4bbe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\08. Collider3D">
+      <UniqueIdentifier>{1bd04477-e788-4385-8b08-75fc338aff8a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

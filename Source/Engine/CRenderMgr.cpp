@@ -148,7 +148,7 @@ void CRenderMgr::Binding()
 
 void CRenderMgr::Render_Debug()
 {
-    auto iter = m_DbgList.begin();
+	list<tDebugShapeInfo>::iterator iter = m_DbgList.begin();
 
     for (; iter != m_DbgList.end();)
     {

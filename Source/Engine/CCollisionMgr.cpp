@@ -6,6 +6,7 @@
 #include "CLayer.h"
 #include "CGameObject.h"
 #include "CCollider2D.h"
+#include "CCollider3D.h"
 
 CCollisionMgr::CCollisionMgr()
     : m_Matrix{}
@@ -37,46 +38,66 @@ void CCollisionMgr::Tick()
 
 void CCollisionMgr::CollisionBtwLayer(UINT _Left, UINT _Right)
 {
-    CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
-    const vector<CGameObject*>& vecLeft = pCurLevel->GetLayer(_Left)->GetObjects();
-    const vector<CGameObject*>& vecRight = pCurLevel->GetLayer(_Right)->GetObjects();
+	const vector<CGameObject*>& vecLeft = pCurLevel->GetLayer(_Left)->GetObjects();
+	const vector<CGameObject*>& vecRight = pCurLevel->GetLayer(_Right)->GetObjects();
 
-    // 충돌 검사를 하려는 두 레이어가 다른 레이어인경우
-    if (_Left != _Right)
-    {
-        for (size_t i = 0; i < vecLeft.size(); ++i)
-        {
-            if (nullptr == vecLeft[i]->Collider2D())
-                continue;
+	// 충돌 검사를 하려는 두 레이어가 다른 레이어인 경우
+	if (_Left != _Right)
+	{
+		for (size_t i = 0; i < vecLeft.size(); ++i)
+		{
+			// 2D 충돌체 검사
+			if (vecLeft[i]->Collider2D())
+			{
+				for (size_t j = 0; j < vecRight.size(); ++j)
+				{
+					if (vecRight[j]->Collider2D())
+						CollisionBtwCollider2D(vecLeft[i]->Collider2D(), vecRight[j]->Collider2D());
+				}
+			}
 
-            for (size_t j = 0; j < vecRight.size(); ++j)
-            {
-                if (nullptr == vecRight[j]->Collider2D())
-                    continue;
+			// 3D 충돌체 검사
+			if (vecLeft[i]->Collider3D())
+			{
+				for (size_t j = 0; j < vecRight.size(); ++j)
+				{
+					if (vecRight[j]->Collider3D())
+						CollisionBtwCollider3D(vecLeft[i]->Collider3D(), vecRight[j]->Collider3D());
+				}
+			}
+		}
+	}
 
-                CollisionBtwCollider2D(vecLeft[i]->Collider2D(), vecRight[j]->Collider2D());
-            }
-        }
-    }
+	// 두 레이어가 동일한 경우
+	else
+	{
+		for (size_t i = 0; i < vecLeft.size(); ++i)
+		{
+			// 2D 충돌체 검사
+			if (vecLeft[i]->Collider2D())
+			{
+				// 두 레이어가 동일한경우면 전에 검사한 오브젝트를 검사하는 경우를 제외해야한다.
+				// 그러니 i +1 부터 시작하도록 한다.
+				for (size_t j = i + 1; j < vecRight.size(); ++j)
+				{
+					if (vecRight[j]->Collider2D())
+						CollisionBtwCollider2D(vecLeft[i]->Collider2D(), vecRight[j]->Collider2D());
+				}
+			}
 
-    // 두 레이어가 동일한 경우
-    else
-    {
-        for (size_t i = 0; i < vecLeft.size(); ++i)
-        {
-            if (nullptr == vecLeft[i]->Collider2D())
-                continue;
-
-            for (size_t j = i + 1; j < vecRight.size(); ++j)
-            {
-                if (nullptr == vecRight[j]->Collider2D())
-                    continue;
-
-                CollisionBtwCollider2D(vecLeft[i]->Collider2D(), vecRight[j]->Collider2D());
-            }
-        }
-    }
+			// 3D 충돌체 검사
+			if (vecLeft[i]->Collider3D())
+			{
+				for (size_t j = i + 1; j < vecRight.size(); ++j)
+				{
+					if (vecRight[j]->Collider3D())
+						CollisionBtwCollider3D(vecLeft[i]->Collider3D(), vecRight[j]->Collider3D());
+				}
+			}
+		}
+	}
 }
 
 void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _RightCol)
@@ -143,6 +164,53 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
     }
 }
 
+void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _RightCol)
+{
+	COLLIDER_ID id = {};
+	id.Left = _LeftCol->GetID();
+	id.Right = _RightCol->GetID();
+
+	map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
+
+	if (iter == m_ColInfo.end())
+	{
+		m_ColInfo.insert(make_pair(id.ID, false));
+		iter = m_ColInfo.find(id.ID);
+	}
+
+	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
+
+	if (IsCollision3D(_LeftCol, _RightCol))
+	{
+		if (iter->second)
+		{
+			if (!IsDead)
+			{
+				_LeftCol->Overlap(_RightCol);
+				_RightCol->Overlap(_LeftCol);
+			}
+		}
+		else
+		{
+			if (!IsDead)
+			{
+				_LeftCol->BeginOverlap(_RightCol);
+				_RightCol->BeginOverlap(_LeftCol);
+			}
+			iter->second = true;
+		}
+	}
+	else
+	{
+		if (iter->second)
+		{
+			_LeftCol->EndOverlap(_RightCol);
+			_RightCol->EndOverlap(_LeftCol);
+			iter->second = false;
+		}
+	}
+}
+
 bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
 {
     // 0 -- 1
@@ -192,6 +260,106 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
     }
 
     return true;
+}
+
+bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
+{
+	const float EPSILON = 0.0001f;
+
+	// 로컬 큐브의 정점 위치 (8개의 정점)
+	static Vec3 arrCube[8] =
+	{
+		Vec3(-0.5f, 0.5f, 0.5f),   // 전면 좌상단
+		Vec3(0.5f, 0.5f, 0.5f),    // 전면 우상단
+		Vec3(0.5f, -0.5f, 0.5f),   // 전면 우하단
+		Vec3(-0.5f, -0.5f, 0.5f),  // 전면 좌하단
+		Vec3(-0.5f, 0.5f, -0.5f),  // 후면 좌상단
+		Vec3(0.5f, 0.5f, -0.5f),   // 후면 우상단
+		Vec3(0.5f, -0.5f, -0.5f),  // 후면 우하단
+		Vec3(-0.5f, -0.5f, -0.5f)  // 후면 좌하단
+	};
+
+
+	Matrix matColLeft = _Left->GetColliderWorldMat();
+	Matrix matColRight = _Right->GetColliderWorldMat();
+
+	// 각 OBB의 월드 공간 꼭지점 계산
+	Vec3 leftVertices[8];
+	Vec3 rightVertices[8];
+	for (int i = 0; i < 8; i++)
+	{
+		leftVertices[i] = XMVector3TransformCoord(arrCube[i], matColLeft);
+		rightVertices[i] = XMVector3TransformCoord(arrCube[i], matColRight);
+	}
+
+	// 검사할 축들: 각 OBB의 면 법선(6개)과 모서리 방향의 cross product(9개)
+	vector<Vec3> axes;
+
+	// 각 OBB의 축(x,y,z) 계산
+	Vec3 leftAxis[3] = {
+		XMVector3TransformNormal(Vec3(1.0f, 0.0f, 0.0f), matColLeft),
+		XMVector3TransformNormal(Vec3(0.0f, 1.0f, 0.0f), matColLeft),
+		XMVector3TransformNormal(Vec3(0.0f, 0.0f, 1.0f), matColLeft)
+	};
+
+	Vec3 rightAxis[3] = {
+		XMVector3TransformNormal(Vec3(1.0f, 0.0f, 0.0f), matColRight),
+		XMVector3TransformNormal(Vec3(0.0f, 1.0f, 0.0f), matColRight),
+		XMVector3TransformNormal(Vec3(0.0f, 0.0f, 1.0f), matColRight)
+	};
+
+	// OBB의 면 법선 추가
+	for (int i = 0; i < 3; i++)
+	{
+		axes.push_back(leftAxis[i]);
+		axes.push_back(rightAxis[i]);
+	}
+
+	// 모서리 방향의 cross product 추가
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			Vec3 crossAxis = leftAxis[i].Cross(rightAxis[j]);
+			if (crossAxis.Length() > EPSILON)  // 0벡터 제외
+			{
+				crossAxis.Normalize();
+				axes.push_back(crossAxis);
+			}
+		}
+	}
+
+	// 각 축에 대해 분리축 테스트 수행
+	vector<Vec3>::iterator iter = axes.begin();
+	for (; iter != axes.end(); ++iter)
+	{
+		float leftMin = FLT_MAX;
+		float leftMax = -FLT_MAX;
+		float rightMin = FLT_MAX;
+		float rightMax = -FLT_MAX;
+
+		// 왼쪽 OBB의 꼭지점들을 현재 축에 투영
+		for (int i = 0; i < 8; i++)
+		{
+			float dot = leftVertices[i].Dot(*iter);
+			leftMin = min(leftMin, dot);
+			leftMax = max(leftMax, dot);
+		}
+
+		// 오른쪽 OBB의 꼭지점들을 현재 축에 투영
+		for (int i = 0; i < 8; i++)
+		{
+			float dot = rightVertices[i].Dot(*iter);
+			rightMin = min(rightMin, dot);
+			rightMax = max(rightMax, dot);
+		}
+
+		// 분리축 테스트
+		if (leftMin > rightMax + EPSILON || rightMin > leftMax + EPSILON)
+			return false;
+	}
+
+	return true;
 }
 
 void CCollisionMgr::CollisionCheck(UINT _Left, UINT _Right)

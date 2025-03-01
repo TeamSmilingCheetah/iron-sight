@@ -126,6 +126,19 @@ void DrawDebugCube(Vec4 _Color, Vec3 _Pos, Vec3 _Scale, Vec3 _Rotation, bool _De
     CRenderMgr::GetInst()->AddDebugShape(info);
 }
 
+void DrawDebugCube(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float _Duration)
+{
+	tDebugShapeInfo info = {};
+	info.Shape = DEBUG_SHAPE::CUBE;
+	info.Color = _Color;
+
+	info.matWorld = _matWorld;
+
+	info.DepthTest = _DepthTest;
+	info.Duration = _Duration;
+	CRenderMgr::GetInst()->AddDebugShape(info);
+}
+
 void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, float _Duration)
 {
     tDebugShapeInfo info = {};

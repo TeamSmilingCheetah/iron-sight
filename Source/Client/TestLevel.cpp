@@ -7,6 +7,8 @@
 #include <Engine/components.h>
 #include <Engine/CAssetMgr.h>
 
+#include <Engine/CCollisionMgr.h>
+
 #include <Scripts/CPlayerScript.h>
 #include <Scripts/CCameraScript.h>
 
@@ -31,6 +33,8 @@ void TestLevel::CreateTestLevel()
     pLevel->GetLayer(4)->SetName(L"PlayerObject");
     pLevel->GetLayer(5)->SetName(L"Monster");
     pLevel->GetLayer(6)->SetName(L"MonsterObject");
+
+	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 
     CGameObject* pObject = nullptr;
 
@@ -85,6 +89,7 @@ void TestLevel::CreateTestLevel()
     pObject = new CGameObject;
     pObject->SetName(L"Player");
     pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider3D);
 
     pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
     pObject->MeshRender()->SetMaterial(
@@ -94,6 +99,8 @@ void TestLevel::CreateTestLevel()
     pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
     pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
     pObject->Transform()->SetFrustumRadius(750.f);
+
+	pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
 
     Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
         L"Texture\\HeightMap\\MoonCrater.png");
@@ -131,15 +138,19 @@ void TestLevel::CreateTestLevel()
         Ptr<CMeshData> pMeshData = nullptr;
         CGameObject* pObj = nullptr;
 
-        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
+        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep.fbx");
         //pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
         pObj = pMeshData->Instantiate();
         pObj->SetName(L"Monster");
+		pObj->AddComponent(new CCollider3D);
 
         pObj->Transform()->SetRelativePos(Vec3(500.f, -380.f, 500.f));
         pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
         pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+
+		pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
+		pObj->Collider3D()->SetIndependentScale(true);
 
 		pObj->AddComponent(new CPlayerScript);
 

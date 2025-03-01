@@ -2,6 +2,7 @@
 #include "CComputeShader.h"
 
 class CStructuredBuffer;
+class CTexture;
 
 class CParticleTickCS :
     public CComputeShader
