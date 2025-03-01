@@ -1,6 +1,5 @@
-#pragma once
-#include "CComponent.h"
-
+ï»¿#pragma once
+#include "Runtime/Public/Component/Base/CComponent.h"
 
 class CCollider3D :
     public CComponent
@@ -9,9 +8,8 @@ private:
     Vec3        m_Offset;
     Vec3        m_Scale;
     Vec3        m_FinalPos;
-    Matrix      m_matColliderWorld; // Å©±â, È¸Àü, ÀÌµ¿
+    Matrix      m_matColliderWorld;
     bool        m_IndependentScale;
-
     int         m_OverlapCount;
 
 public:
@@ -42,6 +40,5 @@ public:
     CCollider3D();
     CCollider3D(const CCollider3D& _Origin);
     ~CCollider3D();
-
 };
 

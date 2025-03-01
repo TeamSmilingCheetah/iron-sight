@@ -28,21 +28,32 @@ public:
 	{
 	}
 
-	virtual void BeginOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
+	virtual void BeginOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject,
 	                          CCollider2D* _OtherCollider)
 	{
 	};
 
-	virtual void Overlap(CCollider2D* _Collider, CGameObject* _OtherObject,
+	virtual void Overlap(class CCollider2D* _Collider, CGameObject* _OtherObject,
 	                     CCollider2D* _OtherCollider)
 	{
 	};
 
-	virtual void EndOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
+	virtual void EndOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject,
 	                        CCollider2D* _OtherCollider)
 	{
 	};
 
+	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+	{
+	};
+
+	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+	{
+	};
+
+	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+	{
+	};
 
 	CScript(UINT _ScriptType);
 	~CScript() override;

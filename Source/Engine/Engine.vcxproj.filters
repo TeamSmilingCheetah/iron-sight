@@ -210,6 +210,7 @@
     <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
     <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -407,6 +408,7 @@
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp" />
+    <ClInclude Include="Runtime\Private\Component\Physics\CCollider3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">

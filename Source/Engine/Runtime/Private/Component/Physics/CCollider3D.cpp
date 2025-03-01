@@ -1,25 +1,26 @@
 ﻿#include "pch.h"
-#include "CCollider3D.h"
+#include "Runtime/Public/Component/Physics/CCollider3D.h"
 
-#include "CTransform.h"
-#include "CScript.h"
+#include "Runtime/Public/Component/Script/CScript.h"
+#include "Runtime/Public/Component/Transform/CTransform.h"
+
 
 CCollider3D::CCollider3D()
-	:CComponent(COMPONENT_TYPE::COLLIDER3D)
-	, m_IndependentScale(false)
-	, m_OverlapCount(0)
-	, m_Offset(Vec3(0.f))
-	, m_Scale(Vec3(0.f))
+	: CComponent(COMPONENT_TYPE::COLLIDER3D)
+	  , m_IndependentScale(false)
+	  , m_OverlapCount(0)
+	  , m_Offset(Vec3(0.f))
+	  , m_Scale(Vec3(0.f))
 {
 }
 
 CCollider3D::CCollider3D(const CCollider3D& _Origin)
 	: CComponent(_Origin)
-	, m_Offset(_Origin.m_Offset)
-	, m_Scale(_Origin.m_Scale)
-	, m_FinalPos(_Origin.m_FinalPos)
-	, m_IndependentScale(_Origin.m_IndependentScale)
-	, m_OverlapCount(0)
+	  , m_Offset(_Origin.m_Offset)
+	  , m_Scale(_Origin.m_Scale)
+	  , m_FinalPos(_Origin.m_FinalPos)
+	  , m_IndependentScale(_Origin.m_IndependentScale)
+	  , m_OverlapCount(0)
 {
 }
 
@@ -37,7 +38,6 @@ void CCollider3D::FinalTick()
 		Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
 		Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
 		m_matColliderWorld = matScale * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
-
 	}
 	else
 	{
