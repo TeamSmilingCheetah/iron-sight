@@ -50,7 +50,6 @@ public:
     virtual void SaveComponent(FILE* _File) = 0;
     virtual void LoadComponent(FILE* _File) = 0;
 
-
     CComponent(COMPONENT_TYPE _TYPE);
     ~CComponent() override;
 

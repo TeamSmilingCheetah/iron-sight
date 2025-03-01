@@ -1,8 +1,7 @@
 ﻿#include "pch.h"
-#include "SkyBoxUI.h"
-
-#include <Engine/CSkyBox.h>
-
+#include "UI/Public/Component/SkyBoxUI.h"
+#include "Runtime/Public/Actor/CGameObject.h"
+#include "Runtime/Public/Component/Rendering/CSkyBox.h"
 
 SkyBoxUI::SkyBoxUI()
 	: ComponentUI("SkyBoxUI", COMPONENT_TYPE::SKYBOX)
@@ -19,7 +18,7 @@ void SkyBoxUI::Render_Update()
 	ComponentTitle("SkyBox");
 	CSkyBox* pSkyBox = GetTargetObject()->SkyBox();
 
-	vector<string> vecMode = { "SPHERE", "CUBE" };
+	vector<string> vecMode = {"SPHERE", "CUBE"};
 
 	// Mode
 	int SkyBoxMode = (int)pSkyBox->GetMode();

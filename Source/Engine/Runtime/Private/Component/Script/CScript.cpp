@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
+#include "System/Public/Asset/Prefab/CPrefab.h"
 
 CScript::CScript(UINT _ScriptType)
     : CComponent(COMPONENT_TYPE::SCRIPT)

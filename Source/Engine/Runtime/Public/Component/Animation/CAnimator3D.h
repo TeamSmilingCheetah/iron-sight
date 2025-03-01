@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include "System/Public/Asset/Mesh/CMesh.h"
 #include "Runtime/Public/Component/Base/CComponent.h"
+#include "System/Public/Asset/Animation/CAnimation.h"
 
+class CAnimation;
 class CStructuredBuffer;
 class CMeshRender;
 

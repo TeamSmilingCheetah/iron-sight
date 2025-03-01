@@ -2,7 +2,7 @@
 #include "Common/global.h"
 
 //===============
-// Struct of FBX 
+// Struct of FBX
 //===============
 struct tFbxMaterial
 {
@@ -94,7 +94,7 @@ class CFBXLoader
     vector<tAnimClip*> m_vecAnimClip;
 
 public:
-    void init();
+    void Init();
     void LoadFbx(const wstring& _strPath);
 
     int GetContainerCount() { return static_cast<int>(m_vecContainer.size()); }

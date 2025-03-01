@@ -10,8 +10,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Scripts/GameObject/Public/CCameraScript.h"
-
-class CTexture;
+#include "Scripts/GameObject/Public/CPlayerScript.h"
 
 void TestLevel::CreateTestLevel()
 {
@@ -133,7 +132,7 @@ void TestLevel::CreateTestLevel()
 		CGameObject* pObj = nullptr;
 
         pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
-        //pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
+        // pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
         pObj = pMeshData->Instantiate();
         pObj->SetName(L"Monster");

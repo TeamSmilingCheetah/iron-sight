@@ -145,21 +145,22 @@
     <ClInclude Include="UI\Public\SpriteEditor\SE_AtlasView.h">
       <Filter>3. EditorUI\SpriteEditor\Sub\SE_AtlasView</Filter>
     </ClInclude>
-    <ClInclude Include="Animator3DUI.h">
+    <ClInclude Include="UI\Public\Asset\Animator3DUI.h">
       <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
     </ClInclude>
-    <ClInclude Include="Light3DUI.h">
+    <ClInclude Include="UI\Public\Asset\Light3DUI.h">
       <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
     </ClInclude>
-    <ClInclude Include="SkyBoxUI.h">
+    <ClInclude Include="UI\Public\Asset\SkyBoxUI.h">
       <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
     </ClInclude>
-    <ClInclude Include="LandScapeUI.h">
+    <ClInclude Include="UI\Public\Asset\LandScapeUI.h">
       <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
-    <ClInclude Include="SkeletonUI.h">
+    </ClInclude>
+    <ClInclude Include="UI\Public\Asset\SkeletonUI.h">
       <Filter>3. EditorUI\Inspector\AssetUI\12. SkeletonUI</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationUI.h">
+    <ClInclude Include="UI\Public\Asset\AnimationUI.h">
       <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -300,6 +301,7 @@
     </Filter>
     <Filter Include="3. EditorUI\Inspector\ComponentUI\SkyBoxUI">
       <UniqueIdentifier>{0ac4f247-20fc-47b2-a5c5-508705823442}</UniqueIdentifier>
+    </Filter>
     <Filter Include="3. EditorUI\Inspector\AssetUI\11. AnimationUI">
       <UniqueIdentifier>{db1e4c4b-81a6-42aa-b441-44b06b49796c}</UniqueIdentifier>
     </Filter>
@@ -446,21 +448,22 @@
     <ClCompile Include="UI\Private\SpriteEditor\SE_AtlasView.cpp">
       <Filter>3. EditorUI\SpriteEditor\Sub\SE_AtlasView</Filter>
     </ClCompile>
-    <ClCompile Include="Animator3DUI.cpp">
+    <ClCompile Include="UI\Private\Asset\Animator3DUI.cpp">
       <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
     </ClCompile>
-    <ClCompile Include="Light3DUI.cpp">
+    <ClCompile Include="UI\Private\Asset\Light3DUI.cpp">
       <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
     </ClCompile>
-    <ClCompile Include="SkyBoxUI.cpp">
+    <ClCompile Include="UI\Private\Asset\SkyBoxUI.cpp">
       <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
     </ClCompile>
-    <ClCompile Include="LandScapeUI.cpp">
+    <ClCompile Include="UI\Private\Asset\LandScapeUI.cpp">
       <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
-    <ClCompile Include="SkeletonUI.cpp">
+    </ClCompile>
+    <ClCompile Include="UI\Private\Asset\SkeletonUI.cpp">
       <Filter>3. EditorUI\Inspector\AssetUI\12. SkeletonUI</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationUI.cpp">
+    <ClCompile Include="UI\Private\Asset\AnimationUI.cpp">
       <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClCompile>
   </ItemGroup>

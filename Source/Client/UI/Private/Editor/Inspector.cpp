@@ -13,12 +13,16 @@
 #include "UI/Public/Asset/SoundUI.h"
 #include "UI/Public/Asset/SpriteUI.h"
 #include "UI/Public/Asset/TextureUI.h"
+#include "UI/Public/Component/Animator3DUI.h"
 #include "UI/Public/Component/CameraUI.h"
 #include "UI/Public/Component/Collider2DUI.h"
 #include "UI/Public/Component/ComponentUI.h"
+#include "UI/Public/Component/LandScapeUI.h"
 #include "UI/Public/Component/Light2DUI.h"
+#include "UI/Public/Component/Light3DUI.h"
 #include "UI/Public/Component/MeshRenderUI.h"
 #include "UI/Public/Component/ScriptUI.h"
+#include "UI/Public/Component/SkyBoxUI.h"
 #include "UI/Public/Component/TransformUI.h"
 
 class CScript;
@@ -145,6 +149,22 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESHRENDER)] = static_cast<ComponentUI*>(
 		AddChildUI(new MeshRenderUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESHRENDER)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LIGHT3D)] = static_cast<ComponentUI*>(
+		AddChildUI(new Light3DUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LIGHT3D)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::ANIMATOR3D)] = static_cast<ComponentUI*>(
+		AddChildUI(new Animator3DUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::ANIMATOR3D)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::SKYBOX)] = static_cast<ComponentUI*>(
+		AddChildUI(new SkyBoxUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::SKYBOX)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)] = static_cast<ComponentUI*>(
+		AddChildUI(new LandScapeUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)]->SetChildSize(ImVec2(0.f, 150.f));
 }
 
 void Inspector::CreateAssetUI()
@@ -159,6 +179,9 @@ void Inspector::CreateAssetUI()
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::MATERIAL)] = new MaterialUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::GRAPHIC_SHADER)] = new GraphicShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::COMPUTE_SHADER)] = new ComputeShaderUI;
+	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new ComputeShaderUI;
+	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SKELETON)] = new ComputeShaderUI;
+
 
 	for (UINT i = 0; i < static_cast<UINT>(ASSET_TYPE::END); ++i)
 	{

@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="pch.h" />
     <ClInclude Include="$(SolutionDir)External\Include\Common\define.h" />
     <ClInclude Include="$(SolutionDir)External\Include\Common\enum.h" />
     <ClInclude Include="$(SolutionDir)External\Include\Common\func.h" />
@@ -175,8 +176,6 @@
     <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h" />
     <ClInclude Include="Core\Public\CEngine.h" />
     <ClInclude Include="Core\Public\CEntity.h" />
-    <ClInclude Include="CTimeMgr.h" />
-    <ClInclude Include="CTransform.h" />
     <ClInclude Include="Runtime\Public\Actor\CGameObject.h" />
     <ClInclude Include="Runtime\Public\Actor\CLayer.h" />
     <ClInclude Include="Runtime\Public\Actor\CLevel.h" />
@@ -198,6 +197,8 @@
     <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h" />
     <ClInclude Include="Runtime\Public\Component\Script\CScript.h" />
     <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h" />
+    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
+    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
     <ClInclude Include="System\Public\Asset\Audio\CSound.h" />
     <ClInclude Include="System\Public\Asset\Base\assets.h" />
     <ClInclude Include="System\Public\Asset\Base\CAsset.h" />
@@ -232,7 +233,6 @@
     <ClInclude Include="System\Public\Rendering\Shader\CRaycastCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CShader.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CWeightMapCS.h" />
-    <ClInclude Include="System\Public\Rendering\Shader\CWeightMapCS.h" />
     <ClInclude Include="System\Public\Rendering\Tool\FBX\CFBXLoader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +260,8 @@
     <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp" />
     <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp" />
     <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp" />
+    <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
+    <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
     <ClCompile Include="System\Private\Asset\Audio\CSound.cpp" />
     <ClCompile Include="System\Private\Asset\Base\CAsset.cpp" />
     <ClCompile Include="System\Private\Asset\Mesh\CMesh.cpp" />

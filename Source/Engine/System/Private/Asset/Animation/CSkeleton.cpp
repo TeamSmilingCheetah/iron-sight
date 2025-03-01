@@ -1,15 +1,13 @@
 ﻿#include "pch.h"
-#include "CSkeleton.h"
+#include "System/Public/Asset/Animation/CSkeleton.h"
+#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
-#include "CFBXLoader.h"
-#include "CStructuredBuffer.h"
-
-#include "CAssetMgr.h"
-#include "CPathMgr.h"
+struct tBone;
 
 CSkeleton::CSkeleton(bool _bEngineRes)
 	: CAsset(SKELETON, _bEngineRes)
-	, m_BoneInvBuffer(nullptr)
+	  , m_BoneInvBuffer(nullptr)
 {
 }
 
@@ -52,7 +50,7 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 
 	pBone->m_BoneInvBuffer = new CStructuredBuffer;
 	pBone->m_BoneInvBuffer->Create(sizeof(Matrix), static_cast<UINT>(vecOffset.size()), SRV_ONLY,
-		false, vecOffset.data());
+	                               false, vecOffset.data());
 
 	// AssetMgr 등록 (key 값 설정)
 	CAssetMgr::GetInst()->AddAsset<CSkeleton>(pBone->GetName(), pBone);
@@ -75,10 +73,10 @@ int CSkeleton::Save(const wstring& _RelativePath)
 	errno_t err = _wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
-	// 키값, 상대 경로	
+	// 키값, 상대 경로
 	SaveWString(GetName(), pFile);
 	SaveWString(GetKey(), pFile);
-	SaveWString(GetRelativePath(), pFile);	
+	SaveWString(GetRelativePath(), pFile);
 
 	UINT iCount = static_cast<UINT>(m_vecBones.size());
 	fwrite(&iCount, sizeof(int), 1, pFile);

@@ -1,21 +1,21 @@
 ﻿#include "pch.h"
-#include "CAnimation.h"
-
-#include "CStructuredBuffer.h"
-#include "CFBXLoader.h"
-#include "CAssetMgr.h"
+#include "System/Public/Asset/Animation/CAnimation.h"
+#include "System/Public/Asset/Animation/CSkeleton.h"
+#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 CAnimation::CAnimation(bool _bEngineRes)
 	: CAsset(ANIMATION, _bEngineRes)
-	, m_Bone(nullptr)
-	, m_StartFrame(0)
-	, m_EndFrame(0)
-	, m_FrameLength(0)
-	, m_StartTime(0.)
-	, m_EndTime(0.)
-	, m_TimeLength(0.)
-	, m_TimeMode(FbxTime::EMode::eFrames30)
-	, m_BoneFrameData(nullptr)
+	  , m_Bone(nullptr)
+	  , m_StartFrame(0)
+	  , m_EndFrame(0)
+	  , m_FrameLength(0)
+	  , m_StartTime(0.)
+	  , m_EndTime(0.)
+	  , m_TimeLength(0.)
+	  , m_TimeMode(FbxTime::EMode::eFrames30)
+	  , m_BoneFrameData(nullptr)
 {
 }
 
@@ -61,21 +61,22 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 			for (size_t frameIdx = 0; frameIdx < vecBones[boneIdx]->vecKeyFrame[clipIdx].size(); ++frameIdx)
 			{
 				Vec4 vTranslate{}, vScale{}, qRot{};
-				vTranslate = GetVectorFromFbxVector(vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetT());
+				vTranslate = GetVectorFromFbxVector(
+					vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetT());
 				vScale = GetVectorFromFbxVector(vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetS());
 				qRot = GetVectorFromFbxVector(vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetQ());
 
 				// 같은 frame끼리 정보를 모아 둠
 				pAnim->m_vecKeyFrames[static_cast<UINT>(vecBones.size()) * frameIdx + boneIdx]
-					= tFrameTrans{ vTranslate, vScale, qRot };
+					= tFrameTrans{vTranslate, vScale, qRot};
 			}
 		}
 
 		// structuredbuffer 만들어두기
 		pAnim->m_BoneFrameData = new CStructuredBuffer;
 		pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
-			, static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
-			, SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
+		                               , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
+		                               , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
 
 		// AssetMgr 등록 (key 값 설정)
 		CAssetMgr::GetInst()->AddAsset<CAnimation>(pAnim->GetName(), pAnim);
@@ -102,7 +103,7 @@ int CAnimation::Save(const wstring& _RelativePath)
 	errno_t err = _wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
-	// 키값, 상대 경로	
+	// 키값, 상대 경로
 	SaveWString(GetName(), pFile);
 	SaveWString(GetKey(), pFile);
 	SaveWString(GetRelativePath(), pFile);
@@ -120,7 +121,8 @@ int CAnimation::Save(const wstring& _RelativePath)
 	fwrite(&m_TimeLength, sizeof(double), 1, pFile);
 
 	// Keyframe 정보
-	fwrite(m_vecKeyFrames.data(), sizeof(tFrameTrans), static_cast<size_t>(m_Bone->GetBoneCount() * m_FrameLength), pFile);
+	fwrite(m_vecKeyFrames.data(), sizeof(tFrameTrans), static_cast<size_t>(m_Bone->GetBoneCount() * m_FrameLength),
+	       pFile);
 
 	fclose(pFile);
 
@@ -164,8 +166,8 @@ int CAnimation::Load(const wstring& _strFilePath)
 	// Structured Buffer 생성
 	m_BoneFrameData = new CStructuredBuffer;
 	m_BoneFrameData->Create(sizeof(tFrameTrans)
-		, m_Bone->GetBoneCount() * m_FrameLength
-		, SRV_ONLY, false, m_vecKeyFrames.data());
+	                        , m_Bone->GetBoneCount() * m_FrameLength
+	                        , SRV_ONLY, false, m_vecKeyFrames.data());
 
 	fclose(pFile);
 

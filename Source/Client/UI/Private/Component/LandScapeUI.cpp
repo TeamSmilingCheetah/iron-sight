@@ -1,8 +1,7 @@
 ﻿#include "pch.h"
-#include "LandScapeUI.h"
-
-#include <Engine/CLandScape.h>
-
+#include "UI/Public/Component/LandScapeUI.h"
+#include "Runtime/Public/Actor/CGameObject.h"
+#include "Runtime/Public/Component/Rendering/CLandScape.h"
 
 LandScapeUI::LandScapeUI()
 	: ComponentUI("LandScapeUI", COMPONENT_TYPE::LANDSCAPE)

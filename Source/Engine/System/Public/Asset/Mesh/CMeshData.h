@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include "System/Public/Asset/Base/CAsset.h"
-#include "System/Public/Asset/Mesh/CMesh.h"
-#include "System/Public/Rendering/Meterial/CMaterial.h"
+
+class CAnimation;
+class CMaterial;
+class CMesh;
 
 class CMeshData :
     public CAsset

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CAsset.h"
+#include "System/Public/Asset/Base/CAsset.h"
 
 class CStructuredBuffer;
 
@@ -7,10 +7,9 @@ class CSkeleton :
 	public CAsset
 {
 private:
-	vector<tMTBone>		m_vecBones;
-
+	vector<tMTBone> m_vecBones;
 	vector<Matrix> vecOffset;
-	CStructuredBuffer*  m_BoneInvBuffer; // 각 뼈의 상쇄(무효화) 행렬(각 뼈의 위치를 되돌리는 행렬) (1행 짜리)
+	CStructuredBuffer* m_BoneInvBuffer; // 각 뼈의 상쇄(무효화) 행렬(각 뼈의 위치를 되돌리는 행렬) (1행 짜리)
 
 public:
 	const vector<tMTBone>* GetBones() const { return &m_vecBones; }
@@ -29,4 +28,3 @@ public:
 	CSkeleton(bool _bEngineRes = false);
 	~CSkeleton();
 };
-

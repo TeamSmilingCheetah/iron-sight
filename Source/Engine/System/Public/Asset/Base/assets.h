@@ -10,3 +10,4 @@
 #include "System/Public/Rendering/Shader/CGraphicShader.h"
 #include "System/Public/Rendering/Shader/CComputeShader.h"
 #include "System/Public/Rendering/Meterial/CMaterial.h"
+#include "System/Public/Asset/Animation/CSkeleton.h"

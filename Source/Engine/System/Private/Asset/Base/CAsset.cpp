@@ -2,7 +2,9 @@
 #include "System/Public/Asset/Base/CAsset.h"
 
 CAsset::CAsset(ASSET_TYPE _Type, bool _bEngine)
-	: m_Type(_Type)
+	: m_Key(L"")
+	  , m_RelativePath(L"")
+	  , m_Type(_Type)
 	  , m_RefCount(0)
 	  , m_EngineRes(_bEngine)
 {

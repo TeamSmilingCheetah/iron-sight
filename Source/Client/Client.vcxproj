@@ -179,21 +179,27 @@
     <ClInclude Include="Script\Public\CGameObjectEx.h" />
     <ClInclude Include="System\Public\CImGuiMgr.h" />
     <ClInclude Include="TestLevel.h" />
+    <ClInclude Include="UI\Public\Asset\AnimationUI.h" />
     <ClInclude Include="UI\Public\Asset\AssetUI.h" />
     <ClInclude Include="UI\Public\Asset\FlipbookUI.h" />
     <ClInclude Include="UI\Public\Asset\MaterialUI.h" />
     <ClInclude Include="UI\Public\Asset\MeshDataUI.h" />
     <ClInclude Include="UI\Public\Asset\MeshUI.h" />
     <ClInclude Include="UI\Public\Asset\PrefabUI.h" />
+    <ClInclude Include="UI\Public\Asset\SkeletonUI.h" />
     <ClInclude Include="UI\Public\Asset\SoundUI.h" />
     <ClInclude Include="UI\Public\Asset\SpriteUI.h" />
     <ClInclude Include="UI\Public\Asset\TextureUI.h" />
+    <ClInclude Include="UI\Public\Component\Animator3DUI.h" />
     <ClInclude Include="UI\Public\Component\CameraUI.h" />
     <ClInclude Include="UI\Public\Component\Collider2DUI.h" />
     <ClInclude Include="UI\Public\Component\ComponentUI.h" />
+    <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
     <ClInclude Include="UI\Public\Component\Light2DUI.h" />
+    <ClInclude Include="UI\Public\Component\Light3DUI.h" />
     <ClInclude Include="UI\Public\Component\MeshRenderUI.h" />
     <ClInclude Include="UI\Public\Component\ScriptUI.h" />
+    <ClInclude Include="UI\Public\Component\SkyBoxUI.h" />
     <ClInclude Include="UI\Public\Component\TransformUI.h" />
     <ClInclude Include="UI\Public\Editor\ContentUI.h" />
     <ClInclude Include="UI\Public\Editor\EditorUI.h" />
@@ -229,21 +235,27 @@
     <ClCompile Include="Script\Private\CGameObjectEx.cpp" />
     <ClCompile Include="System\Private\CImGuiMgr.cpp" />
     <ClCompile Include="TestLevel.cpp" />
+    <ClCompile Include="UI\Private\Asset\AnimationUI.cpp" />
     <ClCompile Include="UI\Private\Asset\AssetUI.cpp" />
     <ClCompile Include="UI\Private\Asset\FlipbookUI.cpp" />
     <ClCompile Include="UI\Private\Asset\MaterialUI.cpp" />
     <ClCompile Include="UI\Private\Asset\MeshDataUI.cpp" />
     <ClCompile Include="UI\Private\Asset\MeshUI.cpp" />
     <ClCompile Include="UI\Private\Asset\PrefabUI.cpp" />
+    <ClCompile Include="UI\Private\Asset\SkeletonUI.cpp" />
     <ClCompile Include="UI\Private\Asset\SoundUI.cpp" />
     <ClCompile Include="UI\Private\Asset\SpriteUI.cpp" />
     <ClCompile Include="UI\Private\Asset\TextureUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Animator3DUI.cpp" />
     <ClCompile Include="UI\Private\Component\CameraUI.cpp" />
     <ClCompile Include="UI\Private\Component\Collider2DUI.cpp" />
     <ClCompile Include="UI\Private\Component\ComponentUI.cpp" />
+    <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
     <ClCompile Include="UI\Private\Component\Light2DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Light3DUI.cpp" />
     <ClCompile Include="UI\Private\Component\MeshRenderUI.cpp" />
     <ClCompile Include="UI\Private\Component\ScriptUI.cpp" />
+    <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp" />
     <ClCompile Include="UI\Private\Component\TransformUI.cpp" />
     <ClCompile Include="UI\Private\Editor\ContentUI.cpp" />
     <ClCompile Include="UI\Private\Editor\EditorUI.cpp" />
@@ -266,16 +278,7 @@
     <Content Include="imgui\LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Build\Client.rc">
-      <ResourceOutputFileName>C:\Users\Heejun Kim\Documents\GitHub\iron-sight\OutputFile\Bin\Intermediate\Client.res</ResourceOutputFileName>
-      <Culture>0x0409</Culture>
-      <TrackerLogDirectory>C:\Users\Heejun Kim\Documents\GitHub\iron-sight\OutputFile\Bin\Intermediate\Client.tlog\</TrackerLogDirectory>
-      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
-      <UseResponseFile>false</UseResponseFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;</PreprocessorDefinitions>
-      <LinkCompiled>true</LinkCompiled>
-    </ResourceCompile>
+    <ResourceCompile Include="Client.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

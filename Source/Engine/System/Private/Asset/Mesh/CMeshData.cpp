@@ -8,7 +8,7 @@
 #include "System/Public/Manager/CPathMgr.h"
 
 CMeshData::CMeshData(bool _Engine)
-    : CAsset(MESH_DATA, false)
+	: CAsset(MESH_DATA, false)
 {
 }
 
@@ -94,7 +94,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 	strFullPath += _RelativePath;
 
 	CFBXLoader loader;
-	loader.init();
+	loader.Init();
 	loader.LoadFbx(strFullPath);
 
 	CMeshData* pMeshData = new CMeshData(true);
@@ -111,7 +111,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		// AssetMgr 에 메쉬 등록
 		if (nullptr != pMesh)
 		{
-			wstring strMeshKey =  path(strFullPath).stem();
+			wstring strMeshKey = path(strFullPath).stem();
 			strMeshKey += L"_";
 			strMeshKey += Container.strName;
 			strMeshKey += L".mesh";

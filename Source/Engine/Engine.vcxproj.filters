@@ -199,20 +199,17 @@
     <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClCompile Include="System\Public\Rendering\Shader\CBoneMatrixCS.h">
-      <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
-    </ClCompile>
     <ClInclude Include="System\Public\Rendering\Shader\CCopyBoneCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="CAnimation.h" />
-    <ClInclude Include="CSkeleton.h" />
-    <ClInclude Include="CCollider3D.h">
-      <Filter>07. Component\08. Collider3D</Filter>
-    </ClInclude>
+    <ClInclude Include="CTimeMgr.h" />
+    <ClInclude Include="CTransform.h" />
+    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
+    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
+    <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -407,11 +404,9 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="CAnimation.cpp" />
-    <ClCompile Include="CSkeleton.cpp" />
-    <ClCompile Include="CCollider3D.cpp">
-      <Filter>07. Component\08. Collider3D</Filter>
-    </ClCompile>
+    <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
+    <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
+    <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -614,9 +609,6 @@
     </Filter>
     <Filter Include="04. Manager\09. InstancingBuffer">
       <UniqueIdentifier>{e4ced7d0-9af4-474a-a391-54fb02f4bbe6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. Component\08. Collider3D">
-      <UniqueIdentifier>{1bd04477-e788-4385-8b08-75fc338aff8a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

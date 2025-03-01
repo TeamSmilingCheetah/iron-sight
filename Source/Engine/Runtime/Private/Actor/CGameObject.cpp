@@ -3,6 +3,7 @@
 #include "Runtime/Public/Actor/CLayer.h"
 #include "Runtime/Public/Actor/CLevel.h"
 #include "Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"

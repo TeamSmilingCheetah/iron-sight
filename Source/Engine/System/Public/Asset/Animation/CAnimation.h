@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "CAsset.h"
 #include "CSkeleton.h"
+#include "System/Public/Asset/Base/CAsset.h"
 
 class CStructuredBuffer;
 
@@ -10,23 +10,23 @@ class CAnimation :
 {
 private:
 	// Bone 정보
-	Ptr<CSkeleton>		m_Bone;
+	Ptr<CSkeleton> m_Bone;
 
 	// Animation3D 정보
-	int					m_StartFrame;
-	int					m_EndFrame;
-	int					m_FrameLength;
+	int m_StartFrame;
+	int m_EndFrame;
+	int m_FrameLength;
 
-	double				m_StartTime;
-	double				m_EndTime;
-	double				m_TimeLength;
+	double m_StartTime;
+	double m_EndTime;
+	double m_TimeLength;
 
-	FbxTime::EMode		m_TimeMode;
+	FbxTime::EMode m_TimeMode;
 
 	// KeyFrame 정보
 	vector<tFrameTrans> m_vecKeyFrames;
 
-	CStructuredBuffer*	m_BoneFrameData; // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
+	CStructuredBuffer* m_BoneFrameData; // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
 
 public:
 	CStructuredBuffer* GetBoneFrameDataBuffer() const { return m_BoneFrameData; } // 전체 본 프레임 정보
@@ -54,4 +54,3 @@ public:
 	CAnimation(bool _bEngineRes = false);
 	~CAnimation();
 };
-

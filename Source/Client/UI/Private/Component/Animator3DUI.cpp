@@ -1,8 +1,9 @@
 ﻿#include "pch.h"
-#include "Animator3DUI.h"
+#include "UI/Public/Component/Animator3DUI.h"
+#include "Runtime/Public/Actor/CGameObject.h"
+#include "Runtime/Public/Component/Animation/CAnimator3D.h"
 
-#include <Engine/CAnimator3D.h>
-#include <Engine/CMesh.h>
+class CAnimator3D;
 
 Animator3DUI::Animator3DUI()
 	: ComponentUI("Animator3DUI", COMPONENT_TYPE::ANIMATOR3D)
