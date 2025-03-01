@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "System/Public/Rendering/Shader/CCopyBoneCS.h"
 
+class CCopyBoneCS;
 class CStructuredBuffer;
 
 class CInstancingBuffer

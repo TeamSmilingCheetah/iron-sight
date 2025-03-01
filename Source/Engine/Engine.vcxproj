@@ -237,6 +237,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp" />
+    <ClCompile Include="$(SolutionDir)External\Include\Common\extern.cpp" />
     <ClCompile Include="Core\Private\CEngine.cpp" />
     <ClCompile Include="Core\Private\CEntity.cpp" />
     <ClCompile Include="Runtime\Private\Actor\CGameObject.cpp" />
@@ -276,11 +277,13 @@
     <ClCompile Include="System\Private\Manager\CRenderMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CTaskMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CTimeMgr.cpp" />
+    <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp" />
     <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp" />
     <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CClearColorCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CComputeShader.cpp" />
@@ -295,7 +298,6 @@
     <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp" />
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp" />
     <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp" />
-    <ClCompile Include="extern.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -1,14 +1,13 @@
 ﻿#include "pch.h"
-#include "CInstancingBuffer.h"
-
-#include "CDevice.h"
-#include "CMaterial.h"
-#include "CAssetMgr.h"
+#include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
+#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "System/Public/Rendering/Device/CDevice.h"
+#include "System/Public/Rendering/Shader/CCopyBoneCS.h"
 
 CInstancingBuffer::CInstancingBuffer()
 	: m_MaxCount(10)
-	, m_AnimInstCount(0)
-	, m_BoneBuffer(nullptr)
+	  , m_AnimInstCount(0)
+	  , m_BoneBuffer(nullptr)
 {
 	m_BoneBuffer = new CStructuredBuffer;
 }
@@ -38,7 +37,7 @@ void CInstancingBuffer::SetData()
 {
 	if (m_vecData.size() > m_MaxCount)
 	{
-		Resize((UINT)m_vecData.size());
+		Resize(static_cast<UINT>(m_vecData.size()));
 	}
 
 	D3D11_MAPPED_SUBRESOURCE tMap = {};
@@ -51,18 +50,19 @@ void CInstancingBuffer::SetData()
 	if (m_vecBoneMat.empty())
 		return;
 
-	UINT iBufferSize = (UINT)m_vecBoneMat.size() * m_vecBoneMat[0]->GetBufferSize();
+	UINT iBufferSize = static_cast<UINT>(m_vecBoneMat.size() * m_vecBoneMat[0]->GetBufferSize());
 	if (m_BoneBuffer->GetBufferSize() < iBufferSize)
 	{
 		m_BoneBuffer->Create(m_vecBoneMat[0]->GetElementSize()
-			, m_vecBoneMat[0]->GetElementCount() * (UINT)m_vecBoneMat.size(), SB_TYPE::SRV_UAV, false, nullptr);
+		                     , m_vecBoneMat[0]->GetElementCount() * static_cast<UINT>(m_vecBoneMat.size()), SB_TYPE::SRV_UAV, false,
+		                     nullptr);
 	}
 
 	// 복사용 컴퓨트 쉐이더 실행
 	UINT iBoneCount = m_vecBoneMat[0]->GetElementCount();
 	m_CopyShader->SetBoneCount(iBoneCount);
 
-	for (UINT i = 0; i < (UINT)m_vecBoneMat.size(); ++i)
+	for (UINT i = 0; i < static_cast<UINT>(m_vecBoneMat.size()); ++i)
 	{
 		m_CopyShader->SetRowIndex(i);
 		m_CopyShader->SetSourceBuffer(m_vecBoneMat[i]);
@@ -73,7 +73,6 @@ void CInstancingBuffer::SetData()
 	// Bone 정보 전달 레지스터
 	m_BoneBuffer->Binding(17);
 }
-
 
 void CInstancingBuffer::AddInstancingBoneMat(CStructuredBuffer* _pBuffer)
 {

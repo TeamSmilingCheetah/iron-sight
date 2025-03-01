@@ -199,10 +199,13 @@
     <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h">
       <Filter>01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="CCopyBoneCS.h">
+    <ClCompile Include="System\Public\Rendering\Shader\CBoneMatrixCS.h">
+      <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
+    </ClCompile>
+    <ClInclude Include="System\Public\Rendering\Shader\CCopyBoneCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
     </ClInclude>
-    <ClInclude Include="CInstancingBuffer.h">
+    <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
     <ClInclude Include="CAnimation.h" />
@@ -218,7 +221,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>00. Default</Filter>
     </ClCompile>
-    <ClCompile Include="extern.cpp">
+    <ClCompile Include="$(SolutionDir)External\Include\Common\extern.cpp">
       <Filter>01. Header</Filter>
     </ClCompile>
     <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp">
@@ -398,10 +401,10 @@
     <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
     </ClCompile>
-    <ClCompile Include="CCopyBoneCS.cpp">
+    <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp">
       <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
     </ClCompile>
-    <ClCompile Include="CInstancingBuffer.cpp">
+    <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClCompile>
     <ClCompile Include="CAnimation.cpp" />
@@ -688,7 +691,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\External\Include\Common\SimpleMath.inl">
+    <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl">
       <Filter>01. Header</Filter>
     </None>
   </ItemGroup>
