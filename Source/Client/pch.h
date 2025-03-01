@@ -8,7 +8,6 @@
 #pragma comment(lib, R"(Engine/Engine)")
 #endif
 
-
 #ifdef _DEBUG
 #pragma comment(lib, R"(Scripts/Scripts_d)")
 #else

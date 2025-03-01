@@ -1,0 +1,65 @@
+﻿#include "pch.h"
+#include "UI/Public/Component/ScriptUI.h"
+
+#include "Runtime/Public/Component/Script/CScript.h"
+#include "Scripts/Manager/CScriptMgr.h"
+#include "UI/Public/Editor/ParamUI.h"
+
+ScriptUI::ScriptUI()
+	: ComponentUI("ScriptUI", COMPONENT_TYPE::SCRIPT)
+{
+}
+
+ScriptUI::~ScriptUI()
+{
+}
+
+void ScriptUI::Render_Update()
+{
+	string ScriptName = WStringToString(CScriptMgr::GetScriptName(m_TargetScript));
+	ComponentTitle(ScriptName.c_str());
+
+
+	const vector<tScriptParam>& vecParam = m_TargetScript->GetScriptParam();
+
+	for (size_t i = 0; i < vecParam.size(); ++i)
+	{
+		switch (vecParam[i].Param)
+		{
+		case SCRIPT_PARAM::INT:
+			ParamUI::Param_Int(vecParam[i].Desc, static_cast<int*>(vecParam[i].pData), false);
+			break;
+		case SCRIPT_PARAM::FLOAT:
+			ParamUI::Param_Float(vecParam[i].Desc, static_cast<float*>(vecParam[i].pData), false);
+			break;
+		case SCRIPT_PARAM::VEC2:
+			ParamUI::Param_Vec2(vecParam[i].Desc, static_cast<Vec2*>(vecParam[i].pData), false);
+			break;
+		case SCRIPT_PARAM::VEC4:
+			ParamUI::Param_Vec4(vecParam[i].Desc, static_cast<Vec4*>(vecParam[i].pData), false);
+			break;
+		case SCRIPT_PARAM::TEXTURE:
+			ParamUI::Param_Tex(vecParam[i].Desc, *static_cast<Ptr<CTexture>*>(vecParam[i].pData));
+			break;
+		case SCRIPT_PARAM::PREFAB:
+			ParamUI::Param_Prefab(vecParam[i].Desc, *static_cast<Ptr<CPrefab>*>(vecParam[i].pData));
+			break;
+		}
+	}
+}
+
+void ScriptUI::SetScript(CScript* _Script)
+{
+	m_TargetScript = _Script;
+
+	if (nullptr == m_TargetScript)
+	{
+		SetTargetObject(nullptr);
+		SetActive(false);
+	}
+	else
+	{
+		SetTargetObject(m_TargetScript->GetOwner());
+		SetActive(true);
+	}
+}

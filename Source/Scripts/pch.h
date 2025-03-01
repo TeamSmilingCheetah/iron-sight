@@ -9,9 +9,7 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
-
-
-#include <Common/global.h>
+#include "Common/global.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, R"(Engine/Engine_d)")
@@ -19,7 +17,6 @@
 #pragma comment(lib, R"(Engine/Engine)")
 #endif
 
-#include "CScriptMgr.h"
-
+#include "Manager/CScriptMgr.h"
 
 #endif //PCH_H

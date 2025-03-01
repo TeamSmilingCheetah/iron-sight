@@ -1,0 +1,16 @@
+﻿#pragma once
+
+#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Runtime/Public/Component/Camera/CCamera.h"
+#include "Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Runtime/Public/Component/Light/CLight2D.h"
+#include "Runtime/Public/Component/Light/CLight3D.h"
+#include "Runtime/Public/Component/Animation/CFlipBookPlayer.h"
+#include "Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Runtime/Public/Component/Rendering/CTileMap.h"
+#include "Runtime/Public/Component/Rendering/CParticleSystem.h"
+#include "Runtime/Public/Component/Rendering/CSkyBox.h"
+#include "Runtime/Public/Component/Rendering/CDecal.h"
+#include "Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Runtime/Public/Component/Script/CScript.h"
