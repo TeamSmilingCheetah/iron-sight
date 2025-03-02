@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/SkyBoxUI.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Rendering/CSkyBox.h"
+#include "Client/UI/Public/Component/SkyBoxUI.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 
 SkyBoxUI::SkyBoxUI()
 	: ComponentUI("SkyBoxUI", COMPONENT_TYPE::SKYBOX)

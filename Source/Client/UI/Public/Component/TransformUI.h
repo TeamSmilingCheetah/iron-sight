@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "UI/Public/Component/ComponentUI.h"
+#include "Client/UI/Public/Component/ComponentUI.h"
 
 
 class TransformUI :

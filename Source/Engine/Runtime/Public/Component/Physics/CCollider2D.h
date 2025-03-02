@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CCollider2D :
     public CComponent

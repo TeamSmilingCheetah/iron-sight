@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Common/singleton.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CConstBuffer;
 

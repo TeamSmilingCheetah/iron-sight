@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Rendering/Public/GraphicShaderUI.h"
+#include "Client/Rendering/Public/GraphicShaderUI.h"
 
 GraphicShaderUI::GraphicShaderUI()
 	: AssetUI("GraphicShader", GRAPHIC_SHADER)

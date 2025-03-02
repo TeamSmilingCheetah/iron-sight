@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Base/CRenderComponent.h"
-#include "System/Public/Rendering/Shader/CHeightMapCS.h"
-#include "System/Public/Rendering/Shader/CWeightMapCS.h"
-#include "System/Public/Rendering/Shader/CRaycastCS.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/System/Public/Rendering/Shader/CHeightMapCS.h"
+#include "Engine/System/Public/Rendering/Shader/CWeightMapCS.h"
+#include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 struct tRaycastOut
 {
@@ -73,7 +73,7 @@ public:
 	UINT GetWeigtIdx() { return m_WeightIdx; }
 	int GetBrushSize() { return static_cast<int>(m_vecBrush.size()); }
 	int GetWeightSize() { return m_ColorTex->GetArraySize(); }
-	
+
 
 	LANDSCAPE_MODE GetMode() { return m_Mode; }
 

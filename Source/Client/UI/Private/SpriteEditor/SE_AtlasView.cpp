@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/SpriteEditor/SE_AtlasView.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 SE_AtlasView::SE_AtlasView()
 	: SE_Sub("SE_AtlasView")

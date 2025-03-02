@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Rendering/Public/ComputeShaderUI.h"
+#include "Client/Rendering/Public/ComputeShaderUI.h"
 
 ComputeShaderUI::ComputeShaderUI()
 	: AssetUI("ComputeShader", COMPUTE_SHADER)

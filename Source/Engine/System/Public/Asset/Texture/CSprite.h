@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "System/Public/Asset/Base/CAsset.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CSprite :
     public CAsset

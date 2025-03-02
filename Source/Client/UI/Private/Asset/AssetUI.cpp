@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/AssetUI.h"
+#include "Client/UI/Public/Asset/AssetUI.h"
 
 AssetUI::AssetUI(const string& _ID, ASSET_TYPE _Type)
 	: EditorUI(_ID)

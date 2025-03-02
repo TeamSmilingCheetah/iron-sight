@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Common/global.h"
-#include "System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
 
 class CTexture :
     public CAsset

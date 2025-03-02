@@ -1,13 +1,13 @@
 ﻿#include "pch.h"
-#include "UI/Public/Editor/MenuUI.h"
-#include "UI/Public/Editor/Inspector.h"
-#include "Core/Public/CLevelSaveLoad.h"
+#include "Client/UI/Public/Editor/MenuUI.h"
+#include "Client/UI/Public/Editor/Inspector.h"
+#include "Client/Core/Public/CLevelSaveLoad.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 #include "Engine/System/Public/Manager/CRenderMgr.h"
-#include "System/Public/CImGuiMgr.h"
+#include "Client/System/Public/CImGuiMgr.h"
 
 class Inspector;
 class CMaterial;

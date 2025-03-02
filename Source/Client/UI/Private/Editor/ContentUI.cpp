@@ -1,10 +1,10 @@
 ﻿#include "pch.h"
-#include "UI/Public/Editor/ContentUI.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
-#include "System/Public/CImGuiMgr.h"
-#include "UI/Public/Editor/Inspector.h"
-#include "UI/Public/Editor/TreeUI.h"
+#include "Client/System/Public/CImGuiMgr.h"
+#include "Client/UI/Public/Editor/Inspector.h"
+#include "Client/UI/Public/Editor/TreeUI.h"
 
 class Inspector;
 

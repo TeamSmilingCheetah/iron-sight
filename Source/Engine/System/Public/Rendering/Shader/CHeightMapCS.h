@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "System/Public/Rendering/Shader/CComputeShader.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Engine/System/Public/Rendering/Shader/CComputeShader.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CStructuredBuffer;
 

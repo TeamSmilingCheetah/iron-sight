@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/SpriteUI.h"
+#include "Client/UI/Public/Asset/SpriteUI.h"
 
 SpriteUI::SpriteUI()
 	: AssetUI("Sprite", SPRITE)

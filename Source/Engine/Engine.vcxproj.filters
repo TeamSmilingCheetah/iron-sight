@@ -1,17 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>00. Default</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>00. Default</Filter>
     </ClInclude>
     <ClInclude Include="Core\Public\CEngine.h">
       <Filter>02. Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Public\Rendering\Device\CDevice.cpp">
-      <Filter>03. Device</Filter>
     </ClInclude>
     <ClInclude Include="Core\Public\CEntity.h">
       <Filter>Module</Filter>
@@ -205,8 +199,6 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="CTimeMgr.h" />
-    <ClInclude Include="CTransform.h" />
     <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
     <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
@@ -375,9 +367,6 @@
     <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape.cpp">
       <Filter>07. Component\RenderComponent\06. LandScape</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape_Init.cpp">
-      <Filter>07. Component\RenderComponent\06. LandScape</Filter>
-    </ClCompile>
     <ClCompile Include="System\Private\Rendering\Shader\CHeightMapCS.cpp">
       <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
     </ClCompile>
@@ -408,7 +397,7 @@
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp" />
-    <ClInclude Include="Runtime\Private\Component\Physics\CCollider3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">

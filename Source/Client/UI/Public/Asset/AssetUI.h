@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "UI/Public/Editor/EditorUI.h"
 #include "Common/Ptr.h"
-#include "System/Public/Asset/Base/CAsset.h"
+#include "Client/UI/Public/Editor/EditorUI.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
 
 class AssetUI :
 	public EditorUI

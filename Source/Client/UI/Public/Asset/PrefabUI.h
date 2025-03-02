@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "UI/Public/Asset/AssetUI.h"
+#include "Client/UI/Public/Asset/AssetUI.h"
 
 class PrefabUI :
 	public AssetUI

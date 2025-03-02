@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/Light3DUI.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Light/CLight3D.h"
+#include "Client/UI/Public/Component/Light3DUI.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 
 Light3DUI::Light3DUI()
 	: ComponentUI("Light3DUI", COMPONENT_TYPE::LIGHT3D)

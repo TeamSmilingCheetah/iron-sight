@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "System/Public/Asset/Base/CAsset.h"
-#include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 class CStructuredBuffer;
 
@@ -23,7 +23,7 @@ class CMesh :
     // 하나의 버텍스 버퍼에 여러개의 인덱스 버퍼가 연결
     vector<tIndexInfo> m_vecIdxInfo;
 
-    
+
     int Load(const wstring& _RelativePath) override;
 
 public:
@@ -35,7 +35,7 @@ public:
     UINT GetVertexCount() { return m_VtxCount; }
     UINT GetSubsetCount() { return static_cast<UINT>(m_vecIdxInfo.size()); }
     void* GetVtxSysMem() { return m_VtxSysMem; }
-    
+
     void Binding(UINT _Subset);
 	void Binding_Inst(UINT _Subset);
 

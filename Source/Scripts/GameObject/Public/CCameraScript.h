@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 
 class CCameraScript :
 	public CScript

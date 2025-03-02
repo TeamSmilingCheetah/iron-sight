@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Core/Public/CEntity.h"
+#include "Engine/Core/Public/CEntity.h"
 
 class CComponent;
 class CRenderComponent;
@@ -66,7 +66,7 @@ public:
     class CLight3D* Light3D() { return (CLight3D*)GetComponent(COMPONENT_TYPE::LIGHT3D); }
 
 	class CAnimator3D* Animator3D();
-    
+
 
     class CParticleSystem* ParticleSystem()
     {

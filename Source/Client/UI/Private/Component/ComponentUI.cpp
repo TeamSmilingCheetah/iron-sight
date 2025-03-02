@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/ComponentUI.h"
-#include "Runtime/Public/Actor/CGameObject.h"
+#include "Client/UI/Public/Component/ComponentUI.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 class CComponent;
 

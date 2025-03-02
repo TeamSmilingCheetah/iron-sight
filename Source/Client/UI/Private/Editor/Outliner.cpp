@@ -1,13 +1,13 @@
 ﻿#include "pch.h"
-#include "UI/Public/Editor/Outliner.h"
+#include "Client/UI/Public/Editor/Outliner.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLayer.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
-#include "System/Public/CImGuiMgr.h"
-#include "UI/Public/Editor/Inspector.h"
-#include "UI/Public/Editor/TreeUI.h"
+#include "Client/System/Public/CImGuiMgr.h"
+#include "Client/UI/Public/Editor/Inspector.h"
+#include "Client/UI/Public/Editor/TreeUI.h"
 
 class Inspector;
 class CLayer;

@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
-#include "UI/Public/SpriteEditor/SpriteEditor.h"
-#include "System/Public/CImGuiMgr.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "UI/Public/SpriteEditor/SE_AtlasView.h"
-#include "UI/Public/SpriteEditor/SE_Detail.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Client/System/Public/CImGuiMgr.h"
+#include "Client/UI/Public/SpriteEditor/SpriteEditor.h"
+#include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
+#include "Client/UI/Public/SpriteEditor/SE_Detail.h"
 
 SpriteEditor::SpriteEditor()
 	: EditorUI("SpriteEditor")

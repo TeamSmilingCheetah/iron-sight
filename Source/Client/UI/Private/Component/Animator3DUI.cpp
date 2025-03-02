@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/Animator3DUI.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Client/UI/Public/Component/Animator3DUI.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 
 class CAnimator3D;
 

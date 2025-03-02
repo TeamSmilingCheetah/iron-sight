@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "UI/Public/SpriteEditor/SE_Sub.h"
+#include "Client/UI/Public/SpriteEditor/SE_Sub.h"
 
 class CTexture;
 

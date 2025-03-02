@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/SoundUI.h"
+#include "Client/UI/Public/Asset/SoundUI.h"
 
 SoundUI::SoundUI()
 	: AssetUI("Sound", SOUND)

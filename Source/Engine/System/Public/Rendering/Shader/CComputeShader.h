@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "System/Public/Rendering/Shader/CShader.h"
+#include "Engine/System/Public/Rendering/Shader/CShader.h"
 
 class CComputeShader :
     public CShader
