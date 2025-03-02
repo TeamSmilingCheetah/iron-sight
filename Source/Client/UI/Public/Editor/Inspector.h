@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "UI/Public/Editor/EditorUI.h"
+#include "Client/UI/Public/Editor/EditorUI.h"
 #include "Common/Ptr.h"
 
 class CAsset;

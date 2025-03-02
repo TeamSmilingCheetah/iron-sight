@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Common/singleton.h"
-#include "System/Public/Asset/Texture/CTexture.h"
-#include "System/Public/Rendering/Meterial/CMaterial.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
+#include "Engine/System/Public/Rendering/Meterial/CMaterial.h"
 
 class CCamera;
 class CLight2D;

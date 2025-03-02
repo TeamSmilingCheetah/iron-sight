@@ -1,11 +1,11 @@
 ﻿#include "pch.h"
-#include "UI/Public/SpriteEditor/SE_Detail.h"
-#include "System/Public/CImGuiMgr.h"
-#include "System/Public/Asset/Texture/CTexture.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "UI/Public/Editor/ListUI.h"
-#include "UI/Public/Editor/TreeUI.h"
-#include "UI/Public/SpriteEditor/SE_AtlasView.h"
+#include "Client/UI/Public/SpriteEditor/SE_Detail.h"
+#include "Client/System/Public/CImGuiMgr.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Client/UI/Public/Editor/ListUI.h"
+#include "Client/UI/Public/Editor/TreeUI.h"
+#include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
 
 class ListUI;
 class TreeNode;

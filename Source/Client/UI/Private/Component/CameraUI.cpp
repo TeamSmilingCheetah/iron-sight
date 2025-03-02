@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/CameraUI.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
+#include "Client/UI/Public/Component/CameraUI.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 
 class CCamera;
 

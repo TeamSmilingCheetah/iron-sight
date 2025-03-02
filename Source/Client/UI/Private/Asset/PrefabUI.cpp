@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/PrefabUI.h"
-#include "System/Public/Asset/Prefab/CPrefab.h"
-#include "System/Public/Manager/CPathMgr.h"
+#include "Client/UI/Public/Asset/PrefabUI.h"
+#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
 
 class CPrefab;
 

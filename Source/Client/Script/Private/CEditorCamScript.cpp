@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
-#include "Script/Public/CEditorCamScript.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
+#include "Client/Script/Public/CEditorCamScript.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
 
 CEditorCamScript::CEditorCamScript()
 	: CScript(0)

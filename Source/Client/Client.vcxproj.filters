@@ -121,9 +121,6 @@
     <ClInclude Include="Rendering\Public\ComputeShaderUI.h">
       <Filter>3. EditorUI\Inspector\AssetUI\10. ComputeShaderUI</Filter>
     </ClInclude>
-    <ClInclude Include="TestLevel.h">
-      <Filter>4. TestLevel</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Public\CLevelSaveLoad.h">
       <Filter>5. LevelSaveLoad</Filter>
     </ClInclude>
@@ -145,24 +142,16 @@
     <ClInclude Include="UI\Public\SpriteEditor\SE_AtlasView.h">
       <Filter>3. EditorUI\SpriteEditor\Sub\SE_AtlasView</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Public\Asset\Animator3DUI.h">
-      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Public\Asset\Light3DUI.h">
-      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Public\Asset\SkyBoxUI.h">
-      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Public\Asset\LandScapeUI.h">
-      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Public\Asset\SkeletonUI.h">
       <Filter>3. EditorUI\Inspector\AssetUI\12. SkeletonUI</Filter>
     </ClInclude>
     <ClInclude Include="UI\Public\Asset\AnimationUI.h">
       <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Public\Component\Animator3DUI.h" />
+    <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
+    <ClInclude Include="UI\Public\Component\Light3DUI.h" />
+    <ClInclude Include="UI\Public\Component\SkyBoxUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -424,9 +413,6 @@
     <ClCompile Include="Rendering\Private\ComputeShaderUI.cpp">
       <Filter>3. EditorUI\Inspector\AssetUI\10. ComputeShaderUI</Filter>
     </ClCompile>
-    <ClCompile Include="TestLevel.cpp">
-      <Filter>4. TestLevel</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Private\CLevelSaveLoad.cpp">
       <Filter>5. LevelSaveLoad</Filter>
     </ClCompile>
@@ -448,23 +434,15 @@
     <ClCompile Include="UI\Private\SpriteEditor\SE_AtlasView.cpp">
       <Filter>3. EditorUI\SpriteEditor\Sub\SE_AtlasView</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Private\Asset\Animator3DUI.cpp">
-      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Private\Asset\Light3DUI.cpp">
-      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Private\Asset\SkyBoxUI.cpp">
-      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Private\Asset\LandScapeUI.cpp">
-      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Private\Asset\SkeletonUI.cpp">
       <Filter>3. EditorUI\Inspector\AssetUI\12. SkeletonUI</Filter>
     </ClCompile>
     <ClCompile Include="UI\Private\Asset\AnimationUI.cpp">
       <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Private\Component\Animator3DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Light3DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp" />
   </ItemGroup>
 </Project>

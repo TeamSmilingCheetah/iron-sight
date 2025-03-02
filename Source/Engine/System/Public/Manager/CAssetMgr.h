@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Common/singleton.h"
-#include "System/Public/Asset/Base/assets.h"
-#include "System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Asset/Base/assets.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
 
 class CAssetMgr :
     public singleton<CAssetMgr>

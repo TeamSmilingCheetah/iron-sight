@@ -1,10 +1,10 @@
 ﻿#include "pch.h"
-#include "Core/Public/CEditorMgr.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CRenderMgr.h"
-#include "Script/Public/CEditorCamScript.h"
-#include "Script/Public/CGameObjectEx.h"
+#include "Client/Core/Public/CEditorMgr.h"
+#include "Client/Script/Public/CEditorCamScript.h"
+#include "Client/Script/Public/CGameObjectEx.h"
 
 CEditorMgr::CEditorMgr()
 {

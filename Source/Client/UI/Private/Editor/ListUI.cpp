@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/Editor/ListUI.h"
-#include "imgui/imgui.h"
+#include "Client/UI/Public/Editor/ListUI.h"
+#include "Client/imgui/imgui.h"
 
 ListUI::ListUI()
 	: EditorUI("##ListUI")

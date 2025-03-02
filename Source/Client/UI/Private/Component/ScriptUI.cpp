@@ -1,9 +1,8 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/ScriptUI.h"
-
-#include "Runtime/Public/Component/Script/CScript.h"
+#include "Client/UI/Public/Component/ScriptUI.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Scripts/Manager/CScriptMgr.h"
-#include "UI/Public/Editor/ParamUI.h"
+#include "Client/UI/Public/Editor/ParamUI.h"
 
 ScriptUI::ScriptUI()
 	: ComponentUI("ScriptUI", COMPONENT_TYPE::SCRIPT)

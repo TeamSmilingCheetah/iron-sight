@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/FlipbookUI.h"
+#include "Client/UI/Public/Asset/FlipbookUI.h"
 
 FlipbookUI::FlipbookUI()
     : AssetUI("Flipbook", FLIPBOOK)

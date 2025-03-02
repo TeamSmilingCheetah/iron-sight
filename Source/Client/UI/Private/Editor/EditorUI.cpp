@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "UI/Public/Editor/EditorUI.h"
+#include "Client/UI/Public/Editor/EditorUI.h"
 
 EditorUI::EditorUI(const string& _ID)
     : m_ID(_ID)

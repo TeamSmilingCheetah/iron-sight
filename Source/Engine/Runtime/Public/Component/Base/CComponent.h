@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Core/Public/CEntity.h"
-#include "Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Core/Public/CEntity.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 #define GET_OTHER_COMPONENT(Type) C##Type* Type() { return m_Owner->Type(); }
 

@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/TextureUI.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Client/UI/Public/Asset/TextureUI.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CTexture;
 

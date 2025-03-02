@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "System/Public/Asset/Base/CAsset.h"
-#include "System/Public/Asset/Texture/CSprite.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Texture/CSprite.h"
 
 class CFlipbook :
     public CAsset

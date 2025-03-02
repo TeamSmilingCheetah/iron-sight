@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Base/CComponent.h"
-#include "System/Public/Asset/Mesh/CMesh.h"
-#include "System/Public/Rendering/Meterial/CMaterial.h"
+#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/System/Public/Asset/Mesh/CMesh.h"
+#include "Engine/System/Public/Rendering/Meterial/CMaterial.h"
 
 class CLight3D :
     public CComponent

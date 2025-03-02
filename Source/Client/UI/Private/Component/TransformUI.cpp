@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/TransformUI.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Client/UI/Public/Component/TransformUI.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 class CTransform;
 

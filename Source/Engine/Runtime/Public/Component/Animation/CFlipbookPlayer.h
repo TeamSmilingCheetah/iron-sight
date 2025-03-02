@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "System/Public/Asset/Texture/CFlipbook.h"
-#include "Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/System/Public/Asset/Texture/CFlipbook.h"
+#include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CFlipbookPlayer :
     public CComponent

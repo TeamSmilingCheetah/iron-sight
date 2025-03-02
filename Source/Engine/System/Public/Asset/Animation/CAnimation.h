@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "CSkeleton.h"
-#include "System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
 
 class CStructuredBuffer;
 

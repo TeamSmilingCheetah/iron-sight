@@ -74,16 +74,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)OutputFile\Bin\</OutDir>
-    <IncludePath>$(SolutionDir)Source\Engine\;$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath);$(SolutionDir)Source\</IncludePath>
+    <IncludePath>$(IncludePath);$(SolutionDir)External\Include\;$(SolutionDir)Source\;</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(ExternalIncludePath);$(SolutionDir)External\Include\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
     <IntDir>$(SolutionDir)OutputFile\Bin\Intermediate\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)OutputFile\Bin\</OutDir>
-    <IncludePath>$(SolutionDir)Source\Engine\;$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath);$(SolutionDir)Source\</IncludePath>
-    <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+    <IncludePath>$(IncludePath);$(SolutionDir)External\Include\;$(SolutionDir)Source\;</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)External\Library\;</LibraryPath>
+    <ExternalIncludePath>$(ExternalIncludePath);$(SolutionDir)External\Include\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
     <IntDir>$(SolutionDir)OutputFile\Bin\Intermediate\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -178,7 +178,6 @@
     <ClInclude Include="Script\Public\CEditorCamScript.h" />
     <ClInclude Include="Script\Public\CGameObjectEx.h" />
     <ClInclude Include="System\Public\CImGuiMgr.h" />
-    <ClInclude Include="TestLevel.h" />
     <ClInclude Include="UI\Public\Asset\AnimationUI.h" />
     <ClInclude Include="UI\Public\Asset\AssetUI.h" />
     <ClInclude Include="UI\Public\Asset\FlipbookUI.h" />
@@ -234,7 +233,6 @@
     <ClCompile Include="Script\Private\CEditorCamScript.cpp" />
     <ClCompile Include="Script\Private\CGameObjectEx.cpp" />
     <ClCompile Include="System\Private\CImGuiMgr.cpp" />
-    <ClCompile Include="TestLevel.cpp" />
     <ClCompile Include="UI\Private\Asset\AnimationUI.cpp" />
     <ClCompile Include="UI\Private\Asset\AssetUI.cpp" />
     <ClCompile Include="UI\Private\Asset\FlipbookUI.cpp" />

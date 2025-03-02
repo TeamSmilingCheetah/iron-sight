@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Common/Ptr.h"
-#include "Runtime/Public/Component/Base/CRenderComponent.h"
-#include "System/Public/Rendering/Shader/CParticleTickCS.h"
+#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/System/Public/Rendering/Shader/CParticleTickCS.h"
 
 class CStructuredBuffer;
 

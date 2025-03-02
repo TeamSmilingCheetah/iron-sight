@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "Script/Public/CGameObjectEx.h"
-#include "Runtime/Public/Component/Base/CComponent.h"
+#include "Client/Script/Public/CGameObjectEx.h"
+#include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 void CGameObjectEx::FinalTick_Editor()
 {

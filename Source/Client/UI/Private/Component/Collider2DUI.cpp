@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "UI/Public/Component/Collider2DUI.h"
-#include "Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Client/UI/Public/Component/Collider2DUI.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
 
 class CCollider2D;
 

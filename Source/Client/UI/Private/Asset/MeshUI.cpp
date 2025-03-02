@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/MeshUI.h"
+#include "Client/UI/Public/Asset/MeshUI.h"
 
 MeshUI::MeshUI()
 	: AssetUI("Mesh", MESH)

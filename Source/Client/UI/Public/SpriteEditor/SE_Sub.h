@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "UI/Public/Editor/EditorUI.h"
-#include "UI/Public/SpriteEditor/SpriteEditor.h"
+#include "Client/UI/Public/Editor/EditorUI.h"
+#include "Client/UI/Public/SpriteEditor/SpriteEditor.h"
 
 class SE_Sub :
 	public EditorUI

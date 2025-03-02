@@ -1,11 +1,11 @@
 ﻿#include "pch.h"
-#include "UI/Public/Asset/MaterialUI.h"
-#include "UI/Public/Editor/ListUI.h"
-#include "UI/Public/Editor/ParamUI.h"
-#include "UI/Public/Editor/TreeUI.h"
-#include "System/Public/CImGuiMgr.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Rendering/Meterial/CMaterial.h"
+#include "Client/UI/Public/Asset/MaterialUI.h"
+#include "Client/UI/Public/Editor/ListUI.h"
+#include "Client/UI/Public/Editor/ParamUI.h"
+#include "Client/UI/Public/Editor/TreeUI.h"
+#include "Client/System/Public/CImGuiMgr.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Rendering/Meterial/CMaterial.h"
 
 class ListUI;
 class TreeNode;
