@@ -222,7 +222,7 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h" />
     <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h" />
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
-    <ClInclude Include="System\Public\Rendering\Meterial\CMaterial.h" />
+    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h" />
     <ClInclude Include="System\Public\Rendering\RenderTarget\CMRT.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h" />
@@ -285,7 +285,7 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp" />
-    <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp" />
+    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp" />
     <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp" />

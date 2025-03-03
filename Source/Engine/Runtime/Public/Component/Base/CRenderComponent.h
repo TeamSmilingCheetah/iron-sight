@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CComponent.h"
 #include "Engine/System/Public/Asset/Mesh/CMesh.h"
-#include "Engine/System/Public/Rendering/Meterial/CMaterial.h"
+#include "Engine/System/Public/Rendering/Material/CMaterial.h"
 
 struct tMtrlSet
 {
