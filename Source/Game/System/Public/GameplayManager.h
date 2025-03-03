@@ -7,11 +7,9 @@ enum SCRIPT_TYPE
 	PLAYERSCRIPT,
 };
 
-using namespace std;
-
 class CScript;
 
-class CScriptMgr
+class GameplayManager
 {
 public:
 	static void GetScriptInfo(vector<wstring>& _vec);

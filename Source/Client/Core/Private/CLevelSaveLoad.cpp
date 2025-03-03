@@ -12,7 +12,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/CTileMap.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Scripts/Manager/CScriptMgr.h"
+#include "Game/System/Public/GameplayManager.h"
 
 int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)
 {
@@ -81,7 +81,7 @@ int CLevelSaveLoad::SaveGameObject(CGameObject* _Object, FILE* _File)
 	for (size_t i = 0; i < vecScripts.size(); ++i)
 	{
 		// Script 클래스 이름 저장
-		wstring ScriptName = CScriptMgr::GetScriptName(vecScripts[i]);
+		wstring ScriptName = GameplayManager::GetScriptName(vecScripts[i]);
 		SaveWString(ScriptName, _File);
 
 		// Script 가 저장해야할 데이터 저장
@@ -180,7 +180,7 @@ CGameObject* CLevelSaveLoad::LoadGameObject(FILE* _File)
 		LoadWString(ScriptName, _File);
 
 		// Script 이름으로 해당 스크립트 객체를 생성 후 GameObject 에 넣어준다.
-		CScript* pScript = CScriptMgr::GetScript(ScriptName);
+		CScript* pScript = GameplayManager::GetScript(ScriptName);
 		pObject->AddComponent(pScript);
 
 		// Script 가 저장한 데이터를 다시 복구시킨다.

@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Ptr.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
 
 void CreateObject(class CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
@@ -24,10 +26,6 @@ void SaveWString(const wstring& _str, FILE* _File);
 void LoadWString(wstring& _str, FILE* _File);
 
 string WStringToString(const wstring& _str);
-
-#include "Ptr.h"
-
-class CAssetMgr;
 
 template <typename T>
 void SaveAssetRef(Ptr<T> _Asset, FILE* _File)

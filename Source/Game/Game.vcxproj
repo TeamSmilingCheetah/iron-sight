@@ -154,22 +154,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Level\Public\TestLevel.h" />
-    <ClInclude Include="pch.h" />
+      <ClInclude Include="pch.h" />
+      <ClInclude Include="framework.h" />
+      <ClInclude Include="System\Public\GameplayManager.h" />
+      <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
+      <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
+      <ClInclude Include="Gameplay\Component\Public\WeaponComponent.h" />
+      <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h" />
+      <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Level\Private\TestLevel.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Character\" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="System\Private\GameplayManager.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\CameraController.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp" />
+      <ClInclude Include="Gameplay\Component\Private\WeaponComponent.cpp" />
+      <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
+    <ClCompile Include="Level\Private\TestLevel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -76,14 +76,11 @@
     <ClInclude Include="System\Public\Asset\Texture\CTexture.h">
       <Filter>08. Asset\03. Texture</Filter>
     </ClInclude>
-    <ClInclude Include="System\Public\Rendering\Meterial\CMaterial.h">
-      <Filter>08. Asset\08. Material</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h">
       <Filter>07. Component\RenderComponent</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h">
-      <Filter>07. Component\03. Collider2D</Filter>
+      <Filter>07. Component\03. Collider</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Manager\CCollisionMgr.h">
       <Filter>04. Manager\06. Collision</Filter>
@@ -199,10 +196,21 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
-    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
-    <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
-    <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h" />
+    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h">
+      <Filter>08. Asset\08. Material</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Rendering\Device\CDevice.h">
+      <Filter>03. Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h">
+      <Filter>07. Component\03. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h">
+      <Filter>08. Asset\09. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h">
+      <Filter>08. Asset\09. Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -286,14 +294,11 @@
     <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp">
       <Filter>08. Asset\03. Texture</Filter>
     </ClCompile>
-    <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp">
-      <Filter>08. Asset\08. Material</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp">
       <Filter>07. Component\RenderComponent</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp">
-      <Filter>07. Component\03. Collider2D</Filter>
+      <Filter>07. Component\03. Collider</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CCollisionMgr.cpp">
       <Filter>04. Manager\06. Collision</Filter>
@@ -394,10 +399,21 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
-    <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
-    <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp" />
+    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp">
+      <Filter>08. Asset\08. Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp">
+      <Filter>07. Component\03. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp">
+      <Filter>08. Asset\09. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp">
+      <Filter>08. Asset\09. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp">
+      <Filter>08. Asset\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -462,9 +478,6 @@
     </Filter>
     <Filter Include="07. Component\RenderComponent\01. MeshRender">
       <UniqueIdentifier>{e1ed170e-587d-4a5e-b261-bc1d7e470e9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. Component\03. Collider2D">
-      <UniqueIdentifier>{e70422b7-49b6-478c-915b-5f2e1a633a1e}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Manager\06. Collision">
       <UniqueIdentifier>{1b5d7496-c81b-423b-b32b-0b99b280bae5}</UniqueIdentifier>
@@ -600,6 +613,12 @@
     </Filter>
     <Filter Include="04. Manager\09. InstancingBuffer">
       <UniqueIdentifier>{e4ced7d0-9af4-474a-a391-54fb02f4bbe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\03. Collider">
+      <UniqueIdentifier>{e70422b7-49b6-478c-915b-5f2e1a633a1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\09. Animation">
+      <UniqueIdentifier>{5f4d574f-0e11-4aac-89d5-19708f3f3db3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

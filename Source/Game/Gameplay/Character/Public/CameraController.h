@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 
-class CCameraScript :
+class CameraController :
 	public CScript
 {
 	float m_CameraSpeed;
@@ -16,7 +16,7 @@ private:
 	void CameraPerspectiveMove();
 
 public:
-	CLONE(CCameraScript);
-	CCameraScript();
-	~CCameraScript() override;
+	CLONE(CameraController);
+	CameraController();
+	~CameraController() override;
 };
