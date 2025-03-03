@@ -7,6 +7,7 @@
 class CComponent :
     public CEntity
 {
+private:
     CGameObject* m_Owner;
     const COMPONENT_TYPE m_Type;
 

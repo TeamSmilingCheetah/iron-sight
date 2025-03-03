@@ -5,6 +5,7 @@
 class CFlipbookPlayer :
     public CComponent
 {
+private:
     vector<Ptr<CFlipbook>> m_vecFlipbook; // 재생 목록 Flipbook
     Ptr<CFlipbook> m_CurFlipbook; // 재생중인 Flipbook
     int m_SpriteIdx; // 재생중인 Sprite 인덱스
@@ -34,6 +35,8 @@ public:
     void FinalTick() override;
     void SaveComponent(FILE* _File) override;
     void LoadComponent(FILE* _File) override;
+
+public:
     CLONE(CFlipbookPlayer);
     CFlipbookPlayer();
     ~CFlipbookPlayer() override;

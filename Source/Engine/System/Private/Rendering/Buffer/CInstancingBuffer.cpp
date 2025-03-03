@@ -50,6 +50,7 @@ void CInstancingBuffer::SetData()
 	if (m_vecBoneMat.empty())
 		return;
 
+	// 모든 오브젝트의 finalbonemat을 저장할 buffer 생성
 	UINT iBufferSize = static_cast<UINT>(m_vecBoneMat.size() * m_vecBoneMat[0]->GetBufferSize());
 	if (m_BoneBuffer->GetBufferSize() < iBufferSize)
 	{
@@ -59,6 +60,8 @@ void CInstancingBuffer::SetData()
 	}
 
 	// 복사용 컴퓨트 쉐이더 실행
+	// instancing 순서로 각 오브젝트의 프레임 정보에 대한 finalbonemat을 append 하는 형식으로 복사
+	// ( 1번 오브젝트의 finalbonemat | 2번 오브젝트의 finalbonemat | ... )
 	UINT iBoneCount = m_vecBoneMat[0]->GetElementCount();
 	m_CopyShader->SetBoneCount(iBoneCount);
 

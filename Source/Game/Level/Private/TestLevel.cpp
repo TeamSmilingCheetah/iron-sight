@@ -10,6 +10,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -140,21 +141,32 @@ void TestLevel::CreateTestLevel()
 		Ptr<CMeshData> pMeshData = nullptr;
 		CGameObject* pObj = nullptr;
 
-        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
-        // pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
+		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
-        pObj = pMeshData->Instantiate();
-        pObj->SetName(L"Monster");
-		pObj->AddComponent(new CColliderRay);
+		for (int i = 0; i < 10; ++i)
+		{
+			pObj = pMeshData->Instantiate();
+			pObj->SetName(L"Monster");
+			pObj->AddComponent(new CCollider3D);
+			pObj->AddComponent(new CColliderRay);
 
-        pObj->Transform()->SetRelativePos(Vec3(500.f, -380.f, 500.f));
-        pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-        pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+			pObj->Transform()->SetRelativePos(Vec3(500.f + i * 200.f, -380.f, 500.f));
+			pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+			pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
 
-		pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
+			pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
 
-		pObj->AddComponent(new PlayerCharacter);
+			pObj->AddComponent(new PlayerCharacter);
+			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
+			pObj->Collider3D()->SetIndependentScale(true);
 
-        pLevel->AddObject(0, pObj, false);
-    }
+			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
+
+			pObj->AddComponent(new CPlayerScript);
+
+			pLevel->AddObject(0, pObj, false);
+		}
+
+	}
 }
