@@ -9,8 +9,8 @@
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
-#include "Scripts/GameObject/Public/CCameraScript.h"
-#include "Scripts/GameObject/Public/CPlayerScript.h"
+#include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 void TestLevel::CreateTestLevel()
 {
@@ -41,7 +41,7 @@ void TestLevel::CreateTestLevel()
 	pObject = new CGameObject;
 	pObject->SetName(L"MainCamera");
 	pObject->AddComponent(new CCamera);
-	pObject->AddComponent(new CCameraScript);
+	pObject->AddComponent(new CameraController);
 
 	pObject->Camera()->SetProjType(PERSPECTIVE);
 	pObject->Camera()->SetPriority(0);
@@ -141,7 +141,7 @@ void TestLevel::CreateTestLevel()
         pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
         pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
 
-		pObj->AddComponent(new CPlayerScript);
+		pObj->AddComponent(new PlayerCharacter);
 
         pLevel->AddObject(0, pObj, false);
     }

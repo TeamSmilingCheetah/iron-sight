@@ -1,23 +1,21 @@
 ﻿#include "pch.h"
-#include "Scripts/GameObject/Public/CMissileScript.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
+#include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
 
-class CMaterial;
-
-CMissileScript::CMissileScript()
+MissileProjectile::MissileProjectile()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT))
 	  , m_Velocity(Vec3(0.f, 500.f, 0.f))
 {
 }
 
-CMissileScript::~CMissileScript()
+MissileProjectile::~MissileProjectile()
 {
 }
 
-void CMissileScript::Begin()
+void MissileProjectile::Begin()
 {
 	// CAssetMgr 의 재질을 복사시킨 재질을 참조
 	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl");
@@ -29,7 +27,7 @@ void CMissileScript::Begin()
 	MeshRender()->GetMaterial(0)->SetTexParam(TEX_0, pMissileTex);
 }
 
-void CMissileScript::Tick()
+void MissileProjectile::Tick()
 {
 	Vec3 vWorldPos = Transform()->GetRelativePos();
 
@@ -38,12 +36,12 @@ void CMissileScript::Tick()
 	Transform()->SetRelativePos(vWorldPos);
 }
 
-void CMissileScript::SaveComponent(FILE* _File)
+void MissileProjectile::SaveComponent(FILE* _File)
 {
 	fwrite(&m_Velocity, sizeof(float), 1, _File);
 }
 
-void CMissileScript::LoadComponent(FILE* _File)
+void MissileProjectile::LoadComponent(FILE* _File)
 {
 	fread(&m_Velocity, sizeof(float), 1, _File);
 }

@@ -1,10 +1,10 @@
 ﻿#include "pch.h"
-#include "Scripts/GameObject/Public/CPlayerScript.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
 
-CPlayerScript::CPlayerScript()
+PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
 	  , m_PlayerSpeed(500)
 	  , m_PaperBurnIntence(0.f)
@@ -14,16 +14,16 @@ CPlayerScript::CPlayerScript()
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
 }
 
-CPlayerScript::~CPlayerScript()
+PlayerCharacter::~PlayerCharacter()
 {
 }
 
-void CPlayerScript::Begin()
+void PlayerCharacter::Begin()
 {
 	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
 }
 
-void CPlayerScript::Tick()
+void PlayerCharacter::Tick()
 {
 	Vec3 vPos = Transform()->GetRelativePos();
 
@@ -67,29 +67,29 @@ void CPlayerScript::Tick()
 	}
 }
 
-void CPlayerScript::BeginOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
+void PlayerCharacter::BeginOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
                                  CCollider2D* _OtherCollider)
 {
 }
 
-void CPlayerScript::Overlap(CCollider2D* _Collider, CGameObject* _OtherObject,
+void PlayerCharacter::Overlap(CCollider2D* _Collider, CGameObject* _OtherObject,
                             CCollider2D* _OtherCollider)
 {
 }
 
-void CPlayerScript::EndOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
+void PlayerCharacter::EndOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
                                CCollider2D* _OtherCollider)
 {
 }
 
-void CPlayerScript::SaveComponent(FILE* _File)
+void PlayerCharacter::SaveComponent(FILE* _File)
 {
 	fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fwrite(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	SaveAssetRef(m_TargetTex, _File);
 }
 
-void CPlayerScript::LoadComponent(FILE* _File)
+void PlayerCharacter::LoadComponent(FILE* _File)
 {
 	fread(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);

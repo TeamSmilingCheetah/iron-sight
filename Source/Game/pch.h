@@ -9,7 +9,16 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
-
 #include "Common/global.h"
+
+#ifdef _DEBUG
+#pragma comment(lib, R"(Engine/Engine_d)")
+#else
+#pragma comment(lib, R"(Engine/Engine)")
+#endif
+
+#include "Game/System/Public/GameplayManager.h"
+
+using namespace std;
 
 #endif //PCH_H

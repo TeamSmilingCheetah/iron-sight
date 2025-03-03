@@ -3,7 +3,6 @@
 
 class CGameObject;
 
-
 class CPrefab :
     public CAsset
 {
@@ -17,7 +16,6 @@ private:
 public:
     void SetProtoObject(CGameObject* _Object);
     CGameObject* Instantiate();
-
 
     int Load(const wstring& _FilePath) override;
     int Save(const wstring& _FilePath) override;

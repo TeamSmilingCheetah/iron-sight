@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
+#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 
-class CTexture;
-
-class CPlayerScript :
+class PlayerCharacter :
 	public CScript
 {
 	float m_PlayerSpeed;
@@ -23,7 +23,7 @@ public:
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
-	CLONE(CPlayerScript);
-	CPlayerScript();
-	~CPlayerScript() override;
+	CLONE(PlayerCharacter);
+	PlayerCharacter();
+	~PlayerCharacter() override;
 };

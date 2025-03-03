@@ -1,22 +1,21 @@
 ﻿#include "pch.h"
-#include "Scripts/GameObject/Public/CCameraScript.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
+#include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
 
-CCameraScript::CCameraScript()
+CameraController::CameraController()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT))
 	  , m_CameraSpeed(100.f)
-
 {
 }
 
-CCameraScript::~CCameraScript()
+CameraController::~CameraController()
 {
 }
 
-void CCameraScript::Tick()
+void CameraController::Tick()
 {
 	if (ORTHOGRAPHIC == Camera()->GetProjType())
 		CameraOrthgraphicMove();
@@ -24,7 +23,7 @@ void CCameraScript::Tick()
 		CameraPerspectiveMove();
 }
 
-void CCameraScript::CameraOrthgraphicMove()
+void CameraController::CameraOrthgraphicMove()
 {
 	Vec3 vWorldPos = Transform()->GetRelativePos();
 
@@ -68,7 +67,7 @@ void CCameraScript::CameraOrthgraphicMove()
 	Camera()->SetScale(Scale);
 }
 
-void CCameraScript::CameraPerspectiveMove()
+void CameraController::CameraPerspectiveMove()
 {
 	float Speed = m_CameraSpeed;
 	if (KEY_PRESSED(KEY::LSHIFT))
@@ -103,12 +102,12 @@ void CCameraScript::CameraPerspectiveMove()
 	}
 }
 
-void CCameraScript::SaveComponent(FILE* _File)
+void CameraController::SaveComponent(FILE* _File)
 {
 	fwrite(&m_CameraSpeed, sizeof(float), 1, _File);
 }
 
-void CCameraScript::LoadComponent(FILE* _File)
+void CameraController::LoadComponent(FILE* _File)
 {
 	fread(&m_CameraSpeed, sizeof(float), 1, _File);
 }
