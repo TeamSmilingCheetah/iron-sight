@@ -211,3 +211,56 @@ string WStringToString(const wstring& _str)
 
 	return res_str;
 }
+
+bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist)
+{
+	// 삼각형 표면 방향 벡터
+	Vec3 Edge[2] = { Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f) };
+	Edge[0] = *Pos[1] - *Pos[0];
+	Edge[1] = *Pos[2] - *Pos[0];
+
+	// 삼각형에 수직방향인 법선(Normal) 벡터
+	Vec3 Normal = Edge[0].Cross(Edge[1]);
+	Normal.Normalize();
+
+	// 삼각형 법선벡터와 Ray 의 Dir 을 내적
+	// 광선에서 삼각형으로 향하는 수직벡터와, 광선의 방향벡터 사이의 cos 값
+	float NdotD = Normal.Dot(vDir) * -1.f;
+
+	// 내적 값이 0에 가까운지 확인 (평행한 경우)
+	const float epsilon = 0.0001f; // 적절한 임의의 상수
+	if (abs(NdotD) < epsilon)
+		return false;  // 광선이 삼각형 평면과 평행하므로 교차하지 않음
+
+	Vec3 vStoP0 = vStart - *Pos[0];
+	float VerticalDist = Normal.Dot(vStoP0); // 광선을 지나는 한점에서 삼각형 평면으로의 수직 길이
+
+	// 광선이 진행하는 방향으로, 삼각형을 포함하는 평면까지의 거리
+	float RtoTriDist = VerticalDist / NdotD;
+
+	// 광선이, 삼각형을 포함하는 평면을 지나는 교점
+	Vec3 vCrossPoint = vStart + vDir * RtoTriDist;
+
+	// 교점이 삼각형 내부인지 테스트
+	Vec3 P0toCross = vCrossPoint - *Pos[0];
+
+	Vec3 Full = Edge[0].Cross(Edge[1]);
+	Vec3 U = Edge[0].Cross(P0toCross);
+	Vec3 V = P0toCross.Cross(Edge[1]);
+
+	// 직선과 삼각형 평면의 교점이 삼각형 1번과 2번 사이에 존재하는지 체크
+	//      0
+	//     /  \
+    //    1 -- 2    
+	if (Full.Dot(U) < 0.f || Full.Dot(V) < 0.f)
+		return false;
+
+	// 교점이 삼각형 내부인지 체크
+	if (Full.Length() < U.Length() + V.Length())
+		return false;
+
+	pCrossPos = vCrossPoint;
+	pDist = RtoTriDist;
+
+	return true;
+}

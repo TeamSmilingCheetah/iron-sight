@@ -8,7 +8,10 @@
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
@@ -32,6 +35,9 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(4)->SetName(L"PlayerObject");
 	pLevel->GetLayer(5)->SetName(L"Monster");
 	pLevel->GetLayer(6)->SetName(L"MonsterObject");
+
+	// 충돌 설정
+	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 
 	CGameObject* pObject = nullptr;
 
@@ -86,6 +92,7 @@ void TestLevel::CreateTestLevel()
 	pObject = new CGameObject;
 	pObject->SetName(L"Player");
 	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider3D);
 
 	pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 	pObject->MeshRender()->SetMaterial(
@@ -95,6 +102,8 @@ void TestLevel::CreateTestLevel()
 	pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
 	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	pObject->Transform()->SetFrustumRadius(750.f);
+
+	pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
 
 	Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
 		L"Texture\\HeightMap\\MoonCrater.png");
@@ -136,10 +145,13 @@ void TestLevel::CreateTestLevel()
 
         pObj = pMeshData->Instantiate();
         pObj->SetName(L"Monster");
+		pObj->AddComponent(new CColliderRay);
 
         pObj->Transform()->SetRelativePos(Vec3(500.f, -380.f, 500.f));
         pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
         pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+
+		pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
 
 		pObj->AddComponent(new PlayerCharacter);
 

@@ -3,6 +3,8 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Runtime/Public/Component/Light/CLight2D.h"
 #include "Runtime/Public/Component/Light/CLight3D.h"
 #include "Runtime/Public/Component/Animation/CFlipBookPlayer.h"

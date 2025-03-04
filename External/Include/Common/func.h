@@ -27,6 +27,8 @@ void LoadWString(wstring& _str, FILE* _File);
 
 string WStringToString(const wstring& _str);
 
+bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist);
+
 template <typename T>
 void SaveAssetRef(Ptr<T> _Asset, FILE* _File)
 {

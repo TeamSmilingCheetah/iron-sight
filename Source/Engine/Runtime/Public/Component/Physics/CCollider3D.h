@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CCollider3D :
     public CComponent
@@ -34,6 +34,10 @@ public:
     void BeginOverlap(CCollider3D* _Other);
     void Overlap(CCollider3D* _Other);
     void EndOverlap(CCollider3D* _Other);
+
+	void BeginOverlap(CColliderRay* _Other);
+	void Overlap(CColliderRay* _Other);
+	void EndOverlap(CColliderRay* _Other);
 
 public:
     CLONE(CCollider3D);
