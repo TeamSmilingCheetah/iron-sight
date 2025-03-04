@@ -211,6 +211,9 @@
     <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h">
       <Filter>08. Asset\09. Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h">
+      <Filter>07. Component\03. Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -413,6 +416,9 @@
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp">
       <Filter>08. Asset\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\CColliderRay.cpp">
+      <Filter>07. Component\03. Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

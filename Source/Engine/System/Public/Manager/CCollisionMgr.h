@@ -13,6 +13,7 @@ union COLLIDER_ID
 
 class CCollider2D;
 class CCollider3D;
+class CColliderRay;
 
 class CCollisionMgr :
     public singleton<CCollisionMgr>
@@ -26,11 +27,13 @@ public:
     void CollisionCheckClear() { memset(m_Matrix, 0, sizeof(UINT) * MAX_LAYER); }
 
 private:
-    void CollisionBtwLayer(UINT _Left, UINT _Right);
-    void CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _RightCol);
+	void CollisionBtwLayer(UINT _Left, UINT _Right);
+	void CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _RightCol);
 	void CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _RightCol);
-    bool IsCollision(CCollider2D* _Left, CCollider2D* _Right);
+	void CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D* _RightCol);
+	bool IsCollision(CCollider2D* _Left, CCollider2D* _Right);
 	bool IsCollision3D(CCollider3D* _Left, CCollider3D* _Right);
+	bool IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCol);
 
 public:
     void Tick();

@@ -55,6 +55,18 @@ public:
 	{
 	};
 
+	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+	{
+	};
+
+	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+	{
+	};
+
+	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+	{
+	};
+
 	CScript(UINT _ScriptType);
 	~CScript() override;
 };
