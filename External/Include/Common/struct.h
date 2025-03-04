@@ -28,10 +28,14 @@ struct tDebugShapeInfo
     Matrix matWorld;
 
     Vec4 Color;
-    float Duration; // DebugShape 유지 시간
-    float Time; // 현재 진행 시간
+    float Duration;		// DebugShape 유지 시간
+    float Time;			// 현재 진행 시간
 
-    bool DepthTest; // 깊이검사를 수행
+    bool DepthTest;		// 깊이검사를 수행
+
+	// general
+	DWORD_PTR  Data1;
+	DWORD_PTR  Data2;
 };
 
 struct tTask

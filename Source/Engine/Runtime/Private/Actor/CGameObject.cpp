@@ -168,6 +168,7 @@ void CGameObject::AddChild(CGameObject* _Child)
 {
     m_vecChild.push_back(_Child);
     _Child->m_Parent = this;
+	_Child->m_LayerIdx = m_LayerIdx;
 }
 
 bool CGameObject::IsAncestor(CGameObject* _Other)

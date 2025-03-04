@@ -144,10 +144,13 @@ void TestLevel::CreateTestLevel()
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
 		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
-		for (int i = 0; i < 10; ++i)
+		Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
+
+		int modelCnt = 1;
+		for (int i = 0; i < modelCnt; ++i)
 		{
 			pObj = pMeshData->Instantiate();
-			pObj->SetName(L"Monster");
+			pObj->SetName(L"Character");
 			pObj->AddComponent(new CCollider3D);
 			pObj->AddComponent(new CColliderRay);
 
@@ -163,9 +166,22 @@ void TestLevel::CreateTestLevel()
 
 			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
 
-			pObj->AddComponent(new CPlayerScript);
-
 			pLevel->AddObject(0, pObj, false);
+
+			CGameObject* pWeaponObj = pWeaponModel->Instantiate();
+			pWeaponObj->SetName(L"Weapon");
+			pWeaponObj->AddComponent(new CCollider3D);
+			pWeaponObj->AddComponent(new CColliderRay);
+			
+			pWeaponObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+			pWeaponObj->Transform()->SetRelativeScale(Vec3(40.f, 40.f, 40.f));
+			pWeaponObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+			
+			pWeaponObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
+			pWeaponObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
+			pWeaponObj->Collider3D()->SetIndependentScale(true);
+
+			pObj->AddChild(pWeaponObj);
 		}
 
 	}
