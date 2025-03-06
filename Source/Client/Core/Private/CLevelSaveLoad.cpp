@@ -13,7 +13,6 @@
 #include "Engine/Runtime/Public/Component/Rendering/CTileMap.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Scripts/Manager/CScriptMgr.h"
 #include "Game/System/Public/GameplayManager.h"
 
 int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)

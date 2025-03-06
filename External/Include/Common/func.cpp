@@ -231,7 +231,7 @@ void GetComponentsNames(vector<wstring>& _vecComponentsNames)
 	_vecComponentsNames.push_back(L"Transform");
 	_vecComponentsNames.push_back(L"Collider2D");
 	_vecComponentsNames.push_back(L"FlipbookPlayer");
- 
+
 	_vecComponentsNames.push_back(L"Camera");
 	_vecComponentsNames.push_back(L"Light3D");
 	_vecComponentsNames.push_back(L"MeshRender");
@@ -240,7 +240,7 @@ void GetComponentsNames(vector<wstring>& _vecComponentsNames)
 	_vecComponentsNames.push_back(L"SkyBox");
 	_vecComponentsNames.push_back(L"Tilemap");
 	_vecComponentsNames.push_back(L"ParticleSystem");
-\
+}
   
 bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist)
 {
