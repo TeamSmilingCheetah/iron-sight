@@ -171,16 +171,16 @@ void CRenderMgr::Render_Debug()
 					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::LINE:
-				{
-					m_DbgObj->MeshRender()->SetMesh(
-						CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
-					m_DbgObj->MeshRender()->SetMaterial(
-						CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeLineMtrl"), 0);
-					m_DbgObj->MeshRender()->GetMaterial(0)->
-					          SetScalarParam(VEC4_1, iter->WorldPos);
-					m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_2, iter->Scale);
-				}
-				break;
+			{
+				m_DbgObj->MeshRender()->SetMesh(
+					CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
+				m_DbgObj->MeshRender()->SetMaterial(
+					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeLineMtrl"), 0);
+				m_DbgObj->MeshRender()->GetMaterial(0)->
+					SetScalarParam(VEC4_1, iter->WorldPos);
+				m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_2, iter->Scale);
+			}
+			break;
 			case DEBUG_SHAPE::CUBE:
 				m_DbgObj->MeshRender()->SetMesh(
 					CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh_Debug"));
@@ -194,20 +194,10 @@ void CRenderMgr::Render_Debug()
 					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeSphereMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::SKELETON:
-			{
 				m_DbgObj->MeshRender()->SetMesh(
 					CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
 				m_DbgObj->MeshRender()->SetMaterial(
 					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugSkeletonMtrl"), 0);
-
-				CStructuredBuffer* pPureBoneBuffer = reinterpret_cast<CStructuredBuffer*>(iter->Data1);
-				CStructuredBuffer* pParentIdxBuffer = reinterpret_cast<CStructuredBuffer*>(iter->Data2);
-
-				pPureBoneBuffer->Binding(18);
-				pParentIdxBuffer->Binding(19);
-
-				m_DbgObj->MeshRender()->GetMaterial(0)->SetBoneCount(pPureBoneBuffer->GetElementCount());
-			}
 				break;
 			}
 
@@ -238,15 +228,14 @@ void CRenderMgr::Render_Debug()
 			}
 
 			// 렌더
-			m_DbgObj->Render();
-
-			if (iter->Shape == DEBUG_SHAPE::SKELETON)
+			if (iter->Shape != DEBUG_SHAPE::SKELETON)
+				m_DbgObj->Render();
+			else
 			{
 				CStructuredBuffer* pPureBoneBuffer = reinterpret_cast<CStructuredBuffer*>(iter->Data1);
 				CStructuredBuffer* pParentIdxBuffer = reinterpret_cast<CStructuredBuffer*>(iter->Data2);
 
-				pPureBoneBuffer->Clear(18);
-				pParentIdxBuffer->Clear(19);
+				m_DbgObj->MeshRender()->Render_Skeleton(pPureBoneBuffer, pParentIdxBuffer);
 			}
 		}
 

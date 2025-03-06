@@ -123,31 +123,50 @@ float4 PS_DebugShapeLine(GS_OUT _in) : SV_Target
 // Skeleton
 // ========
 
-VS_OUT VS_DebugSkeleton(VS_IN _in)
+struct VS_SKELETON_IN
 {
-	VS_OUT output = (VS_OUT) 0.f;
+	float3 vPos : POSITION;
+	uint uID : SV_InstanceID;
+};
 
-	output.vPosition = float4(_in.vPos, 1.f);
+struct VS_SKELETON_OUT
+{
+	float3 vLocalPos : POSITION;
+	uint uID : FOG;
+};
+
+struct GS_SKELETON_OUT
+{
+	float4 vPosition : SV_Position;
+	uint uID : FOG;
+};
+
+VS_SKELETON_OUT VS_DebugSkeleton(VS_SKELETON_IN _in)
+{
+	VS_SKELETON_OUT output = (VS_SKELETON_OUT) 0.f;
+
+	output.vLocalPos = _in.vPos;
+	output.uID = _in.uID;
 
 	return output;
 }
 
 StructuredBuffer<int> arrBoneParent : register(t19);
 
-[maxvertexcount(256)]
-void GS_DebugSkeleton(point VS_OUT _in[1]
-							, inout LineStream<GS_OUT> _OutStream)
+[maxvertexcount(128)]
+void GS_DebugSkeleton(point VS_SKELETON_OUT _in[1]
+							, inout LineStream<GS_SKELETON_OUT> _OutStream)
 {
-	GS_OUT Start = (GS_OUT) 0.f;
-	GS_OUT End = (GS_OUT) 0.f;
+	GS_SKELETON_OUT Start = (GS_SKELETON_OUT) 0.f;
+	GS_SKELETON_OUT End = (GS_SKELETON_OUT) 0.f;
+	Start.uID = _in[0].uID;
+	End.uID = _in[0].uID;
 
-	int count = 0;
+	uint InstanceID = _in[0].uID;
+	int start = InstanceID * 64;
 	
-	for (int i = 1; i < g_iBoneCount; ++i)
+	for (int i = start; i < min(g_iBoneCount, start + 64); ++i)
 	{
-		if (count == 128)
-			break;
-		
 		float4 vStartLocalPos = mul(float4(0.f, 0.f, 0.f, 1.f), g_arrPureBoneMat[i]);
 		float4 vEndLocalPos = mul(float4(0.f, 0.f, 0.f, 1.f), g_arrPureBoneMat[arrBoneParent[i]]);
 
@@ -162,8 +181,6 @@ void GS_DebugSkeleton(point VS_OUT _in[1]
 		_OutStream.Append(Start);
 		_OutStream.Append(End);
 		_OutStream.RestartStrip();
-
-		++count;
 	}
 }
 

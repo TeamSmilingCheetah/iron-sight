@@ -60,7 +60,7 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 		false, pSkeleton->m_vecOffset.data());
 
 	pSkeleton->m_BoneParentBuffer = new CStructuredBuffer;
-	pSkeleton->m_BoneParentBuffer->Create(sizeof(int) * 4, (static_cast<UINT>(pSkeleton->m_vecParent.size()) + 3) / 4, SRV_ONLY,
+	pSkeleton->m_BoneParentBuffer->Create(sizeof(int), static_cast<UINT>(pSkeleton->m_vecParent.size()), SRV_ONLY,
 		false, pSkeleton->m_vecParent.data());
 
 	// AssetMgr 등록 (key 값 설정)
@@ -145,7 +145,7 @@ int CSkeleton::Load(const wstring& _strFilePath)
 	m_BoneInvBuffer->Create(sizeof(Matrix), iCount, SRV_ONLY, false, m_vecOffset.data());
 
 	m_BoneParentBuffer = new CStructuredBuffer;
-	m_BoneParentBuffer->Create(sizeof(int) * 4, (iCount + 3) / 4, SRV_ONLY, false, m_vecParent.data());
+	m_BoneParentBuffer->Create(sizeof(int), iCount, SRV_ONLY, false, m_vecParent.data());
 
 	fclose(pFile);
 

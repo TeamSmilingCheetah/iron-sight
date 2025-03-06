@@ -297,7 +297,7 @@ void CCamera::render_deferred()
 		}
 
 		pMtrl->Binding_Inst();
-		pMesh->Render_Instancing(pair.second[0].iMtrlIdx);
+		pMesh->Render_Object_Instancing(pair.second[0].iMtrlIdx);
 
 		// 정리
 		if (bHasAnim3D)
@@ -413,7 +413,7 @@ void CCamera::render_forward()
 		}
 
 		pMtrl->Binding_Inst();
-		pMesh->Render_Instancing(pair.second[0].iMtrlIdx);
+		pMesh->Render_Object_Instancing(pair.second[0].iMtrlIdx);
 
 		// 정리
 		if (bHasAnim3D)
@@ -491,7 +491,7 @@ void CCamera::render_effect()
 
     pBlurMtrl->SetTexParam(TEX_0, pEffectTarget);
     pBlurMtrl->Binding();
-    pRectMesh->Render_Particle(2);
+    pRectMesh->Render_Cluster_Instancing(2);
 
     CTexture::Clear(0);
 

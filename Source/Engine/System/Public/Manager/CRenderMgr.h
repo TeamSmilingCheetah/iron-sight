@@ -13,6 +13,8 @@ class CRenderMgr :
     public singleton<CRenderMgr>
 {
     SINGLE(CRenderMgr);
+
+private:
     CMRT* m_arrMRT[static_cast<UINT>(MRT_TYPE::END)];
 
     vector<CCamera*> m_vecCam; // 현재 레벨로 지정된 레벨 안에있는 카메라들

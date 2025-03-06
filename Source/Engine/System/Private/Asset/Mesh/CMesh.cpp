@@ -180,7 +180,7 @@ void CMesh::Binding_Inst(UINT _iSubset)
 	CONTEXT->IASetIndexBuffer(m_vecIdxInfo[_iSubset].IB.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-void CMesh::Render_Instancing(UINT _Subset)
+void CMesh::Render_Object_Instancing(UINT _Subset)
 {
 	Binding_Inst(_Subset);
 
@@ -195,7 +195,7 @@ void CMesh::Render(UINT _Subset)
 	CONTEXT->DrawIndexed(m_vecIdxInfo[_Subset].IdxCount, 0, 0);
 }
 
-void CMesh::Render_Particle(UINT _Count)
+void CMesh::Render_Cluster_Instancing(UINT _Count)
 {
 	Binding(0);
 
