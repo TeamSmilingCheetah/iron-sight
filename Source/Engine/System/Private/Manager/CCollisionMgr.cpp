@@ -497,7 +497,8 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 		if (IntersectsRay(triVerts, rayPos, rayDir, crossPos, dist))
 		{
 			// 충돌 거리가 최대 거리보다 작은지 확인
-			if (dist <= rayMaxDist)
+			// 0보다 작으면 ray의 뒤에 있으니 조건에서 제외
+			if (dist >= 0.f && dist <= rayMaxDist)
 			{
 				return true;
 			}
