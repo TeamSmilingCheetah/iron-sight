@@ -12,7 +12,7 @@ float4 VectorLess(float4 _vQ1, float4 _vQ2)
 		(_vQ1[2] < _vQ2[2]) ? asfloat((uint) 0xFFFFFFFF) : 0.f,
 		(_vQ1[3] < _vQ2[3]) ? asfloat((uint) 0xFFFFFFFF) : 0.f
 	};
-
+	
 	return vReturn;
 }
 
@@ -135,7 +135,7 @@ void MatrixAffineTransformation(in float4 Scaling
 	MScaling._11_22_33 = Scaling.xyz;
 
 	float4 VRotationOrigin = float4(RotationOrigin.xyz, 0.f);
-	float4 VTranslation = float4(Translation.xyz, 0.f);
+	float4 VTranslation = float4(Translation.xyz, 1.f);
 
 	matrix MRotation = (matrix) 0.f;
 	MatrixRotationQuaternion(RotationQuaternion, MRotation);
@@ -208,7 +208,9 @@ struct tFrameTrans
 
 StructuredBuffer<tFrameTrans> g_arrFrameTrans : register(t16);
 StructuredBuffer<matrix> g_arrInverse : register(t17);
-RWStructuredBuffer<matrix> g_arrFinelMat : register(u0);
+StructuredBuffer<tFrameTrans> g_arrBoneWorldFrameTrans : register(t18);
+RWStructuredBuffer<matrix> g_arrFinalMat : register(u0);
+RWStructuredBuffer<matrix> g_arrPureMat : register(u1);
 
 // ===========================
 // Animation3D Compute Shader
@@ -242,9 +244,23 @@ void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
 	//MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
 
 	matrix matInverse = transpose(g_arrInverse[_iThreadIdx.x]);
-
-	// 구조화버퍼에 결과값 저장
-	g_arrFinelMat[_iThreadIdx.x] = mul(matInverse, matBone);
+	
+	// 구조화 버퍼에 결과값 저장
+	g_arrFinalMat[_iThreadIdx.x] = mul(matInverse, matBone);
+	
+	
+	// TEST
+	//matrix matBoneWorld = (matrix) 0.f;
+	//
+	//vScale = lerp(g_arrBoneWorldFrameTrans[iFrameDataIndex].vScale, g_arrBoneWorldFrameTrans[iNextFrameDataIdx].vScale, Ratio);
+	//vTrans = lerp(g_arrBoneWorldFrameTrans[iFrameDataIndex].vTranslate, g_arrBoneWorldFrameTrans[iNextFrameDataIdx].vTranslate, Ratio);
+	//qRot = QuternionLerp(g_arrBoneWorldFrameTrans[iFrameDataIndex].qRot, g_arrBoneWorldFrameTrans[iNextFrameDataIdx].qRot, Ratio);
+	//
+	//// 최종 본행렬 연산
+	//MatrixAffineTransformation(vScale, vQZero, qRot, vTrans, matBoneWorld);
+	
+	g_arrPureMat[_iThreadIdx.x] = matBone;
+	matBone._44 = 1;
 }
 
 #endif

@@ -19,6 +19,9 @@ void DrawDebugCube(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float 
 void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, float _Duration);
 void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float _Duration);
 
+class CStructuredBuffer;
+void DrawDebugSkeleton(Vec4 _Color, const Matrix& _matWorld, CStructuredBuffer* _PureBoneMat, CStructuredBuffer* _ParentIdx, bool _DepthTest, float _Duration);
+
 Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat);
 Vec4 GetVectorFromFbxVector(const FbxDouble4& _vec);
 

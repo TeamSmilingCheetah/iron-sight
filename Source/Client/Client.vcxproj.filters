@@ -148,10 +148,18 @@
     <ClInclude Include="UI\Public\Asset\AnimationUI.h">
       <Filter>03. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Public\Component\Animator3DUI.h" />
-    <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
-    <ClInclude Include="UI\Public\Component\Light3DUI.h" />
-    <ClInclude Include="UI\Public\Component\SkyBoxUI.h" />
+    <ClInclude Include="UI\Public\Component\Animator3DUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Component\LandScapeUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Component\Light3DUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Component\SkyBoxUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -437,9 +445,17 @@
     <ClCompile Include="UI\Private\Asset\AnimationUI.cpp">
       <Filter>03. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Private\Component\Animator3DUI.cpp" />
-    <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
-    <ClCompile Include="UI\Private\Component\Light3DUI.cpp" />
-    <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Animator3DUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\LandScapeUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\Light3DUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -145,6 +145,7 @@ enum class DEBUG_SHAPE
     LINE,
     CUBE,
     SPHERE,
+	SKELETON,
 };
 
 

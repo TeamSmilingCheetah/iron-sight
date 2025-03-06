@@ -10,6 +10,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -140,21 +141,48 @@ void TestLevel::CreateTestLevel()
 		Ptr<CMeshData> pMeshData = nullptr;
 		CGameObject* pObj = nullptr;
 
-        pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
-        // pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\wraithLOD2_sep_multianim.fbx");
+		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
-        pObj = pMeshData->Instantiate();
-        pObj->SetName(L"Monster");
-		pObj->AddComponent(new CColliderRay);
+		Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
 
-        pObj->Transform()->SetRelativePos(Vec3(500.f, -380.f, 500.f));
-        pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-        pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+		int modelCnt = 1;
+		for (int i = 0; i < modelCnt; ++i)
+		{
+			pObj = pMeshData->Instantiate();
+			pObj->SetName(L"Character");
+			pObj->AddComponent(new CCollider3D);
+			pObj->AddComponent(new CColliderRay);
 
-		pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
+			pObj->Transform()->SetRelativePos(Vec3(500.f + i * 200.f, -380.f, 500.f));
+			pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+			pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
 
-		pObj->AddComponent(new PlayerCharacter);
+			pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
 
-        pLevel->AddObject(0, pObj, false);
-    }
+			pObj->AddComponent(new PlayerCharacter);
+			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
+			pObj->Collider3D()->SetIndependentScale(true);
+
+			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
+
+			pLevel->AddObject(0, pObj, false);
+
+			CGameObject* pWeaponObj = pWeaponModel->Instantiate();
+			pWeaponObj->SetName(L"Weapon");
+			pWeaponObj->AddComponent(new CCollider3D);
+			pWeaponObj->AddComponent(new CColliderRay);
+			
+			pWeaponObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+			pWeaponObj->Transform()->SetRelativeScale(Vec3(40.f, 40.f, 40.f));
+			pWeaponObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+			
+			pWeaponObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
+			pWeaponObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
+			pWeaponObj->Collider3D()->SetIndependentScale(true);
+
+			pObj->AddChild(pWeaponObj);
+		}
+
+	}
 }

@@ -14,7 +14,7 @@ private:
 	vector<tInstancingData> m_vecData;
 
 	// anim3D 용도
-	vector<CStructuredBuffer*> m_vecBoneMat;
+	vector<CStructuredBuffer*> m_vecBoneFinalMat;
 	int m_AnimInstCount;
 	CStructuredBuffer* m_BoneBuffer;
 
@@ -26,7 +26,7 @@ public:
 	void Clear()
 	{
 		m_vecData.clear();
-		m_vecBoneMat.clear();
+		m_vecBoneFinalMat.clear();
 		m_AnimInstCount = 0;
 	}
 

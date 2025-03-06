@@ -6,10 +6,12 @@
 class CAnimation;
 class CStructuredBuffer;
 class CMeshRender;
+class CGameObject;
 
 class CAnimator3D :
     public CComponent
 {
+private:
     vector<Ptr<CAnimation>>		m_vecClip;
 
     vector<float>	m_vecClipUpdateTime;
@@ -22,10 +24,10 @@ class CAnimator3D :
     int				m_NextFrameIdx; // 클립의 다음 프레임
     float			m_Ratio; // 프레임 사이 비율
 
-    CStructuredBuffer* m_BoneFinalMatBuffer; // 특정 프레임의 최종 행렬
+    CStructuredBuffer* m_BoneFinalMatBuffer; // 특정 프레임(보간)의 최종 행렬
+	CStructuredBuffer* m_BonePureMatBuffer;  // 특정 프레임(보간)의 bone 행렬 (bone inverse가 곱해지지 않은)
     bool m_bFinalMatUpdate; // 최종행렬 연산 수행여부
 
-private:
 	CMeshRender*	m_BindCaller;	// Bind를 호출한 MeshRenderer 기억
 
 public:
@@ -55,6 +57,7 @@ public:
     void SaveComponent(FILE* _File) override;
     void LoadComponent(FILE* _File) override;
 
+public:
     CLONE(CAnimator3D);
     CAnimator3D();
     CAnimator3D(const CAnimator3D& _Other);

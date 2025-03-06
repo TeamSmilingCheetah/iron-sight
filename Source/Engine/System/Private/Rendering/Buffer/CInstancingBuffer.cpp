@@ -47,25 +47,28 @@ void CInstancingBuffer::SetData()
 	CONTEXT->Unmap(m_InstancingBuffer.Get(), 0);
 
 	// 본 행렬정보 메모리 복사
-	if (m_vecBoneMat.empty())
+	if (m_vecBoneFinalMat.empty())
 		return;
 
-	UINT iBufferSize = static_cast<UINT>(m_vecBoneMat.size() * m_vecBoneMat[0]->GetBufferSize());
+	// 모든 오브젝트의 finalbonemat을 저장할 buffer 생성
+	UINT iBufferSize = static_cast<UINT>(m_vecBoneFinalMat.size() * m_vecBoneFinalMat[0]->GetBufferSize());
 	if (m_BoneBuffer->GetBufferSize() < iBufferSize)
 	{
-		m_BoneBuffer->Create(m_vecBoneMat[0]->GetElementSize()
-		                     , m_vecBoneMat[0]->GetElementCount() * static_cast<UINT>(m_vecBoneMat.size()), SB_TYPE::SRV_UAV, false,
+		m_BoneBuffer->Create(m_vecBoneFinalMat[0]->GetElementSize()
+		                     , m_vecBoneFinalMat[0]->GetElementCount() * static_cast<UINT>(m_vecBoneFinalMat.size()), SB_TYPE::SRV_UAV, false,
 		                     nullptr);
 	}
 
 	// 복사용 컴퓨트 쉐이더 실행
-	UINT iBoneCount = m_vecBoneMat[0]->GetElementCount();
+	// instancing 순서로 각 오브젝트의 프레임 정보에 대한 finalbonemat을 append 하는 형식으로 복사
+	// ( 1번 오브젝트의 finalbonemat | 2번 오브젝트의 finalbonemat | ... )
+	UINT iBoneCount = m_vecBoneFinalMat[0]->GetElementCount();
 	m_CopyShader->SetBoneCount(iBoneCount);
 
-	for (UINT i = 0; i < static_cast<UINT>(m_vecBoneMat.size()); ++i)
+	for (UINT i = 0; i < static_cast<UINT>(m_vecBoneFinalMat.size()); ++i)
 	{
 		m_CopyShader->SetRowIndex(i);
-		m_CopyShader->SetSourceBuffer(m_vecBoneMat[i]);
+		m_CopyShader->SetSourceBuffer(m_vecBoneFinalMat[i]);
 		m_CopyShader->SetDestBuffer(m_BoneBuffer);
 		m_CopyShader->Execute();
 	}
@@ -77,7 +80,7 @@ void CInstancingBuffer::SetData()
 void CInstancingBuffer::AddInstancingBoneMat(CStructuredBuffer* _pBuffer)
 {
 	++m_AnimInstCount;
-	m_vecBoneMat.push_back(_pBuffer);
+	m_vecBoneFinalMat.push_back(_pBuffer);
 }
 
 void CInstancingBuffer::Resize(UINT _iCount)

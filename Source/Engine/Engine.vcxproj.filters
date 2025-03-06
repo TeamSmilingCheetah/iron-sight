@@ -20,7 +20,7 @@
       <Filter>08. Asset\Shader</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Shader\CGraphicShader.h">
-      <Filter>08. Asset\Shader\09. GraphicShader</Filter>
+      <Filter>08. Asset\Shader\GraphicShader</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Buffer\CConstBuffer.h">
       <Filter>03. Device\ConstBuffer</Filter>
@@ -76,6 +76,9 @@
     <ClInclude Include="System\Public\Asset\Texture\CTexture.h">
       <Filter>08. Asset\03. Texture</Filter>
     </ClInclude>
+    <ClInclude Include="System\Public\Rendering\Meterial\CMaterial.h">
+      <Filter>08. Asset\10. Material</Filter>
+    </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h">
       <Filter>07. Component\RenderComponent</Filter>
     </ClInclude>
@@ -95,7 +98,7 @@
       <Filter>08. Asset\07. Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Animation\CFlipbookPlayer.h">
-      <Filter>07. Component\04. FlipbookPlayer</Filter>
+      <Filter>07. Component\05. FlipbookPlayer</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h">
       <Filter>07. Component\RenderComponent\02. TileMap</Filter>
@@ -104,10 +107,10 @@
       <Filter>03. Device\StructuredBuffer</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h">
-      <Filter>07. Component\05. Light2D</Filter>
+      <Filter>07. Component\06. Light2D</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Shader\CComputeShader.h">
-      <Filter>08. Asset\Shader\10. ComputeShader</Filter>
+      <Filter>08. Asset\Shader\ComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h">
       <Filter>HLSL\03. Compute\ClearColor</Filter>
@@ -128,7 +131,7 @@
       <Filter>04. Manager\08. FontMgr</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h">
-      <Filter>07. Component\06. Light3D</Filter>
+      <Filter>07. Component\07. Light3D</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h">
       <Filter>07. Component\RenderComponent\04. SkyBox</Filter>
@@ -161,7 +164,7 @@
       <Filter>08. Asset\02. MeshData</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Animation\CAnimator3D.h">
-      <Filter>07. Component\07. Animator3D</Filter>
+      <Filter>07. Component\08. Animator3D</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
@@ -196,23 +199,17 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h">
-      <Filter>08. Asset\08. Material</Filter>
+    <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h">
+      <Filter>08. Asset\08. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h">
+      <Filter>08. Asset\09. Skeleton</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h">
       <Filter>03. Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h">
-      <Filter>07. Component\03. Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h">
-      <Filter>08. Asset\09. Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h">
-      <Filter>08. Asset\09. Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h">
-      <Filter>07. Component\03. Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -247,7 +244,7 @@
       <Filter>08. Asset\Shader</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Shader\CGraphicShader.cpp">
-      <Filter>08. Asset\Shader\09. GraphicShader</Filter>
+      <Filter>08. Asset\Shader\GraphicShader</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp">
       <Filter>03. Device\ConstBuffer</Filter>
@@ -297,6 +294,9 @@
     <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp">
       <Filter>08. Asset\03. Texture</Filter>
     </ClCompile>
+    <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp">
+      <Filter>08. Asset\10. Material</Filter>
+    </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp">
       <Filter>07. Component\RenderComponent</Filter>
     </ClCompile>
@@ -316,7 +316,7 @@
       <Filter>08. Asset\07. Sprite</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Animation\CFlipbookPlayer.cpp">
-      <Filter>07. Component\04. FlipbookPlayer</Filter>
+      <Filter>07. Component\05. FlipbookPlayer</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp">
       <Filter>07. Component\RenderComponent\02. TileMap</Filter>
@@ -328,10 +328,10 @@
       <Filter>04. Manager\04. Asset</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp">
-      <Filter>07. Component\05. Light2D</Filter>
+      <Filter>07. Component\06. Light2D</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Shader\CComputeShader.cpp">
-      <Filter>08. Asset\Shader\10. ComputeShader</Filter>
+      <Filter>08. Asset\Shader\ComputeShader</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Shader\CClearColorCS.cpp">
       <Filter>HLSL\03. Compute\ClearColor</Filter>
@@ -355,7 +355,7 @@
       <Filter>04. Manager\04. Asset</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp">
-      <Filter>07. Component\06. Light3D</Filter>
+      <Filter>07. Component\07. Light3D</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp">
       <Filter>07. Component\RenderComponent\04. SkyBox</Filter>
@@ -391,7 +391,7 @@
       <Filter>08. Asset\02. MeshData</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Animation\CAnimator3D.cpp">
-      <Filter>07. Component\07. Animator3D</Filter>
+      <Filter>07. Component\08. Animator3D</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp">
       <Filter>HLSL\03. Compute\3DAnimation\BoneMatric</Filter>
@@ -402,23 +402,17 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp">
-      <Filter>08. Asset\08. Material</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp">
-      <Filter>07. Component\03. Collider</Filter>
+      <Filter>07. Component\04. Collider3D</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp">
-      <Filter>08. Asset\09. Animation</Filter>
+      <Filter>08. Asset\08. Animation</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp">
-      <Filter>08. Asset\09. Animation</Filter>
+      <Filter>08. Asset\09. Skeleton</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp">
-      <Filter>08. Asset\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Physics\CColliderRay.cpp">
-      <Filter>07. Component\03. Collider</Filter>
+      <Filter>07. Component\RenderComponent\06. LandScape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -515,23 +509,11 @@
     <Filter Include="08. Asset\07. Sprite">
       <UniqueIdentifier>{0f6dc079-5b12-40cb-b5ee-b318a7c38d77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08. Asset\08. Material">
-      <UniqueIdentifier>{14e61028-4c65-43fe-bd52-17fb166a0735}</UniqueIdentifier>
-    </Filter>
     <Filter Include="08. Asset\05. Prefab">
       <UniqueIdentifier>{f82fd365-cea8-4f95-85c5-71c034e58c4f}</UniqueIdentifier>
     </Filter>
     <Filter Include="08. Asset\Shader">
       <UniqueIdentifier>{2a246ece-77b9-4616-8b64-c9b0efc37598}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="08. Asset\Shader\09. GraphicShader">
-      <UniqueIdentifier>{569aa7b7-bf54-413b-a5e4-664d2a9cd019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="08. Asset\Shader\10. ComputeShader">
-      <UniqueIdentifier>{eb359fd5-625f-4557-9b51-a19b7495b214}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. Component\04. FlipbookPlayer">
-      <UniqueIdentifier>{11e1a5ae-cb41-4d8f-a654-17af0ad37bee}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. Component\RenderComponent\02. TileMap">
       <UniqueIdentifier>{ad83164c-8a81-4eb2-8f19-14310013dc45}</UniqueIdentifier>
@@ -547,9 +529,6 @@
     </Filter>
     <Filter Include="HLSL\03. Compute">
       <UniqueIdentifier>{5c89cd63-5837-4aa2-8227-6e778208a2d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. Component\05. Light2D">
-      <UniqueIdentifier>{5ef29be0-1b21-4199-ab77-c322bc27390a}</UniqueIdentifier>
     </Filter>
     <Filter Include="HLSL\03. Compute\ClearColor">
       <UniqueIdentifier>{53957af1-5e95-4eb1-8325-826ef426ffde}</UniqueIdentifier>
@@ -568,9 +547,6 @@
     </Filter>
     <Filter Include="HLSL\02. Render\3DShader">
       <UniqueIdentifier>{8d137efa-b049-4568-8821-7e055b4087fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. Component\06. Light3D">
-      <UniqueIdentifier>{457135b4-ceca-4cde-a4b4-66d3335100ad}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. Component\RenderComponent\04. SkyBox">
       <UniqueIdentifier>{2e7cef2f-b266-47db-af03-8440140a77d0}</UniqueIdentifier>
@@ -605,9 +581,6 @@
     <Filter Include="HLSL\03. Compute\LandScape\WeightMap">
       <UniqueIdentifier>{b13e3db2-dd8b-425f-8dc6-06b9b04b8a2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. Component\07. Animator3D">
-      <UniqueIdentifier>{7669c761-59a9-40fe-90b0-a8aebd010cf2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HLSL\03. Compute\3DAnimation">
       <UniqueIdentifier>{8e5f2a2a-957e-4075-8947-179c4642c9d3}</UniqueIdentifier>
     </Filter>
@@ -620,11 +593,35 @@
     <Filter Include="04. Manager\09. InstancingBuffer">
       <UniqueIdentifier>{e4ced7d0-9af4-474a-a391-54fb02f4bbe6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. Component\03. Collider">
-      <UniqueIdentifier>{e70422b7-49b6-478c-915b-5f2e1a633a1e}</UniqueIdentifier>
+    <Filter Include="07. Component\04. Collider3D">
+      <UniqueIdentifier>{7849dcc8-8e49-4d7e-92b2-8df66a8ffe61}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08. Asset\09. Animation">
-      <UniqueIdentifier>{5f4d574f-0e11-4aac-89d5-19708f3f3db3}</UniqueIdentifier>
+    <Filter Include="07. Component\05. FlipbookPlayer">
+      <UniqueIdentifier>{11e1a5ae-cb41-4d8f-a654-17af0ad37bee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\06. Light2D">
+      <UniqueIdentifier>{5ef29be0-1b21-4199-ab77-c322bc27390a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\07. Light3D">
+      <UniqueIdentifier>{457135b4-ceca-4cde-a4b4-66d3335100ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\08. Animator3D">
+      <UniqueIdentifier>{7669c761-59a9-40fe-90b0-a8aebd010cf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\08. Animation">
+      <UniqueIdentifier>{9e1de16d-9246-4ae9-9b1f-e7a31f865c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\09. Skeleton">
+      <UniqueIdentifier>{5f15f81b-ccc8-449a-a508-c9f4ee0b45f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\10. Material">
+      <UniqueIdentifier>{14e61028-4c65-43fe-bd52-17fb166a0735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\Shader\GraphicShader">
+      <UniqueIdentifier>{569aa7b7-bf54-413b-a5e4-664d2a9cd019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\Shader\ComputeShader">
+      <UniqueIdentifier>{eb359fd5-625f-4557-9b51-a19b7495b214}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

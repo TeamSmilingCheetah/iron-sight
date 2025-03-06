@@ -188,6 +188,22 @@ void CRenderMgr::CreateDebugMtrl()
     pMtrl->SetName(L"DebugShapeLineMtrl");
     pMtrl->SetShader(pShader);
     CAssetMgr::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// ==============
+	// Skeleton Debug
+	// ==============
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"Shader\\debug.fx", "VS_DebugSkeleton");
+	pShader->CreateGeometryShader(L"Shader\\debug.fx", "GS_DebugSkeleton");
+	pShader->CreatePixelShader(L"Shader\\debug.fx", "PS_DebugSkeleton");
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	CAssetMgr::GetInst()->AddAsset(L"DebugSkeletonShader", pShader);
+
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"DebugSkeletonMtrl");
+	pMtrl->SetShader(pShader);
+	CAssetMgr::GetInst()->AddAsset(pMtrl->GetName(), pMtrl);
 }
 
 void CRenderMgr::CreateRenderMtrl()

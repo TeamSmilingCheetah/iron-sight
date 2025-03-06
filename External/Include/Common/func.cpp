@@ -162,6 +162,19 @@ void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float 
     CRenderMgr::GetInst()->AddDebugShape(info);
 }
 
+void DrawDebugSkeleton(Vec4 _Color, const Matrix& _matWorld, CStructuredBuffer* _PureBoneMat, CStructuredBuffer* _ParentIdx, bool _DepthTest, float _Duration)
+{
+	tDebugShapeInfo info = {};
+	info.Shape = DEBUG_SHAPE::SKELETON;
+	info.Color = _Color;
+	info.Data1 = reinterpret_cast<DWORD_PTR>(_PureBoneMat);
+	info.Data2 = reinterpret_cast<DWORD_PTR>(_ParentIdx);
+	info.matWorld = _matWorld;
+	info.DepthTest = _DepthTest;
+	info.Duration = _Duration;
+	CRenderMgr::GetInst()->AddDebugShape(info);
+}
+
 Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat)
 {
 	Matrix mat{};

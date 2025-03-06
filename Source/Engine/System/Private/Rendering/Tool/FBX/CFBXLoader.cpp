@@ -744,8 +744,7 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 			tTime.SetFrame(i, eTimeMode);
 
 			FbxAMatrix matFromNode = _pNode->EvaluateGlobalTransform(tTime) * _matNodeTransform;
-			FbxAMatrix matCurTrans = matFromNode.Inverse() * _pCluster->GetLink()->
-			                                                            EvaluateGlobalTransform(tTime);
+			FbxAMatrix matCurTrans = matFromNode.Inverse() * _pCluster->GetLink()->EvaluateGlobalTransform(tTime);
 			matCurTrans = matReflect * matCurTrans * matReflect;
 
 			tFrame.dTime = tTime.GetSecondDouble();

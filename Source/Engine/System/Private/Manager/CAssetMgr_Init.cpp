@@ -330,7 +330,7 @@ void CAssetMgr::CreateEngineMaterial()
     pMtrl->SetShader(FindAsset<CGraphicShader>(L"EffectMergeShader"));
     AddAsset(L"EffectMergeMtrl", pMtrl);
 
-    // EffectMergeMtrl
+    // TessMtrl
     pMtrl = new CMaterial(true);
     pMtrl->SetShader(FindAsset<CGraphicShader>(L"TessShader"));
     AddAsset(L"TessMtrl", pMtrl);

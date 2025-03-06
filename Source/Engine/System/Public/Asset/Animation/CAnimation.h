@@ -10,7 +10,7 @@ class CAnimation :
 {
 private:
 	// Bone 정보
-	Ptr<CSkeleton> m_Bone;
+	Ptr<CSkeleton> m_Skeleton;
 
 	// Animation3D 정보
 	int m_StartFrame;
@@ -24,16 +24,16 @@ private:
 	FbxTime::EMode m_TimeMode;
 
 	// KeyFrame 정보
-	vector<tFrameTrans> m_vecKeyFrames;
-
-	CStructuredBuffer* m_BoneFrameData; // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
+	vector<tFrameTrans>		m_vecKeyFrames;
+	CStructuredBuffer*		m_BoneFrameData; // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
 
 public:
 	CStructuredBuffer* GetBoneFrameDataBuffer() const { return m_BoneFrameData; } // 전체 본 프레임 정보
-	CStructuredBuffer* GetBoneInverseBuffer() const { return m_Bone->GetBoneInverseBuffer(); }
+	CStructuredBuffer* GetBoneInverseBuffer() const { return m_Skeleton->GetBoneInverseBuffer(); }
+	CStructuredBuffer* GetBoneParentBuffer() const { return m_Skeleton->GetBoneParentBuffer(); }
 
-	const vector<tMTBone>* GetBones() const { return m_Bone->GetBones(); }
-	UINT GetBoneCount() const { return m_Bone->GetBoneCount(); }
+	const vector<tMTBone>* GetBones() const { return m_Skeleton->GetBones(); }
+	UINT GetBoneCount() const { return m_Skeleton->GetBoneCount(); }
 
 	double GetStartTime() const { return m_StartTime; }
 	double GetEndTime() const { return m_EndTime; }
