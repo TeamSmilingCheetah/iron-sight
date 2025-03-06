@@ -2,6 +2,7 @@
 #include "Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Runtime/Public/Actor/CLevel.h"
 #include "System/Public/Manager/CLevelMgr.h"
+#include "Runtime/Public/Component/Rendering/CMeshRender.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _Type)
     : CComponent(_Type)
@@ -145,8 +146,11 @@ void CRenderComponent::LoadComponent(FILE* _File)
     UINT iMtrlCount = GetMaterialCount();
     fread(&iMtrlCount, sizeof(UINT), 1, _File);
 
+	m_vecMtrls.resize(iMtrlCount);
+
     for (UINT i = 0; i < iMtrlCount; ++i)
     {
         LoadAssetRef(m_vecMtrls[i].pSharedMtrl, _File);
+		SetMaterial(m_vecMtrls[i].pSharedMtrl, i);
     }
 }

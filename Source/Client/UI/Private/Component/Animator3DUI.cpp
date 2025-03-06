@@ -27,7 +27,15 @@ void Animator3DUI::Render_Update()
 	int ClipIdx = pAnim3D->GetCurClipIdx();
 	ImGui::Text("Current Clip IDX:");
 	ImGui::SameLine();
-	ImGui::InputInt("##ClipIdx", &ClipIdx);
+	if(ImGui::InputInt("##ClipIdx", &ClipIdx))
+	{
+		if (ClipIdx < 0)
+			ClipIdx = 0;
+		if (vecClip.size() - 1 < ClipIdx)
+			ClipIdx = vecClip.size() - 1;
+		pAnim3D->SetCurClip(ClipIdx);
+	}
+	
 
 	// CurClipTime
 	double CurClipTime = pAnim3D->GetCurClipTime();

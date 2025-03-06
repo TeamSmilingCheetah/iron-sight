@@ -211,3 +211,19 @@ string WStringToString(const wstring& _str)
 
 	return res_str;
 }
+
+
+void GetComponentsNames(vector<wstring>& _vecComponentsNames)
+{
+	_vecComponentsNames.push_back(L"Transform");
+	_vecComponentsNames.push_back(L"Collider2D");
+	_vecComponentsNames.push_back(L"FlipbookPlayer");
+	_vecComponentsNames.push_back(L"Camera");
+	_vecComponentsNames.push_back(L"Light3D");
+	_vecComponentsNames.push_back(L"MeshRender");
+	_vecComponentsNames.push_back(L"Decal");
+	_vecComponentsNames.push_back(L"LandScape");
+	_vecComponentsNames.push_back(L"SkyBox");
+	_vecComponentsNames.push_back(L"Tilemap");
+	_vecComponentsNames.push_back(L"ParticleSystem");
+}

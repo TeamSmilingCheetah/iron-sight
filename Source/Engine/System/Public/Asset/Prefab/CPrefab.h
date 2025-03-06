@@ -16,6 +16,7 @@ private:
 
 public:
     void SetProtoObject(CGameObject* _Object);
+	CGameObject* GetProtoObject() { return m_ProtoObj; }
     CGameObject* Instantiate();
 
 

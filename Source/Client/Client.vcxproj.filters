@@ -148,10 +148,24 @@
     <ClInclude Include="UI\Public\Asset\AnimationUI.h">
       <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Public\Component\Animator3DUI.h" />
-    <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
-    <ClInclude Include="UI\Public\Component\Light3DUI.h" />
-    <ClInclude Include="UI\Public\Component\SkyBoxUI.h" />
+    <ClInclude Include="UI\Public\Component\Animator3DUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Component\LandScapeUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Component\Light3DUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Component\SkyBoxUI.h">
+      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\PrefabEditor\PrefabEditor.h">
+      <Filter>3. EditorUI\PrefabEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Editor\AddObjectUI.h">
+      <Filter>3. EditorUI\AddObjectUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -297,6 +311,12 @@
     <Filter Include="3. EditorUI\Inspector\AssetUI\12. SkeletonUI">
       <UniqueIdentifier>{0833d19c-70fa-4572-8f10-9bf8e6cf3797}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3. EditorUI\PrefabEditor">
+      <UniqueIdentifier>{333bde7c-0a7e-46cd-9464-7effc0698231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\AddObjectUI">
+      <UniqueIdentifier>{89944bec-a078-4194-8edc-d395de8d8dd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -440,9 +460,23 @@
     <ClCompile Include="UI\Private\Asset\AnimationUI.cpp">
       <Filter>3. EditorUI\Inspector\AssetUI\11. AnimationUI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Private\Component\Animator3DUI.cpp" />
-    <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
-    <ClCompile Include="UI\Private\Component\Light3DUI.cpp" />
-    <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Animator3DUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\LandScapeUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\LandscapeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\Light3DUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\Light3D</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp">
+      <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\PrefabEditor\PrefabEditor.cpp">
+      <Filter>3. EditorUI\PrefabEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Editor\AddObjectUI.cpp">
+      <Filter>3. EditorUI\AddObjectUI</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Base/CRenderComponent.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CDecal :
     public CRenderComponent

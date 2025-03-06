@@ -88,6 +88,74 @@ CGameObject* CMeshData::Instantiate()
 	return pNewObj;
 }
 
+void CMeshData::Instantiate(CGameObject* _Obj)
+{
+	int meshCnt = static_cast<int>(m_vecMesh.size());
+	assert(meshCnt > 0);
+
+	// 1개의 메쉬로 이루어진 경우 - 오브젝트에 바로 meshrenderer 부착
+	if (m_vecMesh.size() == 1)
+	{
+		_Obj->AddComponent(new CMeshRender);
+
+		_Obj->MeshRender()->SetMesh(m_vecMesh[0]);
+
+		for (UINT i = 0; i < m_vecMtrlSet[0].size(); ++i)
+		{
+			_Obj->MeshRender()->SetMaterial(m_vecMtrlSet[0][i], i);
+		}
+
+		// Animation 파트 추가
+		if (!m_vecAnimSet.empty())
+		{
+			CAnimator3D* pAnimator = new CAnimator3D;
+			_Obj->AddComponent(pAnimator);
+
+			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetCurClip(0);
+		}
+	}
+
+	// 2개 이상의 메쉬로 이루어진 경우. 한 empty 오브젝트 밑에 메쉬마다 자식으로 생성
+	else
+	{
+		// Animation 파트 추가
+		if (!m_vecAnimSet.empty())
+		{
+			CAnimator3D* pAnimator = new CAnimator3D;
+			_Obj->AddComponent(pAnimator);
+
+			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetCurClip(0);
+		}
+
+		for (int idx = 0; idx < meshCnt; ++idx)
+		{
+			CGameObject* childObj = new CGameObject;
+			childObj->AddComponent(new CMeshRender);
+			childObj->SetName(m_vecMesh[idx]->GetKey());
+
+			childObj->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+			childObj->MeshRender()->SetMesh(m_vecMesh[idx]);
+
+			for (UINT i = 0; i < m_vecMtrlSet[idx].size(); ++i)
+			{
+				childObj->MeshRender()->SetMaterial(m_vecMtrlSet[idx][i], i);
+
+				// 애니메이션을 사용한다면
+				if (!m_vecAnimSet.empty())
+				{
+					childObj->MeshRender()->SetSkinRender(true);
+				}
+			}
+
+			_Obj->AddChild(childObj);
+		}
+	}
+}
+
 CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 {
 	wstring strFullPath = CPathMgr::GetInst()->GetContentPath();

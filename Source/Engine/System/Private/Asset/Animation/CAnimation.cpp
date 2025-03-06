@@ -38,7 +38,7 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 	{
 		pAnim = new CAnimation;
 		pAnim->SetName(vecAnimClip[clipIdx]->strName + L".anim");
-		pAnim->m_Bone = CAssetMgr::GetInst()->FindAsset<CSkeleton>(vecBones[0]->strBoneName + L".bone");
+		pAnim->m_Bone = CAssetMgr::GetInst()->FindAsset<CSkeleton>(vecBones[0]->strBoneName + L".bone"); 
 		pAnim->m_StartFrame = static_cast<int>(vecAnimClip[clipIdx]->tStartTime.GetFrameCount(
 			vecAnimClip[clipIdx]->eMode));
 		pAnim->m_EndFrame = static_cast<int>(vecAnimClip[clipIdx]->tEndTime.GetFrameCount(

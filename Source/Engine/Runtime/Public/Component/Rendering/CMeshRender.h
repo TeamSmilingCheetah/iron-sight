@@ -17,6 +17,9 @@ public:
     void FinalTick() override;
     void Render() override;
 
+	void SaveComponent(FILE* _File) override;
+	void LoadComponent(FILE* _FILE) override;
+
     CLONE(CMeshRender);
     CMeshRender();
     ~CMeshRender() override;

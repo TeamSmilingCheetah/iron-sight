@@ -23,6 +23,8 @@ Vec4 GetVectorFromFbxVector(const FbxDouble4& _vec);
 void SaveWString(const wstring& _str, FILE* _File);
 void LoadWString(wstring& _str, FILE* _File);
 
+void GetComponentsNames(vector<wstring>& _vecComponentsNames);
+
 string WStringToString(const wstring& _str);
 
 #include "Ptr.h"
