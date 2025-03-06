@@ -2,6 +2,7 @@
 #include "Client/Core/Public/CLevelSaveLoad.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/Base/components.h"
 #include "Engine/Runtime/Public/Component/Animation/CFlipBookPlayer.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Light/CLight2D.h"
@@ -12,6 +13,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/CTileMap.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Scripts/Manager/CScriptMgr.h"
 #include "Game/System/Public/GameplayManager.h"
 
 int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)
@@ -209,7 +211,8 @@ CComponent* CLevelSaveLoad::CreateComponent(COMPONENT_TYPE _Type)
 	//case COMPONENT_TYPE::COLLIDER3D:
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		return new CFlipbookPlayer;
-	//case COMPONENT_TYPE::ANIMATOR3D:
+	case COMPONENT_TYPE::ANIMATOR3D:
+		return new CAnimator3D;
 	case COMPONENT_TYPE::CAMERA:
 		return new CCamera;
 	case COMPONENT_TYPE::LIGHT2D:

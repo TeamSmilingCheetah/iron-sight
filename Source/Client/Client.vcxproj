@@ -200,6 +200,7 @@
     <ClInclude Include="UI\Public\Component\ScriptUI.h" />
     <ClInclude Include="UI\Public\Component\SkyBoxUI.h" />
     <ClInclude Include="UI\Public\Component\TransformUI.h" />
+    <ClInclude Include="UI\Public\Editor\AddObjectUI.h" />
     <ClInclude Include="UI\Public\Editor\ContentUI.h" />
     <ClInclude Include="UI\Public\Editor\EditorUI.h" />
     <ClInclude Include="UI\Public\Editor\Inspector.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="UI\Public\Editor\Outliner.h" />
     <ClInclude Include="UI\Public\Editor\ParamUI.h" />
     <ClInclude Include="UI\Public\Editor\TreeUI.h" />
+    <ClInclude Include="UI\Public\PrefabEditor\PrefabEditor.h" />
     <ClInclude Include="UI\Public\SpriteEditor\SE_AtlasView.h" />
     <ClInclude Include="UI\Public\SpriteEditor\SE_Detail.h" />
     <ClInclude Include="UI\Public\SpriteEditor\SE_Sub.h" />
@@ -255,6 +257,7 @@
     <ClCompile Include="UI\Private\Component\ScriptUI.cpp" />
     <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp" />
     <ClCompile Include="UI\Private\Component\TransformUI.cpp" />
+    <ClCompile Include="UI\Private\Editor\AddObjectUI.cpp" />
     <ClCompile Include="UI\Private\Editor\ContentUI.cpp" />
     <ClCompile Include="UI\Private\Editor\EditorUI.cpp" />
     <ClCompile Include="UI\Private\Editor\Inspector.cpp" />
@@ -263,6 +266,7 @@
     <ClCompile Include="UI\Private\Editor\Outliner.cpp" />
     <ClCompile Include="UI\Private\Editor\ParamUI.cpp" />
     <ClCompile Include="UI\Private\Editor\TreeUI.cpp" />
+    <ClCompile Include="UI\Private\PrefabEditor\PrefabEditor.cpp" />
     <ClCompile Include="UI\Private\SpriteEditor\SE_AtlasView.cpp" />
     <ClCompile Include="UI\Private\SpriteEditor\SE_Detail.cpp" />
     <ClCompile Include="UI\Private\SpriteEditor\SE_Sub.cpp" />

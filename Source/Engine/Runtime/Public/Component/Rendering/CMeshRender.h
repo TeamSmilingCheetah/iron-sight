@@ -19,6 +19,11 @@ public:
     void FinalTick() override;
     void Render() override;
 
+
+	void SaveComponent(FILE* _File) override;
+	void LoadComponent(FILE* _FILE) override;
+
+
 private:
 	void Render_Skeleton(CStructuredBuffer* _PureBoneBuffer, CStructuredBuffer* _ParentIndexBuffer);	// 인스턴싱 활용한 Skeleton render -> RenderMgr에서만 호출
 

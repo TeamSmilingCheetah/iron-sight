@@ -27,6 +27,7 @@ public:
     Ptr<CMaterial> GetDynamicMaterial(UINT _idx);
 
     UINT GetMaterialCount() { return static_cast<UINT>(m_vecMtrls.size()); }
+	void SetMaterialSize(UINT _Size) { m_vecMtrls.resize(_Size); }
 
 	ULONG64 GetInstID(UINT _iMtrlIdx);
 

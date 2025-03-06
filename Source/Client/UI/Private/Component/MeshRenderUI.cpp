@@ -132,6 +132,20 @@ void MeshRenderUI::Render_Update()
 		pListUI->AddDynamicDoubleCliked(
 			this, static_cast<EUI_DELEGATE_2>(&MeshRenderUI::SelectMaterial));
 	}
+
+	int MaterialCount = pMeshRender->GetMaterialCount();
+	if (1 <= MaterialCount)
+	{
+		for (int i = 0; i < MaterialCount; ++i)
+		{
+			string mtrlID = "Mtrl " + std::to_string(i);
+			pMtrl = pMeshRender->GetMaterial(i);
+			MtrlName = WStringToString(pMtrl->GetKey());
+			ImGui::SetNextItemWidth(400);
+			ImGui::InputText(mtrlID.c_str(), (char*)MtrlName.c_str(), MtrlName.length(),
+				ImGuiInputTextFlags_ReadOnly);
+		}		
+	}
 }
 
 void MeshRenderUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)

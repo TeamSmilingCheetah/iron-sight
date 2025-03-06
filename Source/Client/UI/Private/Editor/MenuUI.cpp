@@ -120,21 +120,10 @@ void MenuUI::GameObject()
 {
 	if (ImGui::BeginMenu("GameObject"))
 	{
-		if (ImGui::MenuItem("Undo", "CTRL+Z"))
+		if (ImGui::MenuItem("Add Object"))
 		{
-		}
-		if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
-		{
-		} // Disabled item
-		ImGui::Separator();
-		if (ImGui::MenuItem("Cut", "CTRL+X"))
-		{
-		}
-		if (ImGui::MenuItem("Copy", "CTRL+C"))
-		{
-		}
-		if (ImGui::MenuItem("Paste", "CTRL+V"))
-		{
+			CImGuiMgr::GetInst()->FindUI("AddObjectUI")->SetActive(true);
+
 		}
 		ImGui::EndMenu();
 	}
@@ -144,6 +133,10 @@ void MenuUI::Editor()
 {
 	if (ImGui::BeginMenu("Editor"))
 	{
+		if (ImGui::MenuItem("Edit Prefab"))
+		{
+			CImGuiMgr::GetInst()->FindUI("PrefabEditor")->SetActive(true);
+		}
 		ImGui::EndMenu();
 	}
 }

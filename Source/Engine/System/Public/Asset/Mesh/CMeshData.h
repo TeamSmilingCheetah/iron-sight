@@ -17,6 +17,8 @@ public:
     static CMeshData* LoadFromFBX(const wstring& _RelativePath);
 
     CGameObject* Instantiate();
+	void Instantiate(CGameObject* _Obj);
+
     int Save(const wstring& _RelativePath) override;
     int Load(const wstring& _strFilePath) override;
 

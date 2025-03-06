@@ -79,6 +79,48 @@ void CMeshRender::Render()
 		pAnimator->ClearData();
 }
 
+
+void CMeshRender::SaveComponent(FILE* _File)
+{
+	fwrite(&m_SkinRender, sizeof(bool), 1, _File);
+
+	Ptr<CMesh> pMesh = GetMesh();
+	// 메쉬 참조정보 저장
+	SaveAssetRef(pMesh, _File);
+
+	// 재질 참조정보 저장
+	UINT iMtrlCount = GetMaterialCount();
+	fwrite(&iMtrlCount, sizeof(UINT), 1, _File);
+
+	for (UINT i = 0; i < iMtrlCount; ++i)
+	{
+		SaveAssetRef(GetSharedMaterial(i), _File);
+	}
+}
+
+void CMeshRender::LoadComponent(FILE* _FILE)
+{
+	fread(&m_SkinRender, sizeof(bool), 1, _FILE);
+
+	Ptr<CMesh> pMesh = nullptr;
+
+	// 메쉬 참조정보 불러오기
+	LoadAssetRef(pMesh, _FILE);
+	SetMesh(pMesh);
+
+	// 재질 참조정보 불러오기
+	UINT iMtrlCount = GetMaterialCount();
+	fread(&iMtrlCount, sizeof(UINT), 1, _FILE);
+
+	SetMaterialSize(iMtrlCount);
+
+	for (UINT i = 0; i < iMtrlCount; ++i)
+	{
+		Ptr<CMaterial> pShaderMtrl = GetSharedMaterial(i);
+		LoadAssetRef(pShaderMtrl, _FILE);
+		SetMaterial(pShaderMtrl, i);
+	}
+
 void CMeshRender::Render_Skeleton(CStructuredBuffer* _PureBoneBuffer, CStructuredBuffer* _ParentIndexBuffer)
 {
 	_PureBoneBuffer->Binding(18);

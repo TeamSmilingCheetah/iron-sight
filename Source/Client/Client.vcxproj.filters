@@ -160,6 +160,12 @@
     <ClInclude Include="UI\Public\Component\SkyBoxUI.h">
       <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Public\PrefabEditor\PrefabEditor.h">
+      <Filter>3. EditorUI\PrefabEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\Editor\AddObjectUI.h">
+      <Filter>3. EditorUI\AddObjectUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -301,6 +307,12 @@
     </Filter>
     <Filter Include="03. EditorUI\SpriteEditor\Sub\SE_AtlasView">
       <UniqueIdentifier>{fd45c3bd-866a-4905-a171-0430bfa47b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\PrefabEditor">
+      <UniqueIdentifier>{333bde7c-0a7e-46cd-9464-7effc0698231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3. EditorUI\AddObjectUI">
+      <UniqueIdentifier>{89944bec-a078-4194-8edc-d395de8d8dd2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -457,5 +469,12 @@
     <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp">
       <Filter>3. EditorUI\Inspector\ComponentUI\SkyBoxUI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Private\PrefabEditor\PrefabEditor.cpp">
+      <Filter>3. EditorUI\PrefabEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Editor\AddObjectUI.cpp">
+      <Filter>3. EditorUI\AddObjectUI</Filter>
+    </ClCompile>
+
   </ItemGroup>
 </Project>

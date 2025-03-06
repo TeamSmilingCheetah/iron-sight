@@ -7,6 +7,7 @@
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
+#include "Scripts/Manager/CScriptMgr.h"
 
 CGameObject::CGameObject()
     : m_arrCom{}
@@ -169,6 +170,40 @@ void CGameObject::AddChild(CGameObject* _Child)
     m_vecChild.push_back(_Child);
     _Child->m_Parent = this;
 	_Child->m_LayerIdx = m_LayerIdx;
+}
+
+void CGameObject::DeleteComponent(COMPONENT_TYPE _Type)
+{
+	if (COMPONENT_TYPE::SCRIPT == _Type)
+	{
+		return;
+	}
+	else
+	{
+		// 입력으로 들어오는 컴포넌트가 없는 경우
+		assert(m_arrCom[(UINT)_Type]);
+
+		// 입력된 컴포넌트가 CRenderComponent 의 자식클래스 타입인지 확인
+		if (_Type == COMPONENT_TYPE::TILEMAP || _Type == COMPONENT_TYPE::MESHRENDER || _Type == COMPONENT_TYPE::PARTICLE_SYSTEM)
+		{
+			assert(m_RenderCom);
+			m_RenderCom = nullptr;
+		}
+
+		// 해당 컴퍼넌트 삭제
+		m_arrCom[(UINT)_Type] = nullptr;
+	}
+}
+
+void CGameObject::DeleteScirpt(wstring& _SciprtName)
+{
+	CScript* pScript = CScriptMgr::GetScript(_SciprtName);
+
+	for (UINT i = 0; i < m_vecScripts.size(); ++i)
+	{
+		if (m_vecScripts[i]->GetName() == pScript->GetName())
+			m_vecScripts.erase(m_vecScripts.begin() + i);
+	}
 }
 
 bool CGameObject::IsAncestor(CGameObject* _Other)

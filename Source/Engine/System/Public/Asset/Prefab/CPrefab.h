@@ -15,6 +15,7 @@ private:
 
 public:
     void SetProtoObject(CGameObject* _Object);
+	CGameObject* GetProtoObject() { return m_ProtoObj; }
     CGameObject* Instantiate();
 
     int Load(const wstring& _FilePath) override;

@@ -26,6 +26,8 @@ public:
 
     void AddComponent(CComponent* _Component);
     void AddChild(CGameObject* _Child);
+	void DeleteComponent(COMPONENT_TYPE _Type);
+	void DeleteScirpt(wstring& _SciprtName);
 
     CGameObject* GetParent() { return m_Parent; }
     CComponent* GetComponent(COMPONENT_TYPE _Type) { return m_arrCom[static_cast<UINT>(_Type)]; }

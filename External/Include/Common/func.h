@@ -28,6 +28,8 @@ Vec4 GetVectorFromFbxVector(const FbxDouble4& _vec);
 void SaveWString(const wstring& _str, FILE* _File);
 void LoadWString(wstring& _str, FILE* _File);
 
+void GetComponentsNames(vector<wstring>& _vecComponentsNames);
+
 string WStringToString(const wstring& _str);
 
 bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist);

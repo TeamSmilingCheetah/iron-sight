@@ -27,17 +27,17 @@ CAnimator3D::CAnimator3D()
 
 CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
     : CComponent(COMPONENT_TYPE::ANIMATOR3D)
-    , m_vecClip(_origin.m_vecClip)
-    , m_FrameCount(_origin.m_FrameCount)
-    , m_CurTime(_origin.m_CurTime)
-    , m_CurClip(_origin.m_CurClip)
-    , m_FrameIdx(_origin.m_FrameIdx)
-    , m_NextFrameIdx(_origin.m_NextFrameIdx)
-    , m_Ratio(_origin.m_Ratio)
-    , m_BoneFinalMatBuffer(nullptr)
-	, m_BonePureMatBuffer(nullptr)
-    , m_bFinalMatUpdate(false)
-	, m_BindCaller(nullptr)
+      , m_vecClip(_origin.m_vecClip)
+      , m_vecClipUpdateTime(_origin.m_vecClipUpdateTime)
+      , m_FrameCount(_origin.m_FrameCount)
+      , m_CurTime(_origin.m_CurTime)
+      , m_CurClip(_origin.m_CurClip)
+      , m_FrameIdx(_origin.m_FrameIdx)
+      , m_NextFrameIdx(_origin.m_NextFrameIdx)
+      , m_Ratio(_origin.m_Ratio)
+      , m_BoneFinalMatBuffer(nullptr)
+      , m_bFinalMatUpdate(false)
+	  , m_BindCaller(nullptr)
 {
     m_BoneFinalMatBuffer = new CStructuredBuffer;
 	m_BonePureMatBuffer = new CStructuredBuffer;
@@ -177,8 +177,39 @@ void CAnimator3D::ClearData()
 
 void CAnimator3D::SaveComponent(FILE* _File)
 {
+	int ClipCnt = static_cast<int>(m_vecClip.size());
+	fwrite(&ClipCnt, sizeof(int), 1, _File);
+
+	for (int i = 0; i < ClipCnt; ++i)
+	{
+		SaveAssetRef(m_vecClip[i], _File);
+	}
+
+	int ClipTimeCnt = static_cast<int>(m_vecClipUpdateTime.size());
+	fwrite(&ClipTimeCnt, sizeof(int), 1, _File);
+
+	for (int i = 0; i < ClipTimeCnt; ++i)
+	{
+		fwrite(&m_vecClipUpdateTime[i], sizeof(float), 1, _File);
+	}
 }
 
 void CAnimator3D::LoadComponent(FILE* _File)
 {
+	int ClipCnt = 0;
+	fread(&ClipCnt, sizeof(int), 1, _File);
+	for (int i = 0; i < ClipCnt; ++i)
+	{
+		Ptr<CAnimation> pAnimation;
+		LoadAssetRef(pAnimation, _File);
+		m_vecClip.push_back(pAnimation);
+	}
+
+	int ClipTimeCnt = 0;
+	fread(&ClipTimeCnt, sizeof(int), 1, _File);
+	m_vecClipUpdateTime.resize(ClipTimeCnt);
+	for (int i = 0; i < ClipTimeCnt; ++i)
+	{
+		fread(&m_vecClipUpdateTime[i], sizeof(float), 1, _File);
+	}
 }
