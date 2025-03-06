@@ -11,8 +11,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
 
-#include "Scripts/Manager/CScriptMgr.h"
-
+#include "Game/System/Public/GameplayManager.h"
 
 PrefabEditor::PrefabEditor()
 	: EditorUI("PrefabEditor")
@@ -113,7 +112,7 @@ void PrefabEditor::Render_Update()
 		vector<wstring> vecComponentsNames;
 		vector<wstring> vecScirptsNames;
 		GetComponentsNames(vecComponentsNames);
-		CScriptMgr::GetScriptInfo(vecScirptsNames);
+		GameplayManager::GetScriptInfo(vecScirptsNames);
 		vecComponentsNames.insert(vecComponentsNames.end(), vecScirptsNames.begin(), vecScirptsNames.end());
 
 		pListUI->AddItem(vecComponentsNames);
@@ -136,7 +135,7 @@ void PrefabEditor::Render_Update()
 		vector<wstring> vecComponentsNames;
 		vector<wstring> vecScirptsNames;
 		GetComponentsNames(vecComponentsNames);
-		CScriptMgr::GetScriptInfo(vecScirptsNames);
+		GameplayManager::GetScriptInfo(vecScirptsNames);
 		vecComponentsNames.insert(vecComponentsNames.end(), vecScirptsNames.begin(), vecScirptsNames.end());
 
 		pListUI->AddItem(vecComponentsNames);

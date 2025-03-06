@@ -120,6 +120,7 @@ void CMeshRender::LoadComponent(FILE* _FILE)
 		LoadAssetRef(pShaderMtrl, _FILE);
 		SetMaterial(pShaderMtrl, i);
 	}
+}
 
 void CMeshRender::Render_Skeleton(CStructuredBuffer* _PureBoneBuffer, CStructuredBuffer* _ParentIndexBuffer)
 {

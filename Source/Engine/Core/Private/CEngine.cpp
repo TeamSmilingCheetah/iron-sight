@@ -15,7 +15,7 @@
 
 CEngine::CEngine()
     : m_hMainWnd(nullptr)
-      , m_FMODSystem(nullptr)
+    , m_FMODSystem(nullptr)
 {
 }
 

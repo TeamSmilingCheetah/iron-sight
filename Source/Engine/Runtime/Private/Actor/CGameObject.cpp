@@ -7,7 +7,7 @@
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
-#include "Scripts/Manager/CScriptMgr.h"
+#include "Game/System/Public/GameplayManager.h"
 
 CGameObject::CGameObject()
     : m_arrCom{}
@@ -197,7 +197,7 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _Type)
 
 void CGameObject::DeleteScirpt(wstring& _SciprtName)
 {
-	CScript* pScript = CScriptMgr::GetScript(_SciprtName);
+	CScript* pScript = GameplayManager::GetScript(_SciprtName);
 
 	for (UINT i = 0; i < m_vecScripts.size(); ++i)
 	{
