@@ -203,7 +203,7 @@ void CParticleSystem::Render()
     GetMaterial(0)->Binding();
 
     // 렌더링
-    GetMesh()->Render_Particle(m_MaxParticleCount);
+    GetMesh()->Render_Cluster_Instancing(m_MaxParticleCount);
 
     // 파티클 버퍼 바인딩 해제
     m_ParticleBuffer->Clear(16);

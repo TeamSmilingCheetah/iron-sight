@@ -123,6 +123,8 @@ enum class COMPONENT_TYPE
     DECAL, // 깊이 체크, 문양 렌더링
     LANDSCAPE, // 3D 지형 시뮬레이션 및 렌더링
 
+	COLLIDERRAY,		// Ray 충돌체
+
     END,
 
     SCRIPT, // 대본
@@ -143,6 +145,7 @@ enum class DEBUG_SHAPE
     LINE,
     CUBE,
     SPHERE,
+	SKELETON,
 };
 
 

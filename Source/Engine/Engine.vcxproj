@@ -190,6 +190,7 @@
     <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CLandScape.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h" />
@@ -222,7 +223,7 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h" />
     <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h" />
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
-    <ClInclude Include="System\Public\Rendering\Meterial\CMaterial.h" />
+    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h" />
     <ClInclude Include="System\Public\Rendering\RenderTarget\CMRT.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\CColliderRay.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CMeshRender.cpp" />
@@ -285,7 +287,7 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp" />
-    <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp" />
+    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp" />
     <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp" />

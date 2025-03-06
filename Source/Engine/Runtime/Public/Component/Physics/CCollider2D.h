@@ -4,6 +4,7 @@
 class CCollider2D :
     public CComponent
 {
+private:
     Vec2 m_Offset;
     Vec2 m_Scale;
     Vec2 m_FinalPos;
@@ -33,6 +34,7 @@ public:
     void SaveComponent(FILE* _File) override;
     void LoadComponent(FILE* _File) override;
 
+public:
     CLONE(CCollider2D);
     CCollider2D();
     CCollider2D(const CCollider2D& _Origin);

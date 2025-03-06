@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 
-class CMissileScript :
+class MissileProjectile :
 	public CScript
 {
 	Vec3 m_Velocity;
@@ -15,7 +15,7 @@ public:
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
-	CLONE(CMissileScript);
-	CMissileScript();
-	~CMissileScript() override;
+	CLONE(MissileProjectile);
+	MissileProjectile();
+	~MissileProjectile() override;
 };

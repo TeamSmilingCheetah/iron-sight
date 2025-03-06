@@ -5,7 +5,7 @@
 #include "Client/UI/Public/Editor/TreeUI.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
-#include "Engine/System/Public/Rendering/Meterial/CMaterial.h"
+#include "Engine/System/Public/Rendering/Material/CMaterial.h"
 
 class ListUI;
 class TreeNode;

@@ -1,8 +1,8 @@
 ﻿#include "pch.h"
 #include "Client/UI/Public/Component/ScriptUI.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
-#include "Scripts/Manager/CScriptMgr.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
+#include "Game/System/Public/GameplayManager.h"
 
 ScriptUI::ScriptUI()
 	: ComponentUI("ScriptUI", COMPONENT_TYPE::SCRIPT)
@@ -15,7 +15,7 @@ ScriptUI::~ScriptUI()
 
 void ScriptUI::Render_Update()
 {
-	string ScriptName = WStringToString(CScriptMgr::GetScriptName(m_TargetScript));
+	string ScriptName = WStringToString(GameplayManager::GetScriptName(m_TargetScript));
 	ComponentTitle(ScriptName.c_str());
 
 

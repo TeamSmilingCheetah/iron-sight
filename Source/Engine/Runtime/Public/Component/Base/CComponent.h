@@ -7,6 +7,7 @@
 class CComponent :
     public CEntity
 {
+private:
     CGameObject* m_Owner;
     const COMPONENT_TYPE m_Type;
 
@@ -19,6 +20,7 @@ public:
     GET_OTHER_COMPONENT(Camera);
     GET_OTHER_COMPONENT(Collider2D);
 	GET_OTHER_COMPONENT(Collider3D);
+	GET_OTHER_COMPONENT(ColliderRay);
     GET_OTHER_COMPONENT(FlipbookPlayer);
     GET_OTHER_COMPONENT(TileMap);
     GET_OTHER_COMPONENT(Light2D);

@@ -1,44 +1,44 @@
 ﻿#include "pch.h"
-#include "Scripts/GameObject/Public/CCameraScript.h"
-#include "Scripts/GameObject/Public/CMissileScript.h"
-#include "Scripts/GameObject/Public/CPlayerScript.h"
+#include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 
-void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
+void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
 	_vec.push_back(L"CCameraScript");
 	_vec.push_back(L"CMissileScript");
 	_vec.push_back(L"CPlayerScript");
 }
 
-CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
+CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 {
 	if (L"CCameraScript" == _strScriptName)
-		return new CCameraScript;
+		return new CameraController;
 	if (L"CMissileScript" == _strScriptName)
-		return new CMissileScript;
+		return new MissileProjectile;
 	if (L"CPlayerScript" == _strScriptName)
-		return new CPlayerScript;
+		return new PlayerCharacter;
 	return nullptr;
 }
 
-CScript* CScriptMgr::GetScript(UINT _iScriptType)
+CScript* GameplayManager::GetScript(UINT _iScriptType)
 {
 	switch (_iScriptType)
 	{
 	case static_cast<UINT>(CAMERASCRIPT):
-		return new CCameraScript;
+		return new CameraController;
 		break;
 	case static_cast<UINT>(MISSILESCRIPT):
-		return new CMissileScript;
+		return new MissileProjectile;
 		break;
 	case static_cast<UINT>(PLAYERSCRIPT):
-		return new CPlayerScript;
+		return new PlayerCharacter;
 		break;
 	}
 	return nullptr;
 }
 
-const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
+const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 {
 	switch (static_cast<SCRIPT_TYPE>(_pScript->GetScriptType()))
 	{

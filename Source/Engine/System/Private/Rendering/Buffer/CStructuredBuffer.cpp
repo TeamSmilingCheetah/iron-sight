@@ -18,7 +18,7 @@ CStructuredBuffer::~CStructuredBuffer()
 int CStructuredBuffer::Create(UINT _ElementSize, UINT _ElementCount
                               , SB_TYPE _Type, bool _SysMemMove, void* _SysMem)
 {
-    assert(!(_ElementSize % 16));
+    assert(!(_ElementSize % 4));
 
     m_SB_Main = nullptr;
     m_SB_Write = nullptr;

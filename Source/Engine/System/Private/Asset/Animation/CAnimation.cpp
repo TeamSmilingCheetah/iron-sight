@@ -7,15 +7,15 @@
 
 CAnimation::CAnimation(bool _bEngineRes)
 	: CAsset(ANIMATION, _bEngineRes)
-	  , m_Bone(nullptr)
-	  , m_StartFrame(0)
-	  , m_EndFrame(0)
-	  , m_FrameLength(0)
-	  , m_StartTime(0.)
-	  , m_EndTime(0.)
-	  , m_TimeLength(0.)
-	  , m_TimeMode(FbxTime::EMode::eFrames30)
-	  , m_BoneFrameData(nullptr)
+	, m_Skeleton(nullptr)
+	, m_StartFrame(0)
+	, m_EndFrame(0)
+	, m_FrameLength(0)
+	, m_StartTime(0.)
+	, m_EndTime(0.)
+	, m_TimeLength(0.)
+	, m_TimeMode(FbxTime::EMode::eFrames30)
+	, m_BoneFrameData(nullptr)
 {
 }
 
@@ -38,7 +38,7 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 	{
 		pAnim = new CAnimation;
 		pAnim->SetName(vecAnimClip[clipIdx]->strName + L".anim");
-		pAnim->m_Bone = CAssetMgr::GetInst()->FindAsset<CSkeleton>(vecBones[0]->strBoneName + L".bone"); 
+		pAnim->m_Skeleton = CAssetMgr::GetInst()->FindAsset<CSkeleton>(vecBones[0]->strBoneName + L".bone");
 		pAnim->m_StartFrame = static_cast<int>(vecAnimClip[clipIdx]->tStartTime.GetFrameCount(
 			vecAnimClip[clipIdx]->eMode));
 		pAnim->m_EndFrame = static_cast<int>(vecAnimClip[clipIdx]->tEndTime.GetFrameCount(
@@ -61,8 +61,7 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 			for (size_t frameIdx = 0; frameIdx < vecBones[boneIdx]->vecKeyFrame[clipIdx].size(); ++frameIdx)
 			{
 				Vec4 vTranslate{}, vScale{}, qRot{};
-				vTranslate = GetVectorFromFbxVector(
-					vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetT());
+				vTranslate = GetVectorFromFbxVector(vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetT());
 				vScale = GetVectorFromFbxVector(vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetS());
 				qRot = GetVectorFromFbxVector(vecBones[boneIdx]->vecKeyFrame[clipIdx][frameIdx].matTransform.GetQ());
 
@@ -75,8 +74,8 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 		// structuredbuffer 만들어두기
 		pAnim->m_BoneFrameData = new CStructuredBuffer;
 		pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
-		                               , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
-		                               , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
+		    , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
+		    , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
 
 		// AssetMgr 등록 (key 값 설정)
 		CAssetMgr::GetInst()->AddAsset<CAnimation>(pAnim->GetName(), pAnim);
@@ -109,7 +108,7 @@ int CAnimation::Save(const wstring& _RelativePath)
 	SaveWString(GetRelativePath(), pFile);
 
 	// skeleton reference 저장
-	SaveAssetRef(m_Bone, pFile);
+	SaveAssetRef(m_Skeleton, pFile);
 
 	// Animation 정보
 	fwrite(&m_StartFrame, sizeof(int), 1, pFile);
@@ -121,8 +120,7 @@ int CAnimation::Save(const wstring& _RelativePath)
 	fwrite(&m_TimeLength, sizeof(double), 1, pFile);
 
 	// Keyframe 정보
-	fwrite(m_vecKeyFrames.data(), sizeof(tFrameTrans), static_cast<size_t>(m_Bone->GetBoneCount() * m_FrameLength),
-	       pFile);
+	fwrite(m_vecKeyFrames.data(), sizeof(tFrameTrans), static_cast<size_t>(m_Skeleton->GetBoneCount() * m_FrameLength), pFile);
 
 	fclose(pFile);
 
@@ -146,7 +144,7 @@ int CAnimation::Load(const wstring& _strFilePath)
 	SetRelativePath(strRelativePath);
 
 	// skeleton reference 로드
-	LoadAssetRef(m_Bone, pFile);
+	LoadAssetRef(m_Skeleton, pFile);
 
 	// Animation 정보
 	fread(&m_StartFrame, sizeof(int), 1, pFile);
@@ -158,16 +156,15 @@ int CAnimation::Load(const wstring& _strFilePath)
 	fread(&m_TimeLength, sizeof(double), 1, pFile);
 
 	// Keyframe 정보
-	m_vecKeyFrames.resize(m_Bone->GetBoneCount() * m_FrameLength);
-
+	m_vecKeyFrames.resize(m_Skeleton->GetBoneCount() * m_FrameLength);
 	for (int i = 0; i < m_vecKeyFrames.size(); ++i)
 		fread(&m_vecKeyFrames[i], sizeof(tFrameTrans), 1, pFile);
 
 	// Structured Buffer 생성
 	m_BoneFrameData = new CStructuredBuffer;
 	m_BoneFrameData->Create(sizeof(tFrameTrans)
-	                        , m_Bone->GetBoneCount() * m_FrameLength
-	                        , SRV_ONLY, false, m_vecKeyFrames.data());
+	    , m_Skeleton->GetBoneCount() * m_FrameLength
+	    , SRV_ONLY, false, m_vecKeyFrames.data());
 
 	fclose(pFile);
 

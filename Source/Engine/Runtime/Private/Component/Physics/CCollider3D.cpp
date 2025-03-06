@@ -3,6 +3,7 @@
 
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Runtime/Public/Component/Physics/CColliderRay.h"
 
 
 CCollider3D::CCollider3D()
@@ -81,6 +82,35 @@ void CCollider3D::EndOverlap(CCollider3D* _Other)
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
 		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
+	}
+}
+
+void CCollider3D::BeginOverlap(CColliderRay* _Other)
+{
+	++m_OverlapCount;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->BeginOverlap(_Other, _Other->GetOwner(), this);
+	}
+}
+
+void CCollider3D::Overlap(CColliderRay* _Other)
+{
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->Overlap(_Other, _Other->GetOwner(), this);
+	}
+}
+
+void CCollider3D::EndOverlap(CColliderRay* _Other)
+{
+	--m_OverlapCount;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->EndOverlap(_Other, _Other->GetOwner(), this);
 	}
 }
 

@@ -6,20 +6,23 @@
 #include "System/Public/Manager/CTimeMgr.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "System/Public/Rendering/Shader/CBoneMatrixCS.h"
+#include "Runtime/Public/Component/Transform/CTransform.h"
 
 CAnimator3D::CAnimator3D()
     : CComponent(COMPONENT_TYPE::ANIMATOR3D)
-      , m_FrameCount(30)
-      , m_CurTime(0.)
-      , m_CurClip(0)
-      , m_FrameIdx(0)
-      , m_NextFrameIdx(0)
-      , m_Ratio(0.f)
-      , m_BoneFinalMatBuffer(nullptr)
-      , m_bFinalMatUpdate(false)
-	  , m_BindCaller(nullptr)
+    , m_FrameCount(30)
+    , m_CurTime(0.)
+    , m_CurClip(0)
+    , m_FrameIdx(0)
+    , m_NextFrameIdx(0)
+    , m_Ratio(0.f)
+    , m_BoneFinalMatBuffer(nullptr)
+	, m_BonePureMatBuffer(nullptr)
+    , m_bFinalMatUpdate(false)
+	, m_BindCaller(nullptr)
 {
     m_BoneFinalMatBuffer = new CStructuredBuffer;
+	m_BonePureMatBuffer = new CStructuredBuffer;
 }
 
 CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
@@ -37,12 +40,16 @@ CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	  , m_BindCaller(nullptr)
 {
     m_BoneFinalMatBuffer = new CStructuredBuffer;
+	m_BonePureMatBuffer = new CStructuredBuffer;
 }
 
 CAnimator3D::~CAnimator3D()
 {
     if (nullptr != m_BoneFinalMatBuffer)
         delete m_BoneFinalMatBuffer;
+
+	if (nullptr != m_BonePureMatBuffer)
+		delete m_BonePureMatBuffer;
 }
 
 void CAnimator3D::FinalTick()
@@ -94,11 +101,15 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		UINT iBoneCount = static_cast<UINT>(vecBones->size());
 
 		if (m_BoneFinalMatBuffer->GetElementCount() != iBoneCount)
+		{
 			m_BoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
+			m_BonePureMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
+		}
 
         pBoneMatCS->SetFrameDataBuffer(pCurAnim->GetBoneFrameDataBuffer());
         pBoneMatCS->SetOffsetMatBuffer(pCurAnim->GetBoneInverseBuffer());
         pBoneMatCS->SetOutputBuffer(m_BoneFinalMatBuffer);
+		pBoneMatCS->SetPureOutputBuffer(m_BonePureMatBuffer);
 
         pBoneMatCS->SetBoneCount(iBoneCount);
         pBoneMatCS->SetFrameIndex(m_FrameIdx);
@@ -108,6 +119,9 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
         // 업데이트 쉐이더 실행
         pBoneMatCS->Execute();
 
+		// debug skeleton
+		DrawDebugSkeleton(Vec4(0.f, 1.f, 0.f, 1.f), _Renderer->Transform()->GetWorldMat(), m_BonePureMatBuffer, m_vecClip[m_CurClip]->GetBoneParentBuffer(), false, 0.f);
+
         m_bFinalMatUpdate = true;
     }
 
@@ -115,6 +129,7 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 
     // t17 레지스터에 최종행렬 데이터(구조버퍼) 바인딩
     m_BoneFinalMatBuffer->Binding(17);
+	m_BonePureMatBuffer->Binding(18);
 }
 
 void CAnimator3D::AddAnimClip(Ptr<CAnimation> _pAnim)
@@ -143,6 +158,7 @@ void CAnimator3D::ClearData()
 	if (!m_BindCaller) return;
 
     m_BoneFinalMatBuffer->Clear(17);
+	m_BonePureMatBuffer->Clear(18);
 
     UINT iMtrlCount = m_BindCaller->GetMaterialCount();
     Ptr<CMaterial> pMtrl = nullptr;

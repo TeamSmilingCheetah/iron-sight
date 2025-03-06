@@ -9,6 +9,7 @@ class CBoneMatrixCS :
     CStructuredBuffer* m_FrameDataBuffer; // t16
     CStructuredBuffer* m_OffsetMatBuffer; // t17
     CStructuredBuffer* m_OutputBuffer; // u0
+	CStructuredBuffer* m_PureOutputBuffer; // u1
 
 public:
     // g_int_0 : BonCount, g_int_1 : Frame Index
@@ -19,6 +20,7 @@ public:
     void SetFrameDataBuffer(CStructuredBuffer* _buffer) { m_FrameDataBuffer = _buffer; }
     void SetOffsetMatBuffer(CStructuredBuffer* _buffer) { m_OffsetMatBuffer = _buffer; }
     void SetOutputBuffer(CStructuredBuffer* _buffer) { m_OutputBuffer = _buffer; }
+	void SetPureOutputBuffer(CStructuredBuffer* _buffer) { m_PureOutputBuffer = _buffer; }
 
     int Binding() override;
     void CalcGroupCount() override;

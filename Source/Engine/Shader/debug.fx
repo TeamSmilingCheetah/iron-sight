@@ -3,121 +3,192 @@
 
 #include "value.fx"
 
+// =======
+// General
+// =======
+#define Color g_vec4_0;
+
+
 struct VS_IN
 {
-    float3 vPos : POSITION;
-    float2 vUV  : TEXCOORD;
+	float3 vPos : POSITION;
 };
 
 struct VS_OUT
 {
-    float4 vPosition : SV_Position;
-    float2 vUV : TEXCOORD;
+	float4 vPosition : SV_Position;
 };
 
 VS_OUT VS_DebugShape(VS_IN _in)
 {
-    VS_OUT output = (VS_OUT) 0.f;
+	VS_OUT output = (VS_OUT) 0.f;
 
-    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
-    output.vUV = _in.vUV;
+	output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
 
-    return output;
+	return output;
 }
 
 float4 PS_DebugShape(VS_OUT _in) : SV_Target
 {
-    return g_vec4_0;
+	return Color;
 }
 
+// =======
+// Sphere
+// =======
 
 struct VS_SPHERE_IN
 {
-    float3 vPos : POSITION;
-    float3 vNormal : NORMAL;
+	float3 vPos : POSITION;
+	float3 vNormal : NORMAL;
 };
 
 struct VS_SPHERE_OUT
 {
-    float4 vPosition : SV_Position;
-    float3 vViewPos : POSITION;
-    float3 vViewNormal : NORMAL;
+	float4 vPosition : SV_Position;
+	float3 vViewPos : POSITION;
+	float3 vViewNormal : NORMAL;
 };
 
 
 VS_SPHERE_OUT VS_DebugShapeSphere(VS_SPHERE_IN _in)
 {
-    VS_SPHERE_OUT output = (VS_SPHERE_OUT) 0.f;
+	VS_SPHERE_OUT output = (VS_SPHERE_OUT) 0.f;
 
-    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
-    output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV).xyz;
-    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV).xyz);
+	output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+	output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV).xyz;
+	output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV).xyz);
 
-    return output;
+	return output;
 }
 
 float4 PS_DebugShapeSphere(VS_SPHERE_OUT _in) : SV_Target
 {
-    float3 vEye = normalize(_in.vViewPos);
+	float3 vEye = normalize(_in.vViewPos);
 
-    if (0.f < dot(_in.vViewNormal, vEye))
-    {
-        float Alpha = pow(1.f - saturate(dot(vEye, _in.vViewNormal)), 2.f);
-        return float4(g_vec4_0.rgb, Alpha);
-    }
-    else
-    {
-        float Alpha = pow(saturate(dot(vEye, _in.vViewNormal)), 2.f);
-        return float4(g_vec4_0.rgb, Alpha);
-    }
+	if (0.f < dot(_in.vViewNormal, vEye))
+	{
+		float Alpha = pow(1.f - saturate(dot(vEye, _in.vViewNormal)), 2.f);
+		return float4(g_vec4_0.rgb, Alpha);
+	}
+	else
+	{
+		float Alpha = pow(saturate(dot(vEye, _in.vViewNormal)), 2.f);
+		return float4(g_vec4_0.rgb, Alpha);
+	}
 }
 
+// ====
+// Line
+// ====
 
-struct VS_LINE_IN
+struct GS_OUT
 {
-    float3 vPos : POSITION;
+	float4 vPosition : SV_Position;
 };
 
-struct VS_LINE_OUT
+VS_OUT VS_DebugShapeLine(VS_IN _in)
 {
-    float3 vPos : POSITION;
-};
+	VS_OUT output = (VS_OUT) 0.f;
 
-struct GS_LINE_OUT
-{
-    float4 vPosition : SV_Position;
-};
+	output.vPosition = float4(_in.vPos, 1.f);
 
-VS_LINE_OUT VS_DebugShapeLine(VS_IN _in)
-{
-    VS_LINE_OUT output = (VS_LINE_OUT) 0.f;
-
-    output.vPos = _in.vPos;
-
-    return output;
+	return output;
 }
 
 [maxvertexcount(32)]
-void GS_DebugShapeLine(point VS_LINE_OUT _in[1]
-                            , inout LineStream<GS_LINE_OUT> _OutStream)
+void GS_DebugShapeLine(point VS_OUT _in[1]
+							, inout LineStream<GS_OUT> _OutStream)
 {
-    GS_LINE_OUT Start = (GS_LINE_OUT) 0.f;
-    GS_LINE_OUT End = (GS_LINE_OUT) 0.f;
+	GS_OUT Start = (GS_OUT) 0.f;
+	GS_OUT End = (GS_OUT) 0.f;
 
-    Start.vPosition = g_vec4_1;
-    End.vPosition = g_vec4_2;
+	Start.vPosition = g_vec4_1;
+	End.vPosition = g_vec4_2;
 
-    Start.vPosition = mul(mul(float4(Start.vPosition.xyz, 1.f), g_matView), g_matProj);
-    End.vPosition = mul(mul(float4(End.vPosition.xyz, 1.f), g_matView), g_matProj);
+	Start.vPosition = mul(mul(float4(Start.vPosition.xyz, 1.f), g_matView), g_matProj);
+	End.vPosition = mul(mul(float4(End.vPosition.xyz, 1.f), g_matView), g_matProj);
 
-    _OutStream.Append(Start);
-    _OutStream.Append(End);
-    _OutStream.RestartStrip();
+	_OutStream.Append(Start);
+	_OutStream.Append(End);
+	_OutStream.RestartStrip();
 }
 
-float4 PS_DebugShapeLine(GS_LINE_OUT _in) : SV_Target
+float4 PS_DebugShapeLine(GS_OUT _in) : SV_Target
 {
-    return g_vec4_0;
+	return Color;
 }
+
+// ========
+// Skeleton
+// ========
+
+struct VS_SKELETON_IN
+{
+	float3 vPos : POSITION;
+	uint uID : SV_InstanceID;
+};
+
+struct VS_SKELETON_OUT
+{
+	float3 vLocalPos : POSITION;
+	uint uID : FOG;
+};
+
+struct GS_SKELETON_OUT
+{
+	float4 vPosition : SV_Position;
+	uint uID : FOG;
+};
+
+VS_SKELETON_OUT VS_DebugSkeleton(VS_SKELETON_IN _in)
+{
+	VS_SKELETON_OUT output = (VS_SKELETON_OUT) 0.f;
+
+	output.vLocalPos = _in.vPos;
+	output.uID = _in.uID;
+
+	return output;
+}
+
+StructuredBuffer<int> arrBoneParent : register(t19);
+
+[maxvertexcount(128)]
+void GS_DebugSkeleton(point VS_SKELETON_OUT _in[1]
+							, inout LineStream<GS_SKELETON_OUT> _OutStream)
+{
+	GS_SKELETON_OUT Start = (GS_SKELETON_OUT) 0.f;
+	GS_SKELETON_OUT End = (GS_SKELETON_OUT) 0.f;
+	Start.uID = _in[0].uID;
+	End.uID = _in[0].uID;
+
+	uint InstanceID = _in[0].uID;
+	int start = InstanceID * 64;
+	
+	for (int i = start; i < min(g_iBoneCount, start + 64); ++i)
+	{
+		float4 vStartLocalPos = mul(float4(0.f, 0.f, 0.f, 1.f), g_arrPureBoneMat[i]);
+		float4 vEndLocalPos = mul(float4(0.f, 0.f, 0.f, 1.f), g_arrPureBoneMat[arrBoneParent[i]]);
+
+		if ((vStartLocalPos.x == 0.f && vStartLocalPos.y == 0.f && vStartLocalPos.z == 0.f)
+		|| (vEndLocalPos.x == 0.f && vEndLocalPos.y == 0.f && vEndLocalPos.z == 0.f))
+			continue;
+		
+		// i와 arrBoneParent[i]를 연결한다.
+		Start.vPosition = mul(vStartLocalPos, g_matWVP);
+		End.vPosition = mul(vEndLocalPos, g_matWVP);
+		
+		_OutStream.Append(Start);
+		_OutStream.Append(End);
+		_OutStream.RestartStrip();
+	}
+}
+
+float4 PS_DebugSkeleton(GS_OUT _in) : SV_Target
+{
+	return Color;
+}
+
+
 
 #endif

@@ -14,11 +14,5 @@
 #pragma comment(lib, R"(Game/Game)")
 #endif
 
-#ifdef _DEBUG
-#pragma comment(lib, R"(Scripts/Scripts_d)")
-#else
-#pragma comment(lib, R"(Scripts/Scripts)")
-#endif
-
 #include <set>
 using std::set;

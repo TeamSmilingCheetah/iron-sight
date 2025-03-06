@@ -57,6 +57,7 @@ public:
 	{
 		return (CCollider3D*)GetComponent(COMPONENT_TYPE::COLLIDER3D);
 	}
+	class CColliderRay* ColliderRay() { return (CColliderRay*)GetComponent(COMPONENT_TYPE::COLLIDERRAY); }
 
     class CFlipbookPlayer* FlipbookPlayer()
     {

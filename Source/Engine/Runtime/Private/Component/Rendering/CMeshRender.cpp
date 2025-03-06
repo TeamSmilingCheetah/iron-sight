@@ -3,6 +3,7 @@
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Runtime/Public/Component/Animation/CFlipBookPlayer.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CMeshRender::CMeshRender()
 	: CRenderComponent(COMPONENT_TYPE::MESHRENDER)
@@ -78,6 +79,7 @@ void CMeshRender::Render()
 		pAnimator->ClearData();
 }
 
+
 void CMeshRender::SaveComponent(FILE* _File)
 {
 	fwrite(&m_SkinRender, sizeof(bool), 1, _File);
@@ -118,4 +120,25 @@ void CMeshRender::LoadComponent(FILE* _FILE)
 		LoadAssetRef(pShaderMtrl, _FILE);
 		SetMaterial(pShaderMtrl, i);
 	}
+
+void CMeshRender::Render_Skeleton(CStructuredBuffer* _PureBoneBuffer, CStructuredBuffer* _ParentIndexBuffer)
+{
+	_PureBoneBuffer->Binding(18);
+	_ParentIndexBuffer->Binding(19);
+
+	UINT BoneCount = _PureBoneBuffer->GetElementCount();
+
+	// 위치정보
+	Transform()->Binding();
+
+	// 사용할 쉐이더
+	GetMaterial(0)->SetBoneCount(BoneCount);
+	GetMaterial(0)->Binding();
+
+	// 렌더링
+	GetMesh()->Render_Cluster_Instancing((BoneCount + 63) / 64);	// bone 64개씩 끊어서 instancing
+
+	// Clear
+	_PureBoneBuffer->Clear(18);
+	_ParentIndexBuffer->Clear(19);
 }

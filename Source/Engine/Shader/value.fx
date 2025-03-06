@@ -109,12 +109,14 @@ StructuredBuffer<tLight2DInfo>   g_Light2DInfo : register(t13); // 2D 광원 정
 StructuredBuffer<tLight3DInfo>   g_Light3DInfo : register(t14); // 3D 광원 정보
 
 // Animation3D Bone Matrix Buffer
-StructuredBuffer<Matrix>        g_arrBoneMat : register(t17);
+StructuredBuffer<Matrix>        g_arrBoneMat     : register(t17);
+StructuredBuffer<Matrix>        g_arrPureBoneMat : register(t18);
 
 SamplerState    g_sam_0 : register(s0); // 이방성 필터링
 SamplerState    g_sam_1 : register(s1); // MIN_MAG_POINT 필터링
 
 #define PI  3.1415926535f
+
 
 // 1. VertexBuffer
 // 2. IndexBuffer

@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Ptr.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
 
 void CreateObject(class CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
@@ -17,6 +19,9 @@ void DrawDebugCube(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float 
 void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, float _Duration);
 void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float _Duration);
 
+class CStructuredBuffer;
+void DrawDebugSkeleton(Vec4 _Color, const Matrix& _matWorld, CStructuredBuffer* _PureBoneMat, CStructuredBuffer* _ParentIdx, bool _DepthTest, float _Duration);
+
 Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat);
 Vec4 GetVectorFromFbxVector(const FbxDouble4& _vec);
 
@@ -27,9 +32,7 @@ void GetComponentsNames(vector<wstring>& _vecComponentsNames);
 
 string WStringToString(const wstring& _str);
 
-#include "Ptr.h"
-
-class CAssetMgr;
+bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist);
 
 template <typename T>
 void SaveAssetRef(Ptr<T> _Asset, FILE* _File)
