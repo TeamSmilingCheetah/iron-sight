@@ -42,8 +42,8 @@ public:
 	void Binding_Inst(UINT _Subset);
 
     void Render(UINT _Subset);
-    void Render_Particle(UINT _Count);
-	void Render_Instancing(UINT _iSubset);
+    void Render_Cluster_Instancing(UINT _Count);
+	void Render_Object_Instancing(UINT _iSubset);
 
 public:
     CLONE_DISABLE(CMesh);
