@@ -24,6 +24,10 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 
 	const vector<tBone*>& vecBones = _loader.GetBones();
 
+	// Bone이 없으면 nullptr 리턴
+	if (vecBones.empty())
+		return nullptr;
+
 	// 이미 (루트 본 이름으로) 등록된 skeleton이라면 로드하지 않음
 	pBone = CAssetMgr::GetInst()->FindAsset<CSkeleton>(vecBones[0]->strBoneName);
 	if (pBone != nullptr)
