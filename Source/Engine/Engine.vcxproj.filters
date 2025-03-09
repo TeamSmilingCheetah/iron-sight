@@ -76,14 +76,8 @@
     <ClInclude Include="System\Public\Asset\Texture\CTexture.h">
       <Filter>08. Asset\03. Texture</Filter>
     </ClInclude>
-    <ClInclude Include="System\Public\Rendering\Meterial\CMaterial.h">
-      <Filter>08. Asset\10. Material</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h">
       <Filter>07. Component\RenderComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h">
-      <Filter>07. Component\03. Collider</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Manager\CCollisionMgr.h">
       <Filter>04. Manager\06. Collision</Filter>
@@ -211,6 +205,15 @@
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h">
       <Filter>03. Device</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h">
+      <Filter>08. Asset\10. Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -294,14 +297,8 @@
     <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp">
       <Filter>08. Asset\03. Texture</Filter>
     </ClCompile>
-    <ClCompile Include="System\Private\Rendering\Meterial\CMaterial.cpp">
-      <Filter>08. Asset\10. Material</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp">
       <Filter>07. Component\RenderComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp">
-      <Filter>07. Component\03. Collider</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CCollisionMgr.cpp">
       <Filter>04. Manager\06. Collision</Filter>
@@ -413,6 +410,15 @@
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp">
       <Filter>07. Component\RenderComponent\06. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\CColliderRay.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp">
+      <Filter>08. Asset\10. Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
