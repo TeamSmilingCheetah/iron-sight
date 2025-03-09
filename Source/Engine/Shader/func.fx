@@ -148,6 +148,10 @@ int IntersectsRay(float3 _Pos[3], float3 _vStart, float3 _vDir
     // 광선이 진행하는 방향으로, 삼각형을 포함하는 평면까지의 거리
     float RtoTriDist = VerticalDist / NdotD;
 
+    // 해당거리가 음수다 = 광원은 대상으로 향한게 아니다.
+    if (RtoTriDist < 0.f)
+        return 0;
+
     // 광선이, 삼각형을 포함하는 평면을 지나는 교점
     float3 vCrossPoint = _vStart + RtoTriDist * _vDir;
 

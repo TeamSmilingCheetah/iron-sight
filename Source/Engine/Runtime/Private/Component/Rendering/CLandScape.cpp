@@ -175,6 +175,135 @@ int CLandScape::Raycasting()
 	return m_Out.Success;
 }
 
+tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
+{
+	// 구조화버퍼 클리어
+	tRaycastOut pRayInfo;
+	pRayInfo = {};
+	pRayInfo.Distance = 0xffffffff;
+	m_RaycastOut->SetData(&pRayInfo);
+
+	// 원본 Ray 정보 저장
+	tRay WorldRay = _Ray;
+
+	// LandScape 의 WorldInv 행렬 가져옴
+	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
+	const Matrix& matWorld = Transform()->GetWorldMat();
+
+	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
+	_Ray.vStart = XMVector3TransformCoord(_Ray.vStart, matWorldInv);
+	_Ray.vDir = XMVector3TransformNormal(_Ray.vDir, matWorldInv);
+	_Ray.vDir.Normalize();
+
+	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
+	m_RaycastCS->SetRayInfo(_Ray);
+	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
+	m_RaycastCS->SetOutBuffer(m_RaycastOut);
+	m_RaycastCS->SetHeightMap(m_HeightMap);
+
+	// 컴퓨트쉐이더 실행
+	m_RaycastCS->Execute();
+
+	// 결과 확인
+	m_RaycastOut->GetData(&pRayInfo);
+
+	// 성공 시 거리 계산
+	if (pRayInfo.Success)
+	{
+		// 충돌 위치를 UV에서 로컬 좌표로 변환
+		Vec3 localHitPos;
+		localHitPos.x = pRayInfo.Location.x * m_FaceX;
+		localHitPos.z = (1.0f - pRayInfo.Location.y) * m_FaceZ;
+
+		// 높이맵에서 y값 가져오기
+		localHitPos.y = 0.0f;
+		if (m_HeightMap != nullptr)
+		{
+			// 높이맵 텍스처에서 해당 UV 위치의 높이 값을 가져옴
+			UINT heightMapWidth = m_HeightMap->GetWidth();
+			UINT heightMapHeight = m_HeightMap->GetHeight();
+
+			// UV 좌표 계산
+			float u = pRayInfo.Location.x;
+			float v = pRayInfo.Location.y;
+
+			// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
+			UINT x = (UINT)(u * (float)(heightMapWidth - 1));
+			UINT y = (UINT)(v * (float)(heightMapHeight - 1));
+
+			// 높이값 추출
+			vector<float> heightPixels;
+			if (m_HeightMap->CaptureTextureCustom(heightPixels))
+			{
+				// 텍스처에서 높이 값 가져오기
+				localHitPos.y = heightPixels[y * heightMapWidth + x];
+			}
+		}
+
+		// 로컬 히트 위치를 월드로 변환
+		Vec3 worldHitPos = XMVector3TransformCoord(localHitPos, matWorld);
+
+		// 월드 공간에서의 거리 계산
+		Vec3 worldDist = worldHitPos - WorldRay.vStart;
+		pRayInfo.Distance = worldDist.Length();
+	}
+
+	return pRayInfo;
+}
+
+Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
+{
+	// 랜드스케이프의 월드 행렬
+	const Matrix& matWorld = Transform()->GetWorldMat();
+
+	// 역행렬을 이용하여 월드 좌표를 랜드스케이프 로컬 좌표로 변환
+	Matrix matWorldInv = Transform()->GetWorldInvMat();
+	Vec3 localPos = XMVector3TransformCoord(_TargetWorldPos, matWorldInv);
+
+	// 로컬 좌표를 랜드스케이프 텍스쳐 UV 좌표로 변환
+	// 랜드스케이프의 X, Z 크기에 따라 조정
+	float u = localPos.x / (float)m_FaceX;
+	float v = 1.f - (localPos.z / (float)m_FaceZ); // v 좌표는 상하가 반전되어 있으므로 1에서 빼줌
+
+	// 로컬 좌표가 랜드스케이프 범위 내에 있는지 확인
+	if (localPos.x < 0.f || localPos.x >(float)m_FaceX ||
+		localPos.z < 0.f || localPos.z >(float)m_FaceZ)
+	{
+		// 범위를 벗어나면 큰 음수 값을 반환
+		Vec3 FailPos = Vec3(-10000.f, -10000.f, -10000.f);
+		return FailPos;
+	}
+
+	// 높이맵에서 해당 위치의 높이(Y) 값을 가져옴
+	float height = 0.f;
+	if (m_HeightMap != nullptr)
+	{
+		// 높이맵 텍스처에서 해당 UV 위치의 높이 값을 가져옴
+		UINT heightMapWidth = m_HeightMap->GetWidth();
+		UINT heightMapHeight = m_HeightMap->GetHeight();
+
+		// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
+		UINT x = (UINT)(u * (float)(heightMapWidth - 1));
+		UINT y = (UINT)(v * (float)(heightMapHeight - 1));
+
+		// 높이값 추출
+		vector<float> heightPixels;
+		if (m_HeightMap->CaptureTextureCustom(heightPixels))
+		{
+			// 텍스처에서 높이 값 가져오기
+			height = heightPixels[y * heightMapWidth + x];
+		}
+	}
+
+	// 최종 로컬 좌표에 높이를 적용
+	localPos.y = height;
+
+	// 로컬 좌표를 다시 월드 좌표로 변환
+	Vec3 worldPos = XMVector3TransformCoord(localPos, matWorld);
+
+	return worldPos;
+}
+
 void CLandScape::SaveComponent(FILE* _File)
 {
 }

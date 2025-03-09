@@ -4,24 +4,27 @@
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Runtime/Public/Component/Rendering/CLandScape.h"
 
 
 CCollider3D::CCollider3D()
-	: CComponent(COMPONENT_TYPE::COLLIDER3D)
-	  , m_IndependentScale(false)
-	  , m_OverlapCount(0)
-	  , m_Offset(Vec3(0.f))
-	  , m_Scale(Vec3(0.f))
+	:CComponent(COMPONENT_TYPE::COLLIDER3D)
+	, m_IndependentScale(false)
+	, m_OverlapCount(0)
+	, m_Offset(Vec3(0.f))
+	, m_Scale(Vec3(0.f))
+	, m_State(ACTIVE)
 {
 }
 
 CCollider3D::CCollider3D(const CCollider3D& _Origin)
 	: CComponent(_Origin)
-	  , m_Offset(_Origin.m_Offset)
-	  , m_Scale(_Origin.m_Scale)
-	  , m_FinalPos(_Origin.m_FinalPos)
-	  , m_IndependentScale(_Origin.m_IndependentScale)
-	  , m_OverlapCount(0)
+	, m_Offset(_Origin.m_Offset)
+	, m_Scale(_Origin.m_Scale)
+	, m_FinalPos(_Origin.m_FinalPos)
+	, m_IndependentScale(_Origin.m_IndependentScale)
+	, m_OverlapCount(0)
+	, m_State(_Origin.m_State)
 {
 }
 
@@ -31,6 +34,11 @@ CCollider3D::~CCollider3D()
 
 void CCollider3D::FinalTick()
 {
+	if (DEACTIVE == m_State)
+		return;
+	else if (SEMIDEACTIVE == m_State)
+		m_State = DEACTIVE;
+
 	Matrix matScale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
 	Matrix matTrans = XMMatrixTranslation(m_Offset.x, m_Offset.y, m_Offset.z);
 
@@ -39,6 +47,7 @@ void CCollider3D::FinalTick()
 		Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
 		Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
 		m_matColliderWorld = matScale * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
+
 	}
 	else
 	{
@@ -111,6 +120,35 @@ void CCollider3D::EndOverlap(CColliderRay* _Other)
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
 		vecScript[i]->EndOverlap(_Other, _Other->GetOwner(), this);
+	}
+}
+
+void CCollider3D::BeginOverlap(CLandScape* _Other)
+{
+	++m_OverlapCount;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
+	}
+}
+
+void CCollider3D::Overlap(CLandScape* _Other)
+{
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->Overlap(this, _Other->GetOwner(), _Other);
+	}
+}
+
+void CCollider3D::EndOverlap(CLandScape* _Other)
+{
+	--m_OverlapCount;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
 	}
 }
 

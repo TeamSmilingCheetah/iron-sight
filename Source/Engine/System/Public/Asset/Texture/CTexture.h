@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Common/global.h"
 #include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
 
 class CTexture :
     public CAsset
@@ -46,6 +47,9 @@ public:
     void Clear_SRV_CS();
     void Clear_UAV_CS();
 
+	template<typename T>
+	bool CaptureTextureCustom(vector<T>& _pixels);
+
 private:
     int Load(const wstring& _FilePath) override;
     int Save(const wstring& _RelativePath) override;
@@ -64,3 +68,17 @@ public:
 
     friend class CAssetMgr;
 };
+
+template<typename T>
+bool CTexture::CaptureTextureCustom(vector<T>& _pixels)
+{
+	ScratchImage capturedImage;
+	if (FAILED(CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), capturedImage)))
+		return false;
+
+	// ScratchImage에서 직접 픽셀 데이터를 가져옵니다
+	_pixels.assign((T*)capturedImage.GetPixels(), (T*)(capturedImage.GetPixels() + capturedImage.GetPixelsSize()));
+
+	return true;
+
+}

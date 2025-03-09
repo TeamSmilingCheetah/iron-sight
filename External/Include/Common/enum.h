@@ -265,3 +265,10 @@ enum class MRT_TYPE
 
     END,
 };
+
+enum COLLIDER_STATE
+{
+	ACTIVE,
+	SEMIDEACTIVE,
+	DEACTIVE,
+};

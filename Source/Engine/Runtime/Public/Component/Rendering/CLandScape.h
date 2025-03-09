@@ -77,6 +77,9 @@ public:
 
 	LANDSCAPE_MODE GetMode() { return m_Mode; }
 
+	Vec3 GetWorldPosByLandScape(Vec3 _TargetWorldPos);
+	tRaycastOut ColliderRaycasting(tRay _Ray);
+
     void FinalTick() override;
     void Render() override;
     void SaveComponent(FILE* _File) override;
