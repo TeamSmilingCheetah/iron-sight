@@ -65,4 +65,10 @@ void Light3DUI::Render_Update()
 	ImGui::InputFloat("##Angle", &Angle);
 	pLight3D->SetAngle(Angle);
 	ImGui::EndDisabled();
+
+
+	if (ImGui::Button("DELETE##Light3D"))
+	{
+		DeleteComponent(COMPONENT_TYPE::LIGHT3D);
+	}
 }

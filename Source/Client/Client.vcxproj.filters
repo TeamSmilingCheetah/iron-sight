@@ -162,6 +162,9 @@
     <ClInclude Include="UI\Public\Component\Animator3DUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Public\Component\Collider3DUI.h">
+      <Filter>03. EditorUI\Inspector\ComponentUI\Collider3DUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -303,6 +306,12 @@
     </Filter>
     <Filter Include="03. EditorUI\SpriteEditor\Sub\SE_AtlasView">
       <UniqueIdentifier>{fd45c3bd-866a-4905-a171-0430bfa47b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. EditorUI\Inspector\ComponentUI\Collider3DUI">
+      <UniqueIdentifier>{ed7224cf-ef12-4301-8ba5-f16d5b67d453}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. EditorUI\Inspector\ComponentUI\ColliderRayUI">
+      <UniqueIdentifier>{8e52a253-eb75-4116-8ef4-a1eaa98fccca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -460,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="UI\Private\Component\Animator3DUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\Collider3DUI.cpp">
+      <Filter>03. EditorUI\Inspector\ComponentUI\Collider3DUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

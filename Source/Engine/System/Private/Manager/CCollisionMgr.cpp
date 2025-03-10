@@ -321,7 +321,7 @@ void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _
 		}
 		else
 		{
-			if (!IsDead)
+			if (!IsDead && !IsDeactive)
 			{
 				_LeftCol->BeginOverlap(_RightCol);
 				_RightCol->BeginOverlap(_LeftCol);

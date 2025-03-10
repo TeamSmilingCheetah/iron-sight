@@ -114,4 +114,8 @@ void LandScapeUI::Render_Update()
 	pLandScape->SetWeightIdx(WeightIdx);
 	ImGui::EndDisabled();
 
+	if (ImGui::Button("DELETE##LandScape"))
+	{
+		DeleteComponent(COMPONENT_TYPE::LANDSCAPE);
+	}
 }

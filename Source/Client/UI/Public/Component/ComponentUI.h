@@ -14,6 +14,8 @@ public:
 protected:
 	void ComponentTitle(const string& _title);
 
+	virtual void DeleteComponent(COMPONENT_TYPE _Type);
+
 public:
 	ComponentUI(const string& _ID, COMPONENT_TYPE _Type);
 	~ComponentUI() override;

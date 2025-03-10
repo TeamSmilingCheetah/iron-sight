@@ -146,6 +146,12 @@ void MeshRenderUI::Render_Update()
 				ImGuiInputTextFlags_ReadOnly);
 		}		
 	}
+
+
+	if (ImGui::Button("DELETE##MeshRender"))
+	{
+		DeleteComponent(COMPONENT_TYPE::MESHRENDER);
+	}
 }
 
 void MeshRenderUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)

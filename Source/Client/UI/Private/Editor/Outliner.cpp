@@ -19,9 +19,13 @@ Outliner::Outliner()
 	m_Tree->SetName("Outliner");
 	m_Tree->ShowRoot(false);
 	m_Tree->SelfDragDrop(true);
+	m_Tree->RightOption(true, this);
 
 	m_Tree->AddDynamicSelect(this, static_cast<EUI_DELEGATE_1>(&Outliner::SelectGameObject));
 	m_Tree->AddDynamicSelfDragDrop(this, static_cast<EUI_DELEGATE_2>(&Outliner::DragDrop));
+	m_Tree->AddSeleteRightOption("AddPrefab", (EUI_DELEGATE_1)&Outliner::Prefab);
+	m_Tree->AddSeleteRightOption("CopyObject", (EUI_DELEGATE_1)&Outliner::Copy);
+	m_Tree->AddSeleteRightOption("DeleteObject", (EUI_DELEGATE_1)&Outliner::DeleteObject);
 }
 
 Outliner::~Outliner()
@@ -139,4 +143,34 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 	}
 
 	AddChild(pDropObj, pDragObj);
+}
+
+void Outliner::Prefab(DWORD_PTR _TreeNode)
+{
+	TreeNode* pNode = (TreeNode*)_TreeNode;
+	m_TargetObject = (CGameObject*)pNode->GetData();
+
+	Ptr<CPrefab> pPrefab = new CPrefab;
+	pPrefab->SetProtoObject(m_TargetObject->Clone());
+	CAssetMgr::GetInst()->AddAsset(m_TargetObject->GetName(), pPrefab);
+
+}
+
+void Outliner::Copy(DWORD_PTR _TreeNode)
+{
+	TreeNode* pNode = (TreeNode*)_TreeNode;
+	m_TargetObject = (CGameObject*)pNode->GetData();
+
+	CGameObject* pNewObject = m_TargetObject->Clone();
+	CreateObject(pNewObject, m_TargetObject->GetLayerIdx(), false);
+}
+
+void Outliner::DeleteObject(DWORD_PTR _TreeNode)
+{
+	TreeNode* pNode = (TreeNode*)_TreeNode;
+	m_TargetObject = (CGameObject*)pNode->GetData();
+
+	DestroyObject(m_TargetObject);
+	Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	pInspector->SetTargetObject(nullptr);
 }

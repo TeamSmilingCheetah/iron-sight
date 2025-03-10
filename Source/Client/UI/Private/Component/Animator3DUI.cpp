@@ -75,4 +75,10 @@ void Animator3DUI::Render_Update()
 	ImGui::Text("BoneCount:");
 	ImGui::SameLine();
 	ImGui::InputInt("##BoneCount", &BoneCount);
+
+
+	if (ImGui::Button("DELETE##Animator3D"))
+	{
+		DeleteComponent(COMPONENT_TYPE::ANIMATOR3D);
+	}
 }

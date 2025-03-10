@@ -53,12 +53,24 @@ class TreeUI :
 	TreeNode* m_DraggedNode;
 	TreeNode* m_DroppedNode;
 
+	// 우클 옵션용
+	bool                        m_RightOption;
+	EditorUI* m_SeletedRightInst;
+	vector<string>              m_vecOption;
+	vector<EUI_DELEGATE_1>      m_SeleteRightOption;
+
 public:
 	void ShowRoot(bool _Show) { m_ShowRoot = _Show; }
 	void MutiSelection(bool _Multi) { m_MultiSelection = _Multi; }
 	void SelfDragDrop(bool _Self) { m_SelfDragDrop = _Self; }
 	bool IsSelfDragDrop() { return m_SelfDragDrop; }
+	bool IsRightOption() { return m_RightOption; }
+	const vector<string>& GetVecOptionName() { return m_vecOption; }
+	const vector<EUI_DELEGATE_1>& GetOptionDele() { return m_SeleteRightOption; }
+	EditorUI* GetSeletedRightInst() { return m_SeletedRightInst; }
 
+	void RightOption(bool _Right, EditorUI* _Inst) { m_RightOption = _Right; m_SeletedRightInst = _Inst; }
+	void AddSeleteRightOption(string _strOptionName, EUI_DELEGATE_1 _Memfunc) { m_vecOption.push_back(_strOptionName);  m_SeleteRightOption.push_back(_Memfunc); }
 	void AddSelectedNode(TreeNode* _Node);
 	void SetDraggedNode(TreeNode* _Node) { m_DraggedNode = _Node; }
 	void SetDroppedNode(TreeNode* _Node);
