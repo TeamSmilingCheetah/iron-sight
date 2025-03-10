@@ -35,6 +35,17 @@ CColliderRay::~CColliderRay()
 {
 }
 
+void CColliderRay::Activate()
+{
+	m_State = ACTIVE;
+}
+
+void CColliderRay::Deactivate()
+{
+	if (m_State != SEMIDEACTIVE)
+		m_State = SEMIDEACTIVE;
+}
+
 void CColliderRay::FinalTick()
 {
 	if (DEACTIVE == m_State)

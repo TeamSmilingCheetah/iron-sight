@@ -28,6 +28,17 @@ CCollider3D::CCollider3D(const CCollider3D& _Origin)
 {
 }
 
+void CCollider3D::Activate()
+{
+	m_State = ACTIVE;
+}
+
+void CCollider3D::Deactivate()
+{
+	if (m_State != SEMIDEACTIVE)
+		m_State = SEMIDEACTIVE;
+}
+
 CCollider3D::~CCollider3D()
 {
 }

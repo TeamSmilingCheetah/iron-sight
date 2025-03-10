@@ -34,4 +34,9 @@ void Collider2DUI::Render_Update()
 	ImGui::Text("Independent");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##Independent", &bIndependent);
+
+	if (ImGui::Button("DELETE##Collider2D"))
+	{
+		DeleteComponent(COMPONENT_TYPE::COLLIDER2D);
+	}
 }

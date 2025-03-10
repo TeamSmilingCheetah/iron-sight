@@ -77,6 +77,12 @@ public:
 	COLLIDER_STATE GetState() { return m_State; }
 	bool IsActive() { return m_State == ACTIVE; }
 
+	// 충돌체 화성화
+	void Activate();
+
+	// 충돌체 비활성화
+	void Deactivate();
+
 public:
 	virtual void FinalTick() override;
 

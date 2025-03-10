@@ -191,6 +191,9 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _Type)
 		}
 
 		// 해당 컴퍼넌트 삭제
+		if (nullptr != m_arrCom[(UINT)_Type])
+			delete m_arrCom[(UINT)_Type];
+
 		m_arrCom[(UINT)_Type] = nullptr;
 	}
 }

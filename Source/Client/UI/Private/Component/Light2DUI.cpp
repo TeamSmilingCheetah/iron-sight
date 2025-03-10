@@ -18,4 +18,9 @@ void Light2DUI::Render_Update()
 	CLight2D* pLight2D = GetTargetObject()->Light2D();
 
 	ComponentTitle("Light2D");
+
+	if (ImGui::Button("DELETE##LIGHT2d"))
+	{
+		DeleteComponent(COMPONENT_TYPE::LIGHT2D);
+	}
 }

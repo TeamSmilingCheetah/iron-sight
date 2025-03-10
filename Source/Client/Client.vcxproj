@@ -192,6 +192,7 @@
     <ClInclude Include="UI\Public\Component\Animator3DUI.h" />
     <ClInclude Include="UI\Public\Component\CameraUI.h" />
     <ClInclude Include="UI\Public\Component\Collider2DUI.h" />
+    <ClInclude Include="UI\Public\Component\Collider3DUI.h" />
     <ClInclude Include="UI\Public\Component\ComponentUI.h" />
     <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
     <ClInclude Include="UI\Public\Component\Light2DUI.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="UI\Private\Component\Animator3DUI.cpp" />
     <ClCompile Include="UI\Private\Component\CameraUI.cpp" />
     <ClCompile Include="UI\Private\Component\Collider2DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\Collider3DUI.cpp" />
     <ClCompile Include="UI\Private\Component\ComponentUI.cpp" />
     <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
     <ClCompile Include="UI\Private\Component\Light2DUI.cpp" />

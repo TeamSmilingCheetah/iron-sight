@@ -2,6 +2,9 @@
 #include "Client/UI/Public/Component/ComponentUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
+#include "Client/UI/Public/Editor/Inspector.h"
+#include "Client/System/Public/CImGuiMgr.h"
+
 class CComponent;
 
 ComponentUI::ComponentUI(const string& _ID, COMPONENT_TYPE _Type)
@@ -51,4 +54,11 @@ void ComponentUI::ComponentTitle(const string& _title)
 
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
+}
+
+void ComponentUI::DeleteComponent(COMPONENT_TYPE _Type)
+{
+	GetTargetObject()->DeleteComponent(_Type);
+	Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	pInspector->SetTargetObject(GetTargetObject());
 }

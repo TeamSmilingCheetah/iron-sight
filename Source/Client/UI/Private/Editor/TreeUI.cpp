@@ -83,6 +83,31 @@ void TreeNode::Render_Update()
 		}
 	}
 
+	// 우클릭을 감지하고 팝업 요청
+	if (m_Owner->IsRightOption())
+	{
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("NodeContextMenu"); // 팝업 요청
+		}
+
+		const vector<string>& OptionName = m_Owner->GetVecOptionName();
+		const vector<EUI_DELEGATE_1>& OptionDele = m_Owner->GetOptionDele();
+
+		if (ImGui::BeginPopup("NodeContextMenu"))
+		{
+			for (size_t i = 0; i < OptionDele.size(); ++i)
+			{
+				if (ImGui::MenuItem(OptionName[i].c_str()))
+				{
+					(m_Owner->GetSeletedRightInst()->*OptionDele[i])((DWORD_PTR)this);
+				}
+			}
+
+			ImGui::EndPopup(); // 반드시 EndPopup으로 닫기
+		}
+
+	}
 
 	if (Open)
 	{
@@ -111,6 +136,8 @@ TreeUI::TreeUI()
 	  , m_SelfDragDropFunc(nullptr)
 	  , m_DraggedNode(nullptr)
 	  , m_DroppedNode(nullptr)
+	, m_RightOption(false)
+	, m_SeletedRightInst(nullptr)
 {
 }
 

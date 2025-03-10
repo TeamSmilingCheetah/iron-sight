@@ -57,4 +57,10 @@ void SkyBoxUI::Render_Update()
 		}
 		ImGui::EndCombo();
 	}
+
+
+	if (ImGui::Button("DELETE##SkyBox"))
+	{
+		DeleteComponent(COMPONENT_TYPE::SKYBOX);
+	}
 }

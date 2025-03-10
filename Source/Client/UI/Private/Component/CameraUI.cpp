@@ -91,4 +91,10 @@ void CameraUI::Render_Update()
 	// 공통
 	// UINT m_LayerCheck; // 카메라가 찍을 레이어 비트 체크
 	// int m_Priority; // 카메라 우선순위, 0 : MainCamera, -1 : 미등록
+
+
+	if (ImGui::Button("DELETE##Camera"))
+	{
+		DeleteComponent(COMPONENT_TYPE::CAMERA);
+	}
 }
