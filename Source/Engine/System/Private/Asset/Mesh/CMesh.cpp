@@ -7,9 +7,9 @@
 
 CMesh::CMesh(bool _bEngineRes)
 	: CAsset(MESH, _bEngineRes)
-	  , m_VBDesc{}
-	  , m_VtxCount(0)
-	  , m_VtxSysMem(nullptr)
+	, m_VBDesc{}
+	, m_VtxCount(0)
+	, m_VtxSysMem(nullptr)
 {
 }
 
@@ -180,14 +180,6 @@ void CMesh::Binding_Inst(UINT _iSubset)
 	CONTEXT->IASetIndexBuffer(m_vecIdxInfo[_iSubset].IB.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-void CMesh::Render_Object_Instancing(UINT _Subset)
-{
-	Binding_Inst(_Subset);
-
-	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[_Subset].IdxCount
-	                              , CInstancingBuffer::GetInst()->GetInstanceCount(), 0, 0, 0);
-}
-
 void CMesh::Render(UINT _Subset)
 {
 	Binding(_Subset);
@@ -200,6 +192,14 @@ void CMesh::Render_Cluster_Instancing(UINT _Count)
 	Binding(0);
 
 	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[0].IdxCount, _Count, 0, 0, 0);
+}
+
+void CMesh::Render_Object_Instancing(UINT _Subset)
+{
+	Binding_Inst(_Subset);
+
+	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[_Subset].IdxCount
+		, CInstancingBuffer::GetInst()->GetInstanceCount(), 0, 0, 0);
 }
 
 int CMesh::Save(const wstring& _RelativePath)

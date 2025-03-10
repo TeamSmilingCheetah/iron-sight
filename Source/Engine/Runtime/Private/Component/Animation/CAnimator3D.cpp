@@ -103,7 +103,8 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		if (m_BoneFinalMatBuffer->GetElementCount() != iBoneCount)
 		{
 			m_BoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
-			m_BonePureMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
+			m_BonePureMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, true, nullptr);
+			m_vecBoneWorldTransform.resize(iBoneCount);
 		}
 
         pBoneMatCS->SetFrameDataBuffer(pCurAnim->GetBoneFrameDataBuffer());
@@ -121,6 +122,14 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 
 		// debug skeleton
 		DrawDebugSkeleton(Vec4(0.f, 1.f, 0.f, 1.f), _Renderer->Transform()->GetWorldMat(), m_BonePureMatBuffer, m_vecClip[m_CurClip]->GetBoneParentBuffer(), false, 0.f);
+
+		// Bone Object World Transform 직접 세팅
+		//  TODO : ZCompute shader로 world transform까지 계산해서 pipeline 넘겨주도록 개선하기
+		m_BonePureMatBuffer->GetData(m_vecBoneWorldTransform.data());
+		for (int i = 0; i < iBoneCount; ++i)
+		{
+			m_vecBoneObject[i]->Transform()->SetWorldMat(m_vecBoneWorldTransform[i].Transpose() * _Renderer->Transform()->GetWorldMat());
+		}
 
         m_bFinalMatUpdate = true;
     }
