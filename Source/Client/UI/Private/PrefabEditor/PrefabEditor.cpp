@@ -242,6 +242,16 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 		m_ProtoObject->AddComponent(new CCollider2D);
 		return;
 	}
+	if (*pStr == "Collider3D")
+	{
+		m_ProtoObject->AddComponent(new CCollider3D);
+		return;
+	}
+	if (*pStr == "ColliderRay")
+	{
+		m_ProtoObject->AddComponent(new CColliderRay);
+		return;
+	}
 	if (*pStr == "Camera")
 	{
 		m_ProtoObject->AddComponent(new CCamera);
@@ -284,8 +294,8 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// Scirpt를 추가하는 경우
-	//wstring pScriptStr = wstring(pStr->begin(), pStr->end());
-	//m_ProtoObject->AddComponent(CScriptMgr::GetScript(pScriptStr));
+	wstring pScriptStr = wstring(pStr->begin(), pStr->end());
+	m_ProtoObject->AddComponent(GameplayManager::GetScript(pScriptStr));
 }
 
 void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)

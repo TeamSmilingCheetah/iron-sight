@@ -111,7 +111,8 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 		{
 			CAnimator3D* pAnimator = new CAnimator3D;
 			_Obj->AddComponent(pAnimator);
-
+			_Obj->MeshRender()->SetSkinRender(true);
+			
 			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
 			pAnimator->SetAnimClip(m_vecAnimSet);
 			pAnimator->SetCurClip(0);
