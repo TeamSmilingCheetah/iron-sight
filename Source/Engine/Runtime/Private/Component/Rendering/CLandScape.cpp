@@ -129,7 +129,7 @@ void CLandScape::SetFace(UINT _X, UINT _Z)
 {
 	if (m_FaceX == _X && m_FaceZ == _Z)
 		return;
-
+	 
 	m_FaceX = _X;
 	m_FaceZ = _Z;
 
@@ -177,8 +177,22 @@ int CLandScape::Raycasting()
 
 void CLandScape::SaveComponent(FILE* _File)
 {
+	fwrite(&m_FaceX, sizeof(UINT), 1, _File);
+	fwrite(&m_FaceZ, sizeof(UINT), 1, _File);
+
+	SaveAssetRef(m_HeightMap, _File);
+	SaveAssetRef(m_ColorTex, _File);
+	SaveAssetRef(m_NormalTex, _File);
 }
 
 void CLandScape::LoadComponent(FILE* _File)
 {
+	fread(&m_FaceX, sizeof(UINT), 1, _File);
+	fread(&m_FaceZ, sizeof(UINT), 1, _File);
+	CreateMesh();
+	
+
+	LoadAssetRef(m_HeightMap, _File);
+	LoadAssetRef(m_ColorTex, _File);
+	LoadAssetRef(m_NormalTex, _File);
 }

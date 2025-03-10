@@ -3,16 +3,6 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
-#include "Engine/Runtime/Public/Component/Animation/CFlipBookPlayer.h"
-#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Light/CLight2D.h"
-#include "Engine/Runtime/Public/Component/Light/CLight3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
-#include "Engine/Runtime/Public/Component/Rendering/CTileMap.h"
-#include "Engine/Runtime/Public/Component/Script/CScript.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Game/System/Public/GameplayManager.h"
 
 int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)
@@ -207,7 +197,10 @@ CComponent* CLevelSaveLoad::CreateComponent(COMPONENT_TYPE _Type)
 	{
 	case COMPONENT_TYPE::COLLIDER2D:
 		return new CCollider2D;
-	//case COMPONENT_TYPE::COLLIDER3D:
+	case COMPONENT_TYPE::COLLIDER3D:
+		return new CCollider3D;
+	case COMPONENT_TYPE::COLLIDERRAY:
+		return new CColliderRay;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		return new CFlipbookPlayer;
 	case COMPONENT_TYPE::ANIMATOR3D:
@@ -218,16 +211,18 @@ CComponent* CLevelSaveLoad::CreateComponent(COMPONENT_TYPE _Type)
 		return new CLight2D;
 	case COMPONENT_TYPE::LIGHT3D:
 		return new CLight3D;
-	//case COMPONENT_TYPE::STATEMACINE:
 	case COMPONENT_TYPE::MESHRENDER:
 		return new CMeshRender;
 	case COMPONENT_TYPE::TILEMAP:
 		return new CTileMap;
 	case COMPONENT_TYPE::PARTICLE_SYSTEM:
 		return new CParticleSystem;
-	//case COMPONENT_TYPE::SKYBOX:
-	//case COMPONENT_TYPE::DECAL:
-	//case COMPONENT_TYPE::LANDSCALE:
+	case COMPONENT_TYPE::SKYBOX:
+		return new CSkyBox;
+	case COMPONENT_TYPE::DECAL:
+		return new CDecal;
+	case COMPONENT_TYPE::LANDSCAPE:
+		return new CLandScape;
 	}
 
 	return nullptr;

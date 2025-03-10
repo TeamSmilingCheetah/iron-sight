@@ -86,9 +86,15 @@ void CLight3D::SetRadius(float _Radius)
 void CLight3D::SaveComponent(FILE* _File)
 {
 	fwrite(&m_LightInfo, sizeof(tLight3DInfo), 1, _File);
+
+	SaveAssetRef(m_VolumeMesh, _File);
+	SaveAssetRef(m_LightMtrl, _File);	
 }
 
 void CLight3D::LoadComponent(FILE* _File)
 {
 	fread(&m_LightInfo, sizeof(tLight3DInfo), 1, _File);
+
+	LoadAssetRef(m_VolumeMesh, _File);
+	LoadAssetRef(m_LightMtrl, _File);
 }

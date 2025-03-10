@@ -159,5 +159,6 @@ void CTransform::LoadComponent(FILE* _FILE)
 	fread(&m_RelativePos, sizeof(Vec3), 1, _FILE);
 	fread(&m_RelativeScale, sizeof(Vec3), 1, _FILE);
 	fread(&m_RelativeRotation, sizeof(Vec3), 1, _FILE);
+	SetRelativeRotation(m_RelativeRotation);
 	fread(&m_IndependentScale, sizeof(bool), 1, _FILE);
 }

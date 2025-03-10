@@ -14,5 +14,9 @@
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+
 
