@@ -8,6 +8,10 @@ class CScript;
 class CGameObject :
     public CEntity
 {
+	friend class CLayer;
+	friend class CTaskMgr;
+
+private:
     CComponent* m_arrCom[static_cast<UINT>(COMPONENT_TYPE::END)];
     CRenderComponent* m_RenderCom; // 1개의 게임오브젝트 객체는 1개의 렌더컴포넌트를 가질 수 있다.
     vector<CScript*> m_vecScripts; // 보유 스크립트들
@@ -29,56 +33,34 @@ public:
 	void DeleteComponent(COMPONENT_TYPE _Type);
 	void DeleteScirpt(wstring& _SciprtName);
 
-    CGameObject* GetParent() { return m_Parent; }
-    CComponent* GetComponent(COMPONENT_TYPE _Type) { return m_arrCom[static_cast<UINT>(_Type)]; }
-    CRenderComponent* GetRenderComponent() { return m_RenderCom; }
+    CGameObject* GetParent() const { return m_Parent; }
+    CComponent* GetComponent(COMPONENT_TYPE _Type) const { return m_arrCom[static_cast<UINT>(_Type)]; }
+    CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 
-    int GetLayerIdx() { return m_LayerIdx; }
-    bool IsDead() { return m_Dead; }
+    int GetLayerIdx() const { return m_LayerIdx; }
+    bool IsDead() const { return m_Dead; }
     bool IsAncestor(CGameObject* _Other);
 
-    const vector<CGameObject*>& GetChild() { return m_vecChild; }
-    const vector<CScript*>& GetScripts() { return m_vecScripts; }
+	void SetLayerIdx(int _Idx) { m_LayerIdx = _Idx; }
 
-    class CTransform* Transform() { return (CTransform*)GetComponent(COMPONENT_TYPE::TRANSFORM); }
+    const vector<CGameObject*>& GetChild() const { return m_vecChild; }
+    const vector<CScript*>& GetScripts() const { return m_vecScripts; }
 
-    class CMeshRender* MeshRender()
-    {
-        return (CMeshRender*)GetComponent(COMPONENT_TYPE::MESHRENDER);
-    }
-
-    class CCamera* Camera() { return (CCamera*)GetComponent(COMPONENT_TYPE::CAMERA); }
-
-    class CCollider2D* Collider2D()
-    {
-        return (CCollider2D*)GetComponent(COMPONENT_TYPE::COLLIDER2D);
-    }
-	class CCollider3D* Collider3D()
-	{
-		return (CCollider3D*)GetComponent(COMPONENT_TYPE::COLLIDER3D);
-	}
-	class CColliderRay* ColliderRay() { return (CColliderRay*)GetComponent(COMPONENT_TYPE::COLLIDERRAY); }
-
-    class CFlipbookPlayer* FlipbookPlayer()
-    {
-        return (CFlipbookPlayer*)GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER);
-    }
-
-    class CTileMap* TileMap() { return (CTileMap*)GetComponent(COMPONENT_TYPE::TILEMAP); }
-    class CLight2D* Light2D() { return (CLight2D*)GetComponent(COMPONENT_TYPE::LIGHT2D); }
-    class CLight3D* Light3D() { return (CLight3D*)GetComponent(COMPONENT_TYPE::LIGHT3D); }
-
+	class CTransform* Transform() const { return (CTransform*)GetComponent(COMPONENT_TYPE::TRANSFORM); }
+	class CMeshRender* MeshRender() const { return (CMeshRender*)GetComponent(COMPONENT_TYPE::MESHRENDER); }
+	class CCamera* Camera() const { return (CCamera*)GetComponent(COMPONENT_TYPE::CAMERA); }
+	class CCollider2D* Collider2D() const { return (CCollider2D*)GetComponent(COMPONENT_TYPE::COLLIDER2D); }
+	class CCollider3D* Collider3D() const { return (CCollider3D*)GetComponent(COMPONENT_TYPE::COLLIDER3D); }
+	class CColliderRay* ColliderRay() const { return (CColliderRay*)GetComponent(COMPONENT_TYPE::COLLIDERRAY); }
+	class CFlipbookPlayer* FlipbookPlayer() const { return (CFlipbookPlayer*)GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER); }
+	class CTileMap* TileMap() const { return (CTileMap*)GetComponent(COMPONENT_TYPE::TILEMAP); }
+	class CLight2D* Light2D() const { return (CLight2D*)GetComponent(COMPONENT_TYPE::LIGHT2D); }
+	class CLight3D* Light3D() const { return (CLight3D*)GetComponent(COMPONENT_TYPE::LIGHT3D); }
 	class CAnimator3D* Animator3D();
-
-
-    class CParticleSystem* ParticleSystem()
-    {
-        return (CParticleSystem*)GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM);
-    }
-
-    class CSkyBox* SkyBox() { return (CSkyBox*)GetComponent(COMPONENT_TYPE::SKYBOX); }
-    class CDecal* Decal() { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
-    class CLandScape* LandScape() { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
+	class CParticleSystem* ParticleSystem() const { return (CParticleSystem*)GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM); }
+	class CSkyBox* SkyBox() const { return (CSkyBox*)GetComponent(COMPONENT_TYPE::SKYBOX); }
+	class CDecal* Decal() const { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
+	class CLandScape* LandScape() const { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
 
 private:
     void DisconnectWithLayer();
@@ -90,7 +72,4 @@ public:
     CGameObject();
     CGameObject(const CGameObject& _Origin);
     ~CGameObject() override;
-
-    friend class CLayer;
-    friend class CTaskMgr;
 };

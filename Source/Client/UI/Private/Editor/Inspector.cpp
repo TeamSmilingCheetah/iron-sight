@@ -337,7 +337,7 @@ void Inspector::CreateComponentUI()
 	// InspectorUI 의 자식UI 추가
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::TRANSFORM)] = static_cast<ComponentUI*>(AddChildUI(
 		new TransformUI));
-	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::TRANSFORM)]->SetChildSize(ImVec2(0.f, 150.f));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::TRANSFORM)]->SetChildSize(ImVec2(0.f, 240.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER2D)] = static_cast<ComponentUI*>(
 		AddChildUI(new Collider2DUI));
