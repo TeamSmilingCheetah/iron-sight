@@ -21,6 +21,9 @@ class CTransform :
     bool m_IndependentScale;
     bool m_FrustumCheck;
 
+	bool m_ManualUpdate;	// true: transform을 외부에서 세팅받음. final tick을 skip 함.
+	bool m_SetFromMatrix;	// 이번 프레임에 외부에서 행렬로 세팅받았는지 여부. m_ManualUpdate가 true인데 이게 false면 assert
+
 public:
     void SetRelativePos(Vec3 _Pos) { m_RelativePos = _Pos; }
     void SetRelativePos(float _x, float _y, float _z) { m_RelativePos = Vec3(_x, _y, _z); }
@@ -34,27 +37,32 @@ public:
 
     void SetIndependentScale(bool _Scale) { m_IndependentScale = _Scale; }
 
-    Vec3 GetRelativePos() { return m_RelativePos; }
-    Vec3 GetRelativeScale() { return m_RelativeScale; }
-    Vec3 GetRelativeRotation() { return m_RelativeRotation; }
+    Vec3 GetRelativePos() const { return m_RelativePos; }
+    Vec3 GetRelativeScale() const { return m_RelativeScale; }
+    Vec3 GetRelativeRotation() const { return m_RelativeRotation; }
 
-    Vec3 GetWorldPos() { return m_matWorld.Translation(); }
+    Vec3 GetWorldPos() const { return m_matWorld.Translation(); }
     Vec3 GetWorldScale();
 
     const Matrix& GetWorldMat() const { return m_matWorld; }
     const Matrix& GetWorldInvMat() const { return m_matWorldInv; }
-    void SetWorldMat(const Matrix& _matWorld) { m_matWorld = _matWorld; }
+	void SetWorldMat(const Matrix& _matWorld) { m_matWorld = _matWorld; m_SetFromMatrix = true; }
 
-    Vec3 GetLocalDir(DIR_TYPE _Type) { return m_LocalDir[static_cast<UINT>(_Type)]; }
-    Vec3 GetWorldDir(DIR_TYPE _Type) { return m_WorldDir[static_cast<UINT>(_Type)]; }
+    Vec3 GetLocalDir(DIR_TYPE _Type) const { return m_LocalDir[static_cast<UINT>(_Type)]; }
+    Vec3 GetWorldDir(DIR_TYPE _Type) const { return m_WorldDir[static_cast<UINT>(_Type)]; }
 
     void Binding();
 
     void SetFrustumCheck(bool _Check) { m_FrustumCheck = _Check; }
-    bool IsFrustumCheck() { return m_FrustumCheck; }
+    bool IsFrustumCheck() const { return m_FrustumCheck; }
 
-    float GetFrustumRadius() { return m_FrustumRadius; }
+    float GetFrustumRadius() const { return m_FrustumRadius; }
     void SetFrustumRadius(float _Radius) { m_FrustumRadius = _Radius; }
+
+	bool IsIndependentScale() const { return m_IndependentScale; }
+
+	bool IsManualUpdate() const { return m_ManualUpdate; }
+	void SetManualUpdate(bool _b) { m_ManualUpdate = _b; m_SetFromMatrix = true; } // 최초 1회만 통과시켜줌
 
     void FinalTick() override;
 

@@ -103,7 +103,8 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		if (m_BoneFinalMatBuffer->GetElementCount() != iBoneCount)
 		{
 			m_BoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
-			m_BonePureMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
+			m_BonePureMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, true, nullptr);
+			m_vecBoneWorldTransform.resize(iBoneCount);
 		}
 
         pBoneMatCS->SetFrameDataBuffer(pCurAnim->GetBoneFrameDataBuffer());
@@ -122,6 +123,14 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		// debug skeleton
 		DrawDebugSkeleton(Vec4(0.f, 1.f, 0.f, 1.f), _Renderer->Transform()->GetWorldMat(), m_BonePureMatBuffer, m_vecClip[m_CurClip]->GetBoneParentBuffer(), false, 0.f);
 
+		// Bone Object World Transform 직접 세팅
+		//  TODO : ZCompute shader로 world transform까지 계산해서 pipeline 넘겨주도록 개선하기
+		m_BonePureMatBuffer->GetData(m_vecBoneWorldTransform.data());
+		for (int i = 0; i < iBoneCount; ++i)
+		{
+			m_vecBoneObject[i]->Transform()->SetWorldMat(m_vecBoneWorldTransform[i].Transpose() * _Renderer->Transform()->GetWorldMat());
+		}
+
         m_bFinalMatUpdate = true;
     }
 
@@ -136,12 +145,57 @@ void CAnimator3D::AddAnimClip(Ptr<CAnimation> _pAnim)
 {
 	m_vecClip.push_back(_pAnim);
 	m_vecClipUpdateTime.push_back(0);
+
+	// 만약 처음 추가한 애니메이션이라면
+	if (m_vecClip.size() == 1)
+	{
+		CreateBoneObject();
+	}
 }
 
 void CAnimator3D::SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim)
 {
 	m_vecClip = _vecAnim;
 	m_vecClipUpdateTime.resize(_vecAnim.size());
+
+	CreateBoneObject();
+}
+
+void CAnimator3D::CreateBoneObject()
+{
+	// 기존에 Bone Object가 존재했다면 삭제
+	for (int i = 0; i < m_vecBoneObject.size(); ++i)
+	{
+		DestroyObject(m_vecBoneObject[i]);
+	}
+
+	m_vecBoneObject.clear();
+
+	// Clip 0번의 Bone을 기준으로 생성
+	UINT BoneCount = m_vecClip[0]->GetBoneCount();
+
+	m_vecBoneObject.resize(BoneCount);
+	for (int i = 0; i < BoneCount; ++i)
+	{
+		m_vecBoneObject[i] = new CGameObject;
+		m_vecBoneObject[i]->Transform()->SetManualUpdate(true);
+	}
+
+	// 부모 자식 관계 세팅. 1번부터 하는 이유는 0번은 자기자신을 부모라고 하고 있음
+	// 모든 애니메이션이 같은 skeleton을 공유한다는 전제.
+	const vector<tMTBone>* vecBones = m_vecClip[0]->GetBones();
+	for (int i = 1; i < BoneCount; ++i)
+	{
+		int parentIdx = vecBones->at(i).iParentIndx;
+
+		m_vecBoneObject[i]->SetName(vecBones->at(i).strBoneName);
+		m_vecBoneObject[parentIdx]->AddChild(m_vecBoneObject[i]);
+	}
+
+	m_vecBoneObject[0]->SetName(vecBones->at(0).strBoneName);
+
+	// 자식 오브젝트로 넣음
+	GetOwner()->AddChild(m_vecBoneObject[0]);
 }
 
 void CAnimator3D::SetCurClip(int _Idx)

@@ -30,6 +30,10 @@ private:
 
 	CMeshRender*	m_BindCaller;	// Bind를 호출한 MeshRenderer 기억
 
+	// Bone에 대응되는 오브젝트를 저장
+	vector<CGameObject*>	m_vecBoneObject;
+	vector<Matrix>			m_vecBoneWorldTransform;
+
 public:
 	void AddAnimClip(Ptr<CAnimation> _pAnim);
 	void SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim);
@@ -41,7 +45,6 @@ public:
 	float GetRatio() const { return m_Ratio; }
 
 	const vector<Ptr<CAnimation>>& GetClips() const { return m_vecClip; }
-
 	void SetCurClip(int _Idx);
 
 	UINT GetBoneCount() const { return m_vecClip[m_CurClip]->GetBoneCount(); }
@@ -49,10 +52,11 @@ public:
     CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
     void ClearData();
 
-    void Binding(CMeshRender* _Renderer);
-
+private:
+	void CreateBoneObject();
 
 public:
+    void Binding(CMeshRender* _Renderer);
     void FinalTick() override;
     void SaveComponent(FILE* _File) override;
     void LoadComponent(FILE* _File) override;

@@ -19,14 +19,16 @@ CMeshData::~CMeshData()
 CGameObject* CMeshData::Instantiate()
 {
 	CGameObject* pNewObj = new CGameObject;
+	pNewObj->SetLayerIdx(0);	// 일단 0으로 지정
 
 	int meshCnt = static_cast<int>(m_vecMesh.size());
 	assert(meshCnt > 0);
 
-	// 1개의 메쉬로 이루어진 경우 - 오브젝트에 바로 meshrenderer 부착
-	if (m_vecMesh.size() == 1)
+	// Animation이 없고, 메쉬가 한 개라면 오브젝트를 바로 리턴
+	if (m_vecAnimSet.empty() && meshCnt == 1)
 	{
 		pNewObj->AddComponent(new CMeshRender);
+		pNewObj->SetName(m_vecMesh[0]->GetKey());
 
 		pNewObj->MeshRender()->SetMesh(m_vecMesh[0]);
 
@@ -34,48 +36,37 @@ CGameObject* CMeshData::Instantiate()
 		{
 			pNewObj->MeshRender()->SetMaterial(m_vecMtrlSet[0][i], i);
 		}
-
-		// Animation 파트 추가
-		if (!m_vecAnimSet.empty())
-		{
-			CAnimator3D* pAnimator = new CAnimator3D;
-			pNewObj->AddComponent(pAnimator);
-			pNewObj->MeshRender()->SetSkinRender(true);
-
-			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
-			pAnimator->SetAnimClip(m_vecAnimSet);
-			pAnimator->SetCurClip(0);
-		}
 	}
 
-	// 2개 이상의 메쉬로 이루어진 경우. 한 empty 오브젝트 밑에 메쉬마다 자식으로 생성
+	// Animation이 있거나, mesh가 여러 개라면
 	else
 	{
-		// Animation 파트 추가
+		// Animation이 있다면, 
 		if (!m_vecAnimSet.empty())
 		{
+			// 부모에 애니메이터 추가
 			CAnimator3D* pAnimator = new CAnimator3D;
 			pNewObj->AddComponent(pAnimator);
 
-			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			// 애니메이션을 설정하면서 bone object를 생성해서 자식에 넣음
 			pAnimator->SetAnimClip(m_vecAnimSet);
 			pAnimator->SetCurClip(0);
 		}
-
+		
+		// 빈 오브젝트 밑에 mesh에 대응되는 오브젝트를 추가
 		for (int idx = 0; idx < meshCnt; ++idx)
 		{
 			CGameObject* childObj = new CGameObject;
 			childObj->AddComponent(new CMeshRender);
 			childObj->SetName(m_vecMesh[idx]->GetKey());
 
-			childObj->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
 			childObj->MeshRender()->SetMesh(m_vecMesh[idx]);
 
 			for (UINT i = 0; i < m_vecMtrlSet[idx].size(); ++i)
 			{
 				childObj->MeshRender()->SetMaterial(m_vecMtrlSet[idx][i], i);
 
-				// 애니메이션을 사용한다면
+				// Animation이 있다면,
 				if (!m_vecAnimSet.empty())
 				{
 					childObj->MeshRender()->SetSkinRender(true);
