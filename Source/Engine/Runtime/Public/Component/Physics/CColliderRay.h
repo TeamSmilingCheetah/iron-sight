@@ -45,25 +45,28 @@ private:
 	Vec3        m_RayFinalPos;    // 최종 레이의 위치
 	Vec3        m_RayFinalDir;      // 최종 레이의 방향
 
-	float        m_RayLength;
-	float       m_RayTargetLength;
-
-	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟은 하나(가장 가까운 오브젝트 연산)
+	float        m_RayLength;			// Ray길이
+	float       m_RayTargetLength;		// 디버그용 임시 길이
 
 	int         m_OverlapCount;
 
-	COLLIDER_STATE  m_State;
-	RAYCOLLIDERDATA         m_RayColInfo;
+	COLLIDER_STATE  m_State;					// 충돌체 상태
+	RAYCOLLIDERDATA         m_RayColInfo;		// 단일 타겟 용 검사 구조체
+
+	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟은 하나(가장 가까운 오브젝트 연산)
 
 
 public:
 	void SetOffset(Vec3 _Offset) { m_Offset = _Offset; }
 	void SetRayPos(Vec3 _Pos) { m_RayPosDir.vStart = _Pos; }
 	void SetRayDir(Vec3 _Dir) { m_RayPosDir.vDir = _Dir; m_RayPosDir.vDir.Normalize(); }
+	void SetRayLength(float _Length) { m_RayLength = _Length; }
 	void SetRayTargetAll(bool _bool) { m_RayTargetAll = _bool; }
 	void SetRayTargetLength(float _TargetLength) { m_RayTargetLength = _TargetLength; }
 
 	tRay GetRay() { return m_RayPosDir; }
+	Vec3 GetRayPos() { return m_RayPosDir.vStart; }
+	Vec3 GetRayDir() { return m_RayPosDir.vDir; }
 	Vec3 GetOffset() { return m_Offset; }
 	float GetRayLength() { return m_RayLength; }
 
