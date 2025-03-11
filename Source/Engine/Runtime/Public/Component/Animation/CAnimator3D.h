@@ -52,7 +52,8 @@ public:
     CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
     void ClearData();
 
-	void SetBoneObject(vector<CGameObject*> _vecBoneObject) { m_vecBoneObject = std::move(_vecBoneObject); }
+private:
+	void CreateBoneObject();
 
 public:
     void Binding(CMeshRender* _Renderer);

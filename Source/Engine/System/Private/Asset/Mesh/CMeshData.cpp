@@ -44,40 +44,13 @@ CGameObject* CMeshData::Instantiate()
 		// Animation이 있다면, 
 		if (!m_vecAnimSet.empty())
 		{
-			// 1. 부모에 애니메이터 추가
+			// 부모에 애니메이터 추가
 			CAnimator3D* pAnimator = new CAnimator3D;
 			pNewObj->AddComponent(pAnimator);
 
+			// 애니메이션을 설정하면서 bone object를 생성해서 자식에 넣음
 			pAnimator->SetAnimClip(m_vecAnimSet);
 			pAnimator->SetCurClip(0);
-
-			// 2. skeleton에 대응되는 오브젝트를 자식에 넣음
-			UINT BoneCount = pAnimator->GetBoneCount();
-
-			vector<CGameObject*> vecBoneObject(BoneCount);
-			for (int i = 0; i < BoneCount; ++i)
-			{
-				vecBoneObject[i] = new CGameObject;
-				vecBoneObject[i]->Transform()->SetManualUpdate(true);
-			}
-
-			// 부모 자식 관계 세팅. 1번부터 하는 이유는 0번은 자기자신을 부모라고 하고 있음
-			// 모든 애니메이션이 같은 skeleton을 공유한다는 전제.
-			const vector<tMTBone>* vecBones = m_vecAnimSet[0]->GetBones();
-			for (int i = 1; i < BoneCount; ++i)
-			{
-				int parentIdx = vecBones->at(i).iParentIndx;
-
-				vecBoneObject[i]->SetName(vecBones->at(i).strBoneName);
-				vecBoneObject[parentIdx]->AddChild(vecBoneObject[i]);
-			}
-
-			// 루트를 자식으로 추가
-			vecBoneObject[0]->SetName(vecBones->at(0).strBoneName);
-			pNewObj->AddChild(vecBoneObject[0]);
-
-			// Animator에 넘겨줌
-			pAnimator->SetBoneObject(move(vecBoneObject));
 		}
 		
 		// 빈 오브젝트 밑에 mesh에 대응되는 오브젝트를 추가
