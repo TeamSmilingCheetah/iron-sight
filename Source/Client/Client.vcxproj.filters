@@ -165,6 +165,9 @@
     <ClInclude Include="UI\Public\Component\Collider3DUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\Collider3DUI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Public\Component\ColliderRayUI.h">
+      <Filter>03. EditorUI\Inspector\ComponentUI\ColliderRayUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -472,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="UI\Private\Component\Collider3DUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\Collider3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\ColliderRayUI.cpp">
+      <Filter>03. EditorUI\Inspector\ComponentUI\ColliderRayUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

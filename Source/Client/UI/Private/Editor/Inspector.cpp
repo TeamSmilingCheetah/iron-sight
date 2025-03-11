@@ -18,6 +18,7 @@
 #include "Client/UI/Public/Component/CameraUI.h"
 #include "Client/UI/Public/Component/Collider2DUI.h"
 #include "Client/UI/Public/Component/Collider3DUI.h"
+#include "Client/UI/Public/Component/ColliderRayUI.h"
 #include "Client/UI/Public/Component/ComponentUI.h"
 #include "Client/UI/Public/Component/LandScapeUI.h"
 #include "Client/UI/Public/Component/Light2DUI.h"
@@ -346,6 +347,10 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER3D)] = static_cast<ComponentUI*>(
 		AddChildUI(new Collider3DUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER3D)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDERRAY)] = static_cast<ComponentUI*>(
+		AddChildUI(new ColliderRayUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDERRAY)]->SetChildSize(ImVec2(0.f, 200.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::CAMERA)] = static_cast<ComponentUI*>(AddChildUI(
 		new CameraUI));
