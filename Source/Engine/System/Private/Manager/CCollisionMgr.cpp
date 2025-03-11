@@ -325,8 +325,8 @@ void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _
 			{
 				_LeftCol->BeginOverlap(_RightCol);
 				_RightCol->BeginOverlap(_LeftCol);
+				iter->second = true;
 			}
-			iter->second = true;
 		}
 	}
 	else
@@ -374,11 +374,11 @@ void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _
 		}
 		else
 		{
-			if (!IsDead)
+			if (!IsDead && !IsDeactive)
 			{
 				_LeftCol->BeginOverlap(_RightCol);
+				iter->second = true;
 			}
-			iter->second = true;
 		}
 	}
 	else
@@ -434,12 +434,12 @@ void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D*
 			}
 			else
 			{
-				if (!IsDead)
+				if (!IsDead && !IsDeactive)
 				{
 					_LeftCol->BeginOverlap(_RightCol);
 					_RightCol->BeginOverlap(_LeftCol);
+					iter->second = true;
 				}
-				iter->second = true;
 			}
 		}
 		else

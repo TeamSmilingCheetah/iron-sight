@@ -39,6 +39,16 @@ void Collider3DUI::Render_Update()
 	ImGui::Checkbox("##Independent", &bIndependent);
 	pCollider3D->SetIndependentScale(bIndependent);
 
+	ImGui::Text("IsActive");
+	ImGui::SameLine(100);
+	if (ImGui::Checkbox("##IsActive", &bActive))
+	{
+		if(bActive)
+			pCollider3D->Activate();
+		else
+			pCollider3D->Deactivate();
+	}
+
 
 	if (ImGui::Button("DELETE##Collider3D"))
 	{
