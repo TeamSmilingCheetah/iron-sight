@@ -4,11 +4,11 @@
 
 CFlipbookPlayer::CFlipbookPlayer()
 	: CComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)
-	  , m_SpriteIdx(0)
-	  , m_Repeat(false)
-	  , m_FPS(24)
-	  , m_Time(0.f)
-	  , m_Finish(false)
+	, m_SpriteIdx(0)
+	, m_Repeat(false)
+	, m_FPS(24)
+	, m_Time(0.f)
+	, m_Finish(false)
 {
 }
 

@@ -353,7 +353,7 @@ void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 
 	// Scirpt를 추가하는 경우
 	wstring pScriptStr = wstring(pStr->begin(), pStr->end());
-	m_ProtoObject->DeleteScirpt(pScriptStr);
+	m_ProtoObject->DeleteScript(pScriptStr);
 }
 
 void PrefabEditor::LoadFBX(wstring _Path)

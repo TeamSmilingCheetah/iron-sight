@@ -22,7 +22,6 @@ class CTransform :
     bool m_FrustumCheck;
 
 	bool m_ManualUpdate;	// true: transform을 외부에서 세팅받음. final tick을 skip 함.
-	bool m_SetFromMatrix;	// 이번 프레임에 외부에서 행렬로 세팅받았는지 여부. m_ManualUpdate가 true인데 이게 false면 assert
 
 public:
     void SetRelativePos(Vec3 _Pos) { m_RelativePos = _Pos; }
@@ -46,7 +45,7 @@ public:
 
     const Matrix& GetWorldMat() const { return m_matWorld; }
     const Matrix& GetWorldInvMat() const { return m_matWorldInv; }
-	void SetWorldMat(const Matrix& _matWorld) { m_matWorld = _matWorld; m_SetFromMatrix = true; }
+	void SetWorldMat(const Matrix& _matWorld) { m_matWorld = _matWorld; }
 
     Vec3 GetLocalDir(DIR_TYPE _Type) const { return m_LocalDir[static_cast<UINT>(_Type)]; }
     Vec3 GetWorldDir(DIR_TYPE _Type) const { return m_WorldDir[static_cast<UINT>(_Type)]; }
@@ -62,7 +61,7 @@ public:
 	bool IsIndependentScale() const { return m_IndependentScale; }
 
 	bool IsManualUpdate() const { return m_ManualUpdate; }
-	void SetManualUpdate(bool _b) { m_ManualUpdate = _b; m_SetFromMatrix = true; } // 최초 1회만 통과시켜줌
+	void SetManualUpdate(bool _b) { m_ManualUpdate = _b; }
 
     void FinalTick() override;
 

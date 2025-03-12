@@ -5,6 +5,7 @@
 // STL
 #include <vector>
 #include <list>
+#include <queue>
 #include <map>
 #include <set>
 #include <string>
@@ -12,6 +13,7 @@
 
 using std::vector;
 using std::list;
+using std::queue;
 using std::map;
 using std::make_pair;
 using std::set;

@@ -27,17 +27,18 @@ CAnimator3D::CAnimator3D()
 
 CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
     : CComponent(COMPONENT_TYPE::ANIMATOR3D)
-      , m_vecClip(_origin.m_vecClip)
-      , m_vecClipUpdateTime(_origin.m_vecClipUpdateTime)
-      , m_FrameCount(_origin.m_FrameCount)
-      , m_CurTime(_origin.m_CurTime)
-      , m_CurClip(_origin.m_CurClip)
-      , m_FrameIdx(_origin.m_FrameIdx)
-      , m_NextFrameIdx(_origin.m_NextFrameIdx)
-      , m_Ratio(_origin.m_Ratio)
-      , m_BoneFinalMatBuffer(nullptr)
-      , m_bFinalMatUpdate(false)
-	  , m_BindCaller(nullptr)
+    , m_vecClip(_origin.m_vecClip)
+    , m_vecClipUpdateTime(_origin.m_vecClipUpdateTime)
+    , m_FrameCount(_origin.m_FrameCount)
+    , m_CurTime(_origin.m_CurTime)
+    , m_CurClip(_origin.m_CurClip)
+    , m_FrameIdx(_origin.m_FrameIdx)
+    , m_NextFrameIdx(_origin.m_NextFrameIdx)
+    , m_Ratio(_origin.m_Ratio)
+    , m_BoneFinalMatBuffer(nullptr)
+	, m_BonePureMatBuffer(nullptr)
+    , m_bFinalMatUpdate(false)
+	, m_BindCaller(nullptr)
 {
     m_BoneFinalMatBuffer = new CStructuredBuffer;
 	m_BonePureMatBuffer = new CStructuredBuffer;
@@ -50,6 +51,9 @@ CAnimator3D::~CAnimator3D()
 
 	if (nullptr != m_BonePureMatBuffer)
 		delete m_BonePureMatBuffer;
+
+	// BoneObject를 삭제함.
+	DestroyObject(m_vecBoneObject[0]);
 }
 
 void CAnimator3D::FinalTick()
@@ -164,12 +168,11 @@ void CAnimator3D::SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim)
 void CAnimator3D::CreateBoneObject()
 {
 	// 기존에 Bone Object가 존재했다면 삭제
-	for (int i = 0; i < m_vecBoneObject.size(); ++i)
+	if (!m_vecBoneObject.empty())
 	{
-		DestroyObject(m_vecBoneObject[i]);
+		DestroyObject(m_vecBoneObject[0]);
+		m_vecBoneObject.clear();
 	}
-
-	m_vecBoneObject.clear();
 
 	// Clip 0번의 Bone을 기준으로 생성
 	UINT BoneCount = m_vecClip[0]->GetBoneCount();
@@ -266,4 +269,27 @@ void CAnimator3D::LoadComponent(FILE* _File)
 	{
 		fread(&m_vecClipUpdateTime[i], sizeof(float), 1, _File);
 	}
+}
+
+
+void CAnimator3D::LinkBoneObject()
+{
+	const vector<tMTBone>* vecBones = m_vecClip[0]->GetBones();
+
+	UINT BoneCount = vecBones->size();
+
+	m_vecBoneObject.resize(BoneCount);
+	for (int i = 0; i < BoneCount; ++i)
+	{
+		m_vecBoneObject[i] = GetOwner()->GetChildByName(vecBones->at(i).strBoneName);
+	}
+}
+
+void CAnimator3D::SetOwner(CGameObject* _Owner)
+{
+	CComponent::SetOwner(_Owner);
+
+	// 복사로 생성된 경우, 복사된 Bone Object를 이름으로 연결한다.
+	if (!m_vecClip.empty())
+		LinkBoneObject();
 }

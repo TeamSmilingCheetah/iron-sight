@@ -9,7 +9,6 @@ CTransform::CTransform()
 	, m_IndependentScale(false)
 	, m_FrustumCheck(false)
 	, m_ManualUpdate(false)
-	, m_SetFromMatrix(false)
 {
 	m_matWorld = XMMatrixIdentity();
 	m_FrustumRadius = 100.f;
@@ -23,11 +22,7 @@ void CTransform::FinalTick()
 {
 	// 값을 수동으로 세팅 받는 경우 final tick을 skip 함.
 	if (m_ManualUpdate)
-	{
-		assert(m_SetFromMatrix);
-		m_SetFromMatrix = false;
 		return;
-	}
 
 	m_matWorld = XMMatrixIdentity();
 

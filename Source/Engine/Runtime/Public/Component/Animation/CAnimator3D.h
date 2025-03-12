@@ -54,12 +54,15 @@ public:
 
 private:
 	void CreateBoneObject();
+	void LinkBoneObject();
 
 public:
     void Binding(CMeshRender* _Renderer);
     void FinalTick() override;
     void SaveComponent(FILE* _File) override;
     void LoadComponent(FILE* _File) override;
+
+	virtual void SetOwner(CGameObject* _Owner) override;
 
 public:
     CLONE(CAnimator3D);

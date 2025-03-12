@@ -63,20 +63,19 @@ void CLayer::AddObject(CGameObject* _Object, bool _MoveWithChild)
     // 2. _Object 가 소유한 자식들은 본래 레이어를 유지하는 경우
     // 2-1 _Object 가 소유한 자식들 중에서 레이어가 소속되지 않은 경우
     //	   부모 오브젝트를 따라가게 한다.
-    static list<CGameObject*> queue;
-    queue.clear();
-    queue.push_back(_Object);
+    queue<CGameObject*> Q;
+    Q.emplace(_Object);
 
     CGameObject* pObject = nullptr;
-    while (!queue.empty())
+    while (!Q.empty())
     {
-        pObject = queue.front();
-        queue.pop_front();
+        pObject = Q.front();
+        Q.pop();
 
         const vector<CGameObject*>& vecChild = pObject->GetChild();
         for (size_t i = 0; i < vecChild.size(); ++i)
         {
-            queue.push_back(vecChild[i]);
+            Q.emplace(vecChild[i]);
         }
 
         // 최상위 부모오브젝트인 경우
