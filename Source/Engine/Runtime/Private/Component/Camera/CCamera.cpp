@@ -10,6 +10,7 @@
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/RenderTarget/CMRT.h"
+#include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
 CCamera::CCamera()
     : CComponent(COMPONENT_TYPE::CAMERA)
@@ -274,12 +275,13 @@ void CCamera::render_deferred()
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
 
-			if (pair.second[i].pObj->MeshRender()->IsSkinRender())
+			if (pair.second[i].pObj->MeshRender()->IsSkinRender() && pair.second[i].pObj->Animator3D())
 			{
-				pair.second[i].pObj->Animator3D()->Binding(pObj->MeshRender());
+				pair.second[i].pObj->Animator3D()->Binding(pair.second[i].pObj->MeshRender());
 				tInstData.iRowIdx = iRowIdx++;
 				CInstancingBuffer::GetInst()->AddInstancingBoneMat(pair.second[i].pObj->Animator3D()->GetFinalBoneMat());
 				bHasAnim3D = true;
+				pObj = pair.second[i].pObj;
 			}
 			else
 				tInstData.iRowIdx = -1;
@@ -390,12 +392,13 @@ void CCamera::render_forward()
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
 
-			if (pair.second[i].pObj->MeshRender()->IsSkinRender())
+			if (pair.second[i].pObj->MeshRender()->IsSkinRender() && pair.second[i].pObj->Animator3D())
 			{
-				pair.second[i].pObj->Animator3D()->Binding(pObj->MeshRender());
+				pair.second[i].pObj->Animator3D()->Binding(pair.second[i].pObj->MeshRender());
 				tInstData.iRowIdx = iRowIdx++;
 				CInstancingBuffer::GetInst()->AddInstancingBoneMat(pair.second[i].pObj->Animator3D()->GetFinalBoneMat());
 				bHasAnim3D = true;
+				pObj = pair.second[i].pObj;
 			}
 			else
 				tInstData.iRowIdx = -1;
