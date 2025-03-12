@@ -44,6 +44,8 @@ public:
     }
     virtual void FinalTick() = 0;
 
+	virtual void SetOwner(CGameObject* _Owner) { m_Owner = _Owner; }
+
     CComponent* Clone() override = 0;
 
     void SaveToLevel(FILE* _File) override;
@@ -54,6 +56,4 @@ public:
 
     CComponent(COMPONENT_TYPE _TYPE);
     ~CComponent() override;
-
-    friend class CGameObject;
 };

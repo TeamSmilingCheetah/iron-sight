@@ -53,17 +53,15 @@ CGameObject* CLevel::FindObjectByName(const wstring& _Name)
     {
         const vector<CGameObject*>& vecParents = m_arrLayer[i].GetParentObjects();
 
-        static list<CGameObject*> queue;
-
         for (size_t j = 0; j < vecParents.size(); ++j)
         {
-            queue.clear();
-            queue.push_back(vecParents[j]);
+			queue<CGameObject*> Q;
+            Q.emplace(vecParents[j]);
 
-            while (!queue.empty())
+            while (!Q.empty())
             {
-                CGameObject* pObject = queue.front();
-                queue.pop_front();
+                CGameObject* pObject = Q.front();
+                Q.pop();
 
                 if (pObject->GetName() == _Name)
                 {
@@ -73,7 +71,7 @@ CGameObject* CLevel::FindObjectByName(const wstring& _Name)
                 const vector<CGameObject*>& vecChild = pObject->GetChild();
                 for (size_t k = 0; k < vecChild.size(); ++k)
                 {
-                    queue.push_back(vecChild[k]);
+                    Q.emplace(vecChild[k]);
                 }
             }
         }

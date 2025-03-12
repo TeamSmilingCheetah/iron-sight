@@ -11,10 +11,10 @@
 
 CGameObject::CGameObject()
     : m_arrCom{}
-      , m_RenderCom(nullptr)
-      , m_Parent(nullptr)
-      , m_LayerIdx(-1) // -1 == 특정 레이어에 소속이 아니다 --> Level 안에 존재하지 않은 상태
-      , m_Dead(false)
+    , m_RenderCom(nullptr)
+    , m_Parent(nullptr)
+    , m_LayerIdx(-1) // -1 == 특정 레이어에 소속이 아니다 --> Level 안에 존재하지 않은 상태
+    , m_Dead(false)
 {
     // Transform 컴포넌트는 무조건 가져야 되는 기본 컴포넌트
     AddComponent(new CTransform);
@@ -22,12 +22,18 @@ CGameObject::CGameObject()
 
 CGameObject::CGameObject(const CGameObject& _Origin)
     : CEntity(_Origin)
-      , m_arrCom{}
-      , m_RenderCom(nullptr)
-      , m_Parent(nullptr)
-      , m_LayerIdx(-1)
-      , m_Dead(false)
+    , m_arrCom{}
+    , m_RenderCom(nullptr)
+    , m_Parent(nullptr)
+    , m_LayerIdx(-1)
+    , m_Dead(false)
 {
+
+	for (size_t i = 0; i < _Origin.m_vecChild.size(); ++i)
+	{
+		AddChild(_Origin.m_vecChild[i]->Clone());
+	}
+
     for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
     {
         if (nullptr == _Origin.m_arrCom[i])
@@ -39,11 +45,6 @@ CGameObject::CGameObject(const CGameObject& _Origin)
     for (size_t i = 0; i < _Origin.m_vecScripts.size(); ++i)
     {
         AddComponent(_Origin.m_vecScripts[i]->Clone());
-    }
-
-    for (size_t i = 0; i < _Origin.m_vecChild.size(); ++i)
-    {
-        AddChild(_Origin.m_vecChild[i]->Clone());
     }
 }
 
@@ -159,7 +160,7 @@ void CGameObject::AddComponent(CComponent* _Component)
     }
 
     // 컴포넌트의 소유오브젝트를 세팅
-    _Component->m_Owner = this;
+	_Component->SetOwner(this);
 
     // 컴포넌트 초기화
     _Component->Init();
@@ -198,7 +199,7 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _Type)
 	}
 }
 
-void CGameObject::DeleteScirpt(wstring& _SciprtName)
+void CGameObject::DeleteScript(wstring& _SciprtName)
 {
 	CScript* pScript = GameplayManager::GetScript(_SciprtName);
 
@@ -222,6 +223,30 @@ bool CGameObject::IsAncestor(CGameObject* _Other)
     }
 
     return false;
+}
+
+CGameObject* CGameObject::GetChildByName(const wstring& _Name)
+{
+	queue<CGameObject*> Q;
+	Q.emplace(this);
+
+	while (!Q.empty())
+	{
+		CGameObject* pObj = Q.front();
+		Q.pop();
+
+		if (pObj->GetName() == _Name)
+		{
+			return pObj;
+		}
+
+		for (CGameObject* pChild : pObj->m_vecChild)
+		{
+			Q.emplace(pChild);
+		}
+	}
+
+	return nullptr;
 }
 
 CAnimator3D* CGameObject::Animator3D()

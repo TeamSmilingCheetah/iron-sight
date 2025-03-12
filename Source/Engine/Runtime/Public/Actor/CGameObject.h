@@ -20,6 +20,7 @@ private:
     vector<CGameObject*> m_vecChild; // 자식 오브젝트들
 
     int m_LayerIdx; // 오브젝트가 속해있는 레이어 인덱스 번호, -1 : 무소속
+
     bool m_Dead; // 오브젝트의 상태가 삭제 예정 상태인지
 
 public:
@@ -31,7 +32,7 @@ public:
     void AddComponent(CComponent* _Component);
     void AddChild(CGameObject* _Child);
 	void DeleteComponent(COMPONENT_TYPE _Type);
-	void DeleteScirpt(wstring& _SciprtName);
+	void DeleteScript(wstring& _SciprtName);
 
     CGameObject* GetParent() const { return m_Parent; }
     CComponent* GetComponent(COMPONENT_TYPE _Type) const { return m_arrCom[static_cast<UINT>(_Type)]; }
@@ -45,6 +46,8 @@ public:
 
     const vector<CGameObject*>& GetChild() const { return m_vecChild; }
     const vector<CScript*>& GetScripts() const { return m_vecScripts; }
+
+	CGameObject* GetChildByName(const wstring& _Name);
 
 	class CTransform* Transform() const { return (CTransform*)GetComponent(COMPONENT_TYPE::TRANSFORM); }
 	class CMeshRender* MeshRender() const { return (CMeshRender*)GetComponent(COMPONENT_TYPE::MESHRENDER); }
