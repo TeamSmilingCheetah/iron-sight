@@ -6,7 +6,7 @@ class CLandScape;
 
 struct RAYCOLLIDERDATA
 {
-	CGameObject* RayObject;
+	CColliderRay* RayObject;
 	CGameObject* HitObject;
 	CGameObject* PrevObject;
 	float           Length;
@@ -24,8 +24,8 @@ struct RAYCOLLIDERDATA
 
 	}
 
-	RAYCOLLIDERDATA(CGameObject* _RayObject, CGameObject* _Right, float _Length)
-		: RayObject(_RayObject)
+	RAYCOLLIDERDATA(CColliderRay* _Ray, CGameObject* _Right, float _Length)
+		: RayObject(_Ray)
 		, HitObject(_Right)
 		, PrevObject(nullptr)
 		, Length(_Length)
@@ -53,7 +53,7 @@ private:
 	COLLIDER_STATE  m_State;					// 충돌체 상태
 	RAYCOLLIDERDATA         m_RayColInfo;		// 단일 타겟 용 검사 구조체
 
-	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟은 하나(가장 가까운 오브젝트 연산)
+	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟 판정
 
 
 public:
@@ -61,7 +61,7 @@ public:
 	void SetRayPos(Vec3 _Pos) { m_RayPosDir.vStart = _Pos; }
 	void SetRayDir(Vec3 _Dir) { m_RayPosDir.vDir = _Dir; m_RayPosDir.vDir.Normalize(); }
 	void SetRayLength(float _Length) { m_RayLength = _Length; }
-	void SetRayTargetAll(bool _bool) { m_RayTargetAll = _bool; }
+	void RayTargetMode(bool _bool) { m_RayTargetAll = _bool; }
 	void SetRayTargetLength(float _TargetLength) { m_RayTargetLength = _TargetLength; }
 
 	tRay GetRay() { return m_RayPosDir; }
@@ -75,10 +75,15 @@ public:
 
 	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
 
-	bool IsTargetAll() { return m_RayTargetAll; }
+	RAYCOLLIDERDATA& GetTargetInfoRef() { return m_RayColInfo; }
+
+	bool IsTargetAllMode() { return m_RayTargetAll; }
 
 	COLLIDER_STATE GetState() { return m_State; }
 	bool IsActive() { return m_State == ACTIVE; }
+
+	void UpdateRayColInfo(CGameObject* _HitObject, float _Distance);
+	void ClearRayColInfo();
 
 	// 충돌체 화성화
 	void Activate();

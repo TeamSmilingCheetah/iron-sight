@@ -174,7 +174,7 @@ int IntersectsRay(float3 _Pos[3], float3 _vStart, float3 _vDir
         return 0;
 
     _CrossPos = vCrossPoint;
-    _Dist = (uint) RtoTriDist;
+    _Dist = (uint) (RtoTriDist * 10000.f);
 
     return 1;
 }

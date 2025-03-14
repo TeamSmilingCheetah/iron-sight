@@ -12,6 +12,24 @@ struct tRaycastOut
     int Success;
 };
 
+struct tRayCollision
+{
+	UINT	RayID;
+	Vec3	RayPos;
+	Vec3	RayDir;
+	UINT	Distance;
+	int		Success;
+
+	tRayCollision(UINT _ID, tRay _Ray)
+		: RayID(_ID)
+		, RayPos(_Ray.vStart)
+		, RayDir(_Ray.vDir)
+		, Distance(0xffffffff)
+		, Success(0)
+	{
+	}
+};
+
 enum LANDSCAPE_MODE
 {
     NONE,
@@ -32,11 +50,13 @@ class CLandScape :
 
     Ptr<CTexture> m_HeightMap; // 지형에 적용시킬 높이맵
     Ptr<CHeightMapCS> m_HeightMapCS; // 높이맵 수정용 컴퓨트 쉐이더
+	vector<float> m_CachedHeightData;	// 높이맵 데이터
 
     // Raycasting
     Ptr<CRaycastCS> m_RaycastCS;
     CStructuredBuffer* m_RaycastOut; // 마우스 픽킹 위치
     tRaycastOut m_Out; // 마우스 픽킹 위치
+	vector<tRaycastOut> m_OutCol; // Ray충돌체용
 
     vector<Ptr<CTexture>> m_vecBrush;
     Vec2 m_BrushScale; // 브러쉬 크기
@@ -50,6 +70,10 @@ class CLandScape :
     UINT m_WeightHeight;
     Ptr<CWeightMapCS> m_WeightMapCS;
     int m_WeightIdx;
+
+	// Collision연산용
+	CStructuredBuffer*		m_RayCollisionOut;
+	vector<tRayCollision>	m_vecRayColInst;
 
     // LandScape 모드
     LANDSCAPE_MODE m_Mode;
@@ -78,7 +102,14 @@ public:
 	LANDSCAPE_MODE GetMode() { return m_Mode; }
 
 	Vec3 GetWorldPosByLandScape(Vec3 _TargetWorldPos);
+
+	// 들어있는 Ray연산(구형 방식)
 	tRaycastOut ColliderRaycasting(tRay _Ray);
+	// 들어있는 Ray연산
+	vector<tRayCollision>& Collidercalcul();
+
+	// 충돌할 Ray정보 쌓기
+	void ColisionRayStack(UINT _RayID, tRay _RayPosDir);
 
     void FinalTick() override;
     void Render() override;

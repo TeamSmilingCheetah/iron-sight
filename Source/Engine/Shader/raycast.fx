@@ -6,6 +6,7 @@
 #include "struct.fx"
 
 RWStructuredBuffer<tRaycastOut> m_OutBuffer : register(u0);
+RWStructuredBuffer<tRayCollision> m_InOutBuffer : register(u1);
 
 #define HasHeightMap    g_btex_0
 #define HEIGHT_MAP      g_tex_0
@@ -15,6 +16,8 @@ RWStructuredBuffer<tRaycastOut> m_OutBuffer : register(u0);
 
 #define RayStart        g_vec4_0.xyz
 #define RayDir          g_vec4_1.xyz
+
+#define CollisionRayCount g_int2
 
 [numthreads(32, 32, 1)]
 void CS_Raycast(uint3 _ID : SV_DispatchThreadID)

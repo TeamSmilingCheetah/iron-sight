@@ -1,8 +1,8 @@
-# Unreal Engine Coding Style
+﻿# Unreal Engine Coding Style
 root = true
 
 [*]
-charset = utf-8-bom
+charset = utf-8
 end_of_line = crlf
 insert_final_newline = true
 trim_trailing_whitespace = true

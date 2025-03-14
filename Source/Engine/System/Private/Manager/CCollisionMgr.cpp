@@ -104,26 +104,13 @@ void CCollisionMgr::CollisionBtwLayer(UINT _Left, UINT _Right)
 			// RayCast 검사
 			if (vecLeft[i]->ColliderRay())
 			{
-				// 레이 처리 로직
-				if (vecLeft[i]->ColliderRay()->IsTargetAll())
+				for (size_t j = 0; j < vecRight.size(); ++j)
 				{
-					// Target조건이 모든 타겟일 경우
-					for (size_t j = 0; j < vecRight.size(); ++j)
-					{
-						if (vecRight[j]->Collider3D())
-							CollisionBtwColliderRay(vecLeft[i]->ColliderRay(), vecRight[j]->Collider3D());
+					if (vecRight[j]->Collider3D())
+						CollisionBtwColliderRay(vecLeft[i]->ColliderRay(), vecRight[j]->Collider3D());
 
-						if (vecRight[j]->LandScape())
-							CollisionBtwLandScapeRay(vecLeft[i]->ColliderRay(), vecRight[j]->LandScape());
-					}
-				}
-				else
-				{
-					// Ray가 타겟 하나만 판별하는 경우
-					for (size_t j = 0; j < vecRight.size(); ++j)
-					{
-
-					}
+					if (vecRight[j]->LandScape())
+						CollisionBtwLandScapeRay(vecLeft[i]->ColliderRay(), vecRight[j]->LandScape());
 				}
 
 			}
@@ -187,28 +174,15 @@ void CCollisionMgr::CollisionBtwLayer(UINT _Left, UINT _Right)
 			// RayCast검사
 			if (vecLeft[i]->ColliderRay())
 			{
-				// Target조건이 하나가 아닐 경우
-				if (vecLeft[i]->ColliderRay()->IsTargetAll())
+				for (size_t j = i + 1; j < vecRight.size(); ++j)
 				{
-					for (size_t j = i + 1; j < vecRight.size(); ++j)
-					{
-						if (vecRight[j]->Collider3D())
-							CollisionBtwColliderRay(vecLeft[i]->ColliderRay(), vecRight[j]->Collider3D());
+					if (vecRight[j]->Collider3D())
+						CollisionBtwColliderRay(vecLeft[i]->ColliderRay(), vecRight[j]->Collider3D());
 
-						// LandScape와 충돌의 경우
-						if (vecRight[j]->LandScape())
-						{
-							CollisionBtwLandScapeRay(vecLeft[i]->ColliderRay(), vecRight[j]->LandScape());
-						}
-					}
-				}
-
-				// Ray가 타겟 하나만 판별하는 경우 추가 연산 처리
-				else
-				{
-					for (size_t j = i + 1; j < vecRight.size(); ++j)
+					// LandScape와 충돌의 경우
+					if (vecRight[j]->LandScape())
 					{
-                          
+						CollisionBtwLandScapeRay(vecLeft[i]->ColliderRay(), vecRight[j]->LandScape());
 					}
 				}
 
@@ -405,8 +379,8 @@ void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D*
 		iter = m_ColInfo.find(id.ID);
 	}
 
-	// Ray용 연산만 진행
-	if (_CalculOnly)
+	// 단일 타겟이면 Ray용 연산만 진행
+	if (!(_LeftCol->IsTargetAllMode()))
 	{
 		IsCollisionRay(_LeftCol, _RightCol);
 	}
@@ -469,8 +443,8 @@ void CCollisionMgr::CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape*
 		iter = m_ColInfo.find(id.ID);
 	}
 
-	// Ray용 연산만 진행
-	if (_CalculOnly)
+	// 단일 타겟이면 Ray용 연산만 진행
+	if (!(_LeftCol->IsTargetAllMode()))
 	{
 		IsCollisionRayLand(_LeftCol, _RightCol);
 	}
@@ -828,6 +802,10 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 	Vec3 rayDir = _LeftCol->GetRayFinalDir();
 	float rayMaxDist = _LeftCol->GetRayLength(); // 레이 최대 거리
 
+	// 가장 가까운 충돌 거리 및 충돌 여부
+	float closestDist = FLT_MAX;
+	bool hasCollision = false;
+
 	// 각 삼각형에 대해 레이 충돌 검사
 	for (int i = 0; i < 12; ++i)
 	{
@@ -849,19 +827,31 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 			// 충돌 거리가 최대 거리보다 작은지 확인
 			if (dist >= 0.f && dist <= rayMaxDist)
 			{
-				_LeftCol->SetRayTargetLength(dist);
-				// 조건이 타겟 하나만 일 시
-				if (_LeftCol->IsTargetAll())
+				if (dist >= 0.f && dist <= rayMaxDist && dist < closestDist)
 				{
-					return true;
-				}
-				else
-				{
-					return true;
+					closestDist = dist;
+					hasCollision = true;
 				}
 			}
 		}
 	}
+
+	// 충돌이 있을 경우에만 처리
+	if (hasCollision)
+	{
+		if (_LeftCol->IsTargetAllMode())
+		{
+			_LeftCol->SetRayTargetLength(closestDist);
+			return true;
+		}
+		else
+		{
+			_LeftCol->UpdateRayColInfo(_RightCol->GetOwner(), closestDist);
+			return true;
+		}
+	}
+
+
 	return false;
 }
 
@@ -895,16 +885,15 @@ bool CCollisionMgr::IsCollisionRayLand(CColliderRay* _LeftCol, CLandScape* _Righ
 	// 충돌일 시 처리
 	if (calculInfo.Success && calculInfo.Distance > 0.f && calculInfo.Distance <= rayMaxDist)
 	{
-		_LeftCol->SetRayTargetLength(calculInfo.Distance);
-
-		// 추후 조건 추가
-		if (_LeftCol->IsTargetAll())
+		if (_LeftCol->IsTargetAllMode())
 		{
+			_LeftCol->SetRayTargetLength(calculInfo.Distance);
 			return true;
 		}
 		else
 		{
-			return false;
+			_LeftCol->UpdateRayColInfo(_RightCol->GetOwner(), calculInfo.Distance);
+			return true;
 		}
 	}
 

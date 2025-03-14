@@ -11,12 +11,13 @@ CColliderRay::CColliderRay()
 	, m_Offset(Vec3(0.f))
 	, m_RayLength(1000.f)
 	, m_OverlapCount(0)
-	, m_RayTargetAll(true)
+	, m_RayTargetAll(ACTIVE)
 	, m_RayTargetLength(100000.f)
 	, m_State(ACTIVE)
 {
 	m_RayPosDir.vStart = Vec3(0.f, 0.f, 0.f);
 	m_RayPosDir.vDir = Vec3(1.f, 0.f, 0.f);
+	m_RayColInfo.RayObject = this;
 }
 
 CColliderRay::CColliderRay(const CColliderRay& _Origin)
@@ -29,10 +30,27 @@ CColliderRay::CColliderRay(const CColliderRay& _Origin)
 {
 	m_RayPosDir.vStart = _Origin.m_RayPosDir.vStart;
 	m_RayPosDir.vDir = _Origin.m_RayPosDir.vDir;
+	m_RayColInfo.RayObject = this;
 }
 
 CColliderRay::~CColliderRay()
 {
+}
+
+void CColliderRay::UpdateRayColInfo(CGameObject* _HitObject, float _Distance)
+{
+	// 기존 거리보다 가까운 거리에 있는 물체만 저장
+	if (_Distance < m_RayColInfo.Length)
+	{
+		m_RayColInfo.HitObject = _HitObject;
+		m_RayColInfo.Length = _Distance;
+	}
+}
+
+void CColliderRay::ClearRayColInfo()
+{
+	m_RayColInfo.PrevObject = m_RayColInfo.HitObject;
+	m_RayColInfo.Length = 100000.f;
 }
 
 void CColliderRay::Activate()
