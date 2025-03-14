@@ -53,6 +53,8 @@ int g_arrKeyValue[static_cast<int>(KEY::END)]
 
 
 CKeyMgr::CKeyMgr()
+	: m_CursorFixed(false)
+	, m_ScreenCenter(Vec2(640.f, 384.f))
 {
 }
 
@@ -67,6 +69,12 @@ void CKeyMgr::Init()
 	{
 		m_vecKey.push_back(tKeyInfo{KEY_STATE::NONE, false});
 	}
+
+	//SetCursorFix(true);
+
+
+	m_ScreenCenter = CDevice::GetInst()->GetRenderResolution() / 2.f;
+
 }
 
 void CKeyMgr::Tick()
@@ -118,6 +126,17 @@ void CKeyMgr::Tick()
 		ScreenToClient(CEngine::GetInst()->GetMainWnd(), &Pos);
 		m_MousePos = Vec2(static_cast<float>(Pos.x), static_cast<float>(Pos.y));
 		m_MouseDir = m_MousePos - m_MousePrevPos;
+
+		// 마우스 커서를 중앙에 고정
+		if (m_CursorFixed)
+		{
+			POINT centerPoint = { static_cast<LONG>(m_ScreenCenter.x), static_cast<LONG>(m_ScreenCenter.y) };
+			ClientToScreen(CEngine::GetInst()->GetMainWnd(), &centerPoint);
+			SetCursorPos(centerPoint.x, centerPoint.y);
+
+			// 마우스 위치를 중앙으로 설정
+			m_MousePos = m_ScreenCenter;
+		}
 	}
 
 	// 포커싱 중인 윈도우가 없으면
@@ -138,4 +157,12 @@ void CKeyMgr::Tick()
 			m_vecKey[i].PrevPressed = false;
 		}
 	}
+}
+
+void CKeyMgr::SetCursorFix(bool _bFix)
+{
+	m_CursorFixed = _bFix;
+
+	// 커서 표시/숨김 설정
+	ShowCursor(!m_CursorFixed);
 }
