@@ -117,6 +117,16 @@ struct tRaycastOut
     int     Success;
 };
 
+
+struct tRayCollision
+{
+    uint RayID;
+    float3 RayPos;
+    float3 RayDir;
+    uint Distance;
+    int Success;
+};
+
 struct tWeight8
 {
     float   arrWeight[8];

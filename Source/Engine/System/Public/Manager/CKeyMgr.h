@@ -78,6 +78,9 @@ class CKeyMgr
     Vec2 m_MousePrevPos; // 이전 프레임 마우스 위치
     Vec2 m_MouseDir; // 마우스 좌표가 이동한 방향
 
+	bool m_CursorFixed; // 마우스 커서 고정 상태
+	Vec2 m_ScreenCenter; // 화면 중앙 좌표
+
 public:
     void Init();
     void Tick();
@@ -85,4 +88,6 @@ public:
     KEY_STATE GetKeyState(KEY _Key) { return m_vecKey[static_cast<int>(_Key)].State; }
     Vec2 GetMousePos() { return m_MousePos; }
     Vec2 GetMouseDir() { return m_MouseDir; }
+
+	void SetCursorFix(bool _bFix);
 };

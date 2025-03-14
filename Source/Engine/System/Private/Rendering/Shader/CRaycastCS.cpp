@@ -17,7 +17,7 @@ CRaycastCS::~CRaycastCS()
 
 int CRaycastCS::Binding()
 {
-	if (nullptr == m_OutBuffer)
+	if (nullptr == m_OutBuffer && nullptr == m_RayInOutBuffer)
 		return E_FAIL;
 
 	// Raycasting 을 정확하게 계산하기위해서 t0 에 높이맵도 전달
@@ -25,9 +25,11 @@ int CRaycastCS::Binding()
 	m_HeightMap->Binding_SRV_CS(0);
 
 	m_OutBuffer->Binding_CS_UAV(0);
+	m_RayInOutBuffer->Binding_CS_UAV(1);
 
 	m_Const.iArr[0] = m_FaceX;
 	m_Const.iArr[1] = m_FaceZ;
+	m_Const.iArr[2] = m_RayInoutCount;
 
 	m_Const.v4Arr[0] = m_Ray.vStart;
 	m_Const.v4Arr[1] = m_Ray.vDir;
@@ -52,6 +54,9 @@ void CRaycastCS::Clear()
 {
 	m_OutBuffer->Clear_CS_UAV(0);
 	m_OutBuffer = nullptr;
+
+	m_RayInOutBuffer->Clear_CS_UAV(1);
+	m_RayInOutBuffer = nullptr;
 
 	m_HeightMap->Clear_SRV_CS();
 	m_HeightMap = nullptr;

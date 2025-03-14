@@ -29,6 +29,15 @@ CLandScape::~CLandScape()
 
 	if (nullptr != m_WeightMap)
 		delete m_WeightMap;
+
+	if (nullptr != m_RayCollisionOut)
+		delete m_RayCollisionOut;
+}
+
+void CLandScape::ColisionRayStack(UINT _RayID, tRay _RayPosDir)
+{
+	m_vecRayColInst.push_back(tRayCollision(_RayID, _RayPosDir));
+
 }
 
 void CLandScape::FinalTick()
@@ -75,6 +84,8 @@ void CLandScape::FinalTick()
 				m_HeightMapCS->SetHeightMap(m_HeightMap);
 				m_HeightMapCS->SetBrushTex(m_vecBrush[m_BrushIdx]);
 				m_HeightMapCS->Execute();
+
+				m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
 			}
 		}
 
@@ -149,6 +160,8 @@ int CLandScape::Raycasting()
 	m_Out.Distance = 0xffffffff;
 	m_RaycastOut->SetData(&m_Out);
 
+	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
+
 	// 카메라가 시점에서 마우스를 향하는 Ray 정보를 가져옴
 	tRay ray = pCam->GetRay();
 
@@ -165,6 +178,9 @@ int CLandScape::Raycasting()
 	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
 	m_RaycastCS->SetOutBuffer(m_RaycastOut);
 	m_RaycastCS->SetHeightMap(m_HeightMap);
+
+	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+	m_RaycastCS->SetRayInOutCount(0);
 
 	// 컴퓨트쉐이더 실행
 	m_RaycastCS->Execute();
@@ -183,6 +199,8 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 	pRayInfo.Distance = 0xffffffff;
 	m_RaycastOut->SetData(&pRayInfo);
 
+	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
+
 	// 원본 Ray 정보 저장
 	tRay WorldRay = _Ray;
 
@@ -200,6 +218,9 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
 	m_RaycastCS->SetOutBuffer(m_RaycastOut);
 	m_RaycastCS->SetHeightMap(m_HeightMap);
+
+	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+	m_RaycastCS->SetRayInOutCount(0);
 
 	// 컴퓨트쉐이더 실행
 	m_RaycastCS->Execute();
@@ -232,12 +253,8 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 			UINT y = (UINT)(v * (float)(heightMapHeight - 1));
 
 			// 높이값 추출
-			vector<float> heightPixels;
-			if (m_HeightMap->CaptureTextureCustom(heightPixels))
-			{
-				// 텍스처에서 높이 값 가져오기
-				localHitPos.y = heightPixels[y * heightMapWidth + x];
-			}
+			// 텍스처에서 높이 값 가져오기
+			localHitPos.y = m_CachedHeightData[y * heightMapWidth + x];
 		}
 
 		// 로컬 히트 위치를 월드로 변환
@@ -249,6 +266,17 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 	}
 
 	return pRayInfo;
+}
+
+vector<tRayCollision>& CLandScape::Collidercalcul()
+{
+	// 구조체 크기에 따라 구조체 버퍼 초기화
+
+	// 구조화 버퍼에 넣기
+
+
+
+	return m_vecRayColInst;
 }
 
 Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
@@ -287,12 +315,8 @@ Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
 		UINT y = (UINT)(v * (float)(heightMapHeight - 1));
 
 		// 높이값 추출
-		vector<float> heightPixels;
-		if (m_HeightMap->CaptureTextureCustom(heightPixels))
-		{
-			// 텍스처에서 높이 값 가져오기
-			height = heightPixels[y * heightMapWidth + x];
-		}
+		// 텍스처에서 높이 값 가져오기
+		height = m_CachedHeightData[y * heightMapWidth + x];
 	}
 
 	// 최종 로컬 좌표에 높이를 적용
@@ -324,4 +348,6 @@ void CLandScape::LoadComponent(FILE* _File)
 	LoadAssetRef(m_HeightMap, _File);
 	LoadAssetRef(m_ColorTex, _File);
 	LoadAssetRef(m_NormalTex, _File);
+
+	m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
 }

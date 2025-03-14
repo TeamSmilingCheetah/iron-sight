@@ -24,6 +24,9 @@ void CLandScape::Init()
     // Raycasting 결과를 받는 용도의 구조화버퍼
     m_RaycastOut = new CStructuredBuffer;
     m_RaycastOut->Create(sizeof(tRaycastOut), 1, SRV_UAV, true);
+
+	// 충돌 연산을 주고받는 용도의 구조화 버퍼
+	m_RayCollisionOut = new CStructuredBuffer;
 }
 
 void CLandScape::CreateMesh()
@@ -143,6 +146,8 @@ void CLandScape::CreateHeightMap(UINT _Width, UINT _Height)
                                                       , _Width, _Height, DXGI_FORMAT_R32_FLOAT
                                                       , D3D11_BIND_SHADER_RESOURCE |
                                                       D3D11_BIND_UNORDERED_ACCESS);
+
+	m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
 }
 
 void CLandScape::SetColorTexture(Ptr<CTexture> _ArrTex)
