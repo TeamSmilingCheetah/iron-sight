@@ -4,9 +4,9 @@
 #include "Client/imgui/imgui.h"
 #include "Game/Level/Public/TestLevel.h"
 #include "Client/Core/Public/CEditorMgr.h"
-#include "Client/Core/Public/CLevelSaveLoad.h"
 #include "Engine/Core/Public/CEngine.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/CImGuiMgr.h"
 
@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// Engine 초기화
 	if (FAILED(CEngine::GetInst()->Init(g_hWnd, 1280, 768
-		, &CLevelSaveLoad::SaveGameObject, &CLevelSaveLoad::LoadGameObject)))
+		, &CLevelMgr::SaveGameObject, &CLevelMgr::LoadGameObject)))
 	{
 		return 0;
 	}

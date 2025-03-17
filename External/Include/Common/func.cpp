@@ -3,7 +3,7 @@
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Manager/CTaskMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
-#include "Client/Core/Public/CLevelSaveLoad.h"
+#include "System/Public/Manager/CLevelMgr.h"
 
 void SaveObjectRef(CGameObject* _Object, FILE* _File)
 {
@@ -17,7 +17,7 @@ void LoadObjectRef(CGameObject*& _MissingAddress, FILE* _File)
 	UINT ObjectID = 0;
 	fread(&ObjectID, sizeof(UINT), 1, _File);
 
-	CLevelSaveLoad::GetInst()->AddObjectRefResolution(_MissingAddress, ObjectID);
+	CLevelMgr::GetInst()->AddObjectRefResolution(_MissingAddress, ObjectID);
 }
 
 void CreateObject(CGameObject* _NewObj, int LayerIdx, bool _bMoveChild)
