@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game/Level/Public/TestLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -184,5 +184,83 @@ void TestLevel::CreateTestLevel()
 			pObj->AddChild(pWeaponObj);
 		}
 
+
+		// 모바일 배그 애셋 테스트
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Airdrop");
+		pObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Adrenaline");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Bandage.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Bandage");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Death Box\\box.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"DeathBox");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Energy Drink.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Energy Drink");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\First Aid Kit.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"First Aid Kit");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\GRENADE.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Grenade");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Med Kit.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Med Kit");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\Molotov.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Molotov");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Painkiller.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Painkiller");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
+
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\M18_Smoke.fbx");
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Smoke Grenade");
+		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		pLevel->AddObject(0, pObj, false);
 	}
 }

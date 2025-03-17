@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "CSkeleton.h"
 #include "Engine/System/Public/Asset/Base/CAsset.h"
 

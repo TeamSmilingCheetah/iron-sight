@@ -1,7 +1,6 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/MenuUI.h"
 #include "Client/UI/Public/Editor/Inspector.h"
-#include "Client/Core/Public/CLevelSaveLoad.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -54,7 +53,7 @@ void MenuUI::File()
 			strFilePath += L"Level\\Test.lv";
 
 			CLevel* CurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-			CLevelSaveLoad::SaveLevel(strFilePath, CurLevel);
+			CLevelMgr::SaveLevel(strFilePath, CurLevel);
 		}
 
 		if (ImGui::MenuItem("Level Load"))
@@ -62,7 +61,7 @@ void MenuUI::File()
 			wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 			strFilePath += L"Level\\Test.lv";
 
-			CLevel* pLoadedLevel = CLevelSaveLoad::LoadLevel(strFilePath);
+			CLevel* pLoadedLevel = CLevelMgr::LoadLevel(strFilePath);
 			ChangeLevel(pLoadedLevel, LEVEL_STATE::STOP);
 
 			// 레벨이 로드될때 Inspector 에서 보여주던 정보를 전부 제거한다. (삭제된 객체를 가리키고 있을 수 있기 때문)
@@ -90,7 +89,7 @@ void MenuUI::Level()
 	{
 		if (ImGui::MenuItem("Play", nullptr, nullptr, IsNotPlay))
 		{
-			CLevelSaveLoad::SaveLevel(CPathMgr::GetInst()->GetContentPath() + L"Level\\Temp.lv",
+			CLevelMgr::SaveLevel(CPathMgr::GetInst()->GetContentPath() + L"Level\\Temp.lv",
 			                          pCurLevel);
 
 			ChangeLevelState(LEVEL_STATE::PLAY);
@@ -107,7 +106,7 @@ void MenuUI::Level()
 			auto pInspector = static_cast<Inspector*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 			pInspector->SetTargetObject(nullptr);
 
-			CLevel* pLevel = CLevelSaveLoad::LoadLevel(
+			CLevel* pLevel = CLevelMgr::LoadLevel(
 				CPathMgr::GetInst()->GetContentPath() + L"Level\\Temp.lv");
 			ChangeLevel(pLevel, LEVEL_STATE::STOP);
 		}

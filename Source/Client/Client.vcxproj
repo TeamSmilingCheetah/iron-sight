@@ -163,7 +163,6 @@
     <ClInclude Include="Build\Resource.h" />
     <ClInclude Include="Build\targetver.h" />
     <ClInclude Include="Core\Public\CEditorMgr.h" />
-    <ClInclude Include="Core\Public\CLevelSaveLoad.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx11.h" />
@@ -219,7 +218,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Private\CEditorMgr.cpp" />
-    <ClCompile Include="Core\Private\CLevelSaveLoad.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />

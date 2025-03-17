@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Script/Public/CGameObjectEx.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 

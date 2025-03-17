@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
@@ -158,13 +158,15 @@ void CTransform::SaveComponent(FILE* _File)
 	fwrite(&m_RelativeScale, sizeof(Vec3), 1, _File);
 	fwrite(&m_RelativeRotation, sizeof(Vec3), 1, _File);
 	fwrite(&m_IndependentScale, sizeof(bool), 1, _File);
+	fwrite(&m_ManualUpdate, sizeof(bool), 1, _File);
 }
 
-void CTransform::LoadComponent(FILE* _FILE)
+void CTransform::LoadComponent(FILE* _File)
 {
-	fread(&m_RelativePos, sizeof(Vec3), 1, _FILE);
-	fread(&m_RelativeScale, sizeof(Vec3), 1, _FILE);
-	fread(&m_RelativeRotation, sizeof(Vec3), 1, _FILE);
+	fread(&m_RelativePos, sizeof(Vec3), 1, _File);
+	fread(&m_RelativeScale, sizeof(Vec3), 1, _File);
+	fread(&m_RelativeRotation, sizeof(Vec3), 1, _File);
 	SetRelativeRotation(m_RelativeRotation);
-	fread(&m_IndependentScale, sizeof(bool), 1, _FILE);
+	fread(&m_IndependentScale, sizeof(bool), 1, _File);
+	fread(&m_ManualUpdate, sizeof(bool), 1, _File);
 }

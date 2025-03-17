@@ -121,9 +121,6 @@
     <ClInclude Include="Rendering\Public\ComputeShaderUI.h">
       <Filter>03. EditorUI\Inspector\AssetUI\10. ComputeShaderUI</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Public\CLevelSaveLoad.h">
-      <Filter>04. LevelSaveLoad</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Public\Editor\ParamUI.h">
       <Filter>03. EditorUI\ParamUI</Filter>
     </ClInclude>
@@ -178,9 +175,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="04. LevelSaveLoad">
-      <UniqueIdentifier>{8ecef8a4-c9c3-4f31-a8a2-718f6d67283f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. Default">
       <UniqueIdentifier>{0d87b35f-9f58-4ab3-81ee-0ffbc62595a7}</UniqueIdentifier>
     </Filter>
@@ -431,9 +425,6 @@
     </ClCompile>
     <ClCompile Include="Rendering\Private\ComputeShaderUI.cpp">
       <Filter>03. EditorUI\Inspector\AssetUI\10. ComputeShaderUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Private\CLevelSaveLoad.cpp">
-      <Filter>04. LevelSaveLoad</Filter>
     </ClCompile>
     <ClCompile Include="UI\Private\Editor\ParamUI.cpp">
       <Filter>03. EditorUI\ParamUI</Filter>

@@ -1,12 +1,12 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Build/framework.h"
 #include "Client/Build/Resource.h"
 #include "Client/imgui/imgui.h"
 #include "Game/Level/Public/TestLevel.h"
 #include "Client/Core/Public/CEditorMgr.h"
-#include "Client/Core/Public/CLevelSaveLoad.h"
 #include "Engine/Core/Public/CEngine.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/CImGuiMgr.h"
 
@@ -18,9 +18,9 @@ INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                      _In_opt_ HINSTANCE hPrevInstance,
-                      _In_ LPWSTR lpCmdLine,
-                      _In_ int nCmdShow)
+					  _In_opt_ HINSTANCE hPrevInstance,
+					  _In_ LPWSTR lpCmdLine,
+					  _In_ int nCmdShow)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// _CrtSetBreakAlloc(7481);
@@ -43,8 +43,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	RegisterClassExW(&wcex);
 
 	g_hWnd = CreateWindowW(L"Key", L"Game", WS_OVERLAPPEDWINDOW,
-	                       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance,
-	                       nullptr);
+						   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance,
+						   nullptr);
 	if (!g_hWnd)
 		return FALSE;
 
@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// Engine 초기화
 	if (FAILED(CEngine::GetInst()->Init(g_hWnd, 1280, 768
-		, &CLevelSaveLoad::SaveGameObject, &CLevelSaveLoad::LoadGameObject)))
+		, &CLevelMgr::SaveGameObject, &CLevelMgr::LoadGameObject)))
 	{
 		return 0;
 	}

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/Rendering/Public/ComputeShaderUI.h"
 #include "Client/Rendering/Public/GraphicShaderUI.h"
@@ -56,7 +56,15 @@ void Inspector::Render_Update()
 		}
 		else
 		{
+			// 오브젝트 활성화 체크박스
+			bool active = m_TargetObject->IsActive();
+			if (ImGui::Checkbox("##isActive", &active))
+			{
+				m_TargetObject->SetActive(active);
+			}
+
 			// 오브젝트 삭제 버튼
+			ImGui::SameLine(30);
 			if (ImGui::Button("DeleteObject"))
 			{
 				DestroyObject(m_TargetObject);
