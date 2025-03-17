@@ -76,6 +76,10 @@ int CLevelSaveLoad::SaveGameObject(CGameObject* _Object, FILE* _File)
 	UINT ID = _Object->GetObjectID();
 	fwrite(&ID, sizeof(UINT), 1, _File);
 
+	// 오브젝트 활성화 여부 저장
+	bool active = _Object->IsActive();
+	fwrite(&active, sizeof(bool), 1, _File);
+
 	// 오브젝트 컴포넌트
 	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
 	{
