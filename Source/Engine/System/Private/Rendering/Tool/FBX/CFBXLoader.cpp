@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CPathMgr.h"
@@ -199,23 +199,23 @@ void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
 
 	// Diff
 	tMtrlInfo.tMtrl.vDiff = GetMtrlData(_pMtrlSur
-	                                    , FbxSurfaceMaterial::sDiffuse
-	                                    , FbxSurfaceMaterial::sDiffuseFactor);
+										, FbxSurfaceMaterial::sDiffuse
+										, FbxSurfaceMaterial::sDiffuseFactor);
 
 	// Amb
 	tMtrlInfo.tMtrl.vAmb = GetMtrlData(_pMtrlSur
-	                                   , FbxSurfaceMaterial::sAmbient
-	                                   , FbxSurfaceMaterial::sAmbientFactor);
+									   , FbxSurfaceMaterial::sAmbient
+									   , FbxSurfaceMaterial::sAmbientFactor);
 
 	// Spec
 	tMtrlInfo.tMtrl.vSpec = GetMtrlData(_pMtrlSur
-	                                    , FbxSurfaceMaterial::sSpecular
-	                                    , FbxSurfaceMaterial::sSpecularFactor);
+										, FbxSurfaceMaterial::sSpecular
+										, FbxSurfaceMaterial::sSpecularFactor);
 
 	// Emisv
 	tMtrlInfo.tMtrl.vEmv = GetMtrlData(_pMtrlSur
-	                                   , FbxSurfaceMaterial::sEmissive
-	                                   , FbxSurfaceMaterial::sEmissiveFactor);
+									   , FbxSurfaceMaterial::sEmissive
+									   , FbxSurfaceMaterial::sEmissiveFactor);
 
 	// Texture Name
 	tMtrlInfo.strDiff = GetMtrlTextureName(_pMtrlSur, FbxSurfaceMaterial::sDiffuse);
@@ -344,8 +344,8 @@ void CFBXLoader::GetUV(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int 
 }
 
 Vec4 CFBXLoader::GetMtrlData(FbxSurfaceMaterial* _pSurface
-                             , const char* _pMtrlName
-                             , const char* _pMtrlFactorName)
+							 , const char* _pMtrlName
+							 , const char* _pMtrlFactorName)
 {
 	FbxDouble3 vMtrl;
 	FbxDouble dFactor = 0.;
@@ -360,9 +360,9 @@ Vec4 CFBXLoader::GetMtrlData(FbxSurfaceMaterial* _pSurface
 	}
 
 	Vec4 vRetVal = Vec4(static_cast<float>(vMtrl.mData[0]) * static_cast<float>(dFactor),
-	                    static_cast<float>(vMtrl.mData[1]) * static_cast<float>(dFactor),
-	                    static_cast<float>(vMtrl.mData[2]) * static_cast<float>(dFactor),
-	                    static_cast<float>(dFactor));
+						static_cast<float>(vMtrl.mData[1]) * static_cast<float>(dFactor),
+						static_cast<float>(vMtrl.mData[2]) * static_cast<float>(dFactor),
+						static_cast<float>(dFactor));
 	return vRetVal;
 }
 
@@ -644,7 +644,7 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
 
 					// Bone KeyFrame 별 행렬을 구한다.
 					LoadKeyframeTransform(_pMesh->GetNode(), pCluster, matNodeTransform, iBoneIdx,
-					                      _pContainer);
+										  _pContainer);
 				}
 			}
 		}
@@ -664,10 +664,10 @@ void CFBXLoader::CheckWeightAndIndices(FbxMesh* _pMesh, tContainer* _pContainer)
 		{
 			// 가중치 값 순으로 내림차순 정렬
 			sort(iter->begin(), iter->end()
-			     , [](const tWeightsAndIndices& left, const tWeightsAndIndices& right)
-			     {
-				     return left.dWeight > right.dWeight;
-			     }
+				 , [](const tWeightsAndIndices& left, const tWeightsAndIndices& right)
+				 {
+					 return left.dWeight > right.dWeight;
+				 }
 			);
 
 			double dWeight = 0.f;
@@ -706,8 +706,8 @@ void CFBXLoader::CheckWeightAndIndices(FbxMesh* _pMesh, tContainer* _pContainer)
 }
 
 void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
-                                       , const FbxAMatrix& _matNodeTransform, int _iBoneIdx,
-                                       tContainer* _pContainer)
+									   , const FbxAMatrix& _matNodeTransform, int _iBoneIdx,
+									   tContainer* _pContainer)
 {
 	if (m_vecAnimClip.empty())
 		return;
@@ -759,8 +759,8 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 }
 
 void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
-                                  , const FbxAMatrix& _matNodeTransform
-                                  , int _iBoneIdx, tContainer* _pContainer)
+								  , const FbxAMatrix& _matNodeTransform
+								  , int _iBoneIdx, tContainer* _pContainer)
 {
 	FbxAMatrix matClusterTrans;
 	FbxAMatrix matClusterLinkTrans;
@@ -790,8 +790,8 @@ void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
 
 
 void CFBXLoader::LoadWeightsAndIndices(FbxCluster* _pCluster
-                                       , int _iBoneIdx
-                                       , tContainer* _pContainer)
+									   , int _iBoneIdx
+									   , tContainer* _pContainer)
 {
 	int iIndicesCount = _pCluster->GetControlPointIndicesCount();
 

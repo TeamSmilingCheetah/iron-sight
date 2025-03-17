@@ -1,24 +1,24 @@
-﻿#pragma once
+#pragma once
 
 class CEntity
 {
-    static UINT g_NextID;
+	static UINT g_NextID;
 
-    wstring m_Name;
-    UINT m_ID;
+	wstring m_Name;
+	UINT m_ID;
 
 public:
-    void SetName(const wstring& _Name) { m_Name = _Name; }
-    const wstring& GetName() const { return m_Name; }
+	void SetName(const wstring& _Name) { m_Name = _Name; }
+	const wstring& GetName() const { return m_Name; }
 
-    UINT GetID() { return m_ID; }
+	UINT GetID() { return m_ID; }
 
-    virtual void SaveToLevel(FILE* _File);
-    virtual void LoadFromLevel(FILE* _File);
+	virtual void SaveToLevel(FILE* _File);
+	virtual void LoadFromLevel(FILE* _File);
 
-    virtual CEntity* Clone() = 0;
+	virtual CEntity* Clone() = 0;
 
-    CEntity();
-    CEntity(const CEntity& _Origin);
-    virtual ~CEntity();
+	CEntity();
+	CEntity(const CEntity& _Origin);
+	virtual ~CEntity();
 };

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Animation/CFlipbookPlayer.h"
 #include "System/Public/Manager/CTimeMgr.h"
 

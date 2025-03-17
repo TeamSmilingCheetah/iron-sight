@@ -181,6 +181,11 @@ CGameObject* CLevelSaveLoad::LoadGameObject(FILE* _File)
 	fread(&ID, sizeof(UINT), 1, _File);
 	pObject->SetObjectID(ID);
 
+	// 오브젝트 활성화 여부 로드
+	bool active = true;
+	fread(&active, sizeof(bool), 1, _File);
+	pObject->SetActive(active);
+
 	// 오브젝트 컴포넌트
 	UINT ComponentType = 0;
 	while (true)
