@@ -17,6 +17,7 @@ CGameObject::CGameObject()
 	, m_RenderCom(nullptr)
 	, m_Parent(nullptr)
 	, m_LayerIdx(-1) // -1 == 특정 레이어에 소속이 아니다 --> Level 안에 존재하지 않은 상태
+	, m_Active(true)
 	, m_Dead(false)
 {
 	// Transform 컴포넌트는 무조건 가져야 되는 기본 컴포넌트
@@ -30,6 +31,7 @@ CGameObject::CGameObject(const CGameObject& _Origin)
 	, m_RenderCom(nullptr)
 	, m_Parent(nullptr)
 	, m_LayerIdx(-1)
+	, m_Active(_Origin.m_Active)
 	, m_Dead(false)
 {
 	for (size_t i = 0; i < _Origin.m_vecChild.size(); ++i)

@@ -26,7 +26,8 @@ private:
 
 	int m_LayerIdx; // 오브젝트가 속해있는 레이어 인덱스 번호, -1 : 무소속
 
-    bool m_Dead; // 오브젝트의 상태가 삭제 예정 상태인지
+	bool m_Active; // 오브젝트 활성화 여부
+	bool m_Dead; // 오브젝트의 상태가 삭제 예정 상태인지
 
 public:
 	void Begin();
@@ -46,10 +47,12 @@ public:
 	CComponent* GetComponent(COMPONENT_TYPE _Type) const { return m_arrCom[static_cast<UINT>(_Type)]; }
 	CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 
+	void SetActive(bool _b) { m_Active = _b; }
 
-    int GetLayerIdx() const { return m_LayerIdx; }
-    bool IsDead() const { return m_Dead; }
-    bool IsAncestor(CGameObject* _Other);
+	int GetLayerIdx() const { return m_LayerIdx; }
+	bool IsActive() const { return m_Active; }
+	bool IsDead() const { return m_Dead; }
+	bool IsAncestor(CGameObject* _Other);
 
 	void SetLayerIdx(int _Idx) { m_LayerIdx = _Idx; }
 
