@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Build/framework.h"
 #include "Client/Build/Resource.h"
 #include "Client/imgui/imgui.h"
@@ -18,9 +18,9 @@ INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                      _In_opt_ HINSTANCE hPrevInstance,
-                      _In_ LPWSTR lpCmdLine,
-                      _In_ int nCmdShow)
+					  _In_opt_ HINSTANCE hPrevInstance,
+					  _In_ LPWSTR lpCmdLine,
+					  _In_ int nCmdShow)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// _CrtSetBreakAlloc(7481);
@@ -43,8 +43,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	RegisterClassExW(&wcex);
 
 	g_hWnd = CreateWindowW(L"Key", L"Game", WS_OVERLAPPEDWINDOW,
-	                       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance,
-	                       nullptr);
+						   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance,
+						   nullptr);
 	if (!g_hWnd)
 		return FALSE;
 

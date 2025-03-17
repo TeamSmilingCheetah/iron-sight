@@ -1,9 +1,34 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Core/Public/CLevelSaveLoad.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
 #include "Game/System/Public/GameplayManager.h"
+
+CLevelSaveLoad::CLevelSaveLoad()
+{
+
+}
+
+CLevelSaveLoad::~CLevelSaveLoad()
+{
+
+}
+
+void CLevelSaveLoad::ResolveReference(CLevel* _Level)
+{
+	for (int i = 0; i < m_ReferenceResolution.size(); ++i)
+	{
+		m_ReferenceResolution[i].MissingAddress = _Level->FindObjectByObjectID(m_ReferenceResolution[i].ObjectID);
+	}
+
+	m_ReferenceResolution.clear();
+}
+
+void CLevelSaveLoad::AddObjectRefResolution(CGameObject*& _MissingAddress, UINT _ObjectID)
+{
+	m_ReferenceResolution.push_back(tObjectRefResolution{ _MissingAddress, _ObjectID });
+}
 
 int CLevelSaveLoad::SaveLevel(const wstring& _FilePath, CLevel* _Level)
 {
@@ -46,6 +71,10 @@ int CLevelSaveLoad::SaveGameObject(CGameObject* _Object, FILE* _File)
 {
 	// 오브젝트 이름
 	_Object->SaveToLevel(_File);
+
+	// 오브젝트 id 저장
+	UINT ID = _Object->GetObjectID();
+	fwrite(&ID, sizeof(UINT), 1, _File);
 
 	// 오브젝트 컴포넌트
 	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
@@ -96,7 +125,7 @@ CLevel* CLevelSaveLoad::LoadLevel(const wstring& _FilePath)
 {
 	FILE* pFile = nullptr;
 
-	auto pNewLevel = new CLevel;
+	CLevel* pNewLevel = new CLevel;
 
 	_wfopen_s(&pFile, _FilePath.c_str(), L"rb");
 	assert(pFile);
@@ -129,15 +158,24 @@ CLevel* CLevelSaveLoad::LoadLevel(const wstring& _FilePath)
 
 	fclose(pFile);
 
+	// 모든 OBject를 로드했으므로 Object Reference 관계를 처리함
+	CLevelSaveLoad::GetInst()->ResolveReference(pNewLevel);
+	CLevelSaveLoad::Destroy();
+
 	return pNewLevel;
 }
 
 CGameObject* CLevelSaveLoad::LoadGameObject(FILE* _File)
 {
-	auto pObject = new CGameObject;
+	CGameObject* pObject = new CGameObject;
 
 	// 오브젝트 이름
 	pObject->LoadFromLevel(_File);
+
+	// 오브젝트 ID
+	UINT ID = 0;
+	fread(&ID, sizeof(UINT), 1, _File);
+	pObject->SetObjectID(ID);
 
 	// 오브젝트 컴포넌트
 	UINT ComponentType = 0;

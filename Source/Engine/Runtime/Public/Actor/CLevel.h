@@ -11,7 +11,8 @@ class CLevel
 public:
     CLayer* GetLayer(int _LayerIdx) { return &m_arrLayer[_LayerIdx]; }
     CGameObject* FindObjectByName(const wstring& _Name);
-    LEVEL_STATE GetState() { return m_State; }
+	CGameObject* FindObjectByObjectID(UINT _ObjectID);
+    LEVEL_STATE GetState() const { return m_State; }
 
     void RegisterClear()
     {

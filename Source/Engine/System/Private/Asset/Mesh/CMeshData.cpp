@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Mesh/CMeshData.h"
 
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"

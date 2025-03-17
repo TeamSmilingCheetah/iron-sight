@@ -80,6 +80,39 @@ CGameObject* CLevel::FindObjectByName(const wstring& _Name)
     return nullptr;
 }
 
+CGameObject* CLevel::FindObjectByObjectID(UINT _ObjectID)
+{
+	for (int i = 0; i < MAX_LAYER; ++i)
+	{
+		const vector<CGameObject*>& vecParents = m_arrLayer[i].GetParentObjects();
+
+		for (size_t j = 0; j < vecParents.size(); ++j)
+		{
+			queue<CGameObject*> Q;
+			Q.emplace(vecParents[j]);
+
+			while (!Q.empty())
+			{
+				CGameObject* pObject = Q.front();
+				Q.pop();
+
+				if (pObject->GetObjectID() == _ObjectID)
+				{
+					return pObject;
+				}
+
+				const vector<CGameObject*>& vecChild = pObject->GetChild();
+				for (size_t k = 0; k < vecChild.size(); ++k)
+				{
+					Q.emplace(vecChild[k]);
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 void CLevel::ChangeState(LEVEL_STATE _NextState)
 {
     m_State = _NextState;

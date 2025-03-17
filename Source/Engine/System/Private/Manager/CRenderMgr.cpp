@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CRenderMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"

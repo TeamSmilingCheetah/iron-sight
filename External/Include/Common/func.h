@@ -2,6 +2,7 @@
 #include "Ptr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 
+
 void CreateObject(class CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
 void ChangeLevelState(LEVEL_STATE _NextState);
@@ -82,6 +83,10 @@ T* LoadAssetRef(FILE* _File)
 
     return pAsset.Get();
 }
+
+// Object Reference
+void SaveObjectRef(CGameObject* _Object, FILE* _File);
+void LoadObjectRef(CGameObject*& _MissingAddress, FILE* _File);
 
 
 template <typename T, int Count>
