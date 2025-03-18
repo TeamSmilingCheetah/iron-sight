@@ -15,7 +15,7 @@ PlayerCharacter::PlayerCharacter()
 
 	m_vecWeaponSlot.resize(7);
 	char name[10]{};
-	for (size_t i = 0; i < m_vecWeaponSlot.size(); ++i)
+	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
 	{
 		sprintf_s(name, "Slot %d", i+1);
 		AddScriptParam(tScriptParam{ SCRIPT_PARAM::GAMEOBJECT, name, &m_vecWeaponSlot[i] });
@@ -134,11 +134,11 @@ void PlayerCharacter::LoadComponent(FILE* _File)
 	fread(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	LoadAssetRef(m_TargetTex, _File);
-	/*UINT slotCount = 0;
+	UINT slotCount = 0;
 	fread(&slotCount, sizeof(UINT), 1, _File);
 	m_vecWeaponSlot.resize(slotCount);
 	for (UINT i = 0; i < slotCount; ++i)
 	{
 		LoadObjectRef(m_vecWeaponSlot[i], _File);
-	}*/
+	}
 }
