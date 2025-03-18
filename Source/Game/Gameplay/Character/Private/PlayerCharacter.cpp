@@ -121,6 +121,12 @@ void PlayerCharacter::SaveComponent(FILE* _File)
 	fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fwrite(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	SaveAssetRef(m_TargetTex, _File);
+	UINT slotCount = static_cast<UINT>(m_vecWeaponSlot.size());
+	fwrite(&slotCount, sizeof(UINT), 1, _File);
+	for (UINT i = 0; i < slotCount; ++i)
+	{
+		SaveObjectRef(m_vecWeaponSlot[i], _File);
+	}
 }
 
 void PlayerCharacter::LoadComponent(FILE* _File)
@@ -128,4 +134,11 @@ void PlayerCharacter::LoadComponent(FILE* _File)
 	fread(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	LoadAssetRef(m_TargetTex, _File);
+	/*UINT slotCount = 0;
+	fread(&slotCount, sizeof(UINT), 1, _File);
+	m_vecWeaponSlot.resize(slotCount);
+	for (UINT i = 0; i < slotCount; ++i)
+	{
+		LoadObjectRef(m_vecWeaponSlot[i], _File);
+	}*/
 }
