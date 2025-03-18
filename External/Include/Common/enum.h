@@ -244,7 +244,6 @@ enum class PARTICLE_MODULE
 	END,
 };
 
-
 enum class SCRIPT_PARAM
 {
 	INT,
@@ -254,6 +253,7 @@ enum class SCRIPT_PARAM
 
 	TEXTURE,
 	PREFAB,
+	GAMEOBJECT,
 };
 
 enum class MRT_TYPE

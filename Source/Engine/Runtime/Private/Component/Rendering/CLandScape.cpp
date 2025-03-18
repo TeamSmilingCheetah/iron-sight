@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
@@ -43,7 +43,7 @@ void CLandScape::ColisionRayStack(UINT _RayID, tRay _RayPosDir)
 void CLandScape::FinalTick()
 {
 	// 모드 전환
-	if (KEY_TAP(KEY::NUM_6))
+	if (KEY_TAP(KEY::NUMPAD_6))
 	{
 		if (HEIGHTMAP == m_Mode)
 			m_Mode = SPLATING;
@@ -54,7 +54,7 @@ void CLandScape::FinalTick()
 	}
 
 	// 브러쉬 바꾸기
-	if (KEY_TAP(KEY::NUM_7))
+	if (KEY_TAP(KEY::NUMPAD_7))
 	{
 		++m_BrushIdx;
 		if (m_vecBrush.size() <= m_BrushIdx)
@@ -62,7 +62,7 @@ void CLandScape::FinalTick()
 	}
 
 	// 가중치 인덱스 바꾸기
-	if (KEY_TAP(KEY::NUM_8))
+	if (KEY_TAP(KEY::NUMPAD_8))
 	{
 		++m_WeightIdx;
 		if (m_ColorTex->GetArraySize() <= static_cast<UINT>(m_WeightIdx))

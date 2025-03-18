@@ -1,15 +1,20 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 
+class CGameObject;
+
 class PlayerCharacter :
 	public CScript
 {
+private:
 	float m_PlayerSpeed;
 	float m_PaperBurnIntence;
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
+
+	vector<CGameObject*> m_vecWeaponSlot;
 
 public:
 	void Begin() override;

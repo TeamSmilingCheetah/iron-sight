@@ -7,7 +7,10 @@
 
 void SaveObjectRef(CGameObject* _Object, FILE* _File)
 {
-	UINT ObjectID = _Object->GetObjectID();
+	UINT ObjectID = 0xFFFFFFFF;
+
+	if (_Object)
+		ObjectID = _Object->GetObjectID();
 
 	fwrite(&ObjectID, sizeof(UINT), 1, _File);
 }
@@ -16,6 +19,10 @@ void LoadObjectRef(CGameObject*& _MissingAddress, FILE* _File)
 {
 	UINT ObjectID = 0;
 	fread(&ObjectID, sizeof(UINT), 1, _File);
+
+	// Object 참조가 없는 경우
+	if (ObjectID == 0xFFFFFFFF)
+		return;
 
 	CLevelMgr::GetInst()->AddObjectRefResolution(_MissingAddress, ObjectID);
 }

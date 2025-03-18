@@ -1,9 +1,10 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
 #include "Client/imgui/imgui.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 
@@ -129,22 +130,22 @@ bool ParamUI::Param_Vec4(const string& _Desc, Vec4* _Data, bool _Drag)
 }
 
 bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
-                        , EditorUI* _Inst, EUI_DELEGATE_2 _MemFunc)
+						, EditorUI* _Inst, EUI_DELEGATE_2 _MemFunc)
 {
 	char szID[255] = {};
 
 	ImGui::Text(_Desc.c_str());
 
-	auto uv_min = ImVec2(0.0f, 0.0f);
-	auto uv_max = ImVec2(1.0f, 1.0f);
-	auto tint_col = ImVec4(1.f, 1.f, 1.f, 1.f);
+	ImVec2 uv_min = ImVec2(0.0f, 0.0f);
+	ImVec2 uv_max = ImVec2(1.0f, 1.0f);
+	ImVec4 tint_col = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4 border_col = ImGui::GetStyleColorVec4(ImGuiCol_Border);
 
 	if (nullptr == _Tex)
 		ImGui::Image(nullptr, ImVec2(100.f, 100.f), uv_min, uv_max, tint_col, border_col);
 	else
 		ImGui::Image(_Tex->GetSRV().Get(), ImVec2(100.f, 100.f), uv_min, uv_max, tint_col,
-		             border_col);
+					 border_col);
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -152,7 +153,7 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			Ptr<CAsset> pAsset = reinterpret_cast<CAsset*>(pNode->GetData());
 			if (pAsset->GetAssetType() == TEXTURE)
 			{
 				_Tex = static_cast<CTexture*>(pAsset.Get());
@@ -173,7 +174,7 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 		if (ImGui::Button(szID, ImVec2(18.f, 18.f)))
 		{
 			// ListUI 를 활성화 시키기
-			auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
+			ListUI* pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 			pListUI->SetName("Texture");
 			pListUI->SetActive(true);
 
@@ -195,7 +196,7 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 }
 
 bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI* _Inst,
-                           EUI_DELEGATE_2 _MemFunc)
+						   EUI_DELEGATE_2 _MemFunc)
 {
 	char szID[255] = {};
 
@@ -216,8 +217,8 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
 		if (ImGui::AcceptDragDropPayload("ContentUI"))
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
-			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			TreeNode* pNode = *reinterpret_cast<TreeNode**>(pPayload->Data);
+			Ptr<CAsset> pAsset = reinterpret_cast<CAsset*>(pNode->GetData());
 			if (pAsset->GetAssetType() == PREFAB)
 			{
 				_Prefab = static_cast<CPrefab*>(pAsset.Get());
@@ -237,7 +238,7 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
 		if (ImGui::Button(szID, ImVec2(18.f, 18.f)))
 		{
 			// ListUI 를 활성화 시키기
-			auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
+			ListUI* pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 			pListUI->SetName("Prefab");
 			pListUI->SetActive(true);
 
@@ -253,6 +254,40 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
 
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool ParamUI::Param_GameObject(const string& _Desc, CGameObject** _Object)
+{
+	char szID[255] = {};
+
+	ImGui::Text(_Desc.c_str());
+	ImGui::SameLine(100);
+
+	string strKey;
+	if (nullptr != *_Object)
+		strKey = WStringToString((*_Object)->GetName());
+	else
+		strKey = "NONE";
+
+	sprintf_s(szID, "##PrefabName_%d", g_ParamID++);
+	ImGui::InputText(szID, (char*)strKey.c_str(), strKey.length(), ImGuiInputTextFlags_ReadOnly);
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (ImGui::AcceptDragDropPayload("Outliner"))
+		{
+			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
+			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
+			*_Object = reinterpret_cast<CGameObject*>(pNode->GetData());
+
+			ImGui::SetWindowFocus(nullptr);
+			return true;
+		}
+
+		ImGui::EndDragDropTarget();
 	}
 
 	return false;

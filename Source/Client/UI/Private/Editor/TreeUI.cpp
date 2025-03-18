@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 
 // =========
@@ -167,10 +167,8 @@ void TreeUI::Render_Update()
 	}
 
 
-	// 드래그 노드가 있고, 드랍된 노드도 있다
-	// 드래그 노드가 있고, 마우스 왼쪽이 떼어졌다면
-	if ((m_DraggedNode && m_DroppedNode) || (m_DraggedNode && ImGui::IsMouseReleased(
-		ImGuiMouseButton_Left)))
+	// 드래그 노드가 있고, 마우스 왼쪽이 현재 윈도우에서 떨어진 경우
+	if ((m_DraggedNode && ImGui::IsMouseReleased(ImGuiMouseButton_Left)) && ImGui::IsWindowHovered())
 	{
 		// 등록된 dragdrop delegate 가 있다면
 		if (m_SelfDragDropInst && m_SelfDragDropFunc)

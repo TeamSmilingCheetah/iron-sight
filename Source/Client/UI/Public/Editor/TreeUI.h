@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Client/UI/Public/Editor/EditorUI.h"
 
 class TreeNode
@@ -63,8 +63,8 @@ public:
 	void ShowRoot(bool _Show) { m_ShowRoot = _Show; }
 	void MutiSelection(bool _Multi) { m_MultiSelection = _Multi; }
 	void SelfDragDrop(bool _Self) { m_SelfDragDrop = _Self; }
-	bool IsSelfDragDrop() { return m_SelfDragDrop; }
-	bool IsRightOption() { return m_RightOption; }
+	bool IsSelfDragDrop() const { return m_SelfDragDrop; }
+	bool IsRightOption() const { return m_RightOption; }
 	const vector<string>& GetVecOptionName() { return m_vecOption; }
 	const vector<EUI_DELEGATE_1>& GetOptionDele() { return m_SeleteRightOption; }
 	EditorUI* GetSeletedRightInst() { return m_SeletedRightInst; }

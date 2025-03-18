@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 
 class CameraController :
