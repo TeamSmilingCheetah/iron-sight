@@ -1,55 +1,80 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "Core/Public/CEngine.h"
 
-int g_arrKeyValue[static_cast<int>(KEY::END)]
-	=
-	{
-		'W',
-		'S',
-		'A',
-		'D',
-		'Z',
-		'Y',
+int g_arrKeyValue[static_cast<int>(KEY::END)] =
+{
+	'Q',
+	'W',
+	'E',
+	'R',
+	'T',
+	'Y',
+	'A',
+	'S',
+	'D',
+	'F',
+	'G',
+	'Z',
+	'X',
+	'C',
+	'V',
+	'B',
+	'N',
+	'M',
 
-		VK_LEFT,
-		VK_RIGHT,
-		VK_UP,
-		VK_DOWN,
+	VK_LEFT,
+	VK_RIGHT,
+	VK_UP,
+	VK_DOWN,
 
-		VK_SPACE,
-		VK_RETURN,
+	VK_SPACE,
+	VK_RETURN,
 
-		VK_LSHIFT,
+	VK_LSHIFT,
 
-		VK_NUMPAD1,
-		VK_NUMPAD2,
-		VK_NUMPAD3,
-		VK_NUMPAD4,
-		VK_NUMPAD5,
-		VK_NUMPAD6,
-		VK_NUMPAD7,
-		VK_NUMPAD8,
-		VK_NUMPAD9,
-		VK_NUMPAD0,
+	'1',
+	'2',
+	'3',
+	'4',
+	'5',
+	'6',
+	'7',
+	'8',
+	'9',
+	'0',
 
-		VK_F1,
-		VK_F2,
-		VK_F3,
-		VK_F4,
-		VK_F5,
-		VK_F6,
-		VK_F7,
-		VK_F8,
-		VK_F9,
-		VK_F10,
-		VK_F11,
-		VK_F12,
+	VK_OEM_MINUS,
+	VK_OEM_PLUS,
+
+	VK_NUMPAD1,
+	VK_NUMPAD2,
+	VK_NUMPAD3,
+	VK_NUMPAD4,
+	VK_NUMPAD5,
+	VK_NUMPAD6,
+	VK_NUMPAD7,
+	VK_NUMPAD8,
+	VK_NUMPAD9,
+	VK_NUMPAD0,
+
+	VK_F1,
+	VK_F2,
+	VK_F3,
+	VK_F4,
+	VK_F5,
+	VK_F6,
+	VK_F7,
+	VK_F8,
+	VK_F9,
+	VK_F10,
+	VK_F11,
+	VK_F12,
 
 
-		VK_LBUTTON,
-		VK_RBUTTON,
-	};
+	VK_LBUTTON,
+	VK_RBUTTON,
+};
 
 
 CKeyMgr::CKeyMgr()

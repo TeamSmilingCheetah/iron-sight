@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/Outliner.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLayer.h"
@@ -81,11 +81,12 @@ void Outliner::AddGameObject(TreeNode* _ParentNode, CGameObject* _Object)
 void Outliner::SelectGameObject(DWORD_PTR _TreeNode)
 {
 	TreeNode* pNode = (TreeNode*)_TreeNode;
-	CGameObject* pTarget = reinterpret_cast<CGameObject*>(pNode->GetData());
 
 	// 100보다 작다면 이건 오브젝트 포인터가 아니다.
-	if (100 > (LONGLONG)pTarget)
+	if (static_cast<DWORD_PTR>(100LL) > pNode->GetData())
 		return;
+
+	CGameObject* pTarget = reinterpret_cast<CGameObject*>(pNode->GetData());
 
 	Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
 	pInspector->SetTargetObject(pTarget);
@@ -100,7 +101,7 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 	DWORD_PTR DragData = pDragged->GetData();
 
 	// 드래그된 항목이 레이어 노드인지 먼저 확인 (값이 1000보다 작으면 레이어 노드)
-	if (reinterpret_cast<void*>(DragData) <= (void*)1000)
+	if (DragData <= static_cast<DWORD_PTR>(1000LL))
 	{
 		// 레이어 노드는 드래그 앤 드롭 대상이 아님
 		return;
@@ -122,7 +123,7 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 
 		// DropData가 CGameObject*인지 long long인지 구별하기 위한 확인
 		// 1000 보다 크면 포인터로 본다.
-		if (reinterpret_cast<void*>(DropData) > (void*)100)
+		if (DropData > static_cast<DWORD_PTR>(1000LL))
 		{
 			pDropObj = reinterpret_cast<CGameObject*>(DropData);
 

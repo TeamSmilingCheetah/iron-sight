@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Component/ScriptUI.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
@@ -26,22 +26,25 @@ void ScriptUI::Render_Update()
 		switch (vecParam[i].Param)
 		{
 		case SCRIPT_PARAM::INT:
-			ParamUI::Param_Int(vecParam[i].Desc, static_cast<int*>(vecParam[i].pData), false);
+			ParamUI::Param_Int(vecParam[i].Desc, reinterpret_cast<int*>(vecParam[i].pData), false);
 			break;
 		case SCRIPT_PARAM::FLOAT:
-			ParamUI::Param_Float(vecParam[i].Desc, static_cast<float*>(vecParam[i].pData), false);
+			ParamUI::Param_Float(vecParam[i].Desc, reinterpret_cast<float*>(vecParam[i].pData), false);
 			break;
 		case SCRIPT_PARAM::VEC2:
-			ParamUI::Param_Vec2(vecParam[i].Desc, static_cast<Vec2*>(vecParam[i].pData), false);
+			ParamUI::Param_Vec2(vecParam[i].Desc, reinterpret_cast<Vec2*>(vecParam[i].pData), false);
 			break;
 		case SCRIPT_PARAM::VEC4:
-			ParamUI::Param_Vec4(vecParam[i].Desc, static_cast<Vec4*>(vecParam[i].pData), false);
+			ParamUI::Param_Vec4(vecParam[i].Desc, reinterpret_cast<Vec4*>(vecParam[i].pData), false);
 			break;
 		case SCRIPT_PARAM::TEXTURE:
-			ParamUI::Param_Tex(vecParam[i].Desc, *static_cast<Ptr<CTexture>*>(vecParam[i].pData));
+			ParamUI::Param_Tex(vecParam[i].Desc, *reinterpret_cast<Ptr<CTexture>*>(vecParam[i].pData));
 			break;
 		case SCRIPT_PARAM::PREFAB:
-			ParamUI::Param_Prefab(vecParam[i].Desc, *static_cast<Ptr<CPrefab>*>(vecParam[i].pData));
+			ParamUI::Param_Prefab(vecParam[i].Desc, *reinterpret_cast<Ptr<CPrefab>*>(vecParam[i].pData));
+			break;
+		case SCRIPT_PARAM::GAMEOBJECT:
+			ParamUI::Param_GameObject(vecParam[i].Desc, reinterpret_cast<CGameObject**>(vecParam[i].pData));
 			break;
 		}
 	}
