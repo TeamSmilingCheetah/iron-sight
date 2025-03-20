@@ -120,11 +120,14 @@ struct tRaycastOut
 
 struct tRayCollision
 {
-    uint RayID;
+    uint Rayobj[2];
+    float3 RayWorldPos;
     float3 RayPos;
     float3 RayDir;
+    float RayLength;
     uint Distance;
     int Success;
+    int Padding;
 };
 
 struct tWeight8

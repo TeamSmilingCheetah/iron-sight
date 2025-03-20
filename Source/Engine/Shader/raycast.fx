@@ -15,9 +15,11 @@ RWStructuredBuffer<tRayCollision> m_InOutBuffer : register(u1);
 #define FACE_Z          g_int_1
 
 #define RayStart        g_vec4_0.xyz
-#define RayDir          g_vec4_1.xyz
+#define Raydir          g_vec4_1.xyz
 
-#define CollisionRayCount g_int2
+#define CollisionRayCount g_int_2
+
+#define LandScapeWorldMat g_mat_0
 
 [numthreads(32, 32, 1)]
 void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
@@ -80,19 +82,52 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
         
     float3 vCrossPos = (float3) 0.f;
     uint Dist = 0.f;
-    
-    if (IntersectsRay(vTriPos, RayStart, RayDir, vCrossPos, Dist))
+
+
+    if (CollisionRayCount)
     {
-        InterlockedMin(m_OutBuffer[0].Distance, Dist);
+        for (int i = 0; i < CollisionRayCount; ++i)
+        {
+            if (IntersectsRay(vTriPos, m_InOutBuffer[i].RayPos, m_InOutBuffer[i].RayDir, vCrossPos, Dist))
+            {
+                InterlockedMin(m_InOutBuffer[i].Distance, Dist);
+                
+                // 입력한 값으로 교체가 잘 되었다.
+                if (m_InOutBuffer[i].Distance == Dist)
+                {
+                    // Local좌표를 world좌표로 전환
+                    float4 worldPos = mul(float4(vCrossPos, 1.0f), LandScapeWorldMat);
+
+                    // world좌표 기준으로 길이 재 연산
+                    float3 worldDist = worldPos.xyz - m_InOutBuffer[i].RayWorldPos;
+                    m_InOutBuffer[i].Distance = (uint)length(worldDist);
+
+
+                    // 레이의 길이조건과 비교하여 성공확인
+                    if (m_InOutBuffer[i].RayLength >= m_InOutBuffer[i].Distance)
+                        m_InOutBuffer[i].Success = 1;
+                    else
+                        m_InOutBuffer[i].Success = 0;
+                }
+            }
+        }
+        
+    }
+    else
+    {
+        if (IntersectsRay(vTriPos, RayStart, Raydir, vCrossPos, Dist))
+        {
+            InterlockedMin(m_OutBuffer[0].Distance, Dist);
                 
         // 입력한 값으로 교체가 잘 되었다.
-        if (m_OutBuffer[0].Distance == Dist)
-        {
-            float2 CrossUV = vCrossPos.xz / float2(FACE_X, FACE_Z);
-            CrossUV.y = 1.f - CrossUV.y;
+            if (m_OutBuffer[0].Distance == Dist)
+            {
+                float2 CrossUV = vCrossPos.xz / float2(FACE_X, FACE_Z);
+                CrossUV.y = 1.f - CrossUV.y;
             
-            m_OutBuffer[0].Location = CrossUV;
-            m_OutBuffer[0].Success = 1;
+                m_OutBuffer[0].Location = CrossUV;
+                m_OutBuffer[0].Success = 1;
+            }
         }
     }
 }

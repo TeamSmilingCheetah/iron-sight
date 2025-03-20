@@ -174,7 +174,7 @@ int IntersectsRay(float3 _Pos[3], float3 _vStart, float3 _vDir
         return 0;
 
     _CrossPos = vCrossPoint;
-    _Dist = (uint) (RtoTriDist * 10000.f);
+    _Dist = (uint) (RtoTriDist * 10000.f);  // 데이터 손실을 최소화 하기위한 작업
 
     return 1;
 }

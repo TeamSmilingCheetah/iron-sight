@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 union COLLIDER_ID
 {
@@ -10,7 +10,6 @@ union COLLIDER_ID
 
 	ULONGLONG ID;
 };
-
 
 class CCollider2D;
 class CCollider3D;
@@ -24,7 +23,8 @@ class CCollisionMgr :
 private:
 	UINT                            m_Matrix[MAX_LAYER];
 	map<ULONGLONG, bool>            m_ColInfo;
-
+	set<CColliderRay*>				m_RayColInfo;		// 레이 충돌처리를 위해 저장된 데이터
+	set<CLandScape*>				m_LandObject;		// LandScape콜라이더
 
 public:
 	void CollisionCheck(UINT _Left, UINT _Right);
@@ -35,9 +35,10 @@ private:
 	void CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _RightCol);
 	void CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _RightCol);
 	void CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _RightCol);
-	void CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D* _RightCol, bool _CalculOnly = false);
-	void CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape* _RightCol, bool _CalculOnly = false);
+	void CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D* _RightCol);
+	void CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape* _RightCol);
 
+	void LandCheak();
 	void RayOverlapCheak();
 
 	bool IsCollision(CCollider2D* _Left, CCollider2D* _Right);

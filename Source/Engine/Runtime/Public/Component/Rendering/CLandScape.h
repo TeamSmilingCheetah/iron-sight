@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Engine/System/Public/Rendering/Shader/CHeightMapCS.h"
 #include "Engine/System/Public/Rendering/Shader/CWeightMapCS.h"
@@ -14,14 +14,25 @@ struct tRaycastOut
 
 struct tRayCollision
 {
-	UINT	RayID;
+	void*	RayObj;
+	Vec3	RayWorldPos;
 	Vec3	RayPos;
 	Vec3	RayDir;
+	float	RayLength;
 	UINT	Distance;
 	int		Success;
+	int		Padding;
 
-	tRayCollision(UINT _ID, tRay _Ray)
-		: RayID(_ID)
+	tRayCollision()
+		: RayObj(nullptr)
+		, Distance(0xffffffff)
+		, Success(0)
+	{
+
+	}
+
+	tRayCollision(void* _ID, tRay _Ray)
+		: RayObj(_ID)
 		, RayPos(_Ray.vStart)
 		, RayDir(_Ray.vDir)
 		, Distance(0xffffffff)
@@ -106,10 +117,9 @@ public:
 	// 들어있는 Ray연산(구형 방식)
 	tRaycastOut ColliderRaycasting(tRay _Ray);
 	// 들어있는 Ray연산
+	void AddRayCol(const tRayCollision& _RayInfo) { m_vecRayColInst.push_back(_RayInfo); }
+	void ColisionRayStack(void* _RayObj, tRay _RayPosDir);
 	vector<tRayCollision>& Collidercalcul();
-
-	// 충돌할 Ray정보 쌓기
-	void ColisionRayStack(UINT _RayID, tRay _RayPosDir);
 
     void FinalTick() override;
     void Render() override;

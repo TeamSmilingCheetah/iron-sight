@@ -82,7 +82,7 @@ public:
 	COLLIDER_STATE GetState() { return m_State; }
 	bool IsActive() { return m_State == ACTIVE; }
 
-	void UpdateRayColInfo(CGameObject* _HitObject, float _Distance);
+	bool UpdateRayColInfo(CGameObject* _HitObject, float _Distance);
 	void ClearRayColInfo();
 
 	// 충돌체 화성화

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Shader/CRaycastCS.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
@@ -33,6 +33,8 @@ int CRaycastCS::Binding()
 
 	m_Const.v4Arr[0] = m_Ray.vStart;
 	m_Const.v4Arr[1] = m_Ray.vDir;
+
+	m_Const.matArr[0] = m_LandWorldMat;
 
 	return S_OK;
 }
