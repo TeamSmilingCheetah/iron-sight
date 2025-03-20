@@ -11,7 +11,7 @@ CColliderRay::CColliderRay()
 	, m_Offset(Vec3(0.f))
 	, m_RayLength(1000.f)
 	, m_OverlapCount(0)
-	, m_RayTargetAll(ACTIVE)
+	, m_RayTargetAll(false)
 	, m_RayTargetLength(100000.f)
 	, m_State(ACTIVE)
 {
@@ -37,19 +37,24 @@ CColliderRay::~CColliderRay()
 {
 }
 
-void CColliderRay::UpdateRayColInfo(CGameObject* _HitObject, float _Distance)
+bool CColliderRay::UpdateRayColInfo(CGameObject* _HitObject, float _Distance)
 {
 	// 기존 거리보다 가까운 거리에 있는 물체만 저장
 	if (_Distance < m_RayColInfo.Length)
 	{
 		m_RayColInfo.HitObject = _HitObject;
 		m_RayColInfo.Length = _Distance;
+		m_RayTargetLength = m_RayColInfo.Length;
+		return true;
 	}
+
+	return false;
 }
 
 void CColliderRay::ClearRayColInfo()
 {
 	m_RayColInfo.PrevObject = m_RayColInfo.HitObject;
+	m_RayColInfo.HitObject = nullptr;
 	m_RayColInfo.Length = 100000.f;
 }
 
@@ -108,6 +113,9 @@ void CColliderRay::FinalTick()
 	{
 		DrawDebugLine(Vec4(0.0f, 0.0f, 1.0f, 1.0f), m_RayFinalPos, vEndPos, false, 0.f);
 	}
+
+	// 충돌 기록 초기화
+	ClearRayColInfo();
 }
 
 void CColliderRay::BeginOverlap(CCollider3D* _Other)

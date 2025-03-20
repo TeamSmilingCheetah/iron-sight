@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <Windows.h>
 
@@ -14,6 +14,7 @@
 using std::vector;
 using std::list;
 using std::queue;
+using std::priority_queue;
 using std::map;
 using std::make_pair;
 using std::set;

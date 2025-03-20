@@ -34,14 +34,16 @@ CLandScape::~CLandScape()
 		delete m_RayCollisionOut;
 }
 
-void CLandScape::ColisionRayStack(UINT _RayID, tRay _RayPosDir)
+void CLandScape::ColisionRayStack(void* _RayObj, tRay _RayPosDir)
 {
-	m_vecRayColInst.push_back(tRayCollision(_RayID, _RayPosDir));
+	m_vecRayColInst.push_back(tRayCollision(_RayObj, _RayPosDir));
 
 }
 
 void CLandScape::FinalTick()
 {
+	m_vecRayColInst.clear();
+
 	// 모드 전환
 	if (KEY_TAP(KEY::NUMPAD_6))
 	{
@@ -270,11 +272,44 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 
 vector<tRayCollision>& CLandScape::Collidercalcul()
 {
+	// 검사할 데이터가 0개 이면 즉시 종료
+	if (0 == m_vecRayColInst.size())
+		return m_vecRayColInst;
+
+	size_t Count = m_vecRayColInst.size();
+
 	// 구조체 크기에 따라 구조체 버퍼 초기화
+	m_RayCollisionOut->Create(sizeof(tRayCollision), (UINT)Count, SRV_UAV, true);
 
-	// 구조화 버퍼에 넣기
+	// LandScape 의 WorldInv 행렬 가져옴
+	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
+	const Matrix& matWorld = Transform()->GetWorldMat();
 
+	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
+	for (size_t i = 0; i < m_vecRayColInst.size(); ++i)
+	{
+		m_vecRayColInst[i].RayPos = XMVector3TransformCoord(m_vecRayColInst[i].RayWorldPos, matWorldInv);
+		m_vecRayColInst[i].RayDir = XMVector3TransformNormal(m_vecRayColInst[i].RayDir, matWorldInv);
+		m_vecRayColInst[i].RayDir.Normalize();
+	}
 
+	// 로컬좌표 기준으로 데이터 전달
+	m_RayCollisionOut->SetData(m_vecRayColInst.data());
+
+	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
+	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
+	m_RaycastCS->SetOutBuffer(m_RaycastOut);
+	m_RaycastCS->SetHeightMap(m_HeightMap);
+
+	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+	m_RaycastCS->SetRayInOutCount(Count);
+	m_RaycastCS->SetLandWorldMat(matWorld);
+
+	// 컴퓨트쉐이더 실행
+	m_RaycastCS->Execute();
+
+	// 결과 확인
+	m_RayCollisionOut->GetData(m_vecRayColInst.data());
 
 	return m_vecRayColInst;
 }
