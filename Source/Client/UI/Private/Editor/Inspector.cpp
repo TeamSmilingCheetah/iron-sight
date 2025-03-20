@@ -132,7 +132,7 @@ void Inspector::Render_Update()
 				szProjType.push_back(strStorage[i].c_str());  // c_str()로 const char* 저장
 			}
 
-			ImGui::Combo("##Componentcombo", &m_ComponentListIdx, szProjType.data(), szProjType.size());    // 이름, 선택된 배열 위치, 배열, 개수
+			ImGui::Combo("##Componentcombo", &m_ComponentListIdx, szProjType.data(), static_cast<int>(szProjType.size()));    // 이름, 선택된 배열 위치, 배열, 개수
 
 			ImGui::SameLine();
 

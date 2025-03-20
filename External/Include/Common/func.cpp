@@ -78,6 +78,16 @@ void AddChild(CGameObject* _Parent, CGameObject* _Child)
 	CTaskMgr::GetInst()->AddTask(task);
 }
 
+void ChangeName(CEntity* _Entity, wstring* _Name)
+{
+	tTask task{};
+	task.Type = TASK_TYPE::CHANGE_NAME;
+	task.Param0 = (DWORD_PTR)_Entity;
+	task.Param1 = (DWORD_PTR)_Name;
+
+	CTaskMgr::GetInst()->AddTask(task);
+}
+
 bool IsValid(CGameObject*& _Object)
 {
 	if (nullptr == _Object || _Object->IsDead())

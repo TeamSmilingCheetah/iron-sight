@@ -4,7 +4,7 @@
 
 CLevel::CLevel()
 	: m_State(LEVEL_STATE::NONE)
-	  , m_arrLayer{}
+	, m_arrLayer{}
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
@@ -112,6 +112,7 @@ CGameObject* CLevel::FindObjectByObjectID(UINT _ObjectID)
 
 	return nullptr;
 }
+
 
 void CLevel::ChangeState(LEVEL_STATE _NextState)
 {

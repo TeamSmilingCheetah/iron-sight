@@ -5,6 +5,7 @@
 class CLevel
 	: public CEntity
 {
+private:
 	LEVEL_STATE m_State;
 	CLayer m_arrLayer[MAX_LAYER];
 

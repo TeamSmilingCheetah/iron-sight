@@ -8,6 +8,7 @@ void DestroyObject(CGameObject* _TargetObj);
 void ChangeLevelState(LEVEL_STATE _NextState);
 void ChangeLevel(class CLevel* _Level, LEVEL_STATE _NextState);
 void AddChild(CGameObject* _Parent, CGameObject* _Child);
+void ChangeName(CEntity* _Entity, wstring* _Name);
 
 bool IsValid(class CGameObject*& _Object);
 
