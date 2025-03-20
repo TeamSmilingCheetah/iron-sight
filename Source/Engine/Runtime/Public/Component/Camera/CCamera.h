@@ -54,13 +54,13 @@ public:
 	void SetFOV(float _FOV) { m_FOV = _FOV; }
 	void SetPriority(int _Priority) { m_Priority = _Priority; }
 
-	float GetFar() { return m_Far; }
-	float GetFOV() { return m_FOV; }
-	float GetWidth() { return m_Width; }
-	float GetAspectRatio() { return m_AspectRatio; }
-	int GetCameraPriority() { return m_Priority; }
-	float GetScale() { return m_Scale; }
-	PROJ_TYPE GetProjType() { return m_ProjType; }
+	float GetFar() const { return m_Far; }
+	float GetFOV() const { return m_FOV; }
+	float GetWidth() const { return m_Width; }
+	float GetAspectRatio() const { return m_AspectRatio; }
+	int GetCameraPriority() const { return m_Priority; }
+	float GetScale() const { return m_Scale; }
+	PROJ_TYPE GetProjType() const { return m_ProjType; }
 
 	const tRay& GetRay() { return m_Ray; }
 
@@ -72,6 +72,7 @@ public:
 	void LayerCheck(int _LayerIdx);
 	void LayerCheckAll() { m_LayerCheck = 0xffffffff; }
 	void LayerCheckClear() { m_LayerCheck = 0; }
+	UINT GetLayerCheck() const { return m_LayerCheck; }
 
 	void Begin() override;
 	void FinalTick() override;

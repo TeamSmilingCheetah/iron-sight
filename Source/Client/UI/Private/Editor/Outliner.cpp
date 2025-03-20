@@ -5,6 +5,10 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
@@ -23,9 +27,12 @@ Outliner::Outliner()
 
 	m_Tree->AddDynamicSelect(this, static_cast<EUI_DELEGATE_1>(&Outliner::SelectGameObject));
 	m_Tree->AddDynamicSelfDragDrop(this, static_cast<EUI_DELEGATE_2>(&Outliner::DragDrop));
-	m_Tree->AddSeleteRightOption("AddPrefab", (EUI_DELEGATE_1)&Outliner::Prefab);
-	m_Tree->AddSeleteRightOption("CopyObject", (EUI_DELEGATE_1)&Outliner::Copy);
-	m_Tree->AddSeleteRightOption("DeleteObject", (EUI_DELEGATE_1)&Outliner::DeleteObject);
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&Outliner::ChangeName_Outliner);
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&Outliner::CopyObject);
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&Outliner::DeleteObject);
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&Outliner::MoveToObject);
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&Outliner::MakePrefab);
+	m_Tree->AddRightSpaceDelegate((EUI_DELEGATE_1)&Outliner::CreateObject_Outliner);
 }
 
 Outliner::~Outliner()
@@ -146,32 +153,177 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 	AddChild(pDropObj, pDragObj);
 }
 
-void Outliner::Prefab(DWORD_PTR _TreeNode)
+
+void Outliner::CreateObject_Outliner(Ptr<CMesh> _pMesh)
 {
-	TreeNode* pNode = (TreeNode*)_TreeNode;
-	m_TargetObject = (CGameObject*)pNode->GetData();
+	int idx = 0;
+	for (; idx < 32; ++idx)
+	{
+		if (!(m_ObjectIdx & 1 << idx)) break;
+	}
 
-	Ptr<CPrefab> pPrefab = new CPrefab;
-	pPrefab->SetProtoObject(m_TargetObject->Clone());
-	CAssetMgr::GetInst()->AddAsset(m_TargetObject->GetName(), pPrefab);
+	m_ObjectIdx |= 1 << idx;
 
+	wchar_t szBuff[15]{};
+	swprintf_s(szBuff, L"New Object %d", idx);
+
+	CGameObject* pObj = new CGameObject;
+	pObj->SetName(wstring(szBuff));
+
+	if (_pMesh != nullptr)
+	{
+		pObj->AddComponent(new CMeshRender);
+
+		Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
+		pObj->MeshRender()->SetMesh(_pMesh);
+		pObj->MeshRender()->SetMaterial(pMtrl, 0);
+	}
+
+	pObj->Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
+
+	CreateObject(pObj, 2, false);
 }
 
-void Outliner::Copy(DWORD_PTR _TreeNode)
+void Outliner::CheckDefaultName(const string& _OldName)
 {
-	TreeNode* pNode = (TreeNode*)_TreeNode;
-	m_TargetObject = (CGameObject*)pNode->GetData();
+	string prefix = "New Object ";
 
-	CGameObject* pNewObject = m_TargetObject->Clone();
-	CreateObject(pNewObject, m_TargetObject->GetLayerIdx(), false);
+	if (_OldName.size() > prefix.size() && _OldName.substr(0, prefix.size()) == prefix)
+	{
+		string numPart = _OldName.substr(prefix.size());  // 숫자 부분 추출
+
+		bool isNum = true;
+		for (char ch : numPart) {
+			if (!isdigit(ch))
+			{
+				isNum = false;
+				break;
+			}
+		}
+
+		if (isNum)
+			ClearObjectIdx(stoi(numPart));
+	}
+}
+
+void Outliner::ChangeName_Outliner(DWORD_PTR _TreeNode)
+{
+	// 이름 설정
+	if (ImGui::Selectable("Change Name", false, ImGuiSelectableFlags_DontClosePopups))
+	{
+		ImGui::OpenPopup("Name_Setting_popup");
+
+		TreeNode* pNode = (TreeNode*)_TreeNode;
+		m_TargetObject = (CGameObject*)pNode->GetData();
+	}
+
+	if (ImGui::BeginPopup("Name_Setting_popup"))
+	{
+		char szBuff[50]{};
+		string strName = WStringToString(m_TargetObject->GetName());
+		strcpy_s(szBuff, strName.c_str());
+		if (ImGui::InputText("##ObjectNameSet", szBuff, sizeof(szBuff), ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			// 새로 오브젝트 만들엇을 때 주는 디폴트 이름인지 체크
+			CheckDefaultName(strName);
+
+			strName = szBuff;
+			static wstring wstrName(L"");
+			wstrName = wstring(strName.begin(), strName.end());
+
+			ChangeName(static_cast<CEntity*>(m_TargetObject), &wstrName);
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void Outliner::MakePrefab(DWORD_PTR _TreeNode)
+{
+	if (ImGui::MenuItem("Make Prefab"))
+	{
+		TreeNode* pNode = (TreeNode*)_TreeNode;
+		m_TargetObject = (CGameObject*)pNode->GetData();
+
+		Ptr<CPrefab> pPrefab = new CPrefab;
+		pPrefab->SetProtoObject(m_TargetObject->Clone());
+		CAssetMgr::GetInst()->AddAsset(m_TargetObject->GetName(), pPrefab);
+	}
+}
+
+void Outliner::CopyObject(DWORD_PTR _TreeNode)
+{
+	if (ImGui::MenuItem("Copy Object"))
+	{
+		TreeNode* pNode = (TreeNode*)_TreeNode;
+		m_TargetObject = (CGameObject*)pNode->GetData();
+
+		CGameObject* pNewObject = m_TargetObject->Clone();
+		CreateObject(pNewObject, m_TargetObject->GetLayerIdx(), false);
+	}
 }
 
 void Outliner::DeleteObject(DWORD_PTR _TreeNode)
 {
-	TreeNode* pNode = (TreeNode*)_TreeNode;
-	m_TargetObject = (CGameObject*)pNode->GetData();
+	if (ImGui::MenuItem("Delete Object"))
+	{
+		TreeNode* pNode = (TreeNode*)_TreeNode;
+		m_TargetObject = (CGameObject*)pNode->GetData();
 
-	DestroyObject(m_TargetObject);
-	Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
-	pInspector->SetTargetObject(nullptr);
+		// Default Object인 경우 ID 비워주기
+		CheckDefaultName(WStringToString(m_TargetObject->GetName()));
+
+		DestroyObject(m_TargetObject);
+		Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
+		pInspector->SetTargetObject(nullptr);
+	}
 }
+
+void Outliner::MoveToObject(DWORD_PTR _TreeNode)
+{
+	if (ImGui::MenuItem("Move to Object"))
+	{
+		TreeNode* pNode = (TreeNode*)_TreeNode;
+		m_TargetObject = (CGameObject*)pNode->GetData();
+
+		// 오브젝트 위치로 이동 (Editor Mode)
+		if (CRenderMgr::GetInst()->IsEditorMode()) // Editor
+		{
+			CCamera* pCam = CRenderMgr::GetInst()->GetMainCamera();
+			pCam->Transform()->SetRelativePos(m_TargetObject->Transform()->GetWorldPos());
+		}
+	}
+}
+
+void Outliner::CreateObject_Outliner(DWORD_PTR _Nothing)
+{
+	// Engine Mesh 또는 Empty Object를 만듦.
+	if (ImGui::BeginMenu("Create Object"))
+	{
+		const map<wstring, Ptr<CAsset>>& m_mapMesh = CAssetMgr::GetInst()->GetAssets(ASSET_TYPE::MESH);
+
+		if (ImGui::MenuItem("Empty"))
+		{
+			CreateObject_Outliner(nullptr);
+		}
+
+		// Engine Mesh에 대해서만 적용
+		for (auto iter = m_mapMesh.begin(); iter != m_mapMesh.end(); ++iter)
+		{
+			if (!iter->second->IsEngineAsset())
+				continue;
+
+			string meshName = WStringToString(iter->second->GetKey());
+
+			if (ImGui::MenuItem(meshName.c_str()))
+			{
+				CreateObject_Outliner(static_cast<CMesh*>(iter->second.Get()));
+			}
+		}
+
+		ImGui::EndMenu();
+	}
+}
+

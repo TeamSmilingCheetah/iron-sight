@@ -8,11 +8,11 @@ UINT TreeNode::g_GlobalID = 0;
 
 TreeNode::TreeNode()
 	: m_Owner(nullptr)
-	  , m_Parent(nullptr)
-	  , m_Data(0)
-	  , m_Frame(false)
-	  , m_Selected(false)
-	  , m_FrameListMode(false)
+	, m_Parent(nullptr)
+	, m_Data(0)
+	, m_Frame(false)
+	, m_Selected(false)
+	, m_FrameListMode(false)
 {
 	char buff[50] = {};
 	sprintf_s(buff, 50, "##%d", g_GlobalID++);
@@ -86,25 +86,21 @@ void TreeNode::Render_Update()
 	// 우클릭을 감지하고 팝업 요청
 	if (m_Owner->IsRightOption())
 	{
-		string popupID = "NodeContextMenu" + m_ID; // 노드 ID를 포함한 고유 팝업 ID 생성
+		string popupID = "NodePopup" + m_ID; // 노드 ID를 포함한 고유 팝업 ID 생성
 
 		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 		{
 			ImGui::OpenPopup(popupID.c_str()); // 고유 ID로 팝업 요청
 		}
 
-		const vector<string>& OptionName = m_Owner->GetVecOptionName();
-		const vector<EUI_DELEGATE_1>& OptionDele = m_Owner->GetOptionDele();
+		const vector<EUI_DELEGATE_1>& vecDelegate = m_Owner->GetOptionDelegate();
 
 		if (ImGui::BeginPopup(popupID.c_str())) // 동일한 고유 ID로 팝업 시작
 		{
 			// 기존 코드와 동일
-			for (size_t i = 0; i < OptionDele.size(); ++i)
+			for (size_t i = 0; i < vecDelegate.size(); ++i)
 			{
-				if (ImGui::MenuItem(OptionName[i].c_str()))
-				{
-					(m_Owner->GetSeletedRightInst()->*OptionDele[i])((DWORD_PTR)this);
-				}
+				(m_Owner->GetSeletedRightInst()->*vecDelegate[i])((DWORD_PTR)this);
 			}
 
 			ImGui::EndPopup();
@@ -129,16 +125,16 @@ void TreeNode::Render_Update()
 // ======
 TreeUI::TreeUI()
 	: EditorUI("TreeUI")
-	  , m_Root(nullptr)
-	  , m_ShowRoot(true)
-	  , m_MultiSelection(false)
-	  , m_SelfDragDrop(false)
-	  , m_SelectedInst(nullptr)
-	  , m_SelectedFunc(nullptr)
-	  , m_SelfDragDropInst(nullptr)
-	  , m_SelfDragDropFunc(nullptr)
-	  , m_DraggedNode(nullptr)
-	  , m_DroppedNode(nullptr)
+	, m_Root(nullptr)
+	, m_ShowRoot(true)
+	, m_MultiSelection(false)
+	, m_SelfDragDrop(false)
+	, m_SelectedInst(nullptr)
+	, m_SelectedFunc(nullptr)
+	, m_SelfDragDropInst(nullptr)
+	, m_SelfDragDropFunc(nullptr)
+	, m_DraggedNode(nullptr)
+	, m_DroppedNode(nullptr)
 	, m_RightOption(false)
 	, m_SeletedRightInst(nullptr)
 {
@@ -155,6 +151,7 @@ void TreeUI::Render_Update()
 	if (nullptr == m_Root)
 		return;
 
+	// TreeNode Render
 	// 루트노드부터 모든 노드들 RenderUpdate
 	if (m_ShowRoot)
 		m_Root->Render_Update();
@@ -166,7 +163,7 @@ void TreeUI::Render_Update()
 		}
 	}
 
-
+	// Drag Drop 처리
 	// 드래그 노드가 있고, 마우스 왼쪽이 현재 윈도우에서 떨어진 경우
 	if ((m_DraggedNode && ImGui::IsMouseReleased(ImGuiMouseButton_Left)) && ImGui::IsWindowHovered())
 	{
@@ -179,6 +176,23 @@ void TreeUI::Render_Update()
 
 		m_DraggedNode = nullptr;
 		m_DroppedNode = nullptr;
+	}
+
+	// 빈 공간 우클릭 처리
+	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) &&
+		!ImGui::IsAnyItemHovered() &&  // 어떤 아이템도 Hover되지 않은 경우
+		ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+		ImGui::OpenPopup("SpacePopup");
+
+	if (ImGui::BeginPopup("SpacePopup"))
+	{
+		// 기존 코드와 동일
+		for (size_t i = 0; i < m_vecRightSpaceDelegate.size(); ++i)
+		{
+			(m_SeletedRightInst->*m_vecRightSpaceDelegate[i])((DWORD_PTR)this);
+		}
+
+		ImGui::EndPopup();
 	}
 }
 

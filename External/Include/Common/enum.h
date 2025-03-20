@@ -219,6 +219,9 @@ enum class TASK_TYPE
 
 	// 0 : Asset Adress
 	DELETE_ASSET,
+
+	// 0 : Entity Address, 1 : wstring
+	CHANGE_NAME,
 };
 
 

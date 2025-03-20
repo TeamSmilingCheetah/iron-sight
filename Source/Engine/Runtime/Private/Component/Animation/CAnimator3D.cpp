@@ -130,7 +130,7 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		// Bone Object World Transform 직접 세팅
 		//  TODO : ZCompute shader로 world transform까지 계산해서 pipeline 넘겨주도록 개선하기
 		m_BonePureMatBuffer->GetData(m_vecBoneWorldTransform.data());
-		for (int i = 0; i < iBoneCount; ++i)
+		for (UINT i = 0; i < iBoneCount; ++i)
 		{
 			m_vecBoneObject[i]->Transform()->SetWorldMat(m_vecBoneWorldTransform[i].Transpose() * _Renderer->Transform()->GetWorldMat());
 		}
@@ -178,7 +178,7 @@ void CAnimator3D::CreateBoneObject()
 	UINT BoneCount = m_vecClip[0]->GetBoneCount();
 
 	m_vecBoneObject.resize(BoneCount);
-	for (int i = 0; i < BoneCount; ++i)
+	for (UINT i = 0; i < BoneCount; ++i)
 	{
 		m_vecBoneObject[i] = new CGameObject;
 		m_vecBoneObject[i]->Transform()->SetManualUpdate(true);
@@ -187,7 +187,7 @@ void CAnimator3D::CreateBoneObject()
 	// 부모 자식 관계 세팅. 1번부터 하는 이유는 0번은 자기자신을 부모라고 하고 있음
 	// 모든 애니메이션이 같은 skeleton을 공유한다는 전제.
 	const vector<tMTBone>* vecBones = m_vecClip[0]->GetBones();
-	for (int i = 1; i < BoneCount; ++i)
+	for (UINT i = 1; i < BoneCount; ++i)
 	{
 		int parentIdx = vecBones->at(i).iParentIndx;
 
@@ -284,7 +284,7 @@ void CAnimator3D::LoadComponent(FILE* _File)
 	fread(&BoneCount, sizeof(UINT), 1, _File);
 
 	m_vecBoneObject.resize(BoneCount);
-	for (int i = 0; i < BoneCount; ++i)
+	for (UINT i = 0; i < BoneCount; ++i)
 	{
 		LoadObjectRef(m_vecBoneObject[i], _File);
 	}
@@ -295,10 +295,10 @@ void CAnimator3D::LinkBoneObject()
 {
 	const vector<tMTBone>* vecBones = m_vecClip[0]->GetBones();
 
-	UINT BoneCount = vecBones->size();
+	UINT BoneCount = static_cast<UINT>(vecBones->size());
 
 	m_vecBoneObject.resize(BoneCount);
-	for (int i = 0; i < BoneCount; ++i)
+	for (UINT i = 0; i < BoneCount; ++i)
 	{
 		m_vecBoneObject[i] = GetOwner()->GetChildByName(vecBones->at(i).strBoneName);
 	}

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Component/Animator3DUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -39,7 +39,7 @@ void Animator3DUI::Render_Update()
 			if (ClipIdx < 0)
 				ClipIdx = 0;
 			if (vecClip.size() - 1 < ClipIdx)
-				ClipIdx = vecClip.size() - 1;
+				ClipIdx = static_cast<int>(vecClip.size()) - 1;
 			pAnim3D->SetCurClip(ClipIdx);
 		}
 

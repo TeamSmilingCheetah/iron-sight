@@ -140,6 +140,16 @@ void CTaskMgr::Tick()
 				CAssetMgr::GetInst()->DeleteAsset(pAsset->GetAssetType(), pAsset->GetKey());
 			}
 			break;
+
+		case TASK_TYPE::CHANGE_NAME:
+			{
+				CEntity* pEntity = (CEntity*)task.Param0;
+				wstring* pName = (wstring*)task.Param1;
+				pEntity->SetName(*pName);
+
+				m_LevelChanged = true;
+			}
+			break;
 		}
 	}
 

@@ -164,6 +164,7 @@ void GS_DebugSkeleton(point VS_SKELETON_OUT _in[1]
 
 	uint InstanceID = _in[0].uID;
 	int start = InstanceID * 64;
+
 	
 	for (int i = start; i < min(g_iBoneCount, start + 64); ++i)
 	{

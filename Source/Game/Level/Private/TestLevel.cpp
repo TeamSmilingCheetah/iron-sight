@@ -36,6 +36,7 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(4)->SetName(L"PlayerObject");
 	pLevel->GetLayer(5)->SetName(L"Monster");
 	pLevel->GetLayer(6)->SetName(L"MonsterObject");
+	pLevel->GetLayer(7)->SetName(L"UI");
 
 	// 충돌 설정
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);

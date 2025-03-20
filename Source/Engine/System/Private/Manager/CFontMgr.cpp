@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CFontMgr.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 
@@ -31,7 +31,7 @@ void CFontMgr::Init()
 }
 
 void CFontMgr::DrawFont(const wchar_t* _pStr, float _fPosX, float _fPosY, float _fFontSize,
-                        UINT _Color)
+						UINT _Color)
 {
 	m_FontWrapper->DrawString(
 		CONTEXT,

@@ -3,6 +3,8 @@
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Client/Core/Public/CEditorMgr.h"
 #include "Client/Script/Public/CEditorCamScript.h"
 #include "Client/Script/Public/CGameObjectEx.h"
@@ -18,7 +20,7 @@ CEditorMgr::~CEditorMgr()
 
 void CEditorMgr::Init()
 {
-	auto pObject = new CGameObjectEx;
+	CGameObjectEx* pObject = new CGameObjectEx;
 	pObject->SetName(L"EditorCamera");
 	pObject->AddComponent(new CCamera);
 	pObject->AddComponent(new CEditorCamScript);
@@ -36,6 +38,9 @@ void CEditorMgr::Init()
 
 void CEditorMgr::Progress()
 {
+	if (CLevelMgr::GetInst()->GetCurrentLevel()->GetState() != LEVEL_STATE::STOP)
+		return;
+
 	for (size_t i = 0; i < m_vecEditorObj.size(); ++i)
 	{
 		m_vecEditorObj[i]->Tick();
