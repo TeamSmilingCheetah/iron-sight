@@ -113,6 +113,11 @@ void CGameObject::FinalTick()
 	if (!m_Active)
 		return;
 
+	if (m_Parent != nullptr && m_Parent->IsDead())
+	{
+		m_Dead = true;
+	}
+
 	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
 	{
 		if (!m_arrCom[i])
@@ -124,9 +129,11 @@ void CGameObject::FinalTick()
 	auto iter = m_vecChild.begin();
 	for (; iter != m_vecChild.end();)
 	{
+		bool ChildDead = (*iter)->IsDead();
+
 		(*iter)->FinalTick();
 
-		if ((*iter)->IsDead())
+		if (ChildDead)
 		{
 			iter = m_vecChild.erase(iter);
 		}
