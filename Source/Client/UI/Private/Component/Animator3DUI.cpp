@@ -83,6 +83,25 @@ void Animator3DUI::Render_Update()
 		ImGui::SameLine();
 		ImGui::InputInt("##BoneCount", &BoneCount);
 
+
+		// Animation Stop & Play
+		static bool bStop = false;
+		static double CurTime = 0.f;
+		if (ImGui::Button("Stop Anim"))
+		{
+			CurTime = CurClipTime;
+			bStop = true;
+		}
+		ImGui::SameLine(150);
+		if (ImGui::Button("Play Anim"))
+		{
+			bStop = false;
+		}
+
+		if (bStop)
+		{
+			pAnim3D->SetClipTime(ClipIdx, static_cast<float>(CurTime));
+		}
 	}
 
 	if (ImGui::Button("DELETE##Animator3D"))

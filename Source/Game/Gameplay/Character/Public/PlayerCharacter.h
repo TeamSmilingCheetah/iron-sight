@@ -9,7 +9,13 @@ class PlayerCharacter :
 	public CScript
 {
 private:
+	Vec3 m_velocity;
+
+	float m_Acceleration;
+	float m_Deceleration;
+	float m_MaxSpeed;
 	float m_PlayerSpeed;
+	float m_MouseSensitivity;
 	float m_PaperBurnIntence;
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
@@ -25,6 +31,14 @@ public:
 	             CCollider2D* _OtherCollider) override;
 	void EndOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
 	                CCollider2D* _OtherCollider) override;
+
+private:
+	void UpdatePosition();
+	void UpdateRotation();
+
+public:
+	float GetCurMouseSensitivity() { return m_MouseSensitivity; }
+
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 

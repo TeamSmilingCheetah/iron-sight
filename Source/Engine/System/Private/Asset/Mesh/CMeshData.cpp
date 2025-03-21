@@ -56,6 +56,9 @@ CGameObject* CMeshData::Instantiate()
 		// 빈 오브젝트 밑에 mesh에 대응되는 오브젝트를 추가
 		for (int idx = 0; idx < meshCnt; ++idx)
 		{
+			if (m_vecMesh[idx] == nullptr)
+				continue;
+
 			CGameObject* childObj = new CGameObject;
 			childObj->AddComponent(new CMeshRender);
 			childObj->SetName(m_vecMesh[idx]->GetKey());
@@ -175,6 +178,14 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 			wstring strMeshKey = path(strFullPath).stem();
 			strMeshKey += L"_";
 			strMeshKey += Container.strName;
+			//if (Container.strName != L"")
+			//{
+			//	strMeshKey += Container.strName;
+			//}				
+			//else
+			//{
+			//	strMeshKey += std::to_wstring(idx);
+			//}				
 			strMeshKey += L".mesh";
 
 			if (nullptr == CAssetMgr::GetInst()->FindAsset<CMesh>(strMeshKey))

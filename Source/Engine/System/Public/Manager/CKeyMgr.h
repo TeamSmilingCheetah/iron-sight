@@ -29,7 +29,8 @@ enum class KEY
 	SPACE,
 	ENTER,
 
-	LSHIFT,
+    LSHIFT,
+	LALT,
 
 	NUM_1,
 	NUM_2,
@@ -111,9 +112,9 @@ public:
 	void Init();
 	void Tick();
 
-	KEY_STATE GetKeyState(KEY _Key) { return m_vecKey[static_cast<int>(_Key)].State; }
-	Vec2 GetMousePos() { return m_MousePos; }
-	Vec2 GetMouseDir() { return m_MouseDir; }
-
+    KEY_STATE GetKeyState(KEY _Key) { return m_vecKey[static_cast<int>(_Key)].State; }
+    Vec2 GetMousePos() { return m_MousePos; }
+    Vec2 GetMouseDir() { return m_MouseDir; }
+	void SetMousePos();
 	void SetCursorFix(bool _bFix);
 };

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "Core/Public/CEngine.h"
+#include "System/Public/Rendering/Device/CDevice.h"
 
 int g_arrKeyValue[static_cast<int>(KEY::END)] =
 {
@@ -31,7 +32,8 @@ int g_arrKeyValue[static_cast<int>(KEY::END)] =
 	VK_SPACE,
 	VK_RETURN,
 
-	VK_LSHIFT,
+		VK_LSHIFT,
+		VK_MENU,
 
 	'1',
 	'2',
@@ -190,4 +192,20 @@ void CKeyMgr::SetCursorFix(bool _bFix)
 
 	// 커서 표시/숨김 설정
 	ShowCursor(!m_CursorFixed);
+}
+
+void CKeyMgr::SetMousePos()
+{
+	RECT clientRect;
+	
+	GetClientRect(CEngine::GetInst()->GetMainWnd(), &clientRect);
+	Vec2 ClientRect = CDevice::GetInst()->GetRenderResolution();
+
+	int centerX = (clientRect.right - clientRect.left) / 2;
+	int centerY = (clientRect.bottom - clientRect.top) / 2;
+
+	POINT centerPt = { centerX, centerY };
+	ClientToScreen(CEngine::GetInst()->GetMainWnd(), &centerPt);
+
+	SetCursorPos(static_cast<int>(centerPt.x), static_cast<int>(centerPt.y));
 }
