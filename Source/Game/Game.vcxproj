@@ -77,7 +77,7 @@
     <ExternalIncludePath>$(ExternalIncludePath);$(SolutionDir)External\Include\;$(SolutionDir)External\Include\FBXLoader\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath);$(SolutionDir)External\Include\;$(SolutionDir)Source\;</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)External\Include\;$(SolutionDir)Source\;</IncludePath>
     <ExternalIncludePath>$(ExternalIncludePath);$(SolutionDir)External\Include\;$(SolutionDir)External\Include\FBXLoader\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
     <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)External\Library\$(ProjectName)\Intermediate\</IntDir>
@@ -154,14 +154,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-      <ClInclude Include="pch.h" />
-      <ClInclude Include="framework.h" />
-      <ClInclude Include="System\Public\GameplayManager.h" />
-      <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
-      <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
-      <ClInclude Include="Gameplay\Component\Public\WeaponComponent.h" />
-      <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h" />
-      <ClInclude Include="Level\Public\TestLevel.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="System\Public\GameplayManager.h" />
+    <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
+    <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
+    <ClInclude Include="Gameplay\Component\Public\WeaponComponent.h" />
+    <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h" />
+    <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -174,8 +174,8 @@
     <ClCompile Include="System\Private\GameplayManager.cpp" />
     <ClCompile Include="Gameplay\Character\Private\CameraController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp" />
-      <ClInclude Include="Gameplay\Component\Private\WeaponComponent.cpp" />
-      <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
+    <ClInclude Include="Gameplay\Component\Private\WeaponComponent.cpp" />
+    <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
     <ClCompile Include="Level\Private\TestLevel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

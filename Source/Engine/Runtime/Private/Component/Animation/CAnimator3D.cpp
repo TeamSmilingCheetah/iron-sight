@@ -201,7 +201,7 @@ void CAnimator3D::CreateBoneObject()
 	GetOwner()->AddChild(m_vecBoneObject[0]);
 }
 
-void CAnimator3D::SetCurClip(int _Idx)
+ void CAnimator3D::SetCurClip(int _Idx)
 {
 	assert(_Idx < m_FrameCount);
 

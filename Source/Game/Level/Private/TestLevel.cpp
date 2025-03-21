@@ -92,7 +92,7 @@ void TestLevel::CreateTestLevel()
 	// Player
 	// ======
 	pObject = new CGameObject;
-	pObject->SetName(L"Player");
+	pObject->SetName(L"TestPlayer");
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider3D);
 
@@ -143,16 +143,17 @@ void TestLevel::CreateTestLevel()
 		CGameObject* pObj = nullptr;
 
 
+		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\AK_ANIMACION.fbx");
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\pubg_test2.fbx");
 		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
 
-		Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
+		//Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
 
 		int modelCnt = 1;
 		for (int i = 0; i < modelCnt; ++i)
 		{
 			pObj = pMeshData->Instantiate();
-			pObj->SetName(L"Character");
+			pObj->SetName(L"Player");
 			pObj->AddComponent(new CCollider3D);
 			pObj->AddComponent(new CColliderRay);
 
@@ -170,24 +171,24 @@ void TestLevel::CreateTestLevel()
 
 			pLevel->AddObject(0, pObj, false);
 
-			CGameObject* pWeaponObj = pWeaponModel->Instantiate();
-			pWeaponObj->SetName(L"Weapon");
-			pWeaponObj->AddComponent(new CColliderRay);
-			
-			pWeaponObj->Transform()->SetRelativePos(Vec3(90.f, 0.f, 30.f));
-			pWeaponObj->Transform()->SetRelativeScale(Vec3(900.f, 900.f, 900.f));
-			pWeaponObj->Transform()->SetRelativeRotation(0.f, -2.f, -4.3f);
-			pWeaponObj->Transform()->SetIndependentScale(true);
+		//	CGameObject* pWeaponObj = pWeaponModel->Instantiate();
+		//	pWeaponObj->SetName(L"Weapon");
+		//	pWeaponObj->AddComponent(new CColliderRay);
+		//	
+		//	pWeaponObj->Transform()->SetRelativePos(Vec3(90.f, 0.f, 30.f));
+		//	pWeaponObj->Transform()->SetRelativeScale(Vec3(900.f, 900.f, 900.f));
+		//	pWeaponObj->Transform()->SetRelativeRotation(0.f, -2.f, -4.3f);
+		//	pWeaponObj->Transform()->SetIndependentScale(true);
 
-			pWeaponObj->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
-			pWeaponObj->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
-			
-			pObj->AddChild(pWeaponObj);
+		//	pWeaponObj->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
+		//	pWeaponObj->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
+		//	
+		//	pObj->AddChild(pWeaponObj);
 		}
 
 
 		// 모바일 배그 애셋 테스트
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
+/*		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"Airdrop");
 		pObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
@@ -262,6 +263,6 @@ void TestLevel::CreateTestLevel()
 		pObj->SetName(L"Smoke Grenade");
 		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
+		pLevel->AddObject(0, pObj, false);*/
 	}
 }
