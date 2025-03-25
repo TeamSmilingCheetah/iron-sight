@@ -33,6 +33,7 @@ public:
 	                CCollider2D* _OtherCollider) override;
 
 private:
+public:
 	void UpdatePosition();
 	void UpdateRotation();
 

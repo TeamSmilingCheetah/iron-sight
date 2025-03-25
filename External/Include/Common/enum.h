@@ -125,6 +125,8 @@ enum class COMPONENT_TYPE
 
 	COLLIDERRAY,		// Ray 충돌체
 
+	UI,			// UI 컴포넌트
+
 	END,
 
 	SCRIPT, // 대본

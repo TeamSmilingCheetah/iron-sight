@@ -76,6 +76,7 @@ public:
 	class CSkyBox* SkyBox() const { return (CSkyBox*)GetComponent(COMPONENT_TYPE::SKYBOX); }
 	class CDecal* Decal() const { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
 	class CLandScape* LandScape() const { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
+	class CUI* UI() const { return (CUI*)GetComponent(COMPONENT_TYPE::UI); }
 
 private:
 	void DisconnectWithLayer();

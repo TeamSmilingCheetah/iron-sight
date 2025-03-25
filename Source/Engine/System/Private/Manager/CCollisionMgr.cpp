@@ -1021,6 +1021,8 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 	return false;
 }
 
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+
 bool CCollisionMgr::IsCollision3DLand(CCollider3D* _LeftCol, CLandScape* _RightCol)
 {
 	// 오브젝트는 Transform기준 위치를 발로 잡는다.

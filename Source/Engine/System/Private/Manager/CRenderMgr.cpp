@@ -252,6 +252,10 @@ void CRenderMgr::Render_Play()
 	// 레벨 내에 카메라로 레벨 렌더링
 	for (size_t i = 0; i < m_vecCam.size(); ++i)
 	{
+		// 비활성화된 카메라는 렌더하지 않음.
+		if (!m_vecCam[i]->GetOwner()->IsActive())
+			continue;
+
 		m_vecCam[i]->SortObject();
 
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
@@ -279,9 +283,12 @@ void CRenderMgr::Render_Play()
 		MergeDeferredTarget();
 
 		m_vecCam[i]->render_forward();
-		m_vecCam[i]->render_effect();
 		m_vecCam[i]->render_particle();
+		m_vecCam[i]->render_effect();
+		m_vecCam[i]->render_transparent();
 		m_vecCam[i]->render_postprocess();
+		m_vecCam[i]->render_ui();
+		
 		m_vecCam[i]->render_clear();
 
 		// 특정 타겟으로 SwapChain 을 덮어쓰기
