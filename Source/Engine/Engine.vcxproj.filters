@@ -214,6 +214,12 @@
     <ClInclude Include="System\Public\Rendering\Material\CMaterial.h">
       <Filter>08. Asset\10. Material</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\UI\CUI.h">
+      <Filter>07. Component\09. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Manager\CUIMgr.h">
+      <Filter>04. Manager\10. UIMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -419,6 +425,12 @@
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp">
       <Filter>08. Asset\10. Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\UI\CUI.cpp">
+      <Filter>07. Component\09. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\CUIMgr.cpp">
+      <Filter>04. Manager\10. UIMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -629,6 +641,12 @@
     <Filter Include="08. Asset\Shader\ComputeShader">
       <UniqueIdentifier>{eb359fd5-625f-4557-9b51-a19b7495b214}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. Component\09. UI">
+      <UniqueIdentifier>{296061c1-d724-4324-b31f-555b16450d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Manager\10. UIMgr">
+      <UniqueIdentifier>{f0919f5a-f30c-4060-8b8e-67c9b189cd4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\func.fx">
@@ -699,6 +717,9 @@
     </FxCompile>
     <FxCompile Include="Shader\copybone.fx">
       <Filter>HLSL\03. Compute\3DAnimation\CopyBone</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ui.fx">
+      <Filter>HLSL\02. Render\2DShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

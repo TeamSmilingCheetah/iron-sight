@@ -51,6 +51,7 @@ public:
 	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 
 private:
+public:
 	void UpdatePosition();
 	void UpdateRotation();
 	void PlayerAttack();

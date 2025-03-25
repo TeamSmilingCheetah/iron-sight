@@ -1,20 +1,20 @@
-﻿#pragma once
+#pragma once
 
 class CEngine
-    : public singleton<CEngine>
+	: public singleton<CEngine>
 {
-    SINGLE(CEngine)
-    HWND m_hMainWnd;
-    Vec2 m_Resolution;
+	SINGLE(CEngine)
+	HWND m_hMainWnd;
+	Vec2 m_Resolution;
 
-    // FMOD 관리자 클래스
-    FMOD::System* m_FMODSystem;
+	// FMOD 관리자 클래스
+	FMOD::System* m_FMODSystem;
 
 public:
-    HWND GetMainWnd() { return m_hMainWnd; }
-    FMOD::System* GetFMODSystem() { return m_FMODSystem; }
+	HWND GetMainWnd() { return m_hMainWnd; }
+	FMOD::System* GetFMODSystem() { return m_FMODSystem; }
 
-    int Init(HWND _hWnd, UINT _Width, UINT _Height
-             , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc);
-    void Progress();
+	int Init(HWND _hWnd, UINT _Width, UINT _Height
+			 , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc);
+	void Progress();
 };

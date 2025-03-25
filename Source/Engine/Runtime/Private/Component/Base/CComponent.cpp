@@ -1,9 +1,9 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Base/CComponent.h"
 
 CComponent::CComponent(COMPONENT_TYPE _TYPE)
     : m_Owner(nullptr)
-      , m_Type(_TYPE)
+    , m_Type(_TYPE)
 {
 }
 

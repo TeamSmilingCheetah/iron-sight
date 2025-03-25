@@ -171,6 +171,14 @@ struct tRay
 };
 
 
+// UI
+struct PayLoad
+{
+	wstring		Type;
+	DWORD_PTR	Data;
+};
+
+
 // ============
 // Animation 3D
 // ============
@@ -292,3 +300,6 @@ struct GlobalData
 };
 
 extern GlobalData g_Data;
+
+
+

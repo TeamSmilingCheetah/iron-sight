@@ -11,6 +11,7 @@
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -25,7 +26,7 @@ void TestLevel::CreateTestLevel()
 	Ptr<CTexture> pAtlasTex = CAssetMgr::GetInst()->Load<CTexture>(
 		L"TileMapTex", L"Texture\\TILE.bmp");
 
-	auto pLevel = new CLevel;
+	CLevel* pLevel = new CLevel;
 
 	// 테스트 레벨을 현재 레벨로 지정
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);
@@ -135,6 +136,83 @@ void TestLevel::CreateTestLevel()
 		CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
 
 	pLevel->AddObject(0, pLandScape, false);
+
+
+	// ==============
+	// UI System Test
+	// ==============
+	
+	// UI Camera
+	CGameObject* UICamera = new CGameObject;
+	UICamera->SetName(L"UICamera");
+	UICamera->AddComponent(new CCamera);
+	UICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	UICamera->Camera()->SetPriority(1);
+	UICamera->Camera()->SetFar(10.f);	// 1-10 까지 UI 계층 (Canvas)
+
+	assert(pLevel->GetLayer(7)->GetName() == L"UI");
+	UICamera->Camera()->LayerCheck(7);
+
+	pLevel->AddObject(0, UICamera, false);
+
+	// CanvasUI
+	CGameObject* CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_TYPE::CANVAS));
+
+	CanvasUI->AddComponent(new CMeshRender);
+	CanvasUI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	CanvasUI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	CanvasUI->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_0, Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	CanvasUI->Transform()->SetRelativeScale(1280.f, 768.f, 1.f);
+	CanvasUI->Transform()->SetRelativePos(0.f, 0.f, 1.f);
+
+	pLevel->AddObject(7, CanvasUI, false);	// UI layer
+
+	// ButtonUI
+	CGameObject* UI = new CGameObject;
+	UI->SetName(L"ButtonUI");
+	UI->AddComponent(new CUI(UI_TYPE::BUTTON));
+
+	UI->AddComponent(new CMeshRender);
+	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_0, Vec4(0.3f, 0.3f, 0.3f, 0.5f));
+	UI->Transform()->SetIndependentScale(true);
+	UI->Transform()->SetRelativeScale(100.f, 40.f, 1.f);
+	UI->Transform()->SetRelativePos(-250.f, 120.f, 0.1f);
+
+	CanvasUI->AddChild(UI);
+
+	// DragUI
+	UI = new CGameObject;
+	UI->SetName(L"DragUI");
+	UI->AddComponent(new CUI(UI_TYPE::DRAG));
+
+	UI->AddComponent(new CMeshRender);
+	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_0, Vec4(0.3f, 0.3f, 0.3f, 0.5f));
+	UI->Transform()->SetIndependentScale(true);
+	UI->Transform()->SetRelativeScale(100.f, 40.f, 1.f);
+	UI->Transform()->SetRelativePos(-40.f, 150.f, 0.1f);
+
+	CanvasUI->AddChild(UI);
+
+	// DropUI
+	UI = new CGameObject;
+	UI->SetName(L"DropUI");
+	UI->AddComponent(new CUI(UI_TYPE::DROP));
+
+	UI->AddComponent(new CMeshRender);
+	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_0, Vec4(0.3f, 0.3f, 0.3f, 0.5f));
+	UI->Transform()->SetIndependentScale(true);
+	UI->Transform()->SetRelativeScale(100.f, 600.f, 1.f);
+	UI->Transform()->SetRelativePos(100.f, 0.f, 0.1f);
+
+	CanvasUI->AddChild(UI);
 
 	// ============
 	// FBX Loading
