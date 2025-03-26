@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Core/Public/CEntity.h"
 #include "System/Public/Asset/Texture/CTexture.h"
 

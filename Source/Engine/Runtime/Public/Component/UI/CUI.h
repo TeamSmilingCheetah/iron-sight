@@ -24,7 +24,7 @@ class CUI :
 	friend class CUIMgr;
 
 private:
-	const UI_TYPE		m_UIType;		// RTTI 구현
+	const UI_TYPE		m_UIType;		// Event 지원
 
 	Vec2				m_LT;			// Left Top
 	Vec2				m_RB;			// Right Bottom
@@ -48,12 +48,18 @@ public:
 
 	void SetPriority(int _Priority);
 
+	// 위치 설정
+	void SetRectPos(Vec2 _Pos);
+	void SetRectPos(float _x, float _y);
+
+	Vec2 GetRectPos();
+
 
 	// Event 지원 여부 (bit masking)
+	bool CanHover() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::HOVER); }
 	bool CanClick() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::CLICK); }
 	bool CanDrag() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::DRAG); }
 	bool CanDrop() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::DROP); }
-
 
 
 public:
