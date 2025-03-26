@@ -61,7 +61,7 @@ public:
 	// ========
 	virtual void OnMouseClick() {}
 	virtual void OnMouseHover() {}
-	virtual const PayLoad& OnMouseBeginDrag() { return PayLoad{}; }
+	virtual PayLoad OnMouseBeginDrag() { return PayLoad{}; }
 	virtual void OnMouseDrop(const vector<PayLoad>& _vecPayLoad) {}
 
 

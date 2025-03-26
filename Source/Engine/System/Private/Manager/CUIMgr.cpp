@@ -6,6 +6,10 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 
 CUIMgr::CUIMgr()
+	: m_HoverUI(nullptr)
+	, m_FocusUI(nullptr)
+	, m_FocusCanvas(nullptr)
+	, m_DragUI(nullptr)
 {
 
 }
@@ -20,7 +24,7 @@ void CUIMgr::RegisterUI(CUI* _UI)
 	assert(_UI->m_UIType == UI_TYPE::CANVAS);
 
 	// UI Manager의 다른 Canvas와 Priority가 겹치지 않도록 설정함.
-	_UI->SetPriority(static_cast<int>(m_vecUI.size()) + 1);
+	_UI->SetPriority(static_cast<int>(m_vecUI.size()));
 
 	m_vecUI.push_back(_UI);
 }
@@ -92,14 +96,16 @@ void CUIMgr::ChangeFocus(CUI* _CanvasUI, CUI* _FocusUI)
 	{
 		int prevPriority = m_FocusCanvas->m_Priority;
 
-		// FocusCanvas의 z값을 1로 설정하고, 나머지는 한 칸씩 미룸.
-		m_FocusCanvas->SetPriority(1);
+		// FocusCanvas의 Priority을 0로 설정하고, 나머지는 한 칸씩 미룸.
+		m_FocusCanvas->SetPriority(0);
 
-		for (int i = prevPriority - 1; i > 0; --i)
+		for (int i = prevPriority; i > 0; --i)
 		{
 			m_vecUI[i] = m_vecUI[i - 1];
-			m_vecUI[i]->SetPriority(i + 1);
+			m_vecUI[i]->SetPriority(i);
 		}
+
+		m_vecUI[0] = m_FocusCanvas;
 	}
 }
 
@@ -128,13 +134,16 @@ void CUIMgr::Tick()
 		}
 	}
 
-
+	// =========
 	// Event 처리
-
-	// HoverUI가 있다면 Hover Event 호출
+	// =========
+	
+	// HoverUI가 있다면 
 	if (m_HoverUI)
 	{
-		OnMouseHover();
+		// Hover Event 옵션이 있다면
+		if (m_HoverUI->CanHover())
+			OnMouseHover();
 	}
 
 	// 마우스 Down이 감지된 경우
