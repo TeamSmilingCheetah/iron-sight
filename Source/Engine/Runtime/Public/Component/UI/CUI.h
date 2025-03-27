@@ -43,6 +43,9 @@ public:
 	void SetColor(Vec4 _Color) { m_BackGroundColor = _Color; }
 	Vec4 GetColor() const { return m_BackGroundColor; }
 
+	void SetImage(Ptr<CTexture> _Image) { m_Image = _Image; }
+	Ptr<CTexture> GetImage() { return m_Image; }
+
 	void SetPriority(float _Priority);
 
 	// 위치 설정

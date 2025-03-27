@@ -212,6 +212,7 @@ void TestLevel::CreateTestLevel()
 	UI->UI()->SetRectPos(100.f, 0.f);
 	UI->UI()->SetRectSize(100.f, 600.f);
 	UI->UI()->SetPriority(-0.1f);
+	UI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\link.png"));
 
 	CanvasUI->AddChild(UI);
 
