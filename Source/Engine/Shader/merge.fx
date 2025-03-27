@@ -40,7 +40,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
                 
         if (vViewPos.a == 0.f)
             discard;
-                      
+
         return float4(vColor.rgb * (vDiffuse.rgb + vEmissive.rgb) + vSpecular.rgb, 1.f);
     }
     

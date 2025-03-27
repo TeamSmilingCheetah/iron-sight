@@ -297,6 +297,7 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"UIMtrl");
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UIShader"));
+	pMtrl->SetScalarParam(VEC4_0, Vec4(0.f, 0.f, 0.f, 1.f));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// TileMapMaterial

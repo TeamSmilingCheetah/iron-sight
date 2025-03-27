@@ -30,23 +30,20 @@ private:
 	Vec2				m_RB;			// Right Bottom
 	Vec4				m_BackGroundColor;
 
-	int					m_Priority;		// Transform Z값으로 구현.
+	float				m_Priority;		// Transform Z값으로 구현.
 										// 같은 Canvas에 속하는 UI들은 (Priority-1, Priority] 범위를 사용함.
 
 	// Image
 	Ptr<CTexture>		m_Image;
 
 	// Text
-	wstring				m_Text;
+	vector<FontRenderInfo>		m_TextInfo;
 
 public:
 	void SetColor(Vec4 _Color) { m_BackGroundColor = _Color; }
 	Vec4 GetColor() const { return m_BackGroundColor; }
 
-	void SetText(const wstring& _Text) { m_Text = _Text; }
-	const wstring& GetText() const { return m_Text; }
-
-	void SetPriority(int _Priority);
+	void SetPriority(float _Priority);
 
 	// 위치 설정
 	void SetRectPos(Vec2 _Pos);
@@ -54,6 +51,14 @@ public:
 
 	Vec2 GetRectPos();
 
+	void SetRectSize(Vec2 _Size);
+	void SetRectSize(float _x, float _y);
+
+	Vec2 GetRectSize();
+
+	// Text 설정
+	void AddText(const wstring& _Text, float _x, float _y, float _FontSize, UINT _Color);
+	vector<FontRenderInfo>& GetTextInfoRef() { return m_TextInfo; }
 
 	// Event 지원 여부 (bit masking)
 	bool CanHover() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::HOVER); }

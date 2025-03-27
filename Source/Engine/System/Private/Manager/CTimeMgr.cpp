@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CTimeMgr.h"
 #include "System/Public/Manager/CFontMgr.h"
 
@@ -72,9 +72,7 @@ void CTimeMgr::Tick()
 
 	g_Data.DT_Engine = m_fEngineDT;
 	g_Data.Time_Engine = m_fEngineTime;
-}
 
-void CTimeMgr::Render()
-{
+	// Font Render 호출
 	CFontMgr::GetInst()->DrawFont(m_TimeInfo, 10, 20, 16, FONT_RGBA(255, 20, 20, 255));
 }

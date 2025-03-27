@@ -85,7 +85,7 @@ void CEngine::Progress()
 
 	// Engine Render
 	CRenderMgr::GetInst()->Render();
-	CTimeMgr::GetInst()->Render();
+	CFontMgr::GetInst()->Render();
 
 	// Task
 	CTaskMgr::GetInst()->Tick();

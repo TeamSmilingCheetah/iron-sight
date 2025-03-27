@@ -347,13 +347,10 @@ void CRenderMgr::MergeDeferredTarget()
 {
 	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
-	m_MergeMtrl->
-		SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
-	m_MergeMtrl->
-		SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	m_MergeMtrl->
-		SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 	m_MergeMtrl->SetScalarParam(INT_0, 0);
 	m_MergeMtrl->Binding();
 	pRectMesh->Render(0);
