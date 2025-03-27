@@ -178,6 +178,15 @@ struct PayLoad
 	DWORD_PTR	Data;
 };
 
+// Font
+struct FontRenderInfo
+{
+	wstring		Text;
+	Vec2		Pos;
+	float		Size;
+	UINT		Color;
+};
+
 
 // ============
 // Animation 3D

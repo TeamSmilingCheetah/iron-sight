@@ -80,7 +80,7 @@ void TestLevel::CreateTestLevel()
 	pSkyBox->SetName(L"SkyBox");
 	pSkyBox->AddComponent(new CSkyBox);
 	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
-		L"Texture\\skybox\\Sky02.jpg");
+		L"Texture\\skybox\\Sky01.png");
 
 	// FrustumCheck 비활성화
 	pSkyBox->Transform()->SetFrustumCheck(false);
@@ -163,8 +163,9 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	CanvasUI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
-	CanvasUI->Transform()->SetRelativeScale(1280.f, 768.f, 1.f);
-	CanvasUI->Transform()->SetRelativePos(-200.f, 0.f, 2.f);
+	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetRectPos(0.f, 0.f);
+	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
 	pLevel->AddObject(7, CanvasUI, false);	// UI layer
 
@@ -177,9 +178,10 @@ void TestLevel::CreateTestLevel()
 	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	UI->Transform()->SetIndependentScale(true);
-	UI->Transform()->SetRelativeScale(100.f, 40.f, 1.f);
-	UI->Transform()->SetRelativePos(-250.f, 120.f, -0.1f);
+	UI->UI()->SetRectPos(-250.f, 120.f);
+	UI->UI()->SetRectSize(100.f, 40.f);
+	UI->UI()->SetPriority(-0.1f);
+	UI->UI()->AddText(L"Test", 0.f, 0.f, 16.f, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
 
@@ -192,9 +194,9 @@ void TestLevel::CreateTestLevel()
 	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	UI->Transform()->SetIndependentScale(true);
-	UI->Transform()->SetRelativeScale(100.f, 40.f, 1.f);
-	UI->Transform()->SetRelativePos(-40.f, 150.f, -0.1f);
+	UI->UI()->SetRectPos(-40.f, 150.f);
+	UI->UI()->SetRectSize(100.f, 40.f);
+	UI->UI()->SetPriority(-0.1f);
 
 	CanvasUI->AddChild(UI);
 
@@ -207,9 +209,9 @@ void TestLevel::CreateTestLevel()
 	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	UI->Transform()->SetIndependentScale(true);
-	UI->Transform()->SetRelativeScale(100.f, 600.f, 1.f);
-	UI->Transform()->SetRelativePos(100.f, 0.f, -0.1f);
+	UI->UI()->SetRectPos(100.f, 0.f);
+	UI->UI()->SetRectSize(100.f, 600.f);
+	UI->UI()->SetPriority(-0.1f);
 
 	CanvasUI->AddChild(UI);
 

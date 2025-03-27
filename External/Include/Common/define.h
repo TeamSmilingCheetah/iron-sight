@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 using Vec2 = SimpleMath::Vector2;
@@ -34,3 +34,6 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 #define CLONE_DISABLE(Type) virtual Type* Clone() { return nullptr; }\
 							Type(const Type& _Origin) = delete;
+
+
+#define FONT_RGBA(r, g, b, a) (((((BYTE)a << 24 ) | (BYTE)b << 16) | (BYTE)g << 8) | (BYTE)r)

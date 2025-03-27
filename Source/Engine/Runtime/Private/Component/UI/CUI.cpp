@@ -3,7 +3,7 @@
 #include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-
+#include "Engine/System/Public/Manager/CFontMgr.h"
 
 CUI::CUI(UI_TYPE _uiType)
 	: CComponent(COMPONENT_TYPE::UI)
@@ -16,13 +16,17 @@ CUI::~CUI()
 {
 }
 
-void CUI::SetPriority(int _Priority)
+void CUI::SetPriority(float _Priority)
 {
-	assert(_Priority >= 0);
+	//assert(_Priority >= 0.f);
 
 	m_Priority = _Priority;
 	Vec3 vPos = Transform()->GetRelativePos();
-	Transform()->SetRelativePos(vPos.x, vPos.y, static_cast<float>(_Priority) + 2.f);
+
+	if (m_UIType == UI_TYPE::CANVAS)
+		Transform()->SetRelativePos(vPos.x, vPos.y, _Priority + 2.f);
+	else
+		Transform()->SetRelativePos(vPos.x, vPos.y, _Priority);
 }
 
 void CUI::SetRectPos(Vec2 _Pos)
@@ -41,6 +45,29 @@ Vec2 CUI::GetRectPos()
 {
 	Vec3 vPos = Transform()->GetRelativePos();
 	return Vec2(vPos.x, vPos.y);
+}
+
+void CUI::SetRectSize(Vec2 _Size)
+{
+	Transform()->SetIndependentScale(true);
+	Transform()->SetRelativeScale(_Size.x, _Size.y, 1.f);
+}
+
+void CUI::SetRectSize(float _x, float _y)
+{
+	Transform()->SetIndependentScale(true);
+	Transform()->SetRelativeScale(_x, _y, 1.f);
+}
+
+Vec2 CUI::GetRectSize()
+{
+	Vec3 vScale = Transform()->GetRelativeScale();
+	return Vec2(vScale.x, vScale.y);
+}
+
+void CUI::AddText(const wstring& _Text, float _x, float _y, float _FontSize, UINT _Color)
+{
+	m_TextInfo.push_back(FontRenderInfo{ _Text, Vec2(_x, _y), _FontSize, _Color });
 }
 
 void CUI::Begin()
@@ -81,6 +108,12 @@ void CUI::FinalTick()
 
 	m_RB.x = vPos.x + vScale.x / 2.f + vRes.x / 2.f;
 	m_RB.y = -vPos.y + vScale.y / 2.f + vRes.y / 2.f;
+
+	for (const auto& info : m_TextInfo)
+	{
+		// UI 위치에 대한 상대적인 위치에 출력함.
+		CFontMgr::GetInst()->DrawFont(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.Size, info.Color);
+	}
 }
 
 void CUI::SaveComponent(FILE* _File)
