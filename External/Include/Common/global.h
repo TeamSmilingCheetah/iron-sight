@@ -10,6 +10,7 @@
 #include <set>
 #include <string>
 #include <typeinfo>
+#include <random>
 
 using std::vector;
 using std::list;

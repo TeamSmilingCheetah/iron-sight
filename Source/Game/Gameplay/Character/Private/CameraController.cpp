@@ -10,15 +10,21 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/Gameplay/Weapon/Public/GunController.h"
 
 CameraController::CameraController()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT))
 	, m_CameraSpeed(100.f)
+	, m_bSearch(false)
 	, m_bSearchRecover(false)
 	, m_bRight(true)
-	, m_bZoomRecover(false)
-	, m_bZoom(false)
+	, m_bShoulderRecover(false)
+	, m_bShoulder(false)
+	, m_bADS(false)
 	, m_bChangeFocus(false)
+	, m_RecoilTime(0.f)
+	, m_RecoilAmount_vertical(0.f)
+	, m_RecoilAmount_horizontal(0.f)
 {
 }
 
@@ -82,6 +88,7 @@ void CameraController::CameraPerspectiveMove()
 {
 	// Player를 찾아 Player에 카메라를 부착시킨다.
 	CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pPlayer->GetScripts()[0]);
 
 	Vec3 vCameraPos = Transform()->GetRelativePos();
 	Vec3 vCameraRot = Transform()->GetRelativeRotation();
@@ -94,10 +101,16 @@ void CameraController::CameraPerspectiveMove()
 	float HeightRatio = 2000.f;
 
 	static float lateralOffset = 300.f;
-	static float adjustDistance = DistanceRatio * cosf(RadianPitch);
-	static float adjustHeight = HeightRatio + DistanceRatio * sinf(RadianPitch);
+	static float adjustNormalDistance = 0.f;
+	static float adjustNormalHeight = 0.f;
+	static float adjustFinalDistance = 0.f;
+	static float adjustFinalHeight = 0.f;
 
 
+	// 평상시에 카메라 있을 위치를 계산해 놓는다.
+	adjustNormalDistance = DistanceRatio * cosf(RadianPitch);
+	adjustNormalHeight = HeightRatio + DistanceRatio * sinf(RadianPitch);
+	
 	// TPS
 	// 
 	// Player가 앞을 보고 있으면 Dir는 - , 아니면 +
@@ -110,42 +123,55 @@ void CameraController::CameraPerspectiveMove()
 	Vec3 vRightDir = { -cosf(radian_PlayerRotY), 0.f, sinf(radian_PlayerRotY) };
 
 
-	// 우클릭을 누르고 있는 동안 줌 한다.
+	
 	static float OriginDistance = 0.f;
 	static float OriginHeight = 0.f;
 	static float ObjectiveDistance = 0.f;
 	static float ObjectiveHeight = 0.f;
-
 	static float ObjectiveLateralOff = 0.f;
+
+	// 평상시 상태에서 위치 값 
+	if (!m_bShoulder)
+	{
+		adjustFinalDistance = adjustNormalDistance;
+		adjustFinalHeight = adjustNormalHeight;
+	}
+	// 견착상태에서 카메라가 향할 위치를 계산해놓는다.
+	else
+	{
+		ObjectiveDistance = adjustNormalDistance * 0.5f;
+		ObjectiveHeight = adjustNormalHeight * 0.9f;
+
+		adjustFinalDistance = adjustFinalDistance + (ObjectiveDistance - adjustFinalDistance) * 50.f * DT;
+		adjustFinalHeight = adjustFinalHeight + (ObjectiveHeight - adjustFinalHeight) * 50.f * DT;
+	}
 
 	//
 	// 줌
-	// 
-	// 줌 회복 상태가 아니라면 줌을 활성화 한다.
-	if (!m_bZoomRecover)
+	//
+	// 줌 회복 상태가 아니거나 둘러보기 상태가 아니라면 줌을 활성화 한다.
+	if (!m_bShoulderRecover && !m_bSearch)
 	{
 		// 줌 활성화
 		if (KEY_TAP(KEY::RBTN))
 		{
-			ObjectiveDistance = adjustDistance * 0.5f;
-			ObjectiveHeight = adjustHeight * 0.9f;
-			OriginDistance = adjustDistance;
-			OriginHeight = adjustHeight;
+			//ObjectiveDistance = adjustNormalDistance * 0.5f;
+			//ObjectiveHeight = adjustNormalHeight * 0.9f;
 			lateralOffset = 500.f;
-			m_bZoom = true;
+			m_bShoulder = true;
 		}
 
 		// 카메라위 위치를 조정하여 줌해준다.
 		if (KEY_PRESSED(KEY::RBTN))
 		{
-			if (ObjectiveDistance < adjustDistance)
+	/*		if (ObjectiveDistance < adjustNormalDistance)
 			{
-				adjustDistance = adjustDistance + (ObjectiveDistance - adjustDistance) * 50.f * DT;
+				adjustFinalDistance = adjustFinalDistance + (ObjectiveDistance - adjustFinalDistance) * 50.f * DT;
 			}
-			if (ObjectiveHeight < adjustHeight)
+			if (ObjectiveHeight < adjustNormalHeight)
 			{
-				adjustHeight = adjustHeight + (ObjectiveHeight - adjustHeight) * 50.f * DT;
-			}
+				adjustFinalHeight = adjustFinalHeight + (ObjectiveHeight - adjustFinalHeight) * 50.f * DT;
+			}*/
 
 			
 			// 기울이기에 따라 줌 위치를 바꿔준다.
@@ -166,25 +192,26 @@ void CameraController::CameraPerspectiveMove()
 		// 줌 회복을 활성화 해준다.
 		if (KEY_RELEASED(KEY::RBTN))
 		{
-			m_bZoomRecover = true;
-			m_bZoom = false;
+			m_bShoulderRecover = true;
+			m_bShoulder = false;
+			lateralOffset = 300.f;
 		}
 	}
 	// 줌 회복 
 	else
 	{
 		// 기존 카메라 위치로 회복시켜준다.
-		if (adjustDistance < OriginDistance)
+		if (adjustFinalDistance < adjustNormalDistance)
 		{
-			adjustDistance = adjustDistance + (OriginDistance - adjustDistance) * 50.f * DT;
+			adjustFinalDistance = adjustFinalDistance + (adjustNormalDistance - adjustFinalDistance) * 50.f * DT;
 		}
-		if (adjustHeight < OriginHeight)
+		if (adjustFinalHeight < adjustNormalHeight)
 		{
-			adjustHeight = adjustHeight + (OriginHeight - adjustHeight) * 50.f * DT;
+			adjustFinalHeight = adjustFinalHeight + (adjustNormalHeight - adjustFinalHeight) * 50.f * DT;
 		}
-		if (abs(adjustHeight - OriginHeight) < 5.f && abs(adjustDistance - OriginDistance) < 5.f)
+		if (abs(adjustFinalHeight - adjustNormalHeight) < 5.f && abs(adjustFinalDistance - adjustNormalDistance) < 5.f)
 		{
-			m_bZoomRecover = false;
+			m_bShoulderRecover = false;
 		}
 	}
 
@@ -199,42 +226,107 @@ void CameraController::CameraPerspectiveMove()
 		}
 	}
 
-	// Player 위치에 보정값을 더해 위치를 고정시킨다.
-	vCameraPos.x = vPlayerPos.x + adjustDistance * vBackDir.x;
-	vCameraPos.y = vPlayerPos.y + adjustHeight;
-	vCameraPos.z = vPlayerPos.z + adjustDistance * vBackDir.z;
 
-	// Player가 Camera상에서 약간 왼쪽에 위치하게끔 보정한다.
+	// Player 위치에 보정값을 더해 위치를 고정시킨다.
+	vCameraPos.x = vPlayerPos.x + adjustFinalDistance * vBackDir.x;
+	vCameraPos.y = vPlayerPos.y + adjustFinalHeight;
+	vCameraPos.z = vPlayerPos.z + adjustFinalDistance * vBackDir.z;
+
+	
+	//  Player가 Camera상에서 약간 왼쪽에 위치하게끔 보정한다.
 	vCameraPos.x += lateralOffset * vRightDir.x;
 	vCameraPos.z += lateralOffset * vRightDir.z;
+
+
+	//
+	// 반동
+	//
+	
+	// 플레이어가 총기를 발사하는 중이라면
+	if (pPlayerScript->IsShot())
+	{
+		m_RecoilTime += DT;
+
+		if (0.05f < m_RecoilTime)
+		{
+			m_RecoilTime = 0.0f;  // 타이머 초기화
+
+			// 반동 적용
+			float recoilPower_vertical = 1.2f;
+			float recoilPower_horizontal = 0.5f;
+			float maxRecoli_vertical = 1.5f;
+			float maxRecoli_horizontal = 1.f;
+			float maxTotalYaw = 10.f;
+
+			// 현재 Player가 들고 있는 무기의 반동 변수 값을 가져온다.
+			GunController* pGunScript = static_cast<GunController*>(pPlayerScript->GetCurWeapon()->GetScripts()[0]);
+			recoilPower_horizontal = pGunScript->GetHorizontalPower();
+			recoilPower_vertical = pGunScript->GetVerticalPower();
+
+			// 랜덤한 수직 반동값을 만들어준다
+			float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;
+			m_RecoilAmount_vertical = m_RecoilAmount_vertical * (1.f - 0.1f) + randomRecoil_vertical * 0.1f;
+
+
+			// 랜덤한 수평 반동값을 반들어준다
+			float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal * recoilPower_horizontal;
+
+			// 반동값 보정 (한쪽으로 치우치지 않게)
+			if (abs(m_RecoilAmount_horizontal + randomRecoil_horizontal) > maxTotalYaw)
+			{
+				randomRecoil_horizontal = -randomRecoil_horizontal * 0.5f;
+			}
+			m_RecoilAmount_horizontal = m_RecoilAmount_horizontal * (1.f - 0.7f) + randomRecoil_horizontal * 0.7f;
+			
+
+			vCameraRot.x -= m_RecoilAmount_vertical;
+			vPlayerRot.y -= m_RecoilAmount_horizontal;
+			if (vCameraRot.x < -90.f)
+			{
+				vCameraRot.x = -90.f;
+			}
+
+			Transform()->SetRelativeRotation(vCameraRot);
+			pPlayer->Transform()->SetRelativeRotation(vPlayerRot);
+		}
+	}
+
 
 	//
 	// Search
 	//
 	static float OriginRotY = 0.f;
 	static float OriginRotX = 0.f;
-	if (KEY_TAP(KEY::Z))
+
+	// 줌이나 사격 동안은 둘러보기가 안된다.
+	if (!pPlayerScript->IsShot() && !m_bShoulder)
 	{
-		// 현재의 RotY을 기억해놓는다.
-		OriginRotY = vCameraRot.y;
-		OriginRotX = vCameraRot.x;
-	}
-	if (KEY_RELEASED(KEY::Z))
-	{
-		m_bSearchRecover = true;
+		if (KEY_TAP(KEY::Z))
+		{
+			// 현재의 RotY을 기억해놓는다.
+			OriginRotY = vCameraRot.y;
+			OriginRotX = vCameraRot.x;
+			m_bSearch = true;
+		}
+		if (KEY_RELEASED(KEY::Z))
+		{
+			// 줌 혹은 사격 도중 Z키가 눌려서 생기는 버그를 방지한다.
+			if (m_bSearch)
+			{
+				m_bSearchRecover = true;
+			}
+			m_bSearch = false;
+		}
 	}
 
-	if (KEY_PRESSED(KEY::Z))
-	{
-		int a = 0;
-	}
-	else
+	
+	if(!m_bSearch)
 	{
 		// 회복중이 아닌 일반시
 		if (!m_bSearchRecover)
 		{
 			vCameraRot.y = vPlayerRot.y + 180.f;
-   			Transform()->SetRelativeRotation(vCameraRot);
+			Transform()->SetRelativeRotation(vCameraRot);
 		}
 		// 회복중일때 저장해놓은 위치로 카메라를 원위치 시킨다.
 		else
@@ -246,48 +338,18 @@ void CameraController::CameraPerspectiveMove()
 			Transform()->SetRelativeRotation(vCameraRot);
 
 			// 특정 구간에 도달하면 회복을 종료시킨다.
-			if(fabs(vCameraRot.y - OriginRotY) < 1.f && fabs(vCameraRot.x - OriginRotX) < 1.f)
+			if (fabs(vCameraRot.y - OriginRotY) < 1.f && fabs(vCameraRot.x - OriginRotX) < 1.f)
 			{
 				m_bSearchRecover = false;
-			}			
+			}
 		}
 	}
+	
 
 	Transform()->SetRelativePos(vCameraPos);
 	
 
-
 	// FPS
-	//if (KEY_PRESSED(KEY::LSHIFT))
-	//	Speed *= 5.f;
-
-	//Vec3 vFront = Transform()->GetLocalDir(DIR_TYPE::FRONT);
-	//Vec3 vRight = Transform()->GetLocalDir(DIR_TYPE::RIGHT);
-
-	//Vec3 vPos = Transform()->GetRelativePos();
-
-	//if (KEY_PRESSED(KEY::W))
-	//	vPos += vFront * DT * Speed;
-	//if (KEY_PRESSED(KEY::S))
-	//	vPos -= vFront * DT * Speed;
-	//if (KEY_PRESSED(KEY::A))
-	//	vPos -= vRight * DT * Speed;
-	//if (KEY_PRESSED(KEY::D))
-	//	vPos += vRight * DT * Speed;
-
-	//Transform()->SetRelativePos(vPos);
-
-	//// 마우스 방향에 따른 오브젝트 회전
-	//if (KEY_PRESSED(KEY::RBTN))
-	//{
-	//	Vec3 vRot = Transform()->GetRelativeRotation();
-
-	//	Vec2 vDir = CKeyMgr::GetInst()->GetMouseDir();
-	//	vRot.y += vDir.x * DT * 15.f;
-	//	vRot.x += vDir.y * DT * 10.f;
-
-	//	Transform()->SetRelativeRotation(vRot);
-	//}
 }
 
 void CameraController::SaveComponent(FILE* _File)

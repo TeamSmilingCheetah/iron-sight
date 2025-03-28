@@ -8,6 +8,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/Weapon/Public/GunController.h"
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
@@ -17,6 +18,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_Acceleration(50.f)
 	, m_Deceleration(450.f)
 	, m_MaxSpeed(10.f)
+	, m_bShoot(false)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Speed", &m_PlayerSpeed});
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
@@ -46,6 +48,8 @@ void PlayerCharacter::Tick()
 	Vec3 vRot = Transform()->GetRelativeRotation();
 
 	UpdatePosition();
+	PlayerAttack();
+	
 
 	if (KEY_PRESSED(KEY::NUM_1))
 	{
@@ -112,6 +116,11 @@ void PlayerCharacter::Tick()
 void PlayerCharacter::BeginOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
 								 CCollider2D* _OtherCollider)
 {
+	if (_OtherObject->GetName() == L"House")
+	{
+		int a = 0;
+	}
+
 }
 
 void PlayerCharacter::Overlap(CCollider2D* _Collider, CGameObject* _OtherObject,
@@ -224,6 +233,9 @@ void PlayerCharacter::UpdateRotation()
 	CGameObject* pMainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 	CameraController* pCameraScript = static_cast<CameraController*>(pMainCamera->GetScripts()[0]);
 	bool bRecover = pCameraScript->IsSearchRecover();
+	bool bSearch = pCameraScript->IsSearch();
+	bool bShoulder = pCameraScript->IsShoulder();
+	bool bADS = pCameraScript->IsADS();
 
 	// 마우스 위치를 구해온다
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
@@ -251,35 +263,56 @@ void PlayerCharacter::UpdateRotation()
 	}
 
 	static float OriginRotY = 0.f;
-	if (KEY_TAP(KEY::Z))
+
+	// 평상시
+	if (!bADS && !bShoulder && !m_bShoot)
 	{
-		OriginRotY = vCameraRot.y;
+		// Search
+		if (KEY_TAP(KEY::Z))
+		{
+			OriginRotY = vCameraRot.y;
+		}
+
+		if (KEY_PRESSED(KEY::Z))
+		{
+			// 줌 하는 동안 둘러보기 키가 눌린경우를 방지한다.
+			if (bSearch)
+			{
+				vCameraRot.y += deltaX * m_MouseSensitivity * DT;
+				if (120.f < vCameraRot.y - OriginRotY)
+				{
+					vCameraRot.y = OriginRotY + 120.f;
+				}
+				if (vCameraRot.y - OriginRotY < -120.f)
+				{
+					vCameraRot.y = OriginRotY - 120.f;
+				}
+			}
+		}
+		// 평상시의 회전값 적용
+		else
+		{
+			if (!bRecover)
+			{
+				vPlayerRot.y += deltaX * m_MouseSensitivity * DT;
+			}			
+		}
 	}
 
-	// 해당 변화값으로 Player 회전 적용
-	if (KEY_PRESSED(KEY::Z))
-	{
-		vCameraRot.y += deltaX * m_MouseSensitivity * DT;
-		if (120.f < vCameraRot.y - OriginRotY)
-		{
-			vCameraRot.y = OriginRotY + 120.f;
-		}
-		if (vCameraRot.y - OriginRotY < -120.f)
-		{
-			vCameraRot.y = OriginRotY - 120.f;
-		}
-	}
+	// 줌 혹은 사격중
 	else
 	{
+		// 해당 변화값으로 Player 회전 적용
 		if (!bRecover)
 		{
 			vPlayerRot.y += deltaX * m_MouseSensitivity * DT;
 		}			
 	}
 
-	// 화면을 위아래로 회전시킨다.
+	// 위아래 회전
 	if (!bRecover)
 	{
+		
 		vCameraRot.x += deltaY * m_MouseSensitivity * DT;
 		if (vCameraRot.x < -90.f)
 		{
@@ -289,6 +322,7 @@ void PlayerCharacter::UpdateRotation()
 		{
 			vCameraRot.x = 80.f;
 		}
+		
 		pMainCamera->Transform()->SetRelativeRotation(vCameraRot);
 	}
 
@@ -297,6 +331,44 @@ void PlayerCharacter::UpdateRotation()
 
 	// 마우스 위치를 중앙으로 다시 초기화한다.
 	CKeyMgr::GetInst()->SetMousePos();
+}
+
+void PlayerCharacter::PlayerAttack()
+{
+	CGameObject* pMainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
+	CameraController* pCameraScript = static_cast<CameraController*>(pMainCamera->GetScripts()[0]);
+
+	bool bSearch = pCameraScript->IsSearch();
+
+	if (!bSearch)
+	{
+		if (KEY_TAP(KEY::LBTN))
+		{
+			// 현재 무기 슬롯이 총이라면
+			/*if (m_vecWeaponSlot[CurIDx]->IsGun())
+			{
+
+			}*/
+			m_bShoot = true;
+		}
+
+		if (KEY_PRESSED(KEY::LBTN))
+		{
+			// 총을 사용한다.
+			if (m_bShoot)
+			{
+				GunController* pGunScript = static_cast<GunController*>(m_CurWeapon->GetScripts()[0]);
+				pGunScript->SetFire(true);
+			}
+		}
+
+		if (KEY_RELEASED(KEY::LBTN))
+		{
+			m_bShoot = false;
+			GunController* pGunScript = static_cast<GunController*>(m_CurWeapon->GetScripts()[0]);
+			pGunScript->SetFire(false);
+		}
+	}
 }
 
 void PlayerCharacter::SaveComponent(FILE* _File)
