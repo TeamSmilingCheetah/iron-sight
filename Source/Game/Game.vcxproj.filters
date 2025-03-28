@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -11,9 +11,6 @@
     <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp">
       <Filter>02. Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp">
-      <Filter>02. Gameplay</Filter>
-    </ClCompile>
     <ClCompile Include="System\Private\GameplayManager.cpp">
       <Filter>01. ScriptMgr</Filter>
     </ClCompile>
@@ -22,6 +19,11 @@
     </ClCompile>
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp">
       <Filter>02. Gameplay</Filter>
+    <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp">
+      <Filter>02. Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\PlayerCharacter_Move.cpp">
+      <Filter>02. Gameplay\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -32,9 +34,6 @@
       <Filter>00. Default</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Character\Public\CameraController.h">
-      <Filter>02. Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h">
       <Filter>02. Gameplay</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h">
@@ -54,6 +53,8 @@
     </ClInclude>
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h">
       <Filter>02. Gameplay</Filter>
+    <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h">
+      <Filter>02. Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,9 @@
     </Filter>
     <Filter Include="00. Default">
       <UniqueIdentifier>{7e1996a7-852a-4f0d-afa4-26b347507d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\Player">
+      <UniqueIdentifier>{3276a02d-6c5f-44f0-a504-20d582379ec2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

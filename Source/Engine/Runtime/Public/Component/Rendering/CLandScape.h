@@ -21,22 +21,26 @@ struct tRayCollision
 	float	RayLength;
 	UINT	Distance;
 	int		Success;
-	int		Padding;
+	int		Padding[2];
 
 	tRayCollision()
 		: RayObj(nullptr)
+		, RayLength(0)
 		, Distance(0xffffffff)
 		, Success(0)
+		, Padding{0}
 	{
 
 	}
 
 	tRayCollision(void* _ID, tRay _Ray)
 		: RayObj(_ID)
+		, RayLength(0)
 		, RayPos(_Ray.vStart)
 		, RayDir(_Ray.vDir)
 		, Distance(0xffffffff)
 		, Success(0)
+		, Padding{0}
 	{
 	}
 };
@@ -113,6 +117,8 @@ public:
 	LANDSCAPE_MODE GetMode() { return m_Mode; }
 
 	Vec3 GetWorldPosByLandScape(Vec3 _TargetWorldPos);
+
+	Vec3 GetWorldPosLandNormal(Vec3& _TargetWorldPos);
 
 	// 들어있는 Ray연산(구형 방식)
 	tRaycastOut ColliderRaycasting(tRay _Ray);

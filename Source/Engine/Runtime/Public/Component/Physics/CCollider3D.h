@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CCollider3D :
@@ -8,6 +8,7 @@ private:
 	Vec3        m_Offset;
 	Vec3        m_Scale;
 	Vec3        m_FinalPos;
+	Vec3		m_HitNormal;
 	Matrix      m_matColliderWorld; // 크기, 회전, 이동
 	bool        m_IndependentScale;
 
@@ -18,9 +19,11 @@ private:
 public:
 	void SetOffset(Vec3 _Offset) { m_Offset = _Offset; }
 	void SetScale(Vec3 _Scale) { m_Scale = _Scale; }
+	void SetHitNormal(Vec3 _Nor) { m_HitNormal = _Nor; }
 
 	Vec3 GetOffset() { return m_Offset; }
 	Vec3 GetScale() { return m_Scale; }
+	Vec3 GetHitNormal() { return m_HitNormal; }
 
 	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
 
