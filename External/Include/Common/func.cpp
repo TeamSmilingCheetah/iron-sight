@@ -328,3 +328,11 @@ bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDi
 
 	return true;
 }
+
+float RandomFloat(float min, float max)
+{
+	static std::random_device rd;
+	static std::mt19937 engine(rd());
+	std::uniform_real_distribution<float> dist(min, max);
+	return dist(engine);
+}

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 
 #include "Client/UI/Public/PrefabEditor/PrefabEditor.h"
 
@@ -309,7 +309,7 @@ void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 		return;
 	}
 
-	// 해당 컴퍼넌트를 ProtoObj에 추가한다.
+	// 해당 컴퍼넌트를 ProtoObj에 삭제한다.
 	if (*pStr == "Transform")
 	{
 		m_ProtoObject->DeleteComponent(COMPONENT_TYPE::TRANSFORM);
@@ -351,7 +351,7 @@ void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 		return;
 	}
 
-	// Scirpt를 추가하는 경우
+	// Scirpt를 삭제하는 경우
 	wstring pScriptStr = wstring(pStr->begin(), pStr->end());
 	m_ProtoObject->DeleteScript(pScriptStr);
 }

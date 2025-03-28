@@ -1,10 +1,11 @@
-﻿#pragma once
+#pragma once
 
 enum SCRIPT_TYPE
 {
 	CAMERASCRIPT,
 	MISSILESCRIPT,
 	PLAYERSCRIPT,
+	GUNSCRIPT,
 };
 
 class CScript;
