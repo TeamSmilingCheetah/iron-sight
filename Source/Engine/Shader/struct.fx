@@ -127,7 +127,7 @@ struct tRayCollision
     float RayLength;
     uint Distance;
     int Success;
-    int Padding;
+    int Padding[2];
 };
 
 struct tWeight8

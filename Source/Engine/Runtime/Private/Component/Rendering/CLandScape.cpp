@@ -13,7 +13,7 @@ CLandScape::CLandScape()
 	  , m_Out{}
 	  , m_BrushScale(Vec2(0.25f, 0.25f))
 	  , m_BrushIdx(0)
-	  , m_Mode(NONE)
+	  , m_Mode(HEIGHTMAP)
 	  , m_RaycastOut()
 	  , m_WeightHeight(0)
 	  , m_WeightIdx(0)
@@ -361,6 +361,84 @@ Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
 	Vec3 worldPos = XMVector3TransformCoord(localPos, matWorld);
 
 	return worldPos;
+}
+
+Vec3 CLandScape::GetWorldPosLandNormal(Vec3& _TargetWorldPos)
+{
+	// 랜드스케이프의 월드 행렬
+	const Matrix& matWorld = Transform()->GetWorldMat();
+
+	// 역행렬을 이용하여 월드 좌표를 랜드스케이프 로컬 좌표로 변환
+	Matrix matWorldInv = Transform()->GetWorldInvMat();
+	Vec3 localPos = XMVector3TransformCoord(_TargetWorldPos, matWorldInv);
+
+	// 로컬 좌표를 랜드스케이프 텍스쳐 UV 좌표로 변환
+	// 랜드스케이프의 X, Z 크기에 따라 조정
+	float u = localPos.x / (float)m_FaceX;
+	float v = 1.f - (localPos.z / (float)m_FaceZ); // v 좌표는 상하가 반전되어 있으므로 1에서 빼줌
+
+	// 로컬 좌표가 랜드스케이프 범위 내에 있는지 확인
+	if (localPos.x < 0.f || localPos.x >(float)m_FaceX ||
+		localPos.z < 0.f || localPos.z >(float)m_FaceZ)
+	{
+		// 범위를 벗어나면 큰 음수 값을 반환
+		Vec3 FailPos = Vec3(-10000.f, -10000.f, -10000.f);
+		return FailPos;
+	}
+
+	// 높이맵에서 해당 위치의 높이(Y) 값을 가져옴
+	// 높이맵이 없으면 그냥 위로 올라가는 노말벡터 반환
+	if (m_HeightMap == nullptr)
+	{
+		return Vec3(0.f, 1.f, 0.f);
+	}
+	// 높이맵 텍스처에서 해당 UV 위치의 높이 값을 가져옴
+	UINT heightMapWidth = m_HeightMap->GetWidth();
+	UINT heightMapHeight = m_HeightMap->GetHeight();
+
+	// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
+	UINT x = (UINT)(u * (float)(heightMapWidth - 1));
+	UINT y = (UINT)(v * (float)(heightMapHeight - 1));
+
+	// 인접한 4개의 점 위치 계산
+	UINT xRight = min(x + 1, heightMapWidth - 1);
+	UINT xLeft = 0;
+	if (x > 0)
+		xLeft = x - 1;
+	UINT yUp = min(y + 1, heightMapHeight - 1);
+	UINT yDown = 0;
+	if (y > 0)
+		yDown = y - 1;
+
+	// 높이값 추출
+	// 텍스처에서 높이 값 가져오기
+	float heightCenter = m_CachedHeightData[y * heightMapWidth + x];
+	float heightRight = m_CachedHeightData[y * heightMapWidth + xRight];
+	float heightLeft = m_CachedHeightData[y * heightMapWidth + xLeft];
+	float heightUp = m_CachedHeightData[yUp * heightMapWidth + x];
+	float heightDown = m_CachedHeightData[yDown * heightMapWidth + x];
+
+	// x벡터, z벡터 생성
+	Vec3 vecX = Vec3((float)(xRight - xLeft) * m_FaceX / (float)(heightMapWidth - 1),
+					heightRight - heightLeft,
+					0.0f);
+
+	Vec3 vecZ = Vec3(0.0f,
+					heightUp - heightDown,
+					(float)(yUp - yDown) * m_FaceZ / (float)(heightMapHeight - 1));
+
+	// 두 벡터의 외적으로 노말 벡터 계산
+	Vec3 normal = vecZ.Cross(vecX);
+	normal.Normalize();
+
+	// 로컬 좌표를 다시 월드 좌표로 변환
+	normal = XMVector3TransformNormal(normal, matWorld);
+	normal.Normalize();
+
+	localPos.y = heightCenter;
+	_TargetWorldPos = XMVector3TransformCoord(localPos, matWorld);
+
+	return normal;
 }
 
 void CLandScape::SaveComponent(FILE* _File)

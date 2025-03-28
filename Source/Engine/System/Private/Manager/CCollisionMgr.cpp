@@ -833,6 +833,10 @@ bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
 	Matrix matColLeft = _Left->GetColliderWorldMat();
 	Matrix matColRight = _Right->GetColliderWorldMat();
 
+	Vec3 leftCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft);
+	Vec3 rightCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
+	Vec3 centerToCenter = rightCenter - leftCenter;
+
 	// 각 OBB의 월드 공간 꼭지점 계산
 	Vec3 leftVertices[8];
 	Vec3 rightVertices[8];
@@ -882,6 +886,11 @@ bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
 		}
 	}
 
+	// 최소 침투 축과 침투 깊이 추적
+	Vec3 minPenetrationAxis;
+	float minPenetration = FLT_MAX;
+	bool foundSeparatingAxis = false;
+
 	// 각 축에 대해 분리축 테스트 수행
 	for (int a = 0; a < axisCount; ++a)
 	{
@@ -909,6 +918,30 @@ bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
 		// 분리축 테스트
 		if (leftMin > rightMax + EPSILON || rightMin > leftMax + EPSILON)
 			return false;
+
+		// 침투 깊이 계산
+		float penetration1 = rightMax - leftMin;
+		float penetration2 = leftMax - rightMin;
+		float penetration = min(penetration1, penetration2);
+
+		// 최소 침투 업데이트
+		if (penetration < minPenetration)
+		{
+			minPenetration = penetration;
+			minPenetrationAxis = axes[a];
+			foundSeparatingAxis = true;
+		}
+	}
+
+	if (foundSeparatingAxis)
+	{
+		float dotWithCenterToCenter = minPenetrationAxis.Dot(centerToCenter);
+		if (dotWithCenterToCenter < 0)
+			minPenetrationAxis = -minPenetrationAxis;
+
+		// 충돌 노말 설정
+		_Left->SetHitNormal(-minPenetrationAxis);   // Left에서 Right로 향하는 방향
+		_Right->SetHitNormal(minPenetrationAxis); // Right에서 Left로 향하는 방향
 	}
 
 	return true;

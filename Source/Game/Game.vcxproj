@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\PlayerCharacter_Move.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

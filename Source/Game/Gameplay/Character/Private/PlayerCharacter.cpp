@@ -12,17 +12,28 @@
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
-	, m_PlayerSpeed(1500)
 	, m_PaperBurnIntence(0.f)
 	, m_MouseSensitivity(10.f)
-	, m_Acceleration(50.f)
-	, m_Deceleration(450.f)
+	, m_Force(0.f)
+	, m_Velocity(0.f)
+	, m_GravidyVelocity(0.f)
+	, m_Mass(3.f)
+	, m_Friction(100.f)
 	, m_MaxSpeed(10.f)
+	, m_GravityAccel(20.f)
+	, m_GravityMaxSpeed(1000.f)
+	, m_JumpPower(20.f)
+	, m_IsGround(true)
 	, m_bShoot(false)
 {
-	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Speed", &m_PlayerSpeed});
-	AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
-	AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
+	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Friction", &m_Friction });	// 마찰계수
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player MaxSpeed", &m_MaxSpeed });	// 최고속도
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player GravityAccel", &m_GravityAccel });	// 중력 가속도
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player GravityMaxSpeed", &m_GravityMaxSpeed });	// 중력 최대속도
+
+	//AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
+	//AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
 
 	m_vecWeaponSlot.resize(7);
 	char name[10]{};
@@ -113,120 +124,6 @@ void PlayerCharacter::Tick()
 	
 }
 
-void PlayerCharacter::BeginOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
-								 CCollider2D* _OtherCollider)
-{
-	if (_OtherObject->GetName() == L"House")
-	{
-		int a = 0;
-	}
-
-}
-
-void PlayerCharacter::Overlap(CCollider2D* _Collider, CGameObject* _OtherObject,
-							CCollider2D* _OtherCollider)
-{
-}
-
-void PlayerCharacter::EndOverlap(CCollider2D* _Collider, CGameObject* _OtherObject,
-							   CCollider2D* _OtherCollider)
-{
-}
-
-void PlayerCharacter::UpdatePosition()
-{
-	Vec3 vPos = Transform()->GetRelativePos();
-	Vec3 vRot = Transform()->GetRelativeRotation();
-	float radian = vRot.y * XM_PI / 180.f;
-
-	Vec3 vFowardDir = { -sinf(radian), 0.f, -cosf(radian) };
-	Vec3 vRightDir = { -cosf(radian), 0.f, sinf(radian) };
-	Vec3 vInputDir = { 0.f,0.f,0.f };
-
-	if (KEY_PRESSED(KEY::LSHIFT) &&
-		KEY_PRESSED(KEY::W) &&
-		!(KEY_PRESSED(KEY::A)) &&
-		!(KEY_PRESSED(KEY::S)) &&
-		!(KEY_PRESSED(KEY::D)))
-	{
-		m_Acceleration = 60.f;
-		m_MaxSpeed = 20.f;
-	}
-	else
-	{
-		m_Acceleration = 50.f;
-		m_MaxSpeed = 10.f;
-	}
-
-	// 해당하는 방향으로 벡터를 추가한다.
-	if (KEY_PRESSED(KEY::W))
-	{
-		vInputDir += vFowardDir;
-	}
-	if (KEY_PRESSED(KEY::A))
-	{
-		vInputDir += -vRightDir;
-	}
-	if (KEY_PRESSED(KEY::S))
-	{
-		vInputDir += -vFowardDir;
-	}
-	if (KEY_PRESSED(KEY::D))
-	{
-		vInputDir += vRightDir;
-	}
-
-	// 입력이 있는 경우
-	if (vInputDir.Length() > 0.f)
-	{
-		// 방향 정규화
-		vInputDir.Normalize();
-
-		// 저장된 방향으로 가속도만큼 현재 속도를 증가시킨다.
-		m_velocity += vInputDir * m_Acceleration * DT;
-
-		// 현재의 방향을 즉시 입력 방향으로 맞춰준다.
-		float currentSpeed = m_velocity.Length();
-
-		// 기존의 속도를 현재 바라보는 방향으로 적용해줌
-		if (currentSpeed > 0.f)
-		{
-			m_velocity = vInputDir * currentSpeed;
-		}
-		else
-		{
-			m_velocity = vInputDir * 0.f;
-		}
-
-		// 최대 속도를 넘어가면 제한해준다.
-		float newSpeed = m_velocity.Length();
-		if (newSpeed > m_MaxSpeed)
-		{
-			m_velocity.Normalize();
-			m_velocity = m_velocity * m_MaxSpeed;
-		}
-	}
-	// 입력이 없을 경우
-	else
-	{
-		float currentSpeed = m_velocity.Length();
-		// 현재 속도가 있다면 감속해준다.
-		if (currentSpeed > 0.f)
-		{
-			float newSpeed = currentSpeed - m_Deceleration * DT;
-			if (newSpeed < 0.f)
-			{
-				newSpeed = 0.f;
-			}
-			m_velocity.Normalize();
-			m_velocity = (newSpeed > 0.f) ? m_velocity * newSpeed : Vec3{ 0.f,0.f,0.f };
-			//m_velocity = m_velocity * newSpeed;
-		}
-	}
-
-	vPos += m_velocity;
-	Transform()->SetRelativePos(vPos);
-}
 
 void PlayerCharacter::UpdateRotation()
 {
@@ -373,7 +270,7 @@ void PlayerCharacter::PlayerAttack()
 
 void PlayerCharacter::SaveComponent(FILE* _File)
 {
-	fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
+	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fwrite(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	SaveAssetRef(m_TargetTex, _File);
 	UINT slotCount = static_cast<UINT>(m_vecWeaponSlot.size());
@@ -386,7 +283,7 @@ void PlayerCharacter::SaveComponent(FILE* _File)
 
 void PlayerCharacter::LoadComponent(FILE* _File)
 {
-	fread(&m_PlayerSpeed, sizeof(float), 1, _File);
+	//fread(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	LoadAssetRef(m_TargetTex, _File);
 	UINT slotCount = 0;
