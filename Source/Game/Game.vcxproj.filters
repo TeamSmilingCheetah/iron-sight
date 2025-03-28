@@ -19,6 +19,7 @@
     </ClCompile>
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp">
       <Filter>02. Gameplay</Filter>
+    </ClCompile>
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp">
       <Filter>02. Gameplay\Player</Filter>
     </ClCompile>
@@ -53,6 +54,7 @@
     </ClInclude>
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h">
       <Filter>02. Gameplay</Filter>
+    </ClInclude>
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h">
       <Filter>02. Gameplay\Player</Filter>
     </ClInclude>
