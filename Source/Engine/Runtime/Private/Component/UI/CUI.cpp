@@ -16,29 +16,15 @@ CUI::~CUI()
 {
 }
 
-void CUI::SetPriority(float _Priority)
-{
-	//assert(_Priority >= 0.f);
-
-	m_Priority = _Priority;
-	Vec3 vPos = Transform()->GetRelativePos();
-
-	if (m_UIType == UI_TYPE::CANVAS)
-		Transform()->SetRelativePos(vPos.x, vPos.y, _Priority + 2.f);
-	else
-		Transform()->SetRelativePos(vPos.x, vPos.y, _Priority);
-}
 
 void CUI::SetRectPos(Vec2 _Pos)
 {
-	Vec3 vPos = Transform()->GetRelativePos();
-	Transform()->SetRelativePos(_Pos.x, _Pos.y, vPos.z);
+	Transform()->SetRelativePos(_Pos.x, _Pos.y, 0.f);
 }
 
 void CUI::SetRectPos(float _x, float _y)
 {
-	Vec3 vPos = Transform()->GetRelativePos();
-	Transform()->SetRelativePos(_x, _y, vPos.z);
+	Transform()->SetRelativePos(_x, _y, 0.f);
 }
 
 Vec2 CUI::GetRectPos()
@@ -70,6 +56,54 @@ void CUI::AddText(const wstring& _Text, float _x, float _y, float _FontSize, UIN
 	m_TextInfo.push_back(FontRenderInfo{ _Text, Vec2(_x, _y), _FontSize, _Color });
 }
 
+void CUI::Binding()
+{
+	if (m_UIType == UI_TYPE::CANVAS)
+	{
+		// TEST : SCissor
+		D3D11_RECT scissor = {};
+		scissor.left = static_cast<LONG>(m_LT.x);
+		scissor.top = static_cast<LONG>(m_LT.y);
+		scissor.right = static_cast<LONG>(m_RB.x);
+		scissor.bottom = static_cast<LONG>(m_RB.y);
+
+		CONTEXT->RSSetScissorRects(1, &scissor);
+	}
+}
+
+void CUI::FontRender()
+{
+	// Rasterizer Scissor Rect 계산 -> canvas에서만 수행
+	static Vec4 CanvasRect;
+
+	if (m_UIType == UI_TYPE::CANVAS)
+	{
+		CanvasRect.x = m_LT.x;
+		CanvasRect.y = m_LT.y;
+		CanvasRect.z = m_RB.x;
+		CanvasRect.w = m_RB.y;
+	}
+
+	// Font Render
+	for (const auto& info : m_TextInfo)
+	{
+		CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.Size, info.Color, CanvasRect.x, CanvasRect.y, CanvasRect.z, CanvasRect.w);
+	}
+}
+
+void CUI::Clear()
+{
+	Vec2 vRes = CDevice::GetInst()->GetRenderResolution();
+
+	D3D11_RECT scissor = {};
+	scissor.left = 0;
+	scissor.top = 0;
+	scissor.right = static_cast<LONG>(vRes.x);
+	scissor.bottom = static_cast<LONG>(vRes.y);
+
+	CONTEXT->RSSetScissorRects(1, &scissor);
+}
+
 void CUI::Begin()
 {
 	// CanvasUI일 경우만 등록.
@@ -94,12 +128,15 @@ void CUI::Begin()
 	}
 
 	// 재질 등록
-	MeshRender()->GetDynamicMaterial(0)->SetScalarParam(VEC4_0, m_BackGroundColor);
-	MeshRender()->GetDynamicMaterial(0)->SetTexParam(TEX_0, m_Image);
+	UIRender()->GetDynamicMaterial(0)->SetScalarParam(VEC4_0, m_BackGroundColor);
+	UIRender()->GetDynamicMaterial(0)->SetTexParam(TEX_0, m_Image);
 }
 
 void CUI::FinalTick()
 {
+	// Transform으로부터 LT와 RB를 역으로 계산
+	// Transform component로 값을 바꾸는 경우도 있을 수 있기 때문에 일단 여기에 이런 식으로 구현함
+	// 캡슐화를 잘 할 수 있다면 final tick 말고 position setter에서 역 로직 구현할 것.
 	Vec2 vRes = CDevice::GetInst()->GetRenderResolution();
 	Vec3 vPos = Transform()->GetWorldPos();
 	Vec3 vScale = Transform()->GetWorldScale();
@@ -108,12 +145,6 @@ void CUI::FinalTick()
 
 	m_RB.x = vPos.x + vScale.x / 2.f + vRes.x / 2.f;
 	m_RB.y = -vPos.y + vScale.y / 2.f + vRes.y / 2.f;
-
-	for (const auto& info : m_TextInfo)
-	{
-		// UI 위치에 대한 상대적인 위치에 출력함.
-		CFontMgr::GetInst()->DrawFont(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.Size, info.Color);
-	}
 }
 
 void CUI::SaveComponent(FILE* _File)

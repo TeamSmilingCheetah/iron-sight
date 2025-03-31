@@ -23,6 +23,8 @@ public:
 	void RegisterUI(CUI* _UI);
 	void SwapPriority(CUI* _UI, int Priority);
 
+	const vector<CUI*>& GetUIs() const { return m_vecUI; }
+
 	// Event 함수 호출
 	void OnMouseClick();
 	void OnMouseHover();

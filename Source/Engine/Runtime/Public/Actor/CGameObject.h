@@ -77,6 +77,7 @@ public:
 	class CDecal* Decal() const { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
 	class CLandScape* LandScape() const { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
 	class CUI* UI() const { return (CUI*)GetComponent(COMPONENT_TYPE::UI); }
+	class CUIRender* UIRender() const { return (CUIRender*)GetComponent(COMPONENT_TYPE::UIRENDER); }
 
 private:
 	void DisconnectWithLayer();

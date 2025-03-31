@@ -31,6 +31,7 @@ public:
 	GET_OTHER_COMPONENT(Decal);
 	GET_OTHER_COMPONENT(LandScape);
 	GET_OTHER_COMPONENT(UI);
+	GET_OTHER_COMPONENT(UIRender);
 
 	virtual void Init()
 	{

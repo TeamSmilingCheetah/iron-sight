@@ -7,6 +7,7 @@
 #include <list>
 #include <queue>
 #include <map>
+#include <unordered_map>
 #include <set>
 #include <string>
 #include <typeinfo>
@@ -16,6 +17,7 @@ using std::list;
 using std::queue;
 using std::priority_queue;
 using std::map;
+using std::unordered_map;
 using std::make_pair;
 using std::set;
 using std::string;

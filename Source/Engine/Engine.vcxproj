@@ -197,6 +197,7 @@
     <ClInclude Include="Runtime\Public\Component\Rendering\CParticleSystem.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h" />
     <ClInclude Include="Runtime\Public\Component\Script\CScript.h" />
     <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h" />
     <ClInclude Include="Runtime\Public\Component\UI\CUI.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="Runtime\Private\Component\Rendering\CParticleSystem.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp" />
     <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp" />
     <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp" />
     <ClCompile Include="Runtime\Private\Component\UI\CUI.cpp" />

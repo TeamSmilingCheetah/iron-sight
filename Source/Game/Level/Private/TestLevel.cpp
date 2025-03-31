@@ -12,6 +12,7 @@
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -159,9 +160,9 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->SetName(L"CanvasUI");
 	CanvasUI->AddComponent(new CUI(UI_TYPE::CANVAS));
 
-	CanvasUI->AddComponent(new CMeshRender);
-	CanvasUI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	CanvasUI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	CanvasUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
 	CanvasUI->UI()->SetPriority(0);
 	CanvasUI->UI()->SetRectPos(0.f, 0.f);
@@ -174,14 +175,13 @@ void TestLevel::CreateTestLevel()
 	UI->SetName(L"ButtonUI");
 	UI->AddComponent(new CUI(UI_TYPE::BUTTON));
 
-	UI->AddComponent(new CMeshRender);
-	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->AddComponent(new CUIRender);
+	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(-250.f, 120.f);
 	UI->UI()->SetRectSize(100.f, 40.f);
-	UI->UI()->SetPriority(-0.1f);
-	UI->UI()->AddText(L"Test", 0.f, 0.f, 16.f, FONT_RGBA(255, 20, 20, 255));
+	UI->UI()->AddText(L"Test for very long text how would you respond to this", 0.f, 0.f, 16.f, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
 
@@ -190,13 +190,12 @@ void TestLevel::CreateTestLevel()
 	UI->SetName(L"DragUI");
 	UI->AddComponent(new CUI(UI_TYPE::DRAG));
 
-	UI->AddComponent(new CMeshRender);
-	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->AddComponent(new CUIRender);
+	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(-40.f, 150.f);
 	UI->UI()->SetRectSize(100.f, 40.f);
-	UI->UI()->SetPriority(-0.1f);
 
 	CanvasUI->AddChild(UI);
 
@@ -205,13 +204,12 @@ void TestLevel::CreateTestLevel()
 	UI->SetName(L"DropUI");
 	UI->AddComponent(new CUI(UI_TYPE::DROP));
 
-	UI->AddComponent(new CMeshRender);
-	UI->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	UI->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->AddComponent(new CUIRender);
+	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(100.f, 0.f);
 	UI->UI()->SetRectSize(100.f, 600.f);
-	UI->UI()->SetPriority(-0.1f);
 	UI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\link.png"));
 
 	CanvasUI->AddChild(UI);

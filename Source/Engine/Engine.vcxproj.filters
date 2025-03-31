@@ -220,6 +220,9 @@
     <ClInclude Include="System\Public\Manager\CUIMgr.h">
       <Filter>04. Manager\10. UIMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h">
+      <Filter>07. Component\RenderComponent\07. UIRender</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -431,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CUIMgr.cpp">
       <Filter>04. Manager\10. UIMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp">
+      <Filter>07. Component\RenderComponent\07. UIRender</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -646,6 +652,9 @@
     </Filter>
     <Filter Include="04. Manager\10. UIMgr">
       <UniqueIdentifier>{f0919f5a-f30c-4060-8b8e-67c9b189cd4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\RenderComponent\07. UIRender">
+      <UniqueIdentifier>{208181a3-3602-4043-a3b9-880a61ffd462}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
