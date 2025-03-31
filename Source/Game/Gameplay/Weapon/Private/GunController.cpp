@@ -17,11 +17,14 @@ GunController::GunController()
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
 	, m_bFire(false)
+	, m_InitFirePower(0.f)
 {
 
-	// 무기 종류에 따라 반동 값 정하기
+	// 무기 종류에 따라 변수 값 설정
 	m_VerticalRecoilPower = 1.2f;
 	m_HorizontalRecoilPower = 0.5f;
+
+	m_InitFirePower = 200000.f;
 
 	m_FireDelay = 0.1f;
 }
@@ -129,6 +132,7 @@ void GunController::Firing()
 
 	// 총알이 나아갈 방향을 정해준다.
 	BulletScript->SetDir(vFinalDir);
+	BulletScript->SetSpeed(m_InitFirePower);
 
 	m_AccTime += DT;
 

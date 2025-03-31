@@ -272,6 +272,4 @@ void TestLevel::CreateTestLevel()
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 		pLevel->AddObject(0, pObj, false);
 	}
-
-	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 }
