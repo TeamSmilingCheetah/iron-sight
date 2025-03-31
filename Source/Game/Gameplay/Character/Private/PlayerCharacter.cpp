@@ -81,7 +81,7 @@ void PlayerCharacter::Tick()
 					  , Vec2(200.f, 200.f), Vec3(0.f, 0.f, 0.f), true, 0.f);
 	}
 
-	// 미사일 발사
+	// 마우스 가둠
 	if (KEY_TAP(KEY::SPACE))
 	{
 		//DrawDebugCube(Vec4(0.f, 1.f, 0.f, 1.f), vPos, Vec3(100.f, 100.f, 100.f), Vec3(0.f, 0.f, 0.f), false, 3.f);

@@ -10,6 +10,8 @@ private:
 	float m_HorizontalRecoilPower;
 	float m_VerticalRecoilPower;
 
+	float m_InitFirePower;
+
 	float m_FireDelay;
 	float m_AccTime;
 
