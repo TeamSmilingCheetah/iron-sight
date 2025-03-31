@@ -28,9 +28,10 @@ private:
 
 	Vec2				m_LT;			// Left Top
 	Vec2				m_RB;			// Right Bottom
+
 	Vec4				m_BackGroundColor;
 
-	float				m_Priority;		// Transform Z값으로 구현.
+	UINT				m_Priority;		// Transform Z값으로 구현.
 										// 같은 Canvas에 속하는 UI들은 (Priority-1, Priority] 범위를 사용함.
 
 	// Image
@@ -46,7 +47,10 @@ public:
 	void SetImage(Ptr<CTexture> _Image) { m_Image = _Image; }
 	Ptr<CTexture> GetImage() { return m_Image; }
 
-	void SetPriority(float _Priority);
+	void SetPriority(UINT _Priority) {
+		assert(_Priority >= 0);
+		m_Priority = _Priority;
+	}
 
 	// 위치 설정
 	void SetRectPos(Vec2 _Pos);
@@ -69,6 +73,10 @@ public:
 	bool CanDrag() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::DRAG); }
 	bool CanDrop() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::DROP); }
 
+
+	void Binding();
+	void FontRender();
+	static void Clear();
 
 public:
 	virtual void Begin() override;

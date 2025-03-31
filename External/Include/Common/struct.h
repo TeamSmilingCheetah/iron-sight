@@ -185,6 +185,7 @@ struct FontRenderInfo
 	Vec2		Pos;
 	float		Size;
 	UINT		Color;
+	Vec4		Clip;	// left, top, right, bottom
 };
 
 

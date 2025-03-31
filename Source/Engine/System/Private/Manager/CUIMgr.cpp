@@ -112,9 +112,9 @@ void CUIMgr::ChangeFocus(CUI* _CanvasUI, CUI* _FocusUI)
 void CUIMgr::Tick()
 {
 	// 마우스 Event 감지
-	m_HoverUI = nullptr;			// 실제로 Hover된 UI
-	CUI* HoverCanvasUI = nullptr;	// HoverUI가 속한 Canvas
-	int Priority = INT_MAX;			// UI 우선순위 (Transform Z값)
+	m_HoverUI = nullptr;				// 실제로 Hover된 UI
+	CUI* HoverCanvasUI = nullptr;		// HoverUI가 속한 Canvas
+	UINT Priority = UINT_MAX;			// UI 우선순위
 
 	// Canvas UI의 자식 오브젝트를 순회 (DFS)하면서 마우스가 겹치는 가장 자식 UI를 찾음
 	for (int i = 0; i < m_vecUI.size(); ++i)
@@ -221,6 +221,7 @@ void CUIMgr::Tick()
 		ChangeFocus(HoverCanvasUI, m_HoverUI);
 	}
 }
+
 
 CUI* CUIMgr::CheckMouseHover(CUI* _UI)
 {

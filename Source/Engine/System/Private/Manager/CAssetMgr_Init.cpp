@@ -118,6 +118,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
 	GetInst()->AddAsset(L"UIShader", pShader);
