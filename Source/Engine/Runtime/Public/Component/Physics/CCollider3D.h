@@ -9,6 +9,7 @@ private:
 	Vec3        m_Scale;
 	Vec3        m_FinalPos;
 	Vec3		m_HitNormal;
+	Vec3		m_HitPoint;
 	Matrix      m_matColliderWorld; // 크기, 회전, 이동
 	bool        m_IndependentScale;
 
@@ -20,10 +21,12 @@ public:
 	void SetOffset(Vec3 _Offset) { m_Offset = _Offset; }
 	void SetScale(Vec3 _Scale) { m_Scale = _Scale; }
 	void SetHitNormal(Vec3 _Nor) { m_HitNormal = _Nor; }
+	void SetHitPoint(Vec3 _hitPoint) { m_HitPoint = _hitPoint; }
 
 	Vec3 GetOffset() { return m_Offset; }
 	Vec3 GetScale() { return m_Scale; }
 	Vec3 GetHitNormal() { return m_HitNormal; }
+	Vec3 GetHitPoint() { return m_HitPoint; }
 
 	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
 
