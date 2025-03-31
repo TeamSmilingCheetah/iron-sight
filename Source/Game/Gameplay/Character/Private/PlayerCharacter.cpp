@@ -20,17 +20,17 @@ PlayerCharacter::PlayerCharacter()
 	, m_Mass(3.f)
 	, m_Friction(100.f)
 	, m_MaxSpeed(10.f)
-	, m_GravityAccel(20.f)
-	, m_GravityMaxSpeed(1000.f)
-	, m_JumpPower(20.f)
+	, m_GravityAccel(10.f)
+	, m_GravityMaxSpeed(30.f)
+	, m_JumpPower(5.f)
 	, m_IsGround(true)
 	, m_bShoot(false)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
-	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Friction", &m_Friction });	// 마찰계수
-	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player MaxSpeed", &m_MaxSpeed });	// 최고속도
-	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player GravityAccel", &m_GravityAccel });	// 중력 가속도
-	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player GravityMaxSpeed", &m_GravityMaxSpeed });	// 중력 최대속도
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "MaxSpeed", &m_MaxSpeed });	// 최고속도
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "GravityAccel", &m_GravityAccel });	// 중력 가속도
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "GravityMaxSpeed", &m_GravityMaxSpeed });	// 중력 최대속도
 
 	//AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
 	//AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
@@ -244,11 +244,11 @@ void PlayerCharacter::PlayerAttack()
 			// 현재 무기 슬롯이 총이라면
 			/*if (m_vecWeaponSlot[CurIDx]->IsGun())
 			{
-
+	
 			}*/
 			m_bShoot = true;
 		}
-
+	
 		if (KEY_PRESSED(KEY::LBTN))
 		{
 			// 총을 사용한다.
@@ -258,7 +258,7 @@ void PlayerCharacter::PlayerAttack()
 				pGunScript->SetFire(true);
 			}
 		}
-
+	
 		if (KEY_RELEASED(KEY::LBTN))
 		{
 			m_bShoot = false;

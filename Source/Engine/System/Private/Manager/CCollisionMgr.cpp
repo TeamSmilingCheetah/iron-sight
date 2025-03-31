@@ -998,6 +998,8 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 
 	// 가장 가까운 충돌 거리 및 충돌 여부
 	float closestDist = FLT_MAX;
+	Vec3 closestHitPoint;
+	Vec3 closestHitNormal;
 	bool hasCollision = false;
 
 	// 각 삼각형에 대해 레이 충돌 검사
@@ -1015,6 +1017,12 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 		Vec3 crossPos = Vec3(0.f);
 		float dist = 0;
 
+		// 삼각형의 법선 벡터(노말) 계산
+		Vec3 edge1 = *triVerts[1] - *triVerts[0];
+		Vec3 edge2 = *triVerts[2] - *triVerts[0];
+		Vec3 triangleNormal = edge1.Cross(edge2);
+		triangleNormal.Normalize();
+
 		// IntersectsRay 함수로 레이-삼각형 충돌 검사
 		if (IntersectsRay(triVerts, rayPos, rayDir, crossPos, dist))
 		{
@@ -1024,6 +1032,8 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 				if (dist >= 0.f && dist <= rayMaxDist && dist < closestDist)
 				{
 					closestDist = dist;
+					closestHitPoint = crossPos;
+					closestHitNormal = triangleNormal;
 					hasCollision = true;
 				}
 			}

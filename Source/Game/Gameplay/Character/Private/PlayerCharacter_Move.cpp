@@ -43,6 +43,12 @@ void PlayerCharacter::MoveCalcul()
 	Vec3 vRightDir = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 	Vec3 vInputDir = { 0.f,0.f,0.f };
 
+	// 이전 틱의 이동방향저장
+	Vec3 vPrevVelocityDir = m_Velocity;
+	if (vPrevVelocityDir.Length() > 0.001f) {
+		vPrevVelocityDir.Normalize();
+	}
+
 	// 힘의 량
 	float ForceScar;
 	
@@ -83,6 +89,19 @@ void PlayerCharacter::MoveCalcul()
 	// 입력이 있는 경우
 	if (vInputDir.Length() > 0.f)
 	{
+		float directionDot = vInputDir.Dot(vPrevVelocityDir);
+
+		// 방향 전환이 큰 경우(90도 이상) 속도를 빠르게 줄이고 해당방향 힘을 강하게 증가
+		if (directionDot < 0.f && m_Velocity.Length() > 1.0f)
+		{
+			// 방향 전환 시 속도 감소
+			float reductionFactor = 0.5f;
+			m_Velocity *= reductionFactor;
+
+			// 방향 전환 시 추가 힘 적용
+			ForceScar *= 1.5f;
+		}
+
 		// 힘벡터 완성
 		m_Force = vInputDir * ForceScar;
 
@@ -92,8 +111,8 @@ void PlayerCharacter::MoveCalcul()
 		// 속도 벡터 연산
 		m_Velocity += m_Accel * DT;
 
-		// 최대속도 확인
-		if (m_MaxSpeed < m_Velocity.Length())
+		// 최대속도 확인(땅위에 있을 경우에만 판단)
+		if (m_IsGround && m_MaxSpeed < m_Velocity.Length())
 		{
 			m_Velocity.Normalize();
 			m_Velocity *= m_MaxSpeed;
@@ -101,7 +120,7 @@ void PlayerCharacter::MoveCalcul()
 		
 	}
 	// 방향키 입력이 없다면 마칠계수에 따라 감속(땅에있다는 조건추가)
-	else
+	else if(m_IsGround)
 	{
 		// 속도의 반대방향으로 마찰계수*질량을 곱합
 		Vec3 vFriction = -m_Velocity;
@@ -127,8 +146,8 @@ void PlayerCharacter::gravityCalcul()
 	m_IsGround = false;
 	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
 	{
-		// 노말의 y성분이 0.7 이상이면 지면으로 판단 (약 45도)
-		if (m_vecCollisionNormal[i].y > 0.7f)
+		// 노말의 y성분이 0.3 이상이면 지면으로 판단 (약 60도)
+		if (m_vecCollisionNormal[i].y > 0.3f)
 		{
 			m_IsGround = true;
 			break;
@@ -147,8 +166,11 @@ void PlayerCharacter::gravityCalcul()
 	}
 	else
 	{
-		// 땅위에있다면 중력 속도 0으로 설정
-		m_GravidyVelocity = Vec3(0.f, 0.f, 0.f);
+		// 땅위이며 아래로 내려가는것이 아니라면 속도 0으로 설정
+		if (m_GravidyVelocity.y < 0.f)
+		{
+			m_GravidyVelocity = Vec3(0.f, 0.f, 0.f);
+		}
 	}
 
 	// 점프 기능
@@ -181,8 +203,13 @@ void PlayerCharacter::ColliderCalcul()
 
 void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
+	Vec3 pPos = Transform()->GetRelativePos();
+
 	Vec3 hitNormal = _Collider->GetHitNormal();
 	hitNormal.Normalize();
+
+	//Vec3 hitPoint = _Collider->GetHitPoint();
+	//Transform()->SetRelativePos(hitPoint);
 
 	// 노말이 유효하면 사용
 	if (hitNormal.Length() > 0.001f)
@@ -243,6 +270,8 @@ void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 
 	// 지형의 노말 벡터를 얻음
 	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+
+	Transform()->SetRelativePos(pPos);
 
 	// 노말이 유효하면 사용
 	if (LandNormal.Length() > 0.001f)
