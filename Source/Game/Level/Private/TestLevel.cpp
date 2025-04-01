@@ -33,14 +33,16 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(0)->SetName(L"Background");
 	pLevel->GetLayer(1)->SetName(L"Tile");
 	pLevel->GetLayer(2)->SetName(L"Default");
-	pLevel->GetLayer(3)->SetName(L"Player");
-	pLevel->GetLayer(4)->SetName(L"PlayerObject");
-	pLevel->GetLayer(5)->SetName(L"Monster");
-	pLevel->GetLayer(6)->SetName(L"MonsterObject");
-	pLevel->GetLayer(7)->SetName(L"UI");
+	pLevel->GetLayer(3)->SetName(L"PlayerTPS");
+	pLevel->GetLayer(4)->SetName(L"PlayerFPS");
+	pLevel->GetLayer(5)->SetName(L"PlayerObject");
+	pLevel->GetLayer(6)->SetName(L"Monster");
+	pLevel->GetLayer(7)->SetName(L"MonsterObject");
+	pLevel->GetLayer(8)->SetName(L"UI");
 
 	// 충돌 설정
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
+	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
 
 	CGameObject* pObject = nullptr;
 
@@ -55,6 +57,7 @@ void TestLevel::CreateTestLevel()
 	pObject->Camera()->SetProjType(PERSPECTIVE);
 	pObject->Camera()->SetPriority(0);
 	pObject->Camera()->LayerCheckAll();
+	pObject->Camera()->LayerCheck(4);
 
 	pLevel->AddObject(0, pObject, false);
 
@@ -92,29 +95,29 @@ void TestLevel::CreateTestLevel()
 	// ======
 	// Player
 	// ======
-	pObject = new CGameObject;
-	pObject->SetName(L"TestPlayer");
-	pObject->AddComponent(new CMeshRender);
-	pObject->AddComponent(new CCollider3D);
+	//pObject = new CGameObject;
+	//pObject->SetName(L"TestPlayer");
+	//pObject->AddComponent(new CMeshRender);
+	//pObject->AddComponent(new CCollider3D);
 
-	pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
-	pObject->MeshRender()->SetMaterial(
-		CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
+	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	//pObject->MeshRender()->SetMaterial(
+	//	CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
 
-	pObject->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	pObject->Transform()->SetFrustumRadius(750.f);
+	//pObject->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	//pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	//pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	//pObject->Transform()->SetFrustumRadius(750.f);
 
-	pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
 
-	Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
-		L"Texture\\HeightMap\\MoonCrater.png");
-	pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
+	//Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	//	L"Texture\\HeightMap\\MoonCrater.png");
+	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
 
 	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
 	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
-	pLevel->AddObject(0, pObject, false);
+	//pLevel->AddObject(0, pObject, false);
 
 	// =========
 	// LandScape
@@ -170,7 +173,8 @@ void TestLevel::CreateTestLevel()
 
 			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
 
-			pLevel->AddObject(0, pObj, false);
+			// 자식 메쉬들 같이 이동
+			pLevel->AddObject(3, pObj, true);
 
 			CGameObject* pWeaponObj = pWeaponModel->Instantiate();
 			pWeaponObj->SetName(L"Weapon");
@@ -195,7 +199,7 @@ void TestLevel::CreateTestLevel()
 		}
 
 		// 모바일 배그 애셋 테스트
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
+	/*	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"Airdrop");
 		pObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
@@ -270,6 +274,6 @@ void TestLevel::CreateTestLevel()
 		pObj->SetName(L"Smoke Grenade");
 		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
+		pLevel->AddObject(0, pObj, false);*/
 	}
 }
