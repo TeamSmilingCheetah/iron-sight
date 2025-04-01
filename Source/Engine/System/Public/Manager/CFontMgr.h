@@ -24,17 +24,20 @@ private:
 
 	vector<FontRenderInfo>		m_vecRenderInfo;
 
+	map<wstring, IDWriteTextFormat*>	m_mapFormat;
+
 public:
 	void Init();
 
 	// 쌓아뒀다가 가장 마지막 SwapChain에 출력
-	void DrawFont(const wstring& _pStr, float _fPosX, float _fPosY, float _fFontSize, UINT _Color);
-	void DrawFontClip(const wstring& _pStr, float _fPosX, float _fPosY, float _fFontSize, UINT _Color
-			, float _clipLeft, float _clipTop, float _clipRight, float _clipBottom);
+	void DrawFont(const wstring& _pStr, float _fPosX, float _fPosY, UINT _FontSize, UINT _Color
+		, Vec2 _Layout = Vec2(300.f, 50.f), const wstring& _Font = L"Segoe UI");
+	void DrawFontClip(const wstring& _pStr, float _fPosX, float _fPosY, UINT _FontSize, UINT _Color
+		, Vec4 _Clip, Vec2 _Layout = Vec2(300.f, 50.f), const wstring& _Font = L"Segoe UI");
 
 	// 바로 출력
-	void DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _fPosY, float _fFontSize, UINT _Color
-		, float _clipLeft, float _clipTop, float _clipRight, float _clipBottom);
+	void DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _fPosY, UINT _FontSize, UINT _Color
+		, Vec4 _Clip, Vec2 _Layout = Vec2(300.f, 50.f), const wstring& _Font = L"Segoe UI");
 
 
 	void Render();

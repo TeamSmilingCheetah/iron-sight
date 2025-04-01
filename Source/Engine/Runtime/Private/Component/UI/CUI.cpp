@@ -51,9 +51,16 @@ Vec2 CUI::GetRectSize()
 	return Vec2(vScale.x, vScale.y);
 }
 
-void CUI::AddText(const wstring& _Text, float _x, float _y, float _FontSize, UINT _Color)
+void CUI::AddText(const wstring& _Text, float _posX, float _posY, float _FontSize, UINT _Color)
 {
-	m_TextInfo.push_back(FontRenderInfo{ _Text, Vec2(_x, _y), _FontSize, _Color });
+	FontRenderInfo info{};
+	info.Text = _Text;
+	info.Pos.x = _posX;
+	info.Pos.y = _posY;
+	info.FontSize = _FontSize;
+	info.Color = _Color;
+
+	m_TextInfo.push_back(info);
 }
 
 void CUI::Binding()
@@ -87,7 +94,7 @@ void CUI::FontRender()
 	// Font Render
 	for (const auto& info : m_TextInfo)
 	{
-		CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.Size, info.Color, CanvasRect.x, CanvasRect.y, CanvasRect.z, CanvasRect.w);
+		CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.FontSize, info.Color, CanvasRect, Vec2(m_RB.x - m_LT.x, m_RB.y - m_LT.y));
 	}
 }
 

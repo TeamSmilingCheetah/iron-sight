@@ -181,11 +181,16 @@ struct PayLoad
 // Font
 struct FontRenderInfo
 {
+	// 폰트 정보
+	wstring		Font;
+	UINT		FontSize;
+
+	// 출력 정보
 	wstring		Text;
-	Vec2		Pos;
-	float		Size;
 	UINT		Color;
-	Vec4		Clip;	// left, top, right, bottom
+	Vec2		Pos;
+	Vec2		Layout;		// width, height (텍스트가 끊길 위치)
+	Vec4		Clip;		// left, top, right, bottom
 };
 
 

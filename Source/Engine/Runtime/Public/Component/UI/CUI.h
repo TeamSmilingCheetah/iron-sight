@@ -64,7 +64,7 @@ public:
 	Vec2 GetRectSize();
 
 	// Text 설정
-	void AddText(const wstring& _Text, float _x, float _y, float _FontSize, UINT _Color);
+	void AddText(const wstring& _Text, float _posX, float _posY, float _FontSize, UINT _Color);
 	vector<FontRenderInfo>& GetTextInfoRef() { return m_TextInfo; }
 
 	// Event 지원 여부 (bit masking)
