@@ -24,7 +24,7 @@ GunController::GunController()
 	m_VerticalRecoilPower = 1.2f;
 	m_HorizontalRecoilPower = 0.5f;
 
-	m_InitFirePower = 200000.f;
+	m_InitFirePower = 20000.f;
 
 	m_FireDelay = 0.1f;
 }

@@ -133,6 +133,7 @@ void PlayerCharacter::UpdateRotation()
 	bool bSearch = pCameraScript->IsSearch();
 	bool bShoulder = pCameraScript->IsShoulder();
 	bool bADS = pCameraScript->IsADS();
+	bool bTPS = pCameraScript->IsTPS();
 
 	// 마우스 위치를 구해온다
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
@@ -161,8 +162,8 @@ void PlayerCharacter::UpdateRotation()
 
 	static float OriginRotY = 0.f;
 
-	// 평상시
-	if (!bADS && !bShoulder && !m_bShoot)
+	// 평상시 & TPS 상태일 때
+	if (!bADS && !bShoulder && !m_bShoot && bTPS)
 	{
 		// Search
 		if (KEY_TAP(KEY::Z))

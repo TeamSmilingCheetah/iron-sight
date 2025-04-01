@@ -6,10 +6,12 @@ class CameraController :
 {
 	float m_CameraSpeed;
 
+	float m_AccTime;
 	float m_RecoilTime;
 	float m_RecoilAmount_vertical;
 	float m_RecoilAmount_horizontal;
 
+	bool m_bCliked_First;
 	bool m_bSearch;
 	bool m_bSearchRecover;
 	bool m_bRight;
@@ -17,6 +19,7 @@ class CameraController :
 	bool m_bShoulderRecover;
 	bool m_bADS;
 	bool m_bChangeFocus;
+	bool m_bTPS;
 
 public:
 	void Tick() override;
@@ -27,6 +30,7 @@ public:
 	bool IsShoulder() { return m_bShoulder; }
 	bool IsADS() { return m_bADS; }
 	bool IsSearch() { return m_bSearch; }
+	bool IsTPS() { return m_bTPS; }
 
 private:
 	void CameraOrthgraphicMove();
