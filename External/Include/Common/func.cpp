@@ -4,6 +4,8 @@
 #include "System/Public/Manager/CTaskMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "System/Public/Manager/CLevelMgr.h"
+#include "Runtime/Public/Component/Base/components.h"
+
 
 void SaveObjectRef(CGameObject* _Object, FILE* _File)
 {
@@ -335,4 +337,49 @@ float RandomFloat(float min, float max)
 	static std::mt19937 engine(rd());
 	std::uniform_real_distribution<float> dist(min, max);
 	return dist(engine);
+}
+
+Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
+{
+	Vec3 vTargetPos = _TargetObj->Transform()->GetRelativePos();
+	Vec3 vTargetCollOffset = _TargetObj->Collider3D()->GetOffset();
+	Vec3 vTargetCollScale = _TargetObj->Collider3D()->GetScale();
+
+	Vec3 vSubPos = _SubObj->Transform()->GetRelativePos();
+
+	Vec3 vTargetScale = _TargetObj->Transform()->GetRelativeScale();
+	Vec3 vSubScale = _SubObj->Transform()->GetRelativeScale();
+
+	Vec3 vTargerCenter = Vec3(vTargetPos.x + +vTargetCollOffset.x
+							, vTargetPos.y + vTargetCollOffset.y
+							, vTargetPos.z + +vTargetCollOffset.z);
+
+	Vec3 vDelta = vTargerCenter - vSubPos;
+
+	// 각 축별 절대값
+	float absX = fabs(vDelta.x);
+	float absY = fabs(vDelta.y);
+	float absZ = fabs(vDelta.z);
+
+	// 축별로 충돌이 얼마나 깊은지
+	float overlapX = (vTargetCollScale.x / 2.f + vSubScale.x / 2.f) - absX;
+	float overlapY = (vTargetCollScale.y / 2.f + vSubScale.y / 2.f) - absY;
+	float overlapZ = (vTargetCollScale.z / 2.f + vSubScale.z / 2.f) - absZ;
+
+	// 최소 오버랩 축 결정
+	if (overlapX < overlapY && overlapX < overlapZ)
+	{
+		// X축 충돌
+		return Vec3((vDelta.x > 0.0f) ? 1.0f : -1.0f, 0.0f, 0.0f);
+	}
+	else if (overlapY < overlapZ)
+	{
+		// Y축 충돌
+		return Vec3(0.0f, (vDelta.y > 0.0f) ? 1.0f : -1.0f, 0.0f);
+	}
+	else
+	{
+		// Z축 충돌
+		return Vec3(0.0f, 0.0f, (vDelta.z > 0.0f) ? 1.0f : -1.0f);
+	}
 }

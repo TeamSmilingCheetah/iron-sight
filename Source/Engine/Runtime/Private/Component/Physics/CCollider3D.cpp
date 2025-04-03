@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Physics/CCollider3D.h"
 
 #include "Runtime/Public/Component/Script/CScript.h"
@@ -52,17 +52,18 @@ void CCollider3D::FinalTick()
 
 	Matrix matScale = XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
 	Matrix matTrans = XMMatrixTranslation(m_Offset.x, m_Offset.y, m_Offset.z);
+	Matrix matRot = XMMatrixRotationY(m_RotY);
 
 	if (m_IndependentScale)
 	{
 		Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
 		Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
-		m_matColliderWorld = matScale * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
+		m_matColliderWorld = matScale * matRot * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
 
 	}
 	else
 	{
-		m_matColliderWorld = matScale * matTrans * GetOwner()->Transform()->GetWorldMat();
+		m_matColliderWorld = matScale * matRot * matTrans * GetOwner()->Transform()->GetWorldMat();
 	}
 
 	if (m_OverlapCount)

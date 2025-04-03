@@ -194,6 +194,7 @@
     <ClInclude Include="UI\Public\Component\Collider3DUI.h" />
     <ClInclude Include="UI\Public\Component\ColliderRayUI.h" />
     <ClInclude Include="UI\Public\Component\ComponentUI.h" />
+    <ClInclude Include="UI\Public\Component\DecalUI.h" />
     <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
     <ClInclude Include="UI\Public\Component\Light2DUI.h" />
     <ClInclude Include="UI\Public\Component\Light3DUI.h" />
@@ -252,6 +253,7 @@
     <ClCompile Include="UI\Private\Component\Collider2DUI.cpp" />
     <ClCompile Include="UI\Private\Component\Collider3DUI.cpp" />
     <ClCompile Include="UI\Private\Component\ComponentUI.cpp" />
+    <ClCompile Include="UI\Private\Component\DecalUI.cpp" />
     <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
     <ClCompile Include="UI\Private\Component\Light2DUI.cpp" />
     <ClCompile Include="UI\Private\Component\Light3DUI.cpp" />

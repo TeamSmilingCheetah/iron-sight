@@ -199,12 +199,33 @@ void TestLevel::CreateTestLevel()
 		}
 
 		// 모바일 배그 애셋 테스트
-	/*	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
-		pObj = pMeshData->Instantiate();
-		pObj->SetName(L"Airdrop");
-		pObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
-		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
+		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\hG.fbx");
+		//pObj = pMeshData->Instantiate();
+		//pObj->SetName(L"Wall");
+		//pObj->AddComponent(new CCollider3D);
+
+		//pObj->Collider3D()->SetScale(Vec3(8.f, 5.f, 4.5f));
+		//pObj->Collider3D()->SetRotY(13.31f);
+
+		//pObj->Transform()->SetRelativePos(Vec3(3208.f, 0.f, -1066.f));
+		//pObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+		//pObj->Transform()->SetRelativeRotation(0.f, 138.5f, 0.f);
+		//pLevel->AddObject(0, pObj, false);
+
+		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
+		//pObj = pMeshData->Instantiate();
+		//pObj->SetName(L"Airdrop");
+
+		//pObj->AddComponent(new CCollider3D);
+
+		//pObj->Collider3D()->SetIndependentScale(true);
+		//pObj->Collider3D()->SetScale(Vec3(2850.f, 2850.f, 2850.f));
+		//pObj->Collider3D()->SetOffset(Vec3(0.f, 1500.f, 0.f));
+
+		//pObj->Transform()->SetRelativePos(Vec3(2867.f, -494.f, 321.f));
+		//pObj->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
+		//pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+		//pLevel->AddObject(0, pObj, false);
 
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx");
 		pObj = pMeshData->Instantiate();
@@ -223,11 +244,19 @@ void TestLevel::CreateTestLevel()
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Death Box\\box.fbx");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"DeathBox");
-		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
+
+		pObj->AddComponent(new CCollider3D);
+
+		pObj->Collider3D()->SetIndependentScale(true);
+		pObj->Collider3D()->SetScale(Vec3(3900.f, 3900.f, 2300.f));
+		pObj->Collider3D()->SetOffset(Vec3(0.f, 1868.f, 0.f));
+
+		pObj->Transform()->SetRelativePos(Vec3(6590.f, -410.f, 5000.f));
+		pObj->Transform()->SetRelativeScale(Vec3(700.f, 2000.f, 700.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 		pLevel->AddObject(0, pObj, false);
 
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Energy Drink.fbx");
+		/*pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Energy Drink.fbx");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"Energy Drink");
 		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));

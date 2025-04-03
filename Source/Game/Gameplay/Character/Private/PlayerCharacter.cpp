@@ -64,7 +64,7 @@ void PlayerCharacter::Tick()
 
 	if (KEY_PRESSED(KEY::NUM_1))
 	{
-		Transform()->RotateAxis(Vec3(1.f, 1.f, 1.f), 180.f * DT);
+		//Transform()->RotateAxis(Vec3(1.f, 1.f, 1.f), 180.f * DT);
 	}
 
 	if (KEY_PRESSED(KEY::NUMPAD_0))
