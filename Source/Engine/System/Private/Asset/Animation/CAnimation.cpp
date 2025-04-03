@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Animation/CAnimation.h"
 #include "System/Public/Asset/Animation/CSkeleton.h"
 #include "System/Public/Manager/CAssetMgr.h"

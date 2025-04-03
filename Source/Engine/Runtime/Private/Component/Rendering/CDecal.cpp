@@ -1,14 +1,17 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Rendering/CDecal.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/CTimeMgr.h"
 
 CDecal::CDecal()
 	: CRenderComponent(COMPONENT_TYPE::DECAL)
 	  , m_GlobalAlpha(1.f)
 	  , m_AsLight(false)
+	  , m_LifeTime(0.f)
+	  , m_AccTime(0.f)
 {
 	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
 
@@ -25,6 +28,21 @@ void CDecal::FinalTick()
 	              , Transform()->GetWorldPos()
 	              , Transform()->GetWorldScale()
 	              , Transform()->GetRelativeRotation(), true, 0.f);
+
+	m_AccTime += DT;
+
+	// 수명이 0이라면 영구
+	if (m_LifeTime == 0)
+	{
+		return;
+	}
+		
+	if (m_LifeTime < m_AccTime)
+	{
+		DestroyObject(GetOwner());
+	}
+
+	
 }
 
 void CDecal::Render()
@@ -89,8 +107,16 @@ void CDecal::CreateMaterial()
 
 void CDecal::SaveComponent(FILE* _File)
 {
+	fwrite(&m_GlobalAlpha, sizeof(float), 1, _File);
+	fwrite(&m_AsLight, sizeof(bool), 1, _File);
+	
+	SaveAssetRef(m_DecalTex, _File);
 }
 
 void CDecal::LoadComponent(FILE* _File)
 {
+	fread(&m_GlobalAlpha, sizeof(float), 1, _File);
+	fread(&m_AsLight, sizeof(bool), 1, _File);
+
+	LoadAssetRef(m_DecalTex, _File);
 }
