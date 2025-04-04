@@ -23,6 +23,7 @@ CameraController::CameraController()
 	, m_bADS(false)
 	, m_bChangeFocus(false)
 	, m_bTPS(true)
+	, m_bWasTPS(false)
 	, m_bCliked_First(false)
 	, m_RecoilTime(0.f)
 	, m_RecoilAmount_vertical(0.f)
@@ -199,9 +200,13 @@ void CameraController::CameraPerspectiveMove()
 			{
 				m_AccTime = 0.f;
 				// 특정 시간 이하, 즉 우클릭을 클릭만 했을때는 정조준 진입
-				if (!m_bShoulder)
+				if (!m_bShoulder && !m_bWasTPS)
 				{
 					m_bADS = true;
+				}
+				else if (m_bWasTPS)
+				{
+					m_bWasTPS = false;
 				}
 			}
 
@@ -247,8 +252,9 @@ void CameraController::CameraPerspectiveMove()
 			{
 				// TPS 비활성화, FPS 활성화
 				m_bTPS = false;
+				m_bWasTPS = true;
 				GetOwner()->Camera()->LayerCheck(3);
-				GetOwner()->Camera()->LayerCheck(4);
+				GetOwner()->Camera()->LayerCheck(4);			
 			}
 		}
 
@@ -362,6 +368,13 @@ void CameraController::CameraPerspectiveMove()
 		// 줌 활성화
 		if (KEY_TAP(KEY::RBTN))
 		{
+			// TPS에서 줌으로 넘어온 경우 줌을 풀때 TPS로 넘어간다.
+			if (m_bWasTPS && m_bADS)
+			{
+				m_bTPS = true;
+				GetOwner()->Camera()->LayerCheck(3);
+				GetOwner()->Camera()->LayerCheck(4);
+			}
 			m_bADS == true ? m_bADS = false : m_bADS = true;
 		}
 	}

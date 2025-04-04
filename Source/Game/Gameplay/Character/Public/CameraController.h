@@ -18,6 +18,7 @@ class CameraController :
 	bool m_bShoulder;
 	bool m_bShoulderRecover;
 	bool m_bADS;
+	bool m_bWasTPS;
 	bool m_bChangeFocus;
 	bool m_bTPS;
 
