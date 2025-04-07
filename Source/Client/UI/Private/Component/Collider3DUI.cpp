@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Component/Collider3DUI.h"
 
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
@@ -21,18 +21,24 @@ void Collider3DUI::Render_Update()
 
 	Vec3 vOffset = pCollider3D->GetOffset();
 	Vec3 vScale = pCollider3D->GetScale();
+	float fRotY = pCollider3D->GetRotY();
 	bool bIndependent = pCollider3D->IsIndependentScale();
 	bool bActive = pCollider3D->IsActive();
 
 	ImGui::Text("Scale");
 	ImGui::SameLine(100);
-	ImGui::DragFloat3("##ColliderScale", vScale);
+	ImGui::DragFloat3("##ColliderScale", vScale, 0.1f);
 	pCollider3D->SetScale(vScale);
 
 	ImGui::Text("Offset");
 	ImGui::SameLine(100);
-	ImGui::DragFloat3("##ColliderOffset", vOffset);
+	ImGui::DragFloat3("##ColliderOffset", vOffset, 0.1f);
 	pCollider3D->SetOffset(vOffset);
+
+	ImGui::Text("Rotation");
+	ImGui::SameLine(100);
+	ImGui::DragFloat("##ColliderRotation", &fRotY, 0.01f);
+	pCollider3D->SetRotY(fRotY);
 
 	ImGui::Text("Independent");
 	ImGui::SameLine(100);

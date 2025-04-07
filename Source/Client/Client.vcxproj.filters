@@ -165,6 +165,9 @@
     <ClInclude Include="UI\Public\Component\ColliderRayUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\ColliderRayUI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Public\Component\DecalUI.h">
+      <Filter>03. EditorUI\Inspector\ComponentUI\Decal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -309,6 +312,9 @@
     </Filter>
     <Filter Include="03. EditorUI\Inspector\ComponentUI\ColliderRayUI">
       <UniqueIdentifier>{8e52a253-eb75-4116-8ef4-a1eaa98fccca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. EditorUI\Inspector\ComponentUI\Decal">
+      <UniqueIdentifier>{70f34c67-0730-4071-bf67-477475b9b751}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -469,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="UI\Private\Component\ColliderRayUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\ColliderRayUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\DecalUI.cpp">
+      <Filter>03. EditorUI\Inspector\ComponentUI\Decal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

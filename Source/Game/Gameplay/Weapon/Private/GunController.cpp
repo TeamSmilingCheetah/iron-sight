@@ -24,7 +24,7 @@ GunController::GunController()
 	m_VerticalRecoilPower = 1.2f;
 	m_HorizontalRecoilPower = 0.5f;
 
-	m_InitFirePower = 200000.f;
+	m_InitFirePower = 20000.f;
 
 	m_FireDelay = 0.1f;
 }
@@ -81,8 +81,8 @@ void GunController::Firing()
 	// 총알의 시작 위치를 보정해준다
 	Vec3 vSpawnPos = vPlayerPos;
 	//vSpawnPos.x += 350.f * vPlayerDir.x;
-	vSpawnPos.z -= 950.f;
-	vSpawnPos.y += 50.f;
+	//vSpawnPos.z -= 950.f;
+	vSpawnPos.y += 800.f;
 
 	// 카메라 정중앙이 바라보는곳에서 임의의 타켓 포인트를 구한다.
 	Vec3 vTargetPoint = vCameraPos + vCameraDir * 100000.f;

@@ -22,6 +22,13 @@ public:
 	void SetSpeed(float _Speed) { m_Speed = _Speed; }
 	void SetDir(Vec3 _Dir) { m_Dir = _Dir; }
 
+	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
+		CCollider3D* _OtherCollider) override;
+	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
+		CCollider3D* _OtherCollider) override;
+	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
+		CCollider3D* _OtherCollider) override;
+
 	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;

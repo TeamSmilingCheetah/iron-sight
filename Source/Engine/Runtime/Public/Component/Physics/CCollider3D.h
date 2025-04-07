@@ -7,6 +7,7 @@ class CCollider3D :
 private:
 	Vec3        m_Offset;
 	Vec3        m_Scale;
+	float		m_RotY;
 	Vec3        m_FinalPos;
 	Vec3		m_HitNormal;
 	Vec3		m_HitPoint;
@@ -20,11 +21,13 @@ private:
 public:
 	void SetOffset(Vec3 _Offset) { m_Offset = _Offset; }
 	void SetScale(Vec3 _Scale) { m_Scale = _Scale; }
+	void SetRotY(float _Rot) { m_RotY = _Rot; }
 	void SetHitNormal(Vec3 _Nor) { m_HitNormal = _Nor; }
 	void SetHitPoint(Vec3 _hitPoint) { m_HitPoint = _hitPoint; }
 
 	Vec3 GetOffset() { return m_Offset; }
 	Vec3 GetScale() { return m_Scale; }
+	float GetRotY() { return m_RotY; }
 	Vec3 GetHitNormal() { return m_HitNormal; }
 	Vec3 GetHitPoint() { return m_HitPoint; }
 

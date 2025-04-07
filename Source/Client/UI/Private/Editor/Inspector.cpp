@@ -26,6 +26,7 @@
 #include "Client/UI/Public/Component/MeshRenderUI.h"
 #include "Client/UI/Public/Component/ScriptUI.h"
 #include "Client/UI/Public/Component/SkyBoxUI.h"
+#include "Client/UI/Public/Component/DecalUI.h"
 #include "Client/UI/Public/Component/TransformUI.h"
 
 class CScript;
@@ -387,6 +388,10 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)] = static_cast<ComponentUI*>(
 		AddChildUI(new LandScapeUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)]->SetChildSize(ImVec2(0.f, 150.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)] = static_cast<ComponentUI*>(
+		AddChildUI(new DecalUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)]->SetChildSize(ImVec2(0.f, 165.f));
 }
 
 void Inspector::CreateAssetUI()
