@@ -154,8 +154,8 @@ void TestLevel::CreateTestLevel()
 	UICamera->Camera()->SetPriority(1);
 	UICamera->Camera()->SetFar(10.f);	// 1-10 까지 UI 계층 (Canvas)
 
-	assert(pLevel->GetLayer(7)->GetName() == L"UI");
-	UICamera->Camera()->LayerCheck(7);
+	assert(pLevel->GetLayer(8)->GetName() == L"UI");
+	UICamera->Camera()->LayerCheck(8);
 
 	pLevel->AddObject(0, UICamera, false);
 
@@ -172,7 +172,7 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->UI()->SetRectPos(0.f, 0.f);
 	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
-	pLevel->AddObject(7, CanvasUI, false);	// UI layer
+	pLevel->AddObject(8, CanvasUI, false);	// UI layer
 
 	// ButtonUI
 	CGameObject* UI = new CGameObject;
