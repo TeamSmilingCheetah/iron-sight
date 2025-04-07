@@ -14,10 +14,10 @@ enum class CB_TYPE
 // RasterizerState Type
 enum class RS_TYPE
 {
-	CULL_BACK, // 뒷면 컬링 모드
-	CULL_FRONT, // 앞면 컬링 모드
-	CULL_NONE, // 컬링하지 않음
-	WIRE_FRAME, // WireFrame 모드
+	CULL_BACK,		// 뒷면 컬링 모드
+	CULL_FRONT,		// 앞면 컬링 모드
+	CULL_NONE,		// 컬링하지 않음
+	WIRE_FRAME,		// WireFrame 모드
 	END,
 };
 
@@ -125,9 +125,14 @@ enum class COMPONENT_TYPE
 
 	COLLIDERRAY,		// Ray 충돌체
 
+	UI,			// UI 컴포넌트
+	UIRENDER,
+
 	END,
 
 	SCRIPT, // 대본
+
+	SAVE_END = 0xFFFFFFFF,	// File Save 반복문 종료 조건 값
 };
 
 // 카메라 투영 (Projection)

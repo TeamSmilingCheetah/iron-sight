@@ -11,6 +11,8 @@
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -25,7 +27,7 @@ void TestLevel::CreateTestLevel()
 	Ptr<CTexture> pAtlasTex = CAssetMgr::GetInst()->Load<CTexture>(
 		L"TileMapTex", L"Texture\\TILE.bmp");
 
-	auto pLevel = new CLevel;
+	CLevel* pLevel = new CLevel;
 
 	// 테스트 레벨을 현재 레벨로 지정
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);
@@ -83,7 +85,7 @@ void TestLevel::CreateTestLevel()
 	pSkyBox->SetName(L"SkyBox");
 	pSkyBox->AddComponent(new CSkyBox);
 	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
-		L"Texture\\skybox\\Sky02.jpg");
+		L"Texture\\skybox\\Sky01.png");
 
 	// FrustumCheck 비활성화
 	pSkyBox->Transform()->SetFrustumCheck(false);
@@ -138,6 +140,83 @@ void TestLevel::CreateTestLevel()
 		CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
 
 	pLevel->AddObject(0, pLandScape, false);
+
+
+	// ==============
+	// UI System Test
+	// ==============
+	
+	// UI Camera
+	CGameObject* UICamera = new CGameObject;
+	UICamera->SetName(L"UICamera");
+	UICamera->AddComponent(new CCamera);
+	UICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	UICamera->Camera()->SetPriority(1);
+	UICamera->Camera()->SetFar(10.f);	// 1-10 까지 UI 계층 (Canvas)
+
+	assert(pLevel->GetLayer(8)->GetName() == L"UI");
+	UICamera->Camera()->LayerCheck(8);
+
+	pLevel->AddObject(0, UICamera, false);
+
+	// CanvasUI
+	CGameObject* CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	CanvasUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
+	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetRectPos(0.f, 0.f);
+	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
+
+	pLevel->AddObject(8, CanvasUI, false);	// UI layer
+
+	// ButtonUI
+	CGameObject* UI = new CGameObject;
+	UI->SetName(L"ButtonUI");
+	UI->AddComponent(new CUI(UI_BUTTON));
+
+	UI->AddComponent(new CUIRender);
+	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	UI->UI()->SetRectPos(-250.f, 120.f);
+	UI->UI()->SetRectSize(100.f, 40.f);
+	UI->UI()->AddText(L"Test for very long text how would you respond to this", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
+
+	CanvasUI->AddChild(UI);
+
+	// DragUI
+	UI = new CGameObject;
+	UI->SetName(L"DragUI");
+	UI->AddComponent(new CUI(UI_DRAG));
+
+	UI->AddComponent(new CUIRender);
+	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	UI->UI()->SetRectPos(-40.f, 150.f);
+	UI->UI()->SetRectSize(100.f, 40.f);
+
+	CanvasUI->AddChild(UI);
+
+	// DropUI
+	UI = new CGameObject;
+	UI->SetName(L"DropUI");
+	UI->AddComponent(new CUI(UI_DROP));
+
+	UI->AddComponent(new CUIRender);
+	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	UI->UI()->SetRectPos(100.f, 0.f);
+	UI->UI()->SetRectSize(100.f, 600.f);
+	UI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\link.png"));
+
+	CanvasUI->AddChild(UI);
 
 	// ============
 	// FBX Loading

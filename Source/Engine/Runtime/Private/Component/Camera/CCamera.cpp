@@ -1,16 +1,18 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Actor/CLevel.h"
-#include "Runtime/Public/Component/Base/CRenderComponent.h"
-#include "Runtime/Public/Component/Camera/CFrustum.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CLevelMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Rendering/RenderTarget/CMRT.h"
-#include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Camera/CFrustum.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/CUIMgr.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -541,10 +543,44 @@ void CCamera::render_postprocess()
 
 void CCamera::render_ui()
 {
-	for (size_t i = 0; i < m_vecUI.size(); ++i)
+	// m : canvas UI 개수
+	// n : 총 UI 개수 (n >= m)
+	// 총 O(m+n) <- 현재 구조를 해치지 않는 선에서 구현함
+	const vector<CUI*> vecCanvasUI = CUIMgr::GetInst()->GetUIs();
+
+	// UIMgr에서 Priority에 따라 정렬된 canvasOrder(인덱스)을 해쉬테이블에 등록 : O(m)
+	unordered_map<CUI*, int> canvasOrder;
+	for (int i = 0; i < vecCanvasUI.size(); ++i)
 	{
-		m_vecUI[i]->Render();
+		if (vecCanvasUI[i] == nullptr)
+			continue;
+
+		canvasOrder.emplace(vecCanvasUI[i], i);
 	}
+
+	// canvasUI를 m_vecUI에서 위치를 찾아서 canvasIdx에 등록함. O(n)
+	vector<int> canvasIdx(vecCanvasUI.size());	// canvasIdx[i] : i번째 order의 canvas가 m_vecUI에서 등장하는 인덱스
+	for (int i = 0; i < static_cast<int>(m_vecUI.size()); ++i)
+	{
+		if (canvasOrder.count(m_vecUI[i]->UI()))
+			canvasIdx[canvasOrder[m_vecUI[i]->UI()]] = i;
+	}
+
+	// Priority 역순으로 canvasUI 인덱스부터 다음 canvasUI 직전까지 렌더함. O(n)
+	for (int i = static_cast<int>(canvasIdx.size()) - 1; i >= 0; --i)
+	{
+		m_vecUI[canvasIdx[i]]->Render();
+
+		for (size_t j = canvasIdx[i] + 1; j < m_vecUI.size(); ++j)
+		{
+			if (canvasOrder.count(m_vecUI[j]->UI()))
+				break;
+
+			m_vecUI[j]->Render();
+		}
+	}
+
+	CUI::Clear();
 }
 
 

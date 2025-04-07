@@ -171,6 +171,29 @@ struct tRay
 };
 
 
+// UI
+struct PayLoad
+{
+	wstring		Type;
+	DWORD_PTR	Data;
+};
+
+// Font
+struct FontRenderInfo
+{
+	// 폰트 정보
+	wstring		Font;
+	UINT		FontSize;
+
+	// 출력 정보
+	wstring		Text;
+	UINT		Color;
+	Vec2		Pos;
+	Vec2		Layout;		// width, height (텍스트가 끊길 위치)
+	Vec4		Clip;		// left, top, right, bottom
+};
+
+
 // ============
 // Animation 3D
 // ============
@@ -292,3 +315,6 @@ struct GlobalData
 };
 
 extern GlobalData g_Data;
+
+
+

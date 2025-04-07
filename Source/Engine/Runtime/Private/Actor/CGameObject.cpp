@@ -113,6 +113,9 @@ void CGameObject::FinalTick()
 	if (!m_Active)
 		return;
 
+	// Layer 등록
+	CLevelMgr::GetInst()->RegisterObject(this);
+
 	if (m_Parent != nullptr && m_Parent->IsDead())
 	{
 		m_Dead = true;
@@ -142,9 +145,6 @@ void CGameObject::FinalTick()
 			++iter;
 		}
 	}
-
-	// Layer 등록
-	CLevelMgr::GetInst()->RegisterObject(this);
 }
 
 void CGameObject::Render()

@@ -9,6 +9,7 @@
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
+#include "System/Public/Manager/CUIMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
@@ -252,6 +253,10 @@ void CRenderMgr::Render_Play()
 	// 레벨 내에 카메라로 레벨 렌더링
 	for (size_t i = 0; i < m_vecCam.size(); ++i)
 	{
+		// 비활성화된 카메라는 렌더하지 않음.
+		if (!m_vecCam[i]->GetOwner()->IsActive())
+			continue;
+
 		m_vecCam[i]->SortObject();
 
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
@@ -279,9 +284,12 @@ void CRenderMgr::Render_Play()
 		MergeDeferredTarget();
 
 		m_vecCam[i]->render_forward();
-		m_vecCam[i]->render_effect();
 		m_vecCam[i]->render_particle();
+		m_vecCam[i]->render_effect();
+		m_vecCam[i]->render_transparent();
 		m_vecCam[i]->render_postprocess();
+		m_vecCam[i]->render_ui();
+		
 		m_vecCam[i]->render_clear();
 
 		// 특정 타겟으로 SwapChain 을 덮어쓰기
@@ -334,19 +342,19 @@ void CRenderMgr::Render_Clear()
 {
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
+
+	// UI 등록 해제
+	CUIMgr::GetInst()->ClearUI();
 }
 
 void CRenderMgr::MergeDeferredTarget()
 {
 	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
-	m_MergeMtrl->
-		SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
-	m_MergeMtrl->
-		SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	m_MergeMtrl->
-		SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 	m_MergeMtrl->SetScalarParam(INT_0, 0);
 	m_MergeMtrl->Binding();
 	pRectMesh->Render(0);

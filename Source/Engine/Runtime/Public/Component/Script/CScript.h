@@ -13,6 +13,7 @@ struct tScriptParam
 class CScript :
 	public CComponent
 {
+private:
 	const UINT m_ScriptType;
 	vector<tScriptParam> m_vecScriptParam;
 
@@ -24,56 +25,45 @@ public:
 
 	void Tick() override = 0;
 
-	void FinalTick() final
-	{
-	}
+	void FinalTick() final {}
 
-	virtual void BeginOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject,
-	                          CCollider2D* _OtherCollider)
-	{
-	};
+	// ==============
+	// Collider Event
+	// ==============
 
-	virtual void Overlap(class CCollider2D* _Collider, CGameObject* _OtherObject,
-	                     CCollider2D* _OtherCollider)
-	{
-	};
+	// Col2D - Col2D
+	virtual void BeginOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
+	virtual void Overlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
+	virtual void EndOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
 
-	virtual void EndOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject,
-	                        CCollider2D* _OtherCollider)
-	{
-	};
+	// Col3D - Col3D
+	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) {}
+	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) {}
+	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) {}
 
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-	{
-	};
+	// Ray - Col3D
+	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) {}
+	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)	{}
+	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) {}
 
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-	{
-	};
+	// Col3D - LandScape
+	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
+	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
+	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
 
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-	{
-	};
+	// Ray - LandScape
+	virtual void BeginOverlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
+	virtual void Overlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
+	virtual void EndOverlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
 
-	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-	{
-	};
+	// ========
+	// UI Event
+	// ========
+	virtual void OnMouseClick() {}
+	virtual void OnMouseHover() {}
+	virtual PayLoad OnMouseBeginDrag() { return PayLoad{}; }
+	virtual void OnMouseDrop(const vector<PayLoad>& _vecPayLoad) {}
 
-	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-	{
-	};
-
-	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-	{
-	};
-
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {};
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {};
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {};
-
-	virtual void BeginOverlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {};
-	virtual void Overlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {};
-	virtual void EndOverlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {};
 
 	CScript(UINT _ScriptType);
 	~CScript() override;
