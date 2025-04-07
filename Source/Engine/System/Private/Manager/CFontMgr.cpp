@@ -98,7 +98,7 @@ void CFontMgr::DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _f
 			DWRITE_FONT_WEIGHT_REGULAR,
 			DWRITE_FONT_STYLE_NORMAL,
 			DWRITE_FONT_STRETCH_NORMAL,
-			_FontSize,					// 폰트 크기
+			static_cast<float>(_FontSize),
 			L"en-us",					// 로캘
 			&format
 		);
@@ -116,17 +116,60 @@ void CFontMgr::DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _f
 		format = iter->second;
 	}
 
+	//HRESULT hr = m_WriteFactory->CreateTextFormat(
+	//	_Font.c_str(),				// 폰트 이름
+	//	nullptr,					// 폰트 컬렉션
+	//	DWRITE_FONT_WEIGHT_REGULAR,
+	//	DWRITE_FONT_STYLE_NORMAL,
+	//	DWRITE_FONT_STRETCH_NORMAL,
+	//	1280,					// 폰트 크기
+	//	L"en-us",					// 로캘
+	//	&format
+	//);
+
+	const FW1_RECTF clipRect{ _Clip.x, _Clip.y, _Clip.z, _Clip.w };
+
+	//Matrix matTrans
+	//{
+	//	2.f / 1280.f, 0.f, 0.f, 0.f,
+	//	0.f, -2.f / 768.f, 0.f, 0.f,
+	//	0.f, 0.f, 1.f, 0.f,
+	//	-1.f, 1.f, 0.f, 1.f,
+	//};
+
+	//Vec4 right	 = XMVectorSet(g_Trans.matWorld._11, g_Trans.matWorld._12, g_Trans.matWorld._13, 0.0f);
+	//Vec4 up		 = XMVectorSet(g_Trans.matWorld._21, g_Trans.matWorld._22, g_Trans.matWorld._23, 0.0f);
+	//
+	//float scaleX = right.Length();
+	//float scaleY = up.Length();
+
+	//// 정규화해서 스케일 제거
+	//right = XMVector3Normalize(right);
+	//up = XMVector3Normalize(up);
+
+	//Matrix scaleFix = XMMatrixScaling(1.0f / scaleX, 1.0f / scaleY, 1.0f);
+
+	//Matrix finalTransform = matTrans * scaleFix * g_Trans.matWVP;
+	//Matrix finalTransform = matTrans * g_Trans.matWVP;
+
+	//matTrans *= noScaleWorld * g_Trans.matView * g_Trans.matProj;
+
+	//matTrans *= g_Trans.matWVP;
+
+	/*if (finalTransform._43 < 0.f)
+		finalTransform._43 = 0.f;
+
+	Vec3 test = XMVector3TransformCoord(Vec3(_fPosX, _fPosY, 0.f), matTrans);*/
+
 	// Text Layout을 생성
 	m_WriteFactory->CreateTextLayout(
 		_pStr.c_str(),
 		static_cast<UINT32>(_pStr.size()),
 		format,
-		_Layout.x,  // 레이아웃 너비
+		_Layout.x,	 // 레이아웃 너비
 		_Layout.y,   // 레이아웃 높이
 		&layout
 	);
-
-	const FW1_RECTF clipRect{ _Clip.x, _Clip.y, _Clip.z, _Clip.w };
 
 	// Text Layout을 출력
 	m_FontWrapper->DrawTextLayout(
@@ -136,6 +179,8 @@ void CFontMgr::DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _f
 		_fPosY,
 		_Color,  // color
 		&clipRect, // 여기서 clip rect 지정!
+		//nullptr,
+		//(FLOAT*)finalTransform.m,
 		nullptr,
 		FW1_CLIPRECT
 	);
@@ -168,7 +213,7 @@ void CFontMgr::Render()
 				DWRITE_FONT_WEIGHT_REGULAR,
 				DWRITE_FONT_STYLE_NORMAL,
 				DWRITE_FONT_STRETCH_NORMAL,
-				info.FontSize,               // 폰트 크기
+				static_cast<float>(info.FontSize),
 				L"en-us",					 // 로캘
 				&format
 			);

@@ -5,10 +5,19 @@
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
 
-CUI::CUI(UI_TYPE _uiType)
+CUI::CUI()
+	: CComponent(COMPONENT_TYPE::UI)
+	, m_UIType(UI_END)
+	, m_Priority(0)
+	, m_BackGroundColor(Vec4(0.f, 0.f, 0.f, 0.f))	// 기본값 : alpha 0
+{
+}
+
+CUI::CUI(UINT _uiType)
 	: CComponent(COMPONENT_TYPE::UI)
 	, m_UIType(_uiType)
-	, m_Priority(1)
+	, m_Priority(0)
+	, m_BackGroundColor(Vec4(0.f, 0.f, 0.f, 0.f))	// 기본값 : alpha 0
 {
 }
 
@@ -51,7 +60,7 @@ Vec2 CUI::GetRectSize()
 	return Vec2(vScale.x, vScale.y);
 }
 
-void CUI::AddText(const wstring& _Text, float _posX, float _posY, float _FontSize, UINT _Color)
+void CUI::AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font)
 {
 	FontRenderInfo info{};
 	info.Text = _Text;
@@ -59,15 +68,15 @@ void CUI::AddText(const wstring& _Text, float _posX, float _posY, float _FontSiz
 	info.Pos.y = _posY;
 	info.FontSize = _FontSize;
 	info.Color = _Color;
+	info.Font = _Font;
 
 	m_TextInfo.push_back(info);
 }
 
 void CUI::Binding()
 {
-	if (m_UIType == UI_TYPE::CANVAS)
+	if (m_UIType & UI_CANVAS)
 	{
-		// TEST : SCissor
 		D3D11_RECT scissor = {};
 		scissor.left = static_cast<LONG>(m_LT.x);
 		scissor.top = static_cast<LONG>(m_LT.y);
@@ -83,7 +92,7 @@ void CUI::FontRender()
 	// Rasterizer Scissor Rect 계산 -> canvas에서만 수행
 	static Vec4 CanvasRect;
 
-	if (m_UIType == UI_TYPE::CANVAS)
+	if (m_UIType & UI_CANVAS)
 	{
 		CanvasRect.x = m_LT.x;
 		CanvasRect.y = m_LT.y;
@@ -94,7 +103,7 @@ void CUI::FontRender()
 	// Font Render
 	for (const auto& info : m_TextInfo)
 	{
-		CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.FontSize, info.Color, CanvasRect, Vec2(m_RB.x - m_LT.x, m_RB.y - m_LT.y));
+		CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.FontSize, info.Color, CanvasRect, Vec2(m_RB.x - m_LT.x, m_RB.y - m_LT.y), info.Font);
 	}
 }
 
@@ -113,21 +122,17 @@ void CUI::Clear()
 
 void CUI::Begin()
 {
-	// CanvasUI일 경우만 등록.
-	if (m_UIType == UI_TYPE::CANVAS)
-	{
-		// UI Manager에 등록
-		CUIMgr::GetInst()->RegisterUI(this);
-	}
+	// UI Type을 지정해야 합니다
+	assert(m_UIType != UI_END);
 
 	// CanvasUI가 아닌데 CanvasUI의 자식 계층에 속하지 않는 경우 UIMgr에서 처리할 수 없기 때문에 확인해줌
-	else
+	if (!(m_UIType & UI_CANVAS))
 	{
 		CGameObject* pParent = GetOwner()->GetParent();
 
 		while (pParent != nullptr)
 		{
-			if (pParent->UI() && pParent->UI()->m_UIType == UI_TYPE::CANVAS)
+			if (pParent->UI() && pParent->UI()->m_UIType & UI_CANVAS)
 				break;
 		}
 
@@ -152,12 +157,53 @@ void CUI::FinalTick()
 
 	m_RB.x = vPos.x + vScale.x / 2.f + vRes.x / 2.f;
 	m_RB.y = -vPos.y + vScale.y / 2.f + vRes.y / 2.f;
+
+	// CanvasUI일 경우만 등록.
+	if (m_UIType & UI_CANVAS)
+	{
+		// UI Manager에 등록
+		CUIMgr::GetInst()->RegisterUI(this);
+	}
 }
 
 void CUI::SaveComponent(FILE* _File)
 {
+	fwrite(&m_UIType, sizeof(UINT), 1, _File);
+	fwrite(&m_BackGroundColor, sizeof(Vec4), 1, _File);
+	SaveAssetRef(m_Image, _File);
+
+	size_t TextCount = m_TextInfo.size();
+	fwrite(&TextCount, sizeof(size_t), 1, _File);
+
+	for (size_t i = 0; i < TextCount; ++i)
+	{
+		// FontRenderInfo를 저장 (필요한 것만)
+		SaveWString(m_TextInfo[i].Font, _File);					// 폰트
+		fwrite(&m_TextInfo[i].FontSize, sizeof(UINT), 1, _File);	// 사이즈
+		SaveWString(m_TextInfo[i].Text, _File);					// 텍스트
+		fwrite(&m_TextInfo[i].Color, sizeof(Vec4), 1, _File);	// 색상
+		fwrite(&m_TextInfo[i].Pos, sizeof(Vec2), 1, _File);		// 위치
+	}
 }
 
 void CUI::LoadComponent(FILE* _File)
 {
+	fread(&m_UIType, sizeof(UINT), 1, _File);
+	fread(&m_BackGroundColor, sizeof(Vec4), 1, _File);
+	LoadAssetRef(m_Image, _File);
+
+	size_t TextCount = 0;
+	fread(&TextCount, sizeof(size_t), 1, _File);
+
+	m_TextInfo.resize(TextCount);
+
+	for (size_t i = 0; i < TextCount; ++i)
+	{
+		// FontRenderInfo를 저장 (필요한 것만)
+		LoadWString(m_TextInfo[i].Font, _File);					// 폰트
+		fread(&m_TextInfo[i].FontSize, sizeof(UINT), 1, _File);	// 사이즈
+		LoadWString(m_TextInfo[i].Text, _File);					// 텍스트
+		fread(&m_TextInfo[i].Color, sizeof(Vec4), 1, _File);	// 색상
+		fread(&m_TextInfo[i].Pos, sizeof(Vec2), 1, _File);		// 위치
+	}
 }

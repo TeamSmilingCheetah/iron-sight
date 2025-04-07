@@ -9,6 +9,7 @@
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
+#include "System/Public/Manager/CUIMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
@@ -341,6 +342,9 @@ void CRenderMgr::Render_Clear()
 {
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
+
+	// UI 등록 해제
+	CUIMgr::GetInst()->ClearUI();
 }
 
 void CRenderMgr::MergeDeferredTarget()

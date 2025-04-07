@@ -18,5 +18,6 @@
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 
 

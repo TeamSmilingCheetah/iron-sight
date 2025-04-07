@@ -552,6 +552,9 @@ void CCamera::render_ui()
 	unordered_map<CUI*, int> canvasOrder;
 	for (int i = 0; i < vecCanvasUI.size(); ++i)
 	{
+		if (vecCanvasUI[i] == nullptr)
+			continue;
+
 		canvasOrder.emplace(vecCanvasUI[i], i);
 	}
 

@@ -5,6 +5,9 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+
 CUIMgr::CUIMgr()
 	: m_HoverUI(nullptr)
 	, m_FocusUI(nullptr)
@@ -21,12 +24,27 @@ CUIMgr::~CUIMgr()
 
 void CUIMgr::RegisterUI(CUI* _UI)
 {
-	assert(_UI->m_UIType == UI_TYPE::CANVAS);
+	assert(_UI->m_UIType & UI_CANVAS);
 
-	// UI Manager의 다른 Canvas와 Priority가 겹치지 않도록 설정함.
-	_UI->SetPriority(static_cast<int>(m_vecUI.size()));
+	bool pushed = false;
 
-	m_vecUI.push_back(_UI);
+	// 넣을 자리가 비어있지 않았다면
+	if (_UI->m_Priority >= m_vecUI.size() || m_vecUI[_UI->m_Priority] != nullptr)
+	{
+		// 1씩 더하면서 비어있지 않은 자리를 찾음
+		while (_UI->m_Priority < m_vecUI.size() && m_vecUI[_UI->m_Priority] != nullptr)
+		{
+			++_UI->m_Priority;
+		}
+
+		// 공간이 충분하지 않다면
+		if (_UI->m_Priority >= m_vecUI.size())
+		{
+			m_vecUI.resize(_UI->m_Priority + 1);
+		}
+	}
+
+	m_vecUI[_UI->m_Priority] = _UI;
 }
 
 void CUIMgr::SwapPriority(CUI* _UI, int Priority)
@@ -101,7 +119,7 @@ void CUIMgr::ChangeFocus(CUI* _CanvasUI, CUI* _FocusUI)
 
 		for (int i = prevPriority; i > 0; --i)
 		{
-			m_vecUI[i] = m_vecUI[i - 1];
+				m_vecUI[i] = m_vecUI[i - 1];
 			m_vecUI[i]->SetPriority(i);
 		}
 
@@ -111,6 +129,11 @@ void CUIMgr::ChangeFocus(CUI* _CanvasUI, CUI* _FocusUI)
 
 void CUIMgr::Tick()
 {
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+
+	if (pLevel == nullptr || pLevel->GetState() != LEVEL_STATE::PLAY)
+		return;
+
 	// 마우스 Event 감지
 	m_HoverUI = nullptr;				// 실제로 Hover된 UI
 	CUI* HoverCanvasUI = nullptr;		// HoverUI가 속한 Canvas
@@ -119,6 +142,9 @@ void CUIMgr::Tick()
 	// Canvas UI의 자식 오브젝트를 순회 (DFS)하면서 마우스가 겹치는 가장 자식 UI를 찾음
 	for (int i = 0; i < m_vecUI.size(); ++i)
 	{
+		if (m_vecUI[i] == nullptr)
+			continue;
+
 		// Canvas Priority가 더 높은 경우 (더 뒤에 있는 경우) 걸러냄
 		if (m_vecUI[i]->m_Priority > Priority)
 			continue;

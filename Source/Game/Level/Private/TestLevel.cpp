@@ -159,7 +159,7 @@ void TestLevel::CreateTestLevel()
 	// CanvasUI
 	CGameObject* CanvasUI = new CGameObject;
 	CanvasUI->SetName(L"CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_TYPE::CANVAS));
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
 
 	CanvasUI->AddComponent(new CUIRender);
 	CanvasUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
@@ -174,7 +174,7 @@ void TestLevel::CreateTestLevel()
 	// ButtonUI
 	CGameObject* UI = new CGameObject;
 	UI->SetName(L"ButtonUI");
-	UI->AddComponent(new CUI(UI_TYPE::BUTTON));
+	UI->AddComponent(new CUI(UI_BUTTON));
 
 	UI->AddComponent(new CUIRender);
 	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
@@ -182,14 +182,14 @@ void TestLevel::CreateTestLevel()
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(-250.f, 120.f);
 	UI->UI()->SetRectSize(100.f, 40.f);
-	UI->UI()->AddText(L"Test for very long text how would you respond to this", 0.f, 0.f, 16.f, FONT_RGBA(255, 20, 20, 255));
+	UI->UI()->AddText(L"Test for very long text how would you respond to this", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
 
 	// DragUI
 	UI = new CGameObject;
 	UI->SetName(L"DragUI");
-	UI->AddComponent(new CUI(UI_TYPE::DRAG));
+	UI->AddComponent(new CUI(UI_DRAG));
 
 	UI->AddComponent(new CUIRender);
 	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
@@ -203,7 +203,7 @@ void TestLevel::CreateTestLevel()
 	// DropUI
 	UI = new CGameObject;
 	UI->SetName(L"DropUI");
-	UI->AddComponent(new CUI(UI_TYPE::DROP));
+	UI->AddComponent(new CUI(UI_DROP));
 
 	UI->AddComponent(new CUIRender);
 	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));

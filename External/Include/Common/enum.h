@@ -115,7 +115,6 @@ enum class COMPONENT_TYPE
 	LIGHT2D, // 2D 광원
 	LIGHT3D, // 3D 광원
 	STATEMACINE, // 상태 관리
-	UI,			// UI 컴포넌트
 
 	MESHRENDER, // 기본적인 렌더링 기능
 	TILEMAP, // 2D 타일기반 렌더링
@@ -123,14 +122,17 @@ enum class COMPONENT_TYPE
 	SKYBOX, // 3D 배경
 	DECAL, // 깊이 체크, 문양 렌더링
 	LANDSCAPE, // 3D 지형 시뮬레이션 및 렌더링
-	UIRENDER,
 
 	COLLIDERRAY,		// Ray 충돌체
 
+	UI,			// UI 컴포넌트
+	UIRENDER,
 
 	END,
 
 	SCRIPT, // 대본
+
+	SAVE_END = 0xFFFFFFFF,	// File Save 반복문 종료 조건 값
 };
 
 // 카메라 투영 (Projection)

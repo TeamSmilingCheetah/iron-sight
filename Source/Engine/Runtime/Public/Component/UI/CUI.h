@@ -1,21 +1,19 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
-enum class UI_TYPE
+enum UI_TYPE
 {
 	// Event
-	CLICK	= 0x00000001,
-	HOVER	= 0x00000002,
-	DRAG	= 0x00000004,	// Draggable Item
-	DROP	= 0x00000008,	// Droppable Destination
+	UI_CLICK	= 0x00000001,
+	UI_HOVER	= 0x00000002,
+	UI_DRAG		= 0x00000004,	// Draggable Item
+	UI_DROP		= 0x00000008,	// Droppable Destination
 
 	// Preset UI
-	CANVAS	= 0x10000000,
-	BUTTON	= 0x20000003,
-	IMAGE	= 0x30000004,
-	TEXT	= 0x40000002,
+	UI_CANVAS	= 0x10000000,
+	UI_BUTTON	= 0x00000003,
 
-	END,
+	UI_END		= 0x00000000,
 };
 
 class CUI :
@@ -24,7 +22,7 @@ class CUI :
 	friend class CUIMgr;
 
 private:
-	const UI_TYPE		m_UIType;		// Event 지원
+	UINT				m_UIType;		// Event 지원
 
 	Vec2				m_LT;			// Left Top
 	Vec2				m_RB;			// Right Bottom
@@ -41,6 +39,9 @@ private:
 	vector<FontRenderInfo>		m_TextInfo;
 
 public:
+	void SetUIType(UINT _Type) { m_UIType = _Type; }
+	UINT GetUIType() const { return m_UIType; }
+
 	void SetColor(Vec4 _Color) { m_BackGroundColor = _Color; }
 	Vec4 GetColor() const { return m_BackGroundColor; }
 
@@ -64,14 +65,14 @@ public:
 	Vec2 GetRectSize();
 
 	// Text 설정
-	void AddText(const wstring& _Text, float _posX, float _posY, float _FontSize, UINT _Color);
+	void AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"Segoe UI");
 	vector<FontRenderInfo>& GetTextInfoRef() { return m_TextInfo; }
 
 	// Event 지원 여부 (bit masking)
-	bool CanHover() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::HOVER); }
-	bool CanClick() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::CLICK); }
-	bool CanDrag() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::DRAG); }
-	bool CanDrop() const { return static_cast<UINT>(m_UIType) & static_cast<UINT>(UI_TYPE::DROP); }
+	bool CanHover() const { return m_UIType & UI_HOVER; }
+	bool CanClick() const { return m_UIType & UI_CLICK; }
+	bool CanDrag() const { return m_UIType & UI_DRAG; }
+	bool CanDrop() const { return m_UIType & UI_DROP; }
 
 
 	void Binding();
@@ -86,7 +87,8 @@ public:
 
 public:
 	CLONE(CUI);
-	CUI(UI_TYPE _uiType);
+	CUI();
+	CUI(UINT _uiType);
 	~CUI() override;
 };
 

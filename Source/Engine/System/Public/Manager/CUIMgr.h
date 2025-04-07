@@ -24,6 +24,7 @@ public:
 	void SwapPriority(CUI* _UI, int Priority);
 
 	const vector<CUI*>& GetUIs() const { return m_vecUI; }
+	void ClearUI() { m_vecUI.clear(); }	// Render 이후 매 프레임 clear 해줌
 
 	// Event 함수 호출
 	void OnMouseClick();

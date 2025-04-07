@@ -183,7 +183,8 @@ int CLevelMgr::SaveGameObject(CGameObject* _Object, FILE* _File)
 		// 컴포넌트 데이터 저장
 		_Object->GetComponent(static_cast<COMPONENT_TYPE>(i))->SaveToLevel(_File);
 	}
-	UINT End = static_cast<UINT>(COMPONENT_TYPE::END);
+
+	UINT End = static_cast<UINT>(COMPONENT_TYPE::SAVE_END);
 	fwrite(&End, sizeof(UINT), 1, _File);
 
 
@@ -282,7 +283,7 @@ CGameObject* CLevelMgr::LoadGameObject(FILE* _File)
 		// 컴포넌트 타입 로딩
 		fread(&ComponentType, sizeof(UINT), 1, _File);
 
-		if (ComponentType == static_cast<UINT>(COMPONENT_TYPE::END))
+		if (ComponentType == static_cast<UINT>(COMPONENT_TYPE::SAVE_END))
 			break;
 
 		CComponent* pComponent = CreateComponent(static_cast<COMPONENT_TYPE>(ComponentType));
@@ -359,6 +360,10 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new CDecal;
 	case COMPONENT_TYPE::LANDSCAPE:
 		return new CLandScape;
+	case COMPONENT_TYPE::UI:
+		return new CUI;
+	case COMPONENT_TYPE::UIRENDER:
+		return new CUIRender;
 	}
 
 	return nullptr;
