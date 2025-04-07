@@ -11,6 +11,7 @@
 #include "System/Public/Manager/CTaskMgr.h"
 #include "System/Public/Manager/CFontMgr.h"
 #include "System/Public/Manager/CUIMgr.h"
+#include "System/Public/Manager/CSoundMgr.h"
 #include "System/Public/Asset/Prefab/CPrefab.h"
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
@@ -55,8 +56,11 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 	System_Create(&m_FMODSystem);
 	assert(m_FMODSystem);
 
-	// 32개 채널 생성
-	m_FMODSystem->init(32, FMOD_DEFAULT, nullptr);
+    // 32개 채널 생성
+	m_FMODSystem->init(32, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr);
+
+	// 3D 환경 설정(도플러 효과, 거리 단위, 롤오프 스케일)
+	m_FMODSystem->set3DSettings(1.0f, 1.0f, 1.0f);
 
 	// Manager 초기화
 	CPathMgr::GetInst()->Init();
@@ -73,8 +77,8 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 void CEngine::Progress()
 {
-	// FMOD Tick
-	m_FMODSystem->update();
+    // FMOD Tick
+	CSoundMgr::GetInst()->Tick();
 
 	// Engine Tick
 	CKeyMgr::GetInst()->Tick();

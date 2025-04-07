@@ -17,6 +17,8 @@ public:
 	// 0 ~ 1
 	void SetVolume(float _f, int _iChannelIdx);
 
+	const list<FMOD::Channel*>& GetChannel() { return m_listChannel; }
+
 	int Load(const wstring& _FilePath) override;
 	int Save(const wstring& _FilePath) override { return S_OK; }
 

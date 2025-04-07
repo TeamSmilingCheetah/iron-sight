@@ -219,6 +219,7 @@
     <ClInclude Include="System\Public\Manager\CLevelMgr.h" />
     <ClInclude Include="System\Public\Manager\CPathMgr.h" />
     <ClInclude Include="System\Public\Manager\CRenderMgr.h" />
+    <ClInclude Include="System\Public\Manager\CSoundMgr.h" />
     <ClInclude Include="System\Public\Manager\CTaskMgr.h" />
     <ClInclude Include="System\Public\Manager\CTimeMgr.h" />
     <ClInclude Include="System\Public\Manager\CUIMgr.h" />
@@ -286,6 +287,7 @@
     <ClCompile Include="System\Private\Manager\CLevelMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CPathMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CRenderMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CSoundMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CTaskMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CTimeMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CUIMgr.cpp" />

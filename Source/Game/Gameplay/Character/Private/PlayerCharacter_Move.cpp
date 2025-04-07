@@ -7,6 +7,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 void PlayerCharacter::UpdatePosition()
 {

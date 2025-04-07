@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -222,6 +222,9 @@
     </ClInclude>
     <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h">
       <Filter>07. Component\RenderComponent\07. UIRender</Filter>
+	</ClInclude>
+    <ClInclude Include="System\Public\Manager\CSoundMgr.h">
+      <Filter>04. Manager\10. SoundMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -435,9 +438,12 @@
     <ClCompile Include="System\Private\Manager\CUIMgr.cpp">
       <Filter>04. Manager\10. UIMgr</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp">
-      <Filter>07. Component\RenderComponent\07. UIRender</Filter>
-    </ClCompile>
+	  <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp">
+	    <Filter>07. Component\RenderComponent\07. UIRender</Filter>
+	</ClCompile>
+	  <ClCompile Include="System\Private\Manager\CSoundMgr.cpp">
+		<Filter>04. Manager\10. SoundMgr</Filter>
+	</ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -655,6 +661,9 @@
     </Filter>
     <Filter Include="07. Component\RenderComponent\07. UIRender">
       <UniqueIdentifier>{208181a3-3602-4043-a3b9-880a61ffd462}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="04. Manager\10. SoundMgr">
+      <UniqueIdentifier>{54f35e09-95c0-47f0-a340-ec31fcee4036}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

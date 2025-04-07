@@ -7,6 +7,9 @@ class GunController :
 private:
 	CGameObject* m_EquippedOwner;
 
+	Ptr<CSound> m_AkSound;
+	int			m_AkSoundIdx;
+
 	float m_HorizontalRecoilPower;
 	float m_VerticalRecoilPower;
 
@@ -19,6 +22,7 @@ private:
 
 
 public:
+	void Begin() override;
 	void Tick() override;
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
