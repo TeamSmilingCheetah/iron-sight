@@ -26,6 +26,9 @@
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter_Move.cpp">
       <Filter>02. Gameplay\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\TestSound.cpp">
+      <Filter>02. Gameplay\TestSound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -58,6 +61,9 @@
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h">
       <Filter>02. Gameplay\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\TestSound.h">
+      <Filter>02. Gameplay\TestSound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. ScriptMgr">
@@ -74,6 +80,9 @@
     </Filter>
     <Filter Include="02. Gameplay\Player">
       <UniqueIdentifier>{3276a02d-6c5f-44f0-a504-20d582379ec2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\TestSound">
+      <UniqueIdentifier>{f2116a6a-18be-4136-b635-7127d23ff14c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

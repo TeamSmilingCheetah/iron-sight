@@ -11,6 +11,7 @@
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 CameraController::CameraController()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT))
@@ -41,6 +42,13 @@ void CameraController::Tick()
 		CameraOrthgraphicMove();
 	else
 		CameraPerspectiveMove();
+
+
+	// 소리테스트 위치 업데이트
+	Vec3 vPos = Transform()->GetRelativePos();
+	Vec3 vforward = Transform()->GetWorldDir(DIR_TYPE::FRONT);
+	Vec3 vUp = Transform()->GetWorldDir(DIR_TYPE::UP);
+	CSoundMgr::GetInst()->UpdateListener(vPos, vforward, vUp);
 }
 
 void CameraController::CameraOrthgraphicMove()

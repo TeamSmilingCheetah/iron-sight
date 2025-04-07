@@ -3,7 +3,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
-#include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Game/Gameplay/TestSound.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -11,6 +11,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CMissileScript");
 	_vec.push_back(L"CPlayerScript");
 	_vec.push_back(L"CGunScript");
+	_vec.push_back(L"TestSound");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -23,6 +24,8 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new PlayerCharacter;
 	if (L"CGunScript" == _strScriptName)
 		return new GunController;
+	if (L"TestSound" == _strScriptName)
+		return new TestSound;
 	return nullptr;
 }
 
@@ -41,6 +44,9 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(GUNSCRIPT):
 		return new GunController;
+		break;
+	case static_cast<UINT>(TESTSOUND):
+		return new TestSound;
 		break;
 	}
 	return nullptr;
@@ -64,6 +70,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case GUNSCRIPT:
 		return L"CGunScript";
+		break;
+
+	case TESTSOUND:
+		return L"TestSound";
 		break;
 	}
 	return nullptr;

@@ -15,9 +15,11 @@
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Game/Gameplay/TestSound.h"
 
 void TestLevel::CreateTestLevel()
 {
@@ -384,4 +386,36 @@ void TestLevel::CreateTestLevel()
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 		pLevel->AddObject(0, pObj, false);*/
 	}
+
+	// 배경 사운드 테스트
+	Ptr<CSound> soundBGM = CAssetMgr::GetInst()->FindAsset<CSound>(L"Sound\\Menu_Theme.wav");
+	CSoundMgr::GetInst()->SetGameBGM(soundBGM, false);
+	CSoundMgr::GetInst()->PlayGameBGM(true, 0.5f, false);
+
+
+	// 적 총기 음성 테스트
+	pObject = new CGameObject;
+	pObject->SetName(L"TestSound");
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new TestSound);
+
+	pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	pObject->MeshRender()->SetMaterial(
+		CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
+
+	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
+	pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	pObject->Transform()->SetFrustumRadius(750.f);
+
+	pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
+
+	Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
+		L"Texture\\HeightMap\\MoonCrater.png");
+	pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
+
+	Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
+	pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
+	pLevel->AddObject(0, pObject, false);
 }

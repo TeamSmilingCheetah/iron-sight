@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="framework.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter_Move.cpp" />
     <ClCompile Include="pch.cpp">

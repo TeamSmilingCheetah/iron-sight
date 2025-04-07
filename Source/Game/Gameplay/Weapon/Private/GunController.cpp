@@ -4,6 +4,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -13,6 +14,7 @@
 GunController::GunController()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::GUNSCRIPT))
 	, m_EquippedOwner(nullptr)
+	, m_AkSoundIdx(-1)
 	, m_HorizontalRecoilPower(0.f)
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
@@ -31,6 +33,11 @@ GunController::GunController()
 
 GunController::~GunController()
 {
+}
+
+void GunController::Begin()
+{
+	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
 }
 
 void GunController::Tick()
@@ -141,6 +148,10 @@ void GunController::Firing()
 	{
 		m_AccTime = 0.f;
 		Instantiate(BulletPrefab, vSpawnPos, 0);
+
+		// 사운드 재생
+		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김) 
+		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vSpawnPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 	}
 	
 }
