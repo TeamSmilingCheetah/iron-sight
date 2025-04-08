@@ -62,7 +62,7 @@ public:
 	virtual void OnMouseClick() {}
 	virtual void OnMouseHover() {}
 	virtual PayLoad OnMouseBeginDrag() { return PayLoad{}; }
-	virtual void OnMouseDrop(const vector<PayLoad>& _vecPayLoad) {}
+	virtual void OnMouseDrop(const PayLoad& _PayLoad) {}
 
 
 	CScript(UINT _ScriptType);
