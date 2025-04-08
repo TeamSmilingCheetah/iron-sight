@@ -146,6 +146,22 @@ void CRenderMgr::Binding()
 
 void CRenderMgr::Render_Debug()
 {
+	// Editor Mode
+	if (m_vecCam.empty())
+	{
+		g_Trans.matView = m_EditorCam->GetViewMat();
+		g_Trans.matProj = m_EditorCam->GetProjMat();
+	}
+
+	// Play Mode
+	else
+	{
+		assert(m_vecCam[0]->GetOwner()->GetName() == L"MainCamera");
+
+		g_Trans.matView = m_vecCam[0]->GetViewMat();
+		g_Trans.matProj = m_vecCam[0]->GetProjMat();
+	}
+
 	auto iter = m_DbgList.begin();
 
 	for (; iter != m_DbgList.end();)
