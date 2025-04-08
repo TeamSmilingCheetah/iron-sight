@@ -57,7 +57,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 	assert(m_FMODSystem);
 
     // 32개 채널 생성
-	m_FMODSystem->init(32, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr);
+	m_FMODSystem->init(32, FMOD_INIT_NORMAL, nullptr);
 
 	// 3D 환경 설정(도플러 효과, 거리 단위, 롤오프 스케일)
 	m_FMODSystem->set3DSettings(1.0f, 1.0f, 1.0f);

@@ -100,7 +100,7 @@ void CSoundMgr::UpdateListener(const Vec3& position, const Vec3& forward, const 
 
 	FMOD_VECTOR fmodPos = { position.x, position.y, position.z };
 	FMOD_VECTOR fmodVel = { 0.0f, 0.0f, 0.0f }; // 속도는 0으로 설정
-	FMOD_VECTOR fmodForward = { -forward.x, -forward.y, -forward.z };
+	FMOD_VECTOR fmodForward = { forward.x, forward.y, forward.z };
 	FMOD_VECTOR fmodUp = { up.x, up.y, up.z };
 
 	// FMOD에 듵는 사람 위치 설정
