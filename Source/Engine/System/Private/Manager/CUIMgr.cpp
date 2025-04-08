@@ -96,7 +96,8 @@ void CUIMgr::OnMouseDrop()
 
 	for (CScript* script : vecScript)
 	{
-		script->OnMouseDrop(m_vecPayLoad);
+		for (const PayLoad& payload : m_vecPayLoad)
+			script->OnMouseDrop(payload);
 	}
 }
 
@@ -252,10 +253,6 @@ void CUIMgr::Tick()
 CUI* CUIMgr::CheckMouseHover(CUI* _UI)
 {
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-
-	if (500 < vMousePos.x && vMousePos.x < 700
-		&& 300 < vMousePos.y && vMousePos.y < 400)
-		int a = 0;
 
 	// 해당 UI에 Hover되어 있다면
 	if (_UI->m_LT.x <= vMousePos.x && vMousePos.x <= _UI->m_RB.x
