@@ -187,7 +187,7 @@ void TestLevel::CreateTestLevel()
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(-250.f, 120.f);
 	UI->UI()->SetRectSize(100.f, 40.f);
-	UI->UI()->AddText(L"Test for very long text how would you respond to this", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
+	UI->UI()->AddText(L"Click", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
 
@@ -202,6 +202,7 @@ void TestLevel::CreateTestLevel()
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(-40.f, 150.f);
 	UI->UI()->SetRectSize(100.f, 40.f);
+	UI->UI()->AddText(L"Drag", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
 
@@ -217,6 +218,7 @@ void TestLevel::CreateTestLevel()
 	UI->UI()->SetRectPos(100.f, 0.f);
 	UI->UI()->SetRectSize(100.f, 600.f);
 	UI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\link.png"));
+	UI->UI()->AddText(L"Drop", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
 
