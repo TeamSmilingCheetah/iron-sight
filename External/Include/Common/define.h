@@ -37,3 +37,7 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 
 #define FONT_RGBA(r, g, b, a) (((((BYTE)a << 24 ) | (BYTE)b << 16) | (BYTE)g << 8) | (BYTE)r)
+
+
+
+#define TRIGGER					0x01		// 트리거용 충돌체 

@@ -204,51 +204,70 @@ void PlayerCharacter::ColliderCalcul()
 
 void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	Vec3 pPos = Transform()->GetRelativePos();
+	// 트리거 설정 확인을 위한 기능(나중에 제거)
+	_OtherCollider->SetTrigger(true);
 
-	Vec3 hitNormal = _Collider->GetHitNormal();
-	hitNormal.Normalize();
-
-	//Vec3 hitPoint = _Collider->GetHitPoint();
-	//Transform()->SetRelativePos(hitPoint);
-
-	// 노말이 유효하면 사용
-	if (hitNormal.Length() > 0.001f)
+	// 트리거용 충돌체면 해당 코드 사용 x
+	if (_OtherCollider->IsTrigger())
 	{
-		// 충돌 노말 추가
-		m_vecCollisionNormal.push_back(hitNormal);
+		return;
 	}
 	else
 	{
-		Vec3 myPos = Transform()->GetRelativePos();
-		Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-		Vec3 normal = myPos - otherPos;
-		normal.Normalize();
+		Vec3 pPos = Transform()->GetRelativePos();
 
-		// 충돌 벡터 추가
-		m_vecCollisionNormal.push_back(normal);
+		Vec3 hitNormal = _Collider->GetHitNormal();
+		hitNormal.Normalize();
+
+		//Vec3 hitPoint = _Collider->GetHitPoint();
+		//Transform()->SetRelativePos(hitPoint);
+
+		// 노말이 유효하면 사용
+		if (hitNormal.Length() > 0.001f)
+		{
+			// 충돌 노말 추가
+			m_vecCollisionNormal.push_back(hitNormal);
+		}
+		else
+		{
+			Vec3 myPos = Transform()->GetRelativePos();
+			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+			Vec3 normal = myPos - otherPos;
+			normal.Normalize();
+
+			// 충돌 벡터 추가
+			m_vecCollisionNormal.push_back(normal);
+		}
 	}
 }
 
 void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	Vec3 hitNormal = _Collider->GetHitNormal();
-
-	// 노말이 유효하면 사용
-	if (hitNormal.Length() > 0.001f)
+	// 트리거용 충돌체면 해당 코드 사용 x
+	if (_OtherCollider->IsTrigger())
 	{
-		// 충돌 노말 추가
-		m_vecCollisionNormal.push_back(hitNormal);
+		return;
 	}
 	else
 	{
-		Vec3 myPos = Transform()->GetRelativePos();
-		Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-		Vec3 normal = myPos - otherPos;
-		normal.Normalize();
+		Vec3 hitNormal = _Collider->GetHitNormal();
 
-		// 충돌 벡터 추가
-		m_vecCollisionNormal.push_back(normal);
+		// 노말이 유효하면 사용
+		if (hitNormal.Length() > 0.001f)
+		{
+			// 충돌 노말 추가
+			m_vecCollisionNormal.push_back(hitNormal);
+		}
+		else
+		{
+			Vec3 myPos = Transform()->GetRelativePos();
+			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+			Vec3 normal = myPos - otherPos;
+			normal.Normalize();
+
+			// 충돌 벡터 추가
+			m_vecCollisionNormal.push_back(normal);
+		}
 	}
 }
 
