@@ -14,6 +14,7 @@ CCollider3D::CCollider3D()
 	, m_Offset(Vec3(0.f))
 	, m_Scale(Vec3(0.f))
 	, m_State(ACTIVE)
+	, m_Status(0)
 {
 }
 
@@ -25,6 +26,7 @@ CCollider3D::CCollider3D(const CCollider3D& _Origin)
 	, m_IndependentScale(_Origin.m_IndependentScale)
 	, m_OverlapCount(0)
 	, m_State(_Origin.m_State)
+	, m_Status(_Origin.m_Status)
 {
 }
 
@@ -161,6 +163,18 @@ void CCollider3D::EndOverlap(CLandScape* _Other)
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
 		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
+	}
+}
+
+void CCollider3D::SetTrigger(bool _true)
+{
+	if (_true)
+	{
+		m_Status |= TRIGGER;
+	}
+	else
+	{
+		m_Status &= ~TRIGGER;
 	}
 }
 
