@@ -66,20 +66,23 @@ public:
 	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 
 private:
-public:
 	void UpdatePosition();
 	void UpdateRotation();
+
+	void PlayerReload();
 	void PlayerAttack();
 	void PlayerInteractWeapon();
 
+public:
 	void MoveCalcul();
 	void gravityCalcul();
 	void ColliderCalcul();
 
 public:
 	void SetCurWeapon(CGameObject* _Weapon) { m_CurWeapon = _Weapon; }
+	void SetShot(bool _Shot) { m_bShoot = _Shot; }
+
 	CGameObject* GetCurWeapon() { return m_CurWeapon; }
- 
 	float GetCurMouseSensitivity() { return m_MouseSensitivity; }
 	bool IsShot() { return m_bShoot; }
 

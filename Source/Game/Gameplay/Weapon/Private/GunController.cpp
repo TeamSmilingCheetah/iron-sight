@@ -7,6 +7,7 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 
@@ -17,7 +18,12 @@ GunController::GunController()
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
 	, m_InitFirePower(0.f)
+	, m_AccTime_Fire(0.f)
+	, m_AccTime_Reload(0.f)
+	, m_MaxRounds(0)
+	, m_CurRounds(0)
 	, m_bFire(false)
+	, m_bReload(false)
 {
 
 	// 무기 종류에 따라 변수 값 설정
@@ -27,6 +33,9 @@ GunController::GunController()
 	m_InitFirePower = 20000.f;
 
 	m_FireDelay = 0.1f;
+	m_MaxRounds = 30;
+
+	m_ReloadingTime = 1.f;
 }
 
 GunController::~GunController()
@@ -47,11 +56,22 @@ void GunController::Tick()
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 	}
 
+	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player")->GetScripts()[0]);
+
+	// 총알을 발사한다.
+	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
+	{
+		if (0 < m_CurRounds)
+		{
+			pPlayerScript->SetShot(true);
+		}
+	}
 
 	// 총알을 발사한다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
 	{
-		m_bFire = true;
+		if(0 < m_CurRounds)
+			m_bFire = true;
 	}
 
 	// 총알 발사가 끝난다.
@@ -60,9 +80,26 @@ void GunController::Tick()
 		m_bFire = false;
 	}
 
-	if (m_bFire)
+
+	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
+	{
+		if (!m_bReload && m_CurRounds != m_MaxRounds)
+		{
+			pPlayerScript->SetShot(false);
+			m_bReload = true;
+		}
+			
+	}
+
+
+	if (m_bFire && !m_bReload)
 	{
 		Firing();
+	}
+
+	if (m_bReload)
+	{
+		Reload();
 	}
 }
 
@@ -71,8 +108,15 @@ void GunController::Firing()
 	// 총기 애니메이션 재생
 
 
+	// 총알을 모두 소진했다면
+	if (m_CurRounds <= 0)
+	{
+		PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player")->GetScripts()[0]);
+		pPlayerScript->SetShot(false);
+		m_bFire = false;
+		return;
+	}
 
-	// 총알 생성
 
 	// Camera의 줌 여부를 확인한다.
 	CGameObject* pCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
@@ -157,12 +201,13 @@ void GunController::Firing()
 	BulletScript->SetDir(vFinalDir);
 	BulletScript->SetSpeed(m_InitFirePower);
 
-	m_AccTime += DT;
+	m_AccTime_Fire += DT;
 
 	// 발사 딜레이를 넘어서면 총알을 발사한다.
-	if (m_FireDelay < m_AccTime)
+	if (m_FireDelay < m_AccTime_Fire)
 	{
-		m_AccTime = 0.f;
+		m_AccTime_Fire = 0.f;
+		m_CurRounds -= 1;
 		Instantiate(BulletPrefab, vSpawnPos, 0);
 
 		// 사운드 재생
@@ -170,4 +215,50 @@ void GunController::Firing()
 		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vSpawnPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 	}
 
+}
+
+void GunController::Reload()
+{
+
+	// 플레이어의 인벤토리에서 남아있는 총알 정보를 가져온다.
+	// PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player")->GetScripts()[0]);
+	static int iLeftRounds = 70; // 임시 코드
+
+	// 여분의탄창이 없다면
+	if (iLeftRounds == 0)
+	{
+		m_bReload = false;
+		return;
+	}
+
+	// 총기 애니메이션 재생
+
+
+	m_AccTime_Reload += DT;
+
+	// 사격중에 장전으로 넘어온 경우 사격을 비활성화 해준다.
+	m_bFire = false;
+
+	int iFilledRounds = 0;
+	// 장전 시간이 지나면 
+	if (m_ReloadingTime < m_AccTime_Reload)
+	{
+		// 여분의 탄창이 모두 있다면
+		if (m_MaxRounds < iLeftRounds)
+		{
+			// 현재 총알에서 부족한 만큼을 계산한다.
+			iFilledRounds = m_MaxRounds - m_CurRounds;
+			m_CurRounds = m_MaxRounds;
+		}
+		// 여분의 탄창이 부족하다면
+		else
+		{
+			m_CurRounds = iLeftRounds;
+		}
+
+		// 남은 총알 update
+		iLeftRounds -= iFilledRounds;
+		m_AccTime_Reload = 0.f;
+		m_bReload = false;
+	}
 }

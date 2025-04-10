@@ -14,9 +14,17 @@ private:
 	float m_InitFirePower;
 
 	float m_FireDelay;
-	float m_AccTime;
+	float m_ReloadingTime;
+	float m_AccTime_Fire;
+	float m_AccTime_Reload;
+
+	int m_CurRounds;
+	int m_MaxRounds;
 
 	bool m_bFire;
+	bool m_bReload;
+
+
 public:
 	void Begin() override;
 	void Tick() override;
@@ -27,6 +35,7 @@ public:
 
 private:
 	void Firing();
+	void Reload();
 
 public:
 	CLONE(GunController);
