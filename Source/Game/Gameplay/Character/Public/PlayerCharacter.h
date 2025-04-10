@@ -6,6 +6,12 @@
 class CGameObject;
 class CLandScape;
 
+#define PRIMARY_FIRST 0
+#define PRIMARY_SECOND 1
+#define SECONDARY_FIRST 2
+#define TROWABLE_FIRST 3
+#define TROWABLE_SECOND 4
+
 class PlayerCharacter :
 	public CScript
 {
@@ -28,11 +34,14 @@ private:
 	float m_PaperBurnIntence;
 
 	bool m_bShoot;
+	bool m_bCanEquip;
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
 
 	CGameObject* m_CurWeapon;
+	int			 m_CurWeaponIdx;
+
 	vector<CGameObject*> m_vecWeaponSlot;	// 무기 슬롯
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
@@ -46,6 +55,12 @@ public:
 	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	                CCollider3D* _OtherCollider) override;
 
+
+	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+
+
 	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
@@ -55,6 +70,7 @@ public:
 	void UpdatePosition();
 	void UpdateRotation();
 	void PlayerAttack();
+	void PlayerInteractWeapon();
 
 	void MoveCalcul();
 	void gravityCalcul();

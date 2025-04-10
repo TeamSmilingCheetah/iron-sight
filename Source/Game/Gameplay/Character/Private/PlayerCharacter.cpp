@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -8,7 +9,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
@@ -35,7 +36,7 @@ PlayerCharacter::PlayerCharacter()
 	//AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
 	//AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
 
-	m_vecWeaponSlot.resize(7);
+	m_vecWeaponSlot.resize(5);
 	char name[10]{};
 	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
 	{
@@ -97,31 +98,9 @@ void PlayerCharacter::Tick()
 		UpdateRotation();
 	}
 
-	// 무기 교체
-	assert(m_vecWeaponSlot.size() <= 7); // TEST : 무기 일단 7개 이하로 제한
-	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
-	{
-		if (!m_vecWeaponSlot[i])
-			continue;
+	PlayerInteractWeapon();
 
-		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
-		{
-			// 해당 슬롯 활성화
-			m_vecWeaponSlot[i]->SetActive(true);
 
-			// 나머지 슬롯은 비활성화
-			for (int j = 0; j < static_cast<int>(m_vecWeaponSlot.size()); ++j)
-			{
-				if (!m_vecWeaponSlot[j] || j==i)
-					continue;
-
-				m_vecWeaponSlot[j]->SetActive(false);
-			}
-
-			break;
-		}
-	}
-	
 }
 
 
@@ -229,6 +208,11 @@ void PlayerCharacter::UpdateRotation()
 
 	// 마우스 위치를 중앙으로 다시 초기화한다.
 	CKeyMgr::GetInst()->SetMousePos();
+
+	Vec3 RayDir = Vec3(0.f, 0.f, 0.f);
+   	RayDir.y = -(vCameraRot.x / 90.f + 0.1f);
+	RayDir.z = -1.f;
+    ColliderRay()->SetABSRayDir(RayDir);
 }
 
 void PlayerCharacter::PlayerAttack()
@@ -243,11 +227,10 @@ void PlayerCharacter::PlayerAttack()
 		if (KEY_TAP(KEY::LBTN))
 		{
 			// 현재 무기 슬롯이 총이라면
-			/*if (m_vecWeaponSlot[CurIDx]->IsGun())
+			if (m_CurWeaponIdx != 0 && m_CurWeaponIdx < 4)
 			{
-	
-			}*/
-			m_bShoot = true;
+				m_bShoot = true;
+			}			
 		}
 	
 		if (KEY_PRESSED(KEY::LBTN))
@@ -255,18 +238,95 @@ void PlayerCharacter::PlayerAttack()
 			// 총을 사용한다.
 			if (m_bShoot)
 			{
-				GunController* pGunScript = static_cast<GunController*>(m_CurWeapon->GetScripts()[0]);
-				pGunScript->SetFire(true);
+				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+				pGunScript->SetCurKey(KEY::LBTN);
+				pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
 			}
 		}
 	
 		if (KEY_RELEASED(KEY::LBTN))
 		{
-			m_bShoot = false;
-			GunController* pGunScript = static_cast<GunController*>(m_CurWeapon->GetScripts()[0]);
-			pGunScript->SetFire(false);
+			if (m_bShoot)
+			{
+				m_bShoot = false;
+				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+				pGunScript->SetCurKey(KEY::LBTN);
+				pGunScript->SetCurKeyState(KEY_STATE::RELEASED);
+			}
 		}
 	}
+}
+
+void PlayerCharacter::PlayerInteractWeapon()
+{
+	// 무기 교체
+	assert(m_vecWeaponSlot.size() <= 5); // TEST : 무기 일단 5개 이하로 제한
+	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
+	{
+		if (!m_vecWeaponSlot[i])
+			continue;
+
+		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
+		{
+			// 해당 슬롯 활성화
+			m_vecWeaponSlot[i]->SetActive(true);
+			m_CurWeapon = m_vecWeaponSlot[i];
+			m_CurWeaponIdx = i + 1;
+
+			// 나머지 슬롯은 비활성화
+			for (int j = 0; j < static_cast<int>(m_vecWeaponSlot.size()); ++j)
+			{
+				if (!m_vecWeaponSlot[j] || j == i)
+					continue;
+
+				m_vecWeaponSlot[j]->SetActive(false);
+
+			}
+
+			break;
+		}
+	}
+
+	// 모든 무기 내리기 (무기 미착용 상태로)
+	if (KEY_TAP(KEY::B))
+	{
+		// 모든 무기 슬롯 비활성화
+		for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
+		{
+			if (!m_vecWeaponSlot[i])
+				continue;
+			m_vecWeaponSlot[i]->SetActive(false);
+		}
+		m_CurWeapon = nullptr;
+		m_CurWeaponIdx = 0;
+	}
+
+	// 현재 들고 있는 무기를 버린다.
+	if (KEY_TAP(KEY::G))
+	{
+		if (m_CurWeapon != nullptr)
+		{
+			Vec3 vPlayerPos = Transform()->GetRelativePos();
+
+			// 부모를 없는 독립 개체로 바꿔준다.
+			AddChild(nullptr, m_CurWeapon);
+			// 본래 Layer로 변경해준다.
+			m_CurWeapon->SetLayerIdx(0);
+
+			// 소유주를 삭제하고, 현재 Player 위치에 무기를 다시 생성시킨다.
+			WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+			pGunScript->SetEquippedOwner(nullptr);
+			Vec3 vWeaponPos = vPlayerPos;
+			vWeaponPos.y += 400.f;
+			m_CurWeapon->Transform()->SetRelativePos(vWeaponPos);
+
+			// Player의 무기정보를 비워준다. 
+			m_vecWeaponSlot[m_CurWeaponIdx - 1] = nullptr;
+			m_CurWeapon = nullptr;
+			m_CurWeaponIdx = 0;
+		}
+	}
+
 }
 
 void PlayerCharacter::SaveComponent(FILE* _File)

@@ -11,6 +11,7 @@
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
 CameraController::CameraController()
@@ -414,6 +415,7 @@ void CameraController::CameraPerspectiveMove()
 			GunController* pGunScript = static_cast<GunController*>(pPlayerScript->GetCurWeapon()->GetScripts()[0]);
 			recoilPower_horizontal = pGunScript->GetHorizontalPower();
 			recoilPower_vertical = pGunScript->GetVerticalPower();
+		
 
 			// 랜덤한 수직 반동값을 만들어준다
 			float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;

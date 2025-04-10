@@ -83,7 +83,7 @@ private:
 	void DisconnectWithLayer();
 	void DisconnecntWithParent();
 	void RegisterAsParent();
-
+	
 public:
 	CLONE(CGameObject);
 	CGameObject();

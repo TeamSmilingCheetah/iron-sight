@@ -9,6 +9,11 @@
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
+#include "Engine/Runtime/Public/Actor/CLayer.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
+
 void PlayerCharacter::UpdatePosition()
 {
 	// 힘을 0 으로 초기화
@@ -246,12 +251,72 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{
+		if (_OtherCollider->GetName() == L"Weapon" && m_bCanEquip)
+		{
+			if (KEY_TAP(KEY::F))
+			{
+				WeaponController* pScript = static_cast<WeaponController*>(_OtherObject->GetScripts()[0]);
+				WEAPON_TYPE eWeaponType = pScript->GetWeaponType();
+				static bool bCanEquip = false;
+
+				switch (eWeaponType)
+				{
+					// 주무기
+				case WEAPON_TYPE::PRIMARY:
+					for (int i = PRIMARY_FIRST; i <= PRIMARY_SECOND; ++i)
+					{
+						if (m_vecWeaponSlot[i] == nullptr)
+						{
+							m_vecWeaponSlot[i] = _OtherObject;
+							bCanEquip = true;
+							break;
+						}
+					}
+					break;
+					// 보조무기
+				case WEAPON_TYPE::SECONDARY:
+					if (m_vecWeaponSlot[SECONDARY_FIRST] == nullptr)
+					{
+						m_vecWeaponSlot[SECONDARY_FIRST] = _OtherObject;
+						bCanEquip = true;
+					}
+					break;
+					// 투척무기				
+				case WEAPON_TYPE::THROWABLE:
+					for (int i = TROWABLE_FIRST; i <= TROWABLE_SECOND; ++i)
+					{
+						if (m_vecWeaponSlot[i] == nullptr)
+						{
+							m_vecWeaponSlot[i] = _OtherObject;
+							bCanEquip = true;
+							break;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+
+				if (bCanEquip)
+				{
+					// 현재 Layer에서 무기를 삭제해준다. *삭제 버그 방지
+					CLayer* pCurLayer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_OtherObject->GetLayerIdx());
+					pCurLayer->DisconnectObject(_OtherObject);
+
+					// Player를 소유주으로 등록, 자식에 무기를 넣어준다.
+					pScript->SetEquippedOwner(GetOwner());
+					GetOwner()->AddChild(_OtherObject);
+					_OtherObject->SetActive(false);
+
+					bCanEquip = false;
+				}
+			}
+		}
 		return;
 	}
 	else
 	{
 		Vec3 hitNormal = _Collider->GetHitNormal();
-
 		// 노말이 유효하면 사용
 		if (hitNormal.Length() > 0.001f)
 		{
@@ -264,9 +329,22 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
 			Vec3 normal = myPos - otherPos;
 			normal.Normalize();
+			// 노말이 유효하면 사용
+			if (hitNormal.Length() > 0.001f)
+			{
+				// 충돌 노말 추가
+				m_vecCollisionNormal.push_back(hitNormal);
+			}
+			else
+			{
+				Vec3 myPos = Transform()->GetRelativePos();
+				Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+				Vec3 normal = myPos - otherPos;
+				normal.Normalize();
 
-			// 충돌 벡터 추가
-			m_vecCollisionNormal.push_back(normal);
+				// 충돌 벡터 추가
+				m_vecCollisionNormal.push_back(normal);
+			}
 		}
 	}
 }
@@ -276,7 +354,28 @@ void PlayerCharacter::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObje
 }
 
 
+void PlayerCharacter::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
 
+	if (_3DCollider->GetName() == L"Weapon")
+	{
+		m_bCanEquip = true;
+	}
+
+}
+
+void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+
+}
+
+void PlayerCharacter::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+	if (_3DCollider->GetName() == L"Weapon")
+	{
+		m_bCanEquip = false;
+	}
+}
 
 
 
