@@ -1,12 +1,10 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
 
 class GunController :
-	public CScript
+	public WeaponController
 {
 private:
-	CGameObject* m_EquippedOwner;
-
 	Ptr<CSound> m_AkSound;
 	int			m_AkSoundIdx;
 
@@ -19,18 +17,11 @@ private:
 	float m_AccTime;
 
 	bool m_bFire;
-
-
 public:
 	void Begin() override;
 	void Tick() override;
-	void SaveComponent(FILE* _File) override;
-	void LoadComponent(FILE* _File) override;
 
 public:
-	void SetEquippedOwner(CGameObject* _Owner) { m_EquippedOwner = _Owner; }
-	void SetFire(bool _Fire) { m_bFire = _Fire; }
-
 	float GetHorizontalPower() { return m_HorizontalRecoilPower; }
 	float GetVerticalPower() { return m_VerticalRecoilPower; }
 
@@ -42,3 +33,4 @@ public:
 	GunController();
 	~GunController() override;
 };
+

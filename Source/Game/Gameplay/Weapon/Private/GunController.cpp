@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Game/Gameplay/Weapon/Public/GunController.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -6,20 +7,17 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
-#include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 
-
 GunController::GunController()
-	: CScript(static_cast<UINT>(SCRIPT_TYPE::GUNSCRIPT))
-	, m_EquippedOwner(nullptr)
+	: WeaponController(SCRIPT_TYPE::GUNSCRIPT)
 	, m_AkSoundIdx(-1)
 	, m_HorizontalRecoilPower(0.f)
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
-	, m_bFire(false)
 	, m_InitFirePower(0.f)
+	, m_bFire(false)
 {
 
 	// 무기 종류에 따라 변수 값 설정
@@ -35,6 +33,7 @@ GunController::~GunController()
 {
 }
 
+
 void GunController::Begin()
 {
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
@@ -42,7 +41,24 @@ void GunController::Begin()
 
 void GunController::Tick()
 {
-	// CGameObject* pOwner = GetOwner()->GetParent();
+	// 소유주가 있다면 위치를 0으로 초기화
+	if (m_EquippedOwner != nullptr)
+	{
+		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	}
+
+
+	// 총알을 발사한다.
+	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
+	{
+		m_bFire = true;
+	}
+
+	// 총알 발사가 끝난다.
+	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
+	{
+		m_bFire = false;
+	}
 
 	if (m_bFire)
 	{
@@ -74,7 +90,7 @@ void GunController::Firing()
 	vCameraDir.Normalize();
 
 	// Player의 위치와 방향 정보
-	Vec3 vPlayerPos =  m_EquippedOwner->Transform()->GetRelativePos();
+	Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
 	Vec3 vPlayerRot = m_EquippedOwner->Transform()->GetRelativeRotation();
 	float playerRadX = XMConvertToRadians(vPlayerRot.x);
 	float playerRadY = XMConvertToRadians(vPlayerRot.y);
@@ -108,7 +124,7 @@ void GunController::Firing()
 	float spreadYaw = 0.f;
 	float spreadPitch = 0.f;
 
-	
+
 	// 지향사격
 	if (!pCameraScript->IsShoulder() && !pCameraScript->IsADS())
 	{
@@ -153,15 +169,5 @@ void GunController::Firing()
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김) 
 		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vSpawnPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 	}
-	
+
 }
-
-void GunController::SaveComponent(FILE* _File)
-{
-}
-
-void GunController::LoadComponent(FILE* _File)
-{
-}
-
-

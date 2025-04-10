@@ -17,9 +17,6 @@
     <ClCompile Include="Level\Private\TestLevel.cpp">
       <Filter>03. Level</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp">
-      <Filter>02. Gameplay</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp">
       <Filter>02. Gameplay\Player</Filter>
     </ClCompile>
@@ -28,6 +25,15 @@
     </ClCompile>
     <ClCompile Include="Gameplay\TestSound.cpp">
       <Filter>02. Gameplay\TestSound</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Weapon\Private\WeaponController.cpp">
+      <Filter>02. Gameplay\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp">
+      <Filter>02. Gameplay\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp">
+      <Filter>02. Gameplay\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,14 +61,20 @@
     <ClInclude Include="Gameplay\Component\Public\WeaponComponent.h">
       <Filter>02. Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Weapon\Public\GunController.h">
-      <Filter>02. Gameplay</Filter>
-    </ClInclude>
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h">
       <Filter>02. Gameplay\Player</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\TestSound.h">
       <Filter>02. Gameplay\TestSound</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Weapon\Public\WeaponController.h">
+      <Filter>02. Gameplay\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Weapon\Public\GunController.h">
+      <Filter>02. Gameplay\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h">
+      <Filter>02. Gameplay\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +95,9 @@
     </Filter>
     <Filter Include="02. Gameplay\TestSound">
       <UniqueIdentifier>{f2116a6a-18be-4136-b635-7127d23ff14c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\Weapon">
+      <UniqueIdentifier>{24897eee-c89e-4d69-ad7e-dbde0720867a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
