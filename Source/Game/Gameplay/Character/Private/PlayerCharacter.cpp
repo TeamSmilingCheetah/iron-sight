@@ -11,6 +11,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 
+
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
 	, m_PaperBurnIntence(0.f)
@@ -61,7 +62,8 @@ void PlayerCharacter::Tick()
 
 	UpdatePosition();
 	PlayerAttack();
-	
+	PlayerReload();
+
 
 	if (KEY_PRESSED(KEY::NUM_1))
 	{
@@ -215,6 +217,21 @@ void PlayerCharacter::UpdateRotation()
     ColliderRay()->SetABSRayDir(RayDir);
 }
 
+void PlayerCharacter::PlayerReload()
+{
+
+	if (KEY_TAP(KEY::R))
+	{
+		// 현재 무기 슬롯이 총이라면
+		if (m_CurWeaponIdx != 0 && m_CurWeaponIdx < 4)
+		{			
+			WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+			pGunScript->SetCurKey(KEY::R);
+			pGunScript->SetCurKeyState(KEY_STATE::TAP);
+		}
+	}
+}
+
 void PlayerCharacter::PlayerAttack()
 {
 	CGameObject* pMainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
@@ -229,7 +246,9 @@ void PlayerCharacter::PlayerAttack()
 			// 현재 무기 슬롯이 총이라면
 			if (m_CurWeaponIdx != 0 && m_CurWeaponIdx < 4)
 			{
-				m_bShoot = true;
+				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+				pGunScript->SetCurKey(KEY::LBTN);
+				pGunScript->SetCurKeyState(KEY_STATE::TAP);
 			}			
 		}
 	
