@@ -40,7 +40,9 @@ private:
 	Ptr<CPrefab> m_Prefab;
 
 	CGameObject* m_CurWeapon;
+	CGameObject* m_CollObject;
 	int			 m_CurWeaponIdx;
+
 
 	vector<CGameObject*> m_vecWeaponSlot;	// 무기 슬롯
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터

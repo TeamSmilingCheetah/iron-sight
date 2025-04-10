@@ -215,7 +215,12 @@ void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{
+		if (_OtherCollider->GetName() == L"Weapon" && m_CollObject == _OtherObject)
+		{
+			m_bCanEquip = true;
+		}
 		return;
+
 	}
 	else
 	{
@@ -251,7 +256,65 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{
-		if (_OtherCollider->GetName() == L"Weapon" && m_bCanEquip)
+		
+		return;
+	}
+	else
+	{
+		Vec3 hitNormal = _Collider->GetHitNormal();
+		// 노말이 유효하면 사용
+		if (hitNormal.Length() > 0.001f)
+		{
+			// 충돌 노말 추가
+			m_vecCollisionNormal.push_back(hitNormal);
+		}
+		else
+		{
+			Vec3 myPos = Transform()->GetRelativePos();
+			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+			Vec3 normal = myPos - otherPos;
+			normal.Normalize();
+			// 노말이 유효하면 사용
+			if (hitNormal.Length() > 0.001f)
+			{
+				// 충돌 노말 추가
+				m_vecCollisionNormal.push_back(hitNormal);
+			}
+			else
+			{
+				Vec3 myPos = Transform()->GetRelativePos();
+				Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+				Vec3 normal = myPos - otherPos;
+				normal.Normalize();
+
+				// 충돌 벡터 추가
+				m_vecCollisionNormal.push_back(normal);
+			}
+		}
+	}
+}
+
+void PlayerCharacter::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+	if (_OtherCollider->GetName() == L"Weapon")
+	{
+		m_bCanEquip = false;
+	}
+}
+
+
+void PlayerCharacter::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+	if(_3DCollider->IsTrigger())
+		m_CollObject = _OtherObject;
+
+}
+
+void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+	if (_3DCollider->IsTrigger())
+	{
+		if (_3DCollider->GetName() == L"Weapon" && m_bCanEquip)
 		{
 			if (KEY_TAP(KEY::F))
 			{
@@ -309,72 +372,19 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 					_OtherObject->SetActive(false);
 
 					bCanEquip = false;
+					m_bCanEquip = false;
 				}
 			}
 		}
 		return;
 	}
-	else
-	{
-		Vec3 hitNormal = _Collider->GetHitNormal();
-		// 노말이 유효하면 사용
-		if (hitNormal.Length() > 0.001f)
-		{
-			// 충돌 노말 추가
-			m_vecCollisionNormal.push_back(hitNormal);
-		}
-		else
-		{
-			Vec3 myPos = Transform()->GetRelativePos();
-			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-			Vec3 normal = myPos - otherPos;
-			normal.Normalize();
-			// 노말이 유효하면 사용
-			if (hitNormal.Length() > 0.001f)
-			{
-				// 충돌 노말 추가
-				m_vecCollisionNormal.push_back(hitNormal);
-			}
-			else
-			{
-				Vec3 myPos = Transform()->GetRelativePos();
-				Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-				Vec3 normal = myPos - otherPos;
-				normal.Normalize();
-
-				// 충돌 벡터 추가
-				m_vecCollisionNormal.push_back(normal);
-			}
-		}
-	}
-}
-
-void PlayerCharacter::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-}
-
-
-void PlayerCharacter::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-{
-
-	if (_3DCollider->GetName() == L"Weapon")
-	{
-		m_bCanEquip = true;
-	}
-
-}
-
-void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-{
 
 }
 
 void PlayerCharacter::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
-	if (_3DCollider->GetName() == L"Weapon")
-	{
-		m_bCanEquip = false;
-	}
+	if (_3DCollider->IsTrigger())
+		m_CollObject = nullptr;
 }
 
 
