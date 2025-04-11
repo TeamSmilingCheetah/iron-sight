@@ -56,12 +56,13 @@ void GunController::Tick()
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 	}
 
-	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player")->GetScripts()[0]);
+	CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+ 	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 
 	// 총알을 발사한다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
-		if (0 < m_CurRounds)
+		if (0 < m_CurRounds && !m_bReload)
 		{
 			pPlayerScript->SetShot(true);
 		}
@@ -111,7 +112,9 @@ void GunController::Firing()
 	// 총알을 모두 소진했다면
 	if (m_CurRounds <= 0)
 	{
-		PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player")->GetScripts()[0]);
+		CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+		PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+	
 		pPlayerScript->SetShot(false);
 		m_bFire = false;
 		return;
@@ -232,7 +235,7 @@ void GunController::Reload()
 	}
 
 	// 총기 애니메이션 재생
-
+	
 
 	m_AccTime_Reload += DT;
 
@@ -250,10 +253,22 @@ void GunController::Reload()
 			iFilledRounds = m_MaxRounds - m_CurRounds;
 			m_CurRounds = m_MaxRounds;
 		}
-		// 여분의 탄창이 부족하다면
-		else
+		else // 여분의 탄창이 부족하다면      
 		{
-			m_CurRounds = iLeftRounds;
+			int ineedRounds = m_MaxRounds - m_CurRounds;
+
+			// 채워야 하는 총알보다 여분 총알이 더적다
+			if (iLeftRounds < ineedRounds)
+			{
+				iFilledRounds = iLeftRounds;
+				m_CurRounds += iFilledRounds;
+			}
+			// 채워야하는 총알만큼 있다.
+			else
+			{
+				iFilledRounds = ineedRounds;
+				m_CurRounds += iFilledRounds;
+			}
 		}
 
 		// 남은 총알 update

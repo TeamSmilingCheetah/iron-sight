@@ -215,10 +215,6 @@ void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{
-		if (_OtherCollider->GetName() == L"Weapon" && m_CollObject == _OtherObject)
-		{
-			m_bCanEquip = true;
-		}
 		return;
 
 	}
@@ -256,7 +252,10 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{
-		
+		if (_OtherCollider->GetName() == L"Weapon" && m_CollObject == _OtherObject)
+		{
+			m_bCanEquip = true;
+		}
 		return;
 	}
 	else

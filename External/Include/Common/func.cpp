@@ -339,6 +339,21 @@ float RandomFloat(float min, float max)
 	return dist(engine);
 }
 
+CScript* GetScriptWithType(CGameObject* _Object, UINT _Type)
+{
+	vector<CScript*> vecScript = _Object->GetScripts();
+
+	for (int i = 0; i < vecScript.size(); ++i)
+	{
+		if (vecScript[i]->GetScriptType() == _Type)
+		{
+			return vecScript[i];
+		}
+	}
+
+	return nullptr;
+}
+
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
 {
 	Vec3 vTargetPos = _TargetObj->Transform()->GetRelativePos();
