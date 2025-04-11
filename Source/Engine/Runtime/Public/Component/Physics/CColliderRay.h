@@ -60,7 +60,6 @@ public:
 	void SetOffset(Vec3 _Offset) { m_Offset = _Offset; }
 	void SetRayPos(Vec3 _Pos) { m_RayPosDir.vStart = _Pos; }
 	void SetRayDir(Vec3 _Dir) { m_RayPosDir.vDir = _Dir; m_RayPosDir.vDir.Normalize(); }
-	void SetABSRayDir(Vec3 _Dir) { m_RayPosDir.vDir = _Dir; }
 	void SetRayLength(float _Length) { m_RayLength = _Length; }
 	void RayTargetMode(bool _bool) { m_RayTargetAll = _bool; }
 	void SetRayTargetLength(float _TargetLength) { m_RayTargetLength = _TargetLength; }

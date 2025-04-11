@@ -210,11 +210,11 @@ void PlayerCharacter::UpdateRotation()
 
 	// 마우스 위치를 중앙으로 다시 초기화한다.
 	CKeyMgr::GetInst()->SetMousePos();
-
 	Vec3 RayDir = Vec3(0.f, 0.f, 0.f);
-   	RayDir.y = -(vCameraRot.x / 90.f + 0.1f);
-	RayDir.z = -1.f;
-    ColliderRay()->SetABSRayDir(RayDir);
+	float angle = vCameraRot.x * (XM_PI / 180.f);
+	RayDir.y = -sin(angle);
+	RayDir.z = fabs(RayDir.y) - 1;
+	ColliderRay()->SetRayDir(RayDir);
 }
 
 void PlayerCharacter::PlayerReload()
