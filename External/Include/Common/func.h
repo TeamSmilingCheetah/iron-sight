@@ -37,6 +37,8 @@ string WStringToString(const wstring& _str);
 bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist);
 float RandomFloat(float min, float max);
 
+class CScript* GetScriptWithType(CGameObject* _Object, UINT _Type);
+
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj);
 
 template <typename T>
