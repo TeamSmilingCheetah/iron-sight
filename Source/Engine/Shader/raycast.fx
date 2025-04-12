@@ -25,52 +25,52 @@ RWStructuredBuffer<tRayCollision> m_InOutBuffer : register(u1);
 void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
 {
     uint2 ID = _ID.xy;
-    
+
     // 스레드가 담당할 지역영역을 초과해서 배정된 스레드인 경우
     if ((uint) FACE_X * 2 <= ID.x || (uint) FACE_Z <= ID.y)
     {
         return;
     }
-        
+
     float3 vTriPos[3] = { (float3) 0.f, (float3) 0.f, (float3) 0.f };
-    
+
     if (0 == ID.x % 2)
     {
-        // 아래쪽 삼각형 
+        // 아래쪽 삼각형
         // 2
         // | \
         // 0--1
         vTriPos[0].x = ID.x / 2;
         vTriPos[0].z = ID.y;
         vTriPos[0].y = 0.f;
-        
+
         vTriPos[1].x = (ID.x / 2) + 1;
         vTriPos[1].z = ID.y;
         vTriPos[1].y = 0.f;
-        
+
         vTriPos[2].x = ID.x / 2;
         vTriPos[2].z = ID.y + 1;
         vTriPos[2].y = 0.f;
     }
     else
     {
-        // 위쪽 삼각형         
+        // 위쪽 삼각형
         // 1--0
         //  \ |
         //    2
         vTriPos[0].x = (ID.x / 2) + 1;
         vTriPos[0].z = ID.y + 1;
         vTriPos[0].y = 0.f;
-        
+
         vTriPos[1].x = ID.x / 2;
         vTriPos[1].z = ID.y + 1;
         vTriPos[1].y = 0.f;
-        
+
         vTriPos[2].x = (ID.x / 2) + 1;
         vTriPos[2].z = ID.y;
         vTriPos[2].y = 0.f;
     }
-        
+
     if (HasHeightMap)
     {
         for (int i = 0; i < 3; ++i)
@@ -79,7 +79,7 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
             vTriPos[i].y = HEIGHT_MAP.SampleLevel(g_sam_0, vHeightMapUV, 0).r;
         }
     }
-        
+
     float3 vCrossPos = (float3) 0.f;
     uint Dist = 0.f;
 
@@ -91,7 +91,7 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
             if (IntersectsRay(vTriPos, m_InOutBuffer[i].RayPos, m_InOutBuffer[i].RayDir, vCrossPos, Dist))
             {
                 InterlockedMin(m_InOutBuffer[i].Distance, Dist);
-                
+
                 // 입력한 값으로 교체가 잘 되었다.
                 if (m_InOutBuffer[i].Distance == Dist)
                 {
@@ -104,27 +104,28 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
 
 
                     // 레이의 길이조건과 비교하여 성공확인
-                    if (m_InOutBuffer[i].RayLength >= m_InOutBuffer[i].Distance)
+                    // TODO(KHJ): 타입 캐스팅 시에 발생하는 예외 범위에 대한 문제 고려할 것
+                    if ((uint)m_InOutBuffer[i].RayLength >= m_InOutBuffer[i].Distance)
                         m_InOutBuffer[i].Success = 1;
                     else
                         m_InOutBuffer[i].Success = 0;
                 }
             }
         }
-        
+
     }
     else
     {
         if (IntersectsRay(vTriPos, RayStart, Raydir, vCrossPos, Dist))
         {
             InterlockedMin(m_OutBuffer[0].Distance, Dist);
-                
+
         // 입력한 값으로 교체가 잘 되었다.
             if (m_OutBuffer[0].Distance == Dist)
             {
                 float2 CrossUV = vCrossPos.xz / float2(FACE_X, FACE_Z);
                 CrossUV.y = 1.f - CrossUV.y;
-            
+
                 m_OutBuffer[0].Location = CrossUV;
                 m_OutBuffer[0].Success = 1;
             }

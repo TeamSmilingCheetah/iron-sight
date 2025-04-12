@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
@@ -142,7 +142,7 @@ void CLandScape::SetFace(UINT _X, UINT _Z)
 {
 	if (m_FaceX == _X && m_FaceZ == _Z)
 		return;
-	 
+
 	m_FaceX = _X;
 	m_FaceZ = _Z;
 
@@ -264,7 +264,7 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 
 		// 월드 공간에서의 거리 계산
 		Vec3 worldDist = worldHitPos - WorldRay.vStart;
-		pRayInfo.Distance = worldDist.Length();
+		pRayInfo.Distance = static_cast<UINT>(worldDist.Length());
 	}
 
 	return pRayInfo;
@@ -302,7 +302,7 @@ vector<tRayCollision>& CLandScape::Collidercalcul()
 	m_RaycastCS->SetHeightMap(m_HeightMap);
 
 	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
-	m_RaycastCS->SetRayInOutCount(Count);
+	m_RaycastCS->SetRayInOutCount(static_cast<UINT>(Count));
 	m_RaycastCS->SetLandWorldMat(matWorld);
 
 	// 컴퓨트쉐이더 실행
@@ -456,7 +456,7 @@ void CLandScape::LoadComponent(FILE* _File)
 	fread(&m_FaceX, sizeof(UINT), 1, _File);
 	fread(&m_FaceZ, sizeof(UINT), 1, _File);
 	CreateMesh();
-	
+
 
 	LoadAssetRef(m_HeightMap, _File);
 	LoadAssetRef(m_ColorTex, _File);

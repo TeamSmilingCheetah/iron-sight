@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Common/Ptr.h"
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Engine/System/Public/Rendering/Shader/CParticleTickCS.h"

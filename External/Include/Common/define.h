@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 
 using Vec2 = SimpleMath::Vector2;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Engine/System/Public/Rendering/Shader/CHeightMapCS.h"
 #include "Engine/System/Public/Rendering/Shader/CWeightMapCS.h"

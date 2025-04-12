@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Ptr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 

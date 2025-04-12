@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "System/Public/Manager/CCollisionMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLevel.h"
@@ -45,7 +45,7 @@ void CCollisionMgr::Tick()
 
 	// Ray충돌 작업(단일 타겟만 여기서 추가 연산됨)
 	RayOverlapCheak();
-	
+
 
 	// 정보 초기화
 	m_LandObject.clear();
@@ -579,7 +579,7 @@ void CCollisionMgr::LandCheak()
 						iter->second = false;
 					}
 				}
-				Ray->SetRayTargetLength(RayCol[i].Distance);
+				Ray->SetRayTargetLength(static_cast<float>(RayCol[i].Distance));
 			}
 			// 단일 타겟 모드 시
 			else
@@ -589,7 +589,7 @@ void CCollisionMgr::LandCheak()
 				if (RayCol[i].Success == 1)
 				{
 					// 단일타겟모드시 ray콜라이더에 전용 데이터 삽입
-					Ray->UpdateRayColInfo(pLandscape->GetOwner(), RayCol[i].Distance);
+					Ray->UpdateRayColInfo(pLandscape->GetOwner(), static_cast<float>(RayCol[i].Distance));
 				}
 			}
 
@@ -606,7 +606,7 @@ void CCollisionMgr::RayOverlapCheak()
 		return;
 
 	set<CColliderRay*>::iterator setiter = m_RayColInfo.begin();
-	
+
 	// 거리순으로 정렬된 상태에서 각 객체의 충돌 상태 확인 및 처리
 	for (; setiter != m_RayColInfo.end(); ++setiter)
 	{
@@ -700,8 +700,8 @@ void CCollisionMgr::RayOverlapCheak()
 				}
 			}
 		}
-		
-	
+
+
 
 		// Prev오브젝트 판단
 		// 이전오브젝트와 현재 오브젝트가 같다 = 위에서 overlap처리되어 해당 사항 넘김
@@ -761,7 +761,7 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
 {
 	// 0 -- 1
 	// | \  |
-	// 3 -- 2 
+	// 3 -- 2
 	// Local Mesh 정점 Pos값
 	static Vec3 arrRect[4] =
 	{

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Engine/System/Public/Asset/Base/CAsset.h"
 
 class CStructuredBuffer;
