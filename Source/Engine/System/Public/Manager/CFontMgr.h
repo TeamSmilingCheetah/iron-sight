@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Common/singleton.h"
 #include <FontEngine/FW1FontWrapper.h>
 #include <FontEngine/FW1CompileSettings.h>

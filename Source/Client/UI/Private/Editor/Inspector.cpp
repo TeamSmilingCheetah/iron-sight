@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/Rendering/Public/ComputeShaderUI.h"
 #include "Client/Rendering/Public/GraphicShaderUI.h"

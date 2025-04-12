@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Common/singleton.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Rendering/Material/CMaterial.h"

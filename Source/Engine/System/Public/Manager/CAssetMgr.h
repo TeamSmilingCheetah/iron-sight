@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Common/singleton.h"
 #include "Engine/System/Public/Asset/Base/assets.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"

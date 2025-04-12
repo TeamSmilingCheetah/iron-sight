@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ConstBuffer
 enum class CB_TYPE
@@ -104,7 +104,7 @@ enum class LIGHT_TYPE
 };
 
 
-enum class COMPONENT_TYPE
+enum class COMPONENT_TYPE : UINT
 {
 	TRANSFORM, // 위치, 크기, 회전, 부모자식 계층구조
 	COLLIDER2D, // 2D 충돌체

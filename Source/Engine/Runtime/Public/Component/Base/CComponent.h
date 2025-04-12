@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
