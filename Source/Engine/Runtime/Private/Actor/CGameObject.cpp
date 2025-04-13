@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLayer.h"
 #include "Runtime/Public/Actor/CLevel.h"
@@ -250,6 +250,17 @@ bool CGameObject::IsAncestor(CGameObject* _Other)
 	}
 
 	return false;
+}
+
+CScript* CGameObject::GetScript(UINT _Type) const
+{
+	for (CScript* script : m_vecScripts)
+	{
+		if (script->GetScriptType() == _Type)
+			return script;
+	}
+
+	return nullptr;
 }
 
 CGameObject* CGameObject::GetChildByName(const wstring& _Name)

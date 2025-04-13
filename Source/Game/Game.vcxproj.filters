@@ -35,6 +35,12 @@
     <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp">
       <Filter>02. Gameplay\Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Inventory\Private\InventoryController.cpp">
+      <Filter>02. Gameplay\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Inventory\Private\Item.cpp">
+      <Filter>02. Gameplay\Inventory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -76,6 +82,12 @@
     <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h">
       <Filter>02. Gameplay\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Inventory\Public\InventoryController.h">
+      <Filter>02. Gameplay\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Inventory\Public\Item.h">
+      <Filter>02. Gameplay\Inventory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. ScriptMgr">
@@ -98,6 +110,9 @@
     </Filter>
     <Filter Include="02. Gameplay\Weapon">
       <UniqueIdentifier>{24897eee-c89e-4d69-ad7e-dbde0720867a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\Inventory">
+      <UniqueIdentifier>{3716e2ae-e442-4059-ac24-b50b998ac625}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

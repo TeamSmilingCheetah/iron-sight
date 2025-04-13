@@ -87,6 +87,8 @@ public:
 	
 
 public:
+	CGameObject* GetRayTarget() const { return m_CollObject; }
+
 	void SetCurWeapon(CGameObject* _Weapon) { m_CurWeapon = _Weapon; }
 	void SetShot(bool _Shot) { m_bShoot = _Shot; }
 	void SetThrow(bool _Throw) { m_bCanThrow = _Throw; }
@@ -100,9 +102,12 @@ public:
 	bool IsShot() { return m_bShoot; }
 	bool IsThrow() { return m_bCanThrow; }
 
+	void AcquireItem(CGameObject* _Item);
+
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
+public:
 	CLONE(PlayerCharacter);
 	PlayerCharacter();
 	~PlayerCharacter() override;

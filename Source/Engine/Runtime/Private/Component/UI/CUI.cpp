@@ -1,13 +1,13 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
 
 CUI::CUI()
 	: CComponent(COMPONENT_TYPE::UI)
-	, m_UIType(UI_END)
+	, m_UIType(UI_DEFAULT)
 	, m_Priority(0)
 	, m_BackGroundColor(Vec4(0.f, 0.f, 0.f, 0.f))	// 기본값 : alpha 0
 {
@@ -85,6 +85,9 @@ void CUI::Binding()
 
 		CONTEXT->RSSetScissorRects(1, &scissor);
 	}
+
+	UIRender()->GetDynamicMaterial(0)->SetScalarParam(VEC4_0, m_BackGroundColor);
+	UIRender()->GetDynamicMaterial(0)->SetTexParam(TEX_0, m_Image);
 }
 
 void CUI::FontRender()
@@ -122,9 +125,6 @@ void CUI::Clear()
 
 void CUI::Begin()
 {
-	// UI Type을 지정해야 합니다
-	assert(m_UIType != UI_END);
-
 	// CanvasUI가 아닌데 CanvasUI의 자식 계층에 속하지 않는 경우 UIMgr에서 처리할 수 없기 때문에 확인해줌
 	if (!(m_UIType & UI_CANVAS))
 	{
@@ -134,14 +134,13 @@ void CUI::Begin()
 		{
 			if (pParent->UI() && pParent->UI()->m_UIType & UI_CANVAS)
 				break;
+
+			pParent = pParent->GetParent();
 		}
 
 		assert(pParent != nullptr);		// 끝까지 올라가도 찾을 수 없었다면
 	}
-
-	// 재질 등록
-	UIRender()->GetDynamicMaterial(0)->SetScalarParam(VEC4_0, m_BackGroundColor);
-	UIRender()->GetDynamicMaterial(0)->SetTexParam(TEX_0, m_Image);
+	
 }
 
 void CUI::FinalTick()

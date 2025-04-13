@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Core/Public/CEntity.h"
 
 class CComponent;
@@ -58,6 +58,7 @@ public:
 
 	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
 	const vector<CScript*>& GetScripts() const { return m_vecScripts; }
+	CScript* GetScript(UINT _Type) const;
 
 	CGameObject* GetChildByName(const wstring& _Name);
 

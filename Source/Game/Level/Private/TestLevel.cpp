@@ -22,6 +22,9 @@
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
 #include "Game/Gameplay/TestSound.h"
 
+#include "Game/GamePlay/Inventory/Public/InventoryController.h"
+#include "Game/Gameplay/Inventory/Public/Item.h"
+
 void TestLevel::CreateTestLevel()
 {
 	// Texture 로딩하기
@@ -41,13 +44,14 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(3)->SetName(L"PlayerTPS");
 	pLevel->GetLayer(4)->SetName(L"PlayerFPS");
 	pLevel->GetLayer(5)->SetName(L"PlayerObject");
-	pLevel->GetLayer(6)->SetName(L"Monster");
+	pLevel->GetLayer(6)->SetName(L"Item");
 	pLevel->GetLayer(7)->SetName(L"MonsterObject");
 	pLevel->GetLayer(8)->SetName(L"UI");
 
 	// 충돌 설정
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
+	CCollisionMgr::GetInst()->CollisionCheck(3, 6);
 
 	CGameObject* pObject = nullptr;
 
@@ -192,21 +196,6 @@ void TestLevel::CreateTestLevel()
 
 	CanvasUI->AddChild(UI);
 
-	// DragUI
-	UI = new CGameObject;
-	UI->SetName(L"DragUI");
-	UI->AddComponent(new CUI(UI_DRAG));
-
-	UI->AddComponent(new CUIRender);
-	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
-	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	UI->UI()->SetRectPos(-40.f, 150.f);
-	UI->UI()->SetRectSize(100.f, 40.f);
-	UI->UI()->AddText(L"Drag", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
-
-	CanvasUI->AddChild(UI);
-
 	// DropUI
 	UI = new CGameObject;
 	UI->SetName(L"DropUI");
@@ -216,12 +205,32 @@ void TestLevel::CreateTestLevel()
 	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	UI->UI()->SetRectPos(100.f, 0.f);
-	UI->UI()->SetRectSize(100.f, 600.f);
-	UI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\link.png"));
+	UI->UI()->SetRectPos(400.f, 240.f);
+	UI->UI()->SetRectSize(350.f, 120.f);
 	UI->UI()->AddText(L"Drop", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
 
 	CanvasUI->AddChild(UI);
+
+	UI = UI->Clone();
+	UI->UI()->SetRectPos(400.f, 100.f);
+	CanvasUI->AddChild(UI);
+
+	UI = UI->Clone();
+	UI->UI()->SetRectPos(400.f, -40.f);
+	CanvasUI->AddChild(UI);
+
+	// 인벤토리
+	UI = UI->Clone();
+	UI->UI()->SetRectSize(160.f, 600.f);
+	UI->UI()->SetRectPos(-200.f, 0.f);
+	CanvasUI->AddChild(UI);
+
+	// 주변
+	UI = UI->Clone();
+	UI->UI()->SetRectSize(160.f, 600.f);
+	UI->UI()->SetRectPos(-440.f, 0.f);
+	CanvasUI->AddChild(UI);
+
 
 	// ============
 	// FBX Loading
@@ -262,6 +271,59 @@ void TestLevel::CreateTestLevel()
 			// 자식 메쉬들 같이 이동
 			pLevel->AddObject(3, pObj, true);
 
+			// Inventory Object
+			CGameObject* pInventory = new CGameObject;
+			pInventory->SetName(L"Inventory");
+			pInventory->AddComponent(new CCollider3D);
+
+			pInventory->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
+			pInventory->Collider3D()->SetIndependentScale(true);
+			pInventory->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
+
+			pInventory->AddComponent(new InventoryController);
+			InventoryController* pInvenScript = static_cast<InventoryController*>(pInventory->GetScript(INVENTORYSCRIPT));
+
+			for (int i = 0; i < 10; ++i)
+			{
+				// DragUI
+				CGameObject* DragUI = new CGameObject;
+				DragUI->SetName(L"ItemUI");
+				DragUI->AddComponent(new CUI(UI_DRAG));
+
+				DragUI->AddComponent(new CUIRender);
+				DragUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+				DragUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
+				DragUI->UI()->SetRectSize(150.f, 40.f);
+
+				DragUI->UI()->ClearText();
+				DragUI->UI()->AddText(L"Item Name", 45.f, 12.f, 12, FONT_RGBA(255, 255, 255, 255));
+				DragUI->UI()->AddText(L"20", 130.f, 12.f, 12, FONT_RGBA(255, 255, 255, 255));
+
+				//DragUI->SetActive(false);
+				UI->AddChild(DragUI);
+
+				CGameObject* ChildUI = new CGameObject;
+				ChildUI->SetName(L"ItemImageUI");
+				ChildUI->AddComponent(new CUI);
+				ChildUI->AddComponent(new CUIRender);
+				ChildUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+				ChildUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+				ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+				ChildUI->UI()->SetRectPos(-55.f, 0.f);
+				ChildUI->UI()->SetRectSize(40.f, 40.f);
+				ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
+
+				DragUI->AddChild(ChildUI);
+
+				// inventory controller에 ui 등록
+				pInvenScript->AddVicinityUI(DragUI);
+			}
+
+			pInvenScript->SetPlayer(pObj);
+			pObj->AddChild(pInventory);
+
 			//
 			// AKM
 			//
@@ -290,7 +352,13 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
 
 
-			pLevel->AddObject(0, pWeaponObj, false);
+			pWeaponObj->AddComponent(new ItemScript);
+			ItemScript* pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
+			pItem->SetCount(1);
+			pItem->SetItemType(ITEM_TYPE::WEAPON);
+			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\AKM.png"));
+
+			pLevel->AddObject(6, pWeaponObj, false);
 			//PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pObj->GetScripts()[0]);
 			//pPlayerScript->SetCurWeapon(pWeaponObj);
 
@@ -317,7 +385,14 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 			pWeaponObj->Transform()->SetIndependentScale(true);
-			pLevel->AddObject(0, pWeaponObj, false);
+
+			pWeaponObj->AddComponent(new ItemScript);
+			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
+			pItem->SetCount(1);
+			pItem->SetItemType(ITEM_TYPE::GRENADE);
+			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\Grenade.png"));
+
+			pLevel->AddObject(6, pWeaponObj, false);
 
 			//
 			// smoke
@@ -341,7 +416,13 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 			pWeaponObj->Transform()->SetIndependentScale(true);
 
-			pLevel->AddObject(0, pWeaponObj, false);
+			pWeaponObj->AddComponent(new ItemScript);
+			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
+			pItem->SetCount(1);
+			pItem->SetItemType(ITEM_TYPE::SMOKEBOMB);
+			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\SmokeBomb.png"));
+
+			pLevel->AddObject(6, pWeaponObj, false);
 
 			//
 			// Test PrimaryWeapon
@@ -363,7 +444,14 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 1000.f);
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-			pLevel->AddObject(0, pWeaponObj, false);
+
+			pWeaponObj->AddComponent(new ItemScript);
+			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
+			pItem->SetCount(1);
+			pItem->SetItemType(ITEM_TYPE::ENERGY_DRINK);
+			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\EnergyDrink.png"));
+
+			pLevel->AddObject(6, pWeaponObj, false);
 
 			//
 			// Test SecondaryWeapon
@@ -385,7 +473,14 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 3000.f);
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-			pLevel->AddObject(0, pWeaponObj, false);
+
+			pWeaponObj->AddComponent(new ItemScript);
+			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
+			pItem->SetCount(1);
+			pItem->SetItemType(ITEM_TYPE::FIRST_AID_KIT);
+			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\FirstAidKit.png"));
+
+			pLevel->AddObject(6, pWeaponObj, false);
 		}
 
 		// 모바일 배그 애셋 테스트
@@ -422,14 +517,40 @@ void TestLevel::CreateTestLevel()
 		pObj->SetName(L"Adrenaline");
 		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
+
+		pObj->AddComponent(new CCollider3D);
+		pObj->Collider3D()->SetName(L"Weapon");
+		pObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+		pObj->Collider3D()->SetIndependentScale(true);
+		pObj->Collider3D()->SetTrigger(true);
+
+		pObj->AddComponent(new ItemScript);
+		ItemScript* pItem = static_cast<ItemScript*>(pObj->GetScript(ITEMSCRIPT));
+		pItem->SetCount(1);
+		pItem->SetItemType(ITEM_TYPE::ADRENALINE_SYRINGE);
+		pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\AdrenalineSyringe.png"));
+
+		pLevel->AddObject(6, pObj, false);
 
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Bandage.fbx");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"Bandage");
 		pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
+
+		pObj->AddComponent(new CCollider3D);
+		pObj->Collider3D()->SetName(L"Weapon");
+		pObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+		pObj->Collider3D()->SetIndependentScale(true);
+		pObj->Collider3D()->SetTrigger(true);
+
+		pObj->AddComponent(new ItemScript);
+		pItem = static_cast<ItemScript*>(pObj->GetScript(ITEMSCRIPT));
+		pItem->SetCount(1);
+		pItem->SetItemType(ITEM_TYPE::BANDAGE);
+		pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\Bandage.png"));
+
+		pLevel->AddObject(6, pObj, false);
 
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Death Box\\box.fbx");
 		pObj = pMeshData->Instantiate();
@@ -450,10 +571,6 @@ void TestLevel::CreateTestLevel()
 
 
 		/*
-
-
-
-
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Med Kit.fbx");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"Med Kit");
@@ -479,34 +596,34 @@ void TestLevel::CreateTestLevel()
 	}
 
 	// 배경 사운드 테스트
-	Ptr<CSound> soundBGM = CAssetMgr::GetInst()->FindAsset<CSound>(L"Sound\\Menu_Theme.wav");
-	CSoundMgr::GetInst()->SetGameBGM(soundBGM, false);
-	CSoundMgr::GetInst()->PlayGameBGM(true, 0.5f, false);
+	//Ptr<CSound> soundBGM = CAssetMgr::GetInst()->FindAsset<CSound>(L"Sound\\Menu_Theme.wav");
+	//CSoundMgr::GetInst()->SetGameBGM(soundBGM, false);
+	//CSoundMgr::GetInst()->PlayGameBGM(true, 0.5f, false);
 
 
-	// 적 총기 음성 테스트
-	pObject = new CGameObject;
-	pObject->SetName(L"TestSound");
-	pObject->AddComponent(new CMeshRender);
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new TestSound);
+	//// 적 총기 음성 테스트
+	//pObject = new CGameObject;
+	//pObject->SetName(L"TestSound");
+	//pObject->AddComponent(new CMeshRender);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->AddComponent(new TestSound);
 
-	pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
-	pObject->MeshRender()->SetMaterial(
-		CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
+	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	//pObject->MeshRender()->SetMaterial(
+	//	CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
 
-	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
-	pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	pObject->Transform()->SetFrustumRadius(750.f);
+	//pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
+	//pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	//pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	//pObject->Transform()->SetFrustumRadius(750.f);
 
-	pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
 
-	Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
-		L"Texture\\HeightMap\\MoonCrater.png");
-	pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
+	//Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	//	L"Texture\\HeightMap\\MoonCrater.png");
+	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
 
-	Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
-	pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
-	pLevel->AddObject(0, pObject, false);
+	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
+	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
+	//pLevel->AddObject(0, pObject, false);
 }

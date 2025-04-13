@@ -156,6 +156,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\Inventory\Public\InventoryController.h" />
+    <ClInclude Include="Gameplay\Inventory\Public\Item.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h" />
@@ -170,6 +172,8 @@
     <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Gameplay\Inventory\Private\InventoryController.cpp" />
+    <ClCompile Include="Gameplay\Inventory\Private\Item.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp" />
