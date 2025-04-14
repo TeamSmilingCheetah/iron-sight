@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CCollider3D;
@@ -53,6 +53,7 @@ private:
 	COLLIDER_STATE  m_State;					// 충돌체 상태
 	RAYCOLLIDERDATA         m_RayColInfo;		// 단일 타겟 용 검사 구조체
 
+	bool		m_IndependentDir;		// 독립적인 방향
 	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟 판정
 
 
@@ -63,6 +64,7 @@ public:
 	void SetRayLength(float _Length) { m_RayLength = _Length; }
 	void RayTargetMode(bool _bool) { m_RayTargetAll = _bool; }
 	void SetRayTargetLength(float _TargetLength) { m_RayTargetLength = _TargetLength; }
+	void SetIndependentDir(bool _true) { m_IndependentDir = _true; }
 
 	tRay GetRay() { return m_RayPosDir; }
 	Vec3 GetRayPos() { return m_RayPosDir.vStart; }
@@ -72,6 +74,7 @@ public:
 
 	Vec3 GetRayFinalPos() { return m_RayFinalPos; }
 	Vec3 GetRayFinalDir() { return m_RayFinalDir; }
+	bool IsIndependentDir() { return m_IndependentDir; }
 
 	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
 

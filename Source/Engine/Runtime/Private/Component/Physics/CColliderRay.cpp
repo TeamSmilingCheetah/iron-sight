@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Physics/CColliderRay.h"
 
 #include "Runtime/Public/Component/Script/CScript.h"
@@ -12,6 +12,7 @@ CColliderRay::CColliderRay()
 	, m_RayLength(1000.f)
 	, m_OverlapCount(0)
 	, m_RayTargetAll(false)
+	, m_IndependentDir(false)
 	, m_RayTargetLength(100000.f)
 	, m_State(ACTIVE)
 {
@@ -26,6 +27,7 @@ CColliderRay::CColliderRay(const CColliderRay& _Origin)
 	, m_RayLength(_Origin.m_RayLength)
 	, m_OverlapCount(0)
 	, m_RayTargetAll(_Origin.m_RayTargetAll)
+	, m_IndependentDir(_Origin.m_IndependentDir)
 	, m_State(_Origin.m_State)
 {
 	m_RayPosDir.vStart = _Origin.m_RayPosDir.vStart;
@@ -92,8 +94,15 @@ void CColliderRay::FinalTick()
 	// 레이 시작점 계산
 	m_RayFinalPos = m_matColliderWorld.Translation();
 
-	// 레이 방향 계산
-	m_RayFinalDir = XMVector3TransformNormal(Vec4(rayDir.x, rayDir.y, rayDir.z, 0.f), m_matColliderWorld);
+	// 독립적인지 아닌지에 따라 계산 구분
+	if (m_IndependentDir)
+	{
+		m_RayFinalDir = rayDir;
+	}
+	else
+	{
+		m_RayFinalDir = XMVector3TransformNormal(Vec4(rayDir.x, rayDir.y, rayDir.z, 0.f), m_matColliderWorld);
+	}
 	m_RayFinalDir.Normalize();
 
 	// 레이 끝점 계산
