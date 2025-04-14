@@ -22,6 +22,7 @@ void ColliderRayUI::Render_Update()
 	Vec3 vDir = pColliderRay->GetRayDir();
 	Vec3 vOffset = pColliderRay->GetOffset();
 	float vLength = pColliderRay->GetRayLength();
+	bool bIndependent = pColliderRay->IsIndependentDir();
 	bool bActive = pColliderRay->IsActive();
 
 	ImGui::Text("Direction");
@@ -38,6 +39,11 @@ void ColliderRayUI::Render_Update()
 	ImGui::SameLine(100);
 	ImGui::DragFloat("##Independent", &vLength);
 	pColliderRay->SetRayLength(vLength);
+
+	ImGui::Text("Independent");
+	ImGui::SameLine(100);
+	ImGui::Checkbox("##IndependentRay", &bIndependent);
+	pColliderRay->SetIndependentDir(bIndependent);
 
 	ImGui::Text("IsActive");
 	ImGui::SameLine(100);
