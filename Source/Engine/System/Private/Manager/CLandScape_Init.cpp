@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"

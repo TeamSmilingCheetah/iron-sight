@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Camera/CFrustum.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 

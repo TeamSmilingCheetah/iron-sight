@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Texture/CFlipbook.h"
 #include "System/Public/Manager/CPathMgr.h"
 

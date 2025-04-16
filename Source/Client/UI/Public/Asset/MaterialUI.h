@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Client/UI/Public/Asset/AssetUI.h"
 
 class MaterialUI :

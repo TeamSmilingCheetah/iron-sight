@@ -1,4 +1,4 @@
-﻿// CFW1TextGeometry.h
+// CFW1TextGeometry.h
 
 #ifndef IncludeGuard__FW1_CFW1TextGeometry
 #define IncludeGuard__FW1_CFW1TextGeometry

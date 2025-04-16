@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Client/UI/Public/SpriteEditor/SE_Sub.h"
 
 class CTexture;

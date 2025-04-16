@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Asset/SpriteUI.h"
 
 SpriteUI::SpriteUI()

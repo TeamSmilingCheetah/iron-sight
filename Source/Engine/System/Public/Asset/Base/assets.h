@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Engine/System/Public/Asset/Audio/CSound.h"
 #include "Engine/System/Public/Asset/Mesh/CMesh.h"

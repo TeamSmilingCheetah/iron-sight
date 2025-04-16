@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Shader/CGraphicShader.h"
 #include "System/Public/Manager/CPathMgr.h"
 #include "System/Public/Rendering/Device/CDevice.h"

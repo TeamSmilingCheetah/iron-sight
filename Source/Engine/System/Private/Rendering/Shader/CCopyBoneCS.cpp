@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Shader/CCopyBoneCS.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 

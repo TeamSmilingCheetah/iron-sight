@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Base/CAsset.h"
 
 CAsset::CAsset(ASSET_TYPE _Type, bool _bEngine)

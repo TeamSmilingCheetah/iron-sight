@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Shader/CShader.h"
 
 CShader::CShader(ASSET_TYPE _Type)

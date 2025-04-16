@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Prefab/CPrefab.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 

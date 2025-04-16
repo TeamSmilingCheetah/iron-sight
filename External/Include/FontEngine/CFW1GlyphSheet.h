@@ -1,4 +1,4 @@
-﻿// CFW1GlyphSheet.h
+// CFW1GlyphSheet.h
 
 #ifndef IncludeGuard__FW1_CFW1GlyphSheet
 #define IncludeGuard__FW1_CFW1GlyphSheet

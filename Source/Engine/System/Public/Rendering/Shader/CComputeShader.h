@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/System/Public/Rendering/Shader/CShader.h"
 
 class CComputeShader :

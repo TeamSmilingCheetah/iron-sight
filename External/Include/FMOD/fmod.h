@@ -1,4 +1,4 @@
-﻿/*$ preserve start $*/
+/*$ preserve start $*/
 
 /* ======================================================================================== */
 /* FMOD Studio Low Level API - C header file.                                               */

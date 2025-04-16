@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Rendering/Public/ComputeShaderUI.h"
 
 ComputeShaderUI::ComputeShaderUI()

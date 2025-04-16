@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 
 #include "Client/UI/Public/Editor/AddObjectUI.h"
 #include "Client/UI/Public/Editor/ListUI.h"

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Common/Ptr.h"
 #include "Client/UI/Public/Editor/EditorUI.h"
 #include "Engine/System/Public/Asset/Base/CAsset.h"

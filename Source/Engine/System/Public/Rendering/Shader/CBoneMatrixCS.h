@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "System/Public/Rendering/Shader/CComputeShader.h"
 
 class CStructuredBuffer;
