@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Texture/CSprite.h"
 #include "System/Public/Manager/CPathMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"

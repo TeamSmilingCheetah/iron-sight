@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Shader/CParticleTickCS.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"

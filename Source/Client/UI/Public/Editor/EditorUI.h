@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Client/imgui/imgui.h"
 
 class EditorUI

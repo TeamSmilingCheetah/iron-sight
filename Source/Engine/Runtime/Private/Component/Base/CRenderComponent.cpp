@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Runtime/Public/Actor/CLevel.h"
 #include "System/Public/Manager/CLevelMgr.h"

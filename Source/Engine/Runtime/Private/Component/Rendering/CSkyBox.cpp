@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CAssetMgr.h"

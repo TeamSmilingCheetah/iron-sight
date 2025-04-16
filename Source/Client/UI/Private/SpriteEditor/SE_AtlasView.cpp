@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 

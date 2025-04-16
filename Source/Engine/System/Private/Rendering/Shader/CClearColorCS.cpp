@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Shader/CClearColorCS.h"
 
 CClearColorCS::CClearColorCS()

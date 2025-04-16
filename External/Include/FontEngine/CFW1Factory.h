@@ -1,4 +1,4 @@
-﻿// CFW1Factory.h
+// CFW1Factory.h
 
 #ifndef IncludeGuard__FW1_CFW1Factory
 #define IncludeGuard__FW1_CFW1Factory

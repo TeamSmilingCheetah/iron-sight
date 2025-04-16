@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Component/LandScapeUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"

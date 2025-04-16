@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Component/Light2DUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 

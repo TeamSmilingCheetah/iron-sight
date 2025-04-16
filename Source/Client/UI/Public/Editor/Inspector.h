@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Client/UI/Public/Editor/EditorUI.h"
 #include "Common/Ptr.h"
 #include "Game/System/Public/GameplayManager.h"

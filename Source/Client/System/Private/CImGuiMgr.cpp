@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/ContentUI.h"
 #include "Client/UI/Public/Editor/EditorUI.h"

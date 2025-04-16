@@ -1,4 +1,4 @@
-﻿// CFW1GlyphRenderStates.h
+// CFW1GlyphRenderStates.h
 
 #ifndef IncludeGuard__FW1_CFW1GlyphRenderStates
 #define IncludeGuard__FW1_CFW1GlyphRenderStates

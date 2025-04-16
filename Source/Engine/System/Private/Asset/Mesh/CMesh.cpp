@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Mesh/CMesh.h"
 #include "System/Public/Manager/CPathMgr.h"
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"

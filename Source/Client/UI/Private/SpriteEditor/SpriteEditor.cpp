@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/SpriteEditor/SpriteEditor.h"
