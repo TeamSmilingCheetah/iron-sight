@@ -7,6 +7,7 @@ class CUIRender
 private:
 
 public:
+	void Init() override;
 	void FinalTick() override;
 	void Render() override;
 	void SaveComponent(FILE* _File) override;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Core/Public/CEntity.h"
 
 class CGameObject;
@@ -28,6 +28,7 @@ public:
 	void Tick();
 	void FinalTick();
 
+public:
 	CLONE(CLayer);
 	CLayer();
 	CLayer(const CLayer& _Origin);

@@ -66,7 +66,7 @@ public:
 
 	// Text 설정
 	void ClearText() { m_TextInfo.clear(); }
-	void AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"Segoe UI");
+	void AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"");
 	vector<FontRenderInfo>& GetTextInfoRef() { return m_TextInfo; }
 
 	// Event 지원 여부 (bit masking)

@@ -106,7 +106,10 @@ void CUI::FontRender()
 	// Font Render
 	for (const auto& info : m_TextInfo)
 	{
-		CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.FontSize, info.Color, CanvasRect, Vec2(m_RB.x - m_LT.x, m_RB.y - m_LT.y), info.Font);
+		if (info.Font == L"")
+			CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.FontSize, info.Color, CanvasRect, Vec2(m_RB.x - m_LT.x, m_RB.y - m_LT.y));
+		else
+			CFontMgr::GetInst()->DrawFontClipDirectly(info.Text, m_LT.x + info.Pos.x, m_LT.y + info.Pos.y, info.FontSize, info.Color, CanvasRect, Vec2(m_RB.x - m_LT.x, m_RB.y - m_LT.y), info.Font);
 	}
 }
 

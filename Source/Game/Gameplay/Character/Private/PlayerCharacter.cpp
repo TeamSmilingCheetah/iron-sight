@@ -11,6 +11,7 @@
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Game/Gameplay/Inventory/Public/Item.h"
 
 
 PlayerCharacter::PlayerCharacter()
@@ -476,6 +477,7 @@ void PlayerCharacter::PlayerInteractWeapon()
 
 }
 
+<<<<<<< HEAD
 CGameObject* PlayerCharacter::GetPlayeChildMeshObject(wstring& _str)
 {
 	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
@@ -486,6 +488,66 @@ CGameObject* PlayerCharacter::GetPlayeChildMeshObject(wstring& _str)
 	auto iter = mapBones.find(_str);
 
 	return iter->second;
+=======
+void PlayerCharacter::EquipItem(CGameObject* _Item)
+{
+	// 장착할 수 있는 아이템이라는 것이 보장되어 있음 (InventoryController)
+	WeaponController* pScript = static_cast<WeaponController*>(_Item->GetScript(WEAPONSCRIPT));
+	assert(pScript != nullptr);		// WeaponScript가 있다는 가정
+
+	WEAPON_TYPE eWeaponType = pScript->GetWeaponType();
+	static bool bCanEquip = false;
+
+	switch (eWeaponType)
+	{
+		// 주무기
+	case WEAPON_TYPE::PRIMARY:
+		for (int i = PRIMARY_FIRST; i <= PRIMARY_SECOND; ++i)
+		{
+			if (m_vecWeaponSlot[i] == nullptr)
+			{
+				m_vecWeaponSlot[i] = _Item;
+				bCanEquip = true;
+				break;
+			}
+		}
+		break;
+		// 보조무기
+	case WEAPON_TYPE::SECONDARY:
+		if (m_vecWeaponSlot[SECONDARY_FIRST] == nullptr)
+		{
+			m_vecWeaponSlot[SECONDARY_FIRST] = _Item;
+			bCanEquip = true;
+		}
+		break;
+		// 투척무기				
+	case WEAPON_TYPE::THROWABLE:
+		for (int i = TROWABLE_FIRST; i <= TROWABLE_SECOND; ++i)
+		{
+			if (m_vecWeaponSlot[i] == nullptr)
+			{
+				m_vecWeaponSlot[i] = _Item;
+				bCanEquip = true;
+				break;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
+	// 장착할 수 있는 경우 : 무기 스크립트 쪽에 알려줘야 함
+	if (bCanEquip)
+	{
+		// Player를 소유주으로 등록, 자식에 무기를 넣어준다.
+		pScript->SetEquippedOwner(GetOwner());
+		GetOwner()->AddChild(_Item);
+		_Item->SetActive(false);
+
+		bCanEquip = false;
+		m_bCanEquip = false;
+	}
+>>>>>>> dc21eff (feat: Database structure & item acquisition)
 }
 
 void PlayerCharacter::SaveComponent(FILE* _File)

@@ -24,6 +24,10 @@
 
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
+#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+#include "Game/Gameplay/Inventory/Public/UI_Item.h"
+#include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
+#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 
 void TestLevel::CreateTestLevel()
 {
@@ -172,8 +176,6 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->AddComponent(new CUI(UI_CANVAS));
 
 	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	CanvasUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
 	CanvasUI->UI()->SetPriority(0);
 	CanvasUI->UI()->SetRectPos(0.f, 0.f);
@@ -187,8 +189,6 @@ void TestLevel::CreateTestLevel()
 	UI->AddComponent(new CUI(UI_BUTTON));
 
 	UI->AddComponent(new CUIRender);
-	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(-250.f, 120.f);
 	UI->UI()->SetRectSize(100.f, 40.f);
@@ -202,8 +202,6 @@ void TestLevel::CreateTestLevel()
 	UI->AddComponent(new CUI(UI_DROP));
 
 	UI->AddComponent(new CUIRender);
-	UI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	UI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 	UI->UI()->SetRectPos(400.f, 240.f);
 	UI->UI()->SetRectSize(350.f, 120.f);
@@ -220,16 +218,32 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->AddChild(UI);
 
 	// 인벤토리
-	UI = UI->Clone();
-	UI->UI()->SetRectSize(160.f, 600.f);
-	UI->UI()->SetRectPos(-200.f, 0.f);
-	CanvasUI->AddChild(UI);
+	CGameObject* Inventory = UI->Clone();
+	Inventory->SetName(L"InventoryUI");
+	Inventory->UI()->ClearText();
+	Inventory->UI()->AddText(L"인벤토리", 5.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
+	Inventory->UI()->SetRectSize(160.f, 600.f);
+	Inventory->UI()->SetRectPos(-200.f, 0.f);
+
+	Inventory->AddComponent(new InventoryUI);
+
+	CanvasUI->AddChild(Inventory);
 
 	// 주변
-	UI = UI->Clone();
-	UI->UI()->SetRectSize(160.f, 600.f);
-	UI->UI()->SetRectPos(-440.f, 0.f);
-	CanvasUI->AddChild(UI);
+	CGameObject* Vicinity = UI->Clone();
+	Vicinity->SetName(L"VicinityUI");
+	Vicinity->UI()->ClearText();
+	Vicinity->UI()->AddText(L"주변", 5.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
+	Vicinity->UI()->SetRectSize(160.f, 600.f);
+	Vicinity->UI()->SetRectPos(-440.f, 0.f);
+
+	Vicinity->AddComponent(new VicinityUI);
+
+	CanvasUI->AddChild(Vicinity);
+
+
+	// 아이템 매니저 Initialize
+	ItemMgr::GetInst()->Init();
 
 
 	// ============
@@ -283,7 +297,11 @@ void TestLevel::CreateTestLevel()
 			pInventory->AddComponent(new InventoryController);
 			InventoryController* pInvenScript = static_cast<InventoryController*>(pInventory->GetScript(INVENTORYSCRIPT));
 
-			for (int i = 0; i < 10; ++i)
+			// 주변 및 인벤토리 UI를 등록함
+			pInvenScript->SetVicinityUI(Vicinity);
+			pInvenScript->SetInventoryUI(Inventory);
+
+			for (int i = 0; i < 20; ++i)
 			{
 				// DragUI
 				CGameObject* DragUI = new CGameObject;
@@ -291,34 +309,54 @@ void TestLevel::CreateTestLevel()
 				DragUI->AddComponent(new CUI(UI_DRAG));
 
 				DragUI->AddComponent(new CUIRender);
-				DragUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-				DragUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
 				DragUI->UI()->SetRectSize(150.f, 40.f);
+				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
+				DragUI->SetActive(false);
 
-				DragUI->UI()->ClearText();
-				DragUI->UI()->AddText(L"Item Name", 45.f, 12.f, 12, FONT_RGBA(255, 255, 255, 255));
-				DragUI->UI()->AddText(L"20", 130.f, 12.f, 12, FONT_RGBA(255, 255, 255, 255));
+				DragUI->AddComponent(new ItemUI);
 
-				//DragUI->SetActive(false);
-				UI->AddChild(DragUI);
+				Vicinity->AddChild(DragUI);
 
 				CGameObject* ChildUI = new CGameObject;
 				ChildUI->SetName(L"ItemImageUI");
 				ChildUI->AddComponent(new CUI);
 				ChildUI->AddComponent(new CUIRender);
-				ChildUI->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-				ChildUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 				ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 				ChildUI->UI()->SetRectPos(-55.f, 0.f);
 				ChildUI->UI()->SetRectSize(40.f, 40.f);
 				ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
 
 				DragUI->AddChild(ChildUI);
+			}
 
-				// inventory controller에 ui 등록
-				pInvenScript->AddVicinityUI(DragUI);
+			for (int i = 0; i < 20; ++i)
+			{
+				// DragUI
+				CGameObject* DragUI = new CGameObject;
+				DragUI->SetName(L"ItemUI");
+				DragUI->AddComponent(new CUI(UI_DRAG));
+
+				DragUI->AddComponent(new CUIRender);
+				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+				DragUI->UI()->SetRectSize(150.f, 40.f);
+				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
+				DragUI->SetActive(false);
+
+				DragUI->AddComponent(new ItemUI);
+
+				Inventory->AddChild(DragUI);
+
+				CGameObject* ChildUI = new CGameObject;
+				ChildUI->SetName(L"ItemImageUI");
+				ChildUI->AddComponent(new CUI);
+				ChildUI->AddComponent(new CUIRender);
+				ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+				ChildUI->UI()->SetRectPos(-55.f, 0.f);
+				ChildUI->UI()->SetRectSize(40.f, 40.f);
+				ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
+
+				DragUI->AddChild(ChildUI);
 			}
 
 			pInvenScript->SetPlayer(pObj);
@@ -352,11 +390,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
 
 
-			pWeaponObj->AddComponent(new ItemScript);
-			ItemScript* pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
-			pItem->SetCount(1);
-			pItem->SetItemType(ITEM_TYPE::WEAPON);
-			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\AKM.png"));
+			pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::AKM));
 
 			pLevel->AddObject(6, pWeaponObj, false);
 			//PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pObj->GetScripts()[0]);
@@ -386,11 +420,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 			pWeaponObj->Transform()->SetIndependentScale(true);
 
-			pWeaponObj->AddComponent(new ItemScript);
-			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
-			pItem->SetCount(1);
-			pItem->SetItemType(ITEM_TYPE::GRENADE);
-			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\Grenade.png"));
+			pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::GRENADE));
 
 			pLevel->AddObject(6, pWeaponObj, false);
 
@@ -416,11 +446,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 			pWeaponObj->Transform()->SetIndependentScale(true);
 
-			pWeaponObj->AddComponent(new ItemScript);
-			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
-			pItem->SetCount(1);
-			pItem->SetItemType(ITEM_TYPE::SMOKEBOMB);
-			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\SmokeBomb.png"));
+			pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::SMOKEBOMB));
 
 			pLevel->AddObject(6, pWeaponObj, false);
 
@@ -445,11 +471,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
-			pWeaponObj->AddComponent(new ItemScript);
-			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
-			pItem->SetCount(1);
-			pItem->SetItemType(ITEM_TYPE::ENERGY_DRINK);
-			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\EnergyDrink.png"));
+			pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::ENERGY_DRINK));
 
 			pLevel->AddObject(6, pWeaponObj, false);
 
@@ -474,11 +496,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
-			pWeaponObj->AddComponent(new ItemScript);
-			pItem = static_cast<ItemScript*>(pWeaponObj->GetScript(ITEMSCRIPT));
-			pItem->SetCount(1);
-			pItem->SetItemType(ITEM_TYPE::FIRST_AID_KIT);
-			pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\FirstAidKit.png"));
+			pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::FIRST_AID_KIT));
 
 			pLevel->AddObject(6, pWeaponObj, false);
 		}
@@ -524,11 +542,7 @@ void TestLevel::CreateTestLevel()
 		pObj->Collider3D()->SetIndependentScale(true);
 		pObj->Collider3D()->SetTrigger(true);
 
-		pObj->AddComponent(new ItemScript);
-		ItemScript* pItem = static_cast<ItemScript*>(pObj->GetScript(ITEMSCRIPT));
-		pItem->SetCount(1);
-		pItem->SetItemType(ITEM_TYPE::ADRENALINE_SYRINGE);
-		pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\AdrenalineSyringe.png"));
+		pObj->AddComponent(new ItemScript(ITEM_TYPE::ADRENALINE_SYRINGE));
 
 		pLevel->AddObject(6, pObj, false);
 
@@ -544,13 +558,17 @@ void TestLevel::CreateTestLevel()
 		pObj->Collider3D()->SetIndependentScale(true);
 		pObj->Collider3D()->SetTrigger(true);
 
-		pObj->AddComponent(new ItemScript);
-		pItem = static_cast<ItemScript*>(pObj->GetScript(ITEMSCRIPT));
-		pItem->SetCount(1);
-		pItem->SetItemType(ITEM_TYPE::BANDAGE);
-		pItem->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\Bandage.png"));
+		pObj->AddComponent(new ItemScript(ITEM_TYPE::AMMO_5));
 
 		pLevel->AddObject(6, pObj, false);
+
+		pLevel->AddObject(6, pObj->Clone(), false);
+		pLevel->AddObject(6, pObj->Clone(), false);
+		pLevel->AddObject(6, pObj->Clone(), false);
+		pLevel->AddObject(6, pObj->Clone(), false);
+		pLevel->AddObject(6, pObj->Clone(), false);
+		pLevel->AddObject(6, pObj->Clone(), false);
+		pLevel->AddObject(6, pObj->Clone(), false);
 
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Death Box\\box.fbx");
 		pObj = pMeshData->Instantiate();

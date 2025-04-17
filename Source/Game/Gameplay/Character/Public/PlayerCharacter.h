@@ -102,7 +102,7 @@ public:
 	bool IsShot() { return m_bShoot; }
 	bool IsThrow() { return m_bCanThrow; }
 
-	void AcquireItem(CGameObject* _Item);
+	void EquipItem(CGameObject* _Item);
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

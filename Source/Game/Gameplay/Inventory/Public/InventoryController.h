@@ -1,31 +1,42 @@
 #pragma once
 #include "Engine\Runtime\Public\Component\Script\CScript.h"
+#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
 class PlayerCharacter;
 class ItemScript;
 
 class InventoryController :
-    public CScript
+	public CScript
 {
 private:
-	CGameObject*		m_Player;
-	PlayerCharacter*	m_PlayerScript;
+	CGameObject*			m_Player;
+	PlayerCharacter*		m_PlayerScript;
 
 	vector<CGameObject*>	m_vecVicinity;	// 주변 아이템을 관리하는 컨테이너
-	vector<CGameObject*>	m_vecInventory;	// 소유 아이템을 관리하는 컨테이너
+	int						m_arrInventory[static_cast<UINT>(ITEM_TYPE::END)];	// 소유 아이템을 관리하는 컨테이너 (개수)
 
-	vector<CGameObject*>	m_vecVicinityUI;	// 주변 아이템 UI
-	vector<CGameObject*>	m_vecInventoryUI;	// 소유 아이템 UI
+	bool					m_InventoryChanged;
+
+	// UI
+	CGameObject*			m_VicinityUI;		// 주변 UI
+	CGameObject*			m_InventoryUI;		// 인벤토리 UI
 
 private:
-	void SyncItemUI(ItemScript* _Item, CGameObject* _ItemUI);
+	// 주변 : 오브젝트의 아이템 스크립트 -> UI
+	void SyncItemUI(CGameObject* _ItemObj, ITEM_TYPE _Type, int _Count, CGameObject* _ItemUI);
+
 	void DisplayUI_Vicinity();
 	void DisplayUI_Inventory();
 
 public:
 	void SetPlayer(CGameObject* _Player);
-	void AddVicinityUI(CGameObject* _UI) { m_vecVicinityUI.push_back(_UI); }
-	void AddInventoryUI(CGameObject* _UI) { m_vecInventoryUI.push_back(_UI); }
+	void SetVicinityUI(CGameObject* _UI);
+	void SetInventoryUI(CGameObject* _UI);
+
+	void AcquireItem(CGameObject* _Item);
+	void EquipItem(CGameObject* _Item);
+	void UseItem(ITEM_TYPE _Type, UINT _Count = 1);
+	void DropItem(ITEM_TYPE _Type, UINT _Count);
 
 public:
 	virtual void Init() override;
