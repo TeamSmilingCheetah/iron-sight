@@ -15,6 +15,7 @@
 ThrowableController::ThrowableController()
 	: WeaponController(SCRIPT_TYPE::THROWABLESCRIPT)
 	, m_Velocity()
+	, m_Dir()
 	, m_Mass(0.f)
 	, m_Speed(8000.f)
 	, m_GravityAccel(1000.f)
@@ -177,14 +178,12 @@ void ThrowableController::Throw()
 	Collider3D()->SetTrigger(false);
 	m_bTrigger = true;
 
-	static Vec3 vFinalDir = Vec3(0.f, 0.f, 0.f);
-
 	// 향할 초기 방향을 구한다.
 	if (m_EquippedOwner != nullptr)
 	{
-		vFinalDir = GetFireDir();
-		vFinalDir.y += m_ThrowAngle;
-		m_Velocity = vFinalDir * m_Speed;
+		m_Dir = GetFireDir();
+		m_Dir.y += m_ThrowAngle;
+		m_Velocity = m_Dir * m_Speed;
 	}
 	
 	// 방향을 구한뒤 소유주를 삭제한다.
@@ -216,8 +215,8 @@ void ThrowableController::Throw()
 		// 감속 적용
 		m_Velocity += dragAccel * DT;
 		// 회전시킨다
-		vRot.z += m_Speed / 10.f * vFinalDir.x * DT;
-		vRot.x += m_Speed / 10.f * vFinalDir.z * DT;
+		vRot.z += m_Speed / 10.f * m_Dir.x * DT;
+		vRot.x += m_Speed / 10.f * m_Dir.z * DT;
 	}
 
 	// 위치값을 갱신한다
@@ -246,6 +245,8 @@ void ThrowableController::MakeBounce(Vec3 _Normal, float _elastic, float _fricti
 
 		// 속도 걩신
 		m_Velocity = reflectVelo;
+		reflectVelo.Normalize();
+		m_Dir = reflectVelo;
 	}
 }
 
