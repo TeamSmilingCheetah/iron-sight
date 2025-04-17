@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "Core/Public/CEngine.h"
 #include "System/Public/Rendering/Device/CDevice.h"

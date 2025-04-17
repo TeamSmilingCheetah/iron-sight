@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
@@ -345,7 +345,7 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 					break;
 					// 투척무기				
 				case WEAPON_TYPE::THROWABLE:
-					for (int i = TROWABLE_FIRST; i <= TROWABLE_SECOND; ++i)
+					for (int i = THROWABLE_FIRST; i <= THROWABLE_SECOND; ++i)
 					{
 						if (m_vecWeaponSlot[i] == nullptr)
 						{

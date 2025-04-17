@@ -56,17 +56,43 @@ void CCollider3D::FinalTick()
 	Matrix matTrans = XMMatrixTranslation(m_Offset.x, m_Offset.y, m_Offset.z);
 	Matrix matRot = XMMatrixRotationY(m_RotY);
 
-	if (m_IndependentScale)
-	{
-		Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
-		Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
-		m_matColliderWorld = matScale * matRot * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
+	Vec3 ownerPos = GetOwner()->Transform()->GetWorldPos();
+	Vec3 ownerScale = GetOwner()->Transform()->GetWorldScale();
 
+	Matrix ownerScaleMat = XMMatrixScaling(ownerScale.x, ownerScale.y, ownerScale.z);
+	Matrix ownerTransMat = XMMatrixTranslation(ownerPos.x, ownerPos.y, ownerPos.z);
+
+	Matrix ownerMatNoRot = ownerScaleMat * ownerTransMat;
+
+	if (m_Status & INDEPENDENT_ROT)
+	{
+		if (m_IndependentScale)
+		{
+			Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
+			Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));			
+			m_matColliderWorld = matScale * matRot * matTrans * matScaleInv * ownerMatNoRot;
+		}
+		else
+		{
+			Matrix ownerTrans = XMMatrixTranslationFromVector(GetOwner()->Transform()->GetWorldPos() * GetOwner()->Transform()->GetWorldScale());
+			m_matColliderWorld = matScale * matRot * matTrans * ownerMatNoRot;
+		}
 	}
 	else
 	{
-		m_matColliderWorld = matScale * matRot * matTrans * GetOwner()->Transform()->GetWorldMat();
+		if (m_IndependentScale)
+		{
+			Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
+			Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
+			m_matColliderWorld = matScale * matRot * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
+
+		}
+		else
+		{
+			m_matColliderWorld = matScale * matRot * matTrans * GetOwner()->Transform()->GetWorldMat();
+		}
 	}
+
 
 	if (m_OverlapCount)
 	{
@@ -175,6 +201,18 @@ void CCollider3D::SetTrigger(bool _true)
 	else
 	{
 		m_Status &= ~TRIGGER;
+	}
+}
+
+void CCollider3D::SetIndependetRot(bool _true)
+{
+	if (_true)
+	{
+		m_Status |= INDEPENDENT_ROT;
+	}
+	else
+	{
+		m_Status &= ~INDEPENDENT_ROT;
 	}
 }
 

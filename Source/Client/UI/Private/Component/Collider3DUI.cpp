@@ -24,6 +24,8 @@ void Collider3DUI::Render_Update()
 	float fRotY = pCollider3D->GetRotY();
 	bool bIndependent = pCollider3D->IsIndependentScale();
 	bool bActive = pCollider3D->IsActive();
+	bool bIndependentRot = pCollider3D->IsIndependentRot();
+	bool bTrigger = pCollider3D->IsTrigger();
 
 	ImGui::Text("Scale");
 	ImGui::SameLine(100);
@@ -54,6 +56,18 @@ void Collider3DUI::Render_Update()
 		else
 			pCollider3D->Deactivate();
 	}
+
+	ImGui::Text("IsIndependentRotation");
+	ImGui::SameLine(100);
+	ImGui::Checkbox("##IsIndependentRotation", &bIndependentRot);
+	pCollider3D->SetIndependetRot(bIndependentRot);
+
+	ImGui::Text("IsTrigger");
+	ImGui::SameLine(100);
+	ImGui::Checkbox("##IsTrigger", &bTrigger);
+	pCollider3D->SetTrigger(bTrigger);
+
+	
 
 
 	if (ImGui::Button("DELETE##Collider3D"))

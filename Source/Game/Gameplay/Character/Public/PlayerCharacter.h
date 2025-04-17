@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
@@ -9,8 +9,9 @@ class CLandScape;
 #define PRIMARY_FIRST 0
 #define PRIMARY_SECOND 1
 #define SECONDARY_FIRST 2
-#define TROWABLE_FIRST 3
-#define TROWABLE_SECOND 4
+#define THROWABLE_FIRST 3
+#define THROWABLE_SECOND 4
+#define NONE_WEAPON 5
 
 class PlayerCharacter :
 	public CScript
@@ -34,7 +35,9 @@ private:
 	float m_PaperBurnIntence;
 
 	bool m_bShoot;
+	bool m_bCanThrow;
 	bool m_bCanEquip;
+	bool m_bThrowBoom;
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
@@ -83,10 +86,14 @@ public:
 public:
 	void SetCurWeapon(CGameObject* _Weapon) { m_CurWeapon = _Weapon; }
 	void SetShot(bool _Shot) { m_bShoot = _Shot; }
+	void SetThrow(bool _Throw) { m_bCanThrow = _Throw; }
+	void SetThrowBoom(bool _Boom) { m_bThrowBoom = _Boom; }
 
 	CGameObject* GetCurWeapon() { return m_CurWeapon; }
+	int GetCurWeaponIdx() { return m_CurWeaponIdx; }
 	float GetCurMouseSensitivity() { return m_MouseSensitivity; }
 	bool IsShot() { return m_bShoot; }
+	bool IsThrow() { return m_bCanThrow; }
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

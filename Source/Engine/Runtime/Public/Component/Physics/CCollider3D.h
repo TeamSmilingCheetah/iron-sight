@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CCollider3D :
@@ -27,6 +27,7 @@ public:
 	void SetHitNormal(Vec3 _Nor) { m_HitNormal = _Nor; }
 	void SetHitPoint(Vec3 _hitPoint) { m_HitPoint = _hitPoint; }
 	void SetTrigger(bool _true);
+	void SetIndependetRot(bool _true);
 
 	Vec3 GetOffset() { return m_Offset; }
 	Vec3 GetScale() { return m_Scale; }
@@ -34,7 +35,9 @@ public:
 	Vec3 GetHitNormal() { return m_HitNormal; }
 	Vec3 GetHitPoint() { return m_HitPoint; }
 
+
 	bool IsTrigger() { return (m_Status & TRIGGER); }
+	bool IsIndependentRot() { return (m_Status & INDEPENDENT_ROT); }
 
 	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
 
