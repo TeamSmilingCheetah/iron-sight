@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -120,52 +120,28 @@ void GunController::Firing()
 		return;
 	}
 
-
-	// Camera의 줌 여부를 확인한다.
 	CGameObject* pCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	CameraController* pCameraScript = static_cast<CameraController*>(pCamera->GetScripts()[0]);
 
-	// 카메라의 방향 정보
-	Vec3 vCameraPos = pCamera->Transform()->GetRelativePos();
-	Vec3 vCameraRot = pCamera->Transform()->GetRelativeRotation();
-	float radX = XMConvertToRadians(vCameraRot.x);
-	float radY = XMConvertToRadians(vCameraRot.y);
-	float radZ = XMConvertToRadians(vCameraRot.z);
-	Vec3 vCameraDir = Vec3(0.f, 0.f, 1.f);
-	Matrix matCameraRot = XMMatrixRotationRollPitchYaw(radX, radY, radZ);
-	vCameraDir = XMVector3TransformNormal(vCameraDir, matCameraRot);
-	vCameraDir.Normalize();
 
 	// Player의 위치와 방향 정보
 	Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
-	Vec3 vPlayerRot = m_EquippedOwner->Transform()->GetRelativeRotation();
-	float playerRadX = XMConvertToRadians(vPlayerRot.x);
-	float playerRadY = XMConvertToRadians(vPlayerRot.y);
-	float playerRadZ = XMConvertToRadians(vPlayerRot.z);
-	Vec3 vPlayerDir = Vec3(0.f, 0.f, 1.f);
-	Matrix matPlayerRot = XMMatrixRotationRollPitchYaw(playerRadX, playerRadY, playerRadZ);
-	vPlayerDir = XMVector3TransformNormal(vPlayerDir, matPlayerRot);
-	vPlayerDir.Normalize();
 
 
 	// 총알의 시작 위치를 보정해준다
 	Vec3 vSpawnPos = vPlayerPos;
-	//vSpawnPos.x += 350.f * vPlayerDir.x;
-	//vSpawnPos.z -= 950.f;
 	vSpawnPos.y += 800.f;
 
-	// 카메라 정중앙이 바라보는곳에서 임의의 타켓 포인트를 구한다.
-	Vec3 vTargetPoint = vCameraPos + vCameraDir * 100000.f;
 
-	// 해당 타켓 포인트를 바라보는 방향을 구한다.
-	Vec3 vFinalDir = vTargetPoint - vPlayerPos;
-	vFinalDir.Normalize();
+	Vec3 vFinalDir = GetFireDir();
 
 
 	// 생성할 총알 Prefab 정보 로드
 	Ptr<CPrefab> BulletPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\TestBullet.pref", L"Prefab\\TestBullet.pref");
 	MissileProjectile* BulletScript = static_cast<MissileProjectile*>(BulletPrefab->GetProtoObject()->GetScripts()[0]);
 
+
+	// Camera의 줌 여부를 확인한다.
+	CameraController* pCameraScript = static_cast<CameraController*>(pCamera->GetScripts()[0]);
 
 	// 현재 사격 자세에 따라 정확도를 부여한다.
 	float spreadYaw = 0.f;

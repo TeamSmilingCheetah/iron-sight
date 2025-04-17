@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 using Vec2 = SimpleMath::Vector2;
@@ -40,4 +40,5 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 
 
-#define TRIGGER					0x01		// 트리거용 충돌체 
+#define TRIGGER					0x01		// 트리거용 충돌체
+#define INDEPENDENT_ROT			0x02

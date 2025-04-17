@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
@@ -25,8 +25,11 @@ PlayerCharacter::PlayerCharacter()
 	, m_GravityAccel(10.f)
 	, m_GravityMaxSpeed(30.f)
 	, m_JumpPower(5.f)
+	, m_CurWeaponIdx(NONE_WEAPON)
+	, m_CurWeapon(nullptr)
 	, m_IsGround(true)
 	, m_bShoot(false)
+	, m_bCanThrow(false)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -102,7 +105,15 @@ void PlayerCharacter::Tick()
 
 	PlayerInteractWeapon();
 
-
+	if (m_bThrowBoom)
+	{
+		if (THROWABLE_FIRST <= m_CurWeaponIdx || m_CurWeaponIdx <= THROWABLE_SECOND)
+		{
+			m_CurWeaponIdx = NONE_WEAPON;
+			m_CurWeapon = nullptr;
+			m_bThrowBoom = false;
+		}
+	}
 }
 
 
@@ -223,7 +234,7 @@ void PlayerCharacter::PlayerReload()
 	if (KEY_TAP(KEY::R))
 	{
 		// 현재 무기 슬롯이 총이라면
-		if (m_CurWeaponIdx != 0 && m_CurWeaponIdx < 4)
+		if (m_CurWeaponIdx <= SECONDARY_FIRST)
 		{			
 			WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
 			pGunScript->SetCurKey(KEY::R);
@@ -244,7 +255,7 @@ void PlayerCharacter::PlayerAttack()
 		if (KEY_TAP(KEY::LBTN))
 		{
 			// 현재 무기 슬롯이 총이라면
-			if (m_CurWeaponIdx != 0 && m_CurWeaponIdx < 4)
+			if (m_CurWeaponIdx <= THROWABLE_SECOND)
 			{
 				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
 				pGunScript->SetCurKey(KEY::LBTN);
@@ -261,10 +272,21 @@ void PlayerCharacter::PlayerAttack()
 				pGunScript->SetCurKey(KEY::LBTN);
 				pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
 			}
+
+			if (m_bCanThrow)
+			{
+				if (KEY_TAP(KEY::R))
+				{
+					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+					pWeaponScript->SetCurKey(KEY::R);
+					pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
+				}				
+			}
 		}
 	
 		if (KEY_RELEASED(KEY::LBTN))
 		{
+			// 총기
 			if (m_bShoot)
 			{
 				m_bShoot = false;
@@ -272,7 +294,65 @@ void PlayerCharacter::PlayerAttack()
 				pGunScript->SetCurKey(KEY::LBTN);
 				pGunScript->SetCurKeyState(KEY_STATE::RELEASED);
 			}
+
+			// 투척무기
+			if (m_bCanThrow)
+			{
+				m_bCanThrow = false;
+				if (m_CurWeapon != nullptr)
+				{
+					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+					pWeaponScript->SetCurKey(KEY::LBTN);
+					pWeaponScript->SetCurKeyState(KEY_STATE::RELEASED);
+					m_vecWeaponSlot[m_CurWeaponIdx] = nullptr;
+					m_CurWeapon = nullptr;
+					m_CurWeaponIdx = NONE_WEAPON;
+				}				
+			}
 		}
+
+		if (KEY_TAP(KEY::RBTN))
+		{
+			// 투척무기이면
+			if (THROWABLE_FIRST <= m_CurWeaponIdx && m_CurWeaponIdx <= THROWABLE_SECOND)
+			{
+				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+				pGunScript->SetCurKey(KEY::RBTN);
+				pGunScript->SetCurKeyState(KEY_STATE::TAP);
+			}
+		}
+
+		if (KEY_PRESSED(KEY::RBTN))
+		{
+			if (m_bCanThrow)
+			{
+				if (KEY_TAP(KEY::R))
+				{
+					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+					pWeaponScript->SetCurKey(KEY::R);
+					pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
+				}
+				
+			}
+		}
+
+		if (KEY_RELEASED(KEY::RBTN))
+		{
+			// 투척무기
+			if (m_bCanThrow)
+			{
+				if (m_CurWeapon != nullptr)
+				{
+					m_bCanThrow = false;
+					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+					pWeaponScript->SetCurKey(KEY::RBTN);
+					pWeaponScript->SetCurKeyState(KEY_STATE::RELEASED);
+					m_vecWeaponSlot[m_CurWeaponIdx] = nullptr;
+					m_CurWeapon = nullptr;
+					m_CurWeaponIdx = NONE_WEAPON;
+				}
+			}
+		}		
 	}
 }
 
@@ -290,7 +370,7 @@ void PlayerCharacter::PlayerInteractWeapon()
 			// 해당 슬롯 활성화
 			m_vecWeaponSlot[i]->SetActive(true);
 			m_CurWeapon = m_vecWeaponSlot[i];
-			m_CurWeaponIdx = i + 1;
+			m_CurWeaponIdx = i;
 
 			// 나머지 슬롯은 비활성화
 			for (int j = 0; j < static_cast<int>(m_vecWeaponSlot.size()); ++j)
@@ -317,7 +397,7 @@ void PlayerCharacter::PlayerInteractWeapon()
 			m_vecWeaponSlot[i]->SetActive(false);
 		}
 		m_CurWeapon = nullptr;
-		m_CurWeaponIdx = 0;
+		m_CurWeaponIdx = NONE_WEAPON;
 	}
 
 	// 현재 들고 있는 무기를 버린다.
@@ -340,9 +420,9 @@ void PlayerCharacter::PlayerInteractWeapon()
 			m_CurWeapon->Transform()->SetRelativePos(vWeaponPos);
 
 			// Player의 무기정보를 비워준다. 
-			m_vecWeaponSlot[m_CurWeaponIdx - 1] = nullptr;
+			m_vecWeaponSlot[m_CurWeaponIdx] = nullptr;
 			m_CurWeapon = nullptr;
-			m_CurWeaponIdx = 0;
+			m_CurWeaponIdx = NONE_WEAPON;
 		}
 	}
 

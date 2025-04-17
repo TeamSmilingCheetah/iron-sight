@@ -11,7 +11,8 @@ private:
 	Vec3 m_Dir;
 
 	float m_Speed;
-	float m_GravityAccel;			float m_Mass;
+	float m_GravityAccel;
+	float m_Mass;
 
 	float m_LifeTime;
 

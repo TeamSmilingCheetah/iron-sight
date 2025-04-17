@@ -32,6 +32,10 @@ public:
 	void SetCurKey(KEY _Key) { m_CurKey = _Key; }
 	void SetCurKeyState(KEY_STATE _KeyState) { m_CurKeyState = _KeyState; }
 
+	Vec3 GetFireDir();
+
+	void ClearKey();
+
 	WEAPON_TYPE GetWeaponType() { return m_WeaponType; }
 
 public:

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
@@ -103,6 +103,8 @@ void CameraController::CameraPerspectiveMove()
 	CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
 	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pPlayer->GetScripts()[0]);
 
+	int iWeaponIdx =  pPlayerScript->GetCurWeaponIdx();
+
 	Vec3 vCameraPos = Transform()->GetRelativePos();
 	Vec3 vCameraRot = Transform()->GetRelativeRotation();
 	Vec3 vPlayerPos = pPlayer->Transform()->GetRelativePos();
@@ -189,8 +191,9 @@ void CameraController::CameraPerspectiveMove()
 		//
 
 		// 줌 회복 상태가 아니거나 둘러보기 상태가 아니라면 줌을 활성화 한다.
-		if (!m_bShoulderRecover && !m_bSearch)
+		if (!m_bShoulderRecover && !m_bSearch && iWeaponIdx <= SECONDARY_FIRST)
 		{
+			
 			if (KEY_TAP(KEY::RBTN))
 			{
 				m_bCliked_First = true;
@@ -375,17 +378,21 @@ void CameraController::CameraPerspectiveMove()
 		Transform()->SetRelativeRotation(vCameraRot);
 
 		// 줌 활성화
-		if (KEY_TAP(KEY::RBTN))
+		if (iWeaponIdx <= SECONDARY_FIRST)
 		{
-			// TPS에서 줌으로 넘어온 경우 줌을 풀때 TPS로 넘어간다.
-			if (m_bWasTPS && m_bADS)
+			if (KEY_TAP(KEY::RBTN))
 			{
-				m_bTPS = true;
-				GetOwner()->Camera()->LayerCheck(3);
-				GetOwner()->Camera()->LayerCheck(4);
+				// TPS에서 줌으로 넘어온 경우 줌을 풀때 TPS로 넘어간다.
+				if (m_bWasTPS && m_bADS)
+				{
+					m_bTPS = true;
+					GetOwner()->Camera()->LayerCheck(3);
+					GetOwner()->Camera()->LayerCheck(4);
+				}
+				m_bADS == true ? m_bADS = false : m_bADS = true;
 			}
-			m_bADS == true ? m_bADS = false : m_bADS = true;
 		}
+
 	}
 	
 
