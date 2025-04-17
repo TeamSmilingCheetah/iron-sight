@@ -9,6 +9,7 @@ class ThrowableController :
 {
 private:
 	Vec3 m_Velocity;
+	Vec3 m_Dir;
 
 	float m_Mass;
 	float m_Speed;
