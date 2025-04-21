@@ -149,10 +149,17 @@ void CColliderRay::Overlap(CCollider3D* _Other)
 void CColliderRay::EndOverlap(CCollider3D* _Other)
 {
 	--m_OverlapCount;
+	CGameObject* OtherObj = _Other->GetOwner();
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->EndOverlap(this, OtherObj, _Other);
+	}
+
+	// 충돌된 오브젝트가 이제 삭제 처리될 오브젝트일 시 prev에 들어가지 않게 비운다.
+	if (OtherObj == m_RayColInfo.HitObject && OtherObj->IsDead())
+	{
+		m_RayColInfo.HitObject = nullptr;
 	}
 }
 
@@ -178,10 +185,17 @@ void CColliderRay::Overlap(CLandScape* _Other)
 void CColliderRay::EndOverlap(CLandScape* _Other)
 {
 	--m_OverlapCount;
+	CGameObject* OtherObj = _Other->GetOwner();
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->EndOverlap(this, OtherObj, _Other);
+	}
+
+	// 충돌된 오브젝트가 이제 삭제 처리될 오브젝트일 시 prev에 들어가지 않게 비운다.
+	if (OtherObj == m_RayColInfo.HitObject && OtherObj->IsDead())
+	{
+		m_RayColInfo.HitObject = nullptr;
 	}
 }
 
