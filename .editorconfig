@@ -22,3 +22,8 @@ indent_size = 4
 [*.build.cs]
 indent_style = tab
 indent_size = 4
+
+# 프로젝트 파일
+[*.vcxproj]
+indent_style = space
+indent_size = 2
