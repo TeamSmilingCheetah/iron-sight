@@ -50,7 +50,7 @@ PlayerCharacter::PlayerCharacter()
 	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
 	{
 		sprintf_s(name, "Slot %d", i+1);
-		AddScriptParam(tScriptParam{ SCRIPT_PARAM::GAMEOBJECT, name, &m_vecWeaponSlot[i] });
+		AddScriptParam(tScriptParam{ SCRIPT_PARAM::GAMEOBJECT, name, &m_vecWeaponSlot[i].Object });
 	}
 }
 
@@ -603,7 +603,12 @@ void PlayerCharacter::ReleaseSlot(ITEM_TYPE _Type)
 	{
 		if (m_vecWeaponSlot[i].Type == _Type)
 		{
+			// 부모 관계 해제, 레이어 이동, transform 설정
 			DetachItem(m_vecWeaponSlot[i].Object);
+
+			// 주인 해제
+			WeaponController* pGunScript = static_cast<WeaponController*>(m_vecWeaponSlot[i].Object->GetScripts()[0]);
+			pGunScript->SetEquippedOwner(nullptr);
 
 			m_vecWeaponSlot[i].Object = nullptr;
 			m_vecWeaponSlot[i].Type = ITEM_TYPE::END;
@@ -635,6 +640,7 @@ void PlayerCharacter::DetachItem(CGameObject* _Item)
 	// 아이템 레이어로 변경
 	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
 	ChangeLayer(_Item, 6);
+	_Item->SetActive(true);
 	AttachItem(_Item, nullptr, vPos, vRot);
 }
 
