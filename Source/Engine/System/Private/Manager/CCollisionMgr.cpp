@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CCollisionMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLevel.h"
@@ -288,12 +288,27 @@ void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _
 	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
 	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE;
 
+	// 레이어가 바뀌면서 더 이상 충돌 감지가 안되는 경우도 고려
+	int leftLayer = _LeftCol->GetOwner()->GetLayerIdx();
+	int rightLayer = _RightCol->GetOwner()->GetLayerIdx();
+
+	if (_LeftCol->GetOwner()->IsLayerMove())
+		leftLayer = _LeftCol->GetOwner()->GetNextLayerIdx();
+	if (_RightCol->GetOwner()->IsLayerMove())
+		rightLayer = _RightCol->GetOwner()->GetNextLayerIdx();
+
+	if (leftLayer > rightLayer)
+		std::swap(leftLayer, rightLayer);
+
+	// 레이어가 -1로 바뀐 경우 또는 서로 충돌 감지를 안하는 레이어로 바뀐 경우
+	bool IsLayerNotColliding = (leftLayer == -1) || !(m_Matrix[leftLayer] & (1 << rightLayer));
+
 	if (IsCollision3D(_LeftCol, _RightCol))
 	{
 		if (iter->second)
 		{
 			// 둘중 하나가 곧 삭제 예정이다.
-			if (IsDead || IsDeactive)
+			if (IsDead || IsDeactive || IsLayerNotColliding)
 			{
 				_LeftCol->EndOverlap(_RightCol);
 				_RightCol->EndOverlap(_LeftCol);
