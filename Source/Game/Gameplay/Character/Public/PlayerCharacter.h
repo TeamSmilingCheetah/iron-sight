@@ -2,6 +2,7 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
 class CGameObject;
 class CLandScape;
@@ -12,6 +13,12 @@ class CLandScape;
 #define THROWABLE_FIRST 3
 #define THROWABLE_SECOND 4
 #define NONE_WEAPON 5
+
+struct tSlot
+{
+	ITEM_TYPE		Type;
+	CGameObject*	Object;
+};
 
 class PlayerCharacter :
 	public CScript
@@ -49,7 +56,7 @@ private:
 	int			 m_CurWeaponIdx;
 
 
-	vector<CGameObject*> m_vecWeaponSlot;	// 무기 슬롯
+	vector<tSlot> m_vecWeaponSlot;	// 무기 슬롯
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
 public:
@@ -87,6 +94,8 @@ public:
 	
 
 public:
+	CGameObject* GetRayTarget() const { return m_CollObject; }
+
 	void SetCurWeapon(CGameObject* _Weapon) { m_CurWeapon = _Weapon; }
 	void SetShot(bool _Shot) { m_bShoot = _Shot; }
 	void SetThrow(bool _Throw) { m_bCanThrow = _Throw; }
@@ -100,9 +109,17 @@ public:
 	bool IsShot() { return m_bShoot; }
 	bool IsThrow() { return m_bCanThrow; }
 
+	void EquipSlot(CGameObject* _Item);
+	void ReleaseSlot(ITEM_TYPE _Type);
+
+	// TODO: 데이터 구조 개선
+	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
+	void DetachItem(CGameObject* _Item);
+
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
+public:
 	CLONE(PlayerCharacter);
 	PlayerCharacter();
 	~PlayerCharacter() override;

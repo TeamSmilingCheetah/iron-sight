@@ -33,7 +33,7 @@ class CScript;
 
 Inspector::Inspector()
 	: EditorUI("Inspector")
-	  , m_arrComUI{}
+	, m_arrComUI{}
 {
 	CreateComponentUI();
 
@@ -76,9 +76,9 @@ void Inspector::Render_Update()
 			vector<const char*> szProjType;
 			vector<string>		strStorage;
 
-			strStorage.reserve((UINT)COMPONENT_TYPE::END);
+			strStorage.reserve(static_cast<UINT>(COMPONENT_TYPE::END) - 1);
 
-			for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+			for (UINT i = 1; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
 			{
 				string ComponentName;
 				switch ((COMPONENT_TYPE)i)
@@ -128,9 +128,15 @@ void Inspector::Render_Update()
 				case COMPONENT_TYPE::PARTICLE_SYSTEM:
 					ComponentName = "ParticleSystem";
 					break;
+				case COMPONENT_TYPE::UI:
+					ComponentName = "UI";
+					break;
+				case COMPONENT_TYPE::UIRENDER:
+					ComponentName = "UIRender";
+					break;
 				}
 				strStorage.push_back(ComponentName);  // string을 저장하여 유효하게 유지
-				szProjType.push_back(strStorage[i].c_str());  // c_str()로 const char* 저장
+				szProjType.push_back(strStorage[i - 1].c_str());  // c_str()로 const char* 저장
 			}
 
 			ImGui::Combo("##Componentcombo", &m_ComponentListIdx, szProjType.data(), static_cast<int>(szProjType.size()));    // 이름, 선택된 배열 위치, 배열, 개수
@@ -146,7 +152,7 @@ void Inspector::Render_Update()
 				}
 			}
 		}
-		
+
 	}
 }
 
@@ -273,6 +279,12 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::LANDSCAPE:
 		m_TargetObject->AddComponent(new CLandScape);
 		break;
+	case COMPONENT_TYPE::UI:
+		m_TargetObject->AddComponent(new CUI);
+		break;
+	case COMPONENT_TYPE::UIRENDER:
+		m_TargetObject->AddComponent(new CUIRender);
+		break;
 	}
 
 
@@ -392,6 +404,15 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)] = static_cast<ComponentUI*>(
 		AddChildUI(new DecalUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)]->SetChildSize(ImVec2(0.f, 165.f));
+
+	// FIXME : UI / UIRender ui 추가
+	/*m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UI)] = static_cast<ComponentUI*>(
+		AddChildUI(new UIUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UI)]->SetChildSize(ImVec2(0.f, 165.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UIRENDER)] = static_cast<ComponentUI*>(
+		AddChildUI(new UIRenderUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UIRENDER)]->SetChildSize(ImVec2(0.f, 165.f));*/
 }
 
 void Inspector::CreateAssetUI()
@@ -406,7 +427,9 @@ void Inspector::CreateAssetUI()
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::MATERIAL)] = new MaterialUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::GRAPHIC_SHADER)] = new GraphicShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::COMPUTE_SHADER)] = new ComputeShaderUI;
-	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new ComputeShaderUI;
+
+	// FIXME : 애셋 UI 추가
+	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new ComputeShaderUI;		
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SKELETON)] = new ComputeShaderUI;
 
 

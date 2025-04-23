@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 
@@ -13,6 +13,12 @@ CUIRender::CUIRender()
 
 CUIRender::~CUIRender()
 {
+}
+
+void CUIRender::Init()
+{
+	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 }
 
 void CUIRender::FinalTick()

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Core/Public/CEntity.h"
 
 class CComponent;
@@ -25,9 +25,11 @@ private:
 	vector<CGameObject*> m_vecChild; // 자식 오브젝트들
 
 	int m_LayerIdx; // 오브젝트가 속해있는 레이어 인덱스 번호, -1 : 무소속
+	int m_NextLayerIdx;	// 오브젝트가 레이어 이동을 하면 이동할 레이어를 저장하는 변수
 
-	bool m_Active; // 오브젝트 활성화 여부
-	bool m_Dead; // 오브젝트의 상태가 삭제 예정 상태인지
+	bool m_Active;	// 오브젝트 활성화 여부
+	bool m_Dead;	// 오브젝트의 상태가 삭제 예정 상태인지
+	bool m_LayerMove;
 
 public:
 	void Begin();
@@ -50,14 +52,20 @@ public:
 	void SetActive(bool _b) { m_Active = _b; }
 
 	int GetLayerIdx() const { return m_LayerIdx; }
+	int GetNextLayerIdx() const { return m_NextLayerIdx; }
+
 	bool IsActive() const { return m_Active; }
 	bool IsDead() const { return m_Dead; }
 	bool IsAncestor(CGameObject* _Other);
+	bool IsLayerMove() const { return m_LayerMove; }
 
 	void SetLayerIdx(int _Idx) { m_LayerIdx = _Idx; }
+	void SetNextLayerIdx(int _Idx) { m_LayerMove = true; m_NextLayerIdx = _Idx; }
+	void LayerMoveDone() { m_LayerMove = false; }
 
 	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
 	const vector<CScript*>& GetScripts() const { return m_vecScripts; }
+	CScript* GetScript(UINT _Type) const;
 
 	CGameObject* GetChildByName(const wstring& _Name);
 

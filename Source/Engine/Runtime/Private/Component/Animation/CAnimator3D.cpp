@@ -58,6 +58,18 @@ CAnimator3D::~CAnimator3D()
 	m_mapBoneObject.clear();
 }
 
+void CAnimator3D::Begin()
+{
+	if (m_mapBoneObject.empty())
+	{
+		for (CGameObject* boneObj : m_vecBoneObject)
+		{
+			m_mapBoneObject.emplace(boneObj->GetName(), boneObj);
+		}
+	}
+}
+	
+
 void CAnimator3D::FinalTick()
 {
 	m_CurTime = 0.f;

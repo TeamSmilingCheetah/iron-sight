@@ -1,16 +1,19 @@
-﻿#pragma once
+#pragma once
 #include "Ptr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 
+class CGameObject;
+class CLevel;
 
-void CreateObject(class CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
+void CreateObject(CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
 void ChangeLevelState(LEVEL_STATE _NextState);
-void ChangeLevel(class CLevel* _Level, LEVEL_STATE _NextState);
+void ChangeLevel(CLevel* _Level, LEVEL_STATE _NextState);
 void AddChild(CGameObject* _Parent, CGameObject* _Child);
 void ChangeName(CEntity* _Entity, wstring* _Name);
+void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx);
 
-bool IsValid(class CGameObject*& _Object);
+bool IsValid(CGameObject*& _Object);
 
 void DrawDebugRect(Vec4 _Color, Vec3 _Pos, Vec2 _Scale, Vec3 _Rotation, bool _DepthTest,
 				   float _Duration);

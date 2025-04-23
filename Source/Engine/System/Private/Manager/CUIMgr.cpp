@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
@@ -92,7 +92,7 @@ void CUIMgr::OnMouseBeginDrag()
 
 void CUIMgr::OnMouseDrop()
 {
-	const vector<CScript*>& vecScript = m_DragUI->GetOwner()->GetScripts();
+	const vector<CScript*>& vecScript = m_HoverUI->GetOwner()->GetScripts();
 
 	for (CScript* script : vecScript)
 	{
@@ -120,7 +120,7 @@ void CUIMgr::ChangeFocus(CUI* _CanvasUI, CUI* _FocusUI)
 
 		for (int i = prevPriority; i > 0; --i)
 		{
-				m_vecUI[i] = m_vecUI[i - 1];
+			m_vecUI[i] = m_vecUI[i - 1];
 			m_vecUI[i]->SetPriority(i);
 		}
 
@@ -148,7 +148,7 @@ void CUIMgr::Tick()
 
 		// Canvas Priority가 더 높은 경우 (더 뒤에 있는 경우) 걸러냄
 		if (m_vecUI[i]->m_Priority > Priority)
-			continue;
+			break;
 
 		CUI* curUI = CheckMouseHover(m_vecUI[i]);
 
@@ -252,6 +252,9 @@ void CUIMgr::Tick()
 
 CUI* CUIMgr::CheckMouseHover(CUI* _UI)
 {
+	if (!_UI->GetOwner()->IsActive())
+		return nullptr;
+
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 
 	// 해당 UI에 Hover되어 있다면

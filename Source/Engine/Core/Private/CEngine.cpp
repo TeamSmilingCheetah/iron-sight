@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Core/Public/CEngine.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Manager/CPathMgr.h"
@@ -84,8 +84,8 @@ void CEngine::Progress()
 	CKeyMgr::GetInst()->Tick();
 	CTimeMgr::GetInst()->Tick();
 	CLevelMgr::GetInst()->Progress();
-	CCollisionMgr::GetInst()->Tick();
 	CUIMgr::GetInst()->Tick();
+	CCollisionMgr::GetInst()->Tick();
 
 	// Engine Render
 	CRenderMgr::GetInst()->Render();

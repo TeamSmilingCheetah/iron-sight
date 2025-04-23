@@ -1,0 +1,39 @@
+#pragma once
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
+#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+
+
+class ItemScript
+	: public CScript
+{
+private:
+	ITEM_TYPE	m_ItemType;
+	int			m_Count;
+
+public:
+	ITEM_TYPE GetItemType() const { return m_ItemType; }
+	void SetItemType(ITEM_TYPE _Type) { m_ItemType = _Type; }
+
+	int GetCount() const { return m_Count; }
+	void SetCount(UINT _Count) { m_Count = _Count; }
+
+public:
+	virtual void Init() override;
+	virtual void Begin() override;
+	virtual void Tick() override;
+
+	virtual void SaveComponent(FILE* _File) override;
+	virtual void LoadComponent(FILE* _File) override;
+
+	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+
+
+public:
+	CLONE(ItemScript);
+	ItemScript();
+	ItemScript(ITEM_TYPE _Type);
+	~ItemScript();
+};

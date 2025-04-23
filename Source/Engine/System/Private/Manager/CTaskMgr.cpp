@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CTaskMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLevel.h"
@@ -64,6 +64,8 @@ void CTaskMgr::Tick()
 					pParent->AddChild(pChild);
 				}
 
+				pChild->LayerMoveDone();
+
 				m_LevelChanged = true;
 			}
 			break;
@@ -86,6 +88,7 @@ void CTaskMgr::Tick()
 					pObject->m_LayerIdx = (int)LayerIdx;
 				}
 
+				pObject->LayerMoveDone();
 				m_LevelChanged = true;
 			}
 			break;

@@ -4,6 +4,11 @@
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
+#include "Game/Gameplay/Inventory/Public/Item.h"
+#include "Game/Gameplay/Inventory/Public/UI_Item.h"
+#include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
+#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/TestSound.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
@@ -14,6 +19,12 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CGunScript");
 	_vec.push_back(L"CThrowableScript");
 	_vec.push_back(L"TestSound");
+
+	_vec.push_back(L"InventoryScript");
+	_vec.push_back(L"ItemScript");
+	_vec.push_back(L"ItemUIScript");
+	_vec.push_back(L"InventoryUIScript");
+	_vec.push_back(L"VicinityUIScript");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -30,6 +41,16 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new ThrowableController;
 	if (L"TestSound" == _strScriptName)
 		return new TestSound;
+	if (L"InventoryScript" == _strScriptName)
+		return new InventoryController;
+	if (L"ItemScript" == _strScriptName)
+		return new ItemScript;
+	if (L"ItemUIScript" == _strScriptName)
+		return new ItemUI;
+	if (L"InventoryUIScript" == _strScriptName)
+		return new InventoryUI;
+	if (L"VicinityUIScript" == _strScriptName)
+		return new VicinityUI;
 	return nullptr;
 }
 
@@ -55,6 +76,22 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 	case static_cast<UINT>(TESTSOUND):
 		return new TestSound;
 		break;
+	case static_cast<UINT>(INVENTORYSCRIPT):
+		return new InventoryController;
+		break;
+	case static_cast<UINT>(ITEMSCRIPT):
+		return new ItemScript;
+		break;
+	case static_cast<UINT>(ITEMUI):
+		return new ItemUI;
+		break;
+	case static_cast<UINT>(INVENTORYUI):
+		return new InventoryUI;
+		break;
+	case static_cast<UINT>(VICINITYUI):
+		return new VicinityUI;
+		break;
+
 	}
 	return nullptr;
 }
@@ -85,6 +122,26 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case TESTSOUND:
 		return L"TestSound";
+		break;
+
+	case INVENTORYSCRIPT:
+		return L"InventoryScript";
+		break;
+
+	case ITEMSCRIPT:
+		return L"ItemScript";
+		break;
+
+	case ITEMUI:
+		return L"ItemUIScript";
+		break;
+
+	case INVENTORYUI:
+		return L"InventoryUIScript";
+		break;
+
+	case VICINITYUI:
+		return L"VicinityUIScript";
 		break;
 	}
 	return nullptr;

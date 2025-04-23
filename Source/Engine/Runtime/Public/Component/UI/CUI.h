@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 enum UI_TYPE
@@ -13,7 +13,7 @@ enum UI_TYPE
 	UI_CANVAS	= 0x10000000,
 	UI_BUTTON	= 0x00000003,
 
-	UI_END		= 0x00000000,
+	UI_DEFAULT	= 0x00000000,
 };
 
 class CUI :
@@ -65,7 +65,8 @@ public:
 	Vec2 GetRectSize();
 
 	// Text 설정
-	void AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"Segoe UI");
+	void ClearText() { m_TextInfo.clear(); }
+	void AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"");
 	vector<FontRenderInfo>& GetTextInfoRef() { return m_TextInfo; }
 
 	// Event 지원 여부 (bit masking)

@@ -65,6 +65,7 @@ private:
 
 public:
 	void Binding(CMeshRender* _Renderer);
+	void Begin() override;
 	void FinalTick() override;
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

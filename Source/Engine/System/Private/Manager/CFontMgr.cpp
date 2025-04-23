@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CFontMgr.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 
@@ -25,7 +25,7 @@ void CFontMgr::Init()
 		assert(nullptr);
 	}
 
-	if (FAILED(m_FW1Factory->CreateFontWrapper(DEVICE, L"Arial", &m_FontWrapper)))
+	if (FAILED(m_FW1Factory->CreateFontWrapper(DEVICE, L"Segoe UI", &m_FontWrapper)))
 	{
 		assert(nullptr);
 	}
