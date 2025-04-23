@@ -20,14 +20,14 @@ void ItemMgr::Init()
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AKM)].MaxCount = 1;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AKM)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AKM)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\AKM.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AKM)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AKM)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\AKM.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].Name = L"구급상자";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].DefaultCount = 1;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].MaxCount = 10;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\FirstAidKit.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FIRST_AID_KIT)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\FirstAidKit.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::MED_KIT)].Name = L"의료용 키트";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::MED_KIT)].DefaultCount = 1;
@@ -48,7 +48,7 @@ void ItemMgr::Init()
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ADRENALINE_SYRINGE)].MaxCount = 5;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ADRENALINE_SYRINGE)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ADRENALINE_SYRINGE)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\AdrenalineSyringe.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ADRENALINE_SYRINGE)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ADRENALINE_SYRINGE)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\Adrenaline.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::PAIN_KILLER)].Name = L"진통제";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::PAIN_KILLER)].DefaultCount = 1;
@@ -62,14 +62,14 @@ void ItemMgr::Init()
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ENERGY_DRINK)].MaxCount = 10;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ENERGY_DRINK)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ENERGY_DRINK)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\EnergyDrink.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ENERGY_DRINK)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::ENERGY_DRINK)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\EnergyDrink.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].Name = L"수류탄";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].DefaultCount = 1;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].MaxCount = 5;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\Grenade.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::GRENADE)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\Grenade.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::MOLOTOV)].Name = L"화염병";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::MOLOTOV)].DefaultCount = 1;
@@ -83,7 +83,7 @@ void ItemMgr::Init()
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::SMOKEBOMB)].MaxCount = 5;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::SMOKEBOMB)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::SMOKEBOMB)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\SmokeBomb.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::SMOKEBOMB)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::SMOKEBOMB)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\SmokeBomb.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FLASHBOMB)].Name = L"섬광탄";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::FLASHBOMB)].DefaultCount = 1;

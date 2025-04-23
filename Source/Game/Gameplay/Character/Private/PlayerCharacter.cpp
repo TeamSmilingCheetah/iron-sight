@@ -597,7 +597,7 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 	}
 }
 
-void PlayerCharacter::ReleaseSlot(ITEM_TYPE _Type)
+void PlayerCharacter::ReleaseSlot(ITEM_TYPE _Type, int _Count)
 {
 	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
 	{
@@ -605,6 +605,9 @@ void PlayerCharacter::ReleaseSlot(ITEM_TYPE _Type)
 		{
 			// 부모 관계 해제, 레이어 이동, transform 설정
 			DetachItem(m_vecWeaponSlot[i].Object);
+
+			// 개수 설정
+			static_cast<ItemScript*>(m_vecWeaponSlot[i].Object->GetScript(ITEMSCRIPT))->SetCount(_Count);
 
 			// 주인 해제
 			WeaponController* pGunScript = static_cast<WeaponController*>(m_vecWeaponSlot[i].Object->GetScripts()[0]);

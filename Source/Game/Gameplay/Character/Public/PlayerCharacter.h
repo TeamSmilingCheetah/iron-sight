@@ -110,7 +110,7 @@ public:
 	bool IsThrow() { return m_bCanThrow; }
 
 	void EquipSlot(CGameObject* _Item);
-	void ReleaseSlot(ITEM_TYPE _Type);
+	void ReleaseSlot(ITEM_TYPE _Type, int _Count);
 
 	// TODO: 데이터 구조 개선
 	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
