@@ -198,10 +198,7 @@ void ThrowableController::Throw()
 	float dragCoeff = 2.f;
 	Vec3 dragAccel = -dragCoeff * m_Velocity / m_Mass;
 
-
-
 	float veloLength = m_Velocity.Length();
-
 
 
 	// 중력을 적용한다
@@ -209,7 +206,6 @@ void ThrowableController::Throw()
 		m_Velocity.y -= m_GravityAccel * m_Mass * DT;
 
 		
-
 	// 특정 속도 이하가 되면 멈춘다
 	if (veloLength < 5.f)
 	{
@@ -237,10 +233,10 @@ void ThrowableController::MakeBounce(Vec3 _Normal, float _elastic, float _fricti
 	// 현재 속도
 	Vec3 curVelo = m_Velocity;
 
-	// 노말 성분 (물체의 속도가 얼만큼의 크기로 지면으로 향하고 있었는지 )
+	// 노말 성분 (물체의 속도가 얼만큼의 크기로 목표로 향하고 있었는지 )
 	float dotProduct = curVelo.Dot(_Normal);
 
-	// 만약 물체가 지면을 향해 충돌했다면
+	// 만약 물체가 목표를 향해 충돌했다면
 	if (dotProduct < 0)
 	{
 		// 반사 공식 계산

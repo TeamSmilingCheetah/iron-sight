@@ -135,14 +135,8 @@ void GunController::Firing()
 	Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
 
 
-	// 총알의 시작 위치를 보정해준다
-	Vec3 vRayPos = ColliderRay()->GetRayPos();
-	vRayPos = ColliderRay()->GetRayFinalPos();
-
-
-	Vec3 vSpawnPos = vPlayerPos;
-	vSpawnPos.y += 800.f;
-
+	// 총알의 시작 위치를 정해준다.
+	Vec3 vRayPos = ColliderRay()->GetRayFinalPos();
 
 	Vec3 vFinalDir = GetFireDir();
 
@@ -203,7 +197,7 @@ void GunController::Firing()
 
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김) 
-		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vSpawnPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 	}
 
 }
