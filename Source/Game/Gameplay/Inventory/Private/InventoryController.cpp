@@ -193,8 +193,11 @@ bool InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 		assert(itemPrefab != nullptr);
 
 		CGameObject* itemObj = itemPrefab->Instantiate();
-		itemObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
-		itemObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
+		itemObj->Transform()->SetRelativePos(m_Player->Transform()->GetRelativePos());
+		itemObj->Transform()->SetRelativeRotation(m_Player->Transform()->GetRelativeRotation());
+
+		ItemScript* pItem = static_cast<ItemScript*>(itemObj->GetScript(ITEMSCRIPT));
+		pItem->SetCount(_Count);
 
 		// 오브젝트를 현재 레벨의 Item Layer에 추가함
 		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
