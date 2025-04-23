@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "func.h"
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Manager/CTaskMgr.h"
@@ -77,6 +77,9 @@ void AddChild(CGameObject* _Parent, CGameObject* _Child)
 	task.Param0 = (DWORD_PTR)_Parent;
 	task.Param1 = (DWORD_PTR)_Child;
 
+	if (_Parent)
+		_Child->SetNextLayerIdx(_Parent->GetLayerIdx());
+
 	CTaskMgr::GetInst()->AddTask(task);
 }
 
@@ -86,6 +89,18 @@ void ChangeName(CEntity* _Entity, wstring* _Name)
 	task.Type = TASK_TYPE::CHANGE_NAME;
 	task.Param0 = (DWORD_PTR)_Entity;
 	task.Param1 = (DWORD_PTR)_Name;
+
+	CTaskMgr::GetInst()->AddTask(task);
+}
+
+void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx)
+{
+	tTask task{};
+	task.Type = TASK_TYPE::CHANGE_LAYEROBJECT;
+	task.Param0 = (DWORD_PTR)_TargetObj;
+	task.Param1 = (DWORD_PTR)_LayerIdx;
+
+	_TargetObj->SetNextLayerIdx(static_cast<int>(_LayerIdx));
 
 	CTaskMgr::GetInst()->AddTask(task);
 }
