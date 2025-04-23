@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/System/Public/Asset/Mesh/CMesh.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 #include "Engine/System/Public/Asset/Animation/CAnimation.h"
@@ -32,6 +32,9 @@ private:
 
 	// Bone에 대응되는 오브젝트를 저장
 	vector<CGameObject*>	m_vecBoneObject;
+
+	unordered_map<wstring, CGameObject*> m_mapBoneObject;
+
 	vector<Matrix>			m_vecBoneWorldTransform;
 
 public:
@@ -48,6 +51,10 @@ public:
 	void SetCurClip(int _Idx);
 
 	UINT GetBoneCount() const { return m_vecClip[m_CurClip]->GetBoneCount(); }
+
+	vector<CGameObject*> GetvecBone() { return m_vecBoneObject; }
+	unordered_map<wstring, CGameObject*> GetmapBone() { return m_mapBoneObject; }
+	vector<Matrix> GetvecBoneWorldTrasnform() { return m_vecBoneWorldTransform; }
 
 	CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
 	void ClearData();

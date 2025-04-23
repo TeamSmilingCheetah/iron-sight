@@ -331,6 +331,23 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 						{
 							m_vecWeaponSlot[i] = _OtherObject;
 							bCanEquip = true;
+
+							wstring str = L"coat_b_04";
+							AddChild(GetPlayeChildMeshObject(str), _OtherObject);
+							if (i == PRIMARY_FIRST)
+							{
+								_OtherObject->Transform()->SetRelativePos(Vec3(-810.f, -99.f, -234.f));
+								_OtherObject->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
+								
+							}
+							else
+							{
+								_OtherObject->Transform()->SetRelativePos(Vec3(-810.f, -99.f, 75.f));
+								_OtherObject->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
+							}
+
+
+							_OtherObject->SetActive(true);
 							break;
 						}
 					}
@@ -340,6 +357,8 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 					if (m_vecWeaponSlot[SECONDARY_FIRST] == nullptr)
 					{
 						m_vecWeaponSlot[SECONDARY_FIRST] = _OtherObject;
+						AddChild(GetOwner(), _OtherObject);
+						_OtherObject->SetActive(false);
 						bCanEquip = true;
 					}
 					break;
@@ -350,6 +369,8 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 						if (m_vecWeaponSlot[i] == nullptr)
 						{
 							m_vecWeaponSlot[i] = _OtherObject;
+							AddChild(GetOwner(), _OtherObject);
+							_OtherObject->SetActive(false);
 							bCanEquip = true;
 							break;
 						}
@@ -361,15 +382,6 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 
 				if (bCanEquip)
 				{
-					// 현재 Layer에서 무기를 삭제해준다. *삭제 버그 방지
-					CLayer* pCurLayer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_OtherObject->GetLayerIdx());
-					pCurLayer->DisconnectObject(_OtherObject);
-
-					// Player를 소유주으로 등록, 자식에 무기를 넣어준다.
-					pScript->SetEquippedOwner(GetOwner());
-					GetOwner()->AddChild(_OtherObject);
-					_OtherObject->SetActive(false);
-
 					bCanEquip = false;
 					m_bCanEquip = false;
 				}

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Animation/CSkeleton.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
@@ -40,6 +40,8 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 	pSkeleton = new CSkeleton;
 	pSkeleton->SetName(vecBones[0]->strBoneName + L".bone");
 
+
+
 	for (UINT i = 0; i < vecBones.size(); ++i)
 	{
 		tMTBone bone = {};
@@ -53,6 +55,29 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 		pSkeleton->m_vecBones.push_back(bone);
 		pSkeleton->m_vecOffset.push_back(bone.matOffset);
 		pSkeleton->m_vecParent.push_back(bone.iParentIndx);
+	}
+
+	// 모델 공간 바인드 포즈 계산
+	vector<Matrix> bindModel(vecBones.size());
+	for (UINT i = 0; i < vecBones.size(); ++i)
+	{
+		bindModel[i] = XMMatrixInverse(nullptr, pSkeleton->m_vecBones[i].matOffset);
+	}
+
+	// 로컬 바인드 포즈 계산
+	pSkeleton->m_vecBindLocal.resize(vecBones.size());
+	for (UINT i = 0; i < vecBones.size(); ++i)
+	{
+		int p = pSkeleton->m_vecBones[i].iParentIndx;
+		if (p < 0)
+		{
+			pSkeleton->m_vecBindLocal[i] = bindModel[i];
+		}
+		else
+		{
+			Matrix parentInv = XMMatrixInverse(nullptr, bindModel[p]);
+			pSkeleton->m_vecBindLocal[i] = parentInv * bindModel[i];
+		}
 	}
 
 	pSkeleton->m_BoneInvBuffer = new CStructuredBuffer;
@@ -100,6 +125,7 @@ int CSkeleton::Save(const wstring& _RelativePath)
 		fwrite(&m_vecBones[i].iParentIndx, sizeof(int), 1, pFile);
 		fwrite(&m_vecBones[i].matOffset, sizeof(Matrix), 1, pFile);
 		fwrite(&m_vecBones[i].matBone, sizeof(Matrix), 1, pFile);
+		fwrite(&m_vecBindLocal[i], sizeof(Matrix), 1, pFile);
 	}
 
 	fclose(pFile);
@@ -127,6 +153,7 @@ int CSkeleton::Load(const wstring& _strFilePath)
 	UINT iCount = 0;
 	fread(&iCount, sizeof(int), 1, pFile);
 	m_vecBones.resize(iCount);
+	m_vecBindLocal.resize(iCount);
 
 	for (UINT i = 0; i < iCount; ++i)
 	{
@@ -135,6 +162,7 @@ int CSkeleton::Load(const wstring& _strFilePath)
 		fread(&m_vecBones[i].iParentIndx, sizeof(int), 1, pFile);
 		fread(&m_vecBones[i].matOffset, sizeof(Matrix), 1, pFile);
 		fread(&m_vecBones[i].matBone, sizeof(Matrix), 1, pFile);
+		fread(&m_vecBindLocal[i], sizeof(Matrix), 1, pFile);
 
 		m_vecOffset.push_back(m_vecBones[i].matOffset);
 		m_vecParent.push_back(m_vecBones[i].iParentIndx);

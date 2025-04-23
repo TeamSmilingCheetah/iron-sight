@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "CSkeleton.h"
 #include "Engine/System/Public/Asset/Base/CAsset.h"
 
@@ -34,6 +34,8 @@ public:
 
 	const vector<tMTBone>* GetBones() const { return m_Skeleton->GetBones(); }
 	UINT GetBoneCount() const { return m_Skeleton->GetBoneCount(); }
+	const vector<Matrix> GetBindLocal() const { return m_Skeleton->GetBindLocal(); }
+
 
 	double GetStartTime() const { return m_StartTime; }
 	double GetEndTime() const { return m_EndTime; }

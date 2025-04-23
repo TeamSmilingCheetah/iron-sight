@@ -14,13 +14,16 @@ class WeaponController :
 	public CScript
 {
 protected:
+	CGameObject* m_MainCamera;
 	CGameObject* m_EquippedOwner;
 	WEAPON_TYPE m_WeaponType;
 
 	KEY m_CurKey;
 	KEY_STATE m_CurKeyState;
+
+	bool m_bIsEquipped;
 public:
-	void Begin() override = 0;
+	void Begin() override;
 	void Tick() override = 0;
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
@@ -31,6 +34,7 @@ public:
 
 	void SetCurKey(KEY _Key) { m_CurKey = _Key; }
 	void SetCurKeyState(KEY_STATE _KeyState) { m_CurKeyState = _KeyState; }
+	void SetEquip(bool _Equip) { m_bIsEquipped = _Equip; }
 
 	Vec3 GetFireDir();
 

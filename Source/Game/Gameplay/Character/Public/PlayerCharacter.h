@@ -17,6 +17,8 @@ class PlayerCharacter :
 	public CScript
 {
 private:
+	CGameObject* m_MainCamera;
+
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
 	Vec3 m_Velocity;			// 속도
@@ -82,6 +84,7 @@ public:
 	void MoveCalcul();
 	void gravityCalcul();
 	void ColliderCalcul();
+	
 
 public:
 	void SetCurWeapon(CGameObject* _Weapon) { m_CurWeapon = _Weapon; }
@@ -90,6 +93,8 @@ public:
 	void SetThrowBoom(bool _Boom) { m_bThrowBoom = _Boom; }
 
 	CGameObject* GetCurWeapon() { return m_CurWeapon; }
+	CGameObject* GetPlayeChildMeshObject(wstring& _str);
+
 	int GetCurWeaponIdx() { return m_CurWeaponIdx; }
 	float GetCurMouseSensitivity() { return m_MouseSensitivity; }
 	bool IsShot() { return m_bShoot; }
