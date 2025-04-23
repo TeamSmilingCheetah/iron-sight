@@ -159,7 +159,7 @@ void InventoryController::EquipItem(CGameObject* _Item)
 bool InventoryController::UseItem(ITEM_TYPE _Type, int _Count)
 {
 	// 일단 assert 걸었는데 로직에 따라 변경해야 할 수도
-	assert(_Count >= m_arrInventory[static_cast<UINT>(_Type)]);
+	assert(_Count <= m_arrInventory[static_cast<UINT>(_Type)]);
 
 	m_arrInventory[static_cast<UINT>(_Type)] -= _Count;
 
@@ -174,7 +174,7 @@ bool InventoryController::UseItem(ITEM_TYPE _Type, int _Count)
 bool InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 {
 	// 일단 assert 걸었는데 로직에 따라 변경해야 할 수도
-	assert(_Count >= m_arrInventory[static_cast<UINT>(_Type)]);
+	assert(_Count <= m_arrInventory[static_cast<UINT>(_Type)]);
 	
 	UINT type = static_cast<UINT>(_Type);
 
@@ -184,7 +184,7 @@ bool InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 	// 장착 무기이면서 개수가 0개가 되면 슬롯에서 해제해줘야 함.
 	if ((IS_WEAPON(type) || IS_THROWABLE(type)) && m_arrInventory[type] == 0)
 	{
-		m_PlayerScript->ReleaseSlot(_Type);
+		m_PlayerScript->ReleaseSlot(_Type, _Count);
 	}
 	else
 	{
@@ -193,8 +193,11 @@ bool InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 		assert(itemPrefab != nullptr);
 
 		CGameObject* itemObj = itemPrefab->Instantiate();
-		itemObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
-		itemObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
+		itemObj->Transform()->SetRelativePos(m_Player->Transform()->GetRelativePos());
+		itemObj->Transform()->SetRelativeRotation(m_Player->Transform()->GetRelativeRotation());
+
+		ItemScript* pItem = static_cast<ItemScript*>(itemObj->GetScript(ITEMSCRIPT));
+		pItem->SetCount(_Count);
 
 		// 오브젝트를 현재 레벨의 Item Layer에 추가함
 		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");

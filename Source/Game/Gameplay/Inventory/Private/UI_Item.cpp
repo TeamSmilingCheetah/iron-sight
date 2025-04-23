@@ -3,6 +3,7 @@
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
+#include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 
 ItemUI::ItemUI()
@@ -77,6 +78,12 @@ PayLoad ItemUI::OnMouseBeginDrag()
 	else
 	{
 		payload.Type = L"ItemUI_Inventory";
+
+		if (KEY_PRESSED(KEY::LCTRL))
+		{
+			m_ItemInfo.Count = 1;
+		}
+
 		payload.Data = reinterpret_cast<DWORD_PTR>(&m_ItemInfo);
 	}
 

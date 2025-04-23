@@ -424,6 +424,8 @@ void TestLevel::CreateTestLevel()
 
 			pLevel->AddObject(6, pWeaponObj, false);
 
+			pLevel->AddObject(6, pWeaponObj->Clone(), false);
+
 			//
 			// smoke
 			//

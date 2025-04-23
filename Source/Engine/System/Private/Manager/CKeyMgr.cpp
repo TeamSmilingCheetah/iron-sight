@@ -32,8 +32,9 @@ int g_arrKeyValue[static_cast<int>(KEY::END)] =
 	VK_SPACE,
 	VK_RETURN,
 
-		VK_LSHIFT,
-		VK_MENU,
+	VK_LCONTROL,
+	VK_LSHIFT,
+	VK_MENU,
 
 	'1',
 	'2',

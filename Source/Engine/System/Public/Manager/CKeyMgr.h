@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 enum class KEY
 {
@@ -29,6 +29,7 @@ enum class KEY
 	SPACE,
 	ENTER,
 
+	LCTRL,
     LSHIFT,
 	LALT,
 
