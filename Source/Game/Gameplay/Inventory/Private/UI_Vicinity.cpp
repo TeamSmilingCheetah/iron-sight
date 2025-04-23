@@ -11,6 +11,27 @@ VicinityUI::~VicinityUI()
 {
 }
 
+void VicinityUI::SetController(InventoryController* _Controller)
+{
+	m_Controller = _Controller;
+	m_ControllerOwner = _Controller->GetOwner();
+}
+
+void VicinityUI::Begin()
+{
+	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
+}
+
+void VicinityUI::SaveComponent(FILE* _File)
+{
+	SaveObjectRef(m_ControllerOwner, _File);
+}
+
+void VicinityUI::LoadComponent(FILE* _File)
+{
+	LoadObjectRef(m_ControllerOwner, _File);
+}
+
 void VicinityUI::OnMouseDrop(const PayLoad& _PayLoad)
 {
 	// Inventory에 있던 ItemUI를 Drop받은 경우
