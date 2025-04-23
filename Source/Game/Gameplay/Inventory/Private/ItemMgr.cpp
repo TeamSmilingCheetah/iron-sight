@@ -104,7 +104,7 @@ void ItemMgr::Init()
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_5)].MaxCount = 200;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_5)].WeightPerCount = 0.f;
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_5)].UIImage = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\UI\\Ammo_5.png");
-	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_5)].Prefab = nullptr;
+	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_5)].Prefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(L"Prefab\\TestAmmo.pref");
 
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_7)].Name = L"7.62mm";
 	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::AMMO_7)].DefaultCount = 30;
