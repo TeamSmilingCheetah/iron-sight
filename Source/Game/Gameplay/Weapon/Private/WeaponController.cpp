@@ -55,6 +55,7 @@ Vec3 WeaponController::GetFireDir()
 	vPlayerDir.Normalize();
 
 	// 카메라 정중앙이 바라보는곳에서 임의의 타켓 포인트를 구한다.
+
 	Vec3 vTargetPoint = vCameraPos + vCameraDir * 100000.f;
 
 	// 해당 타켓 포인트를 바라보는 방향을 구한다.
