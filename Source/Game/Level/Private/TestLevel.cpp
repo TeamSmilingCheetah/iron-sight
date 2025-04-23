@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game/Level/Public/TestLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -287,6 +287,8 @@ void TestLevel::CreateTestLevel()
 
 			pWeaponObj->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
 			pWeaponObj->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
+			pWeaponObj->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
+
 
 			pLevel->AddObject(0, pWeaponObj, false);
 			//PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pObj->GetScripts()[0]);
@@ -314,6 +316,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 5000.f);
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+			pWeaponObj->Transform()->SetIndependentScale(true);
 			pLevel->AddObject(0, pWeaponObj, false);
 
 			//
@@ -336,6 +339,8 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 10000.f);
 			pWeaponObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
 			pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+			pWeaponObj->Transform()->SetIndependentScale(true);
+
 			pLevel->AddObject(0, pWeaponObj, false);
 
 			//
@@ -370,7 +375,7 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->AddComponent(new GunController);
 
 			WeaponController* pScript4 = static_cast<WeaponController*>(pWeaponObj->GetScripts()[0]);
-			pScript4->SetWeaponType(WEAPON_TYPE::SECONDARY);
+			pScript4->SetWeaponType(WEAPON_TYPE::PRIMARY);
 
 			pWeaponObj->Collider3D()->SetName(L"Weapon");
 			pWeaponObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));

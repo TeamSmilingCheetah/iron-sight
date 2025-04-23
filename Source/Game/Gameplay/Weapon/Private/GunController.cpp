@@ -2,6 +2,7 @@
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -45,19 +46,27 @@ GunController::~GunController()
 
 void GunController::Begin()
 {
+	WeaponController::Begin();
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
 }
 
 void GunController::Tick()
 {
+
+	PlayerCharacter* pPlayerScript = nullptr;
+
 	// 소유주가 있다면 위치를 0으로 초기화
 	if (m_EquippedOwner != nullptr)
 	{
-		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));		
+	}
+	// 소유주가 없다면 return
+	else if(m_EquippedOwner == nullptr || m_bIsEquipped == false)
+	{
+		return;
 	}
 
-	CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
- 	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+ 	
 
 	// 총알을 발사한다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
@@ -112,8 +121,7 @@ void GunController::Firing()
 	// 총알을 모두 소진했다면
 	if (m_CurRounds <= 0)
 	{
-		CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-		PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+		PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 	
 		pPlayerScript->SetShot(false);
 		m_bFire = false;
@@ -128,6 +136,10 @@ void GunController::Firing()
 
 
 	// 총알의 시작 위치를 보정해준다
+	Vec3 vRayPos = ColliderRay()->GetRayPos();
+	vRayPos = ColliderRay()->GetRayFinalPos();
+
+
 	Vec3 vSpawnPos = vPlayerPos;
 	vSpawnPos.y += 800.f;
 
@@ -187,7 +199,7 @@ void GunController::Firing()
 	{
 		m_AccTime_Fire = 0.f;
 		m_CurRounds -= 1;
-		Instantiate(BulletPrefab, vSpawnPos, 0);
+		Instantiate(BulletPrefab, vRayPos, 0);
 
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김) 

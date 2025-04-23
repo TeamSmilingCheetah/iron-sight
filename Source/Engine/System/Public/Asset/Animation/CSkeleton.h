@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/System/Public/Asset/Base/CAsset.h"
 
 class CStructuredBuffer;
@@ -15,12 +15,16 @@ private:
 	vector<int> m_vecParent;
 	CStructuredBuffer* m_BoneParentBuffer; // 각 뼈의 부모 뼈 인덱스를 저장한 structured buffer -> Debug용
 
+	vector<Matrix> m_vecBindLocal;
+
 public:
 	const vector<tMTBone>* GetBones() const { return &m_vecBones; }
 	UINT GetBoneCount() const { return static_cast<UINT>(m_vecBones.size()); }
 
 	CStructuredBuffer* GetBoneInverseBuffer() const { return m_BoneInvBuffer; } // 각 Bone 의 Inverse 행렬
 	CStructuredBuffer* GetBoneParentBuffer() const { return m_BoneParentBuffer; }
+
+	const vector<Matrix> GetBindLocal() const { return m_vecBindLocal; }
 
 public:
 	static Ptr<CSkeleton> LoadFromFBX(CFBXLoader& _loader);

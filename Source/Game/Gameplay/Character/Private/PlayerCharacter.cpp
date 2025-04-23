@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -14,6 +15,7 @@
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
+	, m_MainCamera(nullptr)
 	, m_PaperBurnIntence(0.f)
 	, m_MouseSensitivity(10.f)
 	, m_Force(0.f)
@@ -55,11 +57,13 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::Begin()
 {
+	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
 }
 
 void PlayerCharacter::Tick()
 {
+
 	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vRot = Transform()->GetRelativeRotation();
 
@@ -119,8 +123,7 @@ void PlayerCharacter::Tick()
 
 void PlayerCharacter::UpdateRotation()
 {
-	CGameObject* pMainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	CameraController* pCameraScript = static_cast<CameraController*>(pMainCamera->GetScripts()[0]);
+	CameraController* pCameraScript = static_cast<CameraController*>(m_MainCamera->GetScripts()[0]);
 	bool bRecover = pCameraScript->IsSearchRecover();
 	bool bSearch = pCameraScript->IsSearch();
 	bool bShoulder = pCameraScript->IsShoulder();
@@ -130,7 +133,7 @@ void PlayerCharacter::UpdateRotation()
 	// 마우스 위치를 구해온다
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 	Vec3 vPlayerRot = Transform()->GetRelativeRotation();
-	Vec3 vCameraRot = pMainCamera->Transform()->GetRelativeRotation();
+	Vec3 vCameraRot = m_MainCamera->Transform()->GetRelativeRotation();
 
 	// 화면의 중앙을 구한다.
 	Vec2 vResoulution = CDevice::GetInst()->GetRenderResolution();
@@ -213,7 +216,7 @@ void PlayerCharacter::UpdateRotation()
 			vCameraRot.x = 80.f;
 		}
 		
-		pMainCamera->Transform()->SetRelativeRotation(vCameraRot);
+		m_MainCamera->Transform()->SetRelativeRotation(vCameraRot);
 	}
 
 	Transform()->SetRelativeRotation(vPlayerRot);
@@ -245,8 +248,7 @@ void PlayerCharacter::PlayerReload()
 
 void PlayerCharacter::PlayerAttack()
 {
-	CGameObject* pMainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	CameraController* pCameraScript = static_cast<CameraController*>(pMainCamera->GetScripts()[0]);
+	CameraController* pCameraScript = static_cast<CameraController*>(m_MainCamera->GetScripts()[0]);
 
 	bool bSearch = pCameraScript->IsSearch();
 
@@ -371,6 +373,12 @@ void PlayerCharacter::PlayerInteractWeapon()
 			m_vecWeaponSlot[i]->SetActive(true);
 			m_CurWeapon = m_vecWeaponSlot[i];
 			m_CurWeaponIdx = i;
+			wstring str = L"hand_r";
+			AddChild(GetPlayeChildMeshObject(str), m_CurWeapon);
+			m_CurWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+			m_CurWeapon->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+			WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+			pWeaponScript->SetEquip(true);
 
 			// 나머지 슬롯은 비활성화
 			for (int j = 0; j < static_cast<int>(m_vecWeaponSlot.size()); ++j)
@@ -378,8 +386,28 @@ void PlayerCharacter::PlayerInteractWeapon()
 				if (!m_vecWeaponSlot[j] || j == i)
 					continue;
 
-				m_vecWeaponSlot[j]->SetActive(false);
-
+				// 주무기는 비활성화가 아닌 등에 다시 부착 시켜 준다.
+				if (j == PRIMARY_FIRST)
+				{
+					wstring str = L"coat_b_04";
+					AddChild(GetPlayeChildMeshObject(str), m_vecWeaponSlot[j]);
+					m_vecWeaponSlot[j]->Transform()->SetRelativePos(Vec3(-810.f, -99.f, -234.f));
+					m_vecWeaponSlot[j]->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
+				}
+				else if (j == PRIMARY_SECOND)
+				{
+					wstring str = L"coat_b_04";
+					AddChild(GetPlayeChildMeshObject(str), m_vecWeaponSlot[j]);
+					m_vecWeaponSlot[j]->Transform()->SetRelativePos(Vec3(-810.f, -99.f, 75.f));
+					m_vecWeaponSlot[j]->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
+				}
+				// 나머지는 비활성화 해준다.
+				else
+				{
+					m_vecWeaponSlot[j]->SetActive(false);
+				}				
+				WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[j]->GetScripts()[0]);
+				pWeaponScript->SetEquip(false);
 			}
 
 			break;
@@ -394,7 +422,27 @@ void PlayerCharacter::PlayerInteractWeapon()
 		{
 			if (!m_vecWeaponSlot[i])
 				continue;
-			m_vecWeaponSlot[i]->SetActive(false);
+			if (i == PRIMARY_FIRST)
+			{
+				wstring str = L"coat_b_04";
+				AddChild(GetPlayeChildMeshObject(str), m_vecWeaponSlot[i]);
+				m_vecWeaponSlot[i]->Transform()->SetRelativePos(Vec3(-810.f, -99.f, -234.f));
+				m_vecWeaponSlot[i]->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
+				m_vecWeaponSlot[i]->SetActive(true);
+			}
+			else if (i == PRIMARY_SECOND)
+			{
+				wstring str = L"coat_b_04";
+				AddChild(GetPlayeChildMeshObject(str), m_vecWeaponSlot[i]);
+				m_vecWeaponSlot[i]->Transform()->SetRelativePos(Vec3(-810.f, -99.f, 75.f));
+				m_vecWeaponSlot[i]->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
+				m_vecWeaponSlot[i]->SetActive(true);
+			}
+			else
+			{
+				m_vecWeaponSlot[i]->SetActive(false);
+			}
+			
 		}
 		m_CurWeapon = nullptr;
 		m_CurWeaponIdx = NONE_WEAPON;
@@ -426,6 +474,18 @@ void PlayerCharacter::PlayerInteractWeapon()
 		}
 	}
 
+}
+
+CGameObject* PlayerCharacter::GetPlayeChildMeshObject(wstring& _str)
+{
+	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
+
+	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
+	unordered_map<wstring, CGameObject*> mapBones = Animator3D()->GetmapBone();
+
+	auto iter = mapBones.find(_str);
+
+	return iter->second;
 }
 
 void PlayerCharacter::SaveComponent(FILE* _File)

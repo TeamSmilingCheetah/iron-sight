@@ -51,6 +51,7 @@ ThrowableController::~ThrowableController()
 
 void ThrowableController::Begin()
 {
+	WeaponController::Begin();
 }
 
 void ThrowableController::Tick()
@@ -60,9 +61,13 @@ void ThrowableController::Tick()
 	{
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 	}
+	// 소유주가 없다면 return
+	else
+	{
+		return;
+	}
 
-	CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 
 	// 투척 준비
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
@@ -206,7 +211,7 @@ void ThrowableController::Throw()
 		
 
 	// 특정 속도 이하가 되면 멈춘다
-	if (veloLength < 30.f)
+	if (veloLength < 5.f)
 	{
 		m_Velocity = Vec3(0.f, 0.f, 0.f);
 	}
@@ -218,6 +223,7 @@ void ThrowableController::Throw()
 		vRot.z += m_Speed / 10.f * m_Dir.x * DT;
 		vRot.x += m_Speed / 10.f * m_Dir.z * DT;
 	}
+
 
 	// 위치값을 갱신한다
 	vPos = vPos + m_Velocity * DT;

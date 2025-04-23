@@ -4,6 +4,8 @@
 class CameraController :
 	public CScript
 {
+	CGameObject* m_Player;
+
 	float m_CameraSpeed;
 
 	float m_AccTime;
@@ -23,6 +25,7 @@ class CameraController :
 	bool m_bTPS;
 
 public:
+	void Begin() override;
 	void Tick() override;
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

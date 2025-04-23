@@ -16,6 +16,7 @@
 
 CameraController::CameraController()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT))
+	, m_Player(nullptr)
 	, m_CameraSpeed(100.f)
 	, m_bSearch(false)
 	, m_bSearchRecover(false)
@@ -35,6 +36,11 @@ CameraController::CameraController()
 
 CameraController::~CameraController()
 {
+}
+
+void CameraController::Begin()
+{
+	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
 }
 
 void CameraController::Tick()
@@ -100,15 +106,14 @@ void CameraController::CameraOrthgraphicMove()
 void CameraController::CameraPerspectiveMove()
 {
 	// Player를 찾아 Player에 카메라를 부착시킨다.
-	CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pPlayer->GetScripts()[0]);
+	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScripts()[0]);
 
 	int iWeaponIdx =  pPlayerScript->GetCurWeaponIdx();
 
 	Vec3 vCameraPos = Transform()->GetRelativePos();
 	Vec3 vCameraRot = Transform()->GetRelativeRotation();
-	Vec3 vPlayerPos = pPlayer->Transform()->GetRelativePos();
-	Vec3 vPlayerRot = pPlayer->Transform()->GetRelativeRotation();
+	Vec3 vPlayerPos = m_Player->Transform()->GetRelativePos();
+	Vec3 vPlayerRot = m_Player->Transform()->GetRelativeRotation();
 
 	// 카메라 전환
 	if (KEY_TAP(KEY::V))
@@ -448,7 +453,7 @@ void CameraController::CameraPerspectiveMove()
 			}
 
 			Transform()->SetRelativeRotation(vCameraRot);
-			pPlayer->Transform()->SetRelativeRotation(vPlayerRot);
+			m_Player->Transform()->SetRelativeRotation(vPlayerRot);
 		}
 	}
 
