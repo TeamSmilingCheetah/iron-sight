@@ -29,14 +29,15 @@ private:
 	void DisplayUI_Inventory();
 
 public:
-	void SetPlayer(CGameObject* _Player);
+	void SetPlayer(CGameObject* _Player) { m_Player = _Player; }
 	void SetVicinityUI(CGameObject* _UI);
 	void SetInventoryUI(CGameObject* _UI);
 
 	void AcquireItem(CGameObject* _Item);
 	void EquipItem(CGameObject* _Item);
-	void UseItem(ITEM_TYPE _Type, UINT _Count = 1);
-	void DropItem(ITEM_TYPE _Type, UINT _Count);
+
+	bool UseItem(ITEM_TYPE _Type, int _Count = 1);	// 아이템이 남으면 true 리턴
+	bool DropItem(ITEM_TYPE _Type, int _Count);		// 아이템이 남으면 true 리턴
 
 public:
 	virtual void Init() override;

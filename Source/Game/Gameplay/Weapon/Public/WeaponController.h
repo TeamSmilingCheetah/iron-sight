@@ -36,6 +36,8 @@ public:
 	void SetCurKeyState(KEY_STATE _KeyState) { m_CurKeyState = _KeyState; }
 	void SetEquip(bool _Equip) { m_bIsEquipped = _Equip; }
 
+	CGameObject* GetEquippedOwner() const { return m_EquippedOwner; }
+
 	Vec3 GetFireDir();
 
 	void ClearKey();

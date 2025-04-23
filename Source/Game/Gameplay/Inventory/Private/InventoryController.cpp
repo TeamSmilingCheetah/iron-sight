@@ -21,6 +21,8 @@ InventoryController::InventoryController()
 	, m_PlayerScript(nullptr)
 	, m_VicinityUI(nullptr)
 	, m_InventoryUI(nullptr)
+	, m_InventoryChanged(false)
+	, m_arrInventory{}
 {
 }
 
@@ -28,11 +30,6 @@ InventoryController::~InventoryController()
 {
 }
 
-void InventoryController::SetPlayer(CGameObject* _Player)
-{
-	m_Player = _Player;
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
-}
 
 void InventoryController::SetVicinityUI(CGameObject* _UI)
 {
@@ -128,18 +125,15 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 	ItemScript* pItem = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT));
 	assert(pItem != nullptr);	// ItemScript가 있다는 가정
 
-	
-
 	UINT type = static_cast<UINT>(pItem->GetItemType());
 
 	// 장착할 수 있는 무기인 경우 
 	if(IS_WEAPON(type) || IS_THROWABLE(type))
 	{
 		// 오브젝트를 레이어에서 꺼냄
-		CLayer* pCurLayer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_Item->GetLayerIdx());
-		pCurLayer->DisconnectObject(_Item);
+		ChangeLayer(_Item, -1);
 
-		m_PlayerScript->EquipItem(_Item);
+		m_PlayerScript->EquipSlot(_Item);
 	}
 	else
 	{
@@ -161,33 +155,58 @@ void InventoryController::EquipItem(CGameObject* _Item)
 
 }
 
-void InventoryController::UseItem(ITEM_TYPE _Type, UINT _Count)
+
+bool InventoryController::UseItem(ITEM_TYPE _Type, int _Count)
 {
+	// 일단 assert 걸었는데 로직에 따라 변경해야 할 수도
 	assert(_Count >= m_arrInventory[static_cast<UINT>(_Type)]);
 
 	m_arrInventory[static_cast<UINT>(_Type)] -= _Count;
 
 	m_InventoryChanged = true;
+
+	if (m_arrInventory[static_cast<UINT>(_Type)] == 0)
+		return false;
+
+	return true;
 }
 
-void InventoryController::DropItem(ITEM_TYPE _Type, UINT _Count)
+bool InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 {
-	//assert(_Count >= m_arrInventory[static_cast<UINT>(_Type)]);
+	// 일단 assert 걸었는데 로직에 따라 변경해야 할 수도
+	assert(_Count >= m_arrInventory[static_cast<UINT>(_Type)]);
+	
+	UINT type = static_cast<UINT>(_Type);
 
-	//m_arrInventory[static_cast<UINT>(_Type)] -= _Count;
+	// 개수 조절
+	m_arrInventory[type] -= _Count;
 
-	//Ptr<CPrefab> itemPrefab = ItemMgr::GetInst()->GetItemInfo(_Type).Prefab;
-	//assert(itemPrefab != nullptr);
+	// 장착 무기이면서 개수가 0개가 되면 슬롯에서 해제해줘야 함.
+	if ((IS_WEAPON(type) || IS_THROWABLE(type)) && m_arrInventory[type] == 0)
+	{
+		m_PlayerScript->ReleaseSlot(_Type);
+	}
+	else
+	{
+		// TODO: Object Pooling으로 개선
+		Ptr<CPrefab> itemPrefab = ItemMgr::GetInst()->GetItemInfo(_Type).Prefab;
+		assert(itemPrefab != nullptr);
 
-	//CGameObject* itemObj = itemPrefab->Instantiate();
-	//itemObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
-	//itemObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
+		CGameObject* itemObj = itemPrefab->Instantiate();
+		itemObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
+		itemObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
 
-	//// 오브젝트를 현재 레벨의 Item Layer에 추가함
-	//assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
-	//CreateObject(itemObj, 6, true);
+		// 오브젝트를 현재 레벨의 Item Layer에 추가함
+		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
+		CreateObject(itemObj, 6, true);
+	}
 
 	m_InventoryChanged = true;
+
+	if (m_arrInventory[static_cast<UINT>(_Type)] == 0)
+		return false;
+
+	return true;
 }
 
 void InventoryController::Init()
@@ -196,6 +215,7 @@ void InventoryController::Init()
 
 void InventoryController::Begin()
 {
+	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
 }
 
 void InventoryController::Tick()
@@ -228,12 +248,14 @@ void InventoryController::Tick()
 
 void InventoryController::SaveComponent(FILE* _File)
 {
+	SaveObjectRef(m_Player, _File);
 	SaveObjectRef(m_VicinityUI, _File);
 	SaveObjectRef(m_InventoryUI, _File);
 }
 
 void InventoryController::LoadComponent(FILE* _File)
 {
+	LoadObjectRef(m_Player, _File);
 	LoadObjectRef(m_VicinityUI, _File);
 	LoadObjectRef(m_InventoryUI, _File);
 }

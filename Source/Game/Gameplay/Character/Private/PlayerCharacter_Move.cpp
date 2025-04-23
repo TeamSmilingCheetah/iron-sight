@@ -317,79 +317,10 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 		{
 			if (KEY_TAP(KEY::F))
 			{
-				WeaponController* pScript = static_cast<WeaponController*>(_OtherObject->GetScripts()[0]);
-				WEAPON_TYPE eWeaponType = pScript->GetWeaponType();
-				static bool bCanEquip = false;
-
-				switch (eWeaponType)
-				{
-					// 주무기
-				case WEAPON_TYPE::PRIMARY:
-					for (int i = PRIMARY_FIRST; i <= PRIMARY_SECOND; ++i)
-					{
-						if (m_vecWeaponSlot[i] == nullptr)
-						{
-							m_vecWeaponSlot[i] = _OtherObject;
-							bCanEquip = true;
-
-							wstring str = L"coat_b_04";
-							AddChild(GetPlayeChildMeshObject(str), _OtherObject);
-							if (i == PRIMARY_FIRST)
-							{
-								_OtherObject->Transform()->SetRelativePos(Vec3(-810.f, -99.f, -234.f));
-								_OtherObject->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
-								
-							}
-							else
-							{
-								_OtherObject->Transform()->SetRelativePos(Vec3(-810.f, -99.f, 75.f));
-								_OtherObject->Transform()->SetRelativeRotation(Vec3(75.9f, -2.f, -4.3f));
-							}
-
-
-							_OtherObject->SetActive(true);
-							break;
-						}
-					}
-					break;
-					// 보조무기
-				case WEAPON_TYPE::SECONDARY:
-					if (m_vecWeaponSlot[SECONDARY_FIRST] == nullptr)
-					{
-						m_vecWeaponSlot[SECONDARY_FIRST] = _OtherObject;
-						AddChild(GetOwner(), _OtherObject);
-						_OtherObject->SetActive(false);
-						bCanEquip = true;
-					}
-					break;
-					// 투척무기				
-				case WEAPON_TYPE::THROWABLE:
-					for (int i = THROWABLE_FIRST; i <= THROWABLE_SECOND; ++i)
-					{
-						if (m_vecWeaponSlot[i] == nullptr)
-						{
-							m_vecWeaponSlot[i] = _OtherObject;
-							AddChild(GetOwner(), _OtherObject);
-							_OtherObject->SetActive(false);
-							bCanEquip = true;
-							break;
-						}
-					}
-					break;
-				default:
-					break;
-				}
-
-				if (bCanEquip)
-				{
-					bCanEquip = false;
-					m_bCanEquip = false;
-				}
+				EquipSlot(_OtherObject);
 			}
 		}
-		return;
 	}
-
 }
 
 void PlayerCharacter::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
