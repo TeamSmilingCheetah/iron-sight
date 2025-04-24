@@ -56,18 +56,19 @@ void ThrowableController::Begin()
 
 void ThrowableController::Tick()
 {
+	PlayerCharacter* pPlayerScript = nullptr;
+
 	// 소유주가 있다면 위치를 0으로 초기화
 	if (m_EquippedOwner != nullptr)
 	{
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 	}
 	// 소유주가 없다면 return
-	else
+	else if (m_EquippedOwner == nullptr && m_bThrow == false)
 	{
 		return;
 	}
-
-	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 
 	// 투척 준비
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
