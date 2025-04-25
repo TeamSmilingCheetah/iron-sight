@@ -37,6 +37,7 @@ void PrefabUI::Render_Update()
 	if (ImGui::Button("Save"))
 	{
 		wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+		strContentPath += L"Prefab\\";
 
 		// 파일 경로 문자열
 		wchar_t szFilePath[255] = {};
@@ -53,9 +54,17 @@ void PrefabUI::Render_Update()
 
 		if (GetSaveFileName(&Desc))
 		{
-			if (wcslen(szFilePath) != 0)
+			wstring strFilePath = szFilePath;
+			size_t strLen = strFilePath.size();
+
+			if (strLen != 0)
 			{
-				pAsset->Save(szFilePath);
+				if (strFilePath.substr(strLen - 5, 5) != L".pref")
+				{
+					strFilePath += L".pref";
+				}
+
+				pAsset->Save(strFilePath);
 			}
 		}
 	}
