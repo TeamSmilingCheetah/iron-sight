@@ -159,6 +159,7 @@ void ThrowableController::Tick()
 	}
 }
 
+
 void ThrowableController::Triggered()
 {
 	m_AccTime += DT;
@@ -252,10 +253,6 @@ void ThrowableController::MakeBounce(Vec3 _Normal, float _elastic, float _fricti
 		m_Dir = reflectVelo;
 	}
 }
-
-
-
-
 
 
 

@@ -29,6 +29,7 @@ public:
 	void Begin() override;
 	void Tick() override;
 
+
 	void Triggered();
 	void Throw();
 

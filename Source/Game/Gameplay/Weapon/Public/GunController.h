@@ -29,6 +29,7 @@ public:
 	void Begin() override;
 	void Tick() override;
 
+
 public:
 	float GetHorizontalPower() { return m_HorizontalRecoilPower; }
 	float GetVerticalPower() { return m_VerticalRecoilPower; }
