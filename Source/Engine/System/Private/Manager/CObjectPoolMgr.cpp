@@ -20,7 +20,7 @@ CGameObject* CObjectPoolMgr::GetPoolObject(const wstring& _Name, int _Layer)
 		CGameObject* obj = vec.back();
 		vec.pop_back();
 
-		obj->SetActive(true);
+		SetObjectActive(obj, true);
 		ChangeLayer(obj, _Layer);
 		//obj->Reset();  // 초기화
 		return obj;
@@ -38,7 +38,7 @@ void CObjectPoolMgr::ReturnObject(CGameObject* _Obj)
 	if (!_Obj)
 		return;
 
-	_Obj->SetActive(false);
+	SetObjectActive(_Obj, false);
 	ChangeLayer(_Obj, 9);
 	//obj->Reset();  // 상태 초기화
 	wstring objName = _Obj->GetName();
@@ -55,7 +55,7 @@ void CObjectPoolMgr::Preload(const wstring& _Name, size_t _Count)
 	for (size_t i = 0; i < _Count; ++i)
 	{
 		CGameObject* obj = pPrefab->GetProtoObject()->Clone();
-		obj->SetActive(false);
+		SetObjectActive(obj, false);
 		obj->SetName(_Name);
 		pool.push_back(obj);
 		CreateObject(obj, 9, true);
