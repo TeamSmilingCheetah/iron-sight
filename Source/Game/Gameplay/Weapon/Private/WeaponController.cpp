@@ -74,10 +74,12 @@ void WeaponController::ClearKey()
 
 void WeaponController::SaveComponent(FILE* _File)
 {
+	fwrite(&m_WeaponType, sizeof(int), 1, _File);
 }
 
 void WeaponController::LoadComponent(FILE* _File)
 {
+	fread(&m_WeaponType, sizeof(int), 1, _File);
 }
 
 
