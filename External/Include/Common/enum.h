@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // ConstBuffer
 enum class CB_TYPE
@@ -204,17 +204,25 @@ enum TEX_PARAM
 // Task
 enum class TASK_TYPE
 {
+	// Delayed Task
+	
 	// 0 : Parent Address, 1 : Child Address
 	ADD_CHILD,
 
 	// 0 : Object Address, 1 : Layer Idx
 	CHANGE_LAYEROBJECT,
 
-	// 0 : Object Address, 1 : Layer Index, 2 : ChildMove
-	CREATE_OBJECT,
-
 	// 0 : Object Address
 	DELETE_OBJECT,
+
+	// 0 : Object Address
+	SETACTIVE_OBJECT,		// 오브젝트 비활성화 (삭제와 비슷한 맥락)
+
+
+	// Immediate
+	
+	// 0 : Object Address, 1 : Layer Index, 2 : ChildMove
+	CREATE_OBJECT,
 
 	// 0 : Level Address
 	CHANGE_LEVEL,

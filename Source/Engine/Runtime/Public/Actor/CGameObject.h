@@ -10,6 +10,7 @@ class CGameObject :
 {
 	friend class CLayer;
 	friend class CTaskMgr;
+	friend class CLevelMgr;
 
 public:
 	static UINT GUID;
@@ -27,9 +28,11 @@ private:
 	int m_LayerIdx; // 오브젝트가 속해있는 레이어 인덱스 번호, -1 : 무소속
 	int m_NextLayerIdx;	// 오브젝트가 레이어 이동을 하면 이동할 레이어를 저장하는 변수
 
-	bool m_Active;	// 오브젝트 활성화 여부
-	bool m_Dead;	// 오브젝트의 상태가 삭제 예정 상태인지
-	bool m_LayerMove;
+	bool m_Active;		// 오브젝트 활성화 여부
+
+	bool m_Dead;		// 오브젝트의 상태가 삭제 예정 상태인지
+	bool m_Deactivate;	// 오브젝트가 비활성화 예정 상태인지
+	bool m_LayerMove;	// 오브젝트가 레이어 이동 예정상태인지
 
 public:
 	void Begin();
@@ -49,7 +52,7 @@ public:
 	CComponent* GetComponent(COMPONENT_TYPE _Type) const { return m_arrCom[static_cast<UINT>(_Type)]; }
 	CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 
-	void SetActive(bool _b) { m_Active = _b; }
+
 
 	int GetLayerIdx() const { return m_LayerIdx; }
 	int GetNextLayerIdx() const { return m_NextLayerIdx; }
@@ -58,11 +61,20 @@ public:
 	bool IsDead() const { return m_Dead; }
 	bool IsAncestor(CGameObject* _Other);
 	bool IsLayerMove() const { return m_LayerMove; }
+	bool IsDeactivated() const { return m_Deactivate; } // IsActive와 차이 : 아직 활성화 되어있지만 다음 프레임에 비활성화 될건지 여부
 
+private:
+	void SetActive(bool _b) { m_Active = _b; }
+
+public:
 	void SetLayerIdx(int _Idx) { m_LayerIdx = _Idx; }
-	void SetNextLayerIdx(int _Idx) { m_LayerMove = true; m_NextLayerIdx = _Idx; }
-	void LayerMoveDone() { m_LayerMove = false; }
+	void SetNextLayerIdx(int _Idx) {
+		m_LayerMove = true;
+		m_NextLayerIdx = _Idx;
+	}
+	
 
+public:
 	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
 	const vector<CScript*>& GetScripts() const { return m_vecScripts; }
 	CScript* GetScript(UINT _Type) const;
@@ -91,6 +103,8 @@ private:
 	void DisconnectWithLayer();
 	void DisconnecntWithParent();
 	void RegisterAsParent();
+
+	void LayerMoveDone() { m_LayerMove = false; }
 	
 public:
 	CLONE(CGameObject);

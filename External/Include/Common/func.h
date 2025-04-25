@@ -12,6 +12,7 @@ void ChangeLevel(CLevel* _Level, LEVEL_STATE _NextState);
 void AddChild(CGameObject* _Parent, CGameObject* _Child);
 void ChangeName(CEntity* _Entity, wstring* _Name);
 void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx);
+void SetObjectActive(CGameObject* _TargetObj, bool _Active);
 
 bool IsValid(CGameObject*& _Object);
 

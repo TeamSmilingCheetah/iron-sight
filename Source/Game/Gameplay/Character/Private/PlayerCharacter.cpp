@@ -285,7 +285,6 @@ void PlayerCharacter::PlayerAttack()
 			// 투척무기
 			if (m_bCanThrow)
 			{
-				m_bCanThrow = false;
 				if (m_CurWeapon != nullptr)
 				{
 					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
@@ -302,7 +301,11 @@ void PlayerCharacter::PlayerAttack()
 					{
 						// TODO: object pooling으로 개선
 						Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(type).Prefab;
-						m_vecWeaponSlot[m_CurWeaponIdx].Object = pPrefab->Instantiate();
+						m_CurWeapon = m_vecWeaponSlot[m_CurWeaponIdx].Object = pPrefab->Instantiate();
+						static_cast<WeaponController*>(m_CurWeapon->GetScript(THROWABLESCRIPT))->SetEquippedOwner(GetOwner());
+
+						CreateObject(m_CurWeapon, 0, false);
+						AttachItem(m_CurWeapon, GetPlayeChildMeshObject(L"hand_r"), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
 					}
 
 					// 아이템이 남지 않았다면
@@ -310,10 +313,11 @@ void PlayerCharacter::PlayerAttack()
 					{
 						m_vecWeaponSlot[m_CurWeaponIdx].Object = nullptr;
 						m_vecWeaponSlot[m_CurWeaponIdx].Type = ITEM_TYPE::END;
+
+						m_bCanThrow = false;
+						m_CurWeapon = nullptr;
+						m_CurWeaponIdx = NONE_WEAPON;
 					}
-					
-					m_CurWeapon = nullptr;
-					m_CurWeaponIdx = NONE_WEAPON;
 				}				
 			}
 		}
@@ -376,13 +380,11 @@ void PlayerCharacter::PlayerInteractWeapon()
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
 			// 해당 슬롯 활성화
-			m_vecWeaponSlot[i].Object->SetActive(true);
+			SetObjectActive(m_vecWeaponSlot[i].Object, true);
 			m_CurWeapon = m_vecWeaponSlot[i].Object;
 			m_CurWeaponIdx = i;
 			wstring str = L"hand_r";
-			AddChild(GetPlayeChildMeshObject(str), m_CurWeapon);
-			m_CurWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-			m_CurWeapon->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+			AttachItem(m_CurWeapon, GetPlayeChildMeshObject(str), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
 			WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
 			pWeaponScript->SetEquip(true);
 
@@ -406,7 +408,7 @@ void PlayerCharacter::PlayerInteractWeapon()
 				// 나머지는 비활성화 해준다.
 				else
 				{
-					m_vecWeaponSlot[j].Object->SetActive(false);
+					SetObjectActive(m_vecWeaponSlot[j].Object, false);
 				}				
 				WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[j].Object->GetScripts()[0]);
 				pWeaponScript->SetEquip(false);
@@ -427,19 +429,17 @@ void PlayerCharacter::PlayerInteractWeapon()
 
 			if (i == PRIMARY_FIRST)
 			{
-				wstring str = L"coat_b_04";
-				AttachItem(m_vecWeaponSlot[i].Object, GetPlayeChildMeshObject(str), Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
-				m_vecWeaponSlot[i].Object->SetActive(true);
+				AttachItem(m_vecWeaponSlot[i].Object, GetPlayeChildMeshObject(L"coat_b_04"), Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+				SetObjectActive(m_vecWeaponSlot[i].Object, true);
 			}
 			else if (i == PRIMARY_SECOND)
 			{
-				wstring str = L"coat_b_04";
-				AttachItem(m_vecWeaponSlot[i].Object, GetPlayeChildMeshObject(str), Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
-				m_vecWeaponSlot[i].Object->SetActive(true);
+				AttachItem(m_vecWeaponSlot[i].Object, GetPlayeChildMeshObject(L"coat_b_04"), Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+				SetObjectActive(m_vecWeaponSlot[i].Object, true);
 			}
 			else
 			{
-				m_vecWeaponSlot[i].Object->SetActive(false);
+				SetObjectActive(m_vecWeaponSlot[i].Object, false);
 			}
 			
 		}
@@ -452,30 +452,16 @@ void PlayerCharacter::PlayerInteractWeapon()
 	{
 		if (m_CurWeapon != nullptr)
 		{
-			Vec3 vPlayerPos = Transform()->GetRelativePos();
-
-			// Item Layer로 변경, 부모관계를 끊음.
-			DetachItem(m_vecWeaponSlot[m_CurWeaponIdx].Object);
-
-			// 현재 Player 위치에 무기를 다시 생성시킨다.
-			WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-			pGunScript->SetEquippedOwner(nullptr);
-
 			// 인벤토리에서 아이템 개수 관리
 			InventoryController* inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
-			inventory->UseItem(m_vecWeaponSlot[m_CurWeaponIdx].Type);
 
-			// Player의 무기정보를 비워준다. 
-			m_vecWeaponSlot[m_CurWeaponIdx].Object = nullptr;
-			m_vecWeaponSlot[m_CurWeaponIdx].Type = ITEM_TYPE::END;
-			m_CurWeapon = nullptr;
-			m_CurWeaponIdx = NONE_WEAPON;
+			inventory->DropItem(m_vecWeaponSlot[m_CurWeaponIdx].Type, 1);
 		}
 	}
 
 }
 
-CGameObject* PlayerCharacter::GetPlayeChildMeshObject(wstring& _str)
+CGameObject* PlayerCharacter::GetPlayeChildMeshObject(const wstring& _str)
 {
 	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
 
@@ -528,8 +514,7 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 		m_vecWeaponSlot[slotIdx].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
 
 		bCanEquip = true;
-		wstring str = L"coat_b_04";
-		CGameObject* pBoneObj = GetPlayeChildMeshObject(str);
+		CGameObject* pBoneObj = GetPlayeChildMeshObject(L"coat_b_04");
 
 		if (slotIdx == PRIMARY_FIRST)
 		{
@@ -540,7 +525,7 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 			AttachItem(_Item, pBoneObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
 		}
 
-		_Item->SetActive(true);
+		SetObjectActive(_Item, true);
 	}
 		break;
 		// 보조무기
@@ -550,35 +535,33 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 			m_vecWeaponSlot[SECONDARY_FIRST].Object = _Item;
 			m_vecWeaponSlot[SECONDARY_FIRST].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
 			AddChild(GetOwner(), _Item);
-			_Item->SetActive(false);
+			SetObjectActive(_Item, false);
 			bCanEquip = true;
 		}
 		break;
 		// 투척무기				
 	case WEAPON_TYPE::THROWABLE:
 	{
-		bool ExistAlready = false;
 		for (int i = THROWABLE_FIRST; i <= THROWABLE_SECOND; ++i)
 		{
-			if (m_vecWeaponSlot[i].Object == nullptr)
+			// 슬롯에 이미 차 있는 경우
+			if (m_vecWeaponSlot[i].Object != nullptr)
 			{
-				m_vecWeaponSlot[i].Object = _Item;
-				m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
-				AddChild(GetOwner(), _Item);
-				_Item->SetActive(false);
-				bCanEquip = true;
-				ExistAlready = true;
-				break;
+				// 같은 weapon 인 경우
+				if (m_vecWeaponSlot[i].Type == static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType())
+					break;
+
+				// 다른 weapon인 경우
+				continue;
 			}
-		}
 
-		// 빈 슬롯이 없었다면 아이템 정보만 얻고 객체는 파괴함
-		if (!ExistAlready)
-		{
-			// TODO : object pooling으로 개선 (파괴가 아니라 비활성화 후 pool에 넣기)
-			DestroyObject(_Item);
+			m_vecWeaponSlot[i].Object = _Item;
+			m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
+			AttachItem(_Item, GetPlayeChildMeshObject(L"hand_r"), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+			SetObjectActive(_Item, false);
+			bCanEquip = true;
+			break;
 		}
-
 		
 	}
 		break;
@@ -586,7 +569,8 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 		break;
 	}
 
-	// 장착할 수 있는 경우 : 무기 스크립트 쪽에 알려줘야 함
+	// 장착할 수 있는 경우 :
+	// 무기 스크립트 쪽에 알려줘야 함
 	if (bCanEquip)
 	{
 		// Player를 소유주으로 등록, 자식에 무기를 넣어준다.
@@ -594,6 +578,14 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 
 		bCanEquip = false;
 		m_bCanEquip = false;
+	}
+
+	// 장착할 수 없는 경우 :
+	// 이미 해당 타입이 슬롯에 존재하거나 빈 슬롯이 없었다면 아이템 정보만 얻고 객체는 파괴함
+	else
+	{
+		// TODO : object pooling으로 개선 (파괴가 아니라 비활성화 후 pool에 넣기)
+		DestroyObject(_Item);
 	}
 }
 
@@ -643,7 +635,7 @@ void PlayerCharacter::DetachItem(CGameObject* _Item)
 	// 아이템 레이어로 변경
 	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
 	ChangeLayer(_Item, 6);
-	_Item->SetActive(true);
+	SetObjectActive(_Item, true);
 	AttachItem(_Item, nullptr, vPos, vRot);
 }
 

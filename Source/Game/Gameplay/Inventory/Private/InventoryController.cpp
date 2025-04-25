@@ -75,13 +75,13 @@ void InventoryController::DisplayUI_Vicinity()
 		SyncItemUI(m_vecVicinity[i], pItem->GetItemType(), pItem->GetCount(), vecVicinityUI[i]);
 
 		// UI 활성화
-		vecVicinityUI[i]->SetActive(true);
+		SetObjectActive(vecVicinityUI[i], true);
 	}
 
 	// 대응되는 범위를 초과하는 UI는 비활성화
 	for (UINT i = static_cast<UINT>(m_vecVicinity.size()); i < static_cast<UINT>(vecVicinityUI.size()); ++i)
 	{
-		vecVicinityUI[i]->SetActive(false);
+		SetObjectActive(vecVicinityUI[i], false);
 	}
 }
 
@@ -107,7 +107,7 @@ void InventoryController::DisplayUI_Inventory()
 
 			// UI의 위치 설정 (인덱스에 따라)
 			vecInventoryUI[uiIdx]->UI()->SetRectPos(0.f, 200.f - 43.f * uiIdx);
-			vecInventoryUI[uiIdx]->SetActive(true);
+			SetObjectActive(vecInventoryUI[uiIdx], true);
 
 			++uiIdx;
 		}
@@ -116,7 +116,7 @@ void InventoryController::DisplayUI_Inventory()
 	// 대응되는 범위를 초과하는 UI는 비활성화
 	for (UINT i = uiIdx; i < static_cast<UINT>(vecInventoryUI.size()); ++i)
 	{
-		vecInventoryUI[i]->SetActive(false);
+		SetObjectActive(vecInventoryUI[i], false);
 	}
 }
 
@@ -130,9 +130,6 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 	// 장착할 수 있는 무기인 경우 
 	if(IS_WEAPON(type) || IS_THROWABLE(type))
 	{
-		// 오브젝트를 레이어에서 꺼냄
-		ChangeLayer(_Item, -1);
-
 		m_PlayerScript->EquipSlot(_Item);
 	}
 	else
@@ -223,23 +220,10 @@ void InventoryController::Begin()
 
 void InventoryController::Tick()
 {
-	// F키 눌렀을 때
-	if (KEY_TAP(KEY::F))
+	if (m_VicinityChanged)
 	{
-		// 플레이어가 바라보고 있는 오브젝트
-		CGameObject* pTarget = m_PlayerScript->GetRayTarget();
-
-		// 주변에 감지된 아이템 중에서 타겟이 있다면
-		for (CGameObject* pItem : m_vecVicinity)
-		{
-			if (pItem == pTarget)
-			{
-				// 아이템을 습득함 -> World에서 없애면서 EndOverlap이 호출되면서 ui에 자동으로 반영됨
-				AcquireItem(pItem);
-
-				break;
-			}
-		}
+		DisplayUI_Vicinity();
+		m_VicinityChanged = false;
 	}
 
 	if (m_InventoryChanged)
@@ -295,11 +279,25 @@ void InventoryController::BeginOverlap(CCollider3D* _Collider, CGameObject* _Oth
 	std::sort(m_vecVicinity.begin(), m_vecVicinity.end(), ItemComp);
 
 	// UI에도 반영
-	DisplayUI_Vicinity();
+	m_VicinityChanged = true;
 }
 
 void InventoryController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
+	// F키 눌렀을 때
+	if (KEY_TAP(KEY::F))
+	{
+		// 플레이어가 바라보고 있는 오브젝트
+		CGameObject* pTarget = m_PlayerScript->GetRayTarget();
+
+		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
+		if (!pTarget || pTarget != _OtherObject || pTarget->GetLayerIdx() != 6)
+			return;
+
+		// 감지된 아이템이 타겟이라면
+		// 아이템을 습득함 -> World에서 없애면서 EndOverlap이 호출되면서 ui에 자동으로 반영됨
+		AcquireItem(_OtherObject);
+	}
 }
 
 void InventoryController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
@@ -314,5 +312,5 @@ void InventoryController::EndOverlap(CCollider3D* _Collider, CGameObject* _Other
 	m_vecVicinity.erase(find(m_vecVicinity.begin(), m_vecVicinity.end(), _OtherObject));
 
 	// UI에도 반영
-	DisplayUI_Vicinity();
+	m_VicinityChanged = true;
 }

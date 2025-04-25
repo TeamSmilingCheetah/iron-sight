@@ -13,6 +13,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
 void PlayerCharacter::UpdatePosition()
 {
@@ -306,20 +307,13 @@ void PlayerCharacter::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _Oth
 {
 	if(_3DCollider->IsTrigger())
 		m_CollObject = _OtherObject;
-
 }
 
 void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
 	if (_3DCollider->IsTrigger())
 	{
-		if (_3DCollider->GetName() == L"Weapon" && m_bCanEquip)
-		{
-			if (KEY_TAP(KEY::F))
-			{
-				EquipSlot(_OtherObject);
-			}
-		}
+		
 	}
 }
 

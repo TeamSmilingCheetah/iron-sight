@@ -312,7 +312,7 @@ void TestLevel::CreateTestLevel()
 				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 				DragUI->UI()->SetRectSize(150.f, 40.f);
 				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
-				DragUI->SetActive(false);
+				SetObjectActive(DragUI, false);
 
 				DragUI->AddComponent(new ItemUI);
 
@@ -341,7 +341,8 @@ void TestLevel::CreateTestLevel()
 				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 				DragUI->UI()->SetRectSize(150.f, 40.f);
 				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
-				DragUI->SetActive(false);
+				SetObjectActive(DragUI, false);
+
 
 				DragUI->AddComponent(new ItemUI);
 
