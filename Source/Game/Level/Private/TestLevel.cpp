@@ -16,6 +16,7 @@
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
@@ -51,6 +52,7 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(6)->SetName(L"Item");
 	pLevel->GetLayer(7)->SetName(L"MonsterObject");
 	pLevel->GetLayer(8)->SetName(L"UI");
+	pLevel->GetLayer(9)->SetName(L"ObjectPool");
 
 	// 충돌 설정
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
@@ -647,4 +649,9 @@ void TestLevel::CreateTestLevel()
 	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
 	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
 	//pLevel->AddObject(0, pObject, false);
+
+	// 1) Prefab 로드
+	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\TestBullet.pref", L"Prefab\\TestBullet.pref");
+
+	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
 }

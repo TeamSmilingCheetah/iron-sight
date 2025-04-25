@@ -1,9 +1,9 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-
+#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
@@ -58,7 +58,9 @@ void MissileProjectile::Tick()
 	// 일정 시간 후 총알 삭제
 	if (5.f < m_LifeTime)
 	{
-		DestroyObject(GetOwner());
+		//DestroyObject(GetOwner());
+		m_LifeTime = 0.f;
+		CObjectPoolMgr::GetInst()->ReturnObject(GetOwner());
 	}
 }
 
@@ -138,7 +140,8 @@ void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 		Instantiate(DecalPrefab, vPos, 0);
 
 		// 총알 삭제
-		DestroyObject(GetOwner());
+		//DestroyObject(GetOwner());
+		CObjectPoolMgr::GetInst()->ReturnObject(GetOwner());
 	}
 
 }
