@@ -35,6 +35,7 @@ int g_arrKeyValue[static_cast<int>(KEY::END)] =
 	VK_LCONTROL,
 	VK_LSHIFT,
 	VK_MENU,
+	VK_TAB,
 
 	'1',
 	'2',
@@ -108,7 +109,7 @@ void CKeyMgr::Init()
 void CKeyMgr::Tick()
 {
 	// 포커싱중인 윈도우가 있는 경우에만
-	if (GetFocus())
+	if (GetFocus() == CEngine::GetInst()->GetMainWnd())
 	{
 		for (size_t i = 0; i < m_vecKey.size(); ++i)
 		{
