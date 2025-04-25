@@ -31,6 +31,13 @@ InventoryController::~InventoryController()
 }
 
 
+void InventoryController::SetPlayer(CGameObject* _Player)
+{
+	m_Player = _Player;
+
+	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
+}
+
 void InventoryController::SetVicinityUI(CGameObject* _UI)
 {
 	m_VicinityUI = _UI;

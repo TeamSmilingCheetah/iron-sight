@@ -35,6 +35,8 @@ PlayerCharacter::PlayerCharacter()
 	, m_IsGround(true)
 	, m_bShoot(false)
 	, m_bCanThrow(false)
+	, m_InventoryCanvasUI(nullptr)
+	, m_InventoryOpened(false)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -58,15 +60,16 @@ PlayerCharacter::~PlayerCharacter()
 {
 }
 
+
 void PlayerCharacter::Begin()
 {
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
+	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"CanvasUI");
 }
 
 void PlayerCharacter::Tick()
 {
-
 	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vRot = Transform()->GetRelativeRotation();
 
@@ -90,6 +93,13 @@ void PlayerCharacter::Tick()
 	if (KEY_PRESSED(KEY::SPACE))
 	{
 		UpdateRotation();
+	}
+
+	// 인벤토리 Toggle
+	if (KEY_TAP(KEY::TAB))
+	{
+		m_InventoryOpened = !m_InventoryOpened;
+		SetObjectActive(m_InventoryCanvasUI, m_InventoryOpened);
 	}
 
 	PlayerInteractWeapon();

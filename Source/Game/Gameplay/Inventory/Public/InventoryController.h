@@ -30,7 +30,7 @@ private:
 	void DisplayUI_Inventory();
 
 public:
-	void SetPlayer(CGameObject* _Player) { m_Player = _Player; }
+	void SetPlayer(CGameObject* _Player);
 	void SetVicinityUI(CGameObject* _UI);
 	void SetInventoryUI(CGameObject* _UI);
 
