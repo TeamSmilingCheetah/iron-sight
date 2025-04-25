@@ -226,6 +226,9 @@
     <ClInclude Include="System\Public\Manager\CSoundMgr.h">
       <Filter>04. Manager\10. SoundMgr</Filter>
     </ClInclude>
+    <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h">
+      <Filter>04. Manager\12. ObjectPollMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -443,6 +446,9 @@
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CSoundMgr.cpp">
       <Filter>04. Manager\10. SoundMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp">
+      <Filter>04. Manager\12. ObjectPollMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -664,6 +670,9 @@
     </Filter>
     <Filter Include="04. Manager\10. SoundMgr">
       <UniqueIdentifier>{54f35e09-95c0-47f0-a340-ec31fcee4036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Manager\12. ObjectPollMgr">
+      <UniqueIdentifier>{22ef37b4-1a2c-4b80-b8bd-4802b8417339}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

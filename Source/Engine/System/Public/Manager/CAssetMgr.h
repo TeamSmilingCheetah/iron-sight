@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Common/singleton.h"
 #include "Engine/System/Public/Asset/Base/assets.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
@@ -59,7 +59,9 @@ public:
 		return m_mapAsset[static_cast<UINT>(_Type)];
 	}
 
-	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
+	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key); 
+
+	CGameObject* ClonePrefabe(const wstring& _Key);
 };
 
 template <typename T>

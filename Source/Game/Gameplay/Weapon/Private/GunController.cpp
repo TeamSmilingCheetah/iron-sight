@@ -7,6 +7,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -48,6 +49,7 @@ void GunController::Begin()
 {
 	WeaponController::Begin();
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
+
 }
 
 void GunController::Tick()
@@ -140,12 +142,6 @@ void GunController::Firing()
 
 	Vec3 vFinalDir = GetFireDir();
 
-
-	// 생성할 총알 Prefab 정보 로드
-	Ptr<CPrefab> BulletPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\TestBullet.pref", L"Prefab\\TestBullet.pref");
-	MissileProjectile* BulletScript = static_cast<MissileProjectile*>(BulletPrefab->GetProtoObject()->GetScripts()[0]);
-
-
 	// Camera의 줌 여부를 확인한다.
 	CameraController* pCameraScript = static_cast<CameraController*>(pCamera->GetScripts()[0]);
 
@@ -182,10 +178,6 @@ void GunController::Firing()
 	vFinalDir = XMVector3TransformNormal(vFinalDir, spreadRot);
 	vFinalDir.Normalize();
 
-	// 총알이 나아갈 방향을 정해준다.
-	BulletScript->SetDir(vFinalDir);
-	BulletScript->SetSpeed(m_InitFirePower);
-
 	m_AccTime_Fire += DT;
 
 	// 발사 딜레이를 넘어서면 총알을 발사한다.
@@ -193,7 +185,17 @@ void GunController::Firing()
 	{
 		m_AccTime_Fire = 0.f;
 		m_CurRounds -= 1;
-		Instantiate(BulletPrefab, vRayPos, 0);
+
+		// 풀에서 꺼내기
+		CGameObject* go = CObjectPoolMgr::GetInst()->GetPoolObject(L"TestBullet", 0);
+
+		// 변형값 세팅
+		go->Transform()->SetRelativePos(vRayPos);
+
+		// 스크립트에 값 전달
+		MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, (UINT)SCRIPT_TYPE::MISSILESCRIPT));
+		BulletScript->SetDir(vFinalDir);
+		BulletScript->SetSpeed(m_InitFirePower);
 
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김) 

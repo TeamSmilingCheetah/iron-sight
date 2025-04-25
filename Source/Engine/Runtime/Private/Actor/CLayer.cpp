@@ -1,6 +1,7 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Actor/CLayer.h"
 #include "Runtime/Public/Actor/CGameObject.h"
+#include "System/Public/Manager/CObjectPoolMgr.h"
 
 CLayer::CLayer()
 	: m_LayerIdx(-1)
@@ -19,7 +20,14 @@ CLayer::CLayer(const CLayer& _Origin)
 
 CLayer::~CLayer()
 {
+	//if (m_LayerIdx == 9)
+	//{
+	//	CObjectPoolMgr::GetInst()->Clear();
+	//}
+	//else
+	//{
 	DeleteVec(m_vecParentObjects);
+	
 }
 
 void CLayer::Begin()

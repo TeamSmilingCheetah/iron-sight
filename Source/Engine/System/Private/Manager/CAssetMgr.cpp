@@ -73,6 +73,11 @@ void CAssetMgr::DeleteAsset(ASSET_TYPE _Type, const wstring& _Key)
 	m_bAssetChanged = true;
 }
 
+CGameObject* CAssetMgr::ClonePrefabe(const wstring& _Key)
+{
+	return nullptr;
+}
+
 Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
 {
 	wstring strFileName = path(_strPath).stem();

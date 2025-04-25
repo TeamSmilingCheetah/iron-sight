@@ -219,6 +219,7 @@
     <ClInclude Include="System\Public\Manager\CFontMgr.h" />
     <ClInclude Include="System\Public\Manager\CKeyMgr.h" />
     <ClInclude Include="System\Public\Manager\CLevelMgr.h" />
+    <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h" />
     <ClInclude Include="System\Public\Manager\CPathMgr.h" />
     <ClInclude Include="System\Public\Manager\CRenderMgr.h" />
     <ClInclude Include="System\Public\Manager\CSoundMgr.h" />
@@ -287,6 +288,7 @@
     <ClCompile Include="System\Private\Manager\CFontMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CKeyMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CLevelMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CPathMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CRenderMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CSoundMgr.cpp" />

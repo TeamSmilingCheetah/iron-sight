@@ -65,10 +65,11 @@ void ThrowableController::Tick()
 		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 	}
 	// 소유주가 없다면 return
-	else if (m_EquippedOwner == nullptr && m_bThrow == false)
+	else if(m_EquippedOwner == nullptr && m_bThrow == false)
 	{
 		return;
 	}
+
 
 	// 투척 준비
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
@@ -179,7 +180,7 @@ void ThrowableController::Triggered()
 
 void ThrowableController::Throw()
 {
-	Vec3 vPos = Transform()->GetRelativePos();
+ 	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vRot = Transform()->GetRelativeRotation();
 
 	Collider3D()->SetTrigger(false);
