@@ -15,6 +15,7 @@ private:
 	vector<CGameObject*>	m_vecVicinity;	// 주변 아이템을 관리하는 컨테이너
 	int						m_arrInventory[static_cast<UINT>(ITEM_TYPE::END)];	// 소유 아이템을 관리하는 컨테이너 (개수)
 
+	bool					m_VicinityChanged;
 	bool					m_InventoryChanged;
 
 	// UI

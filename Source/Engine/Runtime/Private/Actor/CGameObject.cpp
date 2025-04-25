@@ -17,8 +17,11 @@ CGameObject::CGameObject()
 	, m_RenderCom(nullptr)
 	, m_Parent(nullptr)
 	, m_LayerIdx(-1) // -1 == 특정 레이어에 소속이 아니다 --> Level 안에 존재하지 않은 상태
+	, m_NextLayerIdx(-1)
 	, m_Active(true)
 	, m_Dead(false)
+	, m_Deactivate(false)
+	, m_LayerMove(false)
 {
 	// Transform 컴포넌트는 무조건 가져야 되는 기본 컴포넌트
 	AddComponent(new CTransform);

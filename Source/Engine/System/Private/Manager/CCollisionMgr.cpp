@@ -286,29 +286,19 @@ void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _
 	}
 
 	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE;
+	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated() || _RightCol->GetOwner()->IsDeactivated();
+	bool IsLayerChanged = _LeftCol->GetOwner()->IsLayerMove() || _RightCol->GetOwner()->IsLayerMove();
 
-	// 레이어가 바뀌면서 더 이상 충돌 감지가 안되는 경우도 고려
-	int leftLayer = _LeftCol->GetOwner()->GetLayerIdx();
-	int rightLayer = _RightCol->GetOwner()->GetLayerIdx();
 
-	if (_LeftCol->GetOwner()->IsLayerMove())
-		leftLayer = _LeftCol->GetOwner()->GetNextLayerIdx();
-	if (_RightCol->GetOwner()->IsLayerMove())
-		rightLayer = _RightCol->GetOwner()->GetNextLayerIdx();
-
-	if (leftLayer > rightLayer)
-		std::swap(leftLayer, rightLayer);
-
-	// 레이어가 -1로 바뀐 경우 또는 서로 충돌 감지를 안하는 레이어로 바뀐 경우
-	bool IsLayerNotColliding = (leftLayer == -1) || !(m_Matrix[leftLayer] & (1 << rightLayer));
+	// 정책 변경 : 레이어 변경 만으로도 EndOverlap을 시키자.
+	// 바뀐 레이어도 충돌된다면 새로 BeginOverlap하는 방향이 맞아 보임
 
 	if (IsCollision3D(_LeftCol, _RightCol))
 	{
 		if (iter->second)
 		{
 			// 둘중 하나가 곧 삭제 예정이다.
-			if (IsDead || IsDeactive || IsLayerNotColliding)
+			if (IsDead || IsDeactive || IsLayerChanged)
 			{
 				_LeftCol->EndOverlap(_RightCol);
 				_RightCol->EndOverlap(_LeftCol);
@@ -356,7 +346,7 @@ void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _
 	}
 
 	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE;
+	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated();
 
 	if (IsCollision3DLand(_LeftCol, _RightCol))
 	{
@@ -407,7 +397,7 @@ void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D*
 	}
 
 	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE;
+	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated() || _RightCol->GetOwner()->IsDeactivated();
 
 	// 단일 타겟이면 Ray용 연산을 위해 연산 후 저장
 	if (!(_LeftCol->IsTargetAllMode()))
@@ -474,7 +464,7 @@ void CCollisionMgr::CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape*
 
 	// LandScape에 Ray정보 등록
 	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE;
+	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated();
 
 	if(!(IsDead) && !(IsDeactive))
 		IsCollisionRayLand(_LeftCol, _RightCol);
@@ -560,7 +550,7 @@ void CCollisionMgr::LandCheak()
 				}
 
 				bool IsDead = Ray->GetOwner()->IsDead() || pLandscape->GetOwner()->IsDead();
-				bool IsDeactive = Ray->GetState() == DEACTIVE;
+				bool IsDeactive = Ray->GetState() == DEACTIVE || Ray->GetOwner()->IsDeactivated();
 
 				if (RayCol[i].Success == 1)
 				{
@@ -652,14 +642,14 @@ void CCollisionMgr::RayOverlapCheak()
 			CGameObject* RightObject = data.HitObject;
 
 			bool IsDead = pRay->GetOwner()->IsDead() || RightObject->IsDead();
-			bool IsDeactive = pRay->GetState() == DEACTIVE;
+			bool IsDeactive = pRay->GetState() == DEACTIVE || pRay->GetOwner()->IsDeactivated();
 
 			// LandScape인지 3D인지 구분해서 처리
 			if (RightObject->Collider3D())	// 3D타입
 			{
 				CCollider3D* p3DCol = RightObject->Collider3D();
 
-				IsDeactive = p3DCol->GetState() == DEACTIVE;
+				IsDeactive = p3DCol->GetState() == DEACTIVE || p3DCol->GetOwner()->IsDeactivated();
 
 				if (iter->second)
 				{
@@ -739,14 +729,14 @@ void CCollisionMgr::RayOverlapCheak()
 		CGameObject* RightObject = data.PrevObject;
 
 		bool IsDead = pRay->GetOwner()->IsDead() || RightObject->IsDead();
-		bool IsDeactive = pRay->GetState() == DEACTIVE;
+		bool IsDeactive = pRay->GetState() == DEACTIVE || pRay->GetOwner()->IsDeactivated();
 
 		// LandScape인지 3D인지 구분해서 처리
 		if (RightObject->Collider3D())	// 3D타입
 		{
 			CCollider3D* p3DCol = RightObject->Collider3D();
 
-			IsDeactive = p3DCol->GetState() == DEACTIVE;
+			IsDeactive = p3DCol->GetState() == DEACTIVE || p3DCol->GetOwner()->IsDeactivated();
 
 			// 서로 떨어진 것은 확정
 			if (iter->second)

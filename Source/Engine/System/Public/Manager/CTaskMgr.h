@@ -7,7 +7,7 @@ class CTaskMgr
 
 private:
 	vector<tTask> m_vecTask;
-	vector<CGameObject*> m_vecGC;
+	vector<tTask> m_vecDelayedTask;	// 한 프레임 지연시키는 task
 
 	bool m_LevelChanged;
 

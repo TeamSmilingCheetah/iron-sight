@@ -77,9 +77,6 @@ void AddChild(CGameObject* _Parent, CGameObject* _Child)
 	task.Param0 = (DWORD_PTR)_Parent;
 	task.Param1 = (DWORD_PTR)_Child;
 
-	if (_Parent)
-		_Child->SetNextLayerIdx(_Parent->GetLayerIdx());
-
 	CTaskMgr::GetInst()->AddTask(task);
 }
 
@@ -95,12 +92,23 @@ void ChangeName(CEntity* _Entity, wstring* _Name)
 
 void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx)
 {
+	if (_TargetObj->GetLayerIdx() == _LayerIdx)
+		return;
+
 	tTask task{};
 	task.Type = TASK_TYPE::CHANGE_LAYEROBJECT;
 	task.Param0 = (DWORD_PTR)_TargetObj;
-	task.Param1 = (DWORD_PTR)_LayerIdx;
+	task.Param1 = (DWORD_PTR)_LayerIdx; 
 
-	_TargetObj->SetNextLayerIdx(static_cast<int>(_LayerIdx));
+	CTaskMgr::GetInst()->AddTask(task);
+}
+
+void SetObjectActive(CGameObject* _TargetObj, bool _Active)
+{
+	tTask task = {};
+	task.Type = TASK_TYPE::SETACTIVE_OBJECT;
+	task.Param0 = (DWORD_PTR)_TargetObj;
+	task.Param1 = (DWORD_PTR)_Active;
 
 	CTaskMgr::GetInst()->AddTask(task);
 }

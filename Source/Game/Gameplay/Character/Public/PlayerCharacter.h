@@ -102,7 +102,7 @@ public:
 	void SetThrowBoom(bool _Boom) { m_bThrowBoom = _Boom; }
 
 	CGameObject* GetCurWeapon() { return m_CurWeapon; }
-	CGameObject* GetPlayeChildMeshObject(wstring& _str);
+	CGameObject* GetPlayeChildMeshObject(const wstring& _str);
 
 	int GetCurWeaponIdx() { return m_CurWeaponIdx; }
 	float GetCurMouseSensitivity() { return m_MouseSensitivity; }
