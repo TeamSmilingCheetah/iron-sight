@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/Shader/CParticleTickCS.h"
@@ -122,6 +122,20 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
 	GetInst()->AddAsset(L"UIShader", pShader);
+
+	// ========================
+	// UICardinalShader : UI Cardinal 전용 셰이더
+	// ========================
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI_Cardinal");
+	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI");
+
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	GetInst()->AddAsset(L"UICardinalShader", pShader);
 
 
 	// ==================================
@@ -298,7 +312,12 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"UIMtrl");
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UIShader"));
-	pMtrl->SetScalarParam(VEC4_0, Vec4(0.f, 0.f, 0.f, 1.f));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// UICardinalMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"UICardinalMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UICardinalShader"));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// TileMapMaterial

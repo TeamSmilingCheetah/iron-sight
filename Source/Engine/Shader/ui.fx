@@ -47,6 +47,21 @@ VS_OUT VS_UI(VS_IN _in)
 	return output;
 }
 
+VS_OUT VS_UI_Cardinal(VS_IN _in)
+{
+	VS_OUT output = (VS_OUT) 0.f;
+
+	output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+
+	float rotY = g_float_0;
+	rotY /= 360.f; // 0 ~ 1로 매핑
+		
+	const float offset = 0.02114f;
+		
+	output.vUV = _in.vUV + float2(rotY + offset - 0.5f, 0.f);
+
+	return output;
+}
 
 VS_OUT VS_UI_Inst(VS_IN_Inst _in)
 {
@@ -62,12 +77,11 @@ VS_OUT VS_UI_Inst(VS_IN_Inst _in)
 float4 PS_UI(VS_OUT _in) : SV_Target
 {
 	float4 output = (float4) 0.f;
-
+	
 	// 이미지가 있다면 샘플링
 	if (UseImage)
 	{
 		output = Image.Sample(g_sam_0, _in.vUV);
-		
 	}
 
 	// 이미지가 없거나 a 값이 0인 부분은 배경색으로 채움
@@ -78,7 +92,6 @@ float4 PS_UI(VS_OUT _in) : SV_Target
 
 	return output;
 }
-
 
 
 #endif

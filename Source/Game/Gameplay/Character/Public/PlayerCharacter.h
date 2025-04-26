@@ -60,9 +60,14 @@ private:
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
 
+	// UI 관리
+
 	// 인벤토리
 	CGameObject*	m_InventoryCanvasUI;
 	bool			m_InventoryOpened;
+
+	// 방위 UI
+	CGameObject*	m_CardinalImageUI;
 
 public:
 	void Begin() override;
