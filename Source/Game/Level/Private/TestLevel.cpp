@@ -183,23 +183,12 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->UI()->SetRectPos(0.f, 0.f);
 	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
+	SetObjectActive(CanvasUI, false);
+
 	pLevel->AddObject(8, CanvasUI, false);	// UI layer
 
-	// ButtonUI
-	CGameObject* UI = new CGameObject;
-	UI->SetName(L"ButtonUI");
-	UI->AddComponent(new CUI(UI_BUTTON));
-
-	UI->AddComponent(new CUIRender);
-	UI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	UI->UI()->SetRectPos(-250.f, 120.f);
-	UI->UI()->SetRectSize(100.f, 40.f);
-	UI->UI()->AddText(L"Click", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
-
-	CanvasUI->AddChild(UI);
-
 	// DropUI
-	UI = new CGameObject;
+	CGameObject* UI = new CGameObject;
 	UI->SetName(L"DropUI");
 	UI->AddComponent(new CUI(UI_DROP));
 

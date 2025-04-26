@@ -32,6 +32,7 @@ enum class KEY
 	LCTRL,
     LSHIFT,
 	LALT,
+	TAB,
 
 	NUM_1,
 	NUM_2,
