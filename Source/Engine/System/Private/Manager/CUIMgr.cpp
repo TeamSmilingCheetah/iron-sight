@@ -68,6 +68,16 @@ void CUIMgr::OnMouseClick()
 	}
 }
 
+void CUIMgr::OnMouseRightClick()
+{
+	const vector<CScript*>& vecScript = m_DragUI->GetOwner()->GetScripts();
+
+	for (CScript* script : vecScript)
+	{
+		script->OnMouseRightClick();
+	}
+}
+
 void CUIMgr::OnMouseHover()
 {
 	const vector<CScript*>& vecScript = m_HoverUI->GetOwner()->GetScripts();
@@ -135,13 +145,27 @@ void CUIMgr::Tick()
 	if (pLevel == nullptr || pLevel->GetState() != LEVEL_STATE::PLAY)
 		return;
 
+	// Priority 정리 - nullptr인 부분 정리
+	for (auto iter = m_vecUI.begin(); iter != m_vecUI.end(); )
+	{
+		if (*iter == nullptr)
+			iter = m_vecUI.erase(iter);
+		else
+			++iter;
+	}
+
+	for (UINT i = 0; i < UINT(m_vecUI.size()); ++i)
+	{
+		m_vecUI[i]->SetPriority(i);
+	}
+
 	// 마우스 Event 감지
 	m_HoverUI = nullptr;				// 실제로 Hover된 UI
 	CUI* HoverCanvasUI = nullptr;		// HoverUI가 속한 Canvas
 	UINT Priority = UINT_MAX;			// UI 우선순위
 
 	// Canvas UI의 자식 오브젝트를 순회 (DFS)하면서 마우스가 겹치는 가장 자식 UI를 찾음
-	for (int i = 0; i < m_vecUI.size(); ++i)
+	for (size_t i = 0; i < m_vecUI.size(); ++i)
 	{
 		if (m_vecUI[i] == nullptr)
 			continue;
@@ -174,7 +198,7 @@ void CUIMgr::Tick()
 	}
 
 	// 마우스 Down이 감지된 경우
-	if (KEY_TAP(KEY::LBTN))
+	if (KEY_TAP(KEY::LBTN) || KEY_TAP(KEY::RBTN))
 	{
 		// Focus를 변경해줌
 		ChangeFocus(HoverCanvasUI, m_HoverUI);
@@ -189,7 +213,7 @@ void CUIMgr::Tick()
 
 
 	// 마우스 Up이 감지된 경우
-	else if (KEY_RELEASED(KEY::LBTN))
+	else if (KEY_RELEASED(KEY::LBTN) || KEY_RELEASED(KEY::RBTN))
 	{
 		// HoverUI가 없다면
 		if (m_HoverUI == nullptr)
@@ -205,10 +229,17 @@ void CUIMgr::Tick()
 			if (m_HoverUI == m_DragUI)
 			{
 				// 1-1. DragUI가 Click 기능을 지원한다면
-				if (m_DragUI->CanClick())
+				if (m_DragUI->CanClick() && KEY_RELEASED(KEY::LBTN))
 				{
 					// Click 이벤트 호출
 					OnMouseClick();
+				}
+
+				// 1-2. DragUI가 Right Click을 지원한다면
+				else if (m_DragUI->CanRightClick() && KEY_RELEASED(KEY::RBTN))
+				{
+					// Right Click 이벤트 호출
+					OnMouseRightClick();
 				}
 
 				// 1-2. DragUI가 Click 기능을 지원하지 않는다면
@@ -240,7 +271,7 @@ void CUIMgr::Tick()
 	}
 
 	// 마우스 Pressed가 감지된 경우
-	if (KEY_PRESSED(KEY::LBTN))
+	else if (KEY_PRESSED(KEY::LBTN) || KEY_PRESSED(KEY::RBTN))
 	{
 		// Drag가 이루어지는 중
 

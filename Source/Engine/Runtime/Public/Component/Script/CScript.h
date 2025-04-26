@@ -63,6 +63,7 @@ public:
 	// UI Event
 	// ========
 	virtual void OnMouseClick() {}
+	virtual void OnMouseRightClick() {}
 	virtual void OnMouseHover() {}
 	virtual PayLoad OnMouseBeginDrag() { return PayLoad{}; }
 	virtual void OnMouseDrop(const PayLoad& _PayLoad) {}

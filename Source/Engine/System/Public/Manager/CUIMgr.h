@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 class CUI;
 
@@ -28,6 +28,7 @@ public:
 
 	// Event 함수 호출
 	void OnMouseClick();
+	void OnMouseRightClick();
 	void OnMouseHover();
 	void OnMouseBeginDrag();
 	void OnMouseDrop();

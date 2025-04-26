@@ -4,16 +4,17 @@
 enum UI_TYPE
 {
 	// Event
-	UI_CLICK	= 0x00000001,
-	UI_HOVER	= 0x00000002,
-	UI_DRAG		= 0x00000004,	// Draggable Item
-	UI_DROP		= 0x00000008,	// Droppable Destination
+	UI_CLICK		= 0x00000001,
+	UI_HOVER		= 0x00000002,
+	UI_DRAG			= 0x00000004,	// Draggable Item
+	UI_DROP			= 0x00000008,	// Droppable Destination
+	UI_RIGHT_CLICK	= 0x00000010,	
 
 	// Preset UI
-	UI_CANVAS	= 0x10000000,
-	UI_BUTTON	= 0x00000003,
+	UI_CANVAS		= 0x10000000,
+	UI_BUTTON		= 0x00000013,
 
-	UI_DEFAULT	= 0x00000000,
+	UI_DEFAULT		= 0x00000000,
 };
 
 class CUI :
@@ -72,6 +73,7 @@ public:
 	// Event 지원 여부 (bit masking)
 	bool CanHover() const { return m_UIType & UI_HOVER; }
 	bool CanClick() const { return m_UIType & UI_CLICK; }
+	bool CanRightClick() const { return m_UIType & UI_RIGHT_CLICK; }
 	bool CanDrag() const { return m_UIType & UI_DRAG; }
 	bool CanDrop() const { return m_UIType & UI_DROP; }
 
