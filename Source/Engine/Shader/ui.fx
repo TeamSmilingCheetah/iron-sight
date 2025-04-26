@@ -93,5 +93,55 @@ float4 PS_UI(VS_OUT _in) : SV_Target
 	return output;
 }
 
+float4 PS_UI_HP(VS_OUT _in) : SV_Target
+{
+	// g_float_0 : aspect
+	// g_float_1 : semiHP
+	// g_float_2 : curHP
+	
+	const float curHP = g_float_2;	// 최대 체력에 대한 비율
+	const float semiHP = g_float_1;
+	
+	// cur hp
+	if (_in.vUV.x < curHP)
+	{
+		const float offset = 0.4f;	// 체력바가 빨개지기 시작하는 시점
+		
+		// 체력 비율에 따라 색상 결정
+		float ratio = saturate(curHP / (semiHP - offset));
+		
+		return float4(1.f, ratio, ratio, Color.a * 2.f);
+	}
+	
+	// semi max hp
+	else if (_in.vUV.x < semiHP)
+	{
+		const float dx = 0.02f;		// stripe pattern 너비
+		const float speed = 1.5f;	// 움직이는 속도
+		float offset = g_Time * speed;		// offset
+		offset = (offset - floor(offset)) * 2 * dx;	// 0 ~ 2*dx로 범위 제한
+		
+		// 몫 계산
+		const float aspect = g_float_0; // ui box의 aspect ratio
+		float u = _in.vUV.x + _in.vUV.y / aspect + 2 * dx - offset;	// u가 0보다 작을 경우를 대비해 2*dx를 더해줌. (조건문은 cost가 높다고 해서 사용 안함)
+		int count = 0;
+		while (u > dx)
+		{
+			u -= dx;
+			++count;
+		}
+
+		// 홀수면 흰색, 짝수면 color로 채움
+		return count % 2 == 1 ? float4(1.f, 1.f, 1.f, Color.a) : Color;
+	}
+
+	// max hp
+	else
+	{
+		return Color;	// 배경색
+	}
+	
+}
+
 
 #endif

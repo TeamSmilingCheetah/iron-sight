@@ -62,15 +62,27 @@ private:
 	vector<tSlot> m_vecWeaponSlot;	// 무기 슬롯
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
+	// ======
+	// Status
+	// ======
+	const float	m_MaxHP;		// 최대 체력
+	const float	m_SemiMaxHPRatio;	// 붕대, 구급상자로 회복할 수 있는 최대치의 비율
+	float	m_CurHP;		// 현재 체력
 
+
+	// =======
 	// UI 관리
+	// =======
 
-	// 인벤토리
+	// 인벤토리 UI
 	CGameObject*	m_InventoryCanvasUI;
 	bool			m_InventoryOpened;
 
 	// 방위 UI
 	CGameObject*	m_CardinalImageUI;
+
+	// HP UI
+	CGameObject*	m_HPUI;
 
 public:
 	void Begin() override;

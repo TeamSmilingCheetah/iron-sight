@@ -10,6 +10,7 @@
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
@@ -41,6 +42,9 @@ PlayerCharacter::PlayerCharacter()
 	, m_InventoryCanvasUI(nullptr)
 	, m_InventoryOpened(false)
 	, m_CardinalImageUI(nullptr)
+	, m_MaxHP(100.f)
+	, m_SemiMaxHPRatio(0.8f)
+	, m_CurHP(100.f)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -88,6 +92,12 @@ void PlayerCharacter::Begin()
 
 	}
 
+	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_CanvasUI");
+
+	Vec2 uiSize = m_HPUI->UI()->GetRectSize();
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, uiSize.x / uiSize.y);
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_SemiMaxHPRatio);
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, m_CurHP / m_MaxHP);
 
 }
 
@@ -122,6 +132,17 @@ void PlayerCharacter::Tick()
 
 	// 방위 UI : y축 회전값 전달
 	m_CardinalImageUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, Transform()->GetRelativeRotation().y);
+
+	// HP UI : 현재 체력에 대한 정보
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, m_CurHP / m_MaxHP);
+
+	// TEST : 체력 테스트
+	m_CurHP += DT * 10;
+	if (m_CurHP > m_MaxHP)
+	{
+		m_CurHP -= m_MaxHP;
+	}
+	
 }
 
 

@@ -724,4 +724,19 @@ void TestLevel::CreateTestLevel()
 	pVision->ColliderRay()->SetTriggerTarget(false);
 
 	pObject->AddChild(pVision);
+	// HP UI
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"HP_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CanvasUI->UI()->SetRectPos(Vec2(0.f, -350.f));
+	CanvasUI->UI()->SetRectSize(Vec2(280.f, 18.f));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.4f));
+	CanvasUI->UI()->SetPriority(1);
+
+	CanvasUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
+
+	pLevel->AddObject(8, CanvasUI, false);
+
 }
