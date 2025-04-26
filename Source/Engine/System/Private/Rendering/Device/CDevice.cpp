@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
@@ -402,19 +402,19 @@ int CDevice::CreateSamplerState()
 	Desc.MaxLOD = D3D11_FLOAT32_MAX;
 	DEVICE->CreateSamplerState(&Desc, m_Sampler[1].GetAddressOf());
 
-	CONTEXT->VSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
-	CONTEXT->HSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
-	CONTEXT->DSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
-	CONTEXT->GSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
-	CONTEXT->PSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
-	CONTEXT->CSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->VSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->HSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->DSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->GSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->PSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->CSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
 
-	CONTEXT->VSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
-	CONTEXT->HSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
-	CONTEXT->DSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
-	CONTEXT->GSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
-	CONTEXT->PSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
-	CONTEXT->CSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
+	CONTEXT->VSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
+	CONTEXT->HSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
+	CONTEXT->DSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
+	CONTEXT->GSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
+	CONTEXT->PSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
+	CONTEXT->CSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
 
 	return S_OK;
 }
