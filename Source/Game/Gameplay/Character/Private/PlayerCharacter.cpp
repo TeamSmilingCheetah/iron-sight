@@ -9,6 +9,7 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
@@ -37,6 +38,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_bCanThrow(false)
 	, m_InventoryCanvasUI(nullptr)
 	, m_InventoryOpened(false)
+	, m_CardinalImageUI(nullptr)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -66,24 +68,11 @@ void PlayerCharacter::Begin()
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"CanvasUI");
+	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
 }
 
 void PlayerCharacter::Tick()
 {
-	Vec3 vPos = Transform()->GetRelativePos();
-	Vec3 vRot = Transform()->GetRelativeRotation();
-
-	UpdatePosition();
-	PlayerAttack();
-	PlayerReload();
-
-
-	if (KEY_PRESSED(KEY::NUMPAD_9))
-	{
-		DrawDebugRect(Vec4(0.f, 1.f, 0.f, 0.5f), Transform()->GetRelativePos()
-					  , Vec2(200.f, 200.f), Vec3(0.f, 0.f, 0.f), true, 0.f);
-	}
-
 	// 마우스 가둠
 	if (KEY_TAP(KEY::SPACE))
 	{
@@ -95,24 +84,24 @@ void PlayerCharacter::Tick()
 		UpdateRotation();
 	}
 
-	// 인벤토리 Toggle
+	UpdatePosition();
+	PlayerAttack();
+	PlayerReload();
+	PlayerInteractWeapon();
+
+	// =======
+	// UI 관리
+	// =======
+	
+	// 인벤토리 UI Toggle
 	if (KEY_TAP(KEY::TAB))
 	{
 		m_InventoryOpened = !m_InventoryOpened;
 		SetObjectActive(m_InventoryCanvasUI, m_InventoryOpened);
 	}
 
-	PlayerInteractWeapon();
-
-	if (m_bThrowBoom)
-	{
-		if (THROWABLE_FIRST <= m_CurWeaponIdx || m_CurWeaponIdx <= THROWABLE_SECOND)
-		{
-			m_CurWeaponIdx = NONE_WEAPON;
-			m_CurWeapon = nullptr;
-			m_bThrowBoom = false;
-		}
-	}
+	// 방위 UI : y축 회전값 전달
+	m_CardinalImageUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, Transform()->GetRelativeRotation().y);
 }
 
 

@@ -112,8 +112,8 @@ StructuredBuffer<tLight3DInfo>   g_Light3DInfo : register(t14); // 3D 광원 정
 StructuredBuffer<Matrix>        g_arrBoneMat     : register(t17);
 StructuredBuffer<Matrix>        g_arrPureBoneMat : register(t18);
 
-SamplerState    g_sam_0 : register(s0); // 이방성 필터링
-SamplerState    g_sam_1 : register(s1); // MIN_MAG_POINT 필터링
+SamplerState    g_sam_0 : register(s1); // 이방성 필터링
+SamplerState    g_sam_1 : register(s2); // MIN_MAG_POINT 필터링
 
 #define PI  3.1415926535f
 

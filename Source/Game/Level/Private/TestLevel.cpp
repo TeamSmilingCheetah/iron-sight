@@ -643,4 +643,41 @@ void TestLevel::CreateTestLevel()
 	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\TestBullet.pref", L"Prefab\\TestBullet.pref");
 
 	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
+
+
+	// 방위 UI
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"Cardinal_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
+	CanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
+	CanvasUI->UI()->SetPriority(1);
+
+	pLevel->AddObject(8, CanvasUI, false);
+
+	CGameObject* pImageUI = new CGameObject;
+	pImageUI->SetName(L"Cardinal_ImageUI");
+	pImageUI->AddComponent(new CUI);
+	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
+	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
+	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
+
+	pImageUI->AddComponent(new CUIRender);
+	pImageUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
+
+	CanvasUI->AddChild(pImageUI);
+
+	pImageUI = new CGameObject;
+	pImageUI->SetName(L"Cardinal_ArrowUI");
+	pImageUI->AddComponent(new CUI);
+	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
+	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
+	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
+
+	pImageUI->AddComponent(new CUIRender);
+
+	CanvasUI->AddChild(pImageUI);
 }
