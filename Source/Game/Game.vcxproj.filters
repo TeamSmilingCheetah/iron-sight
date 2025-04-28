@@ -53,6 +53,15 @@
     <ClCompile Include="Gameplay\Inventory\Private\UI_Vicinity.cpp">
       <Filter>02. Gameplay\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp">
+      <Filter>02. Gameplay\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp">
+      <Filter>02. Gameplay\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Character\Public\EnemyVisionScript.cpp">
+      <Filter>02. Gameplay\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -110,7 +119,16 @@
       <Filter>02. Gameplay\Inventory</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Inventory\Public\UI_Vicinity.h">
-      <Filter>02. Gameplay\Inventory</Filter>
+    <Filter>02. Gameplay\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Character\Public\EnemyController.h">
+      <Filter>02. Gameplay\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Character\Public\TestCharacter.h">
+      <Filter>02. Gameplay\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Character\Public\EnemyVisionScript.h">
+      <Filter>02. Gameplay\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -136,7 +154,10 @@
       <UniqueIdentifier>{24897eee-c89e-4d69-ad7e-dbde0720867a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Gameplay\Inventory">
-      <UniqueIdentifier>{3716e2ae-e442-4059-ac24-b50b998ac625}</UniqueIdentifier>
+  <UniqueIdentifier>{3716e2ae-e442-4059-ac24-b50b998ac625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\Enemy">
+      <UniqueIdentifier>{a90a6d6d-ebe1-4d56-b6a3-d46fd0cb6d45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

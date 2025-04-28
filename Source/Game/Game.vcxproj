@@ -162,6 +162,9 @@
     <ClInclude Include="Gameplay\Inventory\Public\UI_Inventory.h" />
     <ClInclude Include="Gameplay\Inventory\Public\UI_Item.h" />
     <ClInclude Include="Gameplay\Inventory\Public\UI_Vicinity.h" />
+    <ClInclude Include="Gameplay\Character\Public\EnemyController.h" />
+    <ClInclude Include="Gameplay\Character\Public\EnemyVisionScript.h" />
+    <ClInclude Include="Gameplay\Character\Public\TestCharacter.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h" />
@@ -182,6 +185,9 @@
     <ClCompile Include="Gameplay\Inventory\Private\UI_Inventory.cpp" />
     <ClCompile Include="Gameplay\Inventory\Private\UI_Item.cpp" />
     <ClCompile Include="Gameplay\Inventory\Private\UI_Vicinity.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
+    <ClCompile Include="Gameplay\Character\Public\EnemyVisionScript.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp" />

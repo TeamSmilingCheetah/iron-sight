@@ -1,0 +1,327 @@
+#include "pch.h"
+#include "Game/Gameplay/Character/Public/EnemyController.h"
+
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
+
+
+#include "Engine/Runtime/Public/Actor/CLayer.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+
+EnemyController::EnemyController(SCRIPT_TYPE _Type)
+	: CScript(static_cast<UINT>(_Type))
+	, m_Force(0.f)
+	, m_Velocity(0.f)
+	, m_GravidyVelocity(0.f)
+	, m_Mass(3.f)
+	, m_Friction(100.f)
+	, m_MaxSpeed(10.f)
+	, m_GravityAccel(10.f)
+	, m_GravityMaxSpeed(30.f)
+	, m_IsGround(true)
+	, m_HP(10)
+	, m_State(Enemy_State::None)
+	, m_PrevState(Enemy_State::None)
+{
+}
+
+EnemyController::~EnemyController()
+{
+}
+
+void EnemyController::Tick()
+{
+	// 이동
+	UpdatePosition();
+}
+
+void EnemyController::DemageCalcul(int _Demage)
+{
+	m_HP -= _Demage;
+
+	// 0보다 낮으면 사망
+	if (m_HP < 0.f)
+	{
+		m_HP = 0.f;
+
+		DestroyObject(GetOwner());
+	}
+
+}
+
+
+void EnemyController::UpdatePosition()
+{
+	// 힘을 0 으로 초기화
+	m_Force = Vec3(0.f, 0.f, 0.f);
+
+	Vec3 vPos = Transform()->GetRelativePos();
+
+	// 이동할 방향 연산
+	MoveCalcul();
+
+	// 중력 연산
+	gravityCalcul();
+
+	// 충돌 연산
+	ColliderCalcul();
+
+	vPos += m_Velocity;
+	Transform()->SetRelativePos(vPos);
+
+	// 충돌벡터 초기화
+	m_vecCollisionNormal.clear();
+}
+
+void EnemyController::MoveCalcul()
+{
+	// 이전 틱의 이동방향저장
+	Vec3 vPrevVelocityDir = m_Velocity;
+	if (vPrevVelocityDir.Length() > 0.001f) {
+		vPrevVelocityDir.Normalize();
+	}
+
+	// 힘의 방향과 량
+	float ForceScar = m_InputMoveForce;
+	Vec3 vInputDir = m_InputMoveDir;
+
+
+	// 입력이 있는 경우
+	if (vInputDir.Length() > 0.f)
+	{
+		float directionDot = vInputDir.Dot(vPrevVelocityDir);
+
+		// 방향 전환이 큰 경우(90도 이상) 속도를 빠르게 줄이고 해당방향 힘을 강하게 증가
+		if (directionDot < 0.f && m_Velocity.Length() > 1.0f)
+		{
+			// 방향 전환 시 속도 감소
+			float reductionFactor = 0.5f;
+			m_Velocity *= reductionFactor;
+
+			// 방향 전환 시 추가 힘 적용
+			ForceScar *= 1.5f;
+		}
+
+		// 힘벡터 완성
+		m_Force = vInputDir * ForceScar;
+
+		// 방향키입력에 따라 가속도백터 연산
+		m_Accel = m_Force / m_Mass;
+
+		// 속도 벡터 연산
+		m_Velocity += m_Accel * DT;
+
+		// 최대속도 확인(땅위에 있을 경우에만 판단)
+		if (m_IsGround && m_MaxSpeed < m_Velocity.Length())
+		{
+			m_Velocity.Normalize();
+			m_Velocity *= m_MaxSpeed;
+		}
+
+	}
+	// 이동이 없다면 마찰계수에 따라 감속
+	else if (m_IsGround)
+	{
+		// 속도의 반대방향으로 마찰계수*질량을 곱합
+		Vec3 vFriction = -m_Velocity;
+		vFriction.Normalize();
+		vFriction *= m_Friction * m_Mass * DT;
+
+		// 마찰력이 더 높다면 속도0
+		if (m_Velocity.Length() < vFriction.Length())
+		{
+			m_Velocity = Vec3(0.f, 0.f, 0.f);
+		}
+		else
+		{
+			m_Velocity += vFriction;
+		}
+	}
+}
+
+void EnemyController::gravityCalcul()
+{
+	// 땅 위에있나 판단
+	m_IsGround = false;
+	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
+	{
+		// 노말의 y성분이 0.3 이상이면 지면으로 판단 (약 60도)
+		if (m_vecCollisionNormal[i].y > 0.3f)
+		{
+			m_IsGround = true;
+			break;
+		}
+	}
+
+	Vec3 gravityDir = Vec3(0.f, -1.f, 0.f);
+	if (!m_IsGround)
+	{
+		// 중력가속도 추가하여 y축 아래로 중력 속도 변화
+		m_GravidyVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
+
+		// 최대 중력속도 제한
+		if (m_GravidyVelocity.y < -m_GravityMaxSpeed)
+			m_GravidyVelocity.y = -m_GravityMaxSpeed;
+	}
+	else
+	{
+		// 땅위이며 아래로 내려가는것이 아니라면 속도 0으로 설정
+		if (m_GravidyVelocity.y < 0.f)
+		{
+			m_GravidyVelocity = Vec3(0.f, 0.f, 0.f);
+		}
+	}
+
+	m_Velocity += m_GravidyVelocity;
+}
+
+void EnemyController::ColliderCalcul()
+{
+	// 충돌 처리
+	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
+	{
+		// 속도벡터가 충돌노말벡터로의 투영길이확인
+		float dotProduct = m_Velocity.Dot(m_vecCollisionNormal[i]);
+		// 직각이거나 예각인 상태는 걸러냄 충돌노말벡터로 향하는게 아니니 걸러냄
+		if (dotProduct < 0.f)
+		{
+			// 충돌 방향으로의 속도 성분 제거
+			m_Velocity -= m_vecCollisionNormal[i] * dotProduct;
+		}
+	}
+}
+
+
+void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+	// 트리거 설정 확인을 위한 기능(나중에 제거)
+	_OtherCollider->SetTrigger(true);
+
+	// 트리거용 충돌체면 해당 코드 사용 x
+	if (_OtherCollider->IsTrigger())
+	{
+		return;
+
+	}
+	else
+	{
+		Vec3 pPos = Transform()->GetRelativePos();
+
+		Vec3 hitNormal = _Collider->GetHitNormal();
+		hitNormal.Normalize();
+
+		//Vec3 hitPoint = _Collider->GetHitPoint();
+		//Transform()->SetRelativePos(hitPoint);
+
+		// 노말이 유효하면 사용
+		if (hitNormal.Length() > 0.001f)
+		{
+			// 충돌 노말 추가
+			m_vecCollisionNormal.push_back(hitNormal);
+		}
+		else
+		{
+			Vec3 myPos = Transform()->GetRelativePos();
+			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+			Vec3 normal = myPos - otherPos;
+			normal.Normalize();
+
+			// 충돌 벡터 추가
+			m_vecCollisionNormal.push_back(normal);
+		}
+	}
+}
+
+void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+	// 트리거용 충돌체면 해당 코드 사용 x
+	if (_OtherCollider->IsTrigger())
+	{
+		return;
+	}
+	else
+	{
+		Vec3 hitNormal = _Collider->GetHitNormal();
+		// 노말이 유효하면 사용
+		if (hitNormal.Length() > 0.001f)
+		{
+			// 충돌 노말 추가
+			m_vecCollisionNormal.push_back(hitNormal);
+		}
+		else
+		{
+			Vec3 myPos = Transform()->GetRelativePos();
+			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+			Vec3 normal = myPos - otherPos;
+			normal.Normalize();
+			// 노말이 유효하면 사용
+			if (hitNormal.Length() > 0.001f)
+			{
+				// 충돌 노말 추가
+				m_vecCollisionNormal.push_back(hitNormal);
+			}
+			else
+			{
+				Vec3 myPos = Transform()->GetRelativePos();
+				Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+				Vec3 normal = myPos - otherPos;
+				normal.Normalize();
+
+				// 충돌 벡터 추가
+				m_vecCollisionNormal.push_back(normal);
+			}
+		}
+	}
+}
+
+void EnemyController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+}
+
+void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+{
+	Vec3 pPos = Transform()->GetRelativePos();
+
+	// 지형의 노말 벡터를 얻음
+	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+
+	Transform()->SetRelativePos(pPos);
+
+	// 노말이 유효하면 사용
+	if (LandNormal.Length() > 0.001f)
+	{
+		// 충돌 노말 추가
+		m_vecCollisionNormal.push_back(LandNormal);
+	}
+}
+
+void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+{
+	Vec3 pPos = Transform()->GetRelativePos();
+
+	// 지형의 노말 벡터를 얻음
+	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+
+	// 노말이 유효하면 사용
+	if (LandNormal.Length() > 0.001f)
+	{
+		// 충돌 노말 추가
+		m_vecCollisionNormal.push_back(LandNormal);
+	}
+}
+
+void EnemyController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+{
+}
+
+
+void EnemyController::SaveComponent(FILE* _File)
+{
+}
+
+void EnemyController::LoadComponent(FILE* _File)
+{
+}
