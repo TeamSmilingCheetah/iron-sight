@@ -5,7 +5,8 @@
 
 CScript::CScript(UINT _ScriptType)
 	: CComponent(COMPONENT_TYPE::SCRIPT)
-	  , m_ScriptType(_ScriptType)
+	, m_ScriptType(_ScriptType)
+	, m_ParentScriptType(_ScriptType)
 {
 }
 

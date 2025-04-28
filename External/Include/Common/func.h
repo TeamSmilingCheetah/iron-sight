@@ -42,6 +42,7 @@ bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDi
 float RandomFloat(float min, float max);
 
 class CScript* GetScriptWithType(CGameObject* _Object, UINT _Type);
+CScript* GetScriptWithParentType(CGameObject* _Object, UINT _Type);
 
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj);
 

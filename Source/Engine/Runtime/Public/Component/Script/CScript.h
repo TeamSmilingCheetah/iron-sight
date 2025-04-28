@@ -15,10 +15,13 @@ class CScript :
 {
 private:
 	const UINT m_ScriptType;
+	UINT m_ParentScriptType;
 	vector<tScriptParam> m_vecScriptParam;
 
 public:
+	void SetParentScriptType(UINT _Type) { m_ParentScriptType = _Type; };
 	UINT GetScriptType() { return m_ScriptType; }
+	UINT GetParentScriptType() { return m_ParentScriptType; }
 	void AddScriptParam(tScriptParam _Param) { m_vecScriptParam.push_back(_Param); }
 	const vector<tScriptParam>& GetScriptParam() { return m_vecScriptParam; }
 	void Instantiate(Ptr<CPrefab> _Pref, Vec3 _WorldPos, int _Layer);
