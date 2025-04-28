@@ -254,8 +254,6 @@ void InventoryController::LoadComponent(FILE* _File)
 	LoadObjectRef(m_InventoryUI, _File);
 }
 
-#include <algorithm>
-
 // Compare
 bool ItemComp (CGameObject* _lhs, CGameObject* _rhs)
 {

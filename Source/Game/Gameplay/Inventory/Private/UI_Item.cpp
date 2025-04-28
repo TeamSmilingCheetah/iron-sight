@@ -2,9 +2,12 @@
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 
 ItemUI::ItemUI()
 	: CScript(ITEMUI)
@@ -89,4 +92,27 @@ PayLoad ItemUI::OnMouseBeginDrag()
 	}
 
 	return payload;
+}
+
+void ItemUI::OnMouseRightClick()
+{
+	// 주변부 UI에 속한 item UI라면 -> 획득
+	if (m_ItemObject != nullptr)
+	{
+		auto inventory = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
+
+		inventory->AcquireItem(m_ItemObject);
+	}
+
+	// 인벤토리 UI에 속한 item UI라면 -> 사용
+	else
+	{
+		// TEST : heal 일단 여기서 구현.. 구조 변경
+
+		if (IS_HEAL(static_cast<UINT>(m_ItemInfo.Type)))
+		{
+			auto playerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(PLAYERSCRIPT));
+			playerScript->TriggerHeal(m_ItemInfo.Type);
+		}
+	}
 }

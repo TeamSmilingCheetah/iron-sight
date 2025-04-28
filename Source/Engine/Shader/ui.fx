@@ -98,49 +98,105 @@ float4 PS_UI_HP(VS_OUT _in) : SV_Target
 	// g_float_0 : aspect
 	// g_float_1 : semiHP
 	// g_float_2 : curHP
+	// g_float_3 : boost
+
+	// ui에서 energy용으로 사용할 uv.y 비율
+	const float boostRatio = 0.15f;
 	
-	const float curHP = g_float_2;	// 최대 체력에 대한 비율
-	const float semiHP = g_float_1;
-	
-	// cur hp
-	if (_in.vUV.x < curHP)
+	// 에너지 바
+	if (_in.vUV.y < boostRatio)
 	{
-		const float offset = 0.4f;	// 체력바가 빨개지기 시작하는 시점
-		
-		// 체력 비율에 따라 색상 결정
-		float ratio = saturate(curHP / (semiHP - offset));
-		
-		return float4(1.f, ratio, ratio, Color.a * 2.f);
-	}
-	
-	// semi max hp
-	else if (_in.vUV.x < semiHP)
-	{
-		const float dx = 0.02f;		// stripe pattern 너비
-		const float speed = 1.5f;	// 움직이는 속도
-		float offset = g_Time * speed;		// offset
-		offset = (offset - floor(offset)) * 2 * dx;	// 0 ~ 2*dx로 범위 제한
-		
-		// 몫 계산
-		const float aspect = g_float_0; // ui box의 aspect ratio
-		float u = _in.vUV.x + _in.vUV.y / aspect + 2 * dx - offset;	// u가 0보다 작을 경우를 대비해 2*dx를 더해줌. (조건문은 cost가 높다고 해서 사용 안함)
-		int count = 0;
-		while (u > dx)
+		const float boost = g_float_3;
+
+		if (_in.vUV.x < boost)
 		{
-			u -= dx;
-			++count;
+			return float4(1.f, 0.8f, 0.f, Color.a * 2);
 		}
-
-		// 홀수면 흰색, 짝수면 color로 채움
-		return count % 2 == 1 ? float4(1.f, 1.f, 1.f, Color.a) : Color;
+		else
+		{
+			return Color;			
+		}
 	}
-
-	// max hp
+	
+	// 체력 바
 	else
 	{
-		return Color;	// 배경색
-	}
+		const float curHP = g_float_2; // 최대 체력에 대한 비율
+		const float semiHP = g_float_1;
 	
+		// cur hp
+		if (_in.vUV.x < curHP)
+		{
+			const float offset = 0.4f; // 체력바가 빨개지기 시작하는 시점
+		
+			// 체력 비율에 따라 색상 결정
+			float ratio = saturate(curHP / (semiHP - offset));
+			
+			// 깜빡 거리기 위해 ratio에 더하는 값
+			const float blinkThreshold = 0.2f;
+			
+			// 깜빡 거리는 효과.. 체력이 낮을 때만 적용
+			if (ratio < blinkThreshold * 2.f)
+			{
+				float blink = 0.f;
+				
+				blink = g_Time;
+				blink = blink - floor(blink);
+				blink *= blinkThreshold * 2.f;
+
+				blink = blink < blinkThreshold ? blink : blinkThreshold * 2.f - blink;
+
+				ratio += blink;
+			}
+
+			return float4(1.f, ratio, ratio, Color.a * 2.f);
+		}
+	
+		// semi max hp
+		else if (_in.vUV.x < semiHP)
+		{
+			const float dx = 0.024f; // stripe pattern 너비
+			float offset = 0.f; // offset
+			offset = (offset - floor(offset)) * 2 * dx; // 0 ~ 2*dx로 범위 제한
+		
+			// 몫 계산
+			const float aspect = g_float_0; // ui box의 aspect ratio
+			float u = _in.vUV.x + _in.vUV.y / aspect + 2 * dx - offset; // u가 0보다 작을 경우를 대비해 2*dx를 더해줌. (조건문은 cost가 높다고 해서 사용 안함)
+			int count = 0;
+			while (u > dx)
+			{
+				u -= dx;
+				++count;
+			}
+
+			// 홀수면 흰색, 짝수면 color로 채움
+			return count % 2 == 1 ? float4(1.f, 1.f, 1.f, Color.a) : Color;
+		}
+
+		// max hp
+		else
+		{
+			return Color; // 배경색
+		}
+	}
+}
+
+float4 PS_UI_ItemUse(VS_OUT _in) : SV_Target
+{
+	// g_float_0 : timeRatio (지난 시간 / 총 시간)
+	
+	const float timeRatio = g_float_0;
+	
+	float r = length(_in.vUV.xy - float2(0.5f, 0.5f));
+	
+	if (r > 0.5f)
+		discard;
+
+	// +y축 기준으로 시계 방향으로 진행하기 위해 atan2 반대로 진행
+	float angleRatio = atan2(_in.vUV.x - 0.5f, 0.5f - _in.vUV.y) / (2 * PI);
+	angleRatio = angleRatio - floor(angleRatio);
+	
+	return (r > 0.45f && angleRatio < timeRatio) ? float4(1.f, 1.f, 1.f, 1.f) : Color;
 }
 
 

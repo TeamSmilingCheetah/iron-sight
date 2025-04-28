@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include <Windows.h>
 
 // STL
@@ -12,6 +16,7 @@
 #include <string>
 #include <typeinfo>
 #include <random>
+#include <algorithm>
 
 using std::vector;
 using std::list;
@@ -23,6 +28,8 @@ using std::make_pair;
 using std::set;
 using std::string;
 using std::wstring;
+using std::min;
+using std::max;
 
 #include <filesystem>
 using namespace std::filesystem;

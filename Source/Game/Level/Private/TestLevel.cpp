@@ -178,7 +178,7 @@ void TestLevel::CreateTestLevel()
 
 	// CanvasUI
 	CGameObject* CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"CanvasUI");
+	CanvasUI->SetName(L"Inventory_CanvasUI");
 	CanvasUI->AddComponent(new CUI(UI_CANVAS));
 
 	CanvasUI->AddComponent(new CUIRender);
@@ -302,7 +302,7 @@ void TestLevel::CreateTestLevel()
 				// DragUI
 				CGameObject* DragUI = new CGameObject;
 				DragUI->SetName(L"ItemUI");
-				DragUI->AddComponent(new CUI(UI_DRAG));
+				DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
 
 				DragUI->AddComponent(new CUIRender);
 				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
@@ -331,7 +331,7 @@ void TestLevel::CreateTestLevel()
 				// DragUI
 				CGameObject* DragUI = new CGameObject;
 				DragUI->SetName(L"ItemUI");
-				DragUI->AddComponent(new CUI(UI_DRAG));
+				DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
 
 				DragUI->AddComponent(new CUIRender);
 				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
@@ -686,8 +686,6 @@ void TestLevel::CreateTestLevel()
 
 	CanvasUI->AddChild(pImageUI);
 
-
-
 	// 적 테스트
 
 	Ptr<CMeshData> pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
@@ -724,19 +722,50 @@ void TestLevel::CreateTestLevel()
 	pVision->ColliderRay()->SetTriggerTarget(false);
 
 	pObject->AddChild(pVision);
-	// HP UI
+
+	// CanvasUI : 화면 전체 가리는 투명 ui
 	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"HP_CanvasUI");
+	CanvasUI->SetName(L"CanvasUI_TEST");
 	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-	CanvasUI->UI()->SetRectPos(Vec2(0.f, -350.f));
-	CanvasUI->UI()->SetRectSize(Vec2(280.f, 18.f));
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetRectPos(0.f, 0.f);
+	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
 	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.4f));
-	CanvasUI->UI()->SetPriority(1);
 
 	CanvasUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
 
 	pLevel->AddObject(8, CanvasUI, false);
 
+
+	// HP UI
+	CGameObject* childUI = new CGameObject;
+	childUI->SetName(L"HP_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, -350.f));
+	childUI->UI()->SetRectSize(Vec2(280.f, 18.f));
+	
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.4f));
+	
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
+
+	CanvasUI->AddChild(childUI);
+
+	// ItemUse UI
+	childUI = new CGameObject;
+	childUI->SetName(L"ItemUse_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
+
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
+
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
+	childUI->UI()->AddText(L"", 17.f, 16.f, 20.f, FONT_RGBA(255, 255, 255, 255));
+	SetObjectActive(childUI, false);
+
+	CanvasUI->AddChild(childUI);
 }
