@@ -10,6 +10,8 @@
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/TestSound.h"
+#include "Game\Gameplay\Character\Public\TestCharacter.h"
+#include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -19,12 +21,13 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CGunScript");
 	_vec.push_back(L"CThrowableScript");
 	_vec.push_back(L"TestSound");
-
 	_vec.push_back(L"InventoryScript");
 	_vec.push_back(L"ItemScript");
 	_vec.push_back(L"ItemUIScript");
 	_vec.push_back(L"InventoryUIScript");
 	_vec.push_back(L"VicinityUIScript");
+	_vec.push_back(L"EnemyController");
+	_vec.push_back(L"EnemyVision");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -51,6 +54,10 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new InventoryUI;
 	if (L"VicinityUIScript" == _strScriptName)
 		return new VicinityUI;
+	if (L"TestCharacter" == _strScriptName)
+		return new TestCharacter;
+	if (L"EnemyVision" == _strScriptName)
+		return new EnemyVisionScript;
 	return nullptr;
 }
 
@@ -91,7 +98,12 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 	case static_cast<UINT>(VICINITYUI):
 		return new VicinityUI;
 		break;
-
+	case static_cast<UINT>(TESTCHARACTER):
+		return new TestCharacter;
+		break;
+	case static_cast<UINT>(ENEMYVISION):
+		return new EnemyVisionScript;
+		break;
 	}
 	return nullptr;
 }
@@ -142,6 +154,13 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case VICINITYUI:
 		return L"VicinityUIScript";
+
+	case TESTCHARACTER:
+		return L"TestCharacter";
+		break;
+
+	case ENEMYVISION:
+		return L"EnemyVision";
 		break;
 	}
 	return nullptr;

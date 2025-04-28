@@ -22,6 +22,8 @@
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
 #include "Game/Gameplay/TestSound.h"
+#include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
+#include "Game\Gameplay\Character\Public\TestCharacter.h"
 
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -58,6 +60,8 @@ void TestLevel::CreateTestLevel()
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 6);
+	CCollisionMgr::GetInst()->CollisionCheck(3, 7);
+	CCollisionMgr::GetInst()->CollisionCheck(0, 7);
 
 	CGameObject* pObject = nullptr;
 
@@ -680,4 +684,42 @@ void TestLevel::CreateTestLevel()
 	pImageUI->AddComponent(new CUIRender);
 
 	CanvasUI->AddChild(pImageUI);
+
+
+
+	// 적 테스트
+
+	Ptr<CMeshData> pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
+
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"TestTarget");
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new TestCharacter);
+
+	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
+	pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
+	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	pObject->Transform()->SetFrustumRadius(750.f);
+
+	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+
+	pLevel->AddObject(7, pObject, false);
+
+	// 적 시야 테스트
+	CGameObject* pVision = new CGameObject;
+	pVision->SetName(L"TestVision");
+	pVision->AddComponent(new CCollider3D);
+	pVision->AddComponent(new CColliderRay);
+	pVision->AddComponent(new EnemyVisionScript);
+	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+
+	pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
+	pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2000.f));
+	pVision->Collider3D()->SetIndependentScale(true);
+	pVision->Collider3D()->SetTrigger(true);
+
+	pVision->ColliderRay()->SetRayLength(1000);
+	pVision->ColliderRay()->SetIndependentDir(true);
+
+	pObject->AddChild(pVision);
 }
