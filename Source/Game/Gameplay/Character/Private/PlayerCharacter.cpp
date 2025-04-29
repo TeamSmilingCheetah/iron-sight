@@ -44,17 +44,17 @@ PlayerCharacter::PlayerCharacter()
 	, m_CardinalImageUI(nullptr)
 	, m_MaxHP(100.f)
 	, m_SemiMaxHP(75.f)
-	, m_CurHP(10.f)
+	, m_CurHP(100.f)
 	, m_MaxBoost(100.f)
 	, m_CurBoost(0.f)
-	, m_HealState(HEAL_STATE::NONE)
+	, m_HealType(ITEM_TYPE::END)
 	, m_RemainTime(0.f)
 	, m_TotalTime(0.f)
 	, m_HealAmount(0.f)
 	, m_BoostRemainTime(0.f)
-	, m_BoostTotalTime(4.f)
-	, m_BoostUnit(10.f)
-	, m_BoostHP(10.f)
+	, m_BoostTotalTime(8.f)
+	, m_BoostUnit(0.3f)
+	, m_BoostSpeed(1.f)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -72,6 +72,8 @@ PlayerCharacter::PlayerCharacter()
 		sprintf_s(name, "Slot %d", i+1);
 		AddScriptParam(tScriptParam{ SCRIPT_PARAM::GAMEOBJECT, name, &m_vecWeaponSlot[i].Object });
 	}
+
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "CurHP", &m_CurHP });
 }
 
 PlayerCharacter::~PlayerCharacter()
@@ -105,10 +107,9 @@ void PlayerCharacter::Begin()
 	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
 
 	Vec2 uiSize = m_HPUI->UI()->GetRectSize();
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, uiSize.x / uiSize.y);
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_SemiMaxHP / m_MaxHP);
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, m_CurHP / m_MaxHP);
-
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC2_0, Vec2(uiSize.x / uiSize.y, m_SemiMaxHP / m_MaxHP));	// 고정 값
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, m_CurHP / m_MaxHP);
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
 	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
 
 }
@@ -514,17 +515,6 @@ void PlayerCharacter::PlayerInteractWeapon()
 
 }
 
-//CGameObject* PlayerCharacter::GetPlayeChildMeshObject(const wstring& _str)
-//{
-//	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
-//
-//	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
-//	unordered_map<wstring, CGameObject*> mapBones = Animator3D()->GetmapBone();
-//
-//	auto iter = mapBones.find(_str);
-//
-//	return iter->second;
-//}
 void PlayerCharacter::PlayerControlUI()
 {
 	// 인벤토리 UI Toggle
@@ -537,22 +527,42 @@ void PlayerCharacter::PlayerControlUI()
 	// 방위 UI : y축 회전값 전달
 	m_CardinalImageUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, Transform()->GetRelativeRotation().y);
 
-	// HP UI : 현재 체력에 대한 정보
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, m_CurHP / m_MaxHP);
+	// HP UI : 현재 체력과 부스트에 대한 정보
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, m_CurHP / m_MaxHP);
+	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
+
+	if (IS_HEAL(static_cast<UINT>(m_HealType)))
+	{
+		if (m_HealAmount == 100.f)
+			m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 1.f);
+		else
+			m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, min(m_CurHP + m_HealAmount, m_SemiMaxHP) / m_MaxHP);
+	}
+	else
+	{
+		m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.f);
+	}
+	
 }
 
 void PlayerCharacter::PlayerHeal()
 {
+	UINT type = static_cast<UINT>(m_HealType);
+
 	// 회복 아이템 사용중이면
-	if (m_HealState != HEAL_STATE::NONE)
+	if (IS_HEAL(type) || IS_BOOST(type))
 	{
 		m_RemainTime -= DT;
 
 		// 완료
 		if (m_RemainTime <= 0.f)
 		{
+			auto inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
+
+			inventory->UseItem(m_HealType);
+
 			// 회복 수행
-			if (m_HealState == HEAL_STATE::HEAL)
+			if (IS_HEAL(type))
 			{
 				// 의료용 키트라 풀피 채워야 되면
 				if (m_HealAmount == m_MaxHP)
@@ -566,13 +576,13 @@ void PlayerCharacter::PlayerHeal()
 					m_CurHP = min(m_CurHP + m_HealAmount, m_SemiMaxHP);
 				}
 			}
-			else // if (m_HealState == HEAL_STATE::BOOST)
+			else // if (IS_BOOST(type))
 			{
 				m_CurBoost = min(m_CurBoost + m_HealAmount, m_MaxBoost);
 			}
 
 			// 값 초기화
-			m_HealState = HEAL_STATE::NONE;
+			m_HealType = ITEM_TYPE::END;
 			m_RemainTime = 0.f;
 			m_HealAmount = 0.f;
 
@@ -596,16 +606,40 @@ void PlayerCharacter::PlayerHeal()
 	// Boost가 남아있다면
 	if (m_CurBoost > 0.f)
 	{
-		// TODO: ..  Boost 로직 구현
-
 		// 특정 시간마다 boost를 줄이고 체력을 채워야 함
 		m_BoostRemainTime -= DT;
+		m_CurBoost -= m_BoostUnit * DT;	// 부드럽게 빼줌
 
 		// Boost 수행
 		if (m_BoostRemainTime <= 0.f)
 		{
-			m_CurHP = min(m_CurHP + m_BoostHP, m_MaxHP);
-			m_CurBoost = max(0.f, m_CurBoost - m_BoostUnit);
+			// 부스트 비율에 따라 적용 효과가 다름
+			float boostRatio = m_CurBoost / m_MaxBoost;
+
+			float boostHP = 0.f;
+
+			if (boostRatio >= 0.9f)
+			{
+				boostHP = 4.f;
+				m_BoostSpeed = 1.0625f;
+			}
+			else if (boostRatio >= 0.6f)
+			{
+				boostHP = 3.f;
+				m_BoostSpeed = 1.025f;
+			}
+			else if (boostRatio >= 0.2f)
+			{
+				boostHP = 2.f;
+				m_BoostSpeed = 1.f;
+			}
+			else
+			{
+				boostHP = 1.f;
+				m_BoostSpeed = 1.f;
+			}
+
+			m_CurHP = min(m_CurHP + boostHP, m_MaxHP);
 
 			// 초기 값 세팅
 			if (m_CurBoost > 0.f)
@@ -631,60 +665,37 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 	// ui 활성화
 	SetObjectActive(m_ItemUseUI, true);
 
-	auto inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
-
-	inventory->UseItem(_HealType);
+	m_HealType = _HealType;
 
 	switch (_HealType)
 	{
 	case ITEM_TYPE::FIRST_AID_KIT:
-		//{ 6.f, 75.f, 75.f };
-		m_HealState = HEAL_STATE::HEAL;
 		m_TotalTime = m_RemainTime = 6.f;
 		m_HealAmount = 75.f;
 		break;
 	case ITEM_TYPE::MED_KIT:
-		//{ 8.f, 100.f, 100.f };
-		m_HealState = HEAL_STATE::HEAL;
 		m_TotalTime = m_RemainTime = 8.f;
 		m_HealAmount = 100.f;
 		break;
 	case ITEM_TYPE::BANDAGE:
-		//{ 4.f, 10.f, 75.f };
-		m_HealState = HEAL_STATE::HEAL;
 		m_TotalTime = m_RemainTime = 4.f;
 		m_HealAmount = 10.f;
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
-		m_HealState = HEAL_STATE::BOOST;
 		m_TotalTime = m_RemainTime = 6.f;
 		m_HealAmount = 100.f;
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
-		m_HealState = HEAL_STATE::BOOST;
 		m_TotalTime = m_RemainTime = 6.f;
-		m_HealAmount = 40.f;
+		m_HealAmount = 60.f;
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
-		m_HealState = HEAL_STATE::BOOST;
 		m_TotalTime = m_RemainTime = 4.f;
-		m_HealAmount = 60.f;
+		m_HealAmount = 40.f;
 		break;
 	default:
 		break;
 	}
-}
-
-CGameObject* PlayerCharacter::GetPlayeChildMeshObject(const wstring& _str)
-{
-	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
-
-	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
-	unordered_map<wstring, CGameObject*> mapBones = Animator3D()->GetmapBone();
-
-	auto iter = mapBones.find(_str);
-
-	return iter->second;
 }
 
 void PlayerCharacter::EquipSlot(CGameObject* _Item)

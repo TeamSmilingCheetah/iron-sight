@@ -734,8 +734,6 @@ void TestLevel::CreateTestLevel()
 
 	CanvasUI->AddComponent(new CUIRender);
 
-	CanvasUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
-
 	pLevel->AddObject(8, CanvasUI, false);
 
 

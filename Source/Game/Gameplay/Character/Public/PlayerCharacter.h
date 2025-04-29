@@ -14,13 +14,6 @@ class CLandScape;
 #define THROWABLE_SECOND 4
 #define NONE_WEAPON 5
 
-enum class HEAL_STATE
-{
-	HEAL,
-	BOOST,
-	NONE,
-};
-
 struct tSlot
 {
 	ITEM_TYPE		Type;
@@ -79,7 +72,7 @@ private:
 	const float		m_MaxBoost;	// 최대 Boost
 	float			m_CurBoost;	// 에너지
 
-	HEAL_STATE		m_HealState;
+	ITEM_TYPE		m_HealType;	// 힐 아이템 종류
 
 	float			m_RemainTime;
 	float			m_TotalTime;
@@ -88,7 +81,7 @@ private:
 	float			m_BoostRemainTime;
 	const float		m_BoostTotalTime;	// boost가 수행되는 시간 단위
 	const float		m_BoostUnit;	// 시간 지나면 boost가 빠질 단위
-	const float		m_BoostHP;		// boost를 사용해서 회복할 체력 양
+	float			m_BoostSpeed;	// 부스트로 인한 이동속도 보정
 
 
 	// =======

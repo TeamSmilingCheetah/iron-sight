@@ -92,6 +92,9 @@ void PlayerCharacter::MoveCalcul()
 		vInputDir += -vRightDir;
 	}
 
+
+	// 부스트에 의한 이동속도 보정
+	m_MaxSpeed *= m_BoostSpeed;
 	
 	// 입력이 있는 경우
 	if (vInputDir.Length() > 0.f)

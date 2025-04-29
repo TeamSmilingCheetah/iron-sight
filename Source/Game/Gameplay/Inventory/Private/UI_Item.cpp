@@ -107,11 +107,17 @@ void ItemUI::OnMouseRightClick()
 	// 인벤토리 UI에 속한 item UI라면 -> 사용
 	else
 	{
-		// TEST : heal 일단 여기서 구현.. 구조 변경
+		UINT type = static_cast<UINT>(m_ItemInfo.Type);
+		auto playerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(PLAYERSCRIPT));
 
-		if (IS_HEAL(static_cast<UINT>(m_ItemInfo.Type)))
+		if (IS_WEAPON(type))
 		{
-			auto playerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(PLAYERSCRIPT));
+			// 장착
+		}
+
+		else if (IS_HEAL(type) || IS_BOOST(type))
+		{
+			// 힐 시작
 			playerScript->TriggerHeal(m_ItemInfo.Type);
 		}
 	}

@@ -95,18 +95,17 @@ float4 PS_UI(VS_OUT _in) : SV_Target
 
 float4 PS_UI_HP(VS_OUT _in) : SV_Target
 {
-	// g_float_0 : aspect
-	// g_float_1 : semiHP
-	// g_float_2 : curHP
-	// g_float_3 : boost
+	// g_vec_0 : aspect, semiHP
+	// g_float_0 : curHP
+	// g_float_1 : boost
 
 	// ui에서 energy용으로 사용할 uv.y 비율
 	const float boostRatio = 0.15f;
 	
-	// 에너지 바
+	// 부스트 바
 	if (_in.vUV.y < boostRatio)
 	{
-		const float boost = g_float_3;
+		const float boost = g_float_1;
 
 		if (_in.vUV.x < boost)
 		{
@@ -114,15 +113,22 @@ float4 PS_UI_HP(VS_OUT _in) : SV_Target
 		}
 		else
 		{
-			return Color;			
+			return Color;
 		}
 	}
 	
 	// 체력 바
 	else
 	{
-		const float curHP = g_float_2; // 최대 체력에 대한 비율
-		const float semiHP = g_float_1;
+		const float curHP = g_float_0; // 최대 체력에 대한 비율
+		const float semiHP = g_vec2_0.y;
+		const float healHP = g_float_2;	// 힐로 채워질 양 표시
+
+		// 풀피일 때는 회색으로 표시
+		if (curHP == 1.f)
+		{
+			return float4(0.8f, 0.8f, 0.8f, 0.8f);
+		}
 	
 		// cur hp
 		if (_in.vUV.x < curHP)
@@ -160,7 +166,7 @@ float4 PS_UI_HP(VS_OUT _in) : SV_Target
 			offset = (offset - floor(offset)) * 2 * dx; // 0 ~ 2*dx로 범위 제한
 		
 			// 몫 계산
-			const float aspect = g_float_0; // ui box의 aspect ratio
+			const float aspect = g_vec2_0.x; // ui box의 aspect ratio
 			float u = _in.vUV.x + _in.vUV.y / aspect + 2 * dx - offset; // u가 0보다 작을 경우를 대비해 2*dx를 더해줌. (조건문은 cost가 높다고 해서 사용 안함)
 			int count = 0;
 			while (u > dx)
@@ -168,15 +174,18 @@ float4 PS_UI_HP(VS_OUT _in) : SV_Target
 				u -= dx;
 				++count;
 			}
-
+			
 			// 홀수면 흰색, 짝수면 color로 채움
-			return count % 2 == 1 ? float4(1.f, 1.f, 1.f, Color.a) : Color;
+			float4 color =  count % 2 == 1 ? float4(1.f, 1.f, 1.f, Color.a) : Color;
+
+			return (_in.vUV.x < healHP) ? float4(1.f, 1.f, 1.f, 1.f) * 0.5f + color * 0.5f : color;
+
 		}
 
 		// max hp
 		else
 		{
-			return Color; // 배경색
+			return (_in.vUV.x < healHP) ? float4(1.f, 1.f, 1.f, 1.f) * 0.5f + Color * 0.5f : Color;
 		}
 	}
 }
