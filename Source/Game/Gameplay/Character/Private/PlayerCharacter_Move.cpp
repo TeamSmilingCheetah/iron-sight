@@ -15,7 +15,7 @@
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
-void PlayerCharacter::UpdatePosition()
+void PlayerCharacter::PlayerMove()
 {
 	// 힘을 0 으로 초기화
 	m_Force = Vec3(0.f, 0.f, 0.f);
@@ -92,6 +92,9 @@ void PlayerCharacter::MoveCalcul()
 		vInputDir += -vRightDir;
 	}
 
+
+	// 부스트에 의한 이동속도 보정
+	m_MaxSpeed *= m_BoostSpeed;
 	
 	// 입력이 있는 경우
 	if (vInputDir.Length() > 0.f)
@@ -165,28 +168,28 @@ void PlayerCharacter::gravityCalcul()
 	if (!m_IsGround)
 	{
 		// 중력가속도 추가하여 y축 아래로 중력 속도 변화
-		m_GravidyVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
+		m_GravityVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
 
 		// 최대 중력속도 제한
-		if (m_GravidyVelocity.y < -m_GravityMaxSpeed)
-			m_GravidyVelocity.y = -m_GravityMaxSpeed;
+		if (m_GravityVelocity.y < -m_GravityMaxSpeed)
+			m_GravityVelocity.y = -m_GravityMaxSpeed;
 	}
 	else
 	{
 		// 땅위이며 아래로 내려가는것이 아니라면 속도 0으로 설정
-		if (m_GravidyVelocity.y < 0.f)
+		if (m_GravityVelocity.y < 0.f)
 		{
-			m_GravidyVelocity = Vec3(0.f, 0.f, 0.f);
+			m_GravityVelocity = Vec3(0.f, 0.f, 0.f);
 		}
 	}
 
 	// 점프 기능
 	if (m_IsGround && KEY_TAP(KEY::X))
 	{
-		m_GravidyVelocity += Vec3(0.f,1.f,0.f) * m_JumpPower;
+		m_GravityVelocity += Vec3(0.f,1.f,0.f) * m_JumpPower;
 	}
 
-	m_Velocity += m_GravidyVelocity;
+	m_Velocity += m_GravityVelocity;
 }
 
 void PlayerCharacter::ColliderCalcul()

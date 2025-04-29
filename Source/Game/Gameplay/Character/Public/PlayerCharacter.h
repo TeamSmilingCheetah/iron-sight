@@ -33,7 +33,7 @@ private:
 	Vec3 m_Force;				// 누적 힘
 	Vec3 m_Velocity;			// 속도
 	Vec3 m_Accel;				// 가속도
-	Vec3 m_GravidyVelocity;		// 중력 속도
+	Vec3 m_GravityVelocity;		// 중력 속도
 	float m_Mass;				// 질량
 	float m_Friction;			// 마찰계수
 	float m_MaxSpeed;			// 최대 속력 제한
@@ -62,15 +62,44 @@ private:
 	vector<tSlot> m_vecWeaponSlot;	// 무기 슬롯
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
+	// ======
+	// Status
+	// ======
+	const float		m_MaxHP;	// 최대 체력
+	const float		m_SemiMaxHP;	// 붕대, 구급상자로 회복할 수 있는 최대치의 비율
+	float			m_CurHP;	// 현재 체력
 
+	const float		m_MaxBoost;	// 최대 Boost
+	float			m_CurBoost;	// 에너지
+
+	ITEM_TYPE		m_HealType;	// 힐 아이템 종류
+
+	float			m_RemainTime;
+	float			m_TotalTime;
+	float			m_HealAmount;	// heal 또는 boost 양
+
+	float			m_BoostRemainTime;
+	const float		m_BoostTotalTime;	// boost가 수행되는 시간 단위
+	const float		m_BoostUnit;	// 시간 지나면 boost가 빠질 단위
+	float			m_BoostSpeed;	// 부스트로 인한 이동속도 보정
+
+
+	// =======
 	// UI 관리
+	// =======
 
-	// 인벤토리
+	// 인벤토리 UI
 	CGameObject*	m_InventoryCanvasUI;
 	bool			m_InventoryOpened;
 
 	// 방위 UI
 	CGameObject*	m_CardinalImageUI;
+
+	// HP UI
+	CGameObject*	m_HPUI;
+
+	// 아이템 사용 UI
+	CGameObject*	m_ItemUseUI;
 
 public:
 	void Begin() override;
@@ -93,17 +122,23 @@ public:
 	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 
 private:
-	void UpdatePosition();
-	void UpdateRotation();
+	void PlayerMove();
+	void PlayerView();
 
 	void PlayerReload();
 	void PlayerAttack();
 	void PlayerInteractWeapon();
 
-public:
+	void PlayerControlUI();
+	void PlayerHeal();
+
 	void MoveCalcul();
 	void gravityCalcul();
 	void ColliderCalcul();
+
+	// TODO: 데이터 구조 개선
+	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
+	void DetachItem(CGameObject* _Item);
 	
 
 public:
@@ -117,17 +152,15 @@ public:
 	CGameObject* GetCurWeapon() { return m_CurWeapon; }
 	//CGameObject* GetPlayeChildMeshObject(const wstring& _str);
 
-	int GetCurWeaponIdx() { return m_CurWeaponIdx; }
-	float GetCurMouseSensitivity() { return m_MouseSensitivity; }
-	bool IsShot() { return m_bShoot; }
-	bool IsThrow() { return m_bCanThrow; }
+	int GetCurWeaponIdx() const { return m_CurWeaponIdx; }
+	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
+	bool IsShot() const { return m_bShoot; }
+	bool IsThrow() const { return m_bCanThrow; }
 
 	void EquipSlot(CGameObject* _Item);
 	void ReleaseSlot(ITEM_TYPE _Type, int _Count);
 
-	// TODO: 데이터 구조 개선
-	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
-	void DetachItem(CGameObject* _Item);
+	void TriggerHeal(ITEM_TYPE _HealType);
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

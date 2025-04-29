@@ -57,11 +57,13 @@ public:
 	int GetLayerIdx() const { return m_LayerIdx; }
 	int GetNextLayerIdx() const { return m_NextLayerIdx; }
 
-	bool IsActive() const { return m_Active; }
+	// 비활성화 되는 프레임에 대한 지연 처리는 IsDeactivated를 사용할 것
+	bool IsActive() const { return m_Active; }	
 	bool IsDead() const { return m_Dead; }
 	bool IsAncestor(CGameObject* _Other);
 	bool IsLayerMove() const { return m_LayerMove; }
-	bool IsDeactivated() const { return m_Deactivate; } // IsActive와 차이 : 아직 활성화 되어있지만 다음 프레임에 비활성화 될건지 여부
+	// IsActive와 차이 : 아직 활성화 되어있지만 다음 프레임에 비활성화 될건지 여부
+	bool IsDeactivated() const { return m_Deactivate; } 
 
 private:
 	void SetActive(bool _b) { m_Active = _b; }

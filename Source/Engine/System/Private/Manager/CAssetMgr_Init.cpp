@@ -137,6 +137,34 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	GetInst()->AddAsset(L"UICardinalShader", pShader);
 
+	// =============================
+	// UIHPShader : UI HP 전용 셰이더
+	// =============================
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
+	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI_HP");
+
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	GetInst()->AddAsset(L"UIHPShader", pShader);
+
+	// =============================
+	// UIHPShader : UI HP 전용 셰이더
+	// =============================
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
+	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI_ItemUse");
+
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	GetInst()->AddAsset(L"UIItemUseShader", pShader);
+
 
 	// ==================================
 	// TileMapShader : 타일맵 전용 쉐이더
@@ -318,6 +346,18 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"UICardinalMtrl");
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UICardinalShader"));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// UIHPMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"UIHPMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UIHPShader"));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// UIHPMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"UIItemUseMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UIItemUseShader"));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// TileMapMaterial

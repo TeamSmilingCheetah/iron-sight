@@ -26,6 +26,7 @@ public:
 
 	// UI Event
 	virtual PayLoad OnMouseBeginDrag() override;
+	virtual void OnMouseRightClick() override;
 
 public:
 	CLONE(ItemUI);
