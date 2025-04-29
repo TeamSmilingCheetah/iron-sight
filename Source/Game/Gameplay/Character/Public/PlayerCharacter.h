@@ -26,6 +26,9 @@ class PlayerCharacter :
 private:
 	CGameObject* m_MainCamera;
 
+	CGameObject* m_HandMeshObj;
+	CGameObject* m_BackMeshObj;
+
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
 	Vec3 m_Velocity;			// 속도
@@ -112,7 +115,7 @@ public:
 	void SetThrowBoom(bool _Boom) { m_bThrowBoom = _Boom; }
 
 	CGameObject* GetCurWeapon() { return m_CurWeapon; }
-	CGameObject* GetPlayeChildMeshObject(const wstring& _str);
+	//CGameObject* GetPlayeChildMeshObject(const wstring& _str);
 
 	int GetCurWeaponIdx() { return m_CurWeaponIdx; }
 	float GetCurMouseSensitivity() { return m_MouseSensitivity; }

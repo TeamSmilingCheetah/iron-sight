@@ -53,20 +53,21 @@ CAnimator3D::~CAnimator3D()
 		delete m_BonePureMatBuffer;
 
 	// BoneObject를 삭제함.
+	//DeleteVec(m_vecBoneObject);
 	DestroyObject(m_vecBoneObject[0]);
 	// map을 비워준다
-	m_mapBoneObject.clear();
+	//m_mapBoneObject.clear();
 }
 
 void CAnimator3D::Begin()
 {
-	if (m_mapBoneObject.empty())
-	{
-		for (CGameObject* boneObj : m_vecBoneObject)
-		{
-			m_mapBoneObject.emplace(boneObj->GetName(), boneObj);
-		}
-	}
+	//if (m_mapBoneObject.empty())
+	//{
+	//	for (CGameObject* boneObj : m_vecBoneObject)
+	//	{
+	//		m_mapBoneObject.emplace(boneObj->GetName(), boneObj);
+	//	}
+	//}
 }
 	
 
@@ -160,23 +161,23 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 				if (m_vecBoneObject[i])
 					m_vecBoneObject[i]->Transform()->SetWorldMat(worldMat);
 
-				auto it = m_mapBoneObject.find(m_vecBoneObject[i]->GetName());
-				if (it != m_mapBoneObject.end())
-					it->second->Transform()->SetWorldMat(worldMat);
+				//auto it = m_mapBoneObject.find(m_vecBoneObject[i]->GetName());
+				//if (it != m_mapBoneObject.end())
+				//	it->second->Transform()->SetWorldMat(worldMat);
 			}
 			else
 			{
 				pureLocal = pCurAnim->GetBindLocal()[i];
 
-				// 유효한 변환 정보가 있으므로 사용
+				// Local좌표 등록
 				Matrix worldMat = pureLocal * _Renderer->Transform()->GetWorldMat();
 
 				if (m_vecBoneObject[i])
 					m_vecBoneObject[i]->Transform()->SetWorldMat(worldMat);
 
-				auto it = m_mapBoneObject.find(m_vecBoneObject[i]->GetName());
-				if (it != m_mapBoneObject.end())
-					it->second->Transform()->SetWorldMat(worldMat);
+				//auto it = m_mapBoneObject.find(m_vecBoneObject[i]->GetName());
+				//if (it != m_mapBoneObject.end())
+				//	it->second->Transform()->SetWorldMat(worldMat);
 			}
 		}
 		m_bFinalMatUpdate = true;
@@ -218,12 +219,12 @@ void CAnimator3D::CreateBoneObject()
 		m_vecBoneObject.clear();
 	}
 
-	if (!m_mapBoneObject.empty())
-	{
-		for (auto& i : m_mapBoneObject)
-			DestroyObject(i.second);
-		m_mapBoneObject.clear();
-	}
+	//if (!m_mapBoneObject.empty())
+	//{
+	//	for (auto& i : m_mapBoneObject)
+	//		DestroyObject(i.second);
+	//	m_mapBoneObject.clear();
+	//}
 
 	// Clip 0번의 Bone을 기준으로 생성
 	//UINT BoneCount = m_vecClip[0]->GetBoneCount();
@@ -241,14 +242,14 @@ void CAnimator3D::CreateBoneObject()
 	}
 
 	// map 본 이름을 키로 하여 GameObject를 생성 및 저장
-	for (UINT i = 0; i < BoneCount; ++i)
-	{
-		const wstring& boneName = vecBones->at(i).strBoneName;
-		CGameObject* pBoneObj = new CGameObject;
-		pBoneObj->Transform()->SetManualUpdate(true);
-		pBoneObj->SetName(boneName);
-		m_mapBoneObject.emplace(boneName, pBoneObj);
-	}
+	//for (UINT i = 0; i < BoneCount; ++i)
+	//{
+	//	const wstring& boneName = vecBones->at(i).strBoneName;
+	//	CGameObject* pBoneObj = new CGameObject;
+	//	pBoneObj->Transform()->SetManualUpdate(true);
+	//	pBoneObj->SetName(boneName);
+	//	m_mapBoneObject.emplace(boneName, pBoneObj);
+	//}
 
 
 	// 부모 자식 관계 세팅. 1번부터 하는 이유는 0번은 자기자신을 부모라고 하고 있음
@@ -266,27 +267,27 @@ void CAnimator3D::CreateBoneObject()
 
 
 	// map 부모 자식 관계 설정 (i=0은 루트이므로 건너뜀)
-	for (UINT i = 1; i < BoneCount; ++i)
-	{
-		const auto& bone = vecBones->at(i);
-		const wstring& childName = bone.strBoneName;
-		const wstring& parentName = vecBones->at(bone.iParentIndx).strBoneName;
+	//for (UINT i = 1; i < BoneCount; ++i)
+	//{
+	//	const auto& bone = vecBones->at(i);
+	//	const wstring& childName = bone.strBoneName;
+	//	const wstring& parentName = vecBones->at(bone.iParentIndx).strBoneName;
 
-		unordered_map<wstring, CGameObject*>::iterator itParent = m_mapBoneObject.find(parentName);
-		unordered_map<wstring, CGameObject*>::iterator itChild = m_mapBoneObject.find(childName);
-		if (itParent != m_mapBoneObject.end() && itChild != m_mapBoneObject.end())
-		{
-			itParent->second->AddChild(itChild->second);
-		}
-	}
+	//	unordered_map<wstring, CGameObject*>::iterator itParent = m_mapBoneObject.find(parentName);
+	//	unordered_map<wstring, CGameObject*>::iterator itChild = m_mapBoneObject.find(childName);
+	//	if (itParent != m_mapBoneObject.end() && itChild != m_mapBoneObject.end())
+	//	{
+	//		itParent->second->AddChild(itChild->second);
+	//	}
+	//}
 
 	// map 루트 본을 Owner에 붙임
-	const wstring& rootName = vecBones->at(0).strBoneName;
-	auto itRoot = m_mapBoneObject.find(rootName);
-	if (itRoot != m_mapBoneObject.end())
-	{
-		GetOwner()->AddChild(itRoot->second);
-	}
+	//const wstring& rootName = vecBones->at(0).strBoneName;
+	//auto itRoot = m_mapBoneObject.find(rootName);
+	//if (itRoot != m_mapBoneObject.end())
+	//{
+	//	GetOwner()->AddChild(itRoot->second);
+	//}
 
 
 	// 자식 오브젝트로 넣음
