@@ -384,6 +384,13 @@ void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _
 
 void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D* _RightCol)
 {
+	// Ray가 트리거를 감지할지 확인하고 판단
+	if (!(_LeftCol->IsTriggerTarget()) && _RightCol->IsTrigger())
+	{
+		//트리거용 타겟을 감지하지 않아야하면 종료
+		return;
+	}
+
 	COLLIDER_ID id = {};
 	id.Left = _LeftCol->GetID();
 	id.Right = _RightCol->GetID();

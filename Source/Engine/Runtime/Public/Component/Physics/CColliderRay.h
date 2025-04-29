@@ -55,6 +55,7 @@ private:
 
 	bool		m_IndependentDir;		// 독립적인 방향
 	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟 판정
+	bool		m_TriggerTarget;		// 트리거용 충돌체를 감지할지 판정
 
 
 public:
@@ -65,6 +66,7 @@ public:
 	void RayTargetMode(bool _bool) { m_RayTargetAll = _bool; }
 	void SetRayTargetLength(float _TargetLength) { m_RayTargetLength = _TargetLength; }
 	void SetIndependentDir(bool _true) { m_IndependentDir = _true; }
+	void SetTriggerTarget(bool _true) { m_TriggerTarget = _true; }
 
 	tRay GetRay() { return m_RayPosDir; }
 	Vec3 GetRayPos() { return m_RayPosDir.vStart; }
@@ -81,6 +83,7 @@ public:
 	RAYCOLLIDERDATA& GetTargetInfoRef() { return m_RayColInfo; }
 
 	bool IsTargetAllMode() { return m_RayTargetAll; }
+	bool IsTriggerTarget() { return m_TriggerTarget; }
 
 	COLLIDER_STATE GetState() { return m_State; }
 	bool IsActive() { return m_State == ACTIVE; }
