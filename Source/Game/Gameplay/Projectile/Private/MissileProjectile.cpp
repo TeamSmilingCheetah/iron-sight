@@ -58,7 +58,6 @@ void MissileProjectile::Tick()
 	// 일정 시간 후 총알 삭제
 	if (5.f < m_LifeTime)
 	{
-		//DestroyObject(GetOwner());
 		m_LifeTime = 0.f;
 		CObjectPoolMgr::GetInst()->ReturnObject(GetOwner());
 	}

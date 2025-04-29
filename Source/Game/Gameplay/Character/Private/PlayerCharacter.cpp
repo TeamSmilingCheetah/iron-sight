@@ -20,6 +20,8 @@
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
 	, m_MainCamera(nullptr)
+	, m_HandMeshObj(nullptr)
+	, m_BackMeshObj(nullptr)
 	, m_PaperBurnIntence(0.f)
 	, m_MouseSensitivity(10.f)
 	, m_Force(0.f)
@@ -69,6 +71,24 @@ void PlayerCharacter::Begin()
 	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"CanvasUI");
 	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
+
+	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
+
+	for (int i = 0; i < vecBones.size(); ++i)
+	{
+		if (vecBones[i]->GetName() == L"hand_r")
+		{
+			m_HandMeshObj = vecBones[i];
+		}
+
+		if (vecBones[i]->GetName() == L"coat_b_04")
+		{
+			m_BackMeshObj = vecBones[i];
+		}
+
+	}
+
+
 }
 
 void PlayerCharacter::Tick()
@@ -304,7 +324,7 @@ void PlayerCharacter::PlayerAttack()
 						static_cast<WeaponController*>(m_CurWeapon->GetScript(THROWABLESCRIPT))->SetEquippedOwner(GetOwner());
 
 						CreateObject(m_CurWeapon, 0, false);
-						AttachItem(m_CurWeapon, GetPlayeChildMeshObject(L"hand_r"), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+						AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
 					}
 
 					// 아이템이 남지 않았다면
@@ -382,8 +402,7 @@ void PlayerCharacter::PlayerInteractWeapon()
 			SetObjectActive(m_vecWeaponSlot[i].Object, true);
 			m_CurWeapon = m_vecWeaponSlot[i].Object;
 			m_CurWeaponIdx = i;
-			wstring str = L"hand_r";
-			AttachItem(m_CurWeapon, GetPlayeChildMeshObject(str), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+			AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
 			WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
 			pWeaponScript->SetEquip(true);
 
@@ -396,13 +415,11 @@ void PlayerCharacter::PlayerInteractWeapon()
 				// 주무기는 비활성화가 아닌 등에 다시 부착 시켜 준다.
 				if (j == PRIMARY_FIRST)
 				{
-					wstring str = L"coat_b_04";
-					AttachItem(m_vecWeaponSlot[j].Object, GetPlayeChildMeshObject(str), Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+					AttachItem(m_vecWeaponSlot[j].Object, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
 				}
 				else if (j == PRIMARY_SECOND)
 				{
-					wstring str = L"coat_b_04";
-					AttachItem(m_vecWeaponSlot[j].Object, GetPlayeChildMeshObject(str), Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+					AttachItem(m_vecWeaponSlot[j].Object, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
 				}
 				// 나머지는 비활성화 해준다.
 				else
@@ -428,12 +445,12 @@ void PlayerCharacter::PlayerInteractWeapon()
 
 			if (i == PRIMARY_FIRST)
 			{
-				AttachItem(m_vecWeaponSlot[i].Object, GetPlayeChildMeshObject(L"coat_b_04"), Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+				AttachItem(m_vecWeaponSlot[i].Object, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
 				SetObjectActive(m_vecWeaponSlot[i].Object, true);
 			}
 			else if (i == PRIMARY_SECOND)
 			{
-				AttachItem(m_vecWeaponSlot[i].Object, GetPlayeChildMeshObject(L"coat_b_04"), Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+				AttachItem(m_vecWeaponSlot[i].Object, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
 				SetObjectActive(m_vecWeaponSlot[i].Object, true);
 			}
 			else
@@ -460,17 +477,17 @@ void PlayerCharacter::PlayerInteractWeapon()
 
 }
 
-CGameObject* PlayerCharacter::GetPlayeChildMeshObject(const wstring& _str)
-{
-	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
-
-	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
-	unordered_map<wstring, CGameObject*> mapBones = Animator3D()->GetmapBone();
-
-	auto iter = mapBones.find(_str);
-
-	return iter->second;
-}
+//CGameObject* PlayerCharacter::GetPlayeChildMeshObject(const wstring& _str)
+//{
+//	Matrix invPlayerWorld = Transform()->GetWorldInvMat();
+//
+//	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
+//	unordered_map<wstring, CGameObject*> mapBones = Animator3D()->GetmapBone();
+//
+//	auto iter = mapBones.find(_str);
+//
+//	return iter->second;
+//}
 
 void PlayerCharacter::EquipSlot(CGameObject* _Item)
 {
@@ -513,15 +530,14 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 		m_vecWeaponSlot[slotIdx].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
 
 		bCanEquip = true;
-		CGameObject* pBoneObj = GetPlayeChildMeshObject(L"coat_b_04");
 
 		if (slotIdx == PRIMARY_FIRST)
 		{
-			AttachItem(_Item, pBoneObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+			AttachItem(_Item, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
 		}
 		else
 		{
-			AttachItem(_Item, pBoneObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+			AttachItem(_Item, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
 		}
 
 		SetObjectActive(_Item, true);
@@ -556,7 +572,7 @@ void PlayerCharacter::EquipSlot(CGameObject* _Item)
 
 			m_vecWeaponSlot[i].Object = _Item;
 			m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
-			AttachItem(_Item, GetPlayeChildMeshObject(L"hand_r"), Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+			AttachItem(_Item, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
 			SetObjectActive(_Item, false);
 			bCanEquip = true;
 			break;
