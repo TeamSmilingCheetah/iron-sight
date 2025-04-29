@@ -13,6 +13,7 @@ CColliderRay::CColliderRay()
 	, m_OverlapCount(0)
 	, m_RayTargetAll(false)
 	, m_IndependentDir(false)
+	, m_TriggerTarget(true)
 	, m_RayTargetLength(100000.f)
 	, m_State(ACTIVE)
 {
@@ -28,6 +29,7 @@ CColliderRay::CColliderRay(const CColliderRay& _Origin)
 	, m_OverlapCount(0)
 	, m_RayTargetAll(_Origin.m_RayTargetAll)
 	, m_IndependentDir(_Origin.m_IndependentDir)
+	, m_TriggerTarget(_Origin.m_TriggerTarget)
 	, m_State(_Origin.m_State)
 {
 	m_RayPosDir.vStart = _Origin.m_RayPosDir.vStart;
