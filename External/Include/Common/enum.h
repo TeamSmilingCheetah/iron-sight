@@ -287,3 +287,61 @@ enum COLLIDER_STATE
 	SEMIDEACTIVE,
 	DEACTIVE,
 };
+
+enum class SCRIPT_TYPE : UINT8
+{
+	CAMERASCRIPT,
+	MISSILESCRIPT,
+	PLAYERSCRIPT,
+
+	WEAPONSCRIPT,
+	GUNSCRIPT,
+	THROWABLESCRIPT,
+
+	TESTSOUND,
+
+	ENEMYVISION,
+	ENEMYCONTROLLER,
+	TESTCHARACTER,
+
+	PARTICLESCRIPT,
+
+	// 아이템, 인벤토리 관련 스크립트
+	INVENTORYSCRIPT,
+	ITEMSCRIPT,		// Interactable
+	ITEMUI,
+	INVENTORYUI,
+	VICINITYUI,
+
+	// 상호작용
+	INTERACTION_HANDLER,
+
+	// 문
+	DOORSCRIPT,		// Interactable
+
+	NONE = 0xFF,
+};
+
+// 구체적인 아이템 타입.
+enum class ITEM_TYPE
+{
+	AKM,					// AKM
+
+	FIRST_AID_KIT,			// 의료용 키트
+	MED_KIT,				// 구급 상자
+	BANDAGE,				// 붕대
+	ADRENALINE_SYRINGE,		// 아드레날린 주사
+	PAIN_KILLER,			// 진통제
+	ENERGY_DRINK,			// 에너지 드링크
+
+	GRENADE,				// 수류탄
+	MOLOTOV,				// 화염병
+	SMOKEBOMB,				// 연막탄
+	FLASHBOMB,				// 섬광탄
+
+	AMMO_9,					// 9mm
+	AMMO_5,					// 5.56mm
+	AMMO_7,					// 7.62mm
+
+	END,
+};

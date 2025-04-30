@@ -3,30 +3,6 @@
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 
-// 구체적인 아이템 타입.
-enum class ITEM_TYPE
-{
-	AKM,					// AKM	
-
-	FIRST_AID_KIT,			// 의료용 키트
-	MED_KIT,				// 구급 상자
-	BANDAGE,				// 붕대
-	ADRENALINE_SYRINGE,		// 아드레날린 주사
-	PAIN_KILLER,			// 진통제
-	ENERGY_DRINK,			// 에너지 드링크
-
-	GRENADE,				// 수류탄
-	MOLOTOV,				// 화염병
-	SMOKEBOMB,				// 연막탄
-	FLASHBOMB,				// 섬광탄
-
-	AMMO_9,					// 9mm
-	AMMO_5,					// 5.56mm
-	AMMO_7,					// 7.62mm
-
-	END,
-};
-
 // 범위 매크로 : 무기 추가되면 수동으로 수정해야함
 #define WEAPON_PRIMARY_BEGIN	static_cast<UINT>(ITEM_TYPE::AKM)
 #define WEAPON_PRIMARY_END		static_cast<UINT>(ITEM_TYPE::AKM)
