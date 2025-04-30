@@ -11,7 +11,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 EnemyController::EnemyController(SCRIPT_TYPE _Type)
-	: CScript(static_cast<UINT>(_Type))
+	: CScript(_Type)
 	, m_Force(0.f)
 	, m_Velocity(0.f)
 	, m_GravidyVelocity(0.f)
@@ -59,9 +59,9 @@ void EnemyController::DemageCalcul(int _Demage)
 	m_HP -= _Demage;
 
 	// 0보다 낮으면 사망
-	if (m_HP < 0.f)
+	if (m_HP < 0)
 	{
-		m_HP = 0.f;
+		m_HP = 0;
 
 		DestroyObject(GetOwner());
 	}

@@ -68,7 +68,7 @@ void GunController::Tick()
 		// 소유주가 있다면 위치를 0으로 초기화
 		if (m_EquippedOwner != nullptr)
 		{
-			pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+			pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
 		}
 
 
@@ -162,7 +162,7 @@ void GunController::Firing()
 		// 총알을 모두 소진했다면
 		if (m_CurRounds <= 0)
 		{
-			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
 
 			pPlayerScript->SetShot(false);
 			m_bFire = false;
@@ -217,12 +217,12 @@ void GunController::Firing()
 		go->Transform()->SetRelativePos(vRayPos);
 
 		// 스크립트에 값 전달
-		MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, (UINT)SCRIPT_TYPE::MISSILESCRIPT));
+		MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
 		BulletScript->SetDir(vFinalDir);
 		BulletScript->SetSpeed(m_InitFirePower);
 
 		// 사운드 재생
-		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김) 
+		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
 		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 	}
 
@@ -243,7 +243,7 @@ void GunController::Reload()
 	}
 
 	// 총기 애니메이션 재생
-	
+
 
 	m_AccTime_Reload += DT;
 
@@ -251,7 +251,7 @@ void GunController::Reload()
 	m_bFire = false;
 
 	int iFilledRounds = 0;
-	// 장전 시간이 지나면 
+	// 장전 시간이 지나면
 	if (m_ReloadingTime < m_AccTime_Reload)
 	{
 		// 여분의 탄창이 모두 있다면
@@ -261,7 +261,7 @@ void GunController::Reload()
 			iFilledRounds = m_MaxRounds - m_CurRounds;
 			m_CurRounds = m_MaxRounds;
 		}
-		else // 여분의 탄창이 부족하다면      
+		else // 여분의 탄창이 부족하다면
 		{
 			int ineedRounds = m_MaxRounds - m_CurRounds;
 

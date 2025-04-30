@@ -1,6 +1,6 @@
 #pragma once
 
-enum SCRIPT_TYPE
+enum class SCRIPT_TYPE : UINT8
 {
 	CAMERASCRIPT,
 	MISSILESCRIPT,
@@ -30,6 +30,8 @@ enum SCRIPT_TYPE
 
 	// 문
 	DOORSCRIPT,		// Interactable
+
+	NONE = 0xFF,
 };
 
 class CScript;

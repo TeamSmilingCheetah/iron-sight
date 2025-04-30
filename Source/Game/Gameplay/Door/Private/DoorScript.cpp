@@ -6,7 +6,7 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
 DoorScript::DoorScript()
-	: InteractableScript(DOORSCRIPT)
+	: InteractableScript(SCRIPT_TYPE::DOORSCRIPT)
 	, m_Opened(false)
 	, m_AccTime(0.f)
 	, m_Duration(1.f)
@@ -81,7 +81,7 @@ void DoorScript::Interact(InteractionHandler* _Handler)
 	if (m_Rotating)
 		return;
 
-	Vec3 vRot = Transform()->GetRelativeRotation();	
+	Vec3 vRot = Transform()->GetRelativeRotation();
 
 	// y축 회전만 적용되었다는 가정
 	assert(vRot.x == 0.f && vRot.z == 0.f);
@@ -91,7 +91,7 @@ void DoorScript::Interact(InteractionHandler* _Handler)
 
 	// 문은 회전이 없을 때 x축으로 향한다고 하자.
 	// 즉, 위에서 봤을 때 o====== 형태
-	
+
 	float angle = XMConvertToRadians(vRot.y);
 
 	Vec2 vDoorDir = Vec2(cos(angle), sin(angle));

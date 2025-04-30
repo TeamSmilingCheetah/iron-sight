@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Game/System/Public/GameplayManager.h"
 
 class CPrefab;
 
@@ -14,14 +15,14 @@ class CScript :
 	public CComponent
 {
 private:
-	const UINT m_ScriptType;
-	UINT m_ParentScriptType;
+	const SCRIPT_TYPE m_ScriptType;
+	SCRIPT_TYPE m_ParentScriptType;
 	vector<tScriptParam> m_vecScriptParam;
 
 public:
-	void SetParentScriptType(UINT _Type) { m_ParentScriptType = _Type; };
-	UINT GetScriptType() { return m_ScriptType; }
-	UINT GetParentScriptType() { return m_ParentScriptType; }
+	void SetParentScriptType(SCRIPT_TYPE _Type) { m_ParentScriptType = _Type; };
+	SCRIPT_TYPE GetScriptType() { return m_ScriptType; }
+	SCRIPT_TYPE GetParentScriptType() { return m_ParentScriptType; }
 	void AddScriptParam(tScriptParam _Param) { m_vecScriptParam.push_back(_Param); }
 	const vector<tScriptParam>& GetScriptParam() { return m_vecScriptParam; }
 	void Instantiate(Ptr<CPrefab> _Pref, Vec3 _WorldPos, int _Layer);
@@ -69,6 +70,6 @@ public:
 	virtual void OnMouseDrop(const PayLoad& _PayLoad) {}
 
 
-	CScript(UINT _ScriptType);
+	CScript(SCRIPT_TYPE _ScriptType);
 	~CScript() override;
 };

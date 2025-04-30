@@ -255,7 +255,7 @@ bool CGameObject::IsAncestor(CGameObject* _Other)
 	return false;
 }
 
-CScript* CGameObject::GetScript(UINT _Type) const
+CScript* CGameObject::GetScript(SCRIPT_TYPE _Type) const
 {
 	for (CScript* script : m_vecScripts)
 	{

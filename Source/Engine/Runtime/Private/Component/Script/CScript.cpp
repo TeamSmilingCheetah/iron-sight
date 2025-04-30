@@ -3,7 +3,7 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Asset/Prefab/CPrefab.h"
 
-CScript::CScript(UINT _ScriptType)
+CScript::CScript(SCRIPT_TYPE _ScriptType)
 	: CComponent(COMPONENT_TYPE::SCRIPT)
 	, m_ScriptType(_ScriptType)
 	, m_ParentScriptType(_ScriptType)

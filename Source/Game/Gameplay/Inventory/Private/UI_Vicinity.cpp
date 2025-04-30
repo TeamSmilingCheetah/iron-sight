@@ -3,7 +3,7 @@
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
 VicinityUI::VicinityUI()
-	: CScript(VICINITYUI)
+	: CScript(SCRIPT_TYPE::VICINITYUI)
 {
 }
 
@@ -33,7 +33,7 @@ void VicinityUI::LoadComponent(FILE* _File)
 
 void VicinityUI::LoadComponentReference()
 {
-	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
+	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void VicinityUI::OnMouseDrop(const PayLoad& _PayLoad)

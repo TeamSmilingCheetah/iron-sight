@@ -3,7 +3,7 @@
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
 InventoryUI::InventoryUI()
-	: CScript(INVENTORYUI)
+	: CScript(SCRIPT_TYPE::INVENTORYUI)
 	, m_ControllerOwner(nullptr)
 	, m_Controller(nullptr)
 {
@@ -35,7 +35,7 @@ void InventoryUI::LoadComponent(FILE* _File)
 
 void InventoryUI::LoadComponentReference()
 {
-	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
+	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void InventoryUI::OnMouseDrop(const PayLoad& _PayLoad)

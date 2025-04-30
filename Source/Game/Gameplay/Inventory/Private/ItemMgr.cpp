@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
-ItemMgr* ItemMgr::m_Inst = nullptr;
-
 ItemMgr::ItemMgr()
 	: m_ItemInfo{}
 {

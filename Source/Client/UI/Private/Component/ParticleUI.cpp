@@ -36,7 +36,7 @@ void ParticleUI::Render_Update()
 		MeshName = "None";
 	else
 	{
-		MeshName = string(pMesh->GetKey().begin(), pMesh->GetKey().end());
+		MeshName = WStringToString(pMesh->GetKey());
 	}
 
 	ImGui::Text("Mesh");
@@ -87,7 +87,7 @@ void ParticleUI::Render_Update()
 		MtrlName = "None";
 	else
 	{
-		MtrlName = string(pMtrl->GetKey().begin(), pMtrl->GetKey().end());
+		MtrlName = WStringToString(pMtrl->GetKey());
 	}
 
 	ImGui::Text("Material");

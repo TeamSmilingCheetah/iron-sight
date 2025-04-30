@@ -6,7 +6,7 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
 CEditorCamScript::CEditorCamScript()
-	: CScript(0)
+	: CScript(SCRIPT_TYPE::NONE)
 	  , m_CameraSpeed(500.f)
 {
 }

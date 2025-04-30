@@ -10,7 +10,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
 ItemUI::ItemUI()
-	: CScript(ITEMUI)
+	: CScript(SCRIPT_TYPE::ITEMUI)
 	, m_ItemObject(nullptr)
 	, m_ItemInfo{}
 	, m_Changed(false)
@@ -25,7 +25,7 @@ void ItemUI::SetItemObject(CGameObject* _Object)
 {
 	m_ItemObject = _Object;
 
-	ItemScript* pScript = static_cast<ItemScript*>(m_ItemObject->GetScript(ITEMSCRIPT));
+	ItemScript* pScript = static_cast<ItemScript*>(m_ItemObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
 	assert(pScript);
 
 	m_ItemInfo.Type = pScript->GetItemType();
@@ -99,7 +99,7 @@ void ItemUI::OnMouseRightClick()
 	// 주변부 UI에 속한 item UI라면 -> 획득
 	if (m_ItemObject != nullptr)
 	{
-		auto inventory = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(INVENTORYSCRIPT));
+		auto inventory = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 
 		inventory->AcquireItem(m_ItemObject);
 	}
@@ -108,7 +108,7 @@ void ItemUI::OnMouseRightClick()
 	else
 	{
 		UINT type = static_cast<UINT>(m_ItemInfo.Type);
-		auto playerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(PLAYERSCRIPT));
+		auto playerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
 
 		if (IS_WEAPON(type))
 		{

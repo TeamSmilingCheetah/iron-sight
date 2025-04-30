@@ -141,7 +141,7 @@ void TestLevel::CreateTestLevel()
 	// =========
 	// UI Preset
 	// =========
-	
+
 	// UI Camera
 	CGameObject* UICamera = new CGameObject;
 	UICamera->SetName(L"UICamera");
@@ -321,7 +321,7 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->AddComponent(new CUIRender);
 
 	pLevel->AddObject(8, CanvasUI, false);
-	
+
 	// HP UI
 	CGameObject* childUI = new CGameObject;
 	childUI->SetName(L"HP_UI");
@@ -383,7 +383,7 @@ void TestLevel::CreateTestLevel()
 
 	interactionUI->AddChild(childUI);
 
-	
+
 
 
 	// 아이템 매니저 Initialize
@@ -426,7 +426,7 @@ void TestLevel::CreateTestLevel()
 			pObj->Collider3D()->SetIndependentScale(true);
 
 			pObj->AddComponent(new InventoryController);
-			InventoryController* pInvenScript = static_cast<InventoryController*>(pObj->GetScript(INVENTORYSCRIPT));
+			InventoryController* pInvenScript = static_cast<InventoryController*>(pObj->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 
 			// 주변 및 인벤토리 UI를 등록함
 			pInvenScript->SetVicinityUI(Vicinity);
@@ -809,7 +809,7 @@ void TestLevel::CreateTestLevel()
 
 	pObject->AddChild(pVision);
 
-	
+
 
 
 	// Door
@@ -818,13 +818,13 @@ void TestLevel::CreateTestLevel()
 	pDoorObj->Transform()->SetRelativePos(Vec3(2000.f, -500.f, 1500.f));
 	pDoorObj->Transform()->SetRelativeScale(Vec3(1000.f, 1000.f, 1000.f));
 	pDoorObj->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	
+
 	pDoorObj->AddComponent(new CCollider3D);
 	pDoorObj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
 	pDoorObj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
 	pDoorObj->Collider3D()->SetIndependentScale(true);
-	
+
 	pDoorObj->AddComponent(new DoorScript);
-	
+
 	pLevel->AddObject(1, pDoorObj, false);
 }

@@ -16,7 +16,7 @@
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
 CameraController::CameraController()
-	: CScript(static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT))
+	: CScript(SCRIPT_TYPE::CAMERASCRIPT)
 	, m_Player(nullptr)
 	, m_CameraSpeed(100.f)
 	, m_bSearch(false)
@@ -43,8 +43,8 @@ CameraController::~CameraController()
 void CameraController::Begin()
 {
 	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
-	m_InventoryScript = static_cast<InventoryController*>(m_Player->GetScript(INVENTORYSCRIPT));
+	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(m_Player->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void CameraController::Tick()
@@ -177,7 +177,7 @@ void CameraController::CameraPerspectiveMove()
 		static float ObjectiveHeight = 0.f;
 		static float ObjectiveLateralOff = 0.f;
 
-		// 평상시 상태에서 위치 값 
+		// 평상시 상태에서 위치 값
 		if (!m_bShoulder)
 		{
 			adjustFinalDistance = adjustNormalDistance;
@@ -200,7 +200,7 @@ void CameraController::CameraPerspectiveMove()
 		// 줌 회복 상태가 아니거나 둘러보기 상태가 아니라면 줌을 활성화 한다.
 		if (!m_bShoulderRecover && !m_bSearch && iWeaponIdx <= SECONDARY_FIRST)
 		{
-			
+
 			if (KEY_TAP(KEY::RBTN))
 			{
 				m_bCliked_First = true;
@@ -230,7 +230,7 @@ void CameraController::CameraPerspectiveMove()
 				}
 			}
 
-			// 견착 상태 
+			// 견착 상태
 			if (m_bShoulder)
 			{
 				if (m_bCliked_First)
@@ -238,7 +238,7 @@ void CameraController::CameraPerspectiveMove()
 					lateralOffset = 500.f;
 					m_bCliked_First = false;
 				}
-				
+
 
 				// 카메라위 위치를 조정하여 줌해준다.
 				if (KEY_PRESSED(KEY::RBTN))
@@ -274,11 +274,11 @@ void CameraController::CameraPerspectiveMove()
 				m_bTPS = false;
 				m_bWasTPS = true;
 				GetOwner()->Camera()->LayerCheck(3);
-				GetOwner()->Camera()->LayerCheck(4);			
+				GetOwner()->Camera()->LayerCheck(4);
 			}
 		}
 
-		// 줌 회복 
+		// 줌 회복
 		else
 		{
 			// 기존 카메라 위치로 회복시켜준다.
@@ -389,7 +389,7 @@ void CameraController::CameraPerspectiveMove()
 		if (iWeaponIdx <= SECONDARY_FIRST)
 		{
 			if (KEY_TAP(KEY::RBTN))
-			{				
+			{
 				// TPS에서 줌으로 넘어온 경우 줌을 풀때 TPS로 넘어간다.
 				if (m_bWasTPS && m_bADS)
 				{
@@ -397,8 +397,8 @@ void CameraController::CameraPerspectiveMove()
 					GetOwner()->Camera()->LayerCheck(3);
 					GetOwner()->Camera()->LayerCheck(4);
 				}
-				m_bChangeFOV = true;			
-				m_bADS == true ? m_bADS = false : m_bADS = true;			
+				m_bChangeFOV = true;
+				m_bADS == true ? m_bADS = false : m_bADS = true;
 			}
 		}
 
@@ -408,13 +408,13 @@ void CameraController::CameraPerspectiveMove()
 	{
 		ApplyZoom(m_bADS);
 	}
-	
+
 
 
 	//
 	// 반동
 	//
-	
+
 	// 플레이어가 총기를 발사하는 중이라면
 	if (m_PlayerScript->IsShot())
 	{
@@ -435,7 +435,7 @@ void CameraController::CameraPerspectiveMove()
 			GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
 			recoilPower_horizontal = pGunScript->GetHorizontalPower();
 			recoilPower_vertical = pGunScript->GetVerticalPower();
-		
+
 
 			// 랜덤한 수직 반동값을 만들어준다
 			float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;
@@ -451,7 +451,7 @@ void CameraController::CameraPerspectiveMove()
 				randomRecoil_horizontal = -randomRecoil_horizontal * 0.5f;
 			}
 			m_RecoilAmount_horizontal = m_RecoilAmount_horizontal * (1.f - 0.7f) + randomRecoil_horizontal * 0.7f;
-			
+
 
 			vCameraRot.x -= m_RecoilAmount_vertical;
 			vPlayerRot.y -= m_RecoilAmount_horizontal;
@@ -491,7 +491,7 @@ void CameraController::ApplyZoom(bool _IsADS)
 		{
 			GetOwner()->Camera()->SetFOV(fDestFOV);
 			m_bChangeFOV = false;
-		}					
+		}
 	}
 	else
 	{

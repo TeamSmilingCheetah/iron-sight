@@ -98,7 +98,7 @@ void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx)
 	tTask task{};
 	task.Type = TASK_TYPE::CHANGE_LAYEROBJECT;
 	task.Param0 = (DWORD_PTR)_TargetObj;
-	task.Param1 = (DWORD_PTR)_LayerIdx; 
+	task.Param1 = (DWORD_PTR)_LayerIdx;
 
 	CTaskMgr::GetInst()->AddTask(task);
 }
@@ -302,7 +302,7 @@ void GetComponentsNames(vector<wstring>& _vecComponentsNames)
 	_vecComponentsNames.push_back(L"Tilemap");
 	_vecComponentsNames.push_back(L"ParticleSystem");
 }
-  
+
 bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist)
 {
 	// 삼각형 표면 방향 벡터
@@ -342,7 +342,7 @@ bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDi
 	// 직선과 삼각형 평면의 교점이 삼각형 1번과 2번 사이에 존재하는지 체크
 	//      0
 	//     /  \
-	//    1 -- 2    
+	//    1 -- 2
 	if (Full.Dot(U) < 0.f || Full.Dot(V) < 0.f)
 		return false;
 
@@ -364,7 +364,7 @@ float RandomFloat(float min, float max)
 	return dist(engine);
 }
 
-CScript* GetScriptWithType(CGameObject* _Object, UINT _Type)
+CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type)
 {
 	vector<CScript*> vecScript = _Object->GetScripts();
 
@@ -379,7 +379,7 @@ CScript* GetScriptWithType(CGameObject* _Object, UINT _Type)
 	return nullptr;
 }
 
-CScript* GetScriptWithParentType(CGameObject* _Object, UINT _Type)
+CScript* GetScriptWithParentType(CGameObject* _Object, SCRIPT_TYPE _Type)
 {
 	vector<CScript*> vecScript = _Object->GetScripts();
 

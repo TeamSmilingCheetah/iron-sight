@@ -103,7 +103,6 @@ enum class LIGHT_TYPE
 	SPOT, // 스포트 라이트		손전등,
 };
 
-
 enum class COMPONENT_TYPE : UINT
 {
 	TRANSFORM, // 위치, 크기, 회전, 부모자식 계층구조
@@ -205,7 +204,7 @@ enum TEX_PARAM
 enum class TASK_TYPE
 {
 	// Delayed Task
-	
+
 	// 0 : Parent Address, 1 : Child Address
 	ADD_CHILD,
 
@@ -220,7 +219,7 @@ enum class TASK_TYPE
 
 
 	// Immediate
-	
+
 	// 0 : Object Address, 1 : Layer Index, 2 : ChildMove
 	CREATE_OBJECT,
 

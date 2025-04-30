@@ -13,7 +13,7 @@
 
 
 WeaponController::WeaponController(SCRIPT_TYPE _Type)
-	: CScript(static_cast<UINT>(_Type))
+	: CScript(_Type)
 	, m_MainCamera(nullptr)
 	, m_EquippedOwner(nullptr)
 	, m_bEnemy(false)
