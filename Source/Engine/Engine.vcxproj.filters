@@ -680,4 +680,24 @@
       <Filter>01. Header</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\std3d.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\std2d.fx">
+      <Filter>HLSL\02. Render\2DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\std3d_deferred.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\particle.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\merge.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\particle_composite.fx">
+      <Filter>HLSL\02. Render\3DShader</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

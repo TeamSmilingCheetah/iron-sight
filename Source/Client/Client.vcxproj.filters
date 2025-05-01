@@ -168,6 +168,9 @@
     <ClInclude Include="UI\Public\Component\DecalUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\Decal</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Public\Component\ParticleUI.h">
+      <Filter>03. EditorUI\Inspector\ComponentUI\ParticleUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -315,6 +318,9 @@
     </Filter>
     <Filter Include="03. EditorUI\Inspector\ComponentUI\Decal">
       <UniqueIdentifier>{70f34c67-0730-4071-bf67-477475b9b751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. EditorUI\Inspector\ComponentUI\ParticleUI">
+      <UniqueIdentifier>{218f66b8-61ed-43d0-90bc-484954619683}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +484,9 @@
     </ClCompile>
     <ClCompile Include="UI\Private\Component\DecalUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\Component\ParticleUI.cpp">
+      <Filter>03. EditorUI\Inspector\ComponentUI\ParticleUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

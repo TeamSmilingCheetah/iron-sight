@@ -17,6 +17,7 @@ public:
     void SetClearColor(int _Idx, Vec4 _Color, bool _Independent = true);
     const D3D11_VIEWPORT& GetViewPort() { return m_ViewPort; }
     Ptr<CTexture> GetRenderTarget(int _idx) { return m_Target[_idx]; }
+	Ptr<CTexture> GetDSTex() { return m_DSTex; }
 
     void Clear();
     void ClearRenderTargets();

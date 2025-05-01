@@ -174,6 +174,17 @@ void ThrowableController::Triggered()
 			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
 			pPlayerScript->SetThrowBoom(true);
 		}
+
+		if (GetOwner()->GetName() == L"Smoke Grenade")
+		{
+			if (!GetOwner()->IsDead())
+			{
+				Ptr<CPrefab> SmokeParticelPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\SmokeParticle.pref", L"Prefab\\SmokeParticle.pref");
+				Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
+
+				Instantiate(SmokeParticelPrefab, vPos, 0);
+			}
+		}
 		DestroyObject(GetOwner());
 	}
 }

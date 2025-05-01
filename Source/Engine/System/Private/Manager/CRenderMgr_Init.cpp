@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Base/assets.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CRenderMgr.h"
@@ -136,6 +136,28 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->SetClearColor(
 			0, Vec4(0.f, 0.f, 0.f, 0.f), false);
 	}
+
+	// ========
+	// Particle
+	// ========
+	{
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)] = new CMRT;
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->SetName(L"Particle");
+
+		Ptr<CTexture> arrTex[8] =
+		{
+			CAssetMgr::GetInst()->CreateTexture(L"ParticleTargetTex",
+												static_cast<UINT>(vResolution.x),
+												static_cast<UINT>(vResolution.y),
+												DXGI_FORMAT_R8G8B8A8_UNORM,
+												D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE)
+		};
+
+
+		
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->Create(arrTex, 1, nullptr);
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->SetClearColor(0, Vec4(0.f, 0.f, 0.f, 0.f));
+	}
 }
 
 void CRenderMgr::CreateDebugMtrl()
@@ -215,6 +237,7 @@ void CRenderMgr::CreateRenderMtrl()
 	pShader->CreateVertexShader(L"Shader\\merge.fx", "VS_Merge");
 	pShader->CreatePixelShader(L"Shader\\merge.fx", "PS_Merge");
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	CAssetMgr::GetInst()->AddAsset(L"MergeShader", pShader);
 
 	m_MergeMtrl = new CMaterial(true);
@@ -258,6 +281,24 @@ void CRenderMgr::CreateRenderMtrl()
 	pLightMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
 	pLightMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
 	CAssetMgr::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
+
+	// ==============
+	// ParticleCompositeShader
+	// ==============
+	{
+		Ptr<CGraphicShader> pShader = new CGraphicShader;
+		pShader->CreateVertexShader(L"Shader\\particle_composite.fx", "VS_ParticleComposite");
+		pShader->CreatePixelShader(L"Shader\\particle_composite.fx", "PS_ParticleComposite");
+		pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
+		pShader->SetBSState(BS_TYPE::ALPHABLEND);
+		CAssetMgr::GetInst()->AddAsset(L"ParticleCompositeShader", pShader);
+
+		Ptr<CMaterial> pPartCompMtrl = new CMaterial(true);
+		pPartCompMtrl->SetName(L"ParticleCompositeMtrl");
+		pPartCompMtrl->SetShader(pShader);
+		pPartCompMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ParticleTargetTex"));
+		CAssetMgr::GetInst()->AddAsset<CMaterial>(pPartCompMtrl->GetName(), pPartCompMtrl);
+	}
 }
 
 CCamera* CRenderMgr::GetMainCamera()

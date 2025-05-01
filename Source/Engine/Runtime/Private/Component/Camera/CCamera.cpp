@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
@@ -526,6 +526,7 @@ void CCamera::render_effect()
 
 void CCamera::render_particle()
 {
+	// 이제 실제 파티클을 그린다.
 	for (size_t i = 0; i < m_vecParticle.size(); ++i)
 	{
 		m_vecParticle[i]->Render();
