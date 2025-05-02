@@ -7,27 +7,12 @@
 class CGameObject;
 class CLandScape;
 
-#define PRIMARY_FIRST 0
-#define PRIMARY_SECOND 1
-#define SECONDARY_FIRST 2
-#define THROWABLE_FIRST 3
-#define THROWABLE_SECOND 4
-#define NONE_WEAPON 5
-
-struct tSlot
-{
-	ITEM_TYPE		Type;
-	CGameObject*	Object;
-};
 
 class PlayerCharacter :
 	public CScript
 {
 private:
 	CGameObject* m_MainCamera;
-
-	CGameObject* m_HandMeshObj;
-	CGameObject* m_BackMeshObj;
 
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
@@ -48,19 +33,21 @@ private:
 
 	bool m_bShoot;
 	bool m_bCanThrow;
-	bool m_bCanEquip;
 	bool m_bThrowBoom;
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
 
-	CGameObject* m_CurWeapon;
 	CGameObject* m_CollObject;
-	int			 m_CurWeaponIdx;
 
-
-	vector<tSlot> m_vecWeaponSlot;	// 무기 슬롯
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
+
+	// ======
+	// Script
+	// ======
+	class CameraController*		m_CamScript;
+	class InventoryController*	m_InventoryScript;
+	
 
 	// ======
 	// Status
@@ -127,7 +114,6 @@ private:
 
 	void PlayerReload();
 	void PlayerAttack();
-	void PlayerInteractWeapon();
 
 	void PlayerControlUI();
 	void PlayerHeal();
@@ -136,29 +122,20 @@ private:
 	void gravityCalcul();
 	void ColliderCalcul();
 
-	// TODO: 데이터 구조 개선
-	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
-	void DetachItem(CGameObject* _Item);
+	
 	
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
 
-	void SetCurWeapon(CGameObject* _Weapon) { m_CurWeapon = _Weapon; }
 	void SetShot(bool _Shot) { m_bShoot = _Shot; }
 	void SetThrow(bool _Throw) { m_bCanThrow = _Throw; }
 	void SetThrowBoom(bool _Boom) { m_bThrowBoom = _Boom; }
 
-	CGameObject* GetCurWeapon() { return m_CurWeapon; }
-	//CGameObject* GetPlayeChildMeshObject(const wstring& _str);
-
-	int GetCurWeaponIdx() const { return m_CurWeaponIdx; }
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
-
-	void EquipSlot(CGameObject* _Item);
-	void ReleaseSlot(ITEM_TYPE _Type, int _Count);
+	bool IsInventoryOpened() const { return m_InventoryOpened; }
 
 	void TriggerHeal(ITEM_TYPE _HealType);
 
