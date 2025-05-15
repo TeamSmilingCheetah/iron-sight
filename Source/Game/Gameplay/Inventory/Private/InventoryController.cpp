@@ -284,10 +284,8 @@ void InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 	m_InventoryChanged = true;
 }
 
-
-
 // Compare
-bool ItemComp (CGameObject* _lhs, CGameObject* _rhs)
+bool ItemComp(CGameObject* _lhs, CGameObject* _rhs)
 {
 	ItemScript* lItem = static_cast<ItemScript*>(_lhs->GetScript(ITEMSCRIPT));
 	ItemScript* rItem = static_cast<ItemScript*>(_rhs->GetScript(ITEMSCRIPT));
@@ -305,51 +303,14 @@ bool ItemComp (CGameObject* _lhs, CGameObject* _rhs)
 
 void InventoryController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	// Layer 6번이 Item 레이어임을 가정.
-	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
-
-	if (_OtherObject->GetLayerIdx() != 6)
-		return;
-
-	// 주변부에 추가함
-	m_vecVicinity.push_back(_OtherObject);
-	std::sort(m_vecVicinity.begin(), m_vecVicinity.end(), ItemComp);
-
-	// UI에도 반영
-	m_VicinityChanged = true;
 }
 
 void InventoryController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	// F키 눌렀을 때
-	if (KEY_TAP(KEY::F))
-	{
-		// 플레이어가 바라보고 있는 오브젝트
-		CGameObject* pTarget = m_PlayerScript->GetRayTarget();
-
-		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
-		if (!pTarget || pTarget != _OtherObject || pTarget->GetLayerIdx() != 6)
-			return;
-
-		// 감지된 아이템이 타겟이라면
-		// 아이템을 습득함 -> World에서 없애면서 EndOverlap이 호출되면서 ui에 자동으로 반영됨
-		AcquireItem(_OtherObject);
-	}
 }
 
 void InventoryController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	// Layer 6번이 Item 레이어임을 가정.
-	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
-
-	if (_OtherObject->GetLayerIdx() != 6)
-		return;
-
-	// 주변부에서 제거함
-	m_vecVicinity.erase(find(m_vecVicinity.begin(), m_vecVicinity.end(), _OtherObject));
-
-	// UI에도 반영
-	m_VicinityChanged = true;
 }
 
 void InventoryController::EquipWeapon(CGameObject* _Item)
@@ -612,6 +573,44 @@ void InventoryController::DeactivateSlot()
 	m_CurWeapon = nullptr;
 	m_CurWeaponController = nullptr;
 	m_CurSlotIdx = NONE_WEAPON;
+}
+
+void InventoryController::AddItemToVicinity(CGameObject* _Item)
+{
+	// 주변부에 추가함
+	vector<CGameObject*> vecTemp;
+
+	// 하나를 삽입하는 거니까 sort보다 O(N)의 방법 채택
+	bool isInserted = false;
+
+	for (size_t i = 0; i < m_vecVicinity.size(); ++i)
+	{
+		if (!isInserted && !ItemComp(m_vecVicinity[i], _Item))
+		{
+			vecTemp.push_back(_Item);
+
+			isInserted = true;
+		}
+
+		vecTemp.push_back(m_vecVicinity[i]);
+	}
+
+	if (!isInserted)
+		vecTemp.push_back(_Item);
+
+	m_vecVicinity = std::move(vecTemp);
+
+	// UI에도 반영
+	m_VicinityChanged = true;
+}
+
+void InventoryController::RemoveItemFromVicinity(CGameObject* _Item)
+{
+	// 주변부에서 제거함
+	m_vecVicinity.erase(find(m_vecVicinity.begin(), m_vecVicinity.end(), _Item));
+
+	// UI에도 반영
+	m_VicinityChanged = true;
 }
 
 void InventoryController::AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot)

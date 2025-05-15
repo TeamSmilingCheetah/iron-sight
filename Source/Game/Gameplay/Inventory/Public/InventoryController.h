@@ -66,19 +66,6 @@ public:
 	bool UseItem(ITEM_TYPE _Type, int _Count = 1);	// 아이템이 남으면 true 리턴
 	void DropItem(ITEM_TYPE _Type, int _Count);		// 아이템이 남으면 true 리턴
 
-public:
-	virtual void Init() override;
-	virtual void Begin() override;
-	virtual void Tick() override;
-
-	virtual void SaveComponent(FILE* _File) override;
-	virtual void LoadComponent(FILE* _File) override;
-
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-
-public:
 	void PlayerInteractWeapon();
 
 	void EquipWeapon(CGameObject* _Item);
@@ -102,10 +89,26 @@ public:
 	void ActivateSlot(int _SlotIdx); // 현재 슬롯을 지정한 슬롯으로 변경
 	void DeactivateSlot();	// 현재 슬롯을 비활성화
 
+	void AddItemToVicinity(CGameObject* _Item);
+	void RemoveItemFromVicinity(CGameObject* _Item);
+
 public:
 	int GetCurSlotIdx() const { return m_CurSlotIdx; }
 	CGameObject* GetCurWeapon() const { return m_CurWeapon; }
 	WeaponController* GetCurWeaponController() const { return m_CurWeaponController; }
+
+public:
+	virtual void Init() override;
+	virtual void Begin() override;
+	virtual void Tick() override;
+
+	virtual void SaveComponent(FILE* _File) override;
+	virtual void LoadComponent(FILE* _File) override;
+
+	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+
 
 public:
 	CLONE(InventoryController);

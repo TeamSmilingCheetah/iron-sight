@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CPathMgr.h"
@@ -231,11 +231,11 @@ void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
 void CFBXLoader::GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder)
 {
 	int iTangentCnt = _pMesh->GetElementTangentCount();
+	int iUVCnt = _pMesh->GetTextureUVCount();
 	if (1 != iTangentCnt)
 	{
-		_pMesh->GenerateTangentsData(0);
+		assert(_pMesh->GenerateTangentsData(0));
 	}
-	//assert(NULL); // 정점 1개가 포함하는 탄젠트 정보가 2개 이상이다.
 
 	// 탄젠트 data 의 시작 주소
 	FbxGeometryElementTangent* pTangent = _pMesh->GetElementTangent();

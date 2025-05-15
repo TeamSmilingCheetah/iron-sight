@@ -43,7 +43,7 @@ void CameraController::Begin()
 {
 	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
 	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
-	m_InventoryScript = static_cast<InventoryController*>(m_Player->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(m_Player->GetScript(INVENTORYSCRIPT));
 }
 
 void CameraController::Tick()

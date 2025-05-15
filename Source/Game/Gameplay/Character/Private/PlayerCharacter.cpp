@@ -90,7 +90,7 @@ void PlayerCharacter::Begin()
 
 	// Script
 	m_CamScript = static_cast<CameraController*>(m_MainCamera->GetScript(CAMERASCRIPT));
-	m_InventoryScript = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(GetOwner()->GetScript(INVENTORYSCRIPT));
 }
 
 void PlayerCharacter::Tick()

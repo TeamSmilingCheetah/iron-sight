@@ -297,8 +297,7 @@ void PlayerCharacter::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObje
 
 void PlayerCharacter::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
-	if(_3DCollider->IsTrigger())
-		m_CollObject = _OtherObject;
+	m_CollObject = _OtherObject;
 }
 
 void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
@@ -311,8 +310,7 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 
 void PlayerCharacter::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
-	if (_3DCollider->IsTrigger())
-		m_CollObject = nullptr;
+	m_CollObject = nullptr;
 }
 
 

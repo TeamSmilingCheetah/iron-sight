@@ -105,6 +105,8 @@ void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx)
 
 void SetObjectActive(CGameObject* _TargetObj, bool _Active)
 {
+	assert(_TargetObj);
+
 	tTask task = {};
 	task.Type = TASK_TYPE::SETACTIVE_OBJECT;
 	task.Param0 = (DWORD_PTR)_TargetObj;

@@ -24,6 +24,7 @@
 #include "Game/Gameplay/TestSound.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game\Gameplay\Character\Public\TestCharacter.h"
+#include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -46,7 +47,7 @@ void TestLevel::CreateTestLevel()
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);
 
 	pLevel->GetLayer(0)->SetName(L"Background");
-	pLevel->GetLayer(1)->SetName(L"Tile");
+	pLevel->GetLayer(1)->SetName(L"Structure");	// 건물, 구조물 등
 	pLevel->GetLayer(2)->SetName(L"Default");
 	pLevel->GetLayer(3)->SetName(L"PlayerTPS");
 	pLevel->GetLayer(4)->SetName(L"PlayerFPS");
@@ -275,26 +276,32 @@ void TestLevel::CreateTestLevel()
 			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
 			pObj->Collider3D()->SetIndependentScale(true);
 
+			pObj->AddComponent(new InventoryController);
+			InventoryController* pInvenScript = static_cast<InventoryController*>(pObj->GetScript(INVENTORYSCRIPT));
+
+			// 주변 및 인벤토리 UI를 등록함
+			pInvenScript->SetVicinityUI(Vicinity);
+			pInvenScript->SetInventoryUI(Inventory);
+			pInvenScript->SetPlayer(pObj);
+
 			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
 
 			// 자식 메쉬들 같이 이동
 			pLevel->AddObject(3, pObj, true);
 
 			// Inventory Object
-			CGameObject* pInventory = new CGameObject;
-			pInventory->SetName(L"Inventory");
-			pInventory->AddComponent(new CCollider3D);
+			CGameObject* pInteractionHandler = new CGameObject;
+			pInteractionHandler->SetName(L"Interaction Handler");
+			pInteractionHandler->AddComponent(new CCollider3D);
 
-			pInventory->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
-			pInventory->Collider3D()->SetIndependentScale(true);
-			pInventory->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
+			pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
+			pInteractionHandler->Collider3D()->SetIndependentScale(true);
+			pInteractionHandler->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
 
-			pInventory->AddComponent(new InventoryController);
-			InventoryController* pInvenScript = static_cast<InventoryController*>(pInventory->GetScript(INVENTORYSCRIPT));
-
-			// 주변 및 인벤토리 UI를 등록함
-			pInvenScript->SetVicinityUI(Vicinity);
-			pInvenScript->SetInventoryUI(Inventory);
+			pInteractionHandler->AddComponent(new InteractionHandler);
+			static_cast<InteractionHandler*>(pInteractionHandler->GetScript(INTERACTION_HANDLER))->SetPlayer(pObj);
+			
+			pObj->AddChild(pInteractionHandler);
 
 			for (int i = 0; i < 20; ++i)
 			{
@@ -354,9 +361,6 @@ void TestLevel::CreateTestLevel()
 
 				DragUI->AddChild(ChildUI);
 			}
-
-			pInvenScript->SetPlayer(pObj);
-			pObj->AddChild(pInventory);
 
 			//
 			// AKM
@@ -761,7 +765,7 @@ void TestLevel::CreateTestLevel()
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
 
 	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
-	childUI->UI()->AddText(L"", 17.f, 16.f, 20.f, FONT_RGBA(255, 255, 255, 255));
+	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
 	SetObjectActive(childUI, false);
 
 	CanvasUI->AddChild(childUI);
