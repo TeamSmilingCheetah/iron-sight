@@ -52,6 +52,8 @@ void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _Othe
 	// Interactable Script
 	// TODO : Script 개선
 	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(ITEMSCRIPT));
+	if (!pInteractable)
+		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(DOORSCRIPT));
 
 	if (!pInteractable)
 		return;
@@ -71,6 +73,8 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 	// Interactable Script
 	// TODO : Script 개선
 	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(ITEMSCRIPT));
+	if (!pInteractable)
+		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(DOORSCRIPT));
 
 	if (!pInteractable)
 		return;
@@ -114,8 +118,8 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 	}
 
 	// Interaction UI 띄우기
-	if (isInteractableChanged)
-		SetObjectActive(m_InteractionUI, m_Interactable);
+	//if (isInteractableChanged)
+	//	SetObjectActive(m_InteractionUI, m_Interactable);
 }
 
 void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
@@ -123,6 +127,8 @@ void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherO
 	// Interactable Script
 	// TODO : Script 개선
 	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(ITEMSCRIPT));
+	if (!pInteractable)
+		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(DOORSCRIPT));
 
 	if (!pInteractable)
 		return;

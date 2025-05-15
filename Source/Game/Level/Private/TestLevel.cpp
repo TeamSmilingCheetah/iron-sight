@@ -32,6 +32,7 @@
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
+#include "Game/Gameplay/Door/Public/DoorScript.h"
 
 void TestLevel::CreateTestLevel()
 {
@@ -61,6 +62,7 @@ void TestLevel::CreateTestLevel()
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 6);
+	CCollisionMgr::GetInst()->CollisionCheck(3, 1);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 7);
 	CCollisionMgr::GetInst()->CollisionCheck(0, 7);
 
@@ -271,6 +273,7 @@ void TestLevel::CreateTestLevel()
 			pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
 			pObj->ColliderRay()->SetOffset(Vec3(0.f, 1500.f, 0.f));
 			pObj->ColliderRay()->SetRayLength(5000.f);
+			pObj->ColliderRay()->SetTriggerTarget(true);
 
 			pObj->AddComponent(new PlayerCharacter);
 			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
@@ -585,9 +588,8 @@ void TestLevel::CreateTestLevel()
 		pObj->Transform()->SetRelativePos(Vec3(6590.f, -410.f, 5000.f));
 		pObj->Transform()->SetRelativeScale(Vec3(700.f, 2000.f, 700.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
 
-
+		pLevel->AddObject(1, pObj, false);
 
 
 		/*
@@ -769,4 +771,19 @@ void TestLevel::CreateTestLevel()
 	SetObjectActive(childUI, false);
 
 	CanvasUI->AddChild(childUI);
+
+	CGameObject* House = CAssetMgr::GetInst()->LoadFBX(L"FBX\\door.fbx")->Instantiate();
+	House->SetName(L"House");
+	House->Transform()->SetRelativePos(Vec3(2000.f, -500.f, 1500.f));
+	House->Transform()->SetRelativeScale(Vec3(1000.f, 1000.f, 1000.f));
+	House->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	
+	House->AddComponent(new CCollider3D);
+	House->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
+	House->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
+	House->Collider3D()->SetIndependentScale(true);
+	
+	House->AddComponent(new DoorScript);
+	
+	pLevel->AddObject(1, House, false);
 }

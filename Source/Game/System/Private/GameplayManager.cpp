@@ -13,6 +13,7 @@
 #include "Game\Gameplay\Character\Public\TestCharacter.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
+#include "Game/Gameplay/Door/Public/DoorScript.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -30,6 +31,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"EnemyController");
 	_vec.push_back(L"EnemyVision");
 	_vec.push_back(L"InteractionHandler");
+	_vec.push_back(L"DoorScript");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -62,6 +64,8 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new EnemyVisionScript;
 	if (L"InteractionHandler" == _strScriptName)
 		return new InteractionHandler;
+	if (L"DoorScript" == _strScriptName)
+		return new DoorScript;
 	return nullptr;
 }
 
@@ -109,7 +113,10 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		return new EnemyVisionScript;
 		break;
 	case static_cast<UINT>(INTERACTION_HANDLER):
-		return new EnemyVisionScript;
+		return new InteractionHandler;
+		break;
+	case static_cast<UINT>(DOORSCRIPT):
+		return new DoorScript;
 		break;
 	}
 	return nullptr;
@@ -172,6 +179,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case INTERACTION_HANDLER:
 		return L"InteractionHandler";
+		break;
+
+	case DOORSCRIPT:
+		return L"DoorScript";
 		break;
 	}
 	return nullptr;

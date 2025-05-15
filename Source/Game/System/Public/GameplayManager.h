@@ -25,6 +25,9 @@ enum SCRIPT_TYPE
 
 	// 상호작용
 	INTERACTION_HANDLER,
+
+	// 문
+	DOORSCRIPT,		// Interactable
 };
 
 class CScript;

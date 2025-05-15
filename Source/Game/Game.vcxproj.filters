@@ -68,6 +68,9 @@
     <ClCompile Include="Gameplay\Interaction\Private\InteractableScript.cpp">
       <Filter>02. Gameplay\Interaction</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp">
+      <Filter>02. Gameplay\Door</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -142,6 +145,9 @@
     <ClInclude Include="Gameplay\Interaction\Public\InteractableScript.h">
       <Filter>02. Gameplay\Interaction</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Door\Public\DoorScript.h">
+      <Filter>02. Gameplay\Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. ScriptMgr">
@@ -173,6 +179,9 @@
     </Filter>
     <Filter Include="02. Gameplay\Interaction">
       <UniqueIdentifier>{43f6eb8d-d71a-43bc-bc19-573252bcf836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\Door">
+      <UniqueIdentifier>{2328b0b2-80ab-4896-80ff-ebf73cf1b4d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
