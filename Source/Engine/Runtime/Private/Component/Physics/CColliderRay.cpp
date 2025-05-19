@@ -113,7 +113,9 @@ void CColliderRay::FinalTick()
 	// 디버깅용 길이 끝점
 	Vec3 vEndEdbugPos = m_RayFinalPos + (m_RayFinalDir * m_RayTargetLength);
 
-	m_RayTargetLength = 100000.f;
+	// 히트된 오브젝트가 없을 때만 초기화
+	if (!m_RayColInfo.HitObject)
+		m_RayTargetLength = 100000.f;
 
 	// 디버그 랜더링
 	if (m_OverlapCount)

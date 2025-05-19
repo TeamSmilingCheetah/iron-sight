@@ -1,5 +1,13 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+
+struct AItKeyInfo
+{
+	KEY_STATE State;
+	bool Presssed;
+	bool PrevPressed;
+};
 
 enum class Enemy_State
 {
@@ -9,10 +17,26 @@ enum class Enemy_State
 	None,
 };
 
+#define AIKEY_CHECK(KEY, STATE) GetAIKeyState(KEY) == STATE
+#define AIKEY_TAP(KEY) AIKEY_CHECK(KEY, KEY_STATE::TAP)
+#define AIKEY_RELEASED(KEY) AIKEY_CHECK(KEY, KEY_STATE::RELEASED)
+#define AIKEY_PRESSED(KEY) AIKEY_CHECK(KEY, KEY_STATE::PRESSED)
+
 class EnemyController :
     public CScript
 {
 public:
+	// 현재 사용중인 무기
+	CGameObject*	m_CurWeapon;
+	int				m_CurWeaponIdx;
+
+	// 입력중인 키
+	vector<AItKeyInfo> m_vecAIKey;
+
+	// 시야
+	CGameObject* m_VisionObj;
+	class EnemyVisionScript* m_VisionScript;
+
 	// 이동방향,크기 결정 값
 	Vec3 m_InputMoveDir;
 	float m_InputMoveForce;
@@ -40,7 +64,7 @@ public:
 	
 
 public:
-	void Begin() override {};
+	void Begin() override;
 	void Tick() override;
 
 	virtual void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,CCollider3D* _OtherCollider) override;
@@ -52,13 +76,27 @@ public:
 	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 
-	virtual void DemageCalcul(int _Demage);
-
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
+public:
+	virtual void DemageCalcul(int _Demage);
+	virtual void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
+	virtual void DetachItem(CGameObject* _Item);
+
+
+	// 키입력 판정을 위한 함수
+	void KeyPush(KEY _Key);						// 키 입력
+	void KeyTick();								// 키 입력 정리
+
+	virtual void KeyInputProcessing() {};		// 키 입력 처리(자식 클래스에서 사용)
+
+
+	KEY_STATE GetAIKeyState(KEY _Key) { return m_vecAIKey[static_cast<int>(_Key)].State; }
+
 private:
 	void UpdatePosition();
+	void UpdateRotation();
 	void MoveCalcul();
 	void gravityCalcul();
 	void ColliderCalcul();
@@ -67,4 +105,3 @@ public:
 	EnemyController(SCRIPT_TYPE _Type);
 	~EnemyController() override;
 };
-

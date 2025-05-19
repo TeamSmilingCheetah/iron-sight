@@ -22,6 +22,8 @@ protected:
 	KEY_STATE m_CurKeyState;
 
 	bool m_bIsEquipped;
+	bool m_bEnemy;
+
 public:
 	void Begin() override;
 	void Tick() override = 0;
@@ -35,6 +37,7 @@ public:
 	void SetCurKey(KEY _Key) { m_CurKey = _Key; }
 	void SetCurKeyState(KEY_STATE _KeyState) { m_CurKeyState = _KeyState; }
 	void SetEquip(bool _Equip) { m_bIsEquipped = _Equip; }
+	void SetEquipEnemy(bool _Enemy) { m_bEnemy = _Enemy; }
 
 	CGameObject* GetEquippedOwner() const { return m_EquippedOwner; }
 
