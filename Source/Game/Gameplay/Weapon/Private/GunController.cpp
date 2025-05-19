@@ -37,7 +37,7 @@ GunController::GunController()
 	m_FireDelay = 0.1f;
 	m_MaxRounds = 30;
 
-	m_ReloadingTime = 1.f;
+	m_ReloadingTime = 3.f;
 }
 
 GunController::~GunController()
@@ -54,35 +54,60 @@ void GunController::Begin()
 
 void GunController::Tick()
 {
-
-	PlayerCharacter* pPlayerScript = nullptr;
-
-	// 소유주가 있다면 위치를 0으로 초기화
-	if (m_EquippedOwner != nullptr)
-	{
-		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));		
-	}
 	// 소유주가 없다면 return
-	else if(m_EquippedOwner == nullptr || m_bIsEquipped == false)
+	if (m_EquippedOwner == nullptr || m_bIsEquipped == false)
 	{
 		return;
 	}
 
- 	
-
-	// 총알을 발사한다.
-	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
+	// 플레이어일 시 처리
+	if (!m_bEnemy)
 	{
-		if (0 < m_CurRounds && !m_bReload)
+		PlayerCharacter* pPlayerScript = nullptr;
+
+		// 소유주가 있다면 위치를 0으로 초기화
+		if (m_EquippedOwner != nullptr)
 		{
-			pPlayerScript->SetShot(true);
+			pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+		}
+
+
+		// 총알을 발사한다.
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
+		{
+			if (0 < m_CurRounds && !m_bReload)
+			{
+				pPlayerScript->SetShot(true);
+			}
+		}
+
+		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
+		{
+			if (!m_bReload && m_CurRounds != m_MaxRounds)
+			{
+				pPlayerScript->SetShot(false);
+				m_bReload = true;
+			}
+
 		}
 	}
+	else
+	{
+		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
+		{
+			if (!m_bReload && m_CurRounds != m_MaxRounds)
+			{
+				m_bReload = true;
+			}
+
+		}
+	}
+
 
 	// 총알을 발사한다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
 	{
-		if(0 < m_CurRounds)
+		if (0 < m_CurRounds)
 			m_bFire = true;
 	}
 
@@ -90,17 +115,6 @@ void GunController::Tick()
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
 	{
 		m_bFire = false;
-	}
-
-
-	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
-	{
-		if (!m_bReload && m_CurRounds != m_MaxRounds)
-		{
-			pPlayerScript->SetShot(false);
-			m_bReload = true;
-		}
-			
 	}
 
 
@@ -119,56 +133,66 @@ void GunController::Firing()
 {
 	// 총기 애니메이션 재생
 
-
-	// 총알을 모두 소진했다면
-	if (m_CurRounds <= 0)
-	{
-		PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
-	
-		pPlayerScript->SetShot(false);
-		m_bFire = false;
-		return;
-	}
-
-	CGameObject* pCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-
-
-	// Player의 위치와 방향 정보
-	Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
-
-
 	// 총알의 시작 위치를 정해준다.
 	Vec3 vRayPos = ColliderRay()->GetRayFinalPos();
-
 	Vec3 vFinalDir = GetFireDir();
-
-	// Camera의 줌 여부를 확인한다.
-	CameraController* pCameraScript = static_cast<CameraController*>(pCamera->GetScripts()[0]);
 
 	// 현재 사격 자세에 따라 정확도를 부여한다.
 	float spreadYaw = 0.f;
 	float spreadPitch = 0.f;
 
-
-	// 지향사격
-	if (!pCameraScript->IsShoulder() && !pCameraScript->IsADS())
+	// 적이 사용중인 사격
+	if (m_bEnemy)
 	{
+		// 사격 정확도는 일단 임의로 설정
 		spreadYaw = RandomFloat(-10.f, 10.f);
 		spreadPitch = RandomFloat(-10.f, 10.f);
-	}
 
-	// 견착
-	if (pCameraScript->IsShoulder())
-	{
-		spreadYaw = RandomFloat(-2.f, 2.f);
-		spreadPitch = RandomFloat(-2.f, 2.f);
-	}
+		// 총알을 모두 소진했다면
+		if (m_CurRounds <= 0)
+		{
+			m_bFire = false;
+			return;
+		}
 
-	// 정조준
-	if (pCameraScript->IsADS())
+	}
+	// 플레이어가 사용중인 사격
+	else
 	{
-		spreadYaw = 0.f;
-		spreadPitch = 0.f;
+		// 총알을 모두 소진했다면
+		if (m_CurRounds <= 0)
+		{
+			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+
+			pPlayerScript->SetShot(false);
+			m_bFire = false;
+			return;
+		}
+
+		// Camera의 줌 여부를 확인한다.
+		CGameObject* pCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
+		CameraController* pCameraScript = static_cast<CameraController*>(pCamera->GetScripts()[0]);
+
+		// 지향사격
+		if (!pCameraScript->IsShoulder() && !pCameraScript->IsADS())
+		{
+			spreadYaw = RandomFloat(-10.f, 10.f);
+			spreadPitch = RandomFloat(-10.f, 10.f);
+		}
+
+		// 견착
+		if (pCameraScript->IsShoulder())
+		{
+			spreadYaw = RandomFloat(-2.f, 2.f);
+			spreadPitch = RandomFloat(-2.f, 2.f);
+		}
+
+		// 정조준
+		if (pCameraScript->IsADS())
+		{
+			spreadYaw = 0.f;
+			spreadPitch = 0.f;
+		}
 	}
 
 	float radYaw = XMConvertToRadians(spreadYaw);

@@ -34,6 +34,11 @@ public:
 	float GetHorizontalPower() { return m_HorizontalRecoilPower; }
 	float GetVerticalPower() { return m_VerticalRecoilPower; }
 
+	int GetCurRound() { return m_CurRounds; }
+
+	bool IsReload() { return m_bReload; }
+	bool IsFire() { return m_bFire; }
+
 private:
 	void Firing();
 	void Reload();
