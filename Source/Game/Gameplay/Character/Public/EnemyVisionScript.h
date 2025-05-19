@@ -17,7 +17,7 @@ private:
 	bool m_RayAtkRg;
 
 public:
-	void Begin() override {};
+	void Begin() override;
 	void Tick() override final;
 
 	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;

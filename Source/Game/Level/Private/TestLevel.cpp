@@ -270,7 +270,6 @@ void TestLevel::CreateTestLevel()
 			pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
 			pObj->ColliderRay()->SetOffset(Vec3(0.f, 1500.f, 0.f));
 			pObj->ColliderRay()->SetRayLength(5000.f);
-			pObj->ColliderRay()->SetTriggerTarget(false);
 
 			pObj->AddComponent(new PlayerCharacter);
 			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
@@ -713,7 +712,7 @@ void TestLevel::CreateTestLevel()
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
 	pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
-	pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2000.f));
+	pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2500.f));
 	pVision->Collider3D()->SetIndependentScale(true);
 	pVision->Collider3D()->SetTrigger(true);
 

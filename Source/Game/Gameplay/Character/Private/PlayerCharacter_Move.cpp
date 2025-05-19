@@ -213,9 +213,6 @@ void PlayerCharacter::ColliderCalcul()
 
 void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	// 트리거 설정 확인을 위한 기능(나중에 제거)
-	_OtherCollider->SetTrigger(true);
-
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{

@@ -7,7 +7,6 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
-
 #include "Engine/Runtime/Public/Actor/CLayer.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
@@ -32,10 +31,27 @@ EnemyController::~EnemyController()
 {
 }
 
+void EnemyController::Begin()
+{
+	for (int i = 0; i < static_cast<int>(KEY::END); ++i)
+	{
+		m_vecAIKey.push_back(AItKeyInfo{KEY_STATE::NONE, false});
+	}
+}
+
 void EnemyController::Tick()
 {
+	// 키 입력 확인
+	KeyTick();
+
+	// 키 처리
+	KeyInputProcessing();
+
 	// 이동
 	UpdatePosition();
+
+	// 회전
+	UpdateRotation();
 }
 
 void EnemyController::DemageCalcul(int _Demage)
@@ -74,6 +90,45 @@ void EnemyController::UpdatePosition()
 
 	// 충돌벡터 초기화
 	m_vecCollisionNormal.clear();
+}
+
+void EnemyController::UpdateRotation()
+{
+	// 이동 방향이 있을 경우 해당 방향으로 부드럽게 회전
+	if (m_InputMoveDir.Length() > 0.001f)
+	{
+		// 목표 방향 벡터 (y값은 0으로 설정하여 수평 회전만 적용)
+		Vec3 targetDir = m_InputMoveDir;
+		targetDir.y = 0.0f;
+		targetDir.Normalize();
+
+		// 현재 전방 벡터 (정면 방향)
+		Vec3 currentFront = Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		currentFront.y = 0.0f;
+		currentFront.Normalize();
+
+		// 외적 계산하여 회전 방향 결정
+		Vec3 cross = currentFront.Cross(targetDir);
+
+		// 회전 속도
+		float rotateSpeed = 10.0f; // 초당 10도 회전
+
+		// 외적의 y 성분에 따라 회전 방향 결정
+		float rotateAmount;
+		if (cross.y > 0.0f)
+		{
+			rotateAmount = rotateSpeed * DT;
+		}
+		else
+		{
+			rotateAmount = -rotateSpeed * DT;
+		}
+
+		// 현재 회전값 가져와서 Y축만 업데이트
+		Vec3 currentRotation = Transform()->GetRelativeRotation();
+		currentRotation.y += rotateAmount;
+		Transform()->SetRelativeRotation(currentRotation);
+	}
 }
 
 void EnemyController::MoveCalcul()
@@ -195,11 +250,77 @@ void EnemyController::ColliderCalcul()
 }
 
 
+void EnemyController::AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot)
+{
+	AddChild(_BoneObject, _Item);
+	_Item->Transform()->SetRelativePos(_RelativePos);
+	_Item->Transform()->SetRelativeRotation(_RelativeRot);
+}
+
+void EnemyController::DetachItem(CGameObject* _Item)
+{
+	Vec3 vPos = Transform()->GetRelativePos();
+	Vec3 vRot = Transform()->GetRelativeRotation();
+
+	// 아이템 레이어로 변경
+	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
+	ChangeLayer(_Item, 6);
+	SetObjectActive(_Item, true);
+	AttachItem(_Item, nullptr, vPos, vRot);
+}
+
+void EnemyController::KeyPush(KEY _Key)
+{
+	// 키 배열에서 키입력 처리
+	AItKeyInfo* AiKey = &m_vecAIKey[(int)_Key];
+	AiKey->Presssed = true;
+}
+
+void EnemyController::KeyTick()
+{
+	// 키가 눌려있는지 확인
+	for (size_t i = 0; i < m_vecAIKey.size(); ++i)
+	{
+		if (m_vecAIKey[i].Presssed)
+		{
+			// 키가 눌려있고, 이전에는 눌려있지 않았다.
+			if (false == m_vecAIKey[i].PrevPressed)
+			{
+				m_vecAIKey[i].State = KEY_STATE::TAP;
+			}
+
+			// 키가 눌려있고, 이전에도 눌려있었다.
+			else
+			{
+				m_vecAIKey[i].State = KEY_STATE::PRESSED;
+			}
+
+			// 다음 검사를 위해 키입력 상황 전환
+			m_vecAIKey[i].PrevPressed = true;
+			m_vecAIKey[i].Presssed = false;
+		}
+
+		// 키가 눌려있지 않다면
+		else
+		{
+			// 이전에는 눌려있었다.
+			if (m_vecAIKey[i].PrevPressed)
+			{
+				m_vecAIKey[i].State = KEY_STATE::RELEASED;
+			}
+			else
+			{
+				m_vecAIKey[i].State = KEY_STATE::NONE;
+			}
+
+			m_vecAIKey[i].PrevPressed = false;
+		}
+	}
+}
+
+
 void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	// 트리거 설정 확인을 위한 기능(나중에 제거)
-	_OtherCollider->SetTrigger(true);
-
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
 	{
