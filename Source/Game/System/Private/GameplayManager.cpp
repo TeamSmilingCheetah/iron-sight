@@ -14,6 +14,7 @@
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
+#include "Game/Gameplay/Particle/Public/ParticleController.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -22,9 +23,10 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CPlayerScript");
 	_vec.push_back(L"CGunScript");
 	_vec.push_back(L"CThrowableScript");
+	_vec.push_back(L"CParticleScript");
 	_vec.push_back(L"TestSound");
 	_vec.push_back(L"InventoryScript");
-	_vec.push_back(L"ItemScript");
+	_vec.push_back(L"ItemScript");	
 	_vec.push_back(L"ItemUIScript");
 	_vec.push_back(L"InventoryUIScript");
 	_vec.push_back(L"VicinityUIScript");
@@ -48,6 +50,8 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new ThrowableController;
 	if (L"TestSound" == _strScriptName)
 		return new TestSound;
+	if (L"CParticleScript" == _strScriptName)
+		return new ParticleController;
 	if (L"InventoryScript" == _strScriptName)
 		return new InventoryController;
 	if (L"ItemScript" == _strScriptName)
@@ -90,6 +94,9 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(TESTSOUND):
 		return new TestSound;
+		break;
+	case static_cast<UINT>(PARTICLESCRIPT):
+		return new ParticleController;
 		break;
 	case static_cast<UINT>(INVENTORYSCRIPT):
 		return new InventoryController;
@@ -148,6 +155,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case TESTSOUND:
 		return L"TestSound";
+		break;
+
+	case PARTICLESCRIPT:
+		return L"CParticleScript";
 		break;
 
 	case INVENTORYSCRIPT:

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Common/Ptr.h"
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Engine/System/Public/Rendering/Shader/CParticleTickCS.h"
@@ -29,6 +29,11 @@ class CParticleSystem :
 
 public:
 	void SetParticleTexture(Ptr<CTexture> _Tex) { m_ParticleTex = _Tex; }
+	tParticleModule GetModule() { return m_Module; }
+	void SetModule(tParticleModule _Module) { m_Module = _Module; }
+	Ptr<CTexture> GetParticleTexture() { return m_ParticleTex; }
+
+	const wstring& GetCSKey() { return m_TickCS->GetKey(); }
 
 private:
 	void CaculateSpawnCount();

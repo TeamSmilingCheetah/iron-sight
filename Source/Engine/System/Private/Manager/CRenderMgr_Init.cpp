@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Base/assets.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CRenderMgr.h"
@@ -215,6 +215,7 @@ void CRenderMgr::CreateRenderMtrl()
 	pShader->CreateVertexShader(L"Shader\\merge.fx", "VS_Merge");
 	pShader->CreatePixelShader(L"Shader\\merge.fx", "PS_Merge");
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	CAssetMgr::GetInst()->AddAsset(L"MergeShader", pShader);
 
 	m_MergeMtrl = new CMaterial(true);

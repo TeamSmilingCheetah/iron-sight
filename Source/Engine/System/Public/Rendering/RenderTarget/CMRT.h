@@ -22,7 +22,7 @@ public:
     void ClearRenderTargets();
     void ClearDepthStencil();
     void OMSet();
-
+	void OMSetUI();
 
     CLONE_DISABLE(CMRT);
     CMRT();

@@ -92,3 +92,16 @@ void CMRT::OMSet()
 	else
 		CONTEXT->OMSetRenderTargets(m_RTCount, arrRTV, nullptr);
 }
+
+void CMRT::OMSetUI()
+{
+	ID3D11RenderTargetView* arrRTV[8] = {};
+
+	for (int i = 0; i < m_RTCount; ++i)
+	{
+		arrRTV[i] = m_Target[i]->GetRTV().Get();
+	}
+
+	CONTEXT->RSSetViewports(1, &m_ViewPort);
+	CONTEXT->OMSetRenderTargets(m_RTCount, arrRTV, nullptr);
+}

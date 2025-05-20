@@ -23,8 +23,11 @@
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
 #include "Game/Gameplay/TestSound.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
-#include "Game\Gameplay\Character\Public\TestCharacter.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
+#include "Game/Gameplay/Character/Public/TestCharacter.h"
+#include "Game/Gameplay/Particle/Public/ParticleController.h"
+
+#include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -759,6 +762,33 @@ void TestLevel::CreateTestLevel()
 	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
 
 	pLevel->AddObject(7, pObject, false);
+
+	// 파티클 테스트
+	//CGameObject* pTestObj = nullptr;
+	//pTestObj = new CGameObject;
+
+	//pTestObj->SetName(L"Test Object");
+	//pTestObj->AddComponent(new CParticleSystem);
+	//pTestObj->AddComponent(new ParticleController);
+
+	//pTestObj->ParticleSystem()->SetParticleTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\particle\\smokeparticle.png", L"Texture\\particle\\smokeparticle.png"));
+	//pTestObj->Transform()->SetRelativePos(Vec3(350.f, 100.f, 350.f));
+	////pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
+	////pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	////pObject->Transform()->SetFrustumRadius(750.f);
+
+	//pLevel->AddObject(0, pTestObj, false);
+
+	//pTestObj = new CGameObject;
+
+	//pTestObj->SetName(L"Test Object2");
+	//pTestObj->AddComponent(new CParticleSystem);
+	//pTestObj->AddComponent(new ParticleController);
+
+	//pTestObj->ParticleSystem()->SetParticleTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\particle\\TX_HitFlash02.png", L"Texture\\particle\\TX_HitFlash02.png"));
+	//pTestObj->Transform()->SetRelativePos(Vec3(350.f, 100.f, 350.f));
+	//pLevel->AddObject(0, pTestObj, false);
+
 
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;

@@ -82,8 +82,8 @@ void CRenderMgr::RenderStart()
 void CRenderMgr::ClearMRT()
 {
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->Clear();
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->ClearRenderTargets();
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->ClearRenderTargets();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Clear();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->Clear();
 }
 
 void CRenderMgr::Binding()
@@ -278,39 +278,54 @@ void CRenderMgr::Render_Play()
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
 		g_Trans.matProj = m_vecCam[i]->GetProjMat();
 
-		// Deferred
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
-		m_vecCam[i]->render_deferred();
-
-		// Decal
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DECAL)]->OMSet();
-		m_vecCam[i]->render_decal();
-
-		// Lighting
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
-		for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+		if (i == 1)
 		{
-			m_vecLight3D[i]->Render();
+			// SwapChain
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+
+			m_vecCam[i]->render_ui();
 		}
+		else
+		{
 
-		// SwapChain
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+			// Deferred
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+			m_vecCam[i]->render_deferred();
 
-		// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
-		MergeDeferredTarget();
+			// Decal
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::DECAL)]->OMSet();
+			m_vecCam[i]->render_decal();
 
-		m_vecCam[i]->render_forward();
-		m_vecCam[i]->render_particle();
-		m_vecCam[i]->render_effect();
-		m_vecCam[i]->render_transparent();
-		m_vecCam[i]->render_postprocess();
-		m_vecCam[i]->render_ui();
-		
-		m_vecCam[i]->render_clear();
+			// Lighting
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
+			for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+			{
+				m_vecLight3D[i]->Render();
+			}
 
-		// 특정 타겟으로 SwapChain 을 덮어쓰기
-		MergeSpecifyTarget();
+
+			// SwapChain
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+
+
+			// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
+			MergeDeferredTarget();
+
+			m_vecCam[i]->render_forward();
+			m_vecCam[i]->render_particle();
+			m_vecCam[i]->render_effect();
+			m_vecCam[i]->render_transparent();
+			m_vecCam[i]->render_postprocess();
+			m_vecCam[i]->render_ui();
+
+			m_vecCam[i]->render_clear();
+
+
+			// 특정 타겟으로 SwapChain 을 덮어쓰기
+			MergeSpecifyTarget();
+		}
 	}
+	
 }
 
 void CRenderMgr::Render_Editor()
@@ -338,13 +353,16 @@ void CRenderMgr::Render_Editor()
 	// SwapChain
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 
+
 	// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
 	MergeDeferredTarget();
+
+
 
 	m_EditorCam->render_forward();
 	m_EditorCam->render_particle();
 	m_EditorCam->render_effect();
-	m_EditorCam->render_transparent();
+	m_EditorCam->render_transparent();	
 	m_EditorCam->render_postprocess();
 	m_EditorCam->render_ui();
 
@@ -373,7 +391,9 @@ void CRenderMgr::MergeDeferredTarget()
 	m_MergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 	m_MergeMtrl->SetScalarParam(INT_0, 0);
 	m_MergeMtrl->Binding();
+
 	pRectMesh->Render(0);
+	
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -426,6 +446,7 @@ void CRenderMgr::RegisterCamera(CCamera* _Cam, UINT _Priority)
 		m_vecCam[_Priority] = _Cam;
 	}
 }
+
 
 void CRenderMgr::CopyRenderTarget()
 {

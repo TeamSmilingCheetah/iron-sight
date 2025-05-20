@@ -71,6 +71,9 @@
     <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp">
       <Filter>02. Gameplay\Door</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp">
+      <Filter>02. Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -147,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="Gameplay\Door\Public\DoorScript.h">
       <Filter>02. Gameplay\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Particle\Public\ParticleController.h">
+      <Filter>02. Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

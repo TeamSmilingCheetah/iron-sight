@@ -28,6 +28,7 @@
 #include "Client/UI/Public/Component/SkyBoxUI.h"
 #include "Client/UI/Public/Component/DecalUI.h"
 #include "Client/UI/Public/Component/TransformUI.h"
+#include "Client/UI/Public/Component/ParticleUI.h"
 
 class CScript;
 
@@ -404,6 +405,10 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)] = static_cast<ComponentUI*>(
 		AddChildUI(new DecalUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)]->SetChildSize(ImVec2(0.f, 165.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::PARTICLE_SYSTEM)] = static_cast<ComponentUI*>(
+		AddChildUI(new ParticleUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::PARTICLE_SYSTEM)]->SetChildSize(ImVec2(0.f, 300.f));
 
 	// FIXME : UI / UIRender ui 추가
 	/*m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UI)] = static_cast<ComponentUI*>(

@@ -168,6 +168,7 @@
     <ClInclude Include="Gameplay\Character\Public\EnemyController.h" />
     <ClInclude Include="Gameplay\Character\Public\EnemyVisionScript.h" />
     <ClInclude Include="Gameplay\Character\Public\TestCharacter.h" />
+    <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
     <ClCompile Include="Gameplay\Character\Public\EnemyVisionScript.cpp" />
+    <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp" />

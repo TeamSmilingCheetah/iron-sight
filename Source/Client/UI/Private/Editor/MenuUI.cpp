@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/MenuUI.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -163,7 +163,7 @@ void MenuUI::Asset()
 	}
 }
 
-#define TARGET_COUNT 7
+#define TARGET_COUNT 8
 
 void MenuUI::RenderTarget()
 {
@@ -178,6 +178,7 @@ void MenuUI::RenderTarget()
 		SelectRenderTarget("DataTarget", L"DataTargetTex", bTarget, 4);
 		SelectRenderTarget("DiffuseTarget", L"DiffuseTargetTex", bTarget, 5);
 		SelectRenderTarget("SpecularTarget", L"SpecularTargetTex", bTarget, 6);
+		SelectRenderTarget("ParticleTarget", L"ParticleTargetTex", bTarget, 7);
 
 		ImGui::EndMenu();
 	}
