@@ -39,7 +39,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
         float4 vEmissive = g_tex_4.Sample(g_sam_1, _in.vUV);
                 
         if (vViewPos.a == 0.f)
-            return float4(0, 0, 0, 0);
+            discard;
 
         return float4(vColor.rgb * (vDiffuse.rgb + vEmissive.rgb) + vSpecular.rgb, 1.f);
     }

@@ -278,45 +278,54 @@ void CRenderMgr::Render_Play()
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
 		g_Trans.matProj = m_vecCam[i]->GetProjMat();
 
-
-		// Deferred
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
-		m_vecCam[i]->render_deferred();
-
-		// Decal
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DECAL)]->OMSet();
-		m_vecCam[i]->render_decal();
-
-		// Lighting
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
-		for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+		if (i == 1)
 		{
-			m_vecLight3D[i]->Render();
+			// SwapChain
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+
+			m_vecCam[i]->render_ui();
 		}
-	
+		else
+		{
 
-		// SwapChain
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+			// Deferred
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+			m_vecCam[i]->render_deferred();
+
+			// Decal
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::DECAL)]->OMSet();
+			m_vecCam[i]->render_decal();
+
+			// Lighting
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
+			for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+			{
+				m_vecLight3D[i]->Render();
+			}
 
 
-		// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
-		MergeDeferredTarget();
-
-		//m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
-
-		m_vecCam[i]->render_forward();
-		m_vecCam[i]->render_particle();
-		m_vecCam[i]->render_effect();
-		m_vecCam[i]->render_transparent();
-		m_vecCam[i]->render_postprocess();
-		m_vecCam[i]->render_ui();
+			// SwapChain
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 
 
-		m_vecCam[i]->render_clear();
+			// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
+			MergeDeferredTarget();
 
-		// 특정 타겟으로 SwapChain 을 덮어쓰기
-		MergeSpecifyTarget();
+			m_vecCam[i]->render_forward();
+			m_vecCam[i]->render_particle();
+			m_vecCam[i]->render_effect();
+			m_vecCam[i]->render_transparent();
+			m_vecCam[i]->render_postprocess();
+			m_vecCam[i]->render_ui();
+
+			m_vecCam[i]->render_clear();
+
+
+			// 특정 타겟으로 SwapChain 을 덮어쓰기
+			MergeSpecifyTarget();
+		}
 	}
+	
 }
 
 void CRenderMgr::Render_Editor()
@@ -382,7 +391,7 @@ void CRenderMgr::MergeDeferredTarget()
 	m_MergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 	m_MergeMtrl->SetScalarParam(INT_0, 0);
 	m_MergeMtrl->Binding();
-	DS_TYPE pType =m_MergeMtrl->GetShader()->GetDSState();
+
 	pRectMesh->Render(0);
 	
 
@@ -438,19 +447,6 @@ void CRenderMgr::RegisterCamera(CCamera* _Cam, UINT _Priority)
 	}
 }
 
-void CRenderMgr::CompositeParticle()
-{
-	Ptr<CTexture> pParticleRT = CAssetMgr::GetInst()->FindAsset<CTexture>(L"ParticleTargetTex");
-
-	// 전용 합성 머티리얼
-	Ptr<CMaterial> pCompMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"ParticleCompositeMtrl");
-	pCompMtrl->SetTexParam(TEX_0, pParticleRT);
-	pCompMtrl->Binding();
-
-	// 풀스크린 쿼드 렌더
-	Ptr<CMesh> pRect = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
-	pRect->Render(0);
-}
 
 void CRenderMgr::CopyRenderTarget()
 {

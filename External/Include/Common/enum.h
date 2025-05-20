@@ -278,7 +278,6 @@ enum class MRT_TYPE
 	DEFERRED,
 	DECAL,
 	LIGHT,
-	PARTICLE,
 
 	END,
 };

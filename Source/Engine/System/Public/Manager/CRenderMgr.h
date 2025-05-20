@@ -52,7 +52,6 @@ public:
 	}
 
 	void AddDebugShape(const tDebugShapeInfo& _info) { m_DbgList.push_back(_info); }
-	void CompositeParticle();
 
 	void CopyRenderTarget();
 	void SetEditorMode(bool _IsEditor) { m_IsEditor = _IsEditor; }

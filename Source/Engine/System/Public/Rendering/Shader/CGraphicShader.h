@@ -59,7 +59,6 @@ public:
     void SetBSState(BS_TYPE _Type) { m_BSType = _Type; }
     void SetDSState(DS_TYPE _Type) { m_DSType = _Type; }
 
-	DS_TYPE GetDSState() { return m_DSType; }
     void SetStencilRef(UINT _Stencil) { m_StencilRef = _Stencil; }
 
     void SetDomain(SHADER_DOMAIN _Domain) { m_Domain = _Domain; }

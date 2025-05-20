@@ -181,6 +181,7 @@ void ThrowableController::Triggered()
 			{
 				Ptr<CPrefab> SmokeParticelPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\SmokeParticle.pref", L"Prefab\\SmokeParticle.pref");
 				Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
+				vPos.y += 800.f;
 
 				Instantiate(SmokeParticelPrefab, vPos, 0);
 			}

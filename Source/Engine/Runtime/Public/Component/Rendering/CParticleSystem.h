@@ -33,6 +33,8 @@ public:
 	void SetModule(tParticleModule _Module) { m_Module = _Module; }
 	Ptr<CTexture> GetParticleTexture() { return m_ParticleTex; }
 
+	const wstring& GetCSKey() { return m_TickCS->GetKey(); }
+
 private:
 	void CaculateSpawnCount();
 

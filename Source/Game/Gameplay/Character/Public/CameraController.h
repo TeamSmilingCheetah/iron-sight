@@ -24,6 +24,7 @@ class CameraController :
 	bool m_bADS;
 	bool m_bWasTPS;
 	bool m_bChangeFocus;
+	bool m_bChangeFOV;
 	bool m_bTPS;
 
 public:
@@ -41,6 +42,7 @@ public:
 private:
 	void CameraOrthgraphicMove();
 	void CameraPerspectiveMove();
+	void ApplyZoom(bool _IsADS);
 
 public:
 	CLONE(CameraController);

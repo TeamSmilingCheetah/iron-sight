@@ -29,6 +29,7 @@ CameraController::CameraController()
 	, m_bTPS(true)
 	, m_bWasTPS(false)
 	, m_bCliked_First(false)
+	, m_bChangeFOV(false)
 	, m_RecoilTime(0.f)
 	, m_RecoilAmount_vertical(0.f)
 	, m_RecoilAmount_horizontal(0.f)
@@ -220,6 +221,7 @@ void CameraController::CameraPerspectiveMove()
 				// 특정 시간 이하, 즉 우클릭을 클릭만 했을때는 정조준 진입
 				if (!m_bShoulder && !m_bWasTPS)
 				{
+					m_bChangeFOV = true;
 					m_bADS = true;
 				}
 				else if (m_bWasTPS)
@@ -387,7 +389,7 @@ void CameraController::CameraPerspectiveMove()
 		if (iWeaponIdx <= SECONDARY_FIRST)
 		{
 			if (KEY_TAP(KEY::RBTN))
-			{
+			{				
 				// TPS에서 줌으로 넘어온 경우 줌을 풀때 TPS로 넘어간다.
 				if (m_bWasTPS && m_bADS)
 				{
@@ -395,13 +397,18 @@ void CameraController::CameraPerspectiveMove()
 					GetOwner()->Camera()->LayerCheck(3);
 					GetOwner()->Camera()->LayerCheck(4);
 				}
-				m_bADS == true ? m_bADS = false : m_bADS = true;
+				m_bChangeFOV = true;			
+				m_bADS == true ? m_bADS = false : m_bADS = true;			
 			}
 		}
 
 	}
-	
 
+	if (m_bChangeFOV)
+	{
+		ApplyZoom(m_bADS);
+	}
+	
 
 
 	//
@@ -460,6 +467,49 @@ void CameraController::CameraPerspectiveMove()
 
 
 	Transform()->SetRelativePos(vCameraPos);
+}
+
+void CameraController::ApplyZoom(bool _IsADS)
+{
+	if (_IsADS)
+	{
+		float fCurFOV = GetOwner()->Camera()->GetFOV();
+		// 플레이어의 배율에 따라 카메라의 확대 정도를 조절한다.
+		//m_Player->
+
+		float fTimes = 0.f;
+		//if()
+		fTimes = 0.95f;
+		float fDestFOV = (XM_PI / 2.f) * fTimes;
+
+		float fChangeSpeed = 30.f;
+
+		fCurFOV = fCurFOV + (fDestFOV - fCurFOV) * fChangeSpeed * DT;
+		GetOwner()->Camera()->SetFOV(fCurFOV);
+		// 특정 구간에 도달하면 변환을 종료시킨다.
+		if (fabs(fCurFOV - fDestFOV) < 0.01f && fabs(fCurFOV - fDestFOV) < 0.01f)
+		{
+			GetOwner()->Camera()->SetFOV(fDestFOV);
+			m_bChangeFOV = false;
+		}					
+	}
+	else
+	{
+		float fCurFOV = GetOwner()->Camera()->GetFOV();
+		float fDestFOV = XM_PI / 2.f;
+
+		float fChangeSpeed = 30.f;
+
+		fCurFOV = fCurFOV + (fDestFOV - fCurFOV) * fChangeSpeed * DT;
+		GetOwner()->Camera()->SetFOV(fCurFOV);
+
+		// 특정 구간에 도달하면 변환을 종료시킨다.
+		if (fabs(fCurFOV - fDestFOV) < 0.01f && fabs(fCurFOV - fDestFOV) < 0.01f)
+		{
+			GetOwner()->Camera()->SetFOV(fDestFOV);
+			m_bChangeFOV = false;
+		}
+	}
 }
 
 void CameraController::SaveComponent(FILE* _File)
