@@ -11,6 +11,7 @@ DoorScript::DoorScript()
 	, m_AccTime(0.f)
 	, m_Duration(1.f)
 {
+	m_InteractionDesc = L"문 열기";
 }
 
 DoorScript::~DoorScript()
@@ -46,6 +47,11 @@ void DoorScript::Tick()
 		{
 			m_Rotating = false;
 			m_Opened = !m_Opened;
+
+			if (m_Opened)
+				m_InteractionDesc = L"문 닫기";
+			else
+				m_InteractionDesc = L"문 열기";
 		}
 	}
 }

@@ -48,8 +48,6 @@ void InventoryController::Init()
 
 void InventoryController::Begin()
 {
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
-
 	// Bone
 	vector<CGameObject*> vecBones = m_Player->Animator3D()->GetvecBone();
 
@@ -98,6 +96,10 @@ void InventoryController::LoadComponent(FILE* _File)
 	LoadObjectRef(m_InventoryUI, _File);
 }
 
+void InventoryController::LoadComponentReference()
+{
+	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
+}
 
 void InventoryController::SetPlayer(CGameObject* _Player)
 {

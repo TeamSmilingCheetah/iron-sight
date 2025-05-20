@@ -72,9 +72,9 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::Begin()
 {
+	// TODO : ObjectReference로 변경하기
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
-
+	
 	// UI
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
 	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
@@ -631,4 +631,8 @@ void PlayerCharacter::LoadComponent(FILE* _File)
 	//fread(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	LoadAssetRef(m_TargetTex, _File);
+}
+
+void PlayerCharacter::LoadComponentReference()
+{
 }

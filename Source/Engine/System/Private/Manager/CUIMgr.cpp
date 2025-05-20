@@ -254,8 +254,18 @@ void CUIMgr::Tick()
 			else
 			{
 				// 2-1. DragUI가 Drag 기능을 지원하고 HoverUI가 Drop 기능을 지원한다면
-				if (m_DragUI && m_DragUI->CanDrag() && m_HoverUI->CanDrop())
+				if (m_DragUI && m_DragUI->CanDrag())
 				{
+					while (m_HoverUI && !m_HoverUI->CanDrop())
+					{
+						CGameObject* pParent = m_HoverUI->GetOwner()->GetParent();
+
+						if (!pParent)
+							return;
+
+						m_HoverUI = pParent->UI();
+					}
+
 					// Drop 이벤트 호출
 					OnMouseDrop();
 				}

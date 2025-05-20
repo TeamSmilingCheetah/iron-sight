@@ -141,6 +141,7 @@ public:
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
+	void LoadComponentReference() override;
 
 public:
 	CLONE(PlayerCharacter);

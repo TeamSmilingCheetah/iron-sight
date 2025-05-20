@@ -16,8 +16,9 @@ public:
 public:
 	void Begin() override;
 	void Tick() override {}
-	virtual void SaveComponent(FILE* _File);
-	virtual void LoadComponent(FILE* _File);
+	virtual void SaveComponent(FILE* _File) override;
+	virtual void LoadComponent(FILE* _File) override;
+	virtual void LoadComponentReference() override;
 
 	// UI Event
 	virtual void OnMouseDrop(const PayLoad& _payload) override;

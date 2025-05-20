@@ -310,7 +310,8 @@ void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObj
 
 void PlayerCharacter::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
-	m_CollObject = nullptr;
+	if (m_CollObject == _OtherObject)
+		m_CollObject = nullptr;
 }
 
 

@@ -9,6 +9,7 @@ ItemScript::ItemScript()
 	, m_ItemType(ITEM_TYPE::END)
 	, m_Count(0)
 {
+	m_InteractionDesc = L"아이템 줍기";
 }
 
 ItemScript::ItemScript(ITEM_TYPE _Type)
@@ -16,6 +17,7 @@ ItemScript::ItemScript(ITEM_TYPE _Type)
 	, m_ItemType(_Type)
 	, m_Count(ItemMgr::GetInst()->GetItemInfo(m_ItemType).DefaultCount)
 {
+	m_InteractionDesc = L"아이템 줍기";
 }
 
 ItemScript::~ItemScript()

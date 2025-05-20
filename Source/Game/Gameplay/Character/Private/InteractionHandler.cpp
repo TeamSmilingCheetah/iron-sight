@@ -8,6 +8,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CLayer.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 
 InteractionHandler::InteractionHandler()
 	: CScript(INTERACTION_HANDLER)
@@ -24,6 +25,15 @@ void InteractionHandler::SetPlayer(CGameObject* _Player)
 	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
 }
 
+void InteractionHandler::SetInteractable(bool _b)
+{
+	m_Interactable = _b;
+	SetObjectActive(m_InteractionUI, m_Interactable);
+
+	if (!m_Interactable)
+		m_InteractableObject = nullptr;
+}
+
 void InteractionHandler::Init()
 {
 }
@@ -34,17 +44,31 @@ void InteractionHandler::Begin()
 
 void InteractionHandler::Tick()
 {
+	// 플레이어가 바라보고 있는 오브젝트
+	CGameObject* pTarget = m_PlayerScript->GetRayTarget();
+
+	// null이라면 Interaction 불가능
+	if (!pTarget || pTarget != m_InteractableObject)
+	{
+		SetInteractable(false);
+	}
 }
 
 void InteractionHandler::SaveComponent(FILE* _File)
 {
 	SaveObjectRef(m_Player, _File);
+	SaveObjectRef(m_InteractionUI, _File);
 }
 
 void InteractionHandler::LoadComponent(FILE* _File)
 {
 	LoadObjectRef(m_Player, _File);
-	// TODO : ObjectRef 수정.. ㅠㅠ
+	LoadObjectRef(m_InteractionUI, _File);
+}
+
+void InteractionHandler::LoadComponentReference()
+{
+	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
 }
 
 void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
@@ -76,22 +100,12 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 	if (!pInteractable)
 		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(DOORSCRIPT));
 
-	if (!pInteractable)
-		return;
-
-	// interaction 발생시킴
-	int layerIdx = pTarget->GetLayerIdx();
-
-	bool isInteractableLayer = (layerIdx == 1 || layerIdx == 6);
-	bool isInteractableChanged = false;
-
-	if (isInteractableLayer)
+	if (pInteractable)
 	{
 		// 인터랙션 가능한 오브젝트로 바뀐 경우
 		if (!m_Interactable)
 		{
-			m_Interactable = true;
-			isInteractableChanged = true;
+			SetInteractable(true);
 		}
 
 		// 오브젝트가 바뀌었으면 UI 설정
@@ -99,6 +113,7 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 		{
 			m_InteractableObject = _OtherObject;
 			// TODO: Interaction UI 설정
+			m_InteractionUI->UI()->GetTextInfoRef()[0].Text = pInteractable->GetInteractionDesc();
 		}
 
 		// F 키 입력에 따라 상호작용
@@ -112,14 +127,9 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 		// 상호작용 불가 상태로 변경
 		if (m_Interactable)
 		{
-			m_Interactable = false;
-			isInteractableChanged = true;
+			SetInteractable(false);
 		}
 	}
-
-	// Interaction UI 띄우기
-	//if (isInteractableChanged)
-	//	SetObjectActive(m_InteractionUI, m_Interactable);
 }
 
 void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
@@ -132,6 +142,11 @@ void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherO
 
 	if (!pInteractable)
 		return;
+
+	if (m_InteractableObject == _OtherObject)
+	{
+		SetInteractable(false);
+	}
 
 	pInteractable->ExitDetection(this);
 }

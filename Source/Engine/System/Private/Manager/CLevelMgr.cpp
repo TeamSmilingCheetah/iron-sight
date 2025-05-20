@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLevel.h"
@@ -101,9 +101,6 @@ void CLevelMgr::ChangeLevel(CLevel* _NextLevel, LEVEL_STATE _NextLevelState)
 	if (nullptr != pPrevLevel)
 		delete pPrevLevel;
 }
-
-
-
 
 void CLevelMgr::ResolveReference(CLevel* _Level)
 {
@@ -236,9 +233,6 @@ CLevel* CLevelMgr::LoadLevel(const wstring& _FilePath)
 		// 레이어 이름 불러오기
 		pLayer->LoadFromLevel(pFile);
 
-		// 레이어가 소유한 오브젝트 불러오기
-		const vector<CGameObject*>& vecObjects = pLayer->GetParentObjects();
-
 		// 오브젝트 총 개수
 		size_t ObjectCount = 0;
 		fread(&ObjectCount, sizeof(size_t), 1, pFile);
@@ -253,8 +247,55 @@ CLevel* CLevelMgr::LoadLevel(const wstring& _FilePath)
 
 	fclose(pFile);
 
-	// 모든 OBject를 로드했으므로 Object Reference 관계를 처리함
+	// 모든 Object를 로드했으므로 Object Reference 관계를 처리함
 	CLevelMgr::GetInst()->ResolveReference(pNewLevel);
+
+	// 레퍼런스 관계를 처리한 이후에 처리할 로직을 처리하는 시점
+	for (UINT i = 0; i < MAX_LAYER; ++i)
+	{
+		CLayer* pLayer = pNewLevel->GetLayer(i);
+
+		// 레이어가 소유한 오브젝트 불러오기
+		const vector<CGameObject*>& vecObjects = pLayer->GetParentObjects();
+
+		queue<CGameObject*> Q;
+
+		// 각 오브젝트의 컴포넌트들의 reference 정보를 처리하는 함수 호출
+		for (size_t j = 0; j < vecObjects.size(); ++j)
+		{
+			Q.emplace(vecObjects[j]);
+		}
+
+		while (!Q.empty())
+		{
+			CGameObject* curObject = Q.front();
+			Q.pop();
+
+			// 자식들 Q에 등록
+			const vector<CGameObject*> vecChild = curObject->GetChild();
+			for (CGameObject* child : vecChild)
+			{
+				Q.emplace(child);
+			}
+
+			// 컴포넌트에는 오브젝트 레퍼런스 없다고 가정. 스크립트에만 있다고 가정
+			//for (UINT k = 0; k < static_cast<UINT>(COMPONENT_TYPE::END); ++k)
+			//{
+			//	CComponent* pComponent = vecObjects[j]->GetComponent(static_cast<COMPONENT_TYPE>(k));
+			//	if (pComponent)
+			//		pComponent->LoadComponentReference();
+			//}
+
+
+			const vector<CScript*> vecScripts = curObject->GetScripts();
+
+			for (size_t k = 0; k < vecScripts.size(); ++k)
+			{
+				vecScripts[k]->LoadComponentReference();
+			}
+		}
+		
+	}
 
 	return pNewLevel;
 }
