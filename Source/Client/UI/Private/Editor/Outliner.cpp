@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/Outliner.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLayer.h"
@@ -140,13 +140,9 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 		// DropData가 long long이라면
 		else
 		{
-			int LayerIdx = static_cast<int>(DropData);
+			LONGLONG LayerIdx = static_cast<LONGLONG>(DropData);
 
-			tTask ptask;
-			ptask.Type = TASK_TYPE::CHANGE_LAYEROBJECT;
-			ptask.Param0 = reinterpret_cast<DWORD_PTR>(pDragObj);
-			ptask.Param1 = (DWORD_PTR)LayerIdx;
-			CTaskMgr::GetInst()->AddTask(ptask);
+			ChangeLayer(pDragObj, LayerIdx);
 		}
 	}
 

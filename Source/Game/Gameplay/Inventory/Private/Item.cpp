@@ -1,35 +1,26 @@
 #include "pch.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+#include "Game/GamePlay/Inventory/Public/InventoryController.h"
+#include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
 ItemScript::ItemScript()
-	: CScript(ITEMSCRIPT)
+	: InteractableScript(ITEMSCRIPT)
 	, m_ItemType(ITEM_TYPE::END)
 	, m_Count(0)
 {
+	m_InteractionDesc = L"아이템 줍기";
 }
 
 ItemScript::ItemScript(ITEM_TYPE _Type)
-	: CScript(ITEMSCRIPT)
+	: InteractableScript(ITEMSCRIPT)
 	, m_ItemType(_Type)
 	, m_Count(ItemMgr::GetInst()->GetItemInfo(m_ItemType).DefaultCount)
 {
+	m_InteractionDesc = L"아이템 줍기";
 }
 
 ItemScript::~ItemScript()
-{
-}
-
-void ItemScript::Init()
-{
-}
-
-void ItemScript::Begin()
-{
-	
-}
-
-void ItemScript::Tick()
 {
 }
 
@@ -44,14 +35,29 @@ void ItemScript::LoadComponent(FILE* _File)
 	m_Count = ItemMgr::GetInst()->GetItemInfo(m_ItemType).DefaultCount;
 }
 
-void ItemScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ItemScript::EnterDetection(InteractionHandler* _Handler)
 {
+	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(INVENTORYSCRIPT));
+
+	assert(pInventory);
+
+	pInventory->AddItemToVicinity(GetOwner());
 }
 
-void ItemScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ItemScript::Interact(InteractionHandler* _Handler)
 {
+	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(INVENTORYSCRIPT));
+
+	assert(pInventory);
+
+	pInventory->AcquireItem(GetOwner());
 }
 
-void ItemScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ItemScript::ExitDetection(InteractionHandler* _Handler)
 {
+	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(INVENTORYSCRIPT));
+
+	assert(pInventory);
+
+	pInventory->RemoveItemFromVicinity(GetOwner());
 }

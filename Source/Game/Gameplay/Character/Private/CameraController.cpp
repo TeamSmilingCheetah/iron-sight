@@ -10,6 +10,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
@@ -41,6 +42,8 @@ CameraController::~CameraController()
 void CameraController::Begin()
 {
 	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(PLAYERSCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(m_Player->GetScript(INVENTORYSCRIPT));
 }
 
 void CameraController::Tick()
@@ -106,9 +109,7 @@ void CameraController::CameraOrthgraphicMove()
 void CameraController::CameraPerspectiveMove()
 {
 	// Player를 찾아 Player에 카메라를 부착시킨다.
-	PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScripts()[0]);
-
-	int iWeaponIdx =  pPlayerScript->GetCurWeaponIdx();
+	int iWeaponIdx = m_InventoryScript->GetCurSlotIdx();
 
 	Vec3 vCameraPos = Transform()->GetRelativePos();
 	Vec3 vCameraRot = Transform()->GetRelativeRotation();
@@ -321,7 +322,7 @@ void CameraController::CameraPerspectiveMove()
 		static float OriginRotX = 0.f;
 
 		// 줌이나 사격 동안은 둘러보기가 안된다.
-		if (!pPlayerScript->IsShot() && !m_bShoulder)
+		if (!m_PlayerScript->IsShot() && !m_bShoulder)
 		{
 			if (KEY_TAP(KEY::Z))
 			{
@@ -408,7 +409,7 @@ void CameraController::CameraPerspectiveMove()
 	//
 	
 	// 플레이어가 총기를 발사하는 중이라면
-	if (pPlayerScript->IsShot())
+	if (m_PlayerScript->IsShot())
 	{
 		m_RecoilTime += DT;
 
@@ -424,7 +425,7 @@ void CameraController::CameraPerspectiveMove()
 			float maxTotalYaw = 10.f;
 
 			// 현재 Player가 들고 있는 무기의 반동 변수 값을 가져온다.
-			GunController* pGunScript = static_cast<GunController*>(pPlayerScript->GetCurWeapon()->GetScripts()[0]);
+			GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
 			recoilPower_horizontal = pGunScript->GetHorizontalPower();
 			recoilPower_vertical = pGunScript->GetVerticalPower();
 		

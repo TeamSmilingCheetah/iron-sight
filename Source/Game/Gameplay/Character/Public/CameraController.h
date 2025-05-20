@@ -5,6 +5,8 @@ class CameraController :
 	public CScript
 {
 	CGameObject* m_Player;
+	class PlayerCharacter* m_PlayerScript;
+	class InventoryController* m_InventoryScript;
 
 	float m_CameraSpeed;
 

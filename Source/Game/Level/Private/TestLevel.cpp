@@ -24,6 +24,7 @@
 #include "Game/Gameplay/TestSound.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game\Gameplay\Character\Public\TestCharacter.h"
+#include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -31,6 +32,7 @@
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
+#include "Game/Gameplay/Door/Public/DoorScript.h"
 
 void TestLevel::CreateTestLevel()
 {
@@ -46,7 +48,7 @@ void TestLevel::CreateTestLevel()
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);
 
 	pLevel->GetLayer(0)->SetName(L"Background");
-	pLevel->GetLayer(1)->SetName(L"Tile");
+	pLevel->GetLayer(1)->SetName(L"Structure");	// 건물, 구조물 등
 	pLevel->GetLayer(2)->SetName(L"Default");
 	pLevel->GetLayer(3)->SetName(L"PlayerTPS");
 	pLevel->GetLayer(4)->SetName(L"PlayerFPS");
@@ -60,6 +62,7 @@ void TestLevel::CreateTestLevel()
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 6);
+	CCollisionMgr::GetInst()->CollisionCheck(3, 1);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 7);
 	CCollisionMgr::GetInst()->CollisionCheck(0, 7);
 
@@ -111,33 +114,6 @@ void TestLevel::CreateTestLevel()
 	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
 	pLevel->AddObject(0, pSkyBox, false);
 
-	// ======
-	// Player
-	// ======
-	//pObject = new CGameObject;
-	//pObject->SetName(L"TestPlayer");
-	//pObject->AddComponent(new CMeshRender);
-	//pObject->AddComponent(new CCollider3D);
-
-	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
-	//pObject->MeshRender()->SetMaterial(
-	//	CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
-
-	//pObject->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	//pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-	//pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	//pObject->Transform()->SetFrustumRadius(750.f);
-
-	//pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
-
-	//Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
-	//	L"Texture\\HeightMap\\MoonCrater.png");
-	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
-
-	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
-	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
-	//pLevel->AddObject(0, pObject, false);
-
 	// =========
 	// LandScape
 	// =========
@@ -159,9 +135,9 @@ void TestLevel::CreateTestLevel()
 	pLevel->AddObject(0, pLandScape, false);
 
 
-	// ==============
-	// UI System Test
-	// ==============
+	// =========
+	// UI Preset
+	// =========
 	
 	// UI Camera
 	CGameObject* UICamera = new CGameObject;
@@ -176,7 +152,7 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(0, UICamera, false);
 
-	// CanvasUI
+	// "Inventory CanvasUI"
 	CGameObject* CanvasUI = new CGameObject;
 	CanvasUI->SetName(L"Inventory_CanvasUI");
 	CanvasUI->AddComponent(new CUI(UI_CANVAS));
@@ -201,7 +177,6 @@ void TestLevel::CreateTestLevel()
 	UI->UI()->SetRectPos(400.f, 240.f);
 	UI->UI()->SetRectSize(350.f, 120.f);
 	UI->UI()->AddText(L"Drop", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
-
 	CanvasUI->AddChild(UI);
 
 	UI = UI->Clone();
@@ -235,6 +210,177 @@ void TestLevel::CreateTestLevel()
 	Vicinity->AddComponent(new VicinityUI);
 
 	CanvasUI->AddChild(Vicinity);
+
+	for (int i = 0; i < 20; ++i)
+	{
+		// DragUI
+		CGameObject* DragUI = new CGameObject;
+		DragUI->SetName(L"ItemUI");
+		DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
+
+		DragUI->AddComponent(new CUIRender);
+		DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+		DragUI->UI()->SetRectSize(150.f, 40.f);
+		DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
+		SetObjectActive(DragUI, false);
+
+		DragUI->AddComponent(new ItemUI);
+
+		Vicinity->AddChild(DragUI);
+
+		CGameObject* ChildUI = new CGameObject;
+		ChildUI->SetName(L"ItemImageUI");
+		ChildUI->AddComponent(new CUI);
+		ChildUI->AddComponent(new CUIRender);
+		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+		ChildUI->UI()->SetRectPos(-55.f, 0.f);
+		ChildUI->UI()->SetRectSize(40.f, 40.f);
+		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
+
+		DragUI->AddChild(ChildUI);
+	}
+
+	for (int i = 0; i < 20; ++i)
+	{
+		// DragUI
+		CGameObject* DragUI = new CGameObject;
+		DragUI->SetName(L"ItemUI");
+		DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
+
+		DragUI->AddComponent(new CUIRender);
+		DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+		DragUI->UI()->SetRectSize(150.f, 40.f);
+		DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
+		SetObjectActive(DragUI, false);
+
+
+		DragUI->AddComponent(new ItemUI);
+
+		Inventory->AddChild(DragUI);
+
+		CGameObject* ChildUI = new CGameObject;
+		ChildUI->SetName(L"ItemImageUI");
+		ChildUI->AddComponent(new CUI);
+		ChildUI->AddComponent(new CUIRender);
+		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+		ChildUI->UI()->SetRectPos(-55.f, 0.f);
+		ChildUI->UI()->SetRectSize(40.f, 40.f);
+		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
+
+		DragUI->AddChild(ChildUI);
+	}
+
+	// "Cardinal Direction Canvas UI"
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"Cardinal_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
+	CanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
+	CanvasUI->UI()->SetPriority(1);
+
+	pLevel->AddObject(8, CanvasUI, false);
+
+	CGameObject* pImageUI = new CGameObject;
+	pImageUI->SetName(L"Cardinal_ImageUI");
+	pImageUI->AddComponent(new CUI);
+	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
+	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
+	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
+
+	pImageUI->AddComponent(new CUIRender);
+	pImageUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
+
+	CanvasUI->AddChild(pImageUI);
+
+	pImageUI = new CGameObject;
+	pImageUI->SetName(L"Cardinal_ArrowUI");
+	pImageUI->AddComponent(new CUI);
+	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
+	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
+	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
+
+	pImageUI->AddComponent(new CUIRender);
+
+	CanvasUI->AddChild(pImageUI);
+
+	// "Main Canvas UI" : 화면 전체 가리는 투명 ui
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"Main_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetRectPos(0.f, 0.f);
+	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
+
+	CanvasUI->AddComponent(new CUIRender);
+
+	pLevel->AddObject(8, CanvasUI, false);
+	
+	// HP UI
+	CGameObject* childUI = new CGameObject;
+	childUI->SetName(L"HP_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, -350.f));
+	childUI->UI()->SetRectSize(Vec2(280.f, 18.f));
+
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.4f));
+
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
+
+	CanvasUI->AddChild(childUI);
+
+	// ItemUse UI
+	childUI = new CGameObject;
+	childUI->SetName(L"ItemUse_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
+
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
+
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
+	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
+	SetObjectActive(childUI, false);
+
+	CanvasUI->AddChild(childUI);
+
+	// Interaction UI
+	CGameObject* interactionUI = new CGameObject;
+	interactionUI->SetName(L"Interaction_UI");
+	interactionUI->AddComponent(new CUI);
+	interactionUI->UI()->SetRectPos(Vec2(100.f, -50.f));
+	interactionUI->UI()->SetRectSize(Vec2(80.f, 30.f));
+
+	interactionUI->AddComponent(new CUIRender);
+	interactionUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
+
+	interactionUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	interactionUI->UI()->AddText(L"취소", 40.f, 4.f, 16, FONT_RGBA(255, 255, 255, 255));
+	SetObjectActive(interactionUI, false);
+
+	CanvasUI->AddChild(interactionUI);
+
+	// Interaction Key UI
+	childUI = new CGameObject;
+	childUI->SetName(L"InteractionKey_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(-25.f, 0.f));
+	childUI->UI()->SetRectSize(Vec2(30.f, 30.f));
+
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
+
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	childUI->UI()->AddText(L"F", 11.f, 4.f, 16, FONT_RGBA(255, 255, 255, 255));
+
+	interactionUI->AddChild(childUI);
+
+	
 
 
 	// 아이템 매니저 Initialize
@@ -270,93 +416,42 @@ void TestLevel::CreateTestLevel()
 			pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
 			pObj->ColliderRay()->SetOffset(Vec3(0.f, 1500.f, 0.f));
 			pObj->ColliderRay()->SetRayLength(5000.f);
+			pObj->ColliderRay()->SetTriggerTarget(true);
 
 			pObj->AddComponent(new PlayerCharacter);
 			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
 			pObj->Collider3D()->SetIndependentScale(true);
+
+			pObj->AddComponent(new InventoryController);
+			InventoryController* pInvenScript = static_cast<InventoryController*>(pObj->GetScript(INVENTORYSCRIPT));
+
+			// 주변 및 인벤토리 UI를 등록함
+			pInvenScript->SetVicinityUI(Vicinity);
+			pInvenScript->SetInventoryUI(Inventory);
+			pInvenScript->SetPlayer(pObj);
 
 			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
 
 			// 자식 메쉬들 같이 이동
 			pLevel->AddObject(3, pObj, true);
 
-			// Inventory Object
-			CGameObject* pInventory = new CGameObject;
-			pInventory->SetName(L"Inventory");
-			pInventory->AddComponent(new CCollider3D);
+			// Interaction Object
+			CGameObject* pInteractionHandler = new CGameObject;
+			pInteractionHandler->SetName(L"Interaction Handler");
+			pInteractionHandler->AddComponent(new CCollider3D);
 
-			pInventory->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
-			pInventory->Collider3D()->SetIndependentScale(true);
-			pInventory->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
+			pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
+			pInteractionHandler->Collider3D()->SetIndependentScale(true);
+			pInteractionHandler->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
 
-			pInventory->AddComponent(new InventoryController);
-			InventoryController* pInvenScript = static_cast<InventoryController*>(pInventory->GetScript(INVENTORYSCRIPT));
+			auto pHandlerScript = new InteractionHandler;
 
-			// 주변 및 인벤토리 UI를 등록함
-			pInvenScript->SetVicinityUI(Vicinity);
-			pInvenScript->SetInventoryUI(Inventory);
+			pHandlerScript->SetPlayer(pObj);
+			pHandlerScript->SetInteractionUI(interactionUI);
 
-			for (int i = 0; i < 20; ++i)
-			{
-				// DragUI
-				CGameObject* DragUI = new CGameObject;
-				DragUI->SetName(L"ItemUI");
-				DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
+			pInteractionHandler->AddComponent(pHandlerScript);
 
-				DragUI->AddComponent(new CUIRender);
-				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-				DragUI->UI()->SetRectSize(150.f, 40.f);
-				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
-				SetObjectActive(DragUI, false);
-
-				DragUI->AddComponent(new ItemUI);
-
-				Vicinity->AddChild(DragUI);
-
-				CGameObject* ChildUI = new CGameObject;
-				ChildUI->SetName(L"ItemImageUI");
-				ChildUI->AddComponent(new CUI);
-				ChildUI->AddComponent(new CUIRender);
-				ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-				ChildUI->UI()->SetRectPos(-55.f, 0.f);
-				ChildUI->UI()->SetRectSize(40.f, 40.f);
-				ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
-
-				DragUI->AddChild(ChildUI);
-			}
-
-			for (int i = 0; i < 20; ++i)
-			{
-				// DragUI
-				CGameObject* DragUI = new CGameObject;
-				DragUI->SetName(L"ItemUI");
-				DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
-
-				DragUI->AddComponent(new CUIRender);
-				DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-				DragUI->UI()->SetRectSize(150.f, 40.f);
-				DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
-				SetObjectActive(DragUI, false);
-
-
-				DragUI->AddComponent(new ItemUI);
-
-				Inventory->AddChild(DragUI);
-
-				CGameObject* ChildUI = new CGameObject;
-				ChildUI->SetName(L"ItemImageUI");
-				ChildUI->AddComponent(new CUI);
-				ChildUI->AddComponent(new CUIRender);
-				ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-				ChildUI->UI()->SetRectPos(-55.f, 0.f);
-				ChildUI->UI()->SetRectSize(40.f, 40.f);
-				ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
-
-				DragUI->AddChild(ChildUI);
-			}
-
-			pInvenScript->SetPlayer(pObj);
-			pObj->AddChild(pInventory);
+			pObj->AddChild(pInteractionHandler);
 
 			//
 			// AKM
@@ -384,7 +479,6 @@ void TestLevel::CreateTestLevel()
 			pWeaponObj->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
 			pWeaponObj->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
 			pWeaponObj->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
-
 
 			pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::AKM));
 
@@ -581,9 +675,8 @@ void TestLevel::CreateTestLevel()
 		pObj->Transform()->SetRelativePos(Vec3(6590.f, -410.f, 5000.f));
 		pObj->Transform()->SetRelativeScale(Vec3(700.f, 2000.f, 700.f));
 		pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pLevel->AddObject(0, pObj, false);
 
-
+		pLevel->AddObject(1, pObj, false);
 
 
 		/*
@@ -649,42 +742,6 @@ void TestLevel::CreateTestLevel()
 	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
 
 
-	// 방위 UI
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Cardinal_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-	CanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
-	CanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
-
-	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
-	CanvasUI->UI()->SetPriority(1);
-
-	pLevel->AddObject(8, CanvasUI, false);
-
-	CGameObject* pImageUI = new CGameObject;
-	pImageUI->SetName(L"Cardinal_ImageUI");
-	pImageUI->AddComponent(new CUI);
-	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
-	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
-	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
-
-	pImageUI->AddComponent(new CUIRender);
-	pImageUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
-
-	CanvasUI->AddChild(pImageUI);
-
-	pImageUI = new CGameObject;
-	pImageUI->SetName(L"Cardinal_ArrowUI");
-	pImageUI->AddComponent(new CUI);
-	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
-	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
-	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
-
-	pImageUI->AddComponent(new CUIRender);
-
-	CanvasUI->AddChild(pImageUI);
-
 	// 적 테스트
 
 	Ptr<CMeshData> pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
@@ -722,47 +779,22 @@ void TestLevel::CreateTestLevel()
 
 	pObject->AddChild(pVision);
 
-	// CanvasUI : 화면 전체 가리는 투명 ui
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"CanvasUI_TEST");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	CanvasUI->UI()->SetPriority(0);
-	CanvasUI->UI()->SetRectPos(0.f, 0.f);
-	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
-
-	CanvasUI->AddComponent(new CUIRender);
-
-	pLevel->AddObject(8, CanvasUI, false);
-
-
-	// HP UI
-	CGameObject* childUI = new CGameObject;
-	childUI->SetName(L"HP_UI");
-	childUI->AddComponent(new CUI);
-	childUI->UI()->SetRectPos(Vec2(0.f, -350.f));
-	childUI->UI()->SetRectSize(Vec2(280.f, 18.f));
 	
-	childUI->AddComponent(new CUIRender);
-	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.4f));
+
+
+	// Door
+	CGameObject* pDoorObj = CAssetMgr::GetInst()->LoadFBX(L"FBX\\door.fbx")->Instantiate();
+	pDoorObj->SetName(L"Door");
+	pDoorObj->Transform()->SetRelativePos(Vec3(2000.f, -500.f, 1500.f));
+	pDoorObj->Transform()->SetRelativeScale(Vec3(1000.f, 1000.f, 1000.f));
+	pDoorObj->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
-
-	CanvasUI->AddChild(childUI);
-
-	// ItemUse UI
-	childUI = new CGameObject;
-	childUI->SetName(L"ItemUse_UI");
-	childUI->AddComponent(new CUI);
-	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
-	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
-
-	childUI->AddComponent(new CUIRender);
-	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
-
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
-	childUI->UI()->AddText(L"", 17.f, 16.f, 20.f, FONT_RGBA(255, 255, 255, 255));
-	SetObjectActive(childUI, false);
-
-	CanvasUI->AddChild(childUI);
+	pDoorObj->AddComponent(new CCollider3D);
+	pDoorObj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
+	pDoorObj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
+	pDoorObj->Collider3D()->SetIndependentScale(true);
+	
+	pDoorObj->AddComponent(new DoorScript);
+	
+	pLevel->AddObject(1, pDoorObj, false);
 }

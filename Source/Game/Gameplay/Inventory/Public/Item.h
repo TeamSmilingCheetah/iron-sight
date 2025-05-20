@@ -1,11 +1,10 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Game/Gameplay/Interaction/Public/InteractableScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
-
 class ItemScript
-	: public CScript
+	: public InteractableScript
 {
 private:
 	ITEM_TYPE	m_ItemType;
@@ -19,17 +18,20 @@ public:
 	void SetCount(UINT _Count) { m_Count = _Count; }
 
 public:
-	virtual void Init() override;
-	virtual void Begin() override;
-	virtual void Tick() override;
+	virtual void Init() override {}
+	virtual void Begin() override {}
+	virtual void Tick() override {}
 
 	virtual void SaveComponent(FILE* _File) override;
 	virtual void LoadComponent(FILE* _File) override;
 
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override {}
+	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override {}
+	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override {}
 
+	virtual void EnterDetection(InteractionHandler* _Handler) override;
+	virtual void Interact(InteractionHandler* _Handler) override;
+	virtual void ExitDetection(InteractionHandler* _Handler) override;
 
 public:
 	CLONE(ItemScript);

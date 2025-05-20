@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
@@ -55,6 +55,7 @@ public:
 
 	virtual void SaveComponent(FILE* _File) = 0;
 	virtual void LoadComponent(FILE* _File) = 0;
+	virtual void LoadComponentReference() {}
 
 	CComponent(COMPONENT_TYPE _TYPE);
 	~CComponent() override;

@@ -196,7 +196,7 @@ void CKeyMgr::SetCursorFix(bool _bFix)
 	ShowCursor(!m_CursorFixed);
 }
 
-void CKeyMgr::SetMousePos()
+void CKeyMgr::SetMousePosAsCenter()
 {
 	RECT clientRect;
 	

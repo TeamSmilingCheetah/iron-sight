@@ -21,8 +21,6 @@
 PlayerCharacter::PlayerCharacter()
 	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
 	, m_MainCamera(nullptr)
-	, m_HandMeshObj(nullptr)
-	, m_BackMeshObj(nullptr)
 	, m_PaperBurnIntence(0.f)
 	, m_MouseSensitivity(10.f)
 	, m_Force(0.f)
@@ -34,8 +32,6 @@ PlayerCharacter::PlayerCharacter()
 	, m_GravityAccel(10.f)
 	, m_GravityMaxSpeed(30.f)
 	, m_JumpPower(5.f)
-	, m_CurWeaponIdx(NONE_WEAPON)
-	, m_CurWeapon(nullptr)
 	, m_IsGround(true)
 	, m_bShoot(false)
 	, m_bCanThrow(false)
@@ -65,13 +61,6 @@ PlayerCharacter::PlayerCharacter()
 	//AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
 	//AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
 
-	m_vecWeaponSlot.resize(5);
-	char name[10]{};
-	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
-	{
-		sprintf_s(name, "Slot %d", i+1);
-		AddScriptParam(tScriptParam{ SCRIPT_PARAM::GAMEOBJECT, name, &m_vecWeaponSlot[i].Object });
-	}
 
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "CurHP", &m_CurHP });
 }
@@ -83,26 +72,12 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::Begin()
 {
+	// TODO : ObjectReference로 변경하기
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	//m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\Tile.pref", L"Prefab\\Tile.pref");
+	
+	// UI
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
 	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
-
-	vector<CGameObject*> vecBones = Animator3D()->GetvecBone();
-
-	for (int i = 0; i < vecBones.size(); ++i)
-	{
-		if (vecBones[i]->GetName() == L"hand_r")
-		{
-			m_HandMeshObj = vecBones[i];
-		}
-
-		if (vecBones[i]->GetName() == L"coat_b_04")
-		{
-			m_BackMeshObj = vecBones[i];
-		}
-
-	}
 
 	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
 
@@ -110,8 +85,12 @@ void PlayerCharacter::Begin()
 	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC2_0, Vec2(uiSize.x / uiSize.y, m_SemiMaxHP / m_MaxHP));	// 고정 값
 	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, m_CurHP / m_MaxHP);
 	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
+
 	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
 
+	// Script
+	m_CamScript = static_cast<CameraController*>(m_MainCamera->GetScript(CAMERASCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(GetOwner()->GetScript(INVENTORYSCRIPT));
 }
 
 void PlayerCharacter::Tick()
@@ -139,7 +118,7 @@ void PlayerCharacter::Tick()
 	// 인벤토리 UI를 켠 상태라면 다른 로직 block
 	if (m_InventoryOpened)
 	{
-
+		
 	}
 
 	else
@@ -147,7 +126,7 @@ void PlayerCharacter::Tick()
 		// 마우스 가둠
 		if (KEY_TAP(KEY::SPACE))
 		{
-			CKeyMgr::GetInst()->SetMousePos();
+			CKeyMgr::GetInst()->SetMousePosAsCenter();
 		}
 
 		if (KEY_PRESSED(KEY::SPACE))
@@ -157,20 +136,17 @@ void PlayerCharacter::Tick()
 
 		PlayerAttack();
 		PlayerReload();
-		PlayerInteractWeapon();
 	}
-
 }
 
 
 void PlayerCharacter::PlayerView()
 {
-	CameraController* pCameraScript = static_cast<CameraController*>(m_MainCamera->GetScripts()[0]);
-	bool bRecover = pCameraScript->IsSearchRecover();
-	bool bSearch = pCameraScript->IsSearch();
-	bool bShoulder = pCameraScript->IsShoulder();
-	bool bADS = pCameraScript->IsADS();
-	bool bTPS = pCameraScript->IsTPS();
+	bool bRecover = m_CamScript->IsSearchRecover();
+	bool bSearch = m_CamScript->IsSearch();
+	bool bShoulder = m_CamScript->IsShoulder();
+	bool bADS = m_CamScript->IsADS();
+	bool bTPS = m_CamScript->IsTPS();
 
 	// 마우스 위치를 구해온다
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
@@ -178,9 +154,9 @@ void PlayerCharacter::PlayerView()
 	Vec3 vCameraRot = m_MainCamera->Transform()->GetRelativeRotation();
 
 	// 화면의 중앙을 구한다.
-	Vec2 vResoulution = CDevice::GetInst()->GetRenderResolution();
-	int centerX = static_cast<int>(vResoulution.x / 2);
-	int centerY = static_cast<int>(vResoulution.y / 2);
+	static Vec2 vResoulution = CDevice::GetInst()->GetRenderResolution();
+	static int centerX = static_cast<int>(vResoulution.x / 2);
+	static int centerY = static_cast<int>(vResoulution.y / 2);
 
 	// 현재 마우스위치와 화면 정중앙의 변화값을 구한다.
 	int deltaX = static_cast<int>(vMousePos.x - centerX);
@@ -247,7 +223,6 @@ void PlayerCharacter::PlayerView()
 	// 위아래 회전
 	if (!bRecover)
 	{
-		
 		vCameraRot.x += deltaY * m_MouseSensitivity * DT;
 		if (vCameraRot.x < -90.f)
 		{
@@ -265,7 +240,7 @@ void PlayerCharacter::PlayerView()
 
 
 	// 마우스 위치를 중앙으로 다시 초기화한다.
-	CKeyMgr::GetInst()->SetMousePos();
+	CKeyMgr::GetInst()->SetMousePosAsCenter();
 	Vec3 RayDir = Vec3(0.f, 0.f, 0.f);
 	float angle = vCameraRot.x * (XM_PI / 180.f);
 	RayDir.y = -sin(angle);
@@ -275,13 +250,12 @@ void PlayerCharacter::PlayerView()
 
 void PlayerCharacter::PlayerReload()
 {
-
 	if (KEY_TAP(KEY::R))
 	{
 		// 현재 무기 슬롯이 총이라면
-		if (m_CurWeaponIdx <= SECONDARY_FIRST)
+		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
 		{			
-			WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
 			pGunScript->SetCurKey(KEY::R);
 			pGunScript->SetCurKeyState(KEY_STATE::TAP);
 		}
@@ -290,21 +264,20 @@ void PlayerCharacter::PlayerReload()
 
 void PlayerCharacter::PlayerAttack()
 {
-	CameraController* pCameraScript = static_cast<CameraController*>(m_MainCamera->GetScripts()[0]);
-
-	bool bSearch = pCameraScript->IsSearch();
+	bool bSearch = m_CamScript->IsSearch();
 
 	if (!bSearch)
 	{
+		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
+
 		if (KEY_TAP(KEY::LBTN))
 		{
 			// 현재 무기 슬롯이 총이라면
-			if (m_CurWeaponIdx <= THROWABLE_SECOND)
+			if (m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
 			{
-				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-				pGunScript->SetCurKey(KEY::LBTN);
-				pGunScript->SetCurKeyState(KEY_STATE::TAP);
-			}			
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			}
 		}
 	
 		if (KEY_PRESSED(KEY::LBTN))
@@ -312,19 +285,17 @@ void PlayerCharacter::PlayerAttack()
 			// 총을 사용한다.
 			if (m_bShoot)
 			{
-				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-				pGunScript->SetCurKey(KEY::LBTN);
-				pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
 			}
 
 			if (m_bCanThrow)
 			{
 				if (KEY_TAP(KEY::R))
 				{
-					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-					pWeaponScript->SetCurKey(KEY::R);
-					pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
-				}				
+					pWeaponController->SetCurKey(KEY::R);
+					pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+				}
 			}
 		}
 	
@@ -334,46 +305,42 @@ void PlayerCharacter::PlayerAttack()
 			if (m_bShoot)
 			{
 				m_bShoot = false;
-				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-				pGunScript->SetCurKey(KEY::LBTN);
-				pGunScript->SetCurKeyState(KEY_STATE::RELEASED);
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
 			}
 
 			// 투척무기
 			if (m_bCanThrow)
 			{
-				if (m_CurWeapon != nullptr)
+				if (m_InventoryScript->GetCurWeapon() != nullptr)
 				{
-					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-					pWeaponScript->SetCurKey(KEY::LBTN);
-					pWeaponScript->SetCurKeyState(KEY_STATE::RELEASED);
+					pWeaponController->SetCurKey(KEY::LBTN);
+					pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
 
 					// 인벤토리에서 투척무기 하나 제거
 					// TODO : 개선
-					ITEM_TYPE type = static_cast<ItemScript*>(m_vecWeaponSlot[m_CurWeaponIdx].Object->GetScript(ITEMSCRIPT))->GetItemType();
-					InventoryController* inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
+					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(ITEMSCRIPT))->GetItemType();
 					
 					// 아이템이 남았다면
-					if (inventory->UseItem(type, 1))
+					if (m_InventoryScript->UseItem(type, 1))
 					{
 						// TODO: object pooling으로 개선
 						Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(type).Prefab;
-						m_CurWeapon = m_vecWeaponSlot[m_CurWeaponIdx].Object = pPrefab->Instantiate();
-						static_cast<WeaponController*>(m_CurWeapon->GetScript(THROWABLESCRIPT))->SetEquippedOwner(GetOwner());
+						CGameObject* newItem = pPrefab->Instantiate();
+						CreateObject(newItem, 0, false);
 
-						CreateObject(m_CurWeapon, 0, false);
-						AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+						// REUSE : 기존 슬롯에 prefab을 장착
+						m_InventoryScript->EquipSlot(newItem, type, m_InventoryScript->GetCurSlotIdx(), false);
+
+						// 손에 부착
+						m_InventoryScript->ActivateSlot(m_InventoryScript->GetCurSlotIdx());
 					}
 
 					// 아이템이 남지 않았다면
 					else
 					{
-						m_vecWeaponSlot[m_CurWeaponIdx].Object = nullptr;
-						m_vecWeaponSlot[m_CurWeaponIdx].Type = ITEM_TYPE::END;
-
+						m_InventoryScript->ClearSlot(m_InventoryScript->GetCurSlotIdx());
 						m_bCanThrow = false;
-						m_CurWeapon = nullptr;
-						m_CurWeaponIdx = NONE_WEAPON;
 					}
 				}				
 			}
@@ -382,9 +349,9 @@ void PlayerCharacter::PlayerAttack()
 		if (KEY_TAP(KEY::RBTN))
 		{
 			// 투척무기이면
-			if (THROWABLE_FIRST <= m_CurWeaponIdx && m_CurWeaponIdx <= THROWABLE_SECOND)
+			if (THROWABLE_FIRST <= m_InventoryScript->GetCurSlotIdx() && m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
 			{
-				WeaponController* pGunScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+				WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
 				pGunScript->SetCurKey(KEY::RBTN);
 				pGunScript->SetCurKeyState(KEY_STATE::TAP);
 			}
@@ -396,11 +363,10 @@ void PlayerCharacter::PlayerAttack()
 			{
 				if (KEY_TAP(KEY::R))
 				{
-					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+					WeaponController* pWeaponScript = m_InventoryScript->GetCurWeaponController();
 					pWeaponScript->SetCurKey(KEY::R);
 					pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
 				}
-				
 			}
 		}
 
@@ -409,111 +375,44 @@ void PlayerCharacter::PlayerAttack()
 			// 투척무기
 			if (m_bCanThrow)
 			{
-				if (m_CurWeapon != nullptr)
+				if (m_InventoryScript->GetCurWeapon() != nullptr)
 				{
-					m_bCanThrow = false;
-					WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
+					WeaponController* pWeaponScript = m_InventoryScript->GetCurWeaponController();
 					pWeaponScript->SetCurKey(KEY::RBTN);
 					pWeaponScript->SetCurKeyState(KEY_STATE::RELEASED);
-					m_vecWeaponSlot[m_CurWeaponIdx].Object = nullptr;
-					m_vecWeaponSlot[m_CurWeaponIdx].Type = ITEM_TYPE::END;
-					m_CurWeapon = nullptr;
-					m_CurWeaponIdx = NONE_WEAPON;
+
+					// 인벤토리에서 투척무기 하나 제거
+					// TODO : 개선
+					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(ITEMSCRIPT))->GetItemType();
+
+					// 아이템이 남았다면
+					if (m_InventoryScript->UseItem(type, 1))
+					{
+						// TODO: object pooling으로 개선
+						Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(type).Prefab;
+						CGameObject* newItem = pPrefab->Instantiate();
+						CreateObject(newItem, 0, false);
+
+						// REUSE : 기존 슬롯에 prefab을 장착
+						m_InventoryScript->EquipSlot(newItem, type, m_InventoryScript->GetCurSlotIdx());
+
+						// 손에 부착
+						m_InventoryScript->ActivateSlot(m_InventoryScript->GetCurSlotIdx());
+					}
+
+					// 아이템이 남지 않았다면
+					else
+					{
+						m_InventoryScript->ClearSlot(m_InventoryScript->GetCurSlotIdx());
+						m_bCanThrow = false;
+					}
 				}
 			}
 		}		
 	}
 }
 
-void PlayerCharacter::PlayerInteractWeapon()
-{
-	// 무기 교체
-	assert(m_vecWeaponSlot.size() <= 5); // TEST : 무기 일단 5개 이하로 제한
-	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
-	{
-		if (!m_vecWeaponSlot[i].Object)
-			continue;
 
-		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
-		{
-			// 해당 슬롯 활성화
-			SetObjectActive(m_vecWeaponSlot[i].Object, true);
-			m_CurWeapon = m_vecWeaponSlot[i].Object;
-			m_CurWeaponIdx = i;
-			AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
-			WeaponController* pWeaponScript = static_cast<WeaponController*>(m_CurWeapon->GetScripts()[0]);
-			pWeaponScript->SetEquip(true);
-
-			// 나머지 슬롯은 비활성화
-			for (int j = 0; j < static_cast<int>(m_vecWeaponSlot.size()); ++j)
-			{
-				if (!m_vecWeaponSlot[j].Object || j == i)
-					continue;
-
-				// 주무기는 비활성화가 아닌 등에 다시 부착 시켜 준다.
-				if (j == PRIMARY_FIRST)
-				{
-					AttachItem(m_vecWeaponSlot[j].Object, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
-				}
-				else if (j == PRIMARY_SECOND)
-				{
-					AttachItem(m_vecWeaponSlot[j].Object, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
-				}
-				// 나머지는 비활성화 해준다.
-				else
-				{
-					SetObjectActive(m_vecWeaponSlot[j].Object, false);
-				}				
-				WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[j].Object->GetScripts()[0]);
-				pWeaponScript->SetEquip(false);
-			}
-
-			break;
-		}
-	}
-
-	// 모든 무기 내리기 (무기 미착용 상태로)
-	if (KEY_TAP(KEY::B))
-	{
-		// 모든 무기 슬롯 비활성화
-		for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
-		{
-			if (!m_vecWeaponSlot[i].Object)
-				continue;
-
-			if (i == PRIMARY_FIRST)
-			{
-				AttachItem(m_vecWeaponSlot[i].Object, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
-				SetObjectActive(m_vecWeaponSlot[i].Object, true);
-			}
-			else if (i == PRIMARY_SECOND)
-			{
-				AttachItem(m_vecWeaponSlot[i].Object, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
-				SetObjectActive(m_vecWeaponSlot[i].Object, true);
-			}
-			else
-			{
-				SetObjectActive(m_vecWeaponSlot[i].Object, false);
-			}
-			
-		}
-		m_CurWeapon = nullptr;
-		m_CurWeaponIdx = NONE_WEAPON;
-	}
-
-	// 현재 들고 있는 무기를 버린다.
-	if (KEY_TAP(KEY::G))
-	{
-		if (m_CurWeapon != nullptr)
-		{
-			// 인벤토리에서 아이템 개수 관리
-			InventoryController* inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
-
-			inventory->DropItem(m_vecWeaponSlot[m_CurWeaponIdx].Type, 1);
-		}
-	}
-
-}
 
 void PlayerCharacter::PlayerControlUI()
 {
@@ -557,9 +456,7 @@ void PlayerCharacter::PlayerHeal()
 		// 완료
 		if (m_RemainTime <= 0.f)
 		{
-			auto inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
-
-			inventory->UseItem(m_HealType);
+			m_InventoryScript->UseItem(m_HealType);
 
 			// 회복 수행
 			if (IS_HEAL(type))
@@ -654,6 +551,7 @@ void PlayerCharacter::PlayerHeal()
 	}
 }
 
+
 void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 {
 	// 고려사항
@@ -662,22 +560,34 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 	// 3. 최대 힐량	(최대 몇까지 힐을 한다)
 	// 4. 총 힐량    (최대 제한은 없고 다 사용했을 때 힐량)
 
-	// ui 활성화
-	SetObjectActive(m_ItemUseUI, true);
-
-	m_HealType = _HealType;
+	bool CantHeal = false;
 
 	switch (_HealType)
 	{
 	case ITEM_TYPE::FIRST_AID_KIT:
+		if (m_CurHP >= m_SemiMaxHP)
+		{
+			CantHeal = true;
+			break;
+		}
 		m_TotalTime = m_RemainTime = 6.f;
 		m_HealAmount = 75.f;
 		break;
 	case ITEM_TYPE::MED_KIT:
+		if (m_CurHP >= m_MaxHP)
+		{
+			CantHeal = true;
+			break;
+		}
 		m_TotalTime = m_RemainTime = 8.f;
 		m_HealAmount = 100.f;
 		break;
 	case ITEM_TYPE::BANDAGE:
+		if (m_CurHP >= m_SemiMaxHP)
+		{
+			CantHeal = true;
+			break;
+		}
 		m_TotalTime = m_RemainTime = 4.f;
 		m_HealAmount = 10.f;
 		break;
@@ -696,171 +606,17 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 	default:
 		break;
 	}
-}
 
-void PlayerCharacter::EquipSlot(CGameObject* _Item)
-{
-	// 장착할 수 있는 아이템이라는 것이 보장되어 있음 (InventoryController)
-	// TODO : 개선
-	WeaponController* pScript = static_cast<WeaponController*>(_Item->GetScript(GUNSCRIPT));
-	if (pScript == nullptr)
-		pScript = static_cast<WeaponController*>(_Item->GetScript(THROWABLESCRIPT));
-
-	assert(pScript != nullptr);		// WeaponScript가 있다는 가정
-
-	WEAPON_TYPE eWeaponType = pScript->GetWeaponType();
-	static bool bCanEquip = false;
-
-	switch (eWeaponType)
+	if (CantHeal)
 	{
-		// 주무기
-	case WEAPON_TYPE::PRIMARY:
-	{
-		int slotIdx = 0;
-		for (int i = PRIMARY_FIRST; i <= PRIMARY_SECOND; ++i)
-		{
-			if (m_vecWeaponSlot[i].Object == nullptr)
-			{
-				slotIdx = i;
-				break;
-			}
-		}
-
-		// 빈 슬롯이 없었다면 첫번째 슬롯과 교체
-		if (m_vecWeaponSlot[slotIdx].Object)
-		{
-			// 현재 슬롯을 해제
-			DetachItem(m_vecWeaponSlot[slotIdx].Object);
-			InventoryController* inventory = static_cast<InventoryController*>(GetOwner()->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
-			inventory->UseItem(m_vecWeaponSlot[slotIdx].Type);
-		}
-
-		m_vecWeaponSlot[slotIdx].Object = _Item;
-		m_vecWeaponSlot[slotIdx].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
-
-		bCanEquip = true;
-
-		if (slotIdx == PRIMARY_FIRST)
-		{
-			AttachItem(_Item, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
-		}
-		else
-		{
-			AttachItem(_Item, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
-		}
-
-		SetObjectActive(_Item, true);
-	}
-		break;
-		// 보조무기
-	case WEAPON_TYPE::SECONDARY:
-		if (m_vecWeaponSlot[SECONDARY_FIRST].Object == nullptr)
-		{
-			m_vecWeaponSlot[SECONDARY_FIRST].Object = _Item;
-			m_vecWeaponSlot[SECONDARY_FIRST].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
-			AddChild(GetOwner(), _Item);
-			SetObjectActive(_Item, false);
-			bCanEquip = true;
-		}
-		break;
-		// 투척무기				
-	case WEAPON_TYPE::THROWABLE:
-	{
-		for (int i = THROWABLE_FIRST; i <= THROWABLE_SECOND; ++i)
-		{
-			// 슬롯에 이미 차 있는 경우
-			if (m_vecWeaponSlot[i].Object != nullptr)
-			{
-				// 같은 weapon 인 경우
-				if (m_vecWeaponSlot[i].Type == static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType())
-					break;
-
-				// 다른 weapon인 경우
-				continue;
-			}
-
-			m_vecWeaponSlot[i].Object = _Item;
-			m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(_Item->GetScript(ITEMSCRIPT))->GetItemType();
-			AttachItem(_Item, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
-			SetObjectActive(_Item, false);
-			bCanEquip = true;
-			break;
-		}
-		
-	}
-		break;
-	default:
-		break;
+		// TODO : 사용 할 수 없다는 경고 문구 UI
+		return;
 	}
 
-	// 장착할 수 있는 경우 :
-	// 무기 스크립트 쪽에 알려줘야 함
-	if (bCanEquip)
-	{
-		// Player를 소유주으로 등록, 자식에 무기를 넣어준다.
-		pScript->SetEquippedOwner(GetOwner());
+	// ui 활성화
+	SetObjectActive(m_ItemUseUI, true);
 
-		bCanEquip = false;
-		m_bCanEquip = false;
-	}
-
-	// 장착할 수 없는 경우 :
-	// 이미 해당 타입이 슬롯에 존재하거나 빈 슬롯이 없었다면 아이템 정보만 얻고 객체는 파괴함
-	else
-	{
-		// TODO : object pooling으로 개선 (파괴가 아니라 비활성화 후 pool에 넣기)
-		DestroyObject(_Item);
-	}
-}
-
-void PlayerCharacter::ReleaseSlot(ITEM_TYPE _Type, int _Count)
-{
-	for (int i = 0; i < static_cast<int>(m_vecWeaponSlot.size()); ++i)
-	{
-		if (m_vecWeaponSlot[i].Type == _Type)
-		{
-			// 부모 관계 해제, 레이어 이동, transform 설정
-			DetachItem(m_vecWeaponSlot[i].Object);
-
-			// 개수 설정
-			static_cast<ItemScript*>(m_vecWeaponSlot[i].Object->GetScript(ITEMSCRIPT))->SetCount(_Count);
-
-			// 주인 해제
-			WeaponController* pGunScript = static_cast<WeaponController*>(m_vecWeaponSlot[i].Object->GetScripts()[0]);
-			pGunScript->SetEquippedOwner(nullptr);
-
-			m_vecWeaponSlot[i].Object = nullptr;
-			m_vecWeaponSlot[i].Type = ITEM_TYPE::END;
-
-			// 현재 무기와 일치하는 경우
-			if (i == m_CurWeaponIdx)
-			{
-				m_CurWeapon = nullptr;
-				m_CurWeaponIdx = NONE_WEAPON;
-			}
-
-			return;
-		}
-	}
-}
-
-void PlayerCharacter::AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot)
-{
-	AddChild(_BoneObject, _Item);
-	_Item->Transform()->SetRelativePos(_RelativePos);
-	_Item->Transform()->SetRelativeRotation(_RelativeRot);
-}
-
-void PlayerCharacter::DetachItem(CGameObject* _Item)
-{
-	Vec3 vPos = Transform()->GetRelativePos();
-	Vec3 vRot = Transform()->GetRelativeRotation();
-
-	// 아이템 레이어로 변경
-	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
-	ChangeLayer(_Item, 6);
-	SetObjectActive(_Item, true);
-	AttachItem(_Item, nullptr, vPos, vRot);
+	m_HealType = _HealType;
 }
 
 void PlayerCharacter::SaveComponent(FILE* _File)
@@ -875,4 +631,8 @@ void PlayerCharacter::LoadComponent(FILE* _File)
 	//fread(&m_PlayerSpeed, sizeof(float), 1, _File);
 	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	LoadAssetRef(m_TargetTex, _File);
+}
+
+void PlayerCharacter::LoadComponentReference()
+{
 }

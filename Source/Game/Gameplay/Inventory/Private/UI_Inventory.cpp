@@ -21,7 +21,6 @@ void InventoryUI::SetController(InventoryController* _Controller)
 
 void InventoryUI::Begin()
 {
-	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
 }
 
 void InventoryUI::SaveComponent(FILE* _File)
@@ -32,6 +31,11 @@ void InventoryUI::SaveComponent(FILE* _File)
 void InventoryUI::LoadComponent(FILE* _File)
 {
 	LoadObjectRef(m_ControllerOwner, _File);
+}
+
+void InventoryUI::LoadComponentReference()
+{
+	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
 }
 
 void InventoryUI::OnMouseDrop(const PayLoad& _PayLoad)

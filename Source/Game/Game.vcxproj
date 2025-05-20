@@ -156,6 +156,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\Character\Public\InteractionHandler.h" />
+    <ClInclude Include="Gameplay\Door\Public\DoorScript.h" />
+    <ClInclude Include="Gameplay\Interaction\Public\InteractableScript.h" />
     <ClInclude Include="Gameplay\Inventory\Public\InventoryController.h" />
     <ClInclude Include="Gameplay\Inventory\Public\Item.h" />
     <ClInclude Include="Gameplay\Inventory\Public\ItemMgr.h" />
@@ -179,6 +182,9 @@
     <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Gameplay\Character\Private\InteractionHandler.cpp" />
+    <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp" />
+    <ClCompile Include="Gameplay\Interaction\Private\InteractableScript.cpp" />
     <ClCompile Include="Gameplay\Inventory\Private\InventoryController.cpp" />
     <ClCompile Include="Gameplay\Inventory\Private\Item.cpp" />
     <ClCompile Include="Gameplay\Inventory\Private\ItemMgr.cpp" />

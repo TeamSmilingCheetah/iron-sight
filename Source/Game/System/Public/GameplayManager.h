@@ -18,10 +18,16 @@ enum SCRIPT_TYPE
 
 	// 아이템, 인벤토리 관련 스크립트
 	INVENTORYSCRIPT,
-	ITEMSCRIPT,
+	ITEMSCRIPT,		// Interactable
 	ITEMUI,
 	INVENTORYUI,
 	VICINITYUI,
+
+	// 상호작용
+	INTERACTION_HANDLER,
+
+	// 문
+	DOORSCRIPT,		// Interactable
 };
 
 class CScript;

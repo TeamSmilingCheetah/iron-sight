@@ -19,7 +19,6 @@ void VicinityUI::SetController(InventoryController* _Controller)
 
 void VicinityUI::Begin()
 {
-	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
 }
 
 void VicinityUI::SaveComponent(FILE* _File)
@@ -30,6 +29,11 @@ void VicinityUI::SaveComponent(FILE* _File)
 void VicinityUI::LoadComponent(FILE* _File)
 {
 	LoadObjectRef(m_ControllerOwner, _File);
+}
+
+void VicinityUI::LoadComponentReference()
+{
+	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(INVENTORYSCRIPT));
 }
 
 void VicinityUI::OnMouseDrop(const PayLoad& _PayLoad)

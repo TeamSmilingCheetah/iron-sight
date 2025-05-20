@@ -99,7 +99,7 @@ void ItemUI::OnMouseRightClick()
 	// 주변부 UI에 속한 item UI라면 -> 획득
 	if (m_ItemObject != nullptr)
 	{
-		auto inventory = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetChildByName(L"Inventory")->GetScript(INVENTORYSCRIPT));
+		auto inventory = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(INVENTORYSCRIPT));
 
 		inventory->AcquireItem(m_ItemObject);
 	}
