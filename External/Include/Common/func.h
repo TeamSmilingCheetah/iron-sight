@@ -5,6 +5,7 @@
 enum class SCRIPT_TYPE : UINT8;
 class CGameObject;
 class CLevel;
+class CScript;
 
 void CreateObject(CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
@@ -42,8 +43,7 @@ string WStringToString(const wstring& _str);
 bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist);
 float RandomFloat(float min, float max);
 
-class CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type);
-CScript* GetScriptWithParentType(CGameObject* _Object, SCRIPT_TYPE _Type);
+CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type);
 
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj);
 

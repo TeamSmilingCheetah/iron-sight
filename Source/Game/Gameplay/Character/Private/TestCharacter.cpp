@@ -16,7 +16,6 @@ TestCharacter::TestCharacter()
 	, m_AttackTime(1.f)
 	, m_IsAttack(false)
 {
-	SetParentScriptType(SCRIPT_TYPE::ENEMYCONTROLLER);
 }
 
 TestCharacter::~TestCharacter()
@@ -31,7 +30,7 @@ void TestCharacter::Begin()
 	{
 		vector<CScript*> vecScript = vecChild[i]->GetScripts();
 
-		CScript* VisionScript = GetScriptWithParentType(vecChild[i], SCRIPT_TYPE::ENEMYVISION);
+		CScript* VisionScript = GetScriptWithType(vecChild[i], SCRIPT_TYPE::ENEMYVISION);
 		if (nullptr == VisionScript)
 			continue;
 		else

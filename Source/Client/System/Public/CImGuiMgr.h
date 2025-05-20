@@ -6,12 +6,7 @@ class CImGuiMgr
 	: public singleton<CImGuiMgr>
 {
 	SINGLE(CImGuiMgr)
-	map
-	<
-		string
-		,
-		EditorUI*>
-	m_mapUI;
+	map<string, EditorUI*> m_mapUI;
 	HANDLE m_hNotify;
 
 public:

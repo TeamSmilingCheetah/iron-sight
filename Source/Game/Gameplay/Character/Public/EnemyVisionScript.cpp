@@ -85,7 +85,7 @@ void EnemyVisionScript::Tick()
 void EnemyVisionScript::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithParentType(_OtherObject, m_TargetType);
+	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
 	if (targetScript == nullptr)
 	{
 		// 없으면 처리x
@@ -106,7 +106,7 @@ void EnemyVisionScript::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherO
 void EnemyVisionScript::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithParentType(_OtherObject, m_TargetType);
+	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
 	if (targetScript == nullptr)
 	{
 		// 없으면 처리x
@@ -120,7 +120,7 @@ void EnemyVisionScript::EndOverlap(CColliderRay* _RayCollider, CGameObject* _Oth
 void EnemyVisionScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithParentType(_OtherObject, m_TargetType);
+	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
 	if (targetScript == nullptr)
 	{
 		// 없으면 처리x
@@ -139,7 +139,7 @@ void EnemyVisionScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObjec
 void EnemyVisionScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithParentType(_OtherObject, m_TargetType);
+	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
 	if (targetScript == nullptr)
 	{
 		// 없으면 처리x

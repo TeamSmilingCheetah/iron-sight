@@ -162,10 +162,12 @@ void CGameObject::AddComponent(CComponent* _Component)
 {
 	COMPONENT_TYPE Type = _Component->GetType();
 
-
 	if (COMPONENT_TYPE::SCRIPT == Type)
 	{
+		// 오브젝트에 script 추가
 		m_vecScripts.push_back(static_cast<CScript*>(_Component));
+		// script가 몇 번 위치에 존재하는지 기록
+		m_scriptShortcut[static_cast<CScript*>(_Component)->GetScriptType()] = static_cast<UINT>(m_vecScripts.size()) - 1;
 	}
 	else
 	{
@@ -230,10 +232,13 @@ void CGameObject::DeleteScript(wstring& _SciprtName)
 	for (UINT i = 0; i < m_vecScripts.size(); ++i)
 	{
 		if (m_vecScripts[i]->GetName() == pScript->GetName())
+		{
+			// 해당 스크립트 관련 정보 일괄 제거
 			m_vecScripts.erase(m_vecScripts.begin() + i);
+			m_scriptShortcut.erase(pScript->GetScriptType());
+		}
 	}
 }
-
 void CGameObject::SetObjectID(UINT _ID)
 {
 	m_ObjectID = _ID;
