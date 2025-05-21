@@ -131,7 +131,7 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 
 const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 {
-	switch (static_cast<SCRIPT_TYPE>(_pScript->GetScriptType()))
+	switch (_pScript->GetScriptType())
 	{
 	case SCRIPT_TYPE::CAMERASCRIPT:
 		return L"CCameraScript";

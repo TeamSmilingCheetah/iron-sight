@@ -34,6 +34,7 @@ public:
 	// Collider Event
 	// ==============
 
+	// TODO(KHJ): 컴포지션 패턴 적용해보고 싶을지도
 	// Col2D - Col2D
 	virtual void BeginOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
 	virtual void Overlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}

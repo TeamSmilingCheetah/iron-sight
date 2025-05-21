@@ -51,6 +51,9 @@ ThrowableController::~ThrowableController()
 
 void ThrowableController::Begin()
 {
+	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
+
 	WeaponController::Begin();
 }
 
@@ -170,9 +173,7 @@ void ThrowableController::Triggered()
 	{
 		if (m_EquippedOwner != nullptr)
 		{
-			CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, SCRIPT_TYPE::PLAYERSCRIPT));
-			pPlayerScript->SetThrowBoom(true);
+			m_PlayerScript->SetThrowBoom(true);
 		}
 
 		if (GetOwner()->GetName() == L"Smoke Grenade")

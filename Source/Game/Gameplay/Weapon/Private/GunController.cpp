@@ -26,6 +26,9 @@ GunController::GunController()
 	, m_CurRounds(0)
 	, m_bFire(false)
 	, m_bReload(false)
+	, m_Camera(nullptr)
+	, m_CameraScript(nullptr)
+	, m_PlayerScript(nullptr)
 {
 
 	// 무기 종류에 따라 변수 값 설정
@@ -49,7 +52,8 @@ void GunController::Begin()
 {
 	WeaponController::Begin();
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
-
+	m_Camera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
+	m_CameraScript = static_cast<CameraController*>(m_Camera->GetScripts()[0]);
 }
 
 void GunController::Tick()
@@ -63,32 +67,29 @@ void GunController::Tick()
 	// 플레이어일 시 처리
 	if (!m_bEnemy)
 	{
-		PlayerCharacter* pPlayerScript = nullptr;
+		if (!m_PlayerScript)
+			m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
 
-		// 소유주가 있다면 위치를 0으로 초기화
+		// 소유주가 있다면 플레이어 기반 행동
 		if (m_EquippedOwner != nullptr)
 		{
-			pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
-		}
-
-
-		// 총알을 발사한다.
-		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
-		{
-			if (0 < m_CurRounds && !m_bReload)
+			// 총알을 발사한다.
+			if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 			{
-				pPlayerScript->SetShot(true);
-			}
-		}
-
-		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
-		{
-			if (!m_bReload && m_CurRounds != m_MaxRounds)
-			{
-				pPlayerScript->SetShot(false);
-				m_bReload = true;
+				if (0 < m_CurRounds && !m_bReload)
+				{
+					m_PlayerScript->SetShot(true);
+				}
 			}
 
+			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
+			{
+				if (!m_bReload && m_CurRounds != m_MaxRounds)
+				{
+					m_PlayerScript->SetShot(false);
+					m_bReload = true;
+				}
+			}
 		}
 	}
 	else
@@ -102,7 +103,6 @@ void GunController::Tick()
 
 		}
 	}
-
 
 	// 총알을 발사한다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
@@ -170,25 +170,22 @@ void GunController::Firing()
 		}
 
 		// Camera의 줌 여부를 확인한다.
-		CGameObject* pCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-		CameraController* pCameraScript = static_cast<CameraController*>(pCamera->GetScripts()[0]);
-
 		// 지향사격
-		if (!pCameraScript->IsShoulder() && !pCameraScript->IsADS())
+		if (!m_CameraScript->IsShoulder() && !m_CameraScript->IsADS())
 		{
 			spreadYaw = RandomFloat(-10.f, 10.f);
 			spreadPitch = RandomFloat(-10.f, 10.f);
 		}
 
 		// 견착
-		if (pCameraScript->IsShoulder())
+		if (m_CameraScript->IsShoulder())
 		{
 			spreadYaw = RandomFloat(-2.f, 2.f);
 			spreadPitch = RandomFloat(-2.f, 2.f);
 		}
 
 		// 정조준
-		if (pCameraScript->IsADS())
+		if (m_CameraScript->IsADS())
 		{
 			spreadYaw = 0.f;
 			spreadPitch = 0.f;

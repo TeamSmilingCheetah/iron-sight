@@ -99,16 +99,19 @@ void ItemUI::OnMouseRightClick()
 	// 주변부 UI에 속한 item UI라면 -> 획득
 	if (m_ItemObject != nullptr)
 	{
-		auto inventory = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+		if (!m_InventoryScript)
+			m_InventoryScript = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 
-		inventory->AcquireItem(m_ItemObject);
+		m_InventoryScript->AcquireItem(m_ItemObject);
 	}
 
 	// 인벤토리 UI에 속한 item UI라면 -> 사용
 	else
 	{
+		if (!m_PlayerScript)
+			m_PlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+
 		UINT type = static_cast<UINT>(m_ItemInfo.Type);
-		auto playerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
 
 		if (IS_WEAPON(type))
 		{
@@ -118,7 +121,7 @@ void ItemUI::OnMouseRightClick()
 		else if (IS_HEAL(type) || IS_BOOST(type))
 		{
 			// 힐 시작
-			playerScript->TriggerHeal(m_ItemInfo.Type);
+			m_PlayerScript->TriggerHeal(m_ItemInfo.Type);
 		}
 	}
 }
