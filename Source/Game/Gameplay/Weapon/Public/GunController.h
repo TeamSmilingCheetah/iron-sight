@@ -1,5 +1,6 @@
 #pragma once
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Gameplay/Character/Public/CameraController.h"
 
 class GunController :
 	public WeaponController
@@ -24,6 +25,9 @@ private:
 	bool m_bFire;
 	bool m_bReload;
 
+	CGameObject* m_Camera;
+	CameraController* m_CameraScript;
+	PlayerCharacter* m_PlayerScript;
 
 public:
 	void Begin() override;

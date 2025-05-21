@@ -1,6 +1,6 @@
 #pragma once
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
-
+#include "Gameplay/Character/Public/PlayerCharacter.h"
 
 class CLandScape;
 
@@ -23,7 +23,9 @@ private:
 	bool m_bCanThrow;
 	bool m_bThrow;
 	bool m_bTrigger;
-	
+
+	CGameObject* m_Player;
+	PlayerCharacter* m_PlayerScript;
 
 public:
 	void Begin() override;

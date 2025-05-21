@@ -21,6 +21,7 @@ private:
 	CComponent* m_arrCom[static_cast<UINT>(COMPONENT_TYPE::END)];
 	CRenderComponent* m_RenderCom; // 1개의 게임오브젝트 객체는 1개의 렌더컴포넌트를 가질 수 있다.
 	vector<CScript*> m_vecScripts; // 보유 스크립트들
+	unordered_map<SCRIPT_TYPE, UINT> m_scriptShortcut; // 스크립트 탐색 편의를 위한 shortcut
 
 	CGameObject* m_Parent; // 부모 오브젝트
 	vector<CGameObject*> m_vecChild; // 자식 오브젝트들
@@ -48,6 +49,7 @@ public:
 	UINT GetObjectID() const { return m_ObjectID; }
 	void SetObjectID(UINT _ID);
 
+	const unordered_map<SCRIPT_TYPE, UINT>& GetScriptShortcut() const { return m_scriptShortcut; }
 	CGameObject* GetParent() const { return m_Parent; }
 	CComponent* GetComponent(COMPONENT_TYPE _Type) const { return m_arrCom[static_cast<UINT>(_Type)]; }
 	CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
@@ -58,12 +60,12 @@ public:
 	int GetNextLayerIdx() const { return m_NextLayerIdx; }
 
 	// 비활성화 되는 프레임에 대한 지연 처리는 IsDeactivated를 사용할 것
-	bool IsActive() const { return m_Active; }	
+	bool IsActive() const { return m_Active; }
 	bool IsDead() const { return m_Dead; }
 	bool IsAncestor(CGameObject* _Other);
 	bool IsLayerMove() const { return m_LayerMove; }
 	// IsActive와 차이 : 아직 활성화 되어있지만 다음 프레임에 비활성화 될건지 여부
-	bool IsDeactivated() const { return m_Deactivate; } 
+	bool IsDeactivated() const { return m_Deactivate; }
 
 private:
 	void SetActive(bool _b) { m_Active = _b; }
@@ -74,12 +76,12 @@ public:
 		m_LayerMove = true;
 		m_NextLayerIdx = _Idx;
 	}
-	
+
 
 public:
 	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
 	const vector<CScript*>& GetScripts() const { return m_vecScripts; }
-	CScript* GetScript(UINT _Type) const;
+	CScript* GetScript(SCRIPT_TYPE _Type) const;
 
 	CGameObject* GetChildByName(const wstring& _Name);
 
@@ -107,7 +109,7 @@ private:
 	void RegisterAsParent();
 
 	void LayerMoveDone() { m_LayerMove = false; }
-	
+
 public:
 	CLONE(CGameObject);
 	CGameObject();

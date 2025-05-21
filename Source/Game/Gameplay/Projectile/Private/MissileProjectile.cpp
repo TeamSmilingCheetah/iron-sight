@@ -9,7 +9,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 
 MissileProjectile::MissileProjectile()
-	: CScript(static_cast<UINT>(SCRIPT_TYPE::MISSILESCRIPT))
+	: CScript(SCRIPT_TYPE::MISSILESCRIPT)
 	, m_Velocity(Vec3(0.f, 500.f, 0.f))
 	, m_Dir()
 	, m_Speed(0.f)
@@ -76,7 +76,7 @@ void MissileProjectile::LoadComponent(FILE* _File)
 
 void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-	
+
 
 	if (_OtherObject->GetName() == L"DeathBox")
 	{

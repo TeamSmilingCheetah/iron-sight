@@ -38,7 +38,7 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 #define FONT_RGBA(r, g, b, a) (((((BYTE)a << 24 ) | (BYTE)b << 16) | (BYTE)g << 8) | (BYTE)r)
 
-
-
 #define TRIGGER					0x01		// 트리거용 충돌체
 #define INDEPENDENT_ROT			0x02
+
+#define SET_PARENT_SCRIPT(PARENT_ENUM) static constexpr SCRIPT_TYPE m_ParentType = PARENT_ENUM

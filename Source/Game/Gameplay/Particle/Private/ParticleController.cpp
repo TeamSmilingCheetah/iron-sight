@@ -5,7 +5,7 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
 ParticleController::ParticleController()
-	: CScript(static_cast<UINT>(SCRIPT_TYPE::PARTICLESCRIPT))
+	: CScript(SCRIPT_TYPE::PARTICLESCRIPT)
 	, m_ParticleSystem(nullptr)
 	, m_AccTime(0.f)
 	, m_LifeTime(30.f)
@@ -35,7 +35,7 @@ void ParticleController::Tick()
 
 	// 시간
 	if (2.f < m_AccTime && !m_SpawnTrigger)
-	{		
+	{
 		m_ParticleSystem->SetModule(pModule);
 		m_SpawnTrigger = true;
 	}

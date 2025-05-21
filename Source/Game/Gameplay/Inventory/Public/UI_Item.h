@@ -2,6 +2,9 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
+class PlayerCharacter;
+class InventoryController;
+
 class ItemUI
 	: public CScript
 {
@@ -11,6 +14,9 @@ private:
 	tItemIndividualInfo		m_ItemInfo;
 
 	bool	m_Changed;
+
+	InventoryController* m_InventoryScript;
+	PlayerCharacter* m_PlayerScript;
 
 public:
 	void SetItemObject(CGameObject* _Object);

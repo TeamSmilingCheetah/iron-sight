@@ -26,7 +26,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CParticleScript");
 	_vec.push_back(L"TestSound");
 	_vec.push_back(L"InventoryScript");
-	_vec.push_back(L"ItemScript");	
+	_vec.push_back(L"ItemScript");
 	_vec.push_back(L"ItemUIScript");
 	_vec.push_back(L"InventoryUIScript");
 	_vec.push_back(L"VicinityUIScript");
@@ -77,52 +77,52 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 {
 	switch (_iScriptType)
 	{
-	case static_cast<UINT>(CAMERASCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::CAMERASCRIPT):
 		return new CameraController;
 		break;
-	case static_cast<UINT>(MISSILESCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::MISSILESCRIPT):
 		return new MissileProjectile;
 		break;
-	case static_cast<UINT>(PLAYERSCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT):
 		return new PlayerCharacter;
 		break;
-	case static_cast<UINT>(WEAPONSCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::WEAPONSCRIPT):
 		return new GunController;
 		break;
-	case static_cast<UINT>(THROWABLESCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::THROWABLESCRIPT):
 		return new ThrowableController;
 		break;
-	case static_cast<UINT>(TESTSOUND):
+	case static_cast<UINT>(SCRIPT_TYPE::TESTSOUND):
 		return new TestSound;
 		break;
-	case static_cast<UINT>(PARTICLESCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::PARTICLESCRIPT):
 		return new ParticleController;
 		break;
-	case static_cast<UINT>(INVENTORYSCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::INVENTORYSCRIPT):
 		return new InventoryController;
 		break;
-	case static_cast<UINT>(ITEMSCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::ITEMSCRIPT):
 		return new ItemScript;
 		break;
-	case static_cast<UINT>(ITEMUI):
+	case static_cast<UINT>(SCRIPT_TYPE::ITEMUI):
 		return new ItemUI;
 		break;
-	case static_cast<UINT>(INVENTORYUI):
+	case static_cast<UINT>(SCRIPT_TYPE::INVENTORYUI):
 		return new InventoryUI;
 		break;
-	case static_cast<UINT>(VICINITYUI):
+	case static_cast<UINT>(SCRIPT_TYPE::VICINITYUI):
 		return new VicinityUI;
 		break;
-	case static_cast<UINT>(TESTCHARACTER):
+	case static_cast<UINT>(SCRIPT_TYPE::TESTCHARACTER):
 		return new TestCharacter;
 		break;
-	case static_cast<UINT>(ENEMYVISION):
+	case static_cast<UINT>(SCRIPT_TYPE::ENEMYVISION):
 		return new EnemyVisionScript;
 		break;
-	case static_cast<UINT>(INTERACTION_HANDLER):
+	case static_cast<UINT>(SCRIPT_TYPE::INTERACTION_HANDLER):
 		return new InteractionHandler;
 		break;
-	case static_cast<UINT>(DOORSCRIPT):
+	case static_cast<UINT>(SCRIPT_TYPE::DOORSCRIPT):
 		return new DoorScript;
 		break;
 	}
@@ -131,68 +131,68 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 
 const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 {
-	switch (static_cast<SCRIPT_TYPE>(_pScript->GetScriptType()))
+	switch (_pScript->GetScriptType())
 	{
-	case CAMERASCRIPT:
+	case SCRIPT_TYPE::CAMERASCRIPT:
 		return L"CCameraScript";
 		break;
 
-	case MISSILESCRIPT:
+	case SCRIPT_TYPE::MISSILESCRIPT:
 		return L"CMissileScript";
 		break;
 
-	case PLAYERSCRIPT:
+	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return L"CPlayerScript";
 		break;
 
-	case GUNSCRIPT:
+	case SCRIPT_TYPE::GUNSCRIPT:
 		return L"CGunScript";
 		break;
 
-	case THROWABLESCRIPT:
+	case SCRIPT_TYPE::THROWABLESCRIPT:
 		return L"CThrowableScript";
 		break;
 
-	case TESTSOUND:
+	case SCRIPT_TYPE::TESTSOUND:
 		return L"TestSound";
 		break;
 
-	case PARTICLESCRIPT:
+	case SCRIPT_TYPE::PARTICLESCRIPT:
 		return L"CParticleScript";
 		break;
 
-	case INVENTORYSCRIPT:
+	case SCRIPT_TYPE::INVENTORYSCRIPT:
 		return L"InventoryScript";
 		break;
 
-	case ITEMSCRIPT:
+	case SCRIPT_TYPE::ITEMSCRIPT:
 		return L"ItemScript";
 		break;
 
-	case ITEMUI:
+	case SCRIPT_TYPE::ITEMUI:
 		return L"ItemUIScript";
 		break;
 
-	case INVENTORYUI:
+	case SCRIPT_TYPE::INVENTORYUI:
 		return L"InventoryUIScript";
 		break;
 
-	case VICINITYUI:
+	case SCRIPT_TYPE::VICINITYUI:
 		return L"VicinityUIScript";
 
-	case TESTCHARACTER:
+	case SCRIPT_TYPE::TESTCHARACTER:
 		return L"TestCharacter";
 		break;
 
-	case ENEMYVISION:
+	case SCRIPT_TYPE::ENEMYVISION:
 		return L"EnemyVision";
 		break;
 
-	case INTERACTION_HANDLER:
+	case SCRIPT_TYPE::INTERACTION_HANDLER:
 		return L"InteractionHandler";
 		break;
 
-	case DOORSCRIPT:
+	case SCRIPT_TYPE::DOORSCRIPT:
 		return L"DoorScript";
 		break;
 	}

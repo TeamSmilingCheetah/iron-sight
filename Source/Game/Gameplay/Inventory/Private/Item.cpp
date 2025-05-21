@@ -5,7 +5,7 @@
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
 ItemScript::ItemScript()
-	: InteractableScript(ITEMSCRIPT)
+	: InteractableScript(SCRIPT_TYPE::ITEMSCRIPT)
 	, m_ItemType(ITEM_TYPE::END)
 	, m_Count(0)
 {
@@ -13,7 +13,7 @@ ItemScript::ItemScript()
 }
 
 ItemScript::ItemScript(ITEM_TYPE _Type)
-	: InteractableScript(ITEMSCRIPT)
+	: InteractableScript(SCRIPT_TYPE::ITEMSCRIPT)
 	, m_ItemType(_Type)
 	, m_Count(ItemMgr::GetInst()->GetItemInfo(m_ItemType).DefaultCount)
 {
@@ -37,7 +37,7 @@ void ItemScript::LoadComponent(FILE* _File)
 
 void ItemScript::EnterDetection(InteractionHandler* _Handler)
 {
-	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(INVENTORYSCRIPT));
+	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	assert(pInventory);
 
@@ -46,7 +46,7 @@ void ItemScript::EnterDetection(InteractionHandler* _Handler)
 
 void ItemScript::Interact(InteractionHandler* _Handler)
 {
-	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(INVENTORYSCRIPT));
+	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	assert(pInventory);
 
@@ -55,7 +55,7 @@ void ItemScript::Interact(InteractionHandler* _Handler)
 
 void ItemScript::ExitDetection(InteractionHandler* _Handler)
 {
-	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(INVENTORYSCRIPT));
+	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	assert(pInventory);
 

@@ -47,17 +47,20 @@ void CLevel::AddObject(int _LayerIdx, CGameObject* _Object, bool _MoveWithChild)
 }
 
 
+/**
+ * 레벨 내의 오브젝트를 전체 탐색하여 해당 이름을 가진 오브젝트를 반환하는 함수
+ *
+ * @param _Name [IN] 오브젝트의 이름
+ * @return 해당 이름을 가진 오브젝트 포인터를 반환
+ */
 CGameObject* CLevel::FindObjectByName(const wstring& _Name)
 {
+	queue<CGameObject*> Q;
 	for (int i = 0; i < MAX_LAYER; ++i)
 	{
-		const vector<CGameObject*>& vecParents = m_arrLayer[i].GetParentObjects();
-
-		for (size_t j = 0; j < vecParents.size(); ++j)
+		for (CGameObject* pParent : m_arrLayer[i].GetParentObjects())
 		{
-			queue<CGameObject*> Q;
-			Q.emplace(vecParents[j]);
-
+			Q.emplace(pParent);
 			while (!Q.empty())
 			{
 				CGameObject* pObject = Q.front();

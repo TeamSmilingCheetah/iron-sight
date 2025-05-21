@@ -5,7 +5,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 TestSound::TestSound()
-	: CScript(static_cast<UINT>(SCRIPT_TYPE::TESTSOUND))
+	: CScript(SCRIPT_TYPE::TESTSOUND)
 	, m_BulletSoundIdx(-1)
 {
 }

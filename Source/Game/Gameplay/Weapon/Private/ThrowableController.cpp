@@ -25,7 +25,7 @@ ThrowableController::ThrowableController()
 	, m_bCanThrow(false)
 	, m_bThrow(false)
 	, m_bTrigger(false)
-	
+
 {
 	m_Mass = 4.f;
 
@@ -51,6 +51,9 @@ ThrowableController::~ThrowableController()
 
 void ThrowableController::Begin()
 {
+	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
+
 	WeaponController::Begin();
 }
 
@@ -62,7 +65,7 @@ void ThrowableController::Tick()
 	if (m_EquippedOwner != nullptr)
 	{
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
+		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
 	}
 	// 소유주가 없다면 return
 	else if(m_EquippedOwner == nullptr && m_bThrow == false)
@@ -130,7 +133,7 @@ void ThrowableController::Tick()
 		Vec3 vSpanwPos = vPlayerPos;
 		vSpanwPos.y += 800.f;
 		GetOwner()->Transform()->SetRelativePos(vSpanwPos);
-		 
+
 		// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
 		GetOwner()->Collider3D()->SetTrigger(false);
 
@@ -141,7 +144,7 @@ void ThrowableController::Tick()
 	}
 
 
-	// 
+	//
 	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bTrigger = true;
@@ -170,9 +173,7 @@ void ThrowableController::Triggered()
 	{
 		if (m_EquippedOwner != nullptr)
 		{
-			CGameObject* pPlayer = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(pPlayer, (UINT)SCRIPT_TYPE::PLAYERSCRIPT));
-			pPlayerScript->SetThrowBoom(true);
+			m_PlayerScript->SetThrowBoom(true);
 		}
 
 		if (GetOwner()->GetName() == L"Smoke Grenade")
@@ -205,7 +206,7 @@ void ThrowableController::Throw()
 		m_Dir.y += m_ThrowAngle;
 		m_Velocity = m_Dir * m_Speed;
 	}
-	
+
 	// 방향을 구한뒤 소유주를 삭제한다.
 	m_EquippedOwner = nullptr;
 
@@ -220,7 +221,7 @@ void ThrowableController::Throw()
 	if(!m_bGround)
 		m_Velocity.y -= m_GravityAccel * m_Mass * DT;
 
-		
+
 	// 특정 속도 이하가 되면 멈춘다
 	if (veloLength < 5.f)
 	{
@@ -314,7 +315,7 @@ void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _Oth
 		// 노말이 유효하면 사용
 		if (LandNormal.Length() > 0.001f)
 		{
-			// Bounce 
+			// Bounce
 			MakeBounce(LandNormal, 1.f, 0.7f);
 		}
 	}
@@ -334,5 +335,5 @@ void ThrowableController::EndOverlap(CCollider3D* _Collider, CGameObject* _Other
 	{
 		m_bGround = false;
 	}
-	
+
 }

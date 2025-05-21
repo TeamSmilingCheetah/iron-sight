@@ -16,7 +16,6 @@ TestCharacter::TestCharacter()
 	, m_AttackTime(1.f)
 	, m_IsAttack(false)
 {
-	SetParentScriptType(SCRIPT_TYPE::ENEMYCONTROLLER);
 }
 
 TestCharacter::~TestCharacter()
@@ -31,7 +30,7 @@ void TestCharacter::Begin()
 	{
 		vector<CScript*> vecScript = vecChild[i]->GetScripts();
 
-		CScript* VisionScript = GetScriptWithParentType(vecChild[i], ENEMYVISION);
+		CScript* VisionScript = GetScriptWithType(vecChild[i], SCRIPT_TYPE::ENEMYVISION);
 		if (nullptr == VisionScript)
 			continue;
 		else
@@ -51,14 +50,14 @@ void TestCharacter::Begin()
 		m_CurWeapon = AKMClone;
 		// 해당 아이템의 스크립트 확인하여 gun스크립트 추출
 		// 기존 플레이어 추출 방식 사용
-		m_WeaponScript = static_cast<WeaponController*>(AKMClone->GetScript(GUNSCRIPT));
+		m_WeaponScript = static_cast<WeaponController*>(AKMClone->GetScript(SCRIPT_TYPE::GUNSCRIPT));
 		if (m_WeaponScript == nullptr)
 		{
-			m_WeaponScript = static_cast<WeaponController*>(AKMClone->GetScript(THROWABLESCRIPT));
-			m_WeaponType = THROWABLESCRIPT;
+			m_WeaponScript = static_cast<WeaponController*>(AKMClone->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+			m_WeaponType = SCRIPT_TYPE::THROWABLESCRIPT;
 		}
 		else
-			m_WeaponType = GUNSCRIPT;
+			m_WeaponType = SCRIPT_TYPE::GUNSCRIPT;
 
 		assert(m_WeaponScript != nullptr);		// WeaponScript가 있다는 가정
 
@@ -113,9 +112,9 @@ void TestCharacter::DemageCalcul(int _Demage)
 	m_HP -= _Demage;
 
 	// 0보다 낮으면 사망
-	if (m_HP < 0.f)
+	if (m_HP < 0)
 	{
-		m_HP = 0.f;
+		m_HP = 0;
 
 		m_State = Enemy_State::Death;
 		DeathEntry();
@@ -210,7 +209,7 @@ void TestCharacter::Attack()
 			bool needReload = false;
 			bool isReloading = false;
 
-			if (m_WeaponType == GUNSCRIPT)
+			if (m_WeaponType == SCRIPT_TYPE::GUNSCRIPT)
 			{
 				GunController* pGunScript = static_cast<GunController*>(m_WeaponScript);
 

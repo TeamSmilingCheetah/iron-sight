@@ -98,7 +98,7 @@ void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx)
 	tTask task{};
 	task.Type = TASK_TYPE::CHANGE_LAYEROBJECT;
 	task.Param0 = (DWORD_PTR)_TargetObj;
-	task.Param1 = (DWORD_PTR)_LayerIdx; 
+	task.Param1 = (DWORD_PTR)_LayerIdx;
 
 	CTaskMgr::GetInst()->AddTask(task);
 }
@@ -302,7 +302,7 @@ void GetComponentsNames(vector<wstring>& _vecComponentsNames)
 	_vecComponentsNames.push_back(L"Tilemap");
 	_vecComponentsNames.push_back(L"ParticleSystem");
 }
-  
+
 bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDir, Vec3& pCrossPos, float& pDist)
 {
 	// 삼각형 표면 방향 벡터
@@ -342,7 +342,7 @@ bool IntersectsRay(const Vec3* const Pos[3], const Vec3& vStart, const Vec3& vDi
 	// 직선과 삼각형 평면의 교점이 삼각형 1번과 2번 사이에 존재하는지 체크
 	//      0
 	//     /  \
-	//    1 -- 2    
+	//    1 -- 2
 	if (Full.Dot(U) < 0.f || Full.Dot(V) < 0.f)
 		return false;
 
@@ -364,34 +364,35 @@ float RandomFloat(float min, float max)
 	return dist(engine);
 }
 
-CScript* GetScriptWithType(CGameObject* _Object, UINT _Type)
+/**
+ * 타입 기반의 스크립트 탐색 함수
+ * 우선 정확한 스크립트 탐색을 우선하되 필요에 따라서 부모 스크립트를 리턴한다
+ *
+ * @param _Object [IN] 스크립트를 보유하고 있는 오브젝트
+ * @param _Type [IN] 스크립트의 타입 enum
+ * @return 실제 해당 오브젝트가 보유 중인 스크립트
+ */
+CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type)
 {
+	const auto& shortcut = _Object->GetScriptShortcut();
+	auto iter = shortcut.find(_Type);
+
+	// not assigned script
+	if (iter == shortcut.end())
+		return nullptr;
+
 	vector<CScript*> vecScript = _Object->GetScripts();
 
-	for (int i = 0; i < vecScript.size(); ++i)
+	// parent type search
+	if (vecScript[iter->second] == nullptr)
 	{
-		if (vecScript[i]->GetScriptType() == _Type)
-		{
-			return vecScript[i];
-		}
+		auto parent_iter = shortcut.find(vecScript[iter->second]->GetParentScriptType());
+		// assure parent type existence
+		assert(vecScript[parent_iter->second] != nullptr);
+		return vecScript[parent_iter->second];
 	}
 
-	return nullptr;
-}
-
-CScript* GetScriptWithParentType(CGameObject* _Object, UINT _Type)
-{
-	vector<CScript*> vecScript = _Object->GetScripts();
-
-	for (int i = 0; i < vecScript.size(); ++i)
-	{
-		if (vecScript[i]->GetParentScriptType() == _Type)
-		{
-			return vecScript[i];
-		}
-	}
-
-	return nullptr;
+	return vecScript[iter->second];
 }
 
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)

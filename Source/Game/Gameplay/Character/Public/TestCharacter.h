@@ -7,6 +7,7 @@ class TestCharacter :
     public EnemyController
 {
 private:
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::ENEMYCONTROLLER);
 	WeaponController* m_WeaponScript;	// 지니고 있는 무기의 스크립트
 	SCRIPT_TYPE m_WeaponType;			// 무기 스크립트 타입
 

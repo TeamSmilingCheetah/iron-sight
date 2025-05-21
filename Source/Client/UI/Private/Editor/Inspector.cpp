@@ -299,11 +299,11 @@ void Inspector::AddScript(SCRIPT_TYPE _Type)
 	const vector<CScript*>& pvecScripts = m_TargetObject->GetScripts();
 
 	// 같은 스크립트가 존재하나 확인
-	UINT ScriptsType = pScripttype->GetScriptType();
+	SCRIPT_TYPE ScriptsType = pScripttype->GetScriptType();
 	for (auto& pair : pvecScripts)
 	{
 		// 같은 스크립트가 존재하면 만든 스크립트 삭제하고 끝냄
-		UINT vecScriptsType = pair->GetScriptType();
+		SCRIPT_TYPE vecScriptsType = pair->GetScriptType();
 		if (ScriptsType == vecScriptsType)
 		{
 			delete pScripttype;
@@ -330,11 +330,11 @@ void Inspector::AddScriptCliked(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	const vector<CScript*>& pvecScripts = m_TargetObject->GetScripts();
 
 	// 같은 스크립트가 존재하나 확인
-	UINT ScriptsType = pScripttype->GetScriptType();
+	SCRIPT_TYPE ScriptsType = pScripttype->GetScriptType();
 	for (auto& pair : pvecScripts)
 	{
 		// 같은 스크립트가 존재하면 만든 스크립트 삭제하고 끝냄
-		UINT vecScriptsType = pair->GetScriptType();
+		SCRIPT_TYPE vecScriptsType = pair->GetScriptType();
 		if (ScriptsType == vecScriptsType)
 		{
 			delete pScripttype;
@@ -434,7 +434,7 @@ void Inspector::CreateAssetUI()
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::COMPUTE_SHADER)] = new ComputeShaderUI;
 
 	// FIXME : 애셋 UI 추가
-	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new ComputeShaderUI;		
+	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new ComputeShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SKELETON)] = new ComputeShaderUI;
 
 

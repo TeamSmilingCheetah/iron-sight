@@ -59,7 +59,7 @@ public:
 		return m_mapAsset[static_cast<UINT>(_Type)];
 	}
 
-	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key); 
+	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
 
 	CGameObject* ClonePrefabe(const wstring& _Key);
 };

@@ -19,7 +19,7 @@
 
 
 PlayerCharacter::PlayerCharacter()
-	: CScript(static_cast<UINT>(SCRIPT_TYPE::PLAYERSCRIPT))
+	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_MainCamera(nullptr)
 	, m_PaperBurnIntence(0.f)
 	, m_MouseSensitivity(10.f)
@@ -74,7 +74,7 @@ void PlayerCharacter::Begin()
 {
 	// TODO : ObjectReference로 변경하기
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	
+
 	// UI
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
 	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
@@ -89,8 +89,8 @@ void PlayerCharacter::Begin()
 	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
 
 	// Script
-	m_CamScript = static_cast<CameraController*>(m_MainCamera->GetScript(CAMERASCRIPT));
-	m_InventoryScript = static_cast<InventoryController*>(GetOwner()->GetScript(INVENTORYSCRIPT));
+	m_CamScript = static_cast<CameraController*>(m_MainCamera->GetScript(SCRIPT_TYPE::CAMERASCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(GetOwner()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void PlayerCharacter::Tick()
@@ -109,7 +109,7 @@ void PlayerCharacter::Tick()
 
 	// Heal 상태
 	PlayerHeal();
-	
+
 
 	// ==========
 	// 조건부 로직
@@ -118,7 +118,7 @@ void PlayerCharacter::Tick()
 	// 인벤토리 UI를 켠 상태라면 다른 로직 block
 	if (m_InventoryOpened)
 	{
-		
+
 	}
 
 	else
@@ -206,7 +206,7 @@ void PlayerCharacter::PlayerView()
 			if (!bRecover)
 			{
 				vPlayerRot.y += deltaX * m_MouseSensitivity * DT;
-			}			
+			}
 		}
 	}
 
@@ -217,7 +217,7 @@ void PlayerCharacter::PlayerView()
 		if (!bRecover)
 		{
 			vPlayerRot.y += deltaX * m_MouseSensitivity * DT;
-		}			
+		}
 	}
 
 	// 위아래 회전
@@ -232,7 +232,7 @@ void PlayerCharacter::PlayerView()
 		{
 			vCameraRot.x = 80.f;
 		}
-		
+
 		m_MainCamera->Transform()->SetRelativeRotation(vCameraRot);
 	}
 
@@ -254,7 +254,7 @@ void PlayerCharacter::PlayerReload()
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
-		{			
+		{
 			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
 			pGunScript->SetCurKey(KEY::R);
 			pGunScript->SetCurKeyState(KEY_STATE::TAP);
@@ -279,7 +279,7 @@ void PlayerCharacter::PlayerAttack()
 				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 			}
 		}
-	
+
 		if (KEY_PRESSED(KEY::LBTN))
 		{
 			// 총을 사용한다.
@@ -298,7 +298,7 @@ void PlayerCharacter::PlayerAttack()
 				}
 			}
 		}
-	
+
 		if (KEY_RELEASED(KEY::LBTN))
 		{
 			// 총기
@@ -319,8 +319,8 @@ void PlayerCharacter::PlayerAttack()
 
 					// 인벤토리에서 투척무기 하나 제거
 					// TODO : 개선
-					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(ITEMSCRIPT))->GetItemType();
-					
+					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+
 					// 아이템이 남았다면
 					if (m_InventoryScript->UseItem(type, 1))
 					{
@@ -342,7 +342,7 @@ void PlayerCharacter::PlayerAttack()
 						m_InventoryScript->ClearSlot(m_InventoryScript->GetCurSlotIdx());
 						m_bCanThrow = false;
 					}
-				}				
+				}
 			}
 		}
 
@@ -383,7 +383,7 @@ void PlayerCharacter::PlayerAttack()
 
 					// 인벤토리에서 투척무기 하나 제거
 					// TODO : 개선
-					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(ITEMSCRIPT))->GetItemType();
+					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
 					// 아이템이 남았다면
 					if (m_InventoryScript->UseItem(type, 1))
@@ -408,7 +408,7 @@ void PlayerCharacter::PlayerAttack()
 					}
 				}
 			}
-		}		
+		}
 	}
 }
 
@@ -441,7 +441,7 @@ void PlayerCharacter::PlayerControlUI()
 	{
 		m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.f);
 	}
-	
+
 }
 
 void PlayerCharacter::PlayerHeal()
