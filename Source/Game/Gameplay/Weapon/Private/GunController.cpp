@@ -114,6 +114,17 @@ void GunController::Tick()
 			m_bFire = false;
 		}
 
+		if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
+		{
+			if (!m_CamScript->IsTPS())
+			{
+				m_bTransition = true;
+				m_bADS = m_bADS == false ? true : false;
+			}
+				
+
+			ClearKey();
+		}
 
 		if (m_bFire && !m_bReload)
 		{
@@ -280,3 +291,5 @@ void GunController::Reload()
 		m_bReload = false;
 	}
 }
+
+
