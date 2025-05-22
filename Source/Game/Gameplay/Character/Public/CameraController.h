@@ -27,6 +27,7 @@ class CameraController :
 	bool m_bChangeFOV;
 	bool m_bTPS;
 
+
 public:
 	void Begin() override;
 	void Tick() override;
@@ -38,6 +39,8 @@ public:
 	bool IsADS() { return m_bADS; }
 	bool IsSearch() { return m_bSearch; }
 	bool IsTPS() { return m_bTPS; }
+
+
 
 private:
 	void CameraOrthgraphicMove();

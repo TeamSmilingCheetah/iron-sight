@@ -619,6 +619,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 	m_HealType = _HealType;
 }
 
+
 void PlayerCharacter::SaveComponent(FILE* _File)
 {
 	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
@@ -636,3 +637,5 @@ void PlayerCharacter::LoadComponent(FILE* _File)
 void PlayerCharacter::LoadComponentReference()
 {
 }
+
+

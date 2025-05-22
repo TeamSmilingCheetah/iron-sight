@@ -28,6 +28,7 @@ WeaponController::~WeaponController()
 void WeaponController::Begin()
 {
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
+	m_CamScript = static_cast<CameraController*>(m_MainCamera->GetScript(SCRIPT_TYPE::CAMERASCRIPT));
 }
 
 Vec3 WeaponController::GetFireDir()
@@ -83,6 +84,38 @@ void WeaponController::ClearKey()
 {
 	m_CurKey = KEY::END;
 	m_CurKeyState = KEY_STATE::NONE;
+}
+
+void WeaponController::AdjustFPSPos()
+{
+	// 현재 FPS 모드라면 위치를 조정한다.
+	if (!m_CamScript->IsTPS())
+	{
+		Vec3 vCamPos = m_MainCamera->Transform()->GetRelativePos();
+		Vec3 vCamRot = m_MainCamera->Transform()->GetRelativeRotation();
+
+		Vec3 vFoward = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		Vec3 vRight = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		//Vec3 vUp = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::UP);
+
+		// 카메라의 위아래 회전값에 따라 앞뒤로 위치를 조정해준다
+		Vec3 pitchMove = vFoward * -vCamRot.x;
+
+		// 무기를 카메라 기준 오른쪽 앞에 위치할수 있도록 해준다.
+		Vec3 vOffset = vRight * 220.f + vFoward * 125.f;
+		Vec3 vPos = vCamPos + vOffset + pitchMove;
+		vPos.y -= 200.f;
+
+
+		// 무기의 회전값을 보정해준다.
+		Vec3 vRot = Vec3(0.f, 0.f, 0.f);
+		vRot.y = vCamRot.y - 90.f;
+		vRot.z = -vCamRot.x;
+
+
+		Transform()->SetRelativePos(vPos);
+		Transform()->SetRelativeRotation(vRot);
+	}
 }
 
 

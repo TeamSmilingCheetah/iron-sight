@@ -73,6 +73,8 @@ void ThrowableController::Tick()
 		return;
 	}
 
+	if(m_EquippedOwner)
+		AdjustFPSPos();
 
 	// 투척 준비
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)

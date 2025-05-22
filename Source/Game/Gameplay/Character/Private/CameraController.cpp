@@ -126,6 +126,7 @@ void CameraController::CameraPerspectiveMove()
 			{
 				// TPS 비활성화, FPS 활성화
 				m_bTPS = false;
+				m_InventoryScript->ConvertPS();
 				GetOwner()->Camera()->LayerCheck(3);
 				GetOwner()->Camera()->LayerCheck(4);
 			}
@@ -134,6 +135,7 @@ void CameraController::CameraPerspectiveMove()
 			{
 				// FPS 비활성화, TPS 활성화
 				m_bTPS = true;
+				m_InventoryScript->ConvertPS();
 				GetOwner()->Camera()->LayerCheck(3);
 				GetOwner()->Camera()->LayerCheck(4);
 			}
@@ -273,6 +275,7 @@ void CameraController::CameraPerspectiveMove()
 				// TPS 비활성화, FPS 활성화
 				m_bTPS = false;
 				m_bWasTPS = true;
+				m_InventoryScript->ConvertPS();
 				GetOwner()->Camera()->LayerCheck(3);
 				GetOwner()->Camera()->LayerCheck(4);
 			}
@@ -394,6 +397,7 @@ void CameraController::CameraPerspectiveMove()
 				if (m_bWasTPS && m_bADS)
 				{
 					m_bTPS = true;
+					m_InventoryScript->ConvertPS();
 					GetOwner()->Camera()->LayerCheck(3);
 					GetOwner()->Camera()->LayerCheck(4);
 				}

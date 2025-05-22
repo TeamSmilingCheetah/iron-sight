@@ -24,6 +24,7 @@ class InventoryController :
 private:
 	CGameObject*			m_Player;
 	PlayerCharacter*		m_PlayerScript;
+	class CameraController* m_CamScript;
 
 	vector<CGameObject*>	m_vecVicinity;	// 주변 아이템을 관리하는 컨테이너
 	int						m_arrInventory[static_cast<UINT>(ITEM_TYPE::END)];	// 소유 아이템을 관리하는 컨테이너 (개수)
@@ -35,6 +36,7 @@ private:
 	// 슬롯
 	int			 m_CurSlotIdx;
 	CGameObject* m_CurWeapon;
+	CGameObject* m_CurTempWeapon;
 
 	vector<tSlot> m_vecWeaponSlot;	// 무기 슬롯
 
@@ -63,6 +65,8 @@ public:
 	void AcquireItem(CGameObject* _Item);
 	void EquipItem(CGameObject* _Item);
 
+	void ConvertPS();
+
 	bool UseItem(ITEM_TYPE _Type, int _Count = 1);	// 아이템이 남으면 true 리턴
 	void DropItem(ITEM_TYPE _Type, int _Count);		// 아이템이 남으면 true 리턴
 
@@ -72,7 +76,7 @@ public:
 
 	// TODO: 데이터 구조 개선
 	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
-	void DetachItem(CGameObject* _Item);
+	void DetachItem(CGameObject* _Item, bool _Disconnect = true);
 
 	// 현재 슬롯에 새로운 아이템을 장착하는 함수. 기존에 있던 아이템을 리턴해줌 -> 알아서 처리
 	CGameObject* EquipSlot(CGameObject* _Item, ITEM_TYPE _Type, int _SlotIdx, bool _ChangeSlotIdx = true);
@@ -82,6 +86,7 @@ public:
 
 	// 현재 슬롯을 변경하는 함수. 무기 집어넣고 꺼내는 애니메이션 trigger 추가하기
 	void ChangeSlot(int _SlotIdx);
+	void ChangeCurTemp(int _SlotIdx);
 
 	// Slot 값을 초기화 하는 함수
 	void ClearSlot(int _SlotIdx);
