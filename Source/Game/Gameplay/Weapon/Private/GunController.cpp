@@ -26,8 +26,6 @@ GunController::GunController()
 	, m_CurRounds(0)
 	, m_bFire(false)
 	, m_bReload(false)
-	, m_Camera(nullptr)
-	, m_CameraScript(nullptr)
 	, m_PlayerScript(nullptr)
 {
 
@@ -52,8 +50,6 @@ void GunController::Begin()
 {
 	WeaponController::Begin();
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
-	m_Camera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-	m_CameraScript = static_cast<CameraController*>(m_Camera->GetScripts()[0]);
 }
 
 void GunController::Tick()
@@ -90,42 +86,44 @@ void GunController::Tick()
 					m_bReload = true;
 				}
 			}
+
+			AdjustFPSPos();
 		}
-	}
-	else
-	{
-		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
+		else
 		{
-			if (!m_bReload && m_CurRounds != m_MaxRounds)
+			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
 			{
-				m_bReload = true;
+				if (!m_bReload && m_CurRounds != m_MaxRounds)
+				{
+					m_bReload = true;
+				}
+
 			}
-
 		}
-	}
 
-	// 총알을 발사한다.
-	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
-	{
-		if (0 < m_CurRounds)
-			m_bFire = true;
-	}
+		// 총알을 발사한다.
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
+		{
+			if (0 < m_CurRounds)
+				m_bFire = true;
+		}
 
-	// 총알 발사가 끝난다.
-	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
-	{
-		m_bFire = false;
-	}
+		// 총알 발사가 끝난다.
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
+		{
+			m_bFire = false;
+		}
 
 
-	if (m_bFire && !m_bReload)
-	{
-		Firing();
-	}
+		if (m_bFire && !m_bReload)
+		{
+			Firing();
+		}
 
-	if (m_bReload)
-	{
-		Reload();
+		if (m_bReload)
+		{
+			Reload();
+		}
 	}
 }
 
@@ -171,21 +169,21 @@ void GunController::Firing()
 
 		// Camera의 줌 여부를 확인한다.
 		// 지향사격
-		if (!m_CameraScript->IsShoulder() && !m_CameraScript->IsADS())
+		if (!m_CamScript->IsShoulder() && !m_CamScript->IsADS())
 		{
 			spreadYaw = RandomFloat(-10.f, 10.f);
 			spreadPitch = RandomFloat(-10.f, 10.f);
 		}
 
 		// 견착
-		if (m_CameraScript->IsShoulder())
+		if (m_CamScript->IsShoulder())
 		{
 			spreadYaw = RandomFloat(-2.f, 2.f);
 			spreadPitch = RandomFloat(-2.f, 2.f);
 		}
 
 		// 정조준
-		if (m_CameraScript->IsADS())
+		if (m_CamScript->IsADS())
 		{
 			spreadYaw = 0.f;
 			spreadPitch = 0.f;

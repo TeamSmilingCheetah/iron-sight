@@ -25,8 +25,6 @@ private:
 	bool m_bFire;
 	bool m_bReload;
 
-	CGameObject* m_Camera;
-	CameraController* m_CameraScript;
 	PlayerCharacter* m_PlayerScript;
 
 public:

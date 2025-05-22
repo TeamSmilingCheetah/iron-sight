@@ -16,6 +16,9 @@ class WeaponController :
 protected:
 	CGameObject* m_MainCamera;
 	CGameObject* m_EquippedOwner;
+
+	class CameraController* m_CamScript;
+
 	WEAPON_TYPE m_WeaponType;
 
 	KEY m_CurKey;
@@ -46,6 +49,8 @@ public:
 	void ClearKey();
 
 	WEAPON_TYPE GetWeaponType() { return m_WeaponType; }
+protected:
+	void AdjustFPSPos();
 
 public:
 	//CLONE(WeaponController);

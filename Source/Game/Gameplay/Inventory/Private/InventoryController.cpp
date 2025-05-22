@@ -7,6 +7,7 @@
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Game/Gameplay/Character/Public/CameraController.h"
 
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -63,6 +64,9 @@ void InventoryController::Begin()
 			m_BackMeshObj = vecBones[i];
 		}
 	}
+
+
+	m_CamScript = static_cast<CameraController*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->GetScript(SCRIPT_TYPE::CAMERASCRIPT));
 }
 
 void InventoryController::Tick()
@@ -227,6 +231,28 @@ void InventoryController::EquipItem(CGameObject* _Item)
 	assert(_Item->GetScript(SCRIPT_TYPE::WEAPONSCRIPT));
 
 
+}
+
+void InventoryController::ConvertPS()
+{
+	// 착용중인 무기가 없으면 수행 X
+	if (m_CurWeapon == nullptr)
+		return;
+
+	// 현재 TPS이다 (즉, FPS->TPS로 변환 됨)
+	if (m_CamScript->IsTPS())
+	{
+		// 현재 착용중인 무기를 다시 Bone에 붙혀준다.
+		AttachItem(m_CurTempWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+	}
+
+	// 현재 FPS이다. (즉, TPS->FPS로 변환 됨)
+	else
+	{
+		m_CurTempWeapon = m_CurWeapon;
+		DetachItem(m_CurWeapon, false);
+	}
+	
 }
 
 
@@ -518,6 +544,46 @@ void InventoryController::ChangeSlot(int _SlotIdx)
 
 }
 
+void InventoryController::ChangeCurTemp(int _SlotIdx)
+{
+	if (_SlotIdx == m_CurSlotIdx)
+		return;
+
+	DeactivateSlot();
+
+	//if (m_CurTempWeapon != nullptr)
+	//{
+	//	if (m_CurSlotIdx == PRIMARY_FIRST)
+	//	{
+	//		AttachItem(m_CurTempWeapon, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+	//	}
+	//	else if (m_CurSlotIdx == PRIMARY_SECOND)
+	//	{
+	//		AttachItem(m_CurTempWeapon, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+	//	}
+	//	else
+	//	{
+	//		SetObjectActive(m_CurTempWeapon, false);
+	//	}
+
+	//	m_CurTempWeapon = m_vecWeaponSlot[_SlotIdx].Object;
+	//	m_CurSlotIdx = _SlotIdx;
+	//}
+
+	WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::GUNSCRIPT));
+	if (pWeaponScript == nullptr)
+		pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+
+	// weaponController 장착 전달
+	pWeaponScript->SetEquip(true);
+
+	// 현재 슬롯으로 변경
+	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
+	m_CurWeaponController = pWeaponScript;
+	m_CurSlotIdx = _SlotIdx;
+	ConvertPS();
+}
+
 
 void InventoryController::ActivateSlot(int _SlotIdx)
 {
@@ -622,7 +688,7 @@ void InventoryController::AttachItem(CGameObject* _Item, CGameObject* _BoneObjec
 	_Item->Transform()->SetRelativeRotation(_RelativeRot);
 }
 
-void InventoryController::DetachItem(CGameObject* _Item)
+void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect)
 {
 	Vec3 vPos = m_Player->Transform()->GetRelativePos();
 	Vec3 vRot = m_Player->Transform()->GetRelativeRotation();
@@ -633,7 +699,7 @@ void InventoryController::DetachItem(CGameObject* _Item)
 	if (pWeaponScript == nullptr)
 		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
 
-	if (pWeaponScript)
+	if (pWeaponScript && _Disconnect)
 	{
 		pWeaponScript->SetEquippedOwner(nullptr);
 		pWeaponScript->SetEquip(false);
@@ -671,8 +737,18 @@ void InventoryController::PlayerInteractWeapon()
 
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
-			// 해당 슬롯 활성화
-			ChangeSlot(i);
+			if (!m_CamScript->IsTPS())
+			{
+				// 현재 FPS모드라면 비활성화할 무기 대상을 바꿔준다.
+				ChangeCurTemp(i);
+			}
+			else
+			{
+				// 해당 슬롯 활성화
+				ChangeSlot(i);
+			}
+
+
 
 			break;
 		}
