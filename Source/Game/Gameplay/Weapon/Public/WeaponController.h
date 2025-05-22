@@ -26,6 +26,8 @@ protected:
 
 	bool m_bIsEquipped;
 	bool m_bEnemy;
+	bool m_bTransition;
+	bool m_bADS;
 
 public:
 	void Begin() override;
@@ -51,6 +53,7 @@ public:
 	WEAPON_TYPE GetWeaponType() { return m_WeaponType; }
 protected:
 	void AdjustFPSPos();
+	void TransitionPos(Vec3 _DesPos);
 
 public:
 	//CLONE(WeaponController);

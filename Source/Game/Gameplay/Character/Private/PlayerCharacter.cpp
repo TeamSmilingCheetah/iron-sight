@@ -270,6 +270,16 @@ void PlayerCharacter::PlayerAttack()
 	{
 		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
 
+		if (KEY_TAP(KEY::RBTN))
+		{
+			// 현재 무기 슬롯이 총이라면
+			if (m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
+			{
+				pWeaponController->SetCurKey(KEY::RBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			}
+		}
+
 		if (KEY_TAP(KEY::LBTN))
 		{
 			// 현재 무기 슬롯이 총이라면

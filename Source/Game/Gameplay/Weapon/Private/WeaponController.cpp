@@ -95,26 +95,63 @@ void WeaponController::AdjustFPSPos()
 		Vec3 vCamRot = m_MainCamera->Transform()->GetRelativeRotation();
 
 		Vec3 vFoward = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::FRONT);
-		Vec3 vRight = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-		//Vec3 vUp = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::UP);
+		Vec3 vRight = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::RIGHT);		
 
 		// 카메라의 위아래 회전값에 따라 앞뒤로 위치를 조정해준다
 		Vec3 pitchMove = vFoward * -vCamRot.x;
 
-		// 무기를 카메라 기준 오른쪽 앞에 위치할수 있도록 해준다.
-		Vec3 vOffset = vRight * 220.f + vFoward * 125.f;
-		Vec3 vPos = vCamPos + vOffset + pitchMove;
-		vPos.y -= 200.f;
-
-
+	
 		// 무기의 회전값을 보정해준다.
 		Vec3 vRot = Vec3(0.f, 0.f, 0.f);
 		vRot.y = vCamRot.y - 90.f;
 		vRot.z = -vCamRot.x;
 
+		Vec3 vOffset = Vec3(0.f, 0.f, 0.f);
+		Vec3 vPos = Vec3(0.f, 0.f, 0.f);
 
+		// 정조준일 때의 위치
+		if (m_bADS)
+		{
+			vOffset = vFoward * 80.f;
+			vPos = vCamPos + vOffset + pitchMove;
+			vPos.y -= 200.f;
+		}
+		// 아닐 때의 위치
+		else
+		{	
+			// 무기를 카메라 기준 오른쪽 앞에 위치할수 있도록 해준다.
+			vOffset = vRight * 220.f + vFoward * 125.f;
+			vPos = vCamPos + vOffset + pitchMove;
+			vPos.y -= 200.f;
+		}
+
+		if (m_bTransition)
+		{
+			TransitionPos(vPos);
+		}
+		else
+		{
+			Transform()->SetRelativePos(vPos);
+			Transform()->SetRelativeRotation(vRot);
+		}
+	}
+}
+
+void WeaponController::TransitionPos(Vec3 _DesPos)
+{
+	Vec3 vPos = Transform()->GetRelativePos();
+
+	float fTimes = 0.95f;
+	float fChangeSpeed = 20.f;
+
+	vPos = vPos + (_DesPos - vPos) * fChangeSpeed * DT;
+	Transform()->SetRelativePos(vPos);
+
+	// 특정 구간에 도달하면 변환을 종료시킨다.
+	if (fabs(vPos.x - _DesPos.x) < 10.0f && fabs(vPos.x - _DesPos.x) < 10.0f)
+	{
 		Transform()->SetRelativePos(vPos);
-		Transform()->SetRelativeRotation(vRot);
+		m_bTransition = false;
 	}
 }
 
