@@ -146,10 +146,11 @@ void Inspector::Render_Update()
 
 			if (ImGui::Button("AddComponent"))
 			{
-				CComponent* pCom = m_TargetObject->GetComponent((COMPONENT_TYPE)m_ComponentListIdx);
-				if (nullptr == pCom)
+				COMPONENT_TYPE type = (COMPONENT_TYPE)(m_ComponentListIdx + 1);
+				CComponent* pCom = m_TargetObject->GetComponent(type);
+				if (nullptr == pCom) 
 				{
-					AddComponent((COMPONENT_TYPE)m_ComponentListIdx);
+					AddComponent(type);
 				}
 			}
 		}
