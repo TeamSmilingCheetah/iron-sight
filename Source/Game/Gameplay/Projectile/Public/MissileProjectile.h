@@ -3,10 +3,13 @@
 
 class CLandScape;
 
+
 class MissileProjectile :
 	public CScript
 {
 private:
+	BULLETINFO m_BulletDmg;
+
 	Vec3 m_Velocity;
 	Vec3 m_Dir;
 
@@ -22,6 +25,8 @@ public:
 
 	void SetSpeed(float _Speed) { m_Speed = _Speed; }
 	void SetDir(Vec3 _Dir) { m_Dir = _Dir; }
+
+	void SetBulletInfo(CGameObject* _Object, int _Dmg) { m_BulletDmg.m_Owner = _Object, m_BulletDmg.m_Dmg = _Dmg; }
 
 	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 		CCollider3D* _OtherCollider) override;

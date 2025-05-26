@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 struct Vtx
@@ -193,6 +193,13 @@ struct FontRenderInfo
 	Vec4		Clip;		// left, top, right, bottom
 };
 
+// Bullet
+struct BULLETINFO
+{
+	CGameObject* m_Owner;	// 총알 주인
+	ITEM_TYPE    m_ShotWeapon;	// 해당 총알을 발사한 무기 타입
+	float				m_Dmg;	// 총알 데미지
+};
 
 // ============
 // Animation 3D

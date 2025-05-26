@@ -18,8 +18,9 @@ private:
 public:
 	void Begin() override;
 	void Tick() override;
+	virtual SCRIPT_TYPE GetParentScriptType() { return m_ParentType; }
 
-	virtual void DemageCalcul(int _Demage) override;
+	virtual void DemageCalcul(CGameObject* _AtkObject, float _Demage) override;
 
 	void DeathEntry();
 

@@ -20,6 +20,7 @@ GunController::GunController()
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
 	, m_InitFirePower(0.f)
+	, m_BulletDmg(1.f)
 	, m_AccTime_Fire(0.f)
 	, m_AccTime_Reload(0.f)
 	, m_MaxRounds(0)
@@ -100,41 +101,53 @@ void GunController::Tick()
 
 			}
 		}
-
-		// 총알을 발사한다.
-		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
+	}
+	// ai일시 처리
+	else
+	{
+		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
 		{
-			if (0 < m_CurRounds)
-				m_bFire = true;
-		}
-
-		// 총알 발사가 끝난다.
-		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
-		{
-			m_bFire = false;
-		}
-
-		if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
-		{
-			if (!m_CamScript->IsTPS())
+			if (!m_bReload && m_CurRounds != m_MaxRounds)
 			{
-				m_bTransition = true;
-				m_bADS = m_bADS == false ? true : false;
+				m_bReload = true;
 			}
-				
 
-			ClearKey();
 		}
+	}
 
-		if (m_bFire && !m_bReload)
+	// 총알을 발사한다.
+	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
+	{
+		if (0 < m_CurRounds)
+			m_bFire = true;
+	}
+
+	// 총알 발사가 끝난다.
+	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
+	{
+		m_bFire = false;
+	}
+
+	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
+	{
+		if (!m_CamScript->IsTPS())
 		{
-			Firing();
+			m_bTransition = true;
+			m_bADS = m_bADS == false ? true : false;
 		}
 
-		if (m_bReload)
-		{
-			Reload();
-		}
+
+		ClearKey();
+	}
+
+	if (m_bFire && !m_bReload)
+	{
+		Firing();
+	}
+
+	if (m_bReload)
+	{
+		Reload();
 	}
 }
 
@@ -217,7 +230,7 @@ void GunController::Firing()
 		m_CurRounds -= 1;
 
 		// 풀에서 꺼내기
-		CGameObject* go = CObjectPoolMgr::GetInst()->GetPoolObject(L"TestBullet", 0);
+		CGameObject* go = CObjectPoolMgr::GetInst()->GetPoolObject(L"TestBullet", 10);
 
 		// 변형값 세팅
 		go->Transform()->SetRelativePos(vRayPos);
@@ -226,6 +239,7 @@ void GunController::Firing()
 		MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
 		BulletScript->SetDir(vFinalDir);
 		BulletScript->SetSpeed(m_InitFirePower);
+		BulletScript->SetBulletInfo(m_EquippedOwner, m_BulletDmg);
 
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)

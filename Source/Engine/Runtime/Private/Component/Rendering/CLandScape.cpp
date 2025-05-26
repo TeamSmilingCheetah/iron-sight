@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
@@ -13,7 +13,7 @@ CLandScape::CLandScape()
 	  , m_Out{}
 	  , m_BrushScale(Vec2(0.25f, 0.25f))
 	  , m_BrushIdx(0)
-	  , m_Mode(HEIGHTMAP)
+	  , m_Mode(NONE)
 	  , m_RaycastOut()
 	  , m_WeightHeight(0)
 	  , m_WeightIdx(0)

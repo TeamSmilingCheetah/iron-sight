@@ -139,6 +139,8 @@ public:
 
 	void TriggerHeal(ITEM_TYPE _HealType);
 
+	void DemageCalcul(CGameObject* _AtkObj, float _Demage);	// 공격 피격 처리
+
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 	void LoadComponentReference() override;

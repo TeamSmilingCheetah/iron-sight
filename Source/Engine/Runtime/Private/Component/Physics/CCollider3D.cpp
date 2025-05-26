@@ -222,6 +222,9 @@ void CCollider3D::SaveComponent(FILE* _File)
 	fwrite(&m_Scale, sizeof(Vec3), 1, _File);
 	fwrite(&m_FinalPos, sizeof(Vec3), 1, _File);
 	fwrite(&m_IndependentScale, sizeof(bool), 1, _File);
+
+	// 추가 필요 저장 데이터
+	//fwrite(&m_Status, sizeof(int), 1, _File);
 }
 
 void CCollider3D::LoadComponent(FILE* _File)
@@ -230,4 +233,7 @@ void CCollider3D::LoadComponent(FILE* _File)
 	fread(&m_Scale, sizeof(Vec3), 1, _File);
 	fread(&m_FinalPos, sizeof(Vec3), 1, _File);
 	fread(&m_IndependentScale, sizeof(bool), 1, _File);
+
+	// 추가 필요 로드 데이터
+	//fread(&m_Status, sizeof(int), 1, _File);
 }

@@ -561,6 +561,11 @@ void PlayerCharacter::PlayerHeal()
 	}
 }
 
+void PlayerCharacter::DemageCalcul(CGameObject* _AtkObj, float _Demage)
+{
+	m_CurHP -= _Demage;
+
+}
 
 void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 {

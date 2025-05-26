@@ -2,6 +2,8 @@
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Gameplay/Character/Public/CameraController.h"
 
+class PlayerCharacter;
+
 class GunController :
 	public WeaponController
 {
@@ -13,6 +15,7 @@ private:
 	float m_VerticalRecoilPower;
 
 	float m_InitFirePower;
+	float m_BulletDmg;
 
 	float m_FireDelay;
 	float m_ReloadingTime;

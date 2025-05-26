@@ -107,7 +107,7 @@ void TestCharacter::Tick()
 	EnemyController::Tick();
 }
 
-void TestCharacter::DemageCalcul(int _Demage)
+void TestCharacter::DemageCalcul(CGameObject* _AtkObject, float _Demage)
 {
 	m_HP -= _Demage;
 

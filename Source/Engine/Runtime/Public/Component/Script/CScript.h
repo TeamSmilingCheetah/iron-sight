@@ -21,7 +21,7 @@ private:
 
 public:
 	SCRIPT_TYPE GetScriptType() const { return m_ScriptType; }
-	SCRIPT_TYPE GetParentScriptType() { return m_ParentType; }
+	virtual SCRIPT_TYPE GetParentScriptType() { return m_ParentType; }
 	void AddScriptParam(tScriptParam _Param) { m_vecScriptParam.push_back(_Param); }
 	const vector<tScriptParam>& GetScriptParam() { return m_vecScriptParam; }
 	void Instantiate(Ptr<CPrefab> _Pref, Vec3 _WorldPos, int _Layer);
