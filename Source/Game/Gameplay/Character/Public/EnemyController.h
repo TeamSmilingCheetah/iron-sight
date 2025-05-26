@@ -57,7 +57,7 @@ public:
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
 	// 스텟
-	int	m_HP;
+	float	m_HP;
 
 	Enemy_State m_State;
 	Enemy_State	m_PrevState;
@@ -80,7 +80,7 @@ public:
 	void LoadComponent(FILE* _File) override;
 
 public:
-	virtual void DemageCalcul(int _Demage);
+	virtual void DemageCalcul(CGameObject* _AtkObject, float _Demage);		// 피격 처리
 	virtual void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
 	virtual void DetachItem(CGameObject* _Item);
 

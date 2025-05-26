@@ -60,6 +60,7 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(7)->SetName(L"MonsterObject");
 	pLevel->GetLayer(8)->SetName(L"UI");
 	pLevel->GetLayer(9)->SetName(L"ObjectPool");
+	pLevel->GetLayer(10)->SetName(L"BulletLayer");
 
 	// 충돌 설정
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
@@ -68,6 +69,13 @@ void TestLevel::CreateTestLevel()
 	CCollisionMgr::GetInst()->CollisionCheck(3, 1);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 7);
 	CCollisionMgr::GetInst()->CollisionCheck(0, 7);
+
+	// 총알이 충돌될 레이어
+	CCollisionMgr::GetInst()->CollisionCheck(0, 10);
+	CCollisionMgr::GetInst()->CollisionCheck(1, 10);
+	CCollisionMgr::GetInst()->CollisionCheck(3, 10);
+	CCollisionMgr::GetInst()->CollisionCheck(4, 10);
+	CCollisionMgr::GetInst()->CollisionCheck(7, 10);
 
 	CGameObject* pObject = nullptr;
 
@@ -445,6 +453,7 @@ void TestLevel::CreateTestLevel()
 
 			pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
 			pInteractionHandler->Collider3D()->SetIndependentScale(true);
+			pInteractionHandler->Collider3D()->SetTrigger(true);
 			pInteractionHandler->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
 
 			auto pHandlerScript = new InteractionHandler;

@@ -271,6 +271,17 @@ CScript* CGameObject::GetScript(SCRIPT_TYPE _Type) const
 	return nullptr;
 }
 
+CScript* CGameObject::GetParentScript(SCRIPT_TYPE _Type) const
+{
+	for (CScript* script : m_vecScripts)
+	{
+		if (script->GetParentScriptType() == _Type)
+			return script;
+	}
+
+	return nullptr;
+}
+
 CGameObject* CGameObject::GetChildByName(const wstring& _Name)
 {
 	queue<CGameObject*> Q;

@@ -54,7 +54,7 @@ void EnemyController::Tick()
 	UpdateRotation();
 }
 
-void EnemyController::DemageCalcul(int _Demage)
+void EnemyController::DemageCalcul(CGameObject* _AtkObject, float _Demage)
 {
 	m_HP -= _Demage;
 
@@ -62,8 +62,8 @@ void EnemyController::DemageCalcul(int _Demage)
 	if (m_HP < 0)
 	{
 		m_HP = 0;
-
-		DestroyObject(GetOwner());
+		
+		//DestroyObject(GetOwner());
 	}
 
 }
