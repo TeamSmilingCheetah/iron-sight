@@ -392,7 +392,7 @@ CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type)
 		return script_vector[parent_iter->second];
 	}
 
-	return vecScript[iter->second];
+	return script_vector[iter->second];
 }
 
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
