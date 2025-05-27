@@ -381,15 +381,15 @@ CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type)
 	if (iter == shortcut.end())
 		return nullptr;
 
-	vector<CScript*> vecScript = _Object->GetScripts();
+	vector<CScript*> script_vector = _Object->GetScripts();
 
 	// parent type search
-	if (vecScript[iter->second] == nullptr)
+	if (script_vector[iter->second] == nullptr)
 	{
-		auto parent_iter = shortcut.find(vecScript[iter->second]->GetParentScriptType());
+		auto parent_iter = shortcut.find(script_vector[iter->second]->GetParentScriptType());
 		// assure parent type existence
-		assert(vecScript[parent_iter->second] != nullptr);
-		return vecScript[parent_iter->second];
+		assert(script_vector[parent_iter->second] != nullptr);
+		return script_vector[parent_iter->second];
 	}
 
 	return vecScript[iter->second];

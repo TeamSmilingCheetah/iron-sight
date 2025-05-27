@@ -44,7 +44,7 @@ public:
 	void AddComponent(CComponent* _Component);
 	void AddChild(CGameObject* _Child);
 	void DeleteComponent(COMPONENT_TYPE _Type);
-	void DeleteScript(wstring& _SciprtName);
+	void DeleteScript(wstring& _ScriptName);
 
 	UINT GetObjectID() const { return m_ObjectID; }
 	void SetObjectID(UINT _ID);

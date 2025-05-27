@@ -168,6 +168,12 @@ void CGameObject::AddComponent(CComponent* _Component)
 		m_vecScripts.push_back(static_cast<CScript*>(_Component));
 		// script가 몇 번 위치에 존재하는지 기록
 		m_scriptShortcut[static_cast<CScript*>(_Component)->GetScriptType()] = static_cast<UINT>(m_vecScripts.size()) - 1;
+
+		// 부모 스크립트 정보로 들고 있는 경우, 해당 정보도 Shortcut에 등록해야 조회 시 문제가 없다
+		if (static_cast<CScript*>(_Component)->GetParentScriptType() != SCRIPT_TYPE::NONE)
+		{
+			m_scriptShortcut[static_cast<CScript*>(_Component)->GetParentScriptType()] = static_cast<UINT>(m_vecScripts.size()) - 1;
+		}
 	}
 	else
 	{
@@ -225,9 +231,9 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _Type)
 	}
 }
 
-void CGameObject::DeleteScript(wstring& _SciprtName)
+void CGameObject::DeleteScript(wstring& _ScriptName)
 {
-	CScript* pScript = GameplayManager::GetScript(_SciprtName);
+	CScript* pScript = GameplayManager::GetScript(_ScriptName);
 
 	for (UINT i = 0; i < m_vecScripts.size(); ++i)
 	{
@@ -236,6 +242,12 @@ void CGameObject::DeleteScript(wstring& _SciprtName)
 			// 해당 스크립트 관련 정보 일괄 제거
 			m_vecScripts.erase(m_vecScripts.begin() + i);
 			m_scriptShortcut.erase(pScript->GetScriptType());
+
+			// 부모 스크립트 정보로 들고 있는 경우, Trailing Delete
+			if (pScript->GetParentScriptType() != SCRIPT_TYPE::NONE)
+			{
+				m_scriptShortcut.erase(pScript->GetParentScriptType());
+			}
 		}
 	}
 }
