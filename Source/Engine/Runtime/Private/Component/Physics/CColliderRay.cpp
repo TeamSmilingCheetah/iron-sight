@@ -211,9 +211,9 @@ void CColliderRay::SaveComponent(FILE* _File)
 	fwrite(&m_RayTargetAll, sizeof(bool), 1, _File);
 
 	// 추가 필요 저장 데이터
-	//fwrite(&m_IndependentDir, sizeof(bool), 1, _File);
-	//fwrite(&m_RayTargetAll, sizeof(bool), 1, _File);
-	//fwrite(&m_TriggerTarget, sizeof(bool), 1, _File);
+	fwrite(&m_IndependentDir, sizeof(bool), 1, _File);
+	fwrite(&m_RayTargetAll, sizeof(bool), 1, _File);
+	fwrite(&m_TriggerTarget, sizeof(bool), 1, _File);
 }
 
 void CColliderRay::LoadComponent(FILE* _File)
@@ -224,7 +224,7 @@ void CColliderRay::LoadComponent(FILE* _File)
 	fread(&m_RayTargetAll, sizeof(bool), 1, _File);
 
 	// 추가 필요 로드 데이터
-	//fread(&m_IndependentDir, sizeof(bool), 1, _File);
-	//fread(&m_RayTargetAll, sizeof(bool), 1, _File);
-	//fread(&m_TriggerTarget, sizeof(bool), 1, _File);
+	fread(&m_IndependentDir, sizeof(bool), 1, _File);
+	fread(&m_RayTargetAll, sizeof(bool), 1, _File);
+	fread(&m_TriggerTarget, sizeof(bool), 1, _File);
 }

@@ -82,8 +82,7 @@ void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 	// 트리거는 충돌대상 x
 	if (_OtherCollider->IsTrigger())
 		return;
-
-	CScript * pScript = _OtherObject->GetScript(SCRIPT_TYPE::PLAYERSCRIPT);
+	CScript* pScript = GetScriptWithType(_OtherObject, SCRIPT_TYPE::PLAYERSCRIPT);
 	// 피격된 대상이 플레이어일 경우
 	if (pScript != nullptr)
 	{
@@ -104,7 +103,7 @@ void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 		return;
 	}
 
-	pScript = _OtherObject->GetParentScript(SCRIPT_TYPE::ENEMYCONTROLLER);
+	pScript = GetScriptWithType(_OtherObject, SCRIPT_TYPE::ENEMYCONTROLLER);
 	// 적일 경우(적들은 EnemyController를 부모로 보유)
 	if (pScript != nullptr)
 	{
