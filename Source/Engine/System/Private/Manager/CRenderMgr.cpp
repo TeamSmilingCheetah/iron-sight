@@ -82,8 +82,8 @@ void CRenderMgr::RenderStart()
 void CRenderMgr::ClearMRT()
 {
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->Clear();
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Clear();
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->Clear();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->ClearRenderTargets();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->ClearRenderTargets();
 }
 
 void CRenderMgr::Binding()
@@ -278,16 +278,8 @@ void CRenderMgr::Render_Play()
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
 		g_Trans.matProj = m_vecCam[i]->GetProjMat();
 
-		if (i == 1)
+		if (i == 0)
 		{
-			// SwapChain
-			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
-
-			m_vecCam[i]->render_ui();
-		}
-		else
-		{
-
 			// Deferred
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
 			m_vecCam[i]->render_deferred();
@@ -316,13 +308,25 @@ void CRenderMgr::Render_Play()
 			m_vecCam[i]->render_effect();
 			m_vecCam[i]->render_transparent();
 			m_vecCam[i]->render_postprocess();
-			m_vecCam[i]->render_ui();
 
 			m_vecCam[i]->render_clear();
 
 
 			// 특정 타겟으로 SwapChain 을 덮어쓰기
-			MergeSpecifyTarget();
+			MergeSpecifyTarget();		
+		}
+		else if (i == 1)
+		{
+			// SwapChain
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+			m_vecCam[i]->render_forward();
+			m_vecCam[i]->render_particle();
+			m_vecCam[i]->render_effect();
+			m_vecCam[i]->render_transparent();
+			m_vecCam[i]->render_postprocess();
+
+			m_vecCam[i]->render_ui();
+			m_vecCam[i]->render_clear();
 		}
 	}
 	

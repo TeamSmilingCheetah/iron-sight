@@ -163,7 +163,7 @@ void MenuUI::Asset()
 	}
 }
 
-#define TARGET_COUNT 8
+#define TARGET_COUNT 7
 
 void MenuUI::RenderTarget()
 {
@@ -178,7 +178,6 @@ void MenuUI::RenderTarget()
 		SelectRenderTarget("DataTarget", L"DataTargetTex", bTarget, 4);
 		SelectRenderTarget("DiffuseTarget", L"DiffuseTargetTex", bTarget, 5);
 		SelectRenderTarget("SpecularTarget", L"SpecularTargetTex", bTarget, 6);
-		SelectRenderTarget("ParticleTarget", L"ParticleTargetTex", bTarget, 7);
 
 		ImGui::EndMenu();
 	}
