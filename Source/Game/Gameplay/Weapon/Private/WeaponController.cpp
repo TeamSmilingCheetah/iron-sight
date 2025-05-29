@@ -15,8 +15,16 @@
 WeaponController::WeaponController(SCRIPT_TYPE _Type)
 	: CScript(_Type)
 	, m_MainCamera(nullptr)
+	, m_CamScript(nullptr)
 	, m_EquippedOwner(nullptr)
+	, m_CurKey()
+	, m_CurKeyState()
+	, m_WeaponType()
+	, m_vDesPos(Vec3(0.f, 0.f, 0.f))
 	, m_bEnemy(false)
+	, m_bIsEquipped(false)
+	, m_bTransition(false)
+
 {
 
 }
@@ -89,7 +97,7 @@ void WeaponController::ClearKey()
 void WeaponController::AdjustFPSPos()
 {
 	// 현재 FPS 모드라면 위치를 조정한다.
-	if (!m_CamScript->IsTPS())
+	if (!m_CamScript->GetFlag(TPS))
 	{
 		Vec3 vCamPos = m_MainCamera->Transform()->GetRelativePos();
 		Vec3 vCamRot = m_MainCamera->Transform()->GetRelativeRotation();
@@ -110,11 +118,28 @@ void WeaponController::AdjustFPSPos()
 		Vec3 vPos = Vec3(0.f, 0.f, 0.f);
 
 		// 정조준일 때의 위치
-		if (m_bADS)
+		if (m_CamScript->GetFlag(ADS))
 		{
 			vOffset = vFoward * 80.f;
 			vPos = vCamPos + vOffset + pitchMove;
 			vPos.y -= 200.f;
+
+			static float leanAngle = 0.f;
+			// 정조준 도준 기울이기 입력이 들어오면 무기의 회전값 변경
+			if (m_CurKey == KEY::Q && m_CurKeyState == KEY_STATE::PRESSED)
+			{
+				leanAngle = FloatLerp(leanAngle, 10.f, 10.f);
+			}
+			else if (m_CurKey == KEY::E && m_CurKeyState == KEY_STATE::PRESSED)
+			{
+				leanAngle = FloatLerp(leanAngle, -10.f, 10.f);
+			}
+			else
+			{
+				leanAngle = FloatLerp(leanAngle, 0.f, 10.f);
+			}
+
+			vRot.x += leanAngle;
 		}
 		// 아닐 때의 위치
 		else
@@ -125,9 +150,16 @@ void WeaponController::AdjustFPSPos()
 			vPos.y -= 200.f;
 		}
 
+		if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
+		{
+			m_vDesPos = vPos;
+			m_bTransition = true;
+			ClearKey();
+		}
+
 		if (m_bTransition)
 		{
-			TransitionPos(vPos);
+			TransitionPos(m_vDesPos);
 		}
 		else
 		{
@@ -144,7 +176,7 @@ void WeaponController::TransitionPos(Vec3 _DesPos)
 	float fTimes = 0.95f;
 	float fChangeSpeed = 20.f;
 
-	vPos = vPos + (_DesPos - vPos) * fChangeSpeed * DT;
+	vPos = Vec3Lerp(vPos, _DesPos, fChangeSpeed);
 	Transform()->SetRelativePos(vPos);
 
 	// 특정 구간에 도달하면 변환을 종료시킨다.

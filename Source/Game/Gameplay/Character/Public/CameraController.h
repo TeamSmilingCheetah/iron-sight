@@ -8,6 +8,12 @@ class CameraController :
 	class PlayerCharacter* m_PlayerScript;
 	class InventoryController* m_InventoryScript;
 
+	Vec3 m_CameraPos;
+	Vec3 m_CameraRot;
+	Vec3 m_PlayerPos;
+	Vec3 m_PlayerRot;
+
+
 	float m_CameraSpeed;
 
 	float m_AccTime;
@@ -15,17 +21,18 @@ class CameraController :
 	float m_RecoilAmount_vertical;
 	float m_RecoilAmount_horizontal;
 
-	bool m_bCliked_First;
-	bool m_bSearch;
-	bool m_bSearchRecover;
-	bool m_bRight;
-	bool m_bShoulder;
-	bool m_bShoulderRecover;
-	bool m_bADS;
-	bool m_bWasTPS;
-	bool m_bChangeFocus;
-	bool m_bChangeFOV;
-	bool m_bTPS;
+	float m_LateralOffset;
+	float m_ObjectiveLateralOff;
+
+	float m_AdjustNormalDistance;
+	float m_AdjustNormalHeight;
+	float m_AdjustFinalDistance;
+	float m_AdjustFinalHeight;
+
+	float m_ObjectiveShoulderDistance;
+	float m_ObjectiveShoulderHeight;
+
+	UINT m_CameraFlag;
 
 
 public:
@@ -34,18 +41,29 @@ public:
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
-	bool IsSearchRecover() { return m_bSearchRecover; }
-	bool IsShoulder() { return m_bShoulder; }
-	bool IsADS() { return m_bADS; }
-	bool IsSearch() { return m_bSearch; }
-	bool IsTPS() { return m_bTPS; }
-
+	void SetFlag(CAM_FLAG _flag, bool _value);
+	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }
 
 
 private:
 	void CameraOrthgraphicMove();
 	void CameraPerspectiveMove();
+
+	void UpdateTPSCameraAdjustments();
+
 	void ApplyZoom(bool _IsADS);
+	void ApplyRecoil();
+
+	void HandleRightClickInput();
+
+	void UpdateShoulderMode();
+	void UpdateSearchMode();
+	void UpdateShoulderRecover();
+
+	void UpdateTPSLean();
+	void UpdateFPSLean();
+
+	void ChangePS(bool _bTPS);
 
 public:
 	CLONE(CameraController);

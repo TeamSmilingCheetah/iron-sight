@@ -104,6 +104,9 @@ void PlayerCharacter::Tick()
 	// 이동 로직
 	PlayerMove();
 
+	// 행동 로직
+	PlayerStance();
+
 	// UI 관리
 	PlayerControlUI();
 
@@ -142,11 +145,11 @@ void PlayerCharacter::Tick()
 
 void PlayerCharacter::PlayerView()
 {
-	bool bRecover = m_CamScript->IsSearchRecover();
-	bool bSearch = m_CamScript->IsSearch();
-	bool bShoulder = m_CamScript->IsShoulder();
-	bool bADS = m_CamScript->IsADS();
-	bool bTPS = m_CamScript->IsTPS();
+	bool bRecover = m_CamScript->GetFlag(SEARCH_RECOVER);
+	bool bSearch = m_CamScript->GetFlag(SEARCH);
+	bool bShoulder = m_CamScript->GetFlag(SHOULDER);
+	bool bADS = m_CamScript->GetFlag(ADS);
+	bool bTPS = m_CamScript->GetFlag(TPS);
 
 	// 마우스 위치를 구해온다
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
@@ -248,6 +251,45 @@ void PlayerCharacter::PlayerView()
 	ColliderRay()->SetRayDir(RayDir);
 }
 
+void PlayerCharacter::PlayerStance()
+{
+	// 기울이기
+	if (KEY_PRESSED(KEY::Q))
+	{
+		// 현재 무기 슬롯이 총이라면
+		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
+		{
+			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+			pGunScript->SetCurKey(KEY::Q);
+			pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
+		}
+	}
+
+	if (KEY_PRESSED(KEY::E))
+	{
+		// 현재 무기 슬롯이 총이라면
+		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
+		{
+			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+			pGunScript->SetCurKey(KEY::E);
+			pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
+		}
+	}
+
+
+	// 기울이기 해제
+	if (KEY_RELEASED(KEY::Q) || KEY_RELEASED(KEY::E))
+	{
+		// 현재 무기 슬롯이 총이라면
+		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
+		{
+			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+			pGunScript->ClearKey();
+		}
+	}
+
+}
+
 void PlayerCharacter::PlayerReload()
 {
 	if (KEY_TAP(KEY::R))
@@ -264,7 +306,7 @@ void PlayerCharacter::PlayerReload()
 
 void PlayerCharacter::PlayerAttack()
 {
-	bool bSearch = m_CamScript->IsSearch();
+	bool bSearch = m_CamScript->GetFlag(SEARCH);
 
 	if (!bSearch)
 	{

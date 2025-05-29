@@ -240,7 +240,7 @@ void InventoryController::ConvertPS()
 		return;
 
 	// 현재 TPS이다 (즉, FPS->TPS로 변환 됨)
-	if (m_CamScript->IsTPS())
+	if (m_CamScript->GetFlag(TPS))
 	{
 		// 현재 착용중인 무기를 다시 Bone에 붙혀준다.
 		AttachItem(m_CurTempWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
@@ -737,7 +737,7 @@ void InventoryController::PlayerInteractWeapon()
 
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
-			if (!m_CamScript->IsTPS())
+			if (!m_CamScript->GetFlag(TPS))
 			{
 				// 현재 FPS모드라면 비활성화할 무기 대상을 바꿔준다.
 				ChangeCurTemp(i);

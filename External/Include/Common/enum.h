@@ -345,3 +345,20 @@ enum class ITEM_TYPE
 
 	END,
 };
+
+
+
+enum CAM_FLAG
+{
+	CLICKED_FIRST			= 1 << 0,
+	SEARCH					= 1 << 1,
+	SEARCH_RECOVER			= 1 << 2,
+	RIGHT					= 1 << 3,
+	SHOULDER				= 1 << 4,
+	SHOULDER_RECOVER		= 1 << 5,
+	ADS						= 1 << 6,
+	WAS_TPS					= 1 << 7,
+	CHANGE_FOCUS			= 1 << 8,
+	CHANGE_FOV				= 1 << 9,
+	TPS						= 1 << 10,
+};

@@ -128,17 +128,6 @@ void GunController::Tick()
 		m_bFire = false;
 	}
 
-	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
-	{
-		if (!m_CamScript->IsTPS())
-		{
-			m_bTransition = true;
-			m_bADS = m_bADS == false ? true : false;
-		}
-
-
-		ClearKey();
-	}
 
 	if (m_bFire && !m_bReload)
 	{
@@ -193,21 +182,21 @@ void GunController::Firing()
 
 		// Camera의 줌 여부를 확인한다.
 		// 지향사격
-		if (!m_CamScript->IsShoulder() && !m_CamScript->IsADS())
+		if (!m_CamScript->GetFlag(SHOULDER) && !m_CamScript->GetFlag(ADS))
 		{
 			spreadYaw = RandomFloat(-10.f, 10.f);
 			spreadPitch = RandomFloat(-10.f, 10.f);
 		}
 
 		// 견착
-		if (m_CamScript->IsShoulder())
+		if (m_CamScript->GetFlag(SHOULDER))
 		{
 			spreadYaw = RandomFloat(-2.f, 2.f);
 			spreadPitch = RandomFloat(-2.f, 2.f);
 		}
 
 		// 정조준
-		if (m_CamScript->IsADS())
+		if (m_CamScript->GetFlag(ADS))
 		{
 			spreadYaw = 0.f;
 			spreadPitch = 0.f;

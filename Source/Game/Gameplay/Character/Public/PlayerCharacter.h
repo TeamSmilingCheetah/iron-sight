@@ -111,7 +111,8 @@ public:
 private:
 	void PlayerMove();
 	void PlayerView();
-
+	void PlayerStance();
+	
 	void PlayerReload();
 	void PlayerAttack();
 
