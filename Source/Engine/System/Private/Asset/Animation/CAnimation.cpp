@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Animation/CAnimation.h"
 #include "System/Public/Asset/Animation/CSkeleton.h"
 #include "System/Public/Manager/CAssetMgr.h"
@@ -33,6 +33,9 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 
 	const vector<tAnimClip*>& vecAnimClip = _loader.GetAnimClip();
 	const vector<tBone*>& vecBones = _loader.GetBones();
+
+	if (vecBones.empty())
+		return vecRetClips;
 
 	for (int clipIdx = 0; clipIdx < static_cast<int>(vecAnimClip.size()); ++clipIdx)
 	{

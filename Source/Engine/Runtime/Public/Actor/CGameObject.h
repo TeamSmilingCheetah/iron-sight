@@ -54,8 +54,6 @@ public:
 	CComponent* GetComponent(COMPONENT_TYPE _Type) const { return m_arrCom[static_cast<UINT>(_Type)]; }
 	CRenderComponent* GetRenderComponent() const { return m_RenderCom; }
 
-
-
 	int GetLayerIdx() const { return m_LayerIdx; }
 	int GetNextLayerIdx() const { return m_NextLayerIdx; }
 

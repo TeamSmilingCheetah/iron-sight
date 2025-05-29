@@ -836,4 +836,8 @@ void TestLevel::CreateTestLevel()
 	pDoorObj->AddComponent(new DoorScript);
 
 	pLevel->AddObject(1, pDoorObj, false);
+
+	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+
+	pLevel->AddObject(1, testojb, false);
 }

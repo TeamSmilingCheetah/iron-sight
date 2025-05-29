@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Asset/Mesh/CMeshData.h"
 
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -32,6 +32,8 @@ CGameObject* CMeshData::Instantiate()
 
 		pNewObj->MeshRender()->SetMesh(m_vecMesh[0]);
 
+		// TEST : m_vecMtrlSet[0].size() 대신 subset count로 임시 테스트
+		// CMesh.cpp, 77 에서 index가 0개인 경우 continue로 처리함에 따라 여기서 mtrlset 개수 대신 subset count로 처리.
 		for (UINT i = 0; i < m_vecMtrlSet[0].size(); ++i)
 		{
 			pNewObj->MeshRender()->SetMaterial(m_vecMtrlSet[0][i], i);
@@ -170,32 +172,24 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		// 메쉬 가져오기
 		Ptr<CMesh> pMesh = nullptr;
 		const tContainer& Container = loader.GetContainer(idx);
-		pMesh = CMesh::CreateFromContainer(loader, idx);
+
+		wstring strMeshKey = path(strFullPath).stem();
+		strMeshKey += L"_";
+		strMeshKey += Container.strName;
+		strMeshKey += L".mesh";
+
+		pMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(strMeshKey);
 
 		// AssetMgr 에 메쉬 등록
-		if (nullptr != pMesh)
+		if (nullptr == pMesh)
 		{
-			wstring strMeshKey = path(strFullPath).stem();
-			strMeshKey += L"_";
-			strMeshKey += Container.strName;
-			//if (Container.strName != L"")
-			//{
-			//	strMeshKey += Container.strName;
-			//}				
-			//else
-			//{
-			//	strMeshKey += std::to_wstring(idx);
-			//}				
-			strMeshKey += L".mesh";
+			pMesh = CMesh::CreateFromContainer(loader, idx);
 
-			if (nullptr == CAssetMgr::GetInst()->FindAsset<CMesh>(strMeshKey))
-			{
-				// 메시를 실제 파일로 저장
-				CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
+			// 메시를 실제 파일로 저장
+			CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
 
-				wstring strFilePath = L"Mesh\\" + strMeshKey;
-				pMesh->Save(strFilePath);
-			}
+			wstring strFilePath = L"Mesh\\" + strMeshKey;
+			pMesh->Save(strFilePath);
 		}
 		else
 		{

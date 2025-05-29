@@ -419,8 +419,14 @@ void CFBXLoader::LoadTexture()
 				path_filename = vecPath[k].filename();
 				path_dest = path_fbx_texture.wstring() + path_filename.wstring();
 
+				
 				if (false == exists(path_dest))
 				{
+					if (false == exists(path_origin))
+					{
+						continue;
+					}
+
 					copy(path_origin, path_dest);
 				}
 
@@ -460,7 +466,7 @@ void CFBXLoader::CreateMaterial()
 			if (strMtrlName.empty())
 				strMtrlName = path(m_vecContainer[i].vecMtrl[j].strDiff).stem();
 
-			strPath = L"material\\";
+			strPath = L"Material\\";
 			strPath += strMtrlName + L".mtrl";
 
 			// 재질 이름
