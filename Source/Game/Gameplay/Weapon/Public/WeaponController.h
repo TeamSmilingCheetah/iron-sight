@@ -24,10 +24,11 @@ protected:
 	KEY m_CurKey;
 	KEY_STATE m_CurKeyState;
 
+	Vec3 m_vDesPos;
+
 	bool m_bIsEquipped;
 	bool m_bEnemy;
 	bool m_bTransition;
-	bool m_bADS;
 
 public:
 	void Begin() override;
@@ -43,6 +44,7 @@ public:
 	void SetCurKeyState(KEY_STATE _KeyState) { m_CurKeyState = _KeyState; }
 	void SetEquip(bool _Equip) { m_bIsEquipped = _Equip; }
 	void SetEquipEnemy(bool _Enemy) { m_bEnemy = _Enemy; }
+
 
 	CGameObject* GetEquippedOwner() const { return m_EquippedOwner; }
 

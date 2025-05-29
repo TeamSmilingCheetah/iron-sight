@@ -2,6 +2,7 @@
 #include "func.h"
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Manager/CTaskMgr.h"
+#include "System/Public/Manager/CTimeMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Runtime/Public/Component/Base/components.h"
@@ -438,4 +439,18 @@ Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
 		// Z축 충돌
 		return Vec3(0.0f, 0.0f, (vDelta.z > 0.0f) ? 1.0f : -1.0f);
 	}
+}
+
+float FloatLerp(float _Cur, float _Des, float _Speed)
+{
+	return _Cur + (_Des - _Cur) * _Speed * DT;
+}
+
+Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed)
+{
+	Vec3 result;
+	result.x = _Cur.x + (_Des.x - _Cur.x) * _Speed * DT;
+	result.y = _Cur.y + (_Des.y - _Cur.y) * _Speed * DT;
+	result.z = _Cur.z + (_Des.z - _Cur.z) * _Speed * DT;
+	return result;
 }

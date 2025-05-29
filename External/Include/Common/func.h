@@ -47,6 +47,9 @@ CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type);
 
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj);
 
+float FloatLerp(float _Cur, float _Des, float _Speed);
+Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed);
+
 template <typename T>
 void SaveAssetRef(Ptr<T> _Asset, FILE* _File)
 {
