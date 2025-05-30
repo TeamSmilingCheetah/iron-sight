@@ -50,16 +50,10 @@ void TestCharacter::Begin()
 		m_CurWeapon = AKMClone;
 		// 해당 아이템의 스크립트 확인하여 gun스크립트 추출
 		// 기존 플레이어 추출 방식 사용
-		m_WeaponScript = static_cast<WeaponController*>(AKMClone->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-		if (m_WeaponScript == nullptr)
-		{
-			m_WeaponScript = static_cast<WeaponController*>(AKMClone->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
-			m_WeaponType = SCRIPT_TYPE::THROWABLESCRIPT;
-		}
-		else
-			m_WeaponType = SCRIPT_TYPE::GUNSCRIPT;
-
+		m_WeaponScript = static_cast<WeaponController*>(GetScriptWithType(AKMClone, SCRIPT_TYPE::WEAPONSCRIPT));
 		assert(m_WeaponScript != nullptr);		// WeaponScript가 있다는 가정
+
+		m_WeaponType = m_WeaponScript->GetScriptType();
 
 		// 총기 설정
 		m_WeaponScript->SetEquippedOwner(GetOwner());

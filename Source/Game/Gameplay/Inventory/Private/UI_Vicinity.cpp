@@ -33,7 +33,7 @@ void VicinityUI::LoadComponent(FILE* _File)
 
 void VicinityUI::LoadComponentReference()
 {
-	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	m_Controller = static_cast<InventoryController*>(GetScriptWithType(m_ControllerOwner, SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void VicinityUI::OnMouseDrop(const PayLoad& _PayLoad)

@@ -49,6 +49,7 @@ private:
 	void Reload();
 
 public:
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT);
 	CLONE(GunController);
 	GunController();
 	~GunController() override;

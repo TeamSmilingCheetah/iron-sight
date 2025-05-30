@@ -79,7 +79,7 @@ public:
 public:
 	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
 	const vector<CScript*>& GetScripts() const { return m_vecScripts; }
-	CScript* GetScript(SCRIPT_TYPE _Type) const;
+	//CScript* GetScript(SCRIPT_TYPE _Type) const;
 	CScript* GetParentScript(SCRIPT_TYPE _Type) const;
 
 	CGameObject* GetChildByName(const wstring& _Name);

@@ -66,7 +66,7 @@ void InventoryController::Begin()
 	}
 
 
-	m_CamScript = static_cast<CameraController*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->GetScript(SCRIPT_TYPE::CAMERASCRIPT));
+	m_CamScript = static_cast<CameraController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera"), SCRIPT_TYPE::CAMERASCRIPT));
 }
 
 void InventoryController::Tick()
@@ -102,21 +102,21 @@ void InventoryController::LoadComponent(FILE* _File)
 
 void InventoryController::LoadComponentReference()
 {
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
 void InventoryController::SetPlayer(CGameObject* _Player)
 {
 	m_Player = _Player;
 
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
 void InventoryController::SetVicinityUI(CGameObject* _UI)
 {
 	m_VicinityUI = _UI;
 
-	VicinityUI* pScript = static_cast<VicinityUI*>(_UI->GetScript(SCRIPT_TYPE::VICINITYUI));
+	VicinityUI* pScript = static_cast<VicinityUI*>(GetScriptWithType(_UI, SCRIPT_TYPE::VICINITYUI));
 	assert(pScript != nullptr);
 
 	pScript->SetController(this);
@@ -126,7 +126,7 @@ void InventoryController::SetInventoryUI(CGameObject* _UI)
 {
 	m_InventoryUI = _UI;
 
-	InventoryUI* pScript = static_cast<InventoryUI*>(_UI->GetScript(SCRIPT_TYPE::INVENTORYUI));
+	InventoryUI* pScript = static_cast<InventoryUI*>(GetScriptWithType(_UI, SCRIPT_TYPE::INVENTORYUI));
 	assert(pScript != nullptr);
 
 	pScript->SetController(this);
@@ -134,7 +134,7 @@ void InventoryController::SetInventoryUI(CGameObject* _UI)
 
 void InventoryController::SyncItemUI(CGameObject* _ItemObj, ITEM_TYPE _Type, int _Count, CGameObject* _ItemUI)
 {
-	ItemUI* pItemUI = reinterpret_cast<ItemUI*>(_ItemUI->GetScript(SCRIPT_TYPE::ITEMUI));
+	ItemUI* pItemUI = reinterpret_cast<ItemUI*>(GetScriptWithType(_ItemUI, SCRIPT_TYPE::ITEMUI));
 	assert(pItemUI != nullptr);
 
 	// ItemUI 스크립트 쪽에 정보 전달
@@ -150,7 +150,7 @@ void InventoryController::DisplayUI_Vicinity()
 
 	for (UINT i = 0; i < static_cast<UINT>(m_vecVicinity.size()); ++i)
 	{
-		ItemScript* pItem = static_cast<ItemScript*>(m_vecVicinity[i]->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
+		ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(m_vecVicinity[i], SCRIPT_TYPE::ITEMSCRIPT));
 		assert(pItem != nullptr);
 
 		SyncItemUI(m_vecVicinity[i], pItem->GetItemType(), pItem->GetCount(), vecVicinityUI[i]);
@@ -203,7 +203,7 @@ void InventoryController::DisplayUI_Inventory()
 
 void InventoryController::AcquireItem(CGameObject* _Item)
 {
-	ItemScript* pItem = static_cast<ItemScript*>(_Item->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
+	ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(_Item, SCRIPT_TYPE::ITEMSCRIPT));
 	assert(pItem != nullptr);	// ItemScript가 있다는 가정
 
 	UINT type = static_cast<UINT>(pItem->GetItemType());
@@ -228,7 +228,7 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 void InventoryController::EquipItem(CGameObject* _Item)
 {
 	// WeaponScript가 있다는 가정
-	assert(_Item->GetScript(SCRIPT_TYPE::WEAPONSCRIPT));
+	assert(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
 
 
 }
@@ -304,7 +304,7 @@ void InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 	}
 
 	// 개수 설정
-	static_cast<ItemScript*>(DropItem->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->SetCount(_Count);
+	static_cast<ItemScript*>(GetScriptWithType(DropItem, SCRIPT_TYPE::ITEMSCRIPT))->SetCount(_Count);
 
 	// 부모 관계 해제, 레이어 이동, transform 설정
 	DetachItem(DropItem);
@@ -315,8 +315,8 @@ void InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 // Compare
 bool ItemComp(CGameObject* _lhs, CGameObject* _rhs)
 {
-	ItemScript* lItem = static_cast<ItemScript*>(_lhs->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	ItemScript* rItem = static_cast<ItemScript*>(_rhs->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
+	ItemScript* lItem = static_cast<ItemScript*>(GetScriptWithType(_lhs, SCRIPT_TYPE::ITEMSCRIPT));
+	ItemScript* rItem = static_cast<ItemScript*>(GetScriptWithType(_rhs, SCRIPT_TYPE::ITEMSCRIPT));
 
 	ITEM_TYPE lType = lItem->GetItemType();
 	ITEM_TYPE rType = rItem->GetItemType();
@@ -344,10 +344,7 @@ void InventoryController::EndOverlap(CCollider3D* _Collider, CGameObject* _Other
 void InventoryController::EquipWeapon(CGameObject* _Item)
 {
 	// 장착할 수 있는 아이템이라는 것이 보장되어 있음
-	// TODO : 개선
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
 
 	assert(pWeaponScript != nullptr);		// WeaponScript가 있다는 가정
 
@@ -379,7 +376,7 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 		}
 
 		m_vecWeaponSlot[slotIdx].Object = _Item;
-		m_vecWeaponSlot[slotIdx].Type = static_cast<ItemScript*>(_Item->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+		m_vecWeaponSlot[slotIdx].Type = static_cast<ItemScript*>(GetScriptWithType(_Item, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
 		bCanEquip = true;
 
@@ -400,7 +397,7 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 		if (m_vecWeaponSlot[SECONDARY_FIRST].Object == nullptr)
 		{
 			m_vecWeaponSlot[SECONDARY_FIRST].Object = _Item;
-			m_vecWeaponSlot[SECONDARY_FIRST].Type = static_cast<ItemScript*>(_Item->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+			m_vecWeaponSlot[SECONDARY_FIRST].Type = static_cast<ItemScript*>(GetScriptWithType(_Item, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 			AddChild(m_Player, _Item);
 			SetObjectActive(_Item, false);
 			bCanEquip = true;
@@ -415,7 +412,7 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 			if (m_vecWeaponSlot[i].Object != nullptr)
 			{
 				// 같은 weapon 인 경우
-				if (m_vecWeaponSlot[i].Type == static_cast<ItemScript*>(_Item->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType())
+				if (m_vecWeaponSlot[i].Type == static_cast<ItemScript*>(GetScriptWithType(_Item, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType())
 					break;
 
 				// 다른 weapon인 경우
@@ -423,7 +420,7 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 			}
 
 			m_vecWeaponSlot[i].Object = _Item;
-			m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(_Item->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+			m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(GetScriptWithType(_Item, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 			AttachItem(_Item, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
 			SetObjectActive(_Item, false);
 			bCanEquip = true;
@@ -465,7 +462,7 @@ CGameObject* InventoryController::EquipSlot(CGameObject* _Item, ITEM_TYPE _Type,
 
 	int curSlotIdx = m_CurSlotIdx;
 
-	ITEM_TYPE type = static_cast<ItemScript*>(pPrevObj->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+	ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(pPrevObj, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
 	// 기존 슬롯 아이템에 대한 두 가지 선택지
 	if (IS_WEAPON(static_cast<UINT>(type)))
@@ -483,10 +480,7 @@ CGameObject* InventoryController::EquipSlot(CGameObject* _Item, ITEM_TYPE _Type,
 	m_vecWeaponSlot[_SlotIdx].Object = _Item;
 	m_vecWeaponSlot[_SlotIdx].Type = _Type;
 
-	// TODO : 스크립트 개선
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
 
 	pWeaponScript->SetEquippedOwner(m_Player);
 	pWeaponScript->SetEquip(true);
@@ -570,9 +564,9 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 	//	m_CurSlotIdx = _SlotIdx;
 	//}
 
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::GUNSCRIPT));
+	WeaponController* pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(m_vecWeaponSlot[_SlotIdx].Object, SCRIPT_TYPE::GUNSCRIPT));
 	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+		pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(m_vecWeaponSlot[_SlotIdx].Object, SCRIPT_TYPE::THROWABLESCRIPT));
 
 	// weaponController 장착 전달
 	pWeaponScript->SetEquip(true);
@@ -587,10 +581,7 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 
 void InventoryController::ActivateSlot(int _SlotIdx)
 {
-	// TODO : 개선
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(m_vecWeaponSlot[_SlotIdx].Object, SCRIPT_TYPE::WEAPONSCRIPT));
 
 	// weaponController 장착 전달
 	pWeaponScript->SetEquip(true);
@@ -693,12 +684,9 @@ void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect)
 	Vec3 vPos = m_Player->Transform()->GetRelativePos();
 	Vec3 vRot = m_Player->Transform()->GetRelativeRotation();
 
-	// TODO : 스크립트 개선
 	// 주인 해제
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
-
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
+	
 	if (pWeaponScript && _Disconnect)
 	{
 		pWeaponScript->SetEquippedOwner(nullptr);

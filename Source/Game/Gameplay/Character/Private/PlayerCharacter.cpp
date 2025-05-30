@@ -89,8 +89,8 @@ void PlayerCharacter::Begin()
 	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
 
 	// Script
-	m_CamScript = static_cast<CameraController*>(m_MainCamera->GetScript(SCRIPT_TYPE::CAMERASCRIPT));
-	m_InventoryScript = static_cast<InventoryController*>(GetOwner()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void PlayerCharacter::Tick()
@@ -370,8 +370,7 @@ void PlayerCharacter::PlayerAttack()
 					pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
 
 					// 인벤토리에서 투척무기 하나 제거
-					// TODO : 개선
-					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
 					// 아이템이 남았다면
 					if (m_InventoryScript->UseItem(type, 1))
@@ -434,8 +433,7 @@ void PlayerCharacter::PlayerAttack()
 					pWeaponScript->SetCurKeyState(KEY_STATE::RELEASED);
 
 					// 인벤토리에서 투척무기 하나 제거
-					// TODO : 개선
-					ITEM_TYPE type = static_cast<ItemScript*>(m_InventoryScript->GetCurWeapon()->GetScript(SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
 					// 아이템이 남았다면
 					if (m_InventoryScript->UseItem(type, 1))
@@ -535,7 +533,6 @@ void PlayerCharacter::PlayerHeal()
 			m_RemainTime = 0.f;
 			m_HealAmount = 0.f;
 
-			// TODO: ItemUseUI 비활성화
 			SetObjectActive(m_ItemUseUI, false);
 		}
 

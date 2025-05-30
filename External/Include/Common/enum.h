@@ -319,6 +319,8 @@ enum class SCRIPT_TYPE : UINT8
 	// 문
 	DOORSCRIPT,		// Interactable
 
+	INTERACTABLE,
+
 	NONE = 0xFF,
 };
 

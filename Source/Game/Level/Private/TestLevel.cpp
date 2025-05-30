@@ -434,7 +434,7 @@ void TestLevel::CreateTestLevel()
 			pObj->Collider3D()->SetIndependentScale(true);
 
 			pObj->AddComponent(new InventoryController);
-			InventoryController* pInvenScript = static_cast<InventoryController*>(pObj->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+			InventoryController* pInvenScript = static_cast<InventoryController*>(GetScriptWithType(pObj, SCRIPT_TYPE::INVENTORYSCRIPT));
 
 			// 주변 및 인벤토리 UI를 등록함
 			pInvenScript->SetVicinityUI(Vicinity);
@@ -837,7 +837,7 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
-
-	pLevel->AddObject(1, testojb, false);
+	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+	//
+	//pLevel->AddObject(1, testojb, false);
 }
