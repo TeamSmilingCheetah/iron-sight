@@ -25,7 +25,7 @@ void ItemUI::SetItemObject(CGameObject* _Object)
 {
 	m_ItemObject = _Object;
 
-	ItemScript* pScript = static_cast<ItemScript*>(m_ItemObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
+	ItemScript* pScript = static_cast<ItemScript*>(GetScriptWithType(m_ItemObject, SCRIPT_TYPE::ITEMSCRIPT));
 	assert(pScript);
 
 	m_ItemInfo.Type = pScript->GetItemType();
@@ -100,7 +100,7 @@ void ItemUI::OnMouseRightClick()
 	if (m_ItemObject != nullptr)
 	{
 		if (!m_InventoryScript)
-			m_InventoryScript = static_cast<InventoryController*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+			m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
 
 		m_InventoryScript->AcquireItem(m_ItemObject);
 	}
@@ -109,7 +109,7 @@ void ItemUI::OnMouseRightClick()
 	else
 	{
 		if (!m_PlayerScript)
-			m_PlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->FindObjectByName(L"Player")->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+			m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"Player"), SCRIPT_TYPE::PLAYERSCRIPT));
 
 		UINT type = static_cast<UINT>(m_ItemInfo.Type);
 

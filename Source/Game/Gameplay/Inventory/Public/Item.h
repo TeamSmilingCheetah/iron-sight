@@ -34,6 +34,9 @@ public:
 	virtual void ExitDetection(InteractionHandler* _Handler) override;
 
 public:
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::INTERACTABLE);
+
+public:
 	CLONE(ItemScript);
 	ItemScript();
 	ItemScript(ITEM_TYPE _Type);

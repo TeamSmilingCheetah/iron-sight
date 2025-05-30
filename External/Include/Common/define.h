@@ -41,4 +41,6 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define TRIGGER					0x01		// 트리거용 충돌체
 #define INDEPENDENT_ROT			0x02
 
-#define SET_PARENT_SCRIPT(PARENT_ENUM) static constexpr SCRIPT_TYPE m_ParentType = PARENT_ENUM
+#define SET_PARENT_SCRIPT(PARENT_ENUM) static constexpr SCRIPT_TYPE m_ParentType = PARENT_ENUM; \
+										virtual SCRIPT_TYPE GetParentScriptType() override { return m_ParentType; }
+									   

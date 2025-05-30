@@ -93,6 +93,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->CreateVertexShader(L"Shader\\std3d_deferred.fx", "VS_Std3D_Deferred");
 	pShader->CreatePixelShader(L"Shader\\std3d_deferred.fx", "PS_Std3D_Deferred");
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
+	pShader->AddTexParam("Base Color", TEX_0);
+	pShader->AddTexParam("Normal", TEX_1);
 	GetInst()->AddAsset(L"Std3D_DeferredShader", pShader);
 
 

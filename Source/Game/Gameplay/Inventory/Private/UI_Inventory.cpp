@@ -35,7 +35,7 @@ void InventoryUI::LoadComponent(FILE* _File)
 
 void InventoryUI::LoadComponentReference()
 {
-	m_Controller = static_cast<InventoryController*>(m_ControllerOwner->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	m_Controller = static_cast<InventoryController*>(GetScriptWithType(m_ControllerOwner, SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void InventoryUI::OnMouseDrop(const PayLoad& _PayLoad)

@@ -74,28 +74,38 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int _ContainerIdx)
 
 	for (UINT i = 0; i < iIdxBufferCount; ++i)
 	{
-		tIdxDesc.ByteWidth = static_cast<UINT>(container->vecIdx[i].size()) * sizeof(UINT);
-		// Index Format 이 R32_UINT 이기 때문
-		tIdxDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		tIdxDesc.Usage = D3D11_USAGE_DEFAULT;
-		if (D3D11_USAGE_DYNAMIC == tIdxDesc.Usage)
-			tIdxDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		tIndexInfo info{};
 
-		void* pSysMem = malloc(tIdxDesc.ByteWidth);
-		memcpy(pSysMem, container->vecIdx[i].data(), tIdxDesc.ByteWidth);
-		tSub.pSysMem = pSysMem;
-
-		ComPtr<ID3D11Buffer> pIB = nullptr;
-		if (FAILED(DEVICE->CreateBuffer(&tIdxDesc, &tSub, pIB.GetAddressOf())))
+		if (container->vecIdx[i].size() > 0)
 		{
-			return nullptr;
-		}
+			tIdxDesc.ByteWidth = static_cast<UINT>(container->vecIdx[i].size()) * sizeof(UINT);
+			// Index Format 이 R32_UINT 이기 때문
+			tIdxDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			tIdxDesc.Usage = D3D11_USAGE_DEFAULT;
+			if (D3D11_USAGE_DYNAMIC == tIdxDesc.Usage)
+				tIdxDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-		tIndexInfo info = {};
-		info.IB = pIB;
-		info.IBDesc = tIdxDesc;
-		info.IdxCount = static_cast<UINT>(container->vecIdx[i].size());
-		info.IdxSysMem = pSysMem;
+			void* pSysMem = malloc(tIdxDesc.ByteWidth);
+			memcpy(pSysMem, container->vecIdx[i].data(), tIdxDesc.ByteWidth);
+			tSub.pSysMem = pSysMem;
+
+			ComPtr<ID3D11Buffer> pIB = nullptr;
+			if (FAILED(DEVICE->CreateBuffer(&tIdxDesc, &tSub, pIB.GetAddressOf())))
+			{
+				return nullptr;
+			}
+
+			info.IB = pIB;
+			info.IBDesc = tIdxDesc;
+			info.IdxCount = static_cast<UINT>(container->vecIdx[i].size());
+			info.IdxSysMem = pSysMem;
+		}
+		else
+		{
+			// TEST : index가 0개면 모든 걸 null로 등록.
+			// 나중에 바인딩에서 문제 생길 수도 있음
+			info = {};
+		}
 
 		pMesh->m_vecIdxInfo.push_back(info);
 	}

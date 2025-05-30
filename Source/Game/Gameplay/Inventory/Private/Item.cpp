@@ -37,7 +37,7 @@ void ItemScript::LoadComponent(FILE* _File)
 
 void ItemScript::EnterDetection(InteractionHandler* _Handler)
 {
-	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	InventoryController* pInventory = static_cast<InventoryController*>(GetScriptWithType(_Handler->GetOwner()->GetParent(), SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	assert(pInventory);
 
@@ -46,7 +46,7 @@ void ItemScript::EnterDetection(InteractionHandler* _Handler)
 
 void ItemScript::Interact(InteractionHandler* _Handler)
 {
-	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	InventoryController* pInventory = static_cast<InventoryController*>(GetScriptWithType(_Handler->GetOwner()->GetParent(), SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	assert(pInventory);
 
@@ -55,7 +55,7 @@ void ItemScript::Interact(InteractionHandler* _Handler)
 
 void ItemScript::ExitDetection(InteractionHandler* _Handler)
 {
-	InventoryController* pInventory = static_cast<InventoryController*>(_Handler->GetOwner()->GetParent()->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	InventoryController* pInventory = static_cast<InventoryController*>(GetScriptWithType(_Handler->GetOwner()->GetParent(), SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	assert(pInventory);
 

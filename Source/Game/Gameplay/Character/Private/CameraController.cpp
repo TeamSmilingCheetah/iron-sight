@@ -52,8 +52,8 @@ void CameraController::Begin()
 	m_CameraFlag |= TPS;
 
 	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
-	m_InventoryScript = static_cast<InventoryController*>(m_Player->GetScript(SCRIPT_TYPE::INVENTORYSCRIPT));
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void CameraController::Tick()

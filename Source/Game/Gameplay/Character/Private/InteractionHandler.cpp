@@ -22,7 +22,7 @@ InteractionHandler::~InteractionHandler()
 void InteractionHandler::SetPlayer(CGameObject* _Player)
 {
 	m_Player = _Player;
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
 void InteractionHandler::SetInteractable(bool _b)
@@ -68,17 +68,14 @@ void InteractionHandler::LoadComponent(FILE* _File)
 
 void InteractionHandler::LoadComponentReference()
 {
-	m_PlayerScript = static_cast<PlayerCharacter*>(m_Player->GetScript(SCRIPT_TYPE::PLAYERSCRIPT));
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
 void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
 	// Interactable Script
-	// TODO : Script 개선
-	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	if (!pInteractable)
-		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::DOORSCRIPT));
-
+	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
+	
 	if (!pInteractable)
 		return;
 
@@ -95,10 +92,7 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 		return;
 
 	// Interactable Script
-	// TODO : Script 개선
-	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	if (!pInteractable)
-		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::DOORSCRIPT));
+	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
 
 	if (pInteractable)
 	{
@@ -135,11 +129,7 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
 	// Interactable Script
-	// TODO : Script 개선
-	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	if (!pInteractable)
-		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::DOORSCRIPT));
-
+	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
 	if (!pInteractable)
 		return;
 

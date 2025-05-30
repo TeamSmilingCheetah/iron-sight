@@ -51,6 +51,7 @@ public:
 
 
 public:
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT);
 	CLONE(ThrowableController);
 	ThrowableController();
 	~ThrowableController() override;
