@@ -74,9 +74,6 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int _ContainerIdx)
 
 	for (UINT i = 0; i < iIdxBufferCount; ++i)
 	{
-		// FIXME : index가 0개인 경우 일단 continue로 처리
-		// 중간에 있는 경우 문제 발생 가능성
-
 		tIndexInfo info{};
 
 		if (container->vecIdx[i].size() > 0)

@@ -15,9 +15,10 @@ class CScript :
 	public CComponent
 {
 private:
-	SET_PARENT_SCRIPT(SCRIPT_TYPE::NONE);
 	const SCRIPT_TYPE m_ScriptType;
 	vector<tScriptParam> m_vecScriptParam;
+
+	static constexpr SCRIPT_TYPE m_ParentType = SCRIPT_TYPE::NONE;
 
 public:
 	SCRIPT_TYPE GetScriptType() const { return m_ScriptType; }

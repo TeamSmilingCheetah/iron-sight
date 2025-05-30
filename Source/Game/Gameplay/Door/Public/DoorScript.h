@@ -30,6 +30,7 @@ public:
 	virtual void ExitDetection(InteractionHandler* _Handler) override {}
 
 public:
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::INTERACTABLE);
 	CLONE(DoorScript);
 	DoorScript();
 	~DoorScript();

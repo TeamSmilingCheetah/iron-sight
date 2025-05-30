@@ -74,11 +74,8 @@ void InteractionHandler::LoadComponentReference()
 void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
 	// Interactable Script
-	// TODO : Script 개선
-	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	if (!pInteractable)
-		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::DOORSCRIPT));
-
+	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
+	
 	if (!pInteractable)
 		return;
 
@@ -95,10 +92,7 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 		return;
 
 	// Interactable Script
-	// TODO : Script 개선
-	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	if (!pInteractable)
-		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::DOORSCRIPT));
+	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
 
 	if (pInteractable)
 	{
@@ -135,11 +129,7 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
 	// Interactable Script
-	// TODO : Script 개선
-	auto pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::ITEMSCRIPT));
-	if (!pInteractable)
-		pInteractable = static_cast<InteractableScript*>(_OtherObject->GetScript(SCRIPT_TYPE::DOORSCRIPT));
-
+	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
 	if (!pInteractable)
 		return;
 

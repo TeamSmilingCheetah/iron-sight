@@ -344,10 +344,7 @@ void InventoryController::EndOverlap(CCollider3D* _Collider, CGameObject* _Other
 void InventoryController::EquipWeapon(CGameObject* _Item)
 {
 	// 장착할 수 있는 아이템이라는 것이 보장되어 있음
-	// TODO : 개선
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
 
 	assert(pWeaponScript != nullptr);		// WeaponScript가 있다는 가정
 
@@ -483,10 +480,7 @@ CGameObject* InventoryController::EquipSlot(CGameObject* _Item, ITEM_TYPE _Type,
 	m_vecWeaponSlot[_SlotIdx].Object = _Item;
 	m_vecWeaponSlot[_SlotIdx].Type = _Type;
 
-	// TODO : 스크립트 개선
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
 
 	pWeaponScript->SetEquippedOwner(m_Player);
 	pWeaponScript->SetEquip(true);
@@ -587,10 +581,7 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 
 void InventoryController::ActivateSlot(int _SlotIdx)
 {
-	// TODO : 개선
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(m_vecWeaponSlot[_SlotIdx].Object->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(m_vecWeaponSlot[_SlotIdx].Object, SCRIPT_TYPE::WEAPONSCRIPT));
 
 	// weaponController 장착 전달
 	pWeaponScript->SetEquip(true);
@@ -693,12 +684,9 @@ void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect)
 	Vec3 vPos = m_Player->Transform()->GetRelativePos();
 	Vec3 vRot = m_Player->Transform()->GetRelativeRotation();
 
-	// TODO : 스크립트 개선
 	// 주인 해제
-	WeaponController* pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::GUNSCRIPT));
-	if (pWeaponScript == nullptr)
-		pWeaponScript = static_cast<WeaponController*>(_Item->GetScript(SCRIPT_TYPE::THROWABLESCRIPT));
-
+	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
+	
 	if (pWeaponScript && _Disconnect)
 	{
 		pWeaponScript->SetEquippedOwner(nullptr);
