@@ -250,7 +250,7 @@ void InventoryController::ConvertPS()
 	else
 	{
 		m_CurTempWeapon = m_CurWeapon;
-		DetachItem(m_CurWeapon, false);
+		DetachItem(m_CurWeapon, false, 4);
 	}
 	
 }
@@ -543,26 +543,9 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 	if (_SlotIdx == m_CurSlotIdx)
 		return;
 
-	DeactivateSlot();
+	
+	DeactivateSlot(!m_CamScript->GetFlag(TPS));
 
-	//if (m_CurTempWeapon != nullptr)
-	//{
-	//	if (m_CurSlotIdx == PRIMARY_FIRST)
-	//	{
-	//		AttachItem(m_CurTempWeapon, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
-	//	}
-	//	else if (m_CurSlotIdx == PRIMARY_SECOND)
-	//	{
-	//		AttachItem(m_CurTempWeapon, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
-	//	}
-	//	else
-	//	{
-	//		SetObjectActive(m_CurTempWeapon, false);
-	//	}
-
-	//	m_CurTempWeapon = m_vecWeaponSlot[_SlotIdx].Object;
-	//	m_CurSlotIdx = _SlotIdx;
-	//}
 
 	WeaponController* pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(m_vecWeaponSlot[_SlotIdx].Object, SCRIPT_TYPE::GUNSCRIPT));
 	if (pWeaponScript == nullptr)
@@ -603,7 +586,7 @@ void InventoryController::ActivateSlot(int _SlotIdx)
 	}
 }
 
-void InventoryController::DeactivateSlot()
+void InventoryController::DeactivateSlot(bool _FPS)
 {
 	// 현재 슬롯이 없다면
 	if (m_CurSlotIdx == NONE_WEAPON)
@@ -623,6 +606,12 @@ void InventoryController::DeactivateSlot()
 		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
 	}
 	// 나머지는 비활성화 해준다.
+	// 1인칭인경우 Player HandMesh에 다시 붙혀준다.
+	else if (_FPS)
+	{
+		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+		SetObjectActive(m_vecWeaponSlot[m_CurSlotIdx].Object, false);
+	}
 	else
 	{
 		SetObjectActive(m_vecWeaponSlot[m_CurSlotIdx].Object, false);
@@ -679,7 +668,7 @@ void InventoryController::AttachItem(CGameObject* _Item, CGameObject* _BoneObjec
 	_Item->Transform()->SetRelativeRotation(_RelativeRot);
 }
 
-void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect)
+void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect, int _Layer)
 {
 	Vec3 vPos = m_Player->Transform()->GetRelativePos();
 	Vec3 vRot = m_Player->Transform()->GetRelativeRotation();
@@ -694,8 +683,11 @@ void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect)
 	}
 
 	// 아이템 레이어로 변경
-	assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(6)->GetName() == L"Item");
-	ChangeLayer(_Item, 6);
+	if(_Layer == 6)
+		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_Layer)->GetName() == L"Item");
+	else if (_Layer == 4)
+		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_Layer)->GetName() == L"PlayerFPS");
+	ChangeLayer(_Item, _Layer);
 	SetObjectActive(_Item, true);
 	AttachItem(_Item, nullptr, vPos, vRot);
 }
@@ -745,7 +737,7 @@ void InventoryController::PlayerInteractWeapon()
 	// 모든 무기 내리기 (무기 미착용 상태로)
 	if (KEY_TAP(KEY::B))
 	{
-		DeactivateSlot();
+		DeactivateSlot(!m_CamScript->GetFlag(TPS));
 
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;

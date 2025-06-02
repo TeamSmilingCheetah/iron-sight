@@ -76,7 +76,7 @@ public:
 
 	// TODO: 데이터 구조 개선
 	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
-	void DetachItem(CGameObject* _Item, bool _Disconnect = true);
+	void DetachItem(CGameObject* _Item, bool _Disconnect = true, int _Layer = 6);
 
 	// 현재 슬롯에 새로운 아이템을 장착하는 함수. 기존에 있던 아이템을 리턴해줌 -> 알아서 처리
 	CGameObject* EquipSlot(CGameObject* _Item, ITEM_TYPE _Type, int _SlotIdx, bool _ChangeSlotIdx = true);
@@ -92,7 +92,7 @@ public:
 	void ClearSlot(int _SlotIdx);
 
 	void ActivateSlot(int _SlotIdx); // 현재 슬롯을 지정한 슬롯으로 변경
-	void DeactivateSlot();	// 현재 슬롯을 비활성화
+	void DeactivateSlot(bool _FPS = false);	// 현재 슬롯을 비활성화
 
 	void AddItemToVicinity(CGameObject* _Item);
 	void RemoveItemFromVicinity(CGameObject* _Item);
