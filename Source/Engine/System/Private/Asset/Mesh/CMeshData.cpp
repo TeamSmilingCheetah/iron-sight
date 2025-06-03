@@ -38,6 +38,10 @@ CGameObject* CMeshData::Instantiate()
 		{
 			pNewObj->MeshRender()->SetMaterial(m_vecMtrlSet[0][i], i);
 		}
+
+		pNewObj->Transform()->SetRelativeScale(m_vecScale[0]);
+		pNewObj->Transform()->SetRelativeRotation(m_vecRot[0]);
+		pNewObj->Transform()->SetRelativePos(m_vecTrans[0]);
 	}
 
 	// Animation이 있거나, mesh가 여러 개라면
@@ -78,9 +82,15 @@ CGameObject* CMeshData::Instantiate()
 				}
 			}
 
+			childObj->Transform()->SetRelativeScale(m_vecScale[idx]);
+			childObj->Transform()->SetRelativeRotation(m_vecRot[idx]);
+			childObj->Transform()->SetRelativePos(m_vecTrans[idx]);
+
 			pNewObj->AddChild(childObj);
 		}
 	}
+
+	
 
 	return pNewObj;
 }
@@ -212,6 +222,11 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 
 		pMeshData->m_vecMesh.push_back(pMesh);
 		pMeshData->m_vecMtrlSet.push_back(vecMtrl);
+
+		// Transform 정보 저장
+		pMeshData->m_vecScale.push_back(Container.vScale);
+		pMeshData->m_vecRot.push_back(Container.vRot);
+		pMeshData->m_vecTrans.push_back(Container.vTrans);
 	}
 
 	// Skeleton 로드하기
@@ -265,6 +280,10 @@ int CMeshData::Save(const wstring& _RelativePath)
 
 		i = -1; // 마감 값 (underflow)
 		fwrite(&i, sizeof(UINT), 1, pFile);
+
+		fwrite(&m_vecScale[idx], sizeof(Vec3), 1, pFile);
+		fwrite(&m_vecRot[idx], sizeof(Vec3), 1, pFile);
+		fwrite(&m_vecTrans[idx], sizeof(Vec3), 1, pFile);
 	}
 
 	// Animation set 저장
@@ -292,6 +311,9 @@ int CMeshData::Load(const wstring& _FilePath)
 	fread(&meshCnt, sizeof(int), 1, pFile);
 	m_vecMesh.resize(meshCnt);
 	m_vecMtrlSet.resize(meshCnt);
+	m_vecScale.resize(meshCnt);
+	m_vecRot.resize(meshCnt);
+	m_vecTrans.resize(meshCnt);
 
 	for (int idx = 0; idx < meshCnt; ++idx)
 	{
@@ -314,6 +336,10 @@ int CMeshData::Load(const wstring& _FilePath)
 
 			LoadAssetRef(m_vecMtrlSet[idx][i], pFile);
 		}
+
+		fread(&m_vecScale[idx], sizeof(Vec3), 1, pFile);
+		fread(&m_vecRot[idx], sizeof(Vec3), 1, pFile);
+		fread(&m_vecTrans[idx], sizeof(Vec3), 1, pFile);
 	}
 
 	// Animation set 로드

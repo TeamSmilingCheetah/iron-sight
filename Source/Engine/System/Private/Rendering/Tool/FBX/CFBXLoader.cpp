@@ -98,15 +98,11 @@ void CFBXLoader::LoadMeshDataFromNode(FbxNode* _pNode)
 	// 노드의 메쉬정보 읽기
 	FbxNodeAttribute* pAttr = _pNode->GetNodeAttribute();
 
-
 	if (pAttr && FbxNodeAttribute::eMesh == pAttr->GetAttributeType())
 	{
-		FbxAMatrix matGlobal = _pNode->EvaluateGlobalTransform();
-		matGlobal.GetR();
-
 		FbxMesh* pMesh = _pNode->GetMesh();
 		if (nullptr != pMesh)
-			LoadMesh(pMesh);
+			LoadMesh(_pNode);
 	}
 
 	// 해당 노드의 재질정보 읽기
@@ -128,18 +124,35 @@ void CFBXLoader::LoadMeshDataFromNode(FbxNode* _pNode)
 	}
 }
 
-void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
+void CFBXLoader::LoadMesh(FbxNode* _pNode)
 {
+	FbxMesh* pFbxMesh = _pNode->GetMesh();
+
 	m_vecContainer.push_back(tContainer{});
 	tContainer& Container = m_vecContainer[m_vecContainer.size() - 1];
 
-	string strName = _pFbxMesh->GetName();
+	string strName = pFbxMesh->GetName();
 	Container.strName = wstring(strName.begin(), strName.end());
 
-	int iVtxCnt = _pFbxMesh->GetControlPointsCount();
+	FbxAMatrix matGlobal = _pNode->EvaluateGlobalTransform();
+
+	// Transform 저장
+	// front가 +y, up이 +z인 좌표계에서 front가 +z, up이 +y인 좌표계로 변환
+	// translation과 scale은 y <-> z 바꿔서 저장
+	// rotationdms y <-> -z 바꿔서 저장. 오른손 좌표계 -> 왼손 좌표계이므로
+	FbxVector4 temp = matGlobal.GetT();
+	Container.vTrans = Vec3(temp[0], temp[2], temp[1]);
+
+	temp = matGlobal.GetR();
+	Container.vRot = Vec3(temp[0], -temp[2], temp[1]);
+
+	temp = matGlobal.GetS();
+	Container.vScale = Vec3(temp[0], temp[2], temp[1]);
+
+	int iVtxCnt = pFbxMesh->GetControlPointsCount();
 	Container.Resize(iVtxCnt);
 
-	FbxVector4* pFbxPos = _pFbxMesh->GetControlPoints();
+	FbxVector4* pFbxPos = pFbxMesh->GetControlPoints();
 
 	for (int i = 0; i < iVtxCnt; ++i)
 	{
@@ -149,17 +162,17 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 	}
 
 	// 폴리곤 개수
-	int iPolyCnt = _pFbxMesh->GetPolygonCount();
+	int iPolyCnt = pFbxMesh->GetPolygonCount();
 
 	// 재질의 개수 ( ==> SubSet 개수 ==> Index Buffer Count)
-	int iMtrlCnt = _pFbxMesh->GetNode()->GetMaterialCount();
+	int iMtrlCnt = pFbxMesh->GetNode()->GetMaterialCount();
 	Container.vecIdx.resize(iMtrlCnt);
 
 	// 정점 정보가 속한 subset 을 알기위해서...
-	FbxGeometryElementMaterial* pMtrl = _pFbxMesh->GetElementMaterial();
+	FbxGeometryElementMaterial* pMtrl = pFbxMesh->GetElementMaterial();
 
 	// 폴리곤을 구성하는 정점 개수
-	int iPolySize = _pFbxMesh->GetPolygonSize(0);
+	int iPolySize = pFbxMesh->GetPolygonSize(0);
 	if (3 != iPolySize)
 		assert(NULL); // Polygon 구성 정점이 3개가 아닌 경우
 
@@ -171,13 +184,13 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 		for (int j = 0; j < iPolySize; ++j)
 		{
 			// i 번째 폴리곤에, j 번째 정점
-			int iIdx = _pFbxMesh->GetPolygonVertex(i, j);
+			int iIdx = pFbxMesh->GetPolygonVertex(i, j);
 			arrIdx[j] = iIdx;
 
-			GetTangent(_pFbxMesh, &Container, iIdx, iVtxOrder);
-			GetBinormal(_pFbxMesh, &Container, iIdx, iVtxOrder);
-			GetNormal(_pFbxMesh, &Container, iIdx, iVtxOrder);
-			GetUV(_pFbxMesh, &Container, iIdx, _pFbxMesh->GetTextureUVIndex(i, j));
+			GetTangent(pFbxMesh, &Container, iIdx, iVtxOrder);
+			GetBinormal(pFbxMesh, &Container, iIdx, iVtxOrder);
+			GetNormal(pFbxMesh, &Container, iIdx, iVtxOrder);
+			GetUV(pFbxMesh, &Container, iIdx, pFbxMesh->GetTextureUVIndex(i, j));
 
 			++iVtxOrder;
 		}
@@ -187,7 +200,7 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 		Container.vecIdx[iSubsetIdx].push_back(arrIdx[1]);
 	}
 
-	LoadAnimationData(_pFbxMesh, &Container);
+	LoadAnimationData(pFbxMesh, &Container);
 }
 
 void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
