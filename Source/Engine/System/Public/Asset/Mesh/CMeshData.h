@@ -13,6 +13,10 @@ private:
     vector<vector<Ptr<CMaterial>>>		m_vecMtrlSet;
 	vector<Ptr<CAnimation>>				m_vecAnimSet;	// 같은 본을 사용하는 animation들의 모음
 
+	vector<Vec3>						m_vecScale;
+	vector<Vec3>						m_vecRot;
+	vector<Vec3>						m_vecTrans;
+
 public:
     static CMeshData* LoadFromFBX(const wstring& _RelativePath);
 

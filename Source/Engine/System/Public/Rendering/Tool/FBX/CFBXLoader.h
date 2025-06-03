@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Common/global.h"
 
 //===============
@@ -23,6 +23,11 @@ struct tWeightsAndIndices
 struct tContainer
 {
 	wstring strName;
+
+	Vec3 vScale;
+	Vec3 vRot;
+	Vec3 vTrans;
+
 	vector<Vec3> vecPos;
 	vector<Vec3> vecTangent;
 	vector<Vec3> vecBinormal;
@@ -104,7 +109,7 @@ public:
 
 private:
 	void LoadMeshDataFromNode(FbxNode* _pRoot);
-	void LoadMesh(FbxMesh* _pFbxMesh);
+	void LoadMesh(FbxNode* _pNode);
 	void LoadMaterial(FbxSurfaceMaterial* _pMtrlSur);
 
 	void GetBinormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder);
