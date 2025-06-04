@@ -160,8 +160,7 @@ void CameraController::CameraPerspectiveMove()
 			if (m_CameraFlag & ADS)
 			{
 				// TPS 비활성화, FPS 활성화
-
-				m_CameraFlag &= ~WAS_TPS;
+				m_CameraFlag |= WAS_TPS;
 				ChangePS(false);
 			}
 		}
@@ -368,32 +367,36 @@ void CameraController::UpdateTPSCameraAdjustments()
 
 void CameraController::HandleRightClickInput()
 {
-	if (KEY_TAP(KEY::RBTN))
+	// 인벤토리가 열려있을 땐 입력 방지
+	if (!m_PlayerScript->IsInventoryOpened())
 	{
-		m_CameraFlag |= CLICKED_FIRST;
-	}
-	if (KEY_PRESSED(KEY::RBTN))
-	{
-		m_AccTime += DT;
+		if (KEY_TAP(KEY::RBTN))
+		{
+			m_CameraFlag |= CLICKED_FIRST;
+		}
+		if (KEY_PRESSED(KEY::RBTN))
+		{
+			m_AccTime += DT;
 
-		// 특정 시간 이상 누른상태라면 견착모드로 진입
-		if (0.1f < m_AccTime)
-		{
-			m_CameraFlag |= SHOULDER;
+			// 특정 시간 이상 누른상태라면 견착모드로 진입
+			if (0.1f < m_AccTime)
+			{
+				m_CameraFlag |= SHOULDER;
+			}
 		}
-	}
-	if (KEY_RELEASED(KEY::RBTN))
-	{
-		m_AccTime = 0.f;
-		// 특정 시간 이하, 즉 우클릭을 클릭만 했을때는 정조준 진입
-		if (!(m_CameraFlag & SHOULDER) && !(m_CameraFlag & WAS_TPS))
+		if (KEY_RELEASED(KEY::RBTN))
 		{
-			m_CameraFlag |= CHANGE_FOV;
-			m_CameraFlag |= ADS;
-		}
-		else if ((m_CameraFlag & WAS_TPS))
-		{
-			m_CameraFlag &= ~WAS_TPS;
+			m_AccTime = 0.f;
+			// 특정 시간 이하, 즉 우클릭을 클릭만 했을때는 정조준 진입
+			if (!(m_CameraFlag & SHOULDER) && !(m_CameraFlag & WAS_TPS))
+			{
+				m_CameraFlag |= CHANGE_FOV;
+				m_CameraFlag |= ADS;
+			}
+			else if ((m_CameraFlag & WAS_TPS))
+			{
+				m_CameraFlag &= ~WAS_TPS;
+			}
 		}
 	}
 }
@@ -572,7 +575,8 @@ void CameraController::ChangePS(bool _IsTps)
 	// TPS로 전환
 	if (_IsTps)
 	{
-		m_CameraFlag |= TPS;		
+		m_CameraFlag |= TPS;
+		m_CameraFlag &= ~WAS_TPS;
 	}
 	// FPS로 전환
 	else

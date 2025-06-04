@@ -44,6 +44,7 @@ public:
 	void SetFlag(CAM_FLAG _flag, bool _value);
 	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }
 
+	void ChangePS(bool _bTPS);
 
 private:
 	void CameraOrthgraphicMove();
@@ -62,8 +63,6 @@ private:
 
 	void UpdateTPSLean();
 	void UpdateFPSLean();
-
-	void ChangePS(bool _bTPS);
 
 public:
 	CLONE(CameraController);
