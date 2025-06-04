@@ -33,6 +33,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_GravityMaxSpeed(30.f)
 	, m_JumpPower(5.f)
 	, m_IsGround(true)
+	, m_bLean(false)
 	, m_bShoot(false)
 	, m_bCanThrow(false)
 	, m_InventoryCanvasUI(nullptr)
@@ -74,6 +75,9 @@ void PlayerCharacter::Begin()
 {
 	// TODO : ObjectReference로 변경하기
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
+
+	// Collider
+	m_HeadColl = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player Head");
 
 	// UI
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
@@ -182,12 +186,12 @@ void PlayerCharacter::PlayerView()
 	if (!bADS && !bShoulder && !m_bShoot && bTPS)
 	{
 		// Search
-		if (KEY_TAP(KEY::Z))
+		if (KEY_TAP(KEY::LCTRL))
 		{
 			OriginRotY = vCameraRot.y;
 		}
 
-		if (KEY_PRESSED(KEY::Z))
+		if (KEY_PRESSED(KEY::LCTRL))
 		{
 			// 줌 하는 동안 둘러보기 키가 눌린경우를 방지한다.
 			if (bSearch)
@@ -254,7 +258,7 @@ void PlayerCharacter::PlayerView()
 void PlayerCharacter::PlayerStance()
 {
 	// 기울이기
-	if (KEY_PRESSED(KEY::Q))
+	if (KEY_PRESSED(KEY::Q) && !m_CamScript->GetFlag(LAYING))
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
@@ -263,9 +267,21 @@ void PlayerCharacter::PlayerStance()
 			pGunScript->SetCurKey(KEY::Q);
 			pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
 		}
+
+		// Head Coll 이동
+		if (m_CamScript->GetFlag(SITTING))
+		{
+			m_HeadColl->Transform()->SetRelativePos(Vec3(15.f, 110.f, 0.f));
+		}
+		else
+		{
+			m_HeadColl->Transform()->SetRelativePos(Vec3(15.f, 170.f, 0.f));
+		}		
+		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, -20.f));
+		m_bLean = true;
 	}
 
-	if (KEY_PRESSED(KEY::E))
+	if (KEY_PRESSED(KEY::E) && !m_CamScript->GetFlag(LAYING))
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
@@ -274,11 +290,24 @@ void PlayerCharacter::PlayerStance()
 			pGunScript->SetCurKey(KEY::E);
 			pGunScript->SetCurKeyState(KEY_STATE::PRESSED);
 		}
+
+
+		// Head Coll 이동
+		if (m_CamScript->GetFlag(SITTING))
+		{
+			m_HeadColl->Transform()->SetRelativePos(Vec3(-15.f, 110.f, 0.f));
+		}
+		else
+		{
+			m_HeadColl->Transform()->SetRelativePos(Vec3(-15.f, 170.f, 0.f));
+		}
+		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 20.f));
+		m_bLean = true;
 	}
 
 
 	// 기울이기 해제
-	if (KEY_RELEASED(KEY::Q) || KEY_RELEASED(KEY::E))
+	if ((KEY_RELEASED(KEY::Q) || KEY_RELEASED(KEY::E)) && !m_CamScript->GetFlag(LAYING))
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
@@ -286,6 +315,41 @@ void PlayerCharacter::PlayerStance()
 			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
 			pGunScript->ClearKey();
 		}
+
+		// Head Coll 이동
+		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
+		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+		m_bLean = false;
+	}
+
+
+	// 앉아있는 상태
+	if (m_CamScript->GetFlag(SITTING) && m_CamScript->GetFlag(CHANGE_STANCE))
+	{
+		Collider3D()->SetScale(Vec3(555.f, 900.f, 385.f));
+		Collider3D()->SetOffset(Vec3(35.f, 550.f, 0.f));
+		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 110.f, 0.f));
+		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	}
+	
+
+	// 누워있는 상태
+	if (m_CamScript->GetFlag(LAYING) && m_CamScript->GetFlag(CHANGE_STANCE))
+	{
+		Collider3D()->SetScale(Vec3(500.f, 480.f, 1475.f));
+		Collider3D()->SetOffset(Vec3(35.f, 25.f, 250.f));
+		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 5.f, -60.f));
+		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+		m_bLean = false;
+	}
+
+	// 평상시로
+	if (!m_CamScript->GetFlag(SITTING) && !m_CamScript->GetFlag(LAYING) && m_CamScript->GetFlag(CHANGE_STANCE))
+	{
+		Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
+		Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
+		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
+		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	}
 
 }

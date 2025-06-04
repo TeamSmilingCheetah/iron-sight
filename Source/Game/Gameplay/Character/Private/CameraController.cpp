@@ -27,6 +27,7 @@ CameraController::CameraController()
 	, m_PlayerPos(Vec3(0.f,0.f,0.f))
 	, m_PlayerRot(Vec3(0.f,0.f,0.f))
 	, m_CameraFlag(0)
+	, m_CameraYOffset(0.f)
 	, m_AccTime(0.f)
 	, m_RecoilTime(0.f)
 	, m_RecoilAmount_vertical(0.f)
@@ -140,14 +141,12 @@ void CameraController::CameraPerspectiveMove()
 	{
 		// TPS의 카메라 기본위치들 변수 업데이트
 		UpdateTPSCameraAdjustments();
-
-		//
-		// 견착과 줌
-		//
+		UpdateStance();
 
 		// 줌 회복 상태가 아니거나 둘러보기 상태가 아니라면 줌을 활성화 한다.
 		if (!(m_CameraFlag & SHOULDER_RECOVER)&& !(m_CameraFlag & SEARCH) && iWeaponIdx <= SECONDARY_FIRST)
 		{
+			// 우클릭 동작 수행 (줌과 견착)
 			HandleRightClickInput();
 
 			// 견착 상태
@@ -178,7 +177,7 @@ void CameraController::CameraPerspectiveMove()
 
 		// Player 위치에 보정값을 더해 위치를 고정시킨다.
 		m_CameraPos.x = m_PlayerPos.x + m_AdjustFinalDistance * m_Player->Transform()->GetWorldDir(DIR_TYPE::FRONT).x;
-		m_CameraPos.y = m_PlayerPos.y + m_AdjustFinalHeight;
+		m_CameraPos.y = m_PlayerPos.y + m_AdjustFinalHeight + m_CameraYOffset;
 		m_CameraPos.z = m_PlayerPos.z + m_AdjustFinalDistance * m_Player->Transform()->GetWorldDir(DIR_TYPE::FRONT).z;
 
 
@@ -197,15 +196,19 @@ void CameraController::CameraPerspectiveMove()
 		// 견착모드였다면 해제한다.
 		m_CameraFlag &= ~SHOULDER;
 
+		UpdateStance();
+
 		// 카메라의 위치를 Player의 위치로 바꿔준다.
 		m_CameraPos.x = m_PlayerPos.x;
-		m_CameraPos.y = m_PlayerPos.y + 1800.f;
+		m_CameraPos.y = m_PlayerPos.y + 1800.f + m_CameraYOffset;
 		m_CameraPos.z = m_PlayerPos.z;
 
 		m_CameraRot.y = m_PlayerRot.y + 180.f;
 
-		UpdateFPSLean();
 
+		UpdateFPSLean();
+		
+		
 		// 줌 활성화
 		if (iWeaponIdx <= SECONDARY_FIRST)
 		{
@@ -227,6 +230,7 @@ void CameraController::CameraPerspectiveMove()
 	{
 		ApplyZoom(m_CameraFlag & ADS);
 	}
+
 
 
 	//
@@ -365,6 +369,7 @@ void CameraController::UpdateTPSCameraAdjustments()
 
 }
 
+
 void CameraController::HandleRightClickInput()
 {
 	// 인벤토리가 열려있을 땐 입력 방지
@@ -455,14 +460,14 @@ void CameraController::UpdateSearchMode()
 	// 줌이나 사격 동안은 둘러보기가 안된다.
 	if (!m_PlayerScript->IsShot() && !(m_CameraFlag & SHOULDER))
 	{
-		if (KEY_TAP(KEY::Z))
+		if (KEY_TAP(KEY::LCTRL))
 		{
 			// 현재의 RotY을 기억해놓는다.
 			OriginRotY = m_CameraRot.y;
 			OriginRotX = m_CameraRot.x;
 			m_CameraFlag |= SEARCH;
 		}
-		if (KEY_RELEASED(KEY::Z))
+		if (KEY_RELEASED(KEY::LCTRL))
 		{
 			// 줌 혹은 사격 도중 Z키가 눌려서 생기는 버그를 방지한다.
 			if (m_CameraFlag & SEARCH)
@@ -519,22 +524,30 @@ void CameraController::UpdateShoulderRecover()
 
 void CameraController::UpdateTPSLean()
 {
-	// 왼쪽 Lean
-	if (KEY_PRESSED(KEY::Q))
+	if (!(m_CameraFlag & LAYING))
 	{
-		m_LateralOffset = FloatLerp(m_LateralOffset, -600.f, 10.f);
+		// 왼쪽 Lean
+		if (KEY_PRESSED(KEY::Q))
+		{
+			m_LateralOffset = FloatLerp(m_LateralOffset, -600.f, 10.f);
+		}
+		// 오른쪽 Lean
+		else if (KEY_PRESSED(KEY::E))
+		{
+			m_LateralOffset = FloatLerp(m_LateralOffset, 1000.f, 10.f);
+		}
+		// 회복 (Q,E키가 안 눌린 상태면)
+		else
+		{
+			m_LateralOffset = FloatLerp(m_LateralOffset, 300.f, 10.f);
+		}
 	}
-	// 오른쪽 Lean
-	else if (KEY_PRESSED(KEY::E))
-	{
-		m_LateralOffset = FloatLerp(m_LateralOffset, 1000.f, 10.f);
-	}
-
-	// 회복 (Q,E키가 안 눌린 상태면)
 	else
 	{
-		m_LateralOffset = FloatLerp(m_LateralOffset, 300.f, 10.f);
+		m_LateralOffset = 300.f;
 	}
+
+
 }
 
 void CameraController::UpdateFPSLean()
@@ -542,24 +555,32 @@ void CameraController::UpdateFPSLean()
 	static float leanAngle = 0.f;
 	static float leanOffset = 0.f;
 
-	// 왼쪽 Lean
-	if (KEY_PRESSED(KEY::Q))
+	if (!(m_CameraFlag & LAYING))
 	{
-		leanAngle = FloatLerp(leanAngle, 10.f, 10.f);
-		leanOffset = FloatLerp(leanOffset, 30.f, 10.f);
-	}
-	// 오른쪽 Lean
-	else if (KEY_PRESSED(KEY::E))
-	{
-		leanAngle = FloatLerp(leanAngle, -10.f, 10.f);
-		leanOffset = FloatLerp(leanOffset, -30.f, 10.f);
-	}
+		// 왼쪽 Lean
+		if (KEY_PRESSED(KEY::Q))
+		{
+			leanAngle = FloatLerp(leanAngle, 10.f, 10.f);
+			leanOffset = FloatLerp(leanOffset, 30.f, 10.f);
+		}
+		// 오른쪽 Lean
+		else if (KEY_PRESSED(KEY::E))
+		{
+			leanAngle = FloatLerp(leanAngle, -10.f, 10.f);
+			leanOffset = FloatLerp(leanOffset, -30.f, 10.f);
+		}
 
-	// 회복 (Q,E키가 안 눌린 상태면)
+		// 회복 (Q,E키가 안 눌린 상태면)
+		else
+		{
+			leanAngle = FloatLerp(leanAngle, 0.f, 10.f);
+			leanOffset = FloatLerp(leanOffset, 0.f, 10.f);
+		}
+	}
 	else
 	{
-		leanAngle = FloatLerp(leanAngle, 0.f, 10.f);
-		leanOffset = FloatLerp(leanOffset, 0.f, 10.f);
+		leanAngle = 0.f;
+		leanOffset = 0.f;
 	}
 
 	m_CameraRot.z = leanAngle;
@@ -567,6 +588,64 @@ void CameraController::UpdateFPSLean()
 	m_CameraPos.x += leanOffset;
 	m_CameraPos.y += leanOffset;
 	m_CameraPos.z += leanOffset;
+}
+
+void CameraController::UpdateStance()
+{
+	static float DesPosY = 0.f;
+
+	// C키를 통해 앉기, 일어서기 수행
+	if (KEY_TAP(KEY::C))
+	{
+		// 누워있는 상태라면 해제시킨다.
+		m_CameraFlag &= ~LAYING;
+
+		m_CameraFlag |= CHANGE_STANCE;
+
+		// 현재 앉아있는 상태라면 일어서야한다.
+		if (m_CameraFlag & SITTING)
+		{
+			DesPosY = 0.f;
+		}			
+		else
+		{
+			DesPosY = -600.f;
+		}
+			
+		m_CameraFlag ^= SITTING;		
+	}
+
+	if (KEY_TAP(KEY::Z))
+	{
+		// 앉아있는 상태라면 해제시킨다.
+		m_CameraFlag &= ~SITTING;
+
+		m_CameraFlag |= CHANGE_STANCE;
+
+		// 현재 누워있는 상태라면 일어서야한다.
+		if (m_CameraFlag & LAYING)
+		{
+			DesPosY = 0.f;
+		}
+		else
+		{
+			DesPosY = -1200.f;
+		}
+
+		m_CameraFlag ^= LAYING;
+	}
+
+	if (m_CameraFlag & CHANGE_STANCE)
+	{
+		m_CameraYOffset = FloatLerp(m_CameraYOffset, DesPosY, 10.f);
+
+		if (abs(m_CameraYOffset - DesPosY) < 2.f)
+		{
+			m_CameraYOffset = DesPosY;
+			m_CameraFlag &= ~CHANGE_STANCE;
+		}
+	}
+	
 }
 
 

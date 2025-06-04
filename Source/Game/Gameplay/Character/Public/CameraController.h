@@ -15,6 +15,7 @@ class CameraController :
 
 
 	float m_CameraSpeed;
+	float m_CameraYOffset;
 
 	float m_AccTime;
 	float m_RecoilTime;
@@ -63,6 +64,9 @@ private:
 
 	void UpdateTPSLean();
 	void UpdateFPSLean();
+
+	void UpdateStance();
+
 
 public:
 	CLONE(CameraController);
