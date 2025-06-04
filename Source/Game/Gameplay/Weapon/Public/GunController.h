@@ -1,6 +1,6 @@
 #pragma once
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
-#include "Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/Character/Public/CameraController.h"
 
 class PlayerCharacter;
 
