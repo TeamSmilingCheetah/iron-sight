@@ -150,7 +150,8 @@ void WeaponController::AdjustFPSPos()
 			vPos.y -= 200.f;
 		}
 
-		if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
+		// 우클릭을 통해 정조준과 비정조준의 위치변환을 활성화한다. (투척무기는 제외)
+		if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP && m_WeaponType != WEAPON_TYPE::THROWABLE)
 		{
 			m_vDesPos = vPos;
 			m_bTransition = true;

@@ -402,9 +402,9 @@ void PlayerCharacter::PlayerAttack()
 			// 투척무기이면
 			if (THROWABLE_FIRST <= m_InventoryScript->GetCurSlotIdx() && m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
 			{
-				WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
-				pGunScript->SetCurKey(KEY::RBTN);
-				pGunScript->SetCurKeyState(KEY_STATE::TAP);
+				WeaponController* pWeaponScript = m_InventoryScript->GetCurWeaponController();
+				pWeaponScript->SetCurKey(KEY::RBTN);
+				pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
 			}
 		}
 
@@ -475,6 +475,7 @@ void PlayerCharacter::PlayerControlUI()
 			if (m_CamScript->GetFlag(WAS_TPS))
 			{
 				m_CamScript->SetFlag(ADS, false);
+				m_CamScript->SetFlag(WAS_TPS, false);
 				m_CamScript->ChangePS(true);
 			}
 			else

@@ -731,6 +731,7 @@ void InventoryController::PlayerInteractWeapon()
 			if (m_CamScript->GetFlag(WAS_TPS))
 			{
 				m_CamScript->SetFlag(ADS, false);
+				m_CamScript->SetFlag(WAS_TPS, false);
 				m_CamScript->ChangePS(true);
 			}
 			else
