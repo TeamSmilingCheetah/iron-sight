@@ -308,7 +308,7 @@ void PlayerCharacter::PlayerAttack()
 {
 	bool bSearch = m_CamScript->GetFlag(SEARCH);
 
-	if (!bSearch)
+	if (!bSearch && !m_InventoryOpened)
 	{
 		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
 
@@ -469,6 +469,21 @@ void PlayerCharacter::PlayerControlUI()
 	// 인벤토리 UI Toggle
 	if (KEY_TAP(KEY::TAB))
 	{
+		// 인벤토리가 열릴때, 상태를 초기화해준다.
+		if (!m_InventoryOpened)
+		{
+			if (m_CamScript->GetFlag(WAS_TPS))
+			{
+				m_CamScript->SetFlag(ADS, false);
+				m_CamScript->ChangePS(true);
+			}
+			else
+			{
+				m_CamScript->SetFlag(ADS, false);
+			}
+			m_CamScript->SetFlag(SHOULDER, false);
+		}
+
 		m_InventoryOpened = !m_InventoryOpened;
 		SetObjectActive(m_InventoryCanvasUI, m_InventoryOpened);
 	}

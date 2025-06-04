@@ -728,7 +728,16 @@ void InventoryController::PlayerInteractWeapon()
 				ChangeSlot(i);
 			}
 
-
+			if (m_CamScript->GetFlag(WAS_TPS))
+			{
+				m_CamScript->SetFlag(ADS, false);
+				m_CamScript->ChangePS(true);
+			}
+			else
+			{
+				m_CamScript->SetFlag(ADS, false);
+			}
+			m_CamScript->SetFlag(SHOULDER, false);
 
 			break;
 		}
