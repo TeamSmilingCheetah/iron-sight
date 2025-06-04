@@ -17,9 +17,7 @@ CTimeMgr::CTimeMgr()
 {
 }
 
-CTimeMgr::~CTimeMgr()
-{
-}
+CTimeMgr::~CTimeMgr() = default;
 
 void CTimeMgr::Init()
 {
@@ -27,34 +25,43 @@ void CTimeMgr::Init()
 	QueryPerformanceCounter(&m_PrevCount);
 }
 
+/**
+ * @brief 엔진 전체 FPS 연산 및 시간 측정
+ */
 void CTimeMgr::Tick()
 {
 	QueryPerformanceCounter(&m_CurrentCount);
 
-	m_fEngineDT = static_cast<float>(m_CurrentCount.QuadPart - m_PrevCount.QuadPart) / static_cast<
-		float>(m_Frequency.
+	// Tick 진행에 따른 시간 누적
+	m_fEngineDT = static_cast<float>(m_CurrentCount.QuadPart - m_PrevCount.QuadPart) / static_cast<float>(m_Frequency.
 		QuadPart);
-
-	// DT 보정, 60 분의 1 보다 크지 못하게 보정
-	if ((1.f / 60.f) < m_fEngineDT)
-		m_fEngineDT = (1.f / 60.f);
-
-	// 시간 누적
 	m_fEngineTime += m_fEngineDT;
-
-	// 시간 누적
 	m_Second += m_fEngineDT;
 
-	// 함수 호출횟수
-	++m_FPS;
+	// 10개 샘플링 후 평균 계산값을 출력하여 통계적으로 유의한 값 제공
+	constexpr int SampleCount = 10;
+	static float FPSSamples[SampleCount] = {0.f};
+	static int CurrentSample = 0;
 
-	if (1. < m_Second)
+	// 순환 버퍼에 FPS 정보 입력
+	FPSSamples[CurrentSample] = 1.f / m_fEngineDT;
+	CurrentSample = (CurrentSample + 1) % SampleCount;
+
+	// 평균 연산
+	float AverageFPS = 0.f;
+	for (int i = 0; i < SampleCount; ++i)
 	{
-		m_Second -= 1.;
+		AverageFPS += FPSSamples[i];
+	}
+	AverageFPS /= SampleCount;
 
+	// 0.5초마다 FPS 업데이트
+	if (m_Second >= 0.5f)
+	{
+		m_FPS = static_cast<int>(AverageFPS);
+		m_Second = 0.f;
 		// 윈도우 타이틀에 FPS 랑 DeltaTime 표시
-		swprintf_s(m_TimeInfo, L"DeltaTime : %f, FPS : %d ", m_fEngineDT, m_FPS);
-		m_FPS = 0;
+		swprintf_s(m_TimeInfo, L"DeltaTime : %.3f, FPS : %d", m_fEngineDT, m_FPS);
 	}
 
 	m_PrevCount = m_CurrentCount;
@@ -65,14 +72,24 @@ void CTimeMgr::Tick()
 		m_Time += m_fDT;
 	}
 
-
-	// GlobalData 갱신
+	// Global Data 갱신
 	g_Data.DeltaTime = m_fDT;
 	g_Data.Time = m_Time;
-
 	g_Data.DT_Engine = m_fEngineDT;
 	g_Data.Time_Engine = m_fEngineTime;
 
-	// Font Render 호출
-	CFontMgr::GetInst()->DrawFont(m_TimeInfo, 10, 20, 16, FONT_RGBA(255, 20, 20, 255));
+	// FPS에 따른 색상 변경
+	// 60fps 이상: 녹색, 30fps 이상: 노란색, 30fps 미만: 빨간색)
+	UINT color = FONT_RGBA(255, 20, 20, 255);
+	if (AverageFPS >= 60.f)
+	{
+		color = FONT_RGBA(20, 255, 20, 255);
+	}
+	else if (AverageFPS >= 30.f)
+	{
+		color = FONT_RGBA(255, 255, 20, 255);
+	}
+
+	// Tick마다 렌더링은 매번 진행
+	CFontMgr::GetInst()->DrawFont(m_TimeInfo, 10, 20, 16, color);
 }

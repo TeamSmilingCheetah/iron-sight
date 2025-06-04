@@ -33,6 +33,6 @@ public:
 			m_fDT = 0.f;
 	}
 
-	float GetDeltaTime() { return m_fDT; }
-	float GetEngineDeltaTime() { return m_fEngineDT; }
+	float GetDeltaTime() const { return m_fDT; }
+	float GetEngineDeltaTime() const { return m_fEngineDT; }
 };
