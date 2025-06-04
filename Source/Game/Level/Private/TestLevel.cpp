@@ -430,7 +430,8 @@ void TestLevel::CreateTestLevel()
 			pObj->ColliderRay()->SetTriggerTarget(true);
 
 			pObj->AddComponent(new PlayerCharacter);
-			pObj->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 1000.f));
+			pObj->Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
+			pObj->Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
 			pObj->Collider3D()->SetIndependentScale(true);
 
 			pObj->AddComponent(new InventoryController);
@@ -465,6 +466,18 @@ void TestLevel::CreateTestLevel()
 
 			pObj->AddChild(pInteractionHandler);
 
+			// Player Head Collider
+			CGameObject* pHeadColl = new CGameObject;
+			pHeadColl->SetName(L"Player Head");
+			pHeadColl->AddComponent(new CCollider3D);
+
+			pHeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
+
+			pHeadColl->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+			pHeadColl->Collider3D()->SetIndependentScale(true);
+			pHeadColl->Collider3D()->SetTrigger(false);
+
+			pObj->AddChild(pHeadColl);
 			//
 			// AKM
 			//

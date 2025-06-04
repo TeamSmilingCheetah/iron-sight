@@ -363,4 +363,7 @@ enum CAM_FLAG
 	CHANGE_FOCUS			= 1 << 8,
 	CHANGE_FOV				= 1 << 9,
 	TPS						= 1 << 10,
+	CHANGE_STANCE			= 1 << 11,
+	SITTING					= 1 << 12,
+	LAYING					= 1 << 13,
 };

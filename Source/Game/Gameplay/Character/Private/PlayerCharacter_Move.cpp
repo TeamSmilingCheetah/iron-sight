@@ -12,6 +12,7 @@
 #include "Engine/Runtime/Public/Actor/CLayer.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
+#include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
@@ -63,10 +64,24 @@ void PlayerCharacter::MoveCalcul()
 		KEY_PRESSED(KEY::W) &&
 		!(KEY_PRESSED(KEY::A)) &&
 		!(KEY_PRESSED(KEY::S)) &&
-		!(KEY_PRESSED(KEY::D)))
+		!(KEY_PRESSED(KEY::D)) &&
+		!m_CamScript->GetFlag(ADS) &&
+		!m_CamScript->GetFlag(SITTING) &&
+		!m_CamScript->GetFlag(LAYING) &&
+		!m_bLean)
 	{
 		ForceScar = 60.f;
 		m_MaxSpeed = 20.f;
+	}
+	else if (m_CamScript->GetFlag(SITTING))
+	{
+		ForceScar = 30.f;
+		m_MaxSpeed = 5.f;
+	}
+	else if (m_CamScript->GetFlag(LAYING))
+	{
+		ForceScar = 20.f;
+		m_MaxSpeed = 2.f;
 	}
 	else
 	{

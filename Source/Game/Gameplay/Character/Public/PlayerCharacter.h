@@ -27,6 +27,7 @@ private:
 	float m_JumpPower;			// 점프용
 
 	bool m_IsGround;				// 지상위에 서있는지 판정
+	bool m_bLean;
 
 	float m_MouseSensitivity;
 	float m_PaperBurnIntence;
@@ -39,6 +40,7 @@ private:
 	Ptr<CPrefab> m_Prefab;
 
 	CGameObject* m_CollObject;
+	CGameObject* m_HeadColl;
 
 	vector<Vec3> m_vecCollisionNormal; // 충돌 노말 벡터
 
