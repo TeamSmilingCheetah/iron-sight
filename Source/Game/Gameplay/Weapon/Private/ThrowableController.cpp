@@ -94,7 +94,8 @@ void ThrowableController::Tick()
 		// 부모를 없는 독립 개체로 바꿔준다.
 		AddChild(nullptr, GetOwner());
 		// 본래 Layer로 변경해준다.
-		GetOwner()->SetLayerIdx(0);
+		ChangeLayer(GetOwner(), 0);
+		//GetOwner()->SetLayerIdx(0);
 
 		// 현재 Player 위치에 무기를 다시 생성시킨다.
 		Vec3 vSpanwPos = vPlayerPos;
@@ -129,7 +130,8 @@ void ThrowableController::Tick()
 		// 부모를 없는 독립 개체로 바꿔준다.
 		AddChild(nullptr, GetOwner());
 		// 본래 Layer로 변경해준다.
-		GetOwner()->SetLayerIdx(0);
+		ChangeLayer(GetOwner(), 0);
+		//GetOwner()->SetLayerIdx(0);
 
 		// 현재 Player 위치에 무기를 다시 생성시킨다.
 		Vec3 vSpanwPos = vPlayerPos;

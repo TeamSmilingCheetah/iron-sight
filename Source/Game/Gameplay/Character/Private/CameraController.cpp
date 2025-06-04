@@ -209,7 +209,7 @@ void CameraController::CameraPerspectiveMove()
 		// 줌 활성화
 		if (iWeaponIdx <= SECONDARY_FIRST)
 		{
-			if (KEY_TAP(KEY::RBTN))
+			if (KEY_TAP(KEY::RBTN) && !m_PlayerScript->IsInventoryOpened())
 			{
 				// TPS에서 줌으로 넘어온 경우 줌을 풀때 TPS로 넘어간다.
 				if ((m_CameraFlag & WAS_TPS) && (m_CameraFlag & ADS))
@@ -576,7 +576,6 @@ void CameraController::ChangePS(bool _IsTps)
 	if (_IsTps)
 	{
 		m_CameraFlag |= TPS;
-		m_CameraFlag &= ~WAS_TPS;
 	}
 	// FPS로 전환
 	else
