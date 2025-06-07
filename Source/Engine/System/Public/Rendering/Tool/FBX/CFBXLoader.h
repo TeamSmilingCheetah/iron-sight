@@ -28,6 +28,9 @@ struct tContainer
 	Vec3 vRot;
 	Vec3 vTrans;
 
+	// control point idx -> vertex indices
+	vector<vector<int>> vecControlPointIndices;
+
 	vector<Vec3> vecPos;
 	vector<Vec3> vecTangent;
 	vector<Vec3> vecBinormal;
