@@ -194,6 +194,9 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 	Container.Resize(iVtxIndexCounter);
 	FbxVector4* pFbxPos = pFbxMesh->GetControlPoints();
 
+	// control point 개수로 초기화
+	Container.vecControlPointIndices.resize(pFbxMesh->GetControlPointsCount());
+
 	// 중복 계산을 피하기 위해 체크
 	vector<bool> vecCalculated(iVtxIndexCounter, false);
 	
@@ -220,6 +223,9 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 				GetBinormal(pFbxMesh, &Container, vtxIdx, iVtxOrder);
 				GetNormal(pFbxMesh, &Container, vtxIdx, iVtxOrder);
 				GetUV(pFbxMesh, &Container, vtxIdx, uvIndex);
+
+				// control point에 대응되는 vertex를 기록
+				Container.vecControlPointIndices[iIdx].push_back(vtxIdx);
 
 				// 계산 완료
 				vecCalculated[vtxIdx] = true;
@@ -855,9 +861,15 @@ void CFBXLoader::LoadWeightsAndIndices(FbxCluster* _pCluster
 		tWI.iBoneIdx = _iBoneIdx;
 		tWI.dWeight = _pCluster->GetControlPointWeights()[i];
 
-		int iVtxIdx = _pCluster->GetControlPointIndices()[i];
+		int iControlPointIdx = _pCluster->GetControlPointIndices()[i];
 
-		_pContainer->vecWI[iVtxIdx].push_back(tWI);
+		// control point index에 대응되는 vertex 들 모두에게 bone weight 설정
+		const vector<int>& vecVertexIndex = _pContainer->vecControlPointIndices[iControlPointIdx];
+
+		for (int idx : vecVertexIndex)
+		{
+			_pContainer->vecWI[idx].push_back(tWI);
+		}
 	}
 }
 
