@@ -30,6 +30,7 @@ using std::string;
 using std::wstring;
 using std::min;
 using std::max;
+using std::pair;
 
 #include <filesystem>
 using namespace std::filesystem;

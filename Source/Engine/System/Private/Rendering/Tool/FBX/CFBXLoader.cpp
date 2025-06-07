@@ -149,18 +149,6 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 	temp = matGlobal.GetS();
 	Container.vScale = Vec3(temp[0], temp[2], temp[1]);
 
-	int iVtxCnt = pFbxMesh->GetControlPointsCount();
-	Container.Resize(iVtxCnt);
-
-	FbxVector4* pFbxPos = pFbxMesh->GetControlPoints();
-
-	for (int i = 0; i < iVtxCnt; ++i)
-	{
-		Container.vecPos[i].x = static_cast<float>(pFbxPos[i].mData[0]);
-		Container.vecPos[i].y = static_cast<float>(pFbxPos[i].mData[2]);
-		Container.vecPos[i].z = static_cast<float>(pFbxPos[i].mData[1]);
-	}
-
 	// 폴리곤 개수
 	int iPolyCnt = pFbxMesh->GetPolygonCount();
 
@@ -169,6 +157,7 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 	Container.vecIdx.resize(iMtrlCnt);
 
 	// 정점 정보가 속한 subset 을 알기위해서...
+	// Subset들이 vertex buffer는 공유하니까 하나의 매터리얼 잡고 계산??
 	FbxGeometryElementMaterial* pMtrl = pFbxMesh->GetElementMaterial();
 
 	// 폴리곤을 구성하는 정점 개수
@@ -178,19 +167,63 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 
 	UINT arrIdx[3] = {};
 	UINT iVtxOrder = 0; // 폴리곤 순서로 접근하는 순번
+	UINT iVtxIndexCounter = 0;
 
+	// control point index와 uv index 조합으로 vertex index를 매핑
+	map<pair<int, int>, int> mapVertexIndex;
+
+	// vertex index를 미리 계산
 	for (int i = 0; i < iPolyCnt; ++i)
 	{
 		for (int j = 0; j < iPolySize; ++j)
 		{
 			// i 번째 폴리곤에, j 번째 정점
 			int iIdx = pFbxMesh->GetPolygonVertex(i, j);
-			arrIdx[j] = iIdx;
+			int uvIndex = pFbxMesh->GetTextureUVIndex(i, j);
 
-			GetTangent(pFbxMesh, &Container, iIdx, iVtxOrder);
-			GetBinormal(pFbxMesh, &Container, iIdx, iVtxOrder);
-			GetNormal(pFbxMesh, &Container, iIdx, iVtxOrder);
-			GetUV(pFbxMesh, &Container, iIdx, pFbxMesh->GetTextureUVIndex(i, j));
+			pair<int, int> vtxKey = make_pair(iIdx, uvIndex);
+
+			if (mapVertexIndex.count(vtxKey))
+				continue;
+
+			mapVertexIndex.emplace(vtxKey, iVtxIndexCounter++);
+		}
+	}
+
+	// vtx 개수로 container을 resize
+	Container.Resize(iVtxIndexCounter);
+	FbxVector4* pFbxPos = pFbxMesh->GetControlPoints();
+
+	// 중복 계산을 피하기 위해 체크
+	vector<bool> vecCalculated(iVtxIndexCounter, false);
+	
+	for (int i = 0; i < iPolyCnt; ++i)
+	{
+		for (int j = 0; j < iPolySize; ++j)
+		{
+			// i 번째 폴리곤에, j 번째 정점
+			int iIdx = pFbxMesh->GetPolygonVertex(i, j);	// control point index
+			int uvIndex = pFbxMesh->GetTextureUVIndex(i, j);
+
+			pair<int, int> vtxKey = make_pair(iIdx, uvIndex);
+
+			// vertex index 지정
+			int vtxIdx = arrIdx[j] = mapVertexIndex[vtxKey];
+
+			if (!vecCalculated[vtxIdx])
+			{
+				Container.vecPos[vtxIdx].x = static_cast<float>(pFbxPos[iIdx].mData[0]);
+				Container.vecPos[vtxIdx].y = static_cast<float>(pFbxPos[iIdx].mData[2]);
+				Container.vecPos[vtxIdx].z = static_cast<float>(pFbxPos[iIdx].mData[1]);
+
+				GetTangent(pFbxMesh, &Container, vtxIdx, iVtxOrder);
+				GetBinormal(pFbxMesh, &Container, vtxIdx, iVtxOrder);
+				GetNormal(pFbxMesh, &Container, vtxIdx, iVtxOrder);
+				GetUV(pFbxMesh, &Container, vtxIdx, uvIndex);
+
+				// 계산 완료
+				vecCalculated[vtxIdx] = true;
+			}
 
 			++iVtxOrder;
 		}
@@ -344,14 +377,14 @@ void CFBXLoader::GetUV(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int 
 {
 	FbxGeometryElementUV* pUV = _pMesh->GetElementUV();
 
-	UINT iUVIdx = 0;
-	if (pUV->GetReferenceMode() == FbxGeometryElement::eDirect)
-		iUVIdx = _iIdx;
-	else
-		iUVIdx = pUV->GetIndexArray().GetAt(_iIdx);
+	assert(pUV->GetMappingMode() == FbxGeometryElement::eByPolygonVertex);
 
-	iUVIdx = _iUVIndex;
-	FbxVector2 vUV = pUV->GetDirectArray().GetAt(iUVIdx);
+	UINT refMode = pUV->GetReferenceMode();
+
+	assert(refMode == FbxGeometryElement::eDirect
+		|| refMode == FbxGeometryElement::eIndexToDirect);
+
+	FbxVector2 vUV = pUV->GetDirectArray().GetAt(_iUVIndex);
 	_pContainer->vecUV[_iIdx].x = static_cast<float>(vUV.mData[0]);
 	_pContainer->vecUV[_iIdx].y = 1.f - static_cast<float>(vUV.mData[1]); // fbx uv 좌표계는 좌하단이 0,0
 }
