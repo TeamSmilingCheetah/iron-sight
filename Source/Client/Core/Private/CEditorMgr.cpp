@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -50,4 +50,14 @@ void CEditorMgr::Progress()
 	{
 		m_vecEditorObj[i]->FinalTick_Editor();
 	}
+
+	for (size_t i = 0; i < m_vecEditorObj.size(); ++i)
+	{
+		m_vecEditorObj[i]->Render_Editor();
+	}
+}
+
+void CEditorMgr::CreateEditorObj(CGameObjectEx* _EditorObj)
+{
+	m_vecEditorObj.push_back(_EditorObj);
 }

@@ -251,6 +251,23 @@ void CGameObject::DeleteScript(wstring& _ScriptName)
 		}
 	}
 }
+UINT CGameObject::GetParentObjectID() const
+{
+	UINT ParentID;
+
+
+	if (m_Parent != nullptr)
+	{
+		// 재귀 순회로 부모 ID검색
+		ParentID = m_Parent->GetParentObjectID();
+	}
+	else
+	{
+		ParentID = m_ObjectID;
+	}
+
+	return ParentID;
+}
 void CGameObject::SetObjectID(UINT _ID)
 {
 	m_ObjectID = _ID;

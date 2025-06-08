@@ -52,6 +52,14 @@ CGameObject* CLevelMgr::FindObjectByName(const wstring& _Name)
 	return m_CurLevel->FindObjectByName(_Name);
 }
 
+CGameObject* CLevelMgr::FindObjectByID(UINT _ID)
+{
+	if (nullptr == m_CurLevel)
+		return nullptr;
+
+	return m_CurLevel->FindObjectByObjectID(_ID);
+}
+
 void CLevelMgr::ChangeLevelState(LEVEL_STATE _NextState)
 {
 	assert(m_CurLevel);

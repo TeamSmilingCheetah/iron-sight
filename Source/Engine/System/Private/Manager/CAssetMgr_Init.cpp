@@ -197,6 +197,21 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	GetInst()->AddAsset(L"PostProcessShader", pShader);
 
+	// ===========
+	// TargetObjectPostProcess
+	// ===========
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"Shader\\targetpost.fx", "VS_TargetPost");
+	pShader->CreatePixelShader(L"Shader\\targetpost.fx", "PS_TargetPost");
+
+	pShader->SetBSState(BS_TYPE::DEFAULT);
+	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+
+	CAssetMgr::GetInst()->AddAsset(L"TargetPostShader", pShader);
+
 
 	// ===========
 	// Distortion
@@ -373,6 +388,12 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl->SetName(L"PostProcessMtrl");
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"PostProcessShader"));
 	pMtrl->SetTexParam(TEX_0, FindAsset<CTexture>(L"PostProcessTex"));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// TargetPostProcessMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"TargetPostProcessMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"TargetPostShader"));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// DistortionMtrl

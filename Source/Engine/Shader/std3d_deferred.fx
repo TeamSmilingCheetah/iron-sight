@@ -4,6 +4,9 @@
 #include "value.fx"
 #include "func.fx"
 
+// g_int_3 : ObjectID
+// g_int_2 : ParentID
+
 struct VS_IN
 {
     float3 vPos : POSITION;
@@ -146,7 +149,7 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
     output.Normal = float4(vNormal, 1.f);
     output.Position = float4(_in.vViewPos, 1.f);
     output.Emissive = (float4) 0.f;
-    output.Data = (float4) 0.f;
+    output.Data = float4((float) g_int_2, (float) g_int_3, 0.f, 0.f);
 
     return output;
 }

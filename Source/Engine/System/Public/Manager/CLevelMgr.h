@@ -22,6 +22,7 @@ public:
 	CLevel* GetCurrentLevel() { return m_CurLevel; }
 	void RegisterObject(class CGameObject* _Object);
 	CGameObject* FindObjectByName(const wstring& _Name);
+	CGameObject* FindObjectByID(UINT _ID);
 	void ChangeLevelState(LEVEL_STATE _NextState);
 	void ChangeLevel(CLevel* _NextLevel, LEVEL_STATE _NextLevelState);
 

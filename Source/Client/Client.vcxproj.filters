@@ -70,9 +70,6 @@
     <ClInclude Include="Core\Public\CEditorMgr.h">
       <Filter>02. EditorMgr</Filter>
     </ClInclude>
-    <ClInclude Include="Script\Public\CGameObjectEx.h">
-      <Filter>02. EditorMgr\GameObjectEx</Filter>
-    </ClInclude>
     <ClInclude Include="Script\Public\CEditorCamScript.h">
       <Filter>02. EditorMgr\EditorCamScript</Filter>
     </ClInclude>
@@ -170,6 +167,12 @@
     </ClInclude>
     <ClInclude Include="UI\Public\Component\ParticleUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\ParticleUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Public\TargetOBUI.h">
+      <Filter>03. EditorUI\TargetOBUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\Public\CGameObjectEx.h">
+      <Filter>02. EditorMgr\GameObjectEx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +324,9 @@
     </Filter>
     <Filter Include="03. EditorUI\Inspector\ComponentUI\ParticleUI">
       <UniqueIdentifier>{218f66b8-61ed-43d0-90bc-484954619683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. EditorUI\TargetOBUI">
+      <UniqueIdentifier>{8c112495-7643-4f78-9c4c-747927c5fb75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -487,6 +493,9 @@
     </ClCompile>
     <ClCompile Include="UI\Private\Component\ParticleUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\ParticleUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Private\TargetOBUI.cpp">
+      <Filter>03. EditorUI\TargetOBUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
