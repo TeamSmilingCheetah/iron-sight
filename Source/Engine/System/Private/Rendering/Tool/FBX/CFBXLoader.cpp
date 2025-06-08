@@ -141,13 +141,13 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 	// translation과 scale은 y <-> z 바꿔서 저장
 	// rotationdms y <-> -z 바꿔서 저장. 오른손 좌표계 -> 왼손 좌표계이므로
 	FbxVector4 temp = matGlobal.GetT();
-	Container.vTrans = Vec3(temp[0], temp[2], temp[1]);
+	Container.vTrans = Vec3(static_cast<float>(temp[0]), static_cast<float>(temp[2]), static_cast<float>(temp[1]));
 
 	temp = matGlobal.GetR();
-	Container.vRot = Vec3(temp[0], -temp[2], temp[1]);
+	Container.vRot = Vec3(static_cast<float>(temp[0]), static_cast<float>(-temp[2]), static_cast<float>(temp[1]));
 
 	temp = matGlobal.GetS();
-	Container.vScale = Vec3(temp[0], temp[2], temp[1]);
+	Container.vScale = Vec3(static_cast<float>(temp[0]), static_cast<float>(temp[2]), static_cast<float>(temp[1]));
 
 	// 폴리곤 개수
 	int iPolyCnt = pFbxMesh->GetPolygonCount();
@@ -199,7 +199,7 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 
 	// 중복 계산을 피하기 위해 체크
 	vector<bool> vecCalculated(iVtxIndexCounter, false);
-	
+
 	for (int i = 0; i < iPolyCnt; ++i)
 	{
 		for (int j = 0; j < iPolySize; ++j)
@@ -471,7 +471,6 @@ void CFBXLoader::LoadTexture()
 				path_filename = vecPath[k].filename();
 				path_dest = path_fbx_texture.wstring() + path_filename.wstring();
 
-				
 				if (false == exists(path_dest))
 				{
 					if (false == exists(path_origin))
