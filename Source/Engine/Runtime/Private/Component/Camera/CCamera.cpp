@@ -571,6 +571,10 @@ void CCamera::render_ui()
 	// Priority 역순으로 canvasUI 인덱스부터 다음 canvasUI 직전까지 렌더함. O(n)
 	for (int i = static_cast<int>(canvasIdx.size()) - 1; i >= 0; --i)
 	{
+		// ui가 존재하지 않아서 render 할 수 없는 상황에 render 호출하는 상황 방지
+		if (m_vecUI.size() <= canvasIdx[i] + 1)
+			continue;
+
 		m_vecUI[canvasIdx[i]]->Render();
 
 		for (size_t j = canvasIdx[i] + 1; j < m_vecUI.size(); ++j)
@@ -622,16 +626,36 @@ void CCamera::LayerCheck(int _LayerIdx)
 bool CCamera::IsObjectInFrustum(const CGameObject* _Object)
 {
 	if (!_Object->Transform()->FrustumCheckRequired())
+	{
 		return true;
+	}
 
-	// DrawDebugSphere(Vec4(0.f, 1.f, 0.f, 1.f)
-	// 				, _Object->Transform()->GetWorldPos()
-	// 				, _Object->Transform()->GetFrustumRadius(), false, 0.f);
+	// 오브젝트의 바운딩 박스 가져오기
+	// TODO(KHJ): 일단 bounding box 계산하지 못했다면 무조건 rendering, 개선 여지 확인할 것
+	Vec3 vMin, vMax;
+	if (!_Object->CalculateBoundingBox(vMin, vMax))
+	{
+		return false;
+	}
 
-	Vec3 vWorldPos = _Object->Transform()->GetWorldPos();
+	// AABB의 8개 꼭지점
+	Vec3 vPoints[8] = {
+		Vec3(vMin.x, vMin.y, vMin.z), // 0: 좌하단
+		Vec3(vMax.x, vMin.y, vMin.z), // 1: 우하단
+		Vec3(vMax.x, vMax.y, vMin.z), // 2: 우상단
+		Vec3(vMin.x, vMax.y, vMin.z), // 3: 좌상단
+		Vec3(vMin.x, vMin.y, vMax.z), // 4: 좌하단(후면)
+		Vec3(vMax.x, vMin.y, vMax.z), // 5: 우하단(후면)
+		Vec3(vMax.x, vMax.y, vMax.z), // 6: 우상단(후면)
+		Vec3(vMin.x, vMax.y, vMax.z)  // 7: 좌상단(후면)
+	};
 
-	if (m_Frustum->IsInFrustum(vWorldPos))
-		return true;
+	// AABB의 8개 꼭지점 중 하나라도 프러스텀 내부에 있으면 렌더링
+	for (int i = 0; i < 8; ++i)
+	{
+		if (m_Frustum->IsInFrustum(vPoints[i]))
+			return true;
+	}
 
 	return false;
 }

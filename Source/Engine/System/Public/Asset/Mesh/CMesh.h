@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Engine/System/Public/Asset/Base/CAsset.h"
-#include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 class CStructuredBuffer;
 
@@ -24,6 +23,10 @@ private:
 	// 하나의 버텍스 버퍼에 여러개의 인덱스 버퍼가 연결
 	vector<tIndexInfo> m_vecIdxInfo;
 
+	// 로컬 바운드 정보
+	Vec3 m_BoundMin;
+	Vec3 m_BoundMax;
+
 private:
 	int Load(const wstring& _RelativePath) override;
 
@@ -36,6 +39,10 @@ public:
 	UINT GetVertexCount() const { return m_VtxCount; }
 	UINT GetSubsetCount() const { return static_cast<UINT>(m_vecIdxInfo.size()); }
 	void* GetVtxSysMem() const { return m_VtxSysMem; }
+
+	// Local Bound
+	void GetLocalBound(Vec3& _Min, Vec3& _Max) const;
+	void CalculateLocalBound();
 
 	// Binding
 	void Binding(UINT _Subset);
