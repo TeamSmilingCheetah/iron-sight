@@ -75,16 +75,19 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 		}
 
 		// structuredbuffer 만들어두기
-		pAnim->m_BoneFrameData = new CStructuredBuffer;
-		pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
-		    , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
-		    , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
+		pAnim->CreateBoneFrameSB();
+		//pAnim->m_BoneFrameData = new CStructuredBuffer;
+		//pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
+		//    , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
+		//    , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
+
+
+		wstring strFilePath = L"Animation\\" + pAnim->GetName();
 
 		// AssetMgr 등록 (key 값 설정)
-		CAssetMgr::GetInst()->AddAsset<CAnimation>(pAnim->GetName(), pAnim);
+		CAssetMgr::GetInst()->AddAsset<CAnimation>(strFilePath, pAnim);
 
 		// Save (relative path 설정)
-		wstring strFilePath = L"Animation\\" + pAnim->GetName();
 		pAnim->Save(strFilePath);
 
 		// Return 벡터에 추가
@@ -164,12 +167,17 @@ int CAnimation::Load(const wstring& _strFilePath)
 		fread(&m_vecKeyFrames[i], sizeof(tFrameTrans), 1, pFile);
 
 	// Structured Buffer 생성
-	m_BoneFrameData = new CStructuredBuffer;
-	m_BoneFrameData->Create(sizeof(tFrameTrans)
-	    , m_Skeleton->GetBoneCount() * m_FrameLength
-	    , SRV_ONLY, false, m_vecKeyFrames.data());
+	CreateBoneFrameSB();
 
 	fclose(pFile);
 
 	return S_OK;
+}
+
+void CAnimation::CreateBoneFrameSB()
+{
+	m_BoneFrameData = new CStructuredBuffer;
+	m_BoneFrameData->Create(sizeof(tFrameTrans)
+		, m_Skeleton->GetBoneCount() * m_FrameLength
+		, SRV_ONLY, false, m_vecKeyFrames.data());
 }

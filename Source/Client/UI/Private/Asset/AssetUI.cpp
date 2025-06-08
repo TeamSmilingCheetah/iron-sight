@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Client/UI/Public/Asset/AssetUI.h"
 
+#include "Engine/System/Public/Asset/Base/assets.h"
+
 AssetUI::AssetUI(const string& _ID, ASSET_TYPE _Type)
 	: EditorUI(_ID)
 	  , m_Type(_Type)
@@ -26,6 +28,19 @@ void AssetUI::AssetTitle()
 
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
+}
+
+void AssetUI::SaveButton()
+{
+	// Engine Resource는 저장할 수 없다.
+	if (m_TargetAsset->IsEngineAsset())
+		return;
+
+	if (ImGui::Button("SAVE"))
+	{
+		wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + m_TargetAsset->GetKey();
+		m_TargetAsset->Save(strFilePath);
+	}
 }
 
 void AssetUI::Deactivate()

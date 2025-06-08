@@ -209,8 +209,8 @@ void Outliner::ChangeName_Outliner(DWORD_PTR _TreeNode)
 	{
 		ImGui::OpenPopup("Name_Setting_popup");
 
-		TreeNode* pNode = (TreeNode*)_TreeNode;
-		m_TargetObject = (CGameObject*)pNode->GetData();
+		TreeNode* pNode = reinterpret_cast<TreeNode*>(_TreeNode);
+		m_TargetObject = reinterpret_cast<CGameObject*>(pNode->GetData());
 	}
 
 	if (ImGui::BeginPopup("Name_Setting_popup"))

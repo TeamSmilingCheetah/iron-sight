@@ -15,6 +15,7 @@ public:
 
 protected:
 	void AssetTitle();
+	void SaveButton();
 
 	void Deactivate() override;
 

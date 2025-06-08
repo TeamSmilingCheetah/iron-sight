@@ -14,6 +14,7 @@ ContentUI::ContentUI()
 	m_Tree = static_cast<TreeUI*>(AddChildUI(new TreeUI));
 	m_Tree->SetName("ContentUI");
 	m_Tree->ShowRoot(false);
+
 	m_Tree->AddDynamicSelect(this, static_cast<EUI_DELEGATE_1>(&ContentUI::SelectAsset));
 
 	// Content 폴더안에 있는 모든 에셋을 메모리로 로딩
@@ -92,6 +93,9 @@ void ContentUI::ReloadContent()
 			break;
 		case FLIPBOOK:
 			CAssetMgr::GetInst()->Load<CFlipbook>(m_vecAssetPath[i], m_vecAssetPath[i]);
+			break;
+		case ANIMATION:
+			CAssetMgr::GetInst()->Load<CAnimation>(m_vecAssetPath[i], m_vecAssetPath[i]);
 			break;
 		case SPRITE:
 			CAssetMgr::GetInst()->Load<CSprite>(m_vecAssetPath[i], m_vecAssetPath[i]);
@@ -193,12 +197,22 @@ ASSET_TYPE ContentUI::GetAssetType(const wstring& _Path)
 		return PREFAB;
 	if (".flip" == Ext)
 		return FLIPBOOK;
+	if (".anim" == Ext)
+		return ANIMATION;
 	if (".sprite" == Ext)
 		return SPRITE;
 	if (".mtrl" == Ext)
 		return MATERIAL;
 
 	return END;
+}
+
+void ContentUI::ChangeName_ContentUI(DWORD_PTR _TreeNode)
+{
+}
+
+void ContentUI::CopyAsset(DWORD_PTR _TreeNode)
+{
 }
 
 void ContentUI::SelectAsset(DWORD_PTR _TreeNode)

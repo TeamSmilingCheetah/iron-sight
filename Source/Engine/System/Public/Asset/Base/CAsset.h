@@ -17,14 +17,15 @@ public:
 	void SetKey(const wstring& _Key) { m_Key = _Key; }
 	void SetRelativePath(const wstring& _Path) { m_RelativePath = _Path; }
 
-	ASSET_TYPE GetAssetType() { return m_Type; }
-	int GetRefCount() { return m_RefCount; }
+	ASSET_TYPE GetAssetType() const { return m_Type; }
+	int GetRefCount() const { return m_RefCount; }
 
-	bool IsEngineAsset() { return m_EngineRes; }
+	bool IsEngineAsset() const { return m_EngineRes; }
+
+	virtual int Save(const wstring& _strFilePath) = 0;
 
 private:
 	virtual int Load(const wstring& _strFilePath) = 0;
-	virtual int Save(const wstring& _strFilePath) = 0;
 
 	void AddRef() { ++m_RefCount; }
 
