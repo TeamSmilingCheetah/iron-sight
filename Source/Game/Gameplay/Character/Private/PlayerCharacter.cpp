@@ -28,7 +28,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_GravityVelocity(0.f)
 	, m_Mass(3.f)
 	, m_Friction(100.f)
-	, m_MaxSpeed(10.f)
+	, m_MaxSpeed(50.f)
 	, m_GravityAccel(10.f)
 	, m_GravityMaxSpeed(30.f)
 	, m_JumpPower(5.f)
@@ -276,7 +276,7 @@ void PlayerCharacter::PlayerStance()
 		else
 		{
 			m_HeadColl->Transform()->SetRelativePos(Vec3(15.f, 170.f, 0.f));
-		}		
+		}
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, -20.f));
 		m_bLean = true;
 	}
@@ -331,7 +331,7 @@ void PlayerCharacter::PlayerStance()
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 110.f, 0.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	}
-	
+
 
 	// 누워있는 상태
 	if (m_CamScript->GetFlag(LAYING) && m_CamScript->GetFlag(CHANGE_STANCE))
