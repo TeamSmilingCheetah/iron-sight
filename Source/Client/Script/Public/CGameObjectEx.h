@@ -6,4 +6,5 @@ class CGameObjectEx :
 {
 public:
 	void FinalTick_Editor();
+	void Render_Editor();
 };

@@ -12,4 +12,7 @@ class CEditorMgr :
 public:
 	void Init();
 	void Progress();
+
+	void CreateEditorObj(CGameObjectEx* _EditorObj);
+
 };
