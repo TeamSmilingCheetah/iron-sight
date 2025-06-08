@@ -791,6 +791,12 @@
   <ItemGroup>
     <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\targetpost.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

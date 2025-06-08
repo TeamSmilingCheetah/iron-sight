@@ -11,6 +11,7 @@
 #include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
 #include "Client/UI/Public/SpriteEditor/SE_Detail.h"
 #include "Client/UI/Public/PrefabEditor/PrefabEditor.h"
+#include "Client/UI/Public/TargetOBUI.h"
 
 #include "Client/imgui/imgui.h"
 #include "Client/imgui/imgui_impl_dx11.h"
@@ -228,4 +229,10 @@ void CImGuiMgr::CreateEditorUI()
 	pUI = new AddObjectUI;
 	pUI->SetActive(false);
 	m_mapUI.insert(make_pair(pUI->GetID(), pUI));
+
+	// TargetObject
+	TargetOBUI* pTargetObject = new TargetOBUI;
+	pTargetObject->Init();
+	pTargetObject->SetActive(true);
+	m_mapUI.insert(make_pair(pTargetObject->GetID(), pTargetObject));
 }

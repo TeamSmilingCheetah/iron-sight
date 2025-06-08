@@ -47,6 +47,7 @@ public:
 	void DeleteScript(wstring& _ScriptName);
 
 	UINT GetObjectID() const { return m_ObjectID; }
+	UINT GetParentObjectID() const;
 	void SetObjectID(UINT _ID);
 
 	const unordered_map<SCRIPT_TYPE, UINT>& GetScriptShortcut() const { return m_scriptShortcut; }

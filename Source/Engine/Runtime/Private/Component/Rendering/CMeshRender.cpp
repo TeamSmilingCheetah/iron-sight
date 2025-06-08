@@ -66,6 +66,8 @@ void CMeshRender::Render()
 			continue;
 
 		// 사용할 쉐이더
+		GetMaterial(i)->SetScalarParam(INT_2, (int)GetOwner()->GetParentObjectID());	// 부모 오브젝트 id저장
+		GetMaterial(i)->SetScalarParam(INT_3, (int)GetOwner()->GetObjectID());	// 오브젝트 id저장
 		GetMaterial(i)->Binding();
 
 		// 렌더링
