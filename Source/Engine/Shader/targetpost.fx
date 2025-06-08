@@ -105,7 +105,7 @@ VS_OUT VS_TargetPost(VS_IN _in)
 float4 PS_TargetPost(VS_OUT _in) : SV_Target
 {
     float4 vColor = (float4) 0.f;
-    int targetID = g_int_0;
+    uint targetID = g_int_0;
     
     if (g_btex_0)
     {
