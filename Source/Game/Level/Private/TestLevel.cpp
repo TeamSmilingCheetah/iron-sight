@@ -779,7 +779,6 @@ void TestLevel::CreateTestLevel()
 	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
 	pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
 	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	pObject->Transform()->SetFrustumRadius(750.f);
 
 	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
 
@@ -850,7 +849,7 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
-	//
-	//pLevel->AddObject(1, testojb, false);
+	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+
+	pLevel->AddObject(1, testojb, false);
 }

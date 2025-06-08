@@ -4,12 +4,15 @@
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
+#include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 CMesh::CMesh(bool _bEngineRes)
 	: CAsset(MESH, _bEngineRes)
 	, m_VBDesc{}
 	, m_VtxCount(0)
 	, m_VtxSysMem(nullptr)
+	, m_BoundMin(FLT_MAX, FLT_MAX, FLT_MAX)
+	, m_BoundMax(-FLT_MAX, -FLT_MAX, -FLT_MAX)
 {
 }
 
@@ -110,6 +113,9 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int _ContainerIdx)
 		pMesh->m_vecIdxInfo.push_back(info);
 	}
 
+	// Local Bound 계산
+	pMesh->CalculateLocalBound();
+
 	return pMesh;
 }
 
@@ -119,7 +125,6 @@ int CMesh::Create(Vtx* _Vtx, UINT _VtxCount, UINT* _pIdx, UINT _IdxCount)
 
 	m_VtxSysMem = new Vtx[m_VtxCount];
 	memcpy(m_VtxSysMem, _Vtx, sizeof(Vtx) * m_VtxCount);
-
 
 	// 정점 데이터를 SysMem -> GPU Mem 로 이동
 	m_VBDesc.ByteWidth = sizeof(Vtx) * _VtxCount;
@@ -165,6 +170,9 @@ int CMesh::Create(Vtx* _Vtx, UINT _VtxCount, UINT* _pIdx, UINT _IdxCount)
 	memcpy(IndexInfo.IdxSysMem, _pIdx, sizeof(UINT) * IndexInfo.IdxCount);
 
 	m_vecIdxInfo.push_back(IndexInfo);
+
+	// Local Bound 계산
+	CalculateLocalBound();
 
 	return S_OK;
 }
@@ -315,5 +323,43 @@ int CMesh::Load(const wstring& _strFilePath)
 	}
 	fclose(pFile);
 
+	// Local Bound 세팅
+	CalculateLocalBound();
+
 	return S_OK;
+}
+
+void CMesh::CalculateLocalBound()
+{
+	if (!m_VtxSysMem || !m_VtxCount)
+	{
+		return;
+	}
+
+	// 모든 버텍스에 대해 바운딩 박스 계산
+	for (UINT i = 0; i < m_VtxCount; ++i)
+	{
+		// 최소값 갱신
+		m_BoundMin.x = min(m_BoundMin.x, m_VtxSysMem[i].vPos.x);
+		m_BoundMin.y = min(m_BoundMin.y, m_VtxSysMem[i].vPos.y);
+		m_BoundMin.z = min(m_BoundMin.z, m_VtxSysMem[i].vPos.z);
+
+		// 최대값 갱신
+		m_BoundMax.x = max(m_BoundMax.x, m_VtxSysMem[i].vPos.x);
+		m_BoundMax.y = max(m_BoundMax.y, m_VtxSysMem[i].vPos.y);
+		m_BoundMax.z = max(m_BoundMax.z, m_VtxSysMem[i].vPos.z);
+	}
+
+	// 모든 정점을 순회하고도 갱신이 이루어지지 않은 경우
+	// TODO(KHJ): 완벽한 갱신 요소 체크는 아님, 필요 시에 빡빡하게 설정할 것
+	if (m_BoundMin.x == FLT_MAX || m_BoundMax.x == -FLT_MAX)
+	{
+		assert("If The Update Is Not Done Even After Traversing All Vertices, Enter This Point.");
+	}
+}
+
+void CMesh::GetLocalBound(Vec3& _Min, Vec3& _Max) const
+{
+	_Min = m_BoundMin;
+	_Max = m_BoundMax;
 }

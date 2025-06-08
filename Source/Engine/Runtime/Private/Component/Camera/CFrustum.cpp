@@ -24,9 +24,7 @@ CFrustum::CFrustum()
     m_ProjPos[7] = Vec3(-1.f, -1.f, 1.f);
 }
 
-CFrustum::~CFrustum()
-{
-}
+CFrustum::~CFrustum() = default;
 
 void CFrustum::FinalTick()
 {
@@ -50,38 +48,28 @@ void CFrustum::FinalTick()
     //  | /    | /
     //  |/	   |/
     //  3 ---- 2
-    m_Face[FT_NEAR] = XMPlaneFromPoints(vWorldPos[0], vWorldPos[1], vWorldPos[2]);
-    m_Face[FT_FAR] = XMPlaneFromPoints(vWorldPos[5], vWorldPos[4], vWorldPos[7]);
-    m_Face[FT_RIGHT] = XMPlaneFromPoints(vWorldPos[1], vWorldPos[5], vWorldPos[6]);
-    m_Face[FT_LEFT] = XMPlaneFromPoints(vWorldPos[7], vWorldPos[4], vWorldPos[0]);
-    m_Face[FT_TOP] = XMPlaneFromPoints(vWorldPos[4], vWorldPos[5], vWorldPos[1]);
-    m_Face[FT_BOT] = XMPlaneFromPoints(vWorldPos[7], vWorldPos[2], vWorldPos[6]);
+    m_Face[static_cast<int>(FACE_TYPE::FT_NEAR)] = XMPlaneFromPoints(vWorldPos[0], vWorldPos[1], vWorldPos[2]);
+    m_Face[static_cast<int>(FACE_TYPE::FT_FAR)] = XMPlaneFromPoints(vWorldPos[5], vWorldPos[4], vWorldPos[7]);
+    m_Face[static_cast<int>(FACE_TYPE::FT_RIGHT)] = XMPlaneFromPoints(vWorldPos[1], vWorldPos[5], vWorldPos[6]);
+    m_Face[static_cast<int>(FACE_TYPE::FT_LEFT)] = XMPlaneFromPoints(vWorldPos[7], vWorldPos[4], vWorldPos[0]);
+    m_Face[static_cast<int>(FACE_TYPE::FT_TOP)] = XMPlaneFromPoints(vWorldPos[4], vWorldPos[5], vWorldPos[1]);
+    m_Face[static_cast<int>(FACE_TYPE::FT_BOT)] = XMPlaneFromPoints(vWorldPos[7], vWorldPos[2], vWorldPos[6]);
 }
 
-bool CFrustum::FrustumCheck(Vec3 _WorldPos)
+/**
+ * @brief 단일 지점이 frustum 내에 위치하는지 판별하는 함수
+ *
+ * @param _WorldPos world 좌표
+ * @return 해당 좌표가 frustum 내에 있는지 판별한 결과를 반환
+ */
+bool CFrustum::IsInFrustum(const Vec3& _WorldPos)
 {
-    for (int i = 0; i < FT_END; ++i)
+    for (int i = 0; i < static_cast<int>(FACE_TYPE::END); ++i)
     {
         auto vNormal = Vec3(m_Face[i].x, m_Face[i].y, m_Face[i].z);
 
         // ax + by + cz + d > 0
         if (vNormal.Dot(_WorldPos) + m_Face[i].w > 0)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool CFrustum::FrustumCheckSphere(Vec3 _WorldCenter, float _Radius)
-{
-    for (int i = 0; i < FT_END; ++i)
-    {
-        auto vNormal = Vec3(m_Face[i].x, m_Face[i].y, m_Face[i].z);
-
-        // ax + by + cz + d > r
-        if (vNormal.Dot(_WorldCenter) + m_Face[i].w > _Radius)
         {
             return false;
         }

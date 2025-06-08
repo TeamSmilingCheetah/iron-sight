@@ -95,7 +95,7 @@ public:
 	void render_clear();
 
 private:
-	bool FrustumCheck(CGameObject* _Object);
+	bool IsObjectInFrustum(const CGameObject* _Object);
 	void CalcRay();
 
 public:

@@ -367,3 +367,16 @@ enum CAM_FLAG
 	SITTING					= 1 << 12,
 	LAYING					= 1 << 13,
 };
+
+// FACE TYPE
+enum class FACE_TYPE : UINT8
+{
+	FT_NEAR,
+	FT_FAR,
+	FT_LEFT,
+	FT_RIGHT,
+	FT_TOP,
+	FT_BOT,
+
+	END,
+};

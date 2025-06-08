@@ -76,12 +76,9 @@ public:
 		m_NextLayerIdx = _Idx;
 	}
 
-
 public:
 	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
 	const vector<CScript*>& GetScripts() const { return m_vecScripts; }
-	//CScript* GetScript(SCRIPT_TYPE _Type) const;
-	CScript* GetParentScript(SCRIPT_TYPE _Type) const;
 
 	CGameObject* GetChildByName(const wstring& _Name);
 
@@ -102,6 +99,8 @@ public:
 	class CLandScape* LandScape() const { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
 	class CUI* UI() const { return (CUI*)GetComponent(COMPONENT_TYPE::UI); }
 	class CUIRender* UIRender() const { return (CUIRender*)GetComponent(COMPONENT_TYPE::UIRENDER); }
+
+	bool CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const;
 
 private:
 	void DisconnectWithLayer();

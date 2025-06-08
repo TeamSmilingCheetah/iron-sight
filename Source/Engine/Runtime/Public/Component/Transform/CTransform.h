@@ -16,10 +16,8 @@ class CTransform :
 	Matrix m_matWorld;
 	Matrix m_matWorldInv;
 
-	float m_FrustumRadius; // Frustum 체크할 때 사용할 반경 정보
-
 	bool m_IndependentScale;
-	bool m_FrustumCheck;
+	bool m_FrustumCheckRequired;
 
 	bool m_ManualUpdate;	// true: transform을 외부에서 세팅받음. final tick을 skip 함.
 
@@ -52,11 +50,8 @@ public:
 
 	void Binding();
 
-	void SetFrustumCheck(bool _Check) { m_FrustumCheck = _Check; }
-	bool IsFrustumCheck() const { return m_FrustumCheck; }
-
-	float GetFrustumRadius() const { return m_FrustumRadius; }
-	void SetFrustumRadius(float _Radius) { m_FrustumRadius = _Radius; }
+	void SetFrustumCheck(bool _Check) { m_FrustumCheckRequired = _Check; }
+	bool FrustumCheckRequired() const { return m_FrustumCheckRequired; }
 
 	bool IsIndependentScale() const { return m_IndependentScale; }
 

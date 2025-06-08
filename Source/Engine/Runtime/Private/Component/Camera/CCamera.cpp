@@ -13,6 +13,8 @@
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -131,9 +133,8 @@ void CCamera::SortObject()
 					continue;
 				}
 
-
-				// FrustumCheck
-				if (false == FrustumCheck(vecObjects[j]))
+				// 오브젝트가 Frustum 내에 존재하지 않는다면 그대로 Pass
+				if (!IsObjectInFrustum(vecObjects[j]))
 				{
 					continue;
 				}
@@ -570,6 +571,10 @@ void CCamera::render_ui()
 	// Priority 역순으로 canvasUI 인덱스부터 다음 canvasUI 직전까지 렌더함. O(n)
 	for (int i = static_cast<int>(canvasIdx.size()) - 1; i >= 0; --i)
 	{
+		// ui가 존재하지 않아서 render 할 수 없는 상황에 render 호출하는 상황 방지
+		if (m_vecUI.size() <= canvasIdx[i] + 1)
+			continue;
+
 		m_vecUI[canvasIdx[i]]->Render();
 
 		for (size_t j = canvasIdx[i] + 1; j < m_vecUI.size(); ++j)
@@ -612,20 +617,45 @@ void CCamera::LayerCheck(int _LayerIdx)
 	}
 }
 
-bool CCamera::FrustumCheck(CGameObject* _Object)
+/**
+ * @brief 오브젝트 1개에 대해서 frustum 내부에 있는지 판별하는 함수
+ *
+ * @param _Object
+ * @return
+ */
+bool CCamera::IsObjectInFrustum(const CGameObject* _Object)
 {
-	if (false == _Object->Transform()->IsFrustumCheck())
+	if (!_Object->Transform()->FrustumCheckRequired())
+	{
 		return true;
+	}
 
-	DrawDebugSphere(Vec4(0.f, 1.f, 0.f, 1.f)
-					, _Object->Transform()->GetWorldPos()
-					, _Object->Transform()->GetFrustumRadius(), false, 0.f);
+	// 오브젝트의 바운딩 박스 가져오기
+	// TODO(KHJ): 일단 bounding box 계산하지 못했다면 무조건 rendering, 개선 여지 확인할 것
+	Vec3 vMin, vMax;
+	if (!_Object->CalculateBoundingBox(vMin, vMax))
+	{
+		return false;
+	}
 
-	Vec3 vWorldPos = _Object->Transform()->GetWorldPos();
-	float Radius = _Object->Transform()->GetFrustumRadius();
+	// AABB의 8개 꼭지점
+	Vec3 vPoints[8] = {
+		Vec3(vMin.x, vMin.y, vMin.z), // 0: 좌하단
+		Vec3(vMax.x, vMin.y, vMin.z), // 1: 우하단
+		Vec3(vMax.x, vMax.y, vMin.z), // 2: 우상단
+		Vec3(vMin.x, vMax.y, vMin.z), // 3: 좌상단
+		Vec3(vMin.x, vMin.y, vMax.z), // 4: 좌하단(후면)
+		Vec3(vMax.x, vMin.y, vMax.z), // 5: 우하단(후면)
+		Vec3(vMax.x, vMax.y, vMax.z), // 6: 우상단(후면)
+		Vec3(vMin.x, vMax.y, vMax.z)  // 7: 좌상단(후면)
+	};
 
-	if (m_Frustum->FrustumCheckSphere(vWorldPos, Radius))
-		return true;
+	// AABB의 8개 꼭지점 중 하나라도 프러스텀 내부에 있으면 렌더링
+	for (int i = 0; i < 8; ++i)
+	{
+		if (m_Frustum->IsInFrustum(vPoints[i]))
+			return true;
+	}
 
 	return false;
 }

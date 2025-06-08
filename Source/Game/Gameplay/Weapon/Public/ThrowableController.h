@@ -1,6 +1,6 @@
 #pragma once
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
-#include "Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 class CLandScape;
 

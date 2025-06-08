@@ -289,28 +289,6 @@ bool CGameObject::IsAncestor(CGameObject* _Other)
 	return false;
 }
 
-//CScript* CGameObject::GetScript(SCRIPT_TYPE _Type) const
-//{
-//	for (CScript* script : m_vecScripts)
-//	{
-//		if (script->GetScriptType() == _Type)
-//			return script;
-//	}
-//
-//	return nullptr;
-//}
-
-CScript* CGameObject::GetParentScript(SCRIPT_TYPE _Type) const
-{
-	for (CScript* script : m_vecScripts)
-	{
-		if (script->GetParentScriptType() == _Type)
-			return script;
-	}
-
-	return nullptr;
-}
-
 CGameObject* CGameObject::GetChildByName(const wstring& _Name)
 {
 	queue<CGameObject*> Q;
@@ -383,4 +361,42 @@ void CGameObject::RegisterAsParent()
 
 	CLayer* pLayer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(m_LayerIdx);
 	pLayer->RegisterAsParent(this);
+}
+
+/**
+ * @brief 게임 오브젝트의 world 기준 바운딩 박스를 계산하는 함수
+ *
+ * @param PMin 바운딩 박스의 최소 좌표를 저장할 벡터
+ * @param PMax 바운딩 박스의 최대 좌표를 저장할 벡터
+ */
+bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
+{
+	// 바운딩 박스가 존재하기 위한 최소 조건 확인
+
+	// 1. 메시 렌더러가 없는 경우 실패
+	CMeshRender* pMeshRender = MeshRender();
+	if (!pMeshRender)
+	{
+		return false;
+	}
+
+	// 2. 메시가 없는 경우 실패
+	Ptr<CMesh> pMesh = pMeshRender->GetMesh();
+	if (pMesh == nullptr)
+	{
+		return false;
+	}
+
+	// TODO(KHJ): Animation 기반 Bounding Box Checking
+
+	// get mesh local bound
+	Vec3 vMin, vMax;
+	pMesh->GetLocalBound(vMin, vMax);
+
+	// world 값으로 변환
+	const Matrix& matWorld = Transform()->GetWorldMat();
+	PMin = XMVector3TransformCoord(vMin, matWorld);
+	PMax = XMVector3TransformCoord(vMax, matWorld);
+
+	return true;
 }
