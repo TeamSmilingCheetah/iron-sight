@@ -377,5 +377,6 @@ enum class FACE_TYPE : UINT8
 	FT_RIGHT,
 	FT_TOP,
 	FT_BOT,
-	FT_END,
+
+	END,
 };

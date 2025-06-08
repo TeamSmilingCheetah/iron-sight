@@ -56,30 +56,20 @@ void CFrustum::FinalTick()
     m_Face[static_cast<int>(FACE_TYPE::FT_BOT)] = XMPlaneFromPoints(vWorldPos[7], vWorldPos[2], vWorldPos[6]);
 }
 
-bool CFrustum::FrustumCheck(const Vec3& _WorldPos)
+/**
+ * @brief 단일 지점이 frustum 내에 위치하는지 판별하는 함수
+ *
+ * @param _WorldPos world 좌표
+ * @return 해당 좌표가 frustum 내에 있는지 판별한 결과를 반환
+ */
+bool CFrustum::IsInFrustum(const Vec3& _WorldPos)
 {
-    for (int i = 0; i < static_cast<int>(FACE_TYPE::FT_END); ++i)
+    for (int i = 0; i < static_cast<int>(FACE_TYPE::END); ++i)
     {
         auto vNormal = Vec3(m_Face[i].x, m_Face[i].y, m_Face[i].z);
 
         // ax + by + cz + d > 0
         if (vNormal.Dot(_WorldPos) + m_Face[i].w > 0)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool CFrustum::FrustumCheckSphere(const Vec3& _WorldCenter, float _Radius)
-{
-    for (int i = 0; i < static_cast<int>(FACE_TYPE::FT_END); ++i)
-    {
-        auto vNormal = Vec3(m_Face[i].x, m_Face[i].y, m_Face[i].z);
-
-        // ax + by + cz + d > r
-        if (vNormal.Dot(_WorldCenter) + m_Face[i].w > _Radius)
         {
             return false;
         }

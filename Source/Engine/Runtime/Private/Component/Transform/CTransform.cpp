@@ -7,11 +7,10 @@ CTransform::CTransform()
 	: CComponent(COMPONENT_TYPE::TRANSFORM)
 	, m_RelativeScale(Vec3(1.f, 1.f, 1.f))
 	, m_IndependentScale(false)
-	, m_FrustumCheck(true)
+	, m_FrustumCheckRequired(true)
 	, m_ManualUpdate(false)
 {
 	m_matWorld = XMMatrixIdentity();
-	m_FrustumRadius = 100.f;
 }
 
 CTransform::~CTransform()

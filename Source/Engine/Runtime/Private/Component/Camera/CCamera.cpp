@@ -13,6 +13,8 @@
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -131,9 +133,8 @@ void CCamera::SortObject()
 					continue;
 				}
 
-
-				// FrustumCheck
-				if (false == FrustumCheck(vecObjects[j]))
+				// 오브젝트가 Frustum 내에 존재하지 않는다면 그대로 Pass
+				if (!IsObjectInFrustum(vecObjects[j]))
 				{
 					continue;
 				}
@@ -612,19 +613,24 @@ void CCamera::LayerCheck(int _LayerIdx)
 	}
 }
 
-bool CCamera::FrustumCheck(CGameObject* _Object)
+/**
+ * @brief 오브젝트 1개에 대해서 frustum 내부에 있는지 판별하는 함수
+ *
+ * @param _Object
+ * @return
+ */
+bool CCamera::IsObjectInFrustum(const CGameObject* _Object)
 {
-	if (false == _Object->Transform()->IsFrustumCheck())
+	if (!_Object->Transform()->FrustumCheckRequired())
 		return true;
 
-	DrawDebugSphere(Vec4(0.f, 1.f, 0.f, 1.f)
-					, _Object->Transform()->GetWorldPos()
-					, _Object->Transform()->GetFrustumRadius(), false, 0.f);
+	// DrawDebugSphere(Vec4(0.f, 1.f, 0.f, 1.f)
+	// 				, _Object->Transform()->GetWorldPos()
+	// 				, _Object->Transform()->GetFrustumRadius(), false, 0.f);
 
 	Vec3 vWorldPos = _Object->Transform()->GetWorldPos();
-	float Radius = _Object->Transform()->GetFrustumRadius();
 
-	if (m_Frustum->FrustumCheckSphere(vWorldPos, Radius))
+	if (m_Frustum->IsInFrustum(vWorldPos))
 		return true;
 
 	return false;
