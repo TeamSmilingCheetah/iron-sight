@@ -6,6 +6,7 @@
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Rendering/Material/CMaterial.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 
 class ListUI;
 class TreeNode;
@@ -48,7 +49,11 @@ void MaterialUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == GRAPHIC_SHADER)
 			{
 				pMtrl->SetShader(static_cast<CGraphicShader*>(pAsset.Get()));

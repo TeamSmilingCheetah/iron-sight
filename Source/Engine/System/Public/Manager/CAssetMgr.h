@@ -43,6 +43,9 @@ public:
 	template <typename T>
 	Ptr<T> Load(const wstring& _Key, const wstring& _RelativePath);
 
+	template <typename T>
+	Ptr<T> Load(const wstring& _RelativePath);
+
 	template <>
 	Ptr<CComputeShader> Load(const wstring& _Key, const wstring& _RelativePath)
 	{
@@ -156,6 +159,39 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
 	// 에셋을 맵에 등록
 	ASSET_TYPE Type = GetAssetType<T>();
 	m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_Key, pAsset));
+
+	m_bAssetChanged = true;
+
+	return static_cast<T*>(pAsset.Get());
+}
+
+
+template <typename T>
+Ptr<T> CAssetMgr::Load(const wstring& _RelativePath)
+{
+	Ptr<CAsset> pAsset = FindAsset<T>(_RelativePath).Get();
+
+	if (nullptr != pAsset)
+		return static_cast<T*>(pAsset.Get());
+
+	// 텍스쳐 파일 경로
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + _RelativePath;
+
+	// 에셋 객체 생성 및 로딩
+	pAsset = new T;
+	if (FAILED(pAsset->Load(strFilePath)))
+	{
+		pAsset = nullptr;
+		return nullptr;
+	}
+
+	// 로딩이 완료된 에셋에 본인의 Key, RelativePath 세팅
+	pAsset->SetKey(_RelativePath);
+	pAsset->SetRelativePath(_RelativePath);
+
+	// 에셋을 맵에 등록
+	ASSET_TYPE Type = GetAssetType<T>();
+	m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_RelativePath, pAsset));
 
 	m_bAssetChanged = true;
 

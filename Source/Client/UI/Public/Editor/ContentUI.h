@@ -1,16 +1,34 @@
 #pragma once
 #include "Client/UI/Public/Editor/EditorUI.h"
 
+struct tFSNode	// File System Node
+{
+	wstring				Name;
+	bool				isFolder;
+	tFSNode* Parent;
+	vector<tFSNode*>	vecChildren;
+	Ptr<CAsset>			Asset;
+
+	tFSNode() : Parent(nullptr) {}
+	tFSNode(const wstring& _Name) : Name(_Name), Parent(nullptr) {}
+
+	~tFSNode()
+	{
+		for (tFSNode* child : vecChildren)
+		{
+			delete child;
+		}
+	}
+};
+
 class ContentUI :
 	public EditorUI
 {
 private:
 	class TreeUI*	m_Tree;
-	vector<wstring> m_vecAssetPath; // Content 폴더에 있는 모든 리소스 경로
 
-	// TEST : 메모리 프로파일링 asset 타입별로
-	vector<wstring> m_vecAssetPathByType[(UINT)ASSET_TYPE::END];
-
+	// TEST : 파일 탐색기
+	static tFSNode*		m_rootAssetFileSystem;	// dummy root
 
 	Ptr<CAsset>		m_TargetAsset;
 
@@ -18,14 +36,19 @@ public:
 	void Render_Update() override;
 	void Reset();
 
+	static Ptr<CAsset> LoadAsset(tFSNode* _FSNode);
+
 private:
 	void RenewContent();
 	void ReloadContent();
 
+	// TEST : 파일 탐색기
+	void ConstructFileSystem(tFSNode* _CurFSNode, class TreeNode* _CurTreeNode);
+
 	void SelectAsset(DWORD_PTR _TreeNode);
 
-	void FindAssetPath(const wstring& _FolderPath);
-	ASSET_TYPE GetAssetType(const wstring& _Path);
+	void FindAssetPath(const wstring& _FolderPath, tFSNode* _ParentNode);
+	static ASSET_TYPE GetAssetType(const wstring& _Path);
 
 	// TreeUI item 우클릭 관련 Delegate
 	void ChangeName_ContentUI(DWORD_PTR _TreeNode);

@@ -130,16 +130,22 @@ CMaterial* CMaterial::Clone()
 	return pCloneMtrl;
 }
 
-int CMaterial::Save(const wstring& _FilePath)
+int CMaterial::Save(const wstring& _RelativePath)
 {
 	// m_SharedMtrl 원형 재질을 가리킨다 == 동적재질이다.
 	// 동적 재질을 저장하려고 했다. ==> 에러
 	// 동적 재질 = 게임이 플레이되는 도중에 일시적으로 만들어서 쓰고 버리는 재질
 	assert(!m_SharedMtrl.Get());
 
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	SetRelativePath(strRelativePath);
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
+
+
 	FILE* pFile = nullptr;
 
-	_wfopen_s(&pFile, _FilePath.c_str(), L"wb");
+	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
 	SaveAssetRef(m_Shader, pFile);

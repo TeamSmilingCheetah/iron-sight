@@ -11,6 +11,7 @@
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 #include "Client/System/Public/CImGuiMgr.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 
 
 ParticleUI::ParticleUI()
@@ -50,7 +51,11 @@ void ParticleUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == ASSET_TYPE::MESH)
 			{
 				pParticleSystem->SetMesh((CMesh*)pAsset.Get());
@@ -101,7 +106,11 @@ void ParticleUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == ASSET_TYPE::MATERIAL)
 			{
 				pParticleSystem->SetMaterial((CMaterial*)pAsset.Get(), 0);
@@ -412,7 +421,11 @@ void ParticleUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == ASSET_TYPE::TEXTURE)
 			{
 				pParticleSystem->SetParticleTexture(((CTexture*)pAsset.Get()));

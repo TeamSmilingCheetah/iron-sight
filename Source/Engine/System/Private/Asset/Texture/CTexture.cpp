@@ -67,16 +67,17 @@ int CTexture::Load(const wstring& PFilePath)
 	return S_OK;
 }
 
-int CTexture::Save(const wstring& PRelativePath)
+int CTexture::Save(const wstring& _RelativePath)
 {
 	// GPU -> System
 	ScratchImage localImage;
 	CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), localImage);
 
 	// System -> File
-	SetRelativePath(PRelativePath);
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	SetRelativePath(strRelativePath);
 
-	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + PRelativePath;
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
 
 	HRESULT hr;
 	if (1 == localImage.GetMetadata().arraySize)
@@ -85,7 +86,7 @@ int CTexture::Save(const wstring& PRelativePath)
 		hr = SaveToWICFile(*localImage.GetImages()
 		                   , WIC_FLAGS_NONE
 		                   , GetWICCodec(WIC_CODEC_PNG)
-		                   , FilePath.c_str());
+		                   , strFilePath.c_str());
 	}
 
 	else
@@ -94,7 +95,7 @@ int CTexture::Save(const wstring& PRelativePath)
 		                   , localImage.GetMetadata().arraySize
 		                   , localImage.GetMetadata()
 		                   , DDS_FLAGS_NONE
-		                   , FilePath.c_str());
+		                   , strFilePath.c_str());
 	}
 
 	return hr;

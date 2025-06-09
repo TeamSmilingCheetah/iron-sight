@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
 #include "Client/imgui/imgui.h"
 #include "Client/System/Public/CImGuiMgr.h"
@@ -7,6 +7,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 
 class ListUI;
 class TreeNode;
@@ -153,7 +154,11 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = reinterpret_cast<CAsset*>(pNode->GetData());
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == TEXTURE)
 			{
 				_Tex = static_cast<CTexture*>(pAsset.Get());
@@ -218,7 +223,11 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *reinterpret_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = reinterpret_cast<CAsset*>(pNode->GetData());
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == PREFAB)
 			{
 				_Prefab = static_cast<CPrefab*>(pAsset.Get());

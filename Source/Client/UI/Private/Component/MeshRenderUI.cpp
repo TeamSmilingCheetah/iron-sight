@@ -5,6 +5,7 @@
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 
 class ListUI;
 class TreeNode;
@@ -48,7 +49,11 @@ void MeshRenderUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == MESH)
 			{
 				pMeshRender->SetMesh(static_cast<CMesh*>(pAsset.Get()));
@@ -101,7 +106,11 @@ void MeshRenderUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == MATERIAL)
 			{
 				pMeshRender->SetMaterial(static_cast<CMaterial*>(pAsset.Get()), 0);

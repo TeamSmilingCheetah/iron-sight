@@ -4,6 +4,7 @@
 #include "Client/UI/Public/Editor/TreeUI.h"
 
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 
 
 DecalUI::DecalUI()
@@ -52,7 +53,11 @@ void DecalUI::Render_Update()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
+
 			if (pAsset->GetAssetType() == ASSET_TYPE::TEXTURE)
 			{
 				pDecal->SetDecalTexture(((CTexture*)pAsset.Get()));

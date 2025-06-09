@@ -92,7 +92,7 @@ Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
 	wstring strName = L"MeshData\\";
 	strName += strFileName + L".mdat";
 
-	Ptr<CMeshData> pMeshData = FindAsset<CMeshData>(strName);
+	Ptr<CMeshData> pMeshData = Load<CMeshData>(strName);
 
 	if (nullptr != pMeshData)
 		return pMeshData;
