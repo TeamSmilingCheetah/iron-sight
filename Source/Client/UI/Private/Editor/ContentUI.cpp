@@ -16,8 +16,12 @@ ContentUI::ContentUI()
 	m_Tree = static_cast<TreeUI*>(AddChildUI(new TreeUI));
 	m_Tree->SetName("ContentUI");
 	m_Tree->ShowRoot(false);
+	m_Tree->RightOption(true, this);
 
 	m_Tree->AddDynamicSelect(this, static_cast<EUI_DELEGATE_1>(&ContentUI::SelectAsset));
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&ContentUI::ChangeName_ContentUI);
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&ContentUI::CopyAsset);
+
 
 	// Content 폴더안에 있는 모든 에셋을 메모리로 로딩
 	ReloadContent();
@@ -231,35 +235,32 @@ void ContentUI::FindAssetPath(const wstring& _FolderPath)
 
 ASSET_TYPE ContentUI::GetAssetType(const wstring& _Path)
 {
-	path RelativePath = _Path;
+	wstring Ext = CPathMgr::GetInst()->GetFileExtension(_Path);
 
-	//path FileName = RelativePath.stem();
-	path Ext = RelativePath.extension();
-
-	if (".mesh" == Ext)
+	if (L".mesh" == Ext)
 		return MESH;
-	if (".mdat" == Ext)
+	if (L".mdat" == Ext)
 		return MESH_DATA;
-	if (".bmp" == Ext || ".BMP" == Ext
-		|| ".png" == Ext || ".PNG" == Ext
-		|| ".jpg" == Ext || ".JPG" == Ext
-		|| ".jpeg" == Ext || ".JPEG" == Ext
-		|| ".tga" == Ext || ".TGA" == Ext
-		|| ".dds" == Ext || ".DDS" == Ext)
+	if (L".bmp" == Ext || L".BMP" == Ext
+		|| L".png" == Ext || L".PNG" == Ext
+		|| L".jpg" == Ext || L".JPG" == Ext
+		|| L".jpeg" == Ext || L".JPEG" == Ext
+		|| L".tga" == Ext || L".TGA" == Ext
+		|| L".dds" == Ext || L".DDS" == Ext)
 		return TEXTURE;
-	if (".mp3" == Ext || ".MP3" == Ext
-		|| ".ogg" == Ext || ".OGG" == Ext
-		|| ".wav" == Ext || ".WAV" == Ext)
+	if (L".mp3" == Ext || L".MP3" == Ext
+		|| L".ogg" == Ext || L".OGG" == Ext
+		|| L".wav" == Ext || L".WAV" == Ext)
 		return SOUND;
-	if (".pref" == Ext)
+	if (L".pref" == Ext)
 		return PREFAB;
-	if (".flip" == Ext)
+	if (L".flip" == Ext)
 		return FLIPBOOK;
-	if (".anim" == Ext)
+	if (L".anim" == Ext)
 		return ANIMATION;
-	if (".sprite" == Ext)
+	if (L".sprite" == Ext)
 		return SPRITE;
-	if (".mtrl" == Ext)
+	if (L".mtrl" == Ext)
 		return MATERIAL;
 
 	return END;
@@ -267,20 +268,57 @@ ASSET_TYPE ContentUI::GetAssetType(const wstring& _Path)
 
 void ContentUI::ChangeName_ContentUI(DWORD_PTR _TreeNode)
 {
+	// 이름 설정
+	if (ImGui::Selectable("Change Name", false, ImGuiSelectableFlags_DontClosePopups))
+	{
+		ImGui::OpenPopup("Name_Setting_popup_Asset");
+
+		auto pNode = reinterpret_cast<TreeNode*>(_TreeNode);
+		m_TargetAsset = reinterpret_cast<CAsset*>(pNode->GetData());
+	}
+
+	if (ImGui::BeginPopup("Name_Setting_popup_Asset"))
+	{
+		char szBuff[50]{};
+		string strName = WStringToString(m_TargetAsset->GetKey());
+		strcpy_s(szBuff, strName.c_str());
+		if (ImGui::InputText("##AssetNameSet", szBuff, sizeof(szBuff), ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			strName = szBuff;
+			static wstring wstrName(L"");
+			wstrName = wstring(strName.begin(), strName.end());
+
+			// AssetMgr에 등록이 되어있는지 여부를 반환받음
+			bool registered = CAssetMgr::GetInst()->ChangeAssetKey(m_TargetAsset, wstrName);
+			assert(registered);
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
 }
 
 void ContentUI::CopyAsset(DWORD_PTR _TreeNode)
 {
+	if (ImGui::Selectable("Copy Asset", false, ImGuiSelectableFlags_DontClosePopups))
+	{
+		auto pNode = reinterpret_cast<TreeNode*>(_TreeNode);
+		m_TargetAsset = reinterpret_cast<CAsset*>(pNode->GetData());
+
+		m_TargetAsset = CAssetMgr::GetInst()->CopyAsset(m_TargetAsset);
+	}
 }
 
 void ContentUI::SelectAsset(DWORD_PTR _TreeNode)
 {
-	auto pNode = (TreeNode*)_TreeNode;
-	Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+	auto pNode = reinterpret_cast<TreeNode*>(_TreeNode);
+	m_TargetAsset = reinterpret_cast<CAsset*>(pNode->GetData());
 
-	if (nullptr == pAsset)
+	if (nullptr == m_TargetAsset)
 		return;
 
 	auto pInspector = static_cast<Inspector*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
-	pInspector->SetTargetAsset(pAsset);
+	pInspector->SetTargetAsset(m_TargetAsset);
 }

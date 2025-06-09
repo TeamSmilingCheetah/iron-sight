@@ -85,11 +85,6 @@ void CAssetMgr::DeleteAsset(ASSET_TYPE _Type, const wstring& _Key)
 	m_bAssetChanged = true;
 }
 
-CGameObject* CAssetMgr::ClonePrefabe(const wstring& _Key)
-{
-	return nullptr;
-}
-
 Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
 {
 	wstring strFileName = path(_strPath).stem();
@@ -113,4 +108,67 @@ Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
 	pMeshData->Save(strName);
 
 	return pMeshData;
+}
+
+// map 수정 여부를 반환함
+bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
+{
+	ASSET_TYPE type = _Asset->GetAssetType();
+	UINT typeToIndex = static_cast<UINT>(type);
+	auto iter = m_mapAsset[typeToIndex].find(_Asset->GetKey());
+
+	// 아직 map에 등록되지 않은 경우
+	if (iter == m_mapAsset[typeToIndex].end())
+	{
+		_Asset->SetKey(_NewKey);
+
+		return false;
+	}
+
+	// map에 새로운 키값으로 등록
+	AddAsset(_NewKey, iter->second);
+
+	// map에서 제거
+	m_mapAsset[typeToIndex].erase(iter);
+
+	return true;
+}
+
+Ptr<CAsset> CAssetMgr::CopyAsset(Ptr<CAsset> _Source)
+{
+	Ptr<CAsset> pClone = _Source->Clone();
+
+	if (pClone != nullptr)
+	{
+		ASSET_TYPE type = _Source->GetAssetType();
+		UINT typeToIndex = static_cast<UINT>(type);
+		const wstring& key = _Source->GetKey();
+
+		// 확장자 탐색
+		wstring ext = CPathMgr::GetInst()->GetFileExtension(key);
+		wstring stem = CPathMgr::GetInst()->GetKeyWithoutExtension(key);
+
+		// 사용되지 않은 id 값 찾기
+		wchar_t buffer[4]{};
+		UINT id = 0;
+
+		// FIXME : 순회 방식 개선할 수 있을 거 같긴 함 (iterator 잘 써서 one pass로)
+		while (true)
+		{
+			swprintf_s(buffer, L"%d", id);
+			wstring newKey = stem + buffer + ext;
+
+			if (m_mapAsset[typeToIndex].count(newKey))
+			{
+				++id;
+			}
+			else
+			{
+				AddAsset(newKey, pClone);
+				break;
+			}
+		}
+	}
+
+	return pClone;
 }

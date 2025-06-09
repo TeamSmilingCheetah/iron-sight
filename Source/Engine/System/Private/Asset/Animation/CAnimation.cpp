@@ -19,6 +19,22 @@ CAnimation::CAnimation(bool _bEngineRes)
 {
 }
 
+CAnimation::CAnimation(const CAnimation& _Src)
+	: CAsset(ANIMATION, false)	// FIXME : clone은 engine resource가 아니라고 가정.
+	, m_Skeleton(_Src.m_Skeleton)
+	, m_StartFrame(_Src.m_StartFrame)
+	, m_EndFrame(_Src.m_EndFrame)
+	, m_FrameLength(_Src.m_FrameLength)
+	, m_StartTime(_Src.m_StartTime)
+	, m_EndTime(_Src.m_EndTime)
+	, m_TimeLength(_Src.m_TimeLength)
+	, m_TimeMode(_Src.m_TimeMode)
+	, m_BoneFrameData(nullptr)
+	, m_vecKeyFrames(_Src.m_vecKeyFrames)	// FIXME : cpu 데이터는 날려야 함. 나중에 gpu copyresource로 변경하기
+{
+	CreateBoneFrameSB();
+}
+
 CAnimation::~CAnimation()
 {
 	if (nullptr != m_BoneFrameData)

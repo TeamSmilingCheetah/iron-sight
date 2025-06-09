@@ -3,6 +3,7 @@
 template <typename T>
 class Ptr
 {
+private:
 	T* m_Ptr;
 
 public:

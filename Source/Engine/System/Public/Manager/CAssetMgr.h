@@ -49,6 +49,9 @@ public:
 		return FindAsset<CComputeShader>(_Key).Get();
 	}
 
+	// TEST : Asset key 변경
+	bool ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey);
+
 	Ptr<CTexture> CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
 								DXGI_FORMAT _PixelFormat, UINT _BindFlag,
 								D3D11_USAGE _Usage = D3D11_USAGE_DEFAULT);
@@ -65,7 +68,7 @@ public:
 
 	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
 
-	CGameObject* ClonePrefabe(const wstring& _Key);
+	Ptr<CAsset> CopyAsset(Ptr<CAsset> _Source);
 };
 
 template <typename T>
@@ -102,7 +105,9 @@ ASSET_TYPE GetAssetType()
 template <typename T>
 int CAssetMgr::AddAsset(const wstring& _Key, Ptr<T> _Asset)
 {
-	ASSET_TYPE Type = GetAssetType<T>();
+	static_assert(std::is_base_of<CAsset, T>::value, "T must derive from CAsset");
+
+	ASSET_TYPE Type = _Asset->GetAssetType();
 
 	_Asset->SetKey(_Key);
 	m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_Key, _Asset.Get()));

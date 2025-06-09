@@ -38,8 +38,7 @@ void AssetUI::SaveButton()
 
 	if (ImGui::Button("SAVE"))
 	{
-		wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + m_TargetAsset->GetKey();
-		m_TargetAsset->Save(strFilePath);
+		m_TargetAsset->Save(m_TargetAsset->GetKey());
 	}
 }
 

@@ -55,7 +55,8 @@ private:
 	void CreateBoneFrameSB();
 
 public:
-	CLONE_DISABLE(CAnimation);
+	CLONE(CAnimation);
 	CAnimation(bool _bEngineRes = false);
+	CAnimation(const CAnimation& _Src);
 	~CAnimation();
 };

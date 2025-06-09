@@ -16,4 +16,7 @@ public:
     void Init();
 
 	wstring MakeFileName(const wstring& _Name);
+	wstring GetFileExtension(const wstring& _FilePath);
+	wstring GetFileStem(const wstring& _FilePath);
+	wstring GetKeyWithoutExtension(const wstring& _FilePath);
 };
