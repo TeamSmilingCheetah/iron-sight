@@ -8,39 +8,36 @@ CTexture::CTexture()
 	  , m_Desc{}
 	  , m_RecentSRVNum(-1)
 	  , m_RecentUAVNum(-1)
-	  , m_bSystemMemoryReleased(false)
+	  , m_IsMemoryReleased(false)
 {
 }
 
-CTexture::~CTexture()
-{
-}
+CTexture::~CTexture() = default;
 
-
-int CTexture::Load(const wstring& _FilePath)
+int CTexture::Load(const wstring& PFilePath)
 {
 	// 파일 -> SystemMem
 	wchar_t szExt[50] = {};
-	_wsplitpath_s(_FilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, szExt, 50);
+	_wsplitpath_s(PFilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, szExt, 50);
 	wstring strExt = szExt;
 
-	HRESULT hr = E_FAIL;
+	HRESULT hr;
 
 	if (strExt == L".dds" || strExt == L".DDS")
 	{
 		// DDS
-		hr = LoadFromDDSFile(_FilePath.c_str(), DDS_FLAGS_NONE, nullptr, m_Image);
+		hr = LoadFromDDSFile(PFilePath.c_str(), DDS_FLAGS_NONE, nullptr, m_Image);
 	}
 	else if (strExt == L".tga" || strExt == L".TGA")
 	{
 		// TGA
-		hr = LoadFromTGAFile(_FilePath.c_str(), nullptr, m_Image);
+		hr = LoadFromTGAFile(PFilePath.c_str(), nullptr, m_Image);
 	}
 	else
 	{
 		// Window Image Component(WIC)
 		// png, jpg, jpeg, bmp
-		hr = LoadFromWICFile(_FilePath.c_str(), WIC_FLAGS_NONE, nullptr, m_Image);
+		hr = LoadFromWICFile(PFilePath.c_str(), WIC_FLAGS_NONE, nullptr, m_Image);
 	}
 
 	if (FAILED(hr))
@@ -54,10 +51,10 @@ int CTexture::Load(const wstring& _FilePath)
 	// Texture2D 객체를 만듬
 	// Texture2D 를 전달할때 사용할 ShaderResourceView
 	CreateShaderResourceView(DEVICE
-		, m_Image.GetImages()
-		, m_Image.GetImageCount()
-		, m_Image.GetMetadata()
-		, m_SRV.GetAddressOf());
+	                         , m_Image.GetImages()
+	                         , m_Image.GetImageCount()
+	                         , m_Image.GetMetadata()
+	                         , m_SRV.GetAddressOf());
 
 	// 생성된 ShaderResourceView 를 이용해서 원본 객체(Texture2D) 를 알아낸다.
 	m_SRV->GetResource(reinterpret_cast<ID3D11Resource**>(m_Tex2D.GetAddressOf()));
@@ -70,18 +67,18 @@ int CTexture::Load(const wstring& _FilePath)
 	return S_OK;
 }
 
-int CTexture::Save(const wstring& _RelativePath)
+int CTexture::Save(const wstring& PRelativePath)
 {
 	// GPU -> System
 	ScratchImage localImage;
 	CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), localImage);
 
 	// System -> File
-	SetRelativePath(_RelativePath);
+	SetRelativePath(PRelativePath);
 
-	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + _RelativePath;
+	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + PRelativePath;
 
-	HRESULT hr = E_FAIL;
+	HRESULT hr;
 	if (1 == localImage.GetMetadata().arraySize)
 	{
 		// png, jpg, jpeg, bmp,
@@ -103,20 +100,20 @@ int CTexture::Save(const wstring& _RelativePath)
 	return hr;
 }
 
-int CTexture::Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _BindFlag,
-                     D3D11_USAGE _Usage)
+int CTexture::Create(UINT PWidth, UINT PHeight, DXGI_FORMAT PPixelFormat, UINT PBindFlag,
+                     D3D11_USAGE PUsage)
 {
-	m_Desc.Width = _Width;
-	m_Desc.Height = _Height;
+	m_Desc.Width = PWidth;
+	m_Desc.Height = PHeight;
 
 	m_Desc.ArraySize = 1;
-	m_Desc.Format = _PixelFormat;
+	m_Desc.Format = PPixelFormat;
 
 	// 텍스쳐의 용도
-	m_Desc.BindFlags = _BindFlag;
+	m_Desc.BindFlags = PBindFlag;
 
 	// CPU 에서 생성 이후에 접근이 가능한지 옵션
-	m_Desc.Usage = _Usage;
+	m_Desc.Usage = PUsage;
 
 	if (m_Desc.Usage == D3D11_USAGE_DYNAMIC)
 		m_Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -134,7 +131,6 @@ int CTexture::Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _
 	{
 		return E_FAIL;
 	}
-
 
 	// View 생성
 	if (m_Desc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
@@ -178,11 +174,11 @@ int CTexture::Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _
 	return S_OK;
 }
 
-int CTexture::Create(ComPtr<ID3D11Texture2D> _Tex2D)
+int CTexture::Create(ComPtr<ID3D11Texture2D> P2DTexture)
 {
 	assert(_Tex2D.Get());
 
-	m_Tex2D = _Tex2D;
+	m_Tex2D = P2DTexture;
 	m_Tex2D->GetDesc(&m_Desc);
 
 	// View 생성
@@ -218,10 +214,10 @@ int CTexture::Create(ComPtr<ID3D11Texture2D> _Tex2D)
 	return S_OK;
 }
 
-int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
+int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& PTextureVector)
 {
-	m_Desc = _vecTex[0]->GetDesc();
-	m_Desc.ArraySize = static_cast<UINT>(_vecTex.size());
+	m_Desc = PTextureVector[0]->GetDesc();
+	m_Desc.ArraySize = static_cast<UINT>(PTextureVector.size());
 	m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	m_Desc.MipLevels = 1;
 
@@ -231,14 +227,14 @@ int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
 	}
 
 	// 원본 각 텍스쳐를 생성된 배열 텍스쳐의 각 칸으로 복사시킨다.
-	for (size_t i = 0; i < _vecTex.size(); ++i)
+	for (size_t i = 0; i < PTextureVector.size(); ++i)
 	{
 		UINT Offset = D3D11CalcSubresource(0, static_cast<UINT>(i), 1);
 
 		CONTEXT->UpdateSubresource(m_Tex2D.Get(), Offset, nullptr
-		                           , _vecTex[i]->GetPixels()
-		                           , static_cast<UINT>(_vecTex[i]->GetRowPitch())
-		                           , static_cast<UINT>(_vecTex[i]->GetSlicePitch()));
+		                           , PTextureVector[i]->GetPixels()
+		                           , static_cast<UINT>(PTextureVector[i]->GetRowPitch())
+		                           , static_cast<UINT>(PTextureVector[i]->GetSlicePitch()));
 	}
 
 	// Shader Resrouce View 생성
@@ -256,7 +252,7 @@ int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
 	return S_OK;
 }
 
-int CTexture::GenerateMip(UINT _Level)
+int CTexture::GenerateMip(UINT PLevel)
 {
 	// CubeTexture 는 Mipmap 생성 금지
 	assert(!(m_Desc.MiscFlags & D3D11_SRV_DIMENSION_TEXTURECUBE));
@@ -267,7 +263,7 @@ int CTexture::GenerateMip(UINT _Level)
 	m_SRV = nullptr;
 	m_UAV = nullptr;
 
-	m_Desc.MipLevels = _Level;
+	m_Desc.MipLevels = PLevel;
 	m_Desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	m_Desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
@@ -310,38 +306,38 @@ int CTexture::GenerateMip(UINT _Level)
 	return S_OK;
 }
 
-void CTexture::Binding(int _RegisterNum)
+void CTexture::Binding(int PRegisterNum)
 {
-	CONTEXT->VSSetShaderResources(_RegisterNum, 1, m_SRV.GetAddressOf());
-	CONTEXT->HSSetShaderResources(_RegisterNum, 1, m_SRV.GetAddressOf());
-	CONTEXT->DSSetShaderResources(_RegisterNum, 1, m_SRV.GetAddressOf());
-	CONTEXT->GSSetShaderResources(_RegisterNum, 1, m_SRV.GetAddressOf());
-	CONTEXT->PSSetShaderResources(_RegisterNum, 1, m_SRV.GetAddressOf());
+	CONTEXT->VSSetShaderResources(PRegisterNum, 1, m_SRV.GetAddressOf());
+	CONTEXT->HSSetShaderResources(PRegisterNum, 1, m_SRV.GetAddressOf());
+	CONTEXT->DSSetShaderResources(PRegisterNum, 1, m_SRV.GetAddressOf());
+	CONTEXT->GSSetShaderResources(PRegisterNum, 1, m_SRV.GetAddressOf());
+	CONTEXT->PSSetShaderResources(PRegisterNum, 1, m_SRV.GetAddressOf());
 }
 
-void CTexture::Clear(int _RegisterNum)
+void CTexture::Clear(int PRegisterNum)
 {
 	ID3D11ShaderResourceView* pSRV = nullptr;
-	CONTEXT->VSSetShaderResources(_RegisterNum, 1, &pSRV);
-	CONTEXT->HSSetShaderResources(_RegisterNum, 1, &pSRV);
-	CONTEXT->DSSetShaderResources(_RegisterNum, 1, &pSRV);
-	CONTEXT->GSSetShaderResources(_RegisterNum, 1, &pSRV);
-	CONTEXT->PSSetShaderResources(_RegisterNum, 1, &pSRV);
+	CONTEXT->VSSetShaderResources(PRegisterNum, 1, &pSRV);
+	CONTEXT->HSSetShaderResources(PRegisterNum, 1, &pSRV);
+	CONTEXT->DSSetShaderResources(PRegisterNum, 1, &pSRV);
+	CONTEXT->GSSetShaderResources(PRegisterNum, 1, &pSRV);
+	CONTEXT->PSSetShaderResources(PRegisterNum, 1, &pSRV);
 }
 
-void CTexture::Binding_SRV_CS(int _RegisterNum)
+void CTexture::Binding_SRV_CS(int PRegisterNum)
 {
-	m_RecentSRVNum = _RegisterNum;
-	CONTEXT->CSSetShaderResources(_RegisterNum, 1, m_SRV.GetAddressOf());
+	m_RecentSRVNum = PRegisterNum;
+	CONTEXT->CSSetShaderResources(PRegisterNum, 1, m_SRV.GetAddressOf());
 }
 
-void CTexture::Binding_UAV_CS(int _RegisterNum)
+void CTexture::Binding_UAV_CS(int PRegisterNum)
 {
 	assert(m_UAV.Get());
 
-	m_RecentUAVNum = _RegisterNum;
+	m_RecentUAVNum = PRegisterNum;
 	UINT i = -1;
-	CONTEXT->CSSetUnorderedAccessViews(_RegisterNum, 1, m_UAV.GetAddressOf(), &i);
+	CONTEXT->CSSetUnorderedAccessViews(PRegisterNum, 1, m_UAV.GetAddressOf(), &i);
 }
 
 void CTexture::Clear_SRV_CS()
@@ -355,4 +351,57 @@ void CTexture::Clear_UAV_CS()
 	ID3D11UnorderedAccessView* pUAV = nullptr;
 	UINT i = -1;
 	CONTEXT->CSSetUnorderedAccessViews(m_RecentUAVNum, 1, &pUAV, &i);
+}
+
+tPixel* CTexture::GetPixels()
+{
+	if (m_IsMemoryReleased)
+	{
+		// Recapture If Released
+		CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+		m_IsMemoryReleased = false;
+	}
+	return reinterpret_cast<tPixel*>(m_Image.GetPixels());
+}
+
+void CTexture::ReleaseSystemMemory()
+{
+	if (!m_IsMemoryReleased)
+	{
+		m_Image = ScratchImage();
+		m_IsMemoryReleased = true;
+	}
+}
+
+const TexMetadata& CTexture::GetMetaData()
+{
+	if (m_IsMemoryReleased)
+	{
+		// Recapture If Released
+		CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+		m_IsMemoryReleased = false;
+	}
+	return m_Image.GetMetadata();
+}
+
+size_t CTexture::GetRowPitch()
+{
+	if (m_IsMemoryReleased)
+	{
+		// Recapture If Released
+		CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+		m_IsMemoryReleased = false;
+	}
+	return m_Image.GetImages()->rowPitch;
+}
+
+size_t CTexture::GetSlicePitch()
+{
+	if (m_IsMemoryReleased)
+	{
+		// Recapture If Released
+		CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+		m_IsMemoryReleased = false;
+	}
+	return m_Image.GetImages()->slicePitch;
 }
