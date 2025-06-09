@@ -94,3 +94,22 @@ void CEngine::Progress()
 	// Task
 	CTaskMgr::GetInst()->Tick();
 }
+
+
+#include <psapi.h> 
+#include <iostream>
+
+void CEngine::PrintMemoryUsage(const string& _Text)
+{
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	{
+		std::cout << _Text << std::endl;
+		std::cout << "WorkingSet: " << pmc.WorkingSetSize / (1024.0 * 1024.0) << " MB\n";
+		std::cout << "PrivateUsage: " << pmc.PrivateUsage / (1024.0 * 1024.0) << " MB\n";
+	}
+	else
+	{
+		std::cerr << "Failed to get memory info\n";
+	}
+}

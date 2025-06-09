@@ -51,8 +51,12 @@ public:
 	virtual int Save(const wstring& _RelativePath) override;
 	virtual int Load(const wstring& _RelativePath) override;
 
+private:
+	void CreateBoneFrameSB();
+
 public:
-	CLONE_DISABLE(CAnimation);
+	CLONE(CAnimation);
 	CAnimation(bool _bEngineRes = false);
+	CAnimation(const CAnimation& _Src);
 	~CAnimation();
 };

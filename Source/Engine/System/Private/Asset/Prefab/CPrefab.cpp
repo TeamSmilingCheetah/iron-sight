@@ -43,10 +43,15 @@ CGameObject* CPrefab::Instantiate()
     return m_ProtoObj->Clone();
 }
 
-int CPrefab::Save(const wstring& _FilePath)
+int CPrefab::Save(const wstring& _RelativePath)
 {
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	SetRelativePath(strRelativePath);
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
+
     FILE* File = nullptr;
-    _wfopen_s(&File, _FilePath.c_str(), L"wb");
+    _wfopen_s(&File, strFilePath.c_str(), L"wb");
 
     wstring key = GetKey();
     wstring path = GetRelativePath();

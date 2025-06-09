@@ -83,10 +83,15 @@ void CSprite::Clear()
 }
 
 
-int CSprite::Save(const wstring& _strFilePath)
+int CSprite::Save(const wstring& _RelativePath)
 {
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	SetRelativePath(strRelativePath);
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
+
 	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
 	SaveAssetRef(m_Atlas, pFile);
@@ -99,10 +104,10 @@ int CSprite::Save(const wstring& _strFilePath)
 	fclose(pFile);
 
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
-	size_t FindIdx = _strFilePath.find(strContentPath);
+	size_t FindIdx = strFilePath.find(strContentPath);
 	if (FindIdx != -1)
 	{
-		wstring RelativePath = _strFilePath.substr(strContentPath.length(), _strFilePath.length());
+		wstring RelativePath = strFilePath.substr(strContentPath.length(), strFilePath.length());
 		SetRelativePath(RelativePath);
 	}
 

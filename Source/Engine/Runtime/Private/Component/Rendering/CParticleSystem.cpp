@@ -24,7 +24,7 @@ CParticleSystem::CParticleSystem()
 		Get());
 
 	// Particle Texture
-	m_ParticleTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	m_ParticleTex = CAssetMgr::GetInst()->Load<CTexture>(
 		L"texture\\particle\\TX_GlowScene_2.png");
 
 	// Particle Buffer

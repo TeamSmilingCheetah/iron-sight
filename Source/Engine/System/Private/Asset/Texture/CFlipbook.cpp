@@ -12,10 +12,15 @@ CFlipbook::~CFlipbook()
 }
 
 
-int CFlipbook::Save(const wstring& _strFilePath)
+int CFlipbook::Save(const wstring& _RelativePath)
 {
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	SetRelativePath(strRelativePath);
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
+
 	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
 	// 스프라이트 개수
@@ -31,10 +36,10 @@ int CFlipbook::Save(const wstring& _strFilePath)
 	fclose(pFile);
 
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
-	int FindIdx = static_cast<int>(_strFilePath.find(strContentPath));
+	int FindIdx = static_cast<int>(strFilePath.find(strContentPath));
 	if (FindIdx != -1)
 	{
-		wstring RelativePath = _strFilePath.substr(strContentPath.length(), _strFilePath.length());
+		wstring RelativePath = strFilePath.substr(strContentPath.length(), strFilePath.length());
 		SetRelativePath(RelativePath);
 	}
 

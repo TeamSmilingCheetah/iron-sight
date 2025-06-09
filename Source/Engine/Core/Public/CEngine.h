@@ -1,4 +1,5 @@
-﻿#pragma once
+#pragma once
+
 
 class CEngine
 	: public singleton<CEngine>
@@ -17,4 +18,8 @@ public:
 	int Init(HWND _hWnd, UINT _Width, UINT _Height
 			 , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc);
 	void Progress();
+
+	// TEST: memory profiling
+public:
+	void PrintMemoryUsage(const string& _Text);
 };

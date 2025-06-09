@@ -6,6 +6,7 @@
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 #include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 
 class ListUI;
 class TreeNode;
@@ -53,7 +54,10 @@ void SE_Detail::Atlas()
 		{
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
-			Ptr<CAsset> pAsset = (CAsset*)pNode->GetData();
+			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+			Ptr<CAsset> pAsset = pFSNode->Asset;
+			if (pAsset == nullptr)
+				pAsset = ContentUI::LoadAsset(pFSNode);
 
 			if (pAsset->GetAssetType() == TEXTURE)
 			{

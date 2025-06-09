@@ -13,13 +13,13 @@ void CLandScape::Init()
 
     // BrushTexture 추가
     AddBrushTexture(
-        CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\TX_GlowScene_2.png"));
+        CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_GlowScene_2.png"));
     AddBrushTexture(
-        CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\TX_HitFlash_0.png"));
+        CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_HitFlash_0.png"));
     AddBrushTexture(
-        CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\TX_HitFlash02.png"));
-    AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\TX_Twirl02.png"));
-    AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\brush\\FX_Flare.png"));
+        CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_HitFlash02.png"));
+    AddBrushTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_Twirl02.png"));
+    AddBrushTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\FX_Flare.png"));
 
     // Raycasting 결과를 받는 용도의 구조화버퍼
     m_RaycastOut = new CStructuredBuffer;

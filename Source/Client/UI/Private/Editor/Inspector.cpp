@@ -7,6 +7,7 @@
 #include "Engine/Runtime/Public/Component/Base/components.h"
 #include "Client/UI/Public/Asset/AssetUI.h"
 #include "Client/UI/Public/Asset/FlipbookUI.h"
+#include "Client/UI/Public/Asset/AnimationUI.h"
 #include "Client/UI/Public/Asset/MaterialUI.h"
 #include "Client/UI/Public/Asset/MeshDataUI.h"
 #include "Client/UI/Public/Asset/MeshUI.h"
@@ -433,9 +434,9 @@ void Inspector::CreateAssetUI()
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::MATERIAL)] = new MaterialUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::GRAPHIC_SHADER)] = new GraphicShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::COMPUTE_SHADER)] = new ComputeShaderUI;
+	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new AnimationUI;
 
 	// FIXME : 애셋 UI 추가
-	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new ComputeShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SKELETON)] = new ComputeShaderUI;
 
 

@@ -37,6 +37,8 @@
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
 
+#include "Engine/Core/Public/CEngine.h"
+
 void TestLevel::CreateTestLevel()
 {
 	// Texture 로딩하기
@@ -115,7 +117,7 @@ void TestLevel::CreateTestLevel()
 	auto pSkyBox = new CGameObject;
 	pSkyBox->SetName(L"SkyBox");
 	pSkyBox->AddComponent(new CSkyBox);
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->Load<CTexture>(
 		L"Texture\\skybox\\Sky01.png");
 
 	// FrustumCheck 비활성화
@@ -128,22 +130,22 @@ void TestLevel::CreateTestLevel()
 	// =========
 	// LandScape
 	// =========
-	auto pLandScape = new CGameObject;
-	pLandScape->SetName(L"LandScape");
-	pLandScape->AddComponent(new CLandScape);
-
-	pLandScape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
-	pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-
-	pLandScape->LandScape()->SetFace(32, 32);
-	pLandScape->LandScape()->CreateHeightMap(1024, 1024);
-	//pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
-	pLandScape->LandScape()->SetColorTexture(
-		CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
-	pLandScape->LandScape()->SetNormalTexture(
-		CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
-
-	pLevel->AddObject(0, pLandScape, false);
+	//auto pLandScape = new CGameObject;
+	//pLandScape->SetName(L"LandScape");
+	//pLandScape->AddComponent(new CLandScape);
+	//
+	//pLandScape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
+	//pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	//
+	//pLandScape->LandScape()->SetFace(32, 32);
+	//pLandScape->LandScape()->CreateHeightMap(1024, 1024);
+	////pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
+	//pLandScape->LandScape()->SetColorTexture(
+	//	CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
+	//pLandScape->LandScape()->SetNormalTexture(
+	//	CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
+	//
+	//pLevel->AddObject(0, pLandScape, false);
 
 
 	// =========
@@ -246,7 +248,7 @@ void TestLevel::CreateTestLevel()
 		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 		ChildUI->UI()->SetRectPos(-55.f, 0.f);
 		ChildUI->UI()->SetRectSize(40.f, 40.f);
-		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
+		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\Idle_Left.bmp"));
 
 		DragUI->AddChild(ChildUI);
 	}
@@ -276,7 +278,7 @@ void TestLevel::CreateTestLevel()
 		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 		ChildUI->UI()->SetRectPos(-55.f, 0.f);
 		ChildUI->UI()->SetRectSize(40.f, 40.f);
-		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\Idle_Left.bmp"));
+		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\Idle_Left.bmp"));
 
 		DragUI->AddChild(ChildUI);
 	}
@@ -408,7 +410,7 @@ void TestLevel::CreateTestLevel()
 
 		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\AK_ANIMACION.fbx");
 		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\pubg_test2.fbx");
-		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"MeshData\\Monster.mdat");
+		//pMeshData = CAssetMgr::GetInst()->Load<CMeshData>(L"MeshData\\Monster.mdat");
 
 		Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
 
@@ -730,7 +732,7 @@ void TestLevel::CreateTestLevel()
 	}
 
 	// 배경 사운드 테스트
-	//Ptr<CSound> soundBGM = CAssetMgr::GetInst()->FindAsset<CSound>(L"Sound\\Menu_Theme.wav");
+	//Ptr<CSound> soundBGM = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\Menu_Theme.wav");
 	//CSoundMgr::GetInst()->SetGameBGM(soundBGM, false);
 	//CSoundMgr::GetInst()->PlayGameBGM(true, 0.5f, false);
 
@@ -742,7 +744,7 @@ void TestLevel::CreateTestLevel()
 	//pObject->AddComponent(new CCollider3D);
 	//pObject->AddComponent(new TestSound);
 
-	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->Load<CMesh>(L"SphereMesh"));
 	//pObject->MeshRender()->SetMaterial(
 	//	CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
 
@@ -753,11 +755,11 @@ void TestLevel::CreateTestLevel()
 
 	//pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
 
-	//Ptr<CTexture> pColor = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	//Ptr<CTexture> pColor = CAssetMgr::GetInst()->Load<CTexture>(
 	//	L"Texture\\HeightMap\\MoonCrater.png");
 	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
 
-	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
+	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
 	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
 	//pLevel->AddObject(0, pObject, false);
 

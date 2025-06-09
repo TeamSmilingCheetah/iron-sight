@@ -19,6 +19,22 @@ CAnimation::CAnimation(bool _bEngineRes)
 {
 }
 
+CAnimation::CAnimation(const CAnimation& _Src)
+	: CAsset(ANIMATION, false)	// FIXME : clone은 engine resource가 아니라고 가정.
+	, m_Skeleton(_Src.m_Skeleton)
+	, m_StartFrame(_Src.m_StartFrame)
+	, m_EndFrame(_Src.m_EndFrame)
+	, m_FrameLength(_Src.m_FrameLength)
+	, m_StartTime(_Src.m_StartTime)
+	, m_EndTime(_Src.m_EndTime)
+	, m_TimeLength(_Src.m_TimeLength)
+	, m_TimeMode(_Src.m_TimeMode)
+	, m_BoneFrameData(nullptr)
+	, m_vecKeyFrames(_Src.m_vecKeyFrames)	// FIXME : cpu 데이터는 날려야 함. 나중에 gpu copyresource로 변경하기
+{
+	CreateBoneFrameSB();
+}
+
 CAnimation::~CAnimation()
 {
 	if (nullptr != m_BoneFrameData)
@@ -75,16 +91,19 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 		}
 
 		// structuredbuffer 만들어두기
-		pAnim->m_BoneFrameData = new CStructuredBuffer;
-		pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
-		    , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
-		    , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
+		pAnim->CreateBoneFrameSB();
+		//pAnim->m_BoneFrameData = new CStructuredBuffer;
+		//pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
+		//    , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
+		//    , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
+
+
+		wstring strFilePath = L"Animation\\" + pAnim->GetName();
 
 		// AssetMgr 등록 (key 값 설정)
-		CAssetMgr::GetInst()->AddAsset<CAnimation>(pAnim->GetName(), pAnim);
+		CAssetMgr::GetInst()->AddAsset<CAnimation>(strFilePath, pAnim);
 
 		// Save (relative path 설정)
-		wstring strFilePath = L"Animation\\" + pAnim->GetName();
 		pAnim->Save(strFilePath);
 
 		// Return 벡터에 추가
@@ -164,12 +183,17 @@ int CAnimation::Load(const wstring& _strFilePath)
 		fread(&m_vecKeyFrames[i], sizeof(tFrameTrans), 1, pFile);
 
 	// Structured Buffer 생성
-	m_BoneFrameData = new CStructuredBuffer;
-	m_BoneFrameData->Create(sizeof(tFrameTrans)
-	    , m_Skeleton->GetBoneCount() * m_FrameLength
-	    , SRV_ONLY, false, m_vecKeyFrames.data());
+	CreateBoneFrameSB();
 
 	fclose(pFile);
 
 	return S_OK;
+}
+
+void CAnimation::CreateBoneFrameSB()
+{
+	m_BoneFrameData = new CStructuredBuffer;
+	m_BoneFrameData->Create(sizeof(tFrameTrans)
+		, m_Skeleton->GetBoneCount() * m_FrameLength
+		, SRV_ONLY, false, m_vecKeyFrames.data());
 }

@@ -43,6 +43,29 @@ wstring CPathMgr::MakeFileName(const wstring& _Name)
 	return strName;
 }
 
+wstring CPathMgr::GetFileExtension(const wstring& _FilePath)
+{
+	path RelativePath = _FilePath;
+
+	return RelativePath.extension();
+}
+
+wstring CPathMgr::GetKeyWithoutExtension(const wstring& _FilePath)
+{
+	size_t ExtPos = _FilePath.rfind(L".");
+	if (ExtPos == wstring::npos)
+		return L"";
+
+	return _FilePath.substr(0, ExtPos);
+}
+
+wstring CPathMgr::GetFileStem(const wstring& _FilePath)
+{
+	path RelativePath = _FilePath;
+
+	return RelativePath.stem();
+}
+
 wstring CPathMgr::GetRelativePath(const wstring& _FilePath)
 {
 	size_t FindPos = _FilePath.find(m_ContentPath);

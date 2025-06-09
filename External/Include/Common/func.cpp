@@ -286,6 +286,12 @@ string WStringToString(const wstring& _str)
 	return res_str;
 }
 
+wstring ToLower(const wstring& _str)
+{
+	wstring result = _str;
+	std::transform(result.begin(), result.end(), result.begin(), towlower);
+	return result;
+}
 
 void GetComponentsNames(vector<wstring>& _vecComponentsNames)
 {

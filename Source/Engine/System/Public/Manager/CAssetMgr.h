@@ -8,6 +8,7 @@ class CAssetMgr :
 {
 	SINGLE(CAssetMgr);
 
+private:
 	map<wstring, Ptr<CAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];
 	bool m_bAssetChanged;
 
@@ -39,11 +40,17 @@ public:
 	template <typename T>
 	Ptr<T> Load(const wstring& _Key, const wstring& _RelativePath);
 
+	template <typename T>
+	Ptr<T> Load(const wstring& _RelativePath);
+
 	template <>
 	Ptr<CComputeShader> Load(const wstring& _Key, const wstring& _RelativePath)
 	{
 		return FindAsset<CComputeShader>(_Key).Get();
 	}
+
+	// TEST : Asset key 변경
+	bool ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey);
 
 	Ptr<CTexture> CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
 								DXGI_FORMAT _PixelFormat, UINT _BindFlag,
@@ -61,7 +68,7 @@ public:
 
 	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
 
-	CGameObject* ClonePrefabe(const wstring& _Key);
+	Ptr<CAsset> CopyAsset(Ptr<CAsset> _Source);
 };
 
 template <typename T>
@@ -98,7 +105,9 @@ ASSET_TYPE GetAssetType()
 template <typename T>
 int CAssetMgr::AddAsset(const wstring& _Key, Ptr<T> _Asset)
 {
-	ASSET_TYPE Type = GetAssetType<T>();
+	static_assert(std::is_base_of<CAsset, T>::value, "T must derive from CAsset");
+
+	ASSET_TYPE Type = _Asset->GetAssetType();
 
 	_Asset->SetKey(_Key);
 	m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_Key, _Asset.Get()));
@@ -147,6 +156,39 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
 	// 에셋을 맵에 등록
 	ASSET_TYPE Type = GetAssetType<T>();
 	m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_Key, pAsset));
+
+	m_bAssetChanged = true;
+
+	return static_cast<T*>(pAsset.Get());
+}
+
+
+template <typename T>
+Ptr<T> CAssetMgr::Load(const wstring& _RelativePath)
+{
+	Ptr<CAsset> pAsset = FindAsset<T>(_RelativePath).Get();
+
+	if (nullptr != pAsset)
+		return static_cast<T*>(pAsset.Get());
+
+	// 텍스쳐 파일 경로
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + _RelativePath;
+
+	// 에셋 객체 생성 및 로딩
+	pAsset = new T;
+	if (FAILED(pAsset->Load(strFilePath)))
+	{
+		pAsset = nullptr;
+		return nullptr;
+	}
+
+	// 로딩이 완료된 에셋에 본인의 Key, RelativePath 세팅
+	pAsset->SetKey(_RelativePath);
+	pAsset->SetRelativePath(_RelativePath);
+
+	// 에셋을 맵에 등록
+	ASSET_TYPE Type = GetAssetType<T>();
+	m_mapAsset[static_cast<UINT>(Type)].insert(make_pair(_RelativePath, pAsset));
 
 	m_bAssetChanged = true;
 
