@@ -22,9 +22,6 @@ public:
 		return Changed;
 	}
 
-	// TEST : 메모리 프로파일링 텍스쳐 ScratchImage 한 번에 해제
-	void ReleaseTextureSource();
-
 private:
 	void CreateEngineMesh();
 	void CreateEngineTexture();

@@ -177,7 +177,7 @@ int CTexture::Create(UINT PWidth, UINT PHeight, DXGI_FORMAT PPixelFormat, UINT P
 
 int CTexture::Create(ComPtr<ID3D11Texture2D> P2DTexture)
 {
-	assert(_Tex2D.Get());
+	assert(!m_Tex2D.Get());
 
 	m_Tex2D = P2DTexture;
 	m_Tex2D->GetDesc(&m_Desc);

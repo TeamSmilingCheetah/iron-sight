@@ -10,18 +10,6 @@ CAssetMgr::~CAssetMgr()
 {
 }
 
-// TEST : 메모리 프로파일링 
-void CAssetMgr::ReleaseTextureSource()
-{
-	auto iter = m_mapAsset[(UINT)TEXTURE].begin();
-
-	for (; iter != m_mapAsset[(UINT)TEXTURE].end(); ++iter)
-	{
-		Ptr<CTexture> pTex = (CTexture*)(iter->second.Get());
-		pTex->m_Image.Release();
-	}
-}
-
 Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
                                        DXGI_FORMAT _PixelFormat, UINT _BindFlag, D3D11_USAGE _Usage)
 {
@@ -130,6 +118,8 @@ bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 
 	// map에서 제거
 	m_mapAsset[typeToIndex].erase(iter);
+
+	// TODO : 이 Asset을 참조하던 다른 애셋에게도 알려줘야 함!!!!
 
 	return true;
 }

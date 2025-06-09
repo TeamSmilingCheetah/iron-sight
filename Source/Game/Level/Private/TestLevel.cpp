@@ -37,6 +37,8 @@
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
 
+#include "Engine/Core/Public/CEngine.h"
+
 void TestLevel::CreateTestLevel()
 {
 	// Texture 로딩하기
