@@ -8,6 +8,7 @@ class CAssetMgr :
 {
 	SINGLE(CAssetMgr);
 
+private:
 	map<wstring, Ptr<CAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];
 	bool m_bAssetChanged;
 
@@ -20,6 +21,9 @@ public:
 		m_bAssetChanged = false;
 		return Changed;
 	}
+
+	// TEST : 메모리 프로파일링 텍스쳐 ScratchImage 한 번에 해제
+	void ReleaseTextureSource();
 
 private:
 	void CreateEngineMesh();

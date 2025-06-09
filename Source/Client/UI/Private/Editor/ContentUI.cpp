@@ -6,6 +6,8 @@
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 
+#include "Engine/Core/Public/CEngine.h"
+
 class Inspector;
 
 ContentUI::ContentUI()
@@ -68,43 +70,94 @@ void ContentUI::ReloadContent()
 {
 	// Content 폴더 안에있는 모든 에셋의 경로를 찾아낸다.
 	m_vecAssetPath.clear();
+
+	// TEST : 메모맆 프로파일링 asset 타입별로
+	for (UINT i = 0; i < (UINT)ASSET_TYPE::END; ++i)
+	{
+		m_vecAssetPathByType[i].clear();
+	}
+
 	FindAssetPath(CPathMgr::GetInst()->GetContentPath());
 
-	for (size_t i = 0; i < m_vecAssetPath.size(); ++i)
-	{
-		ASSET_TYPE Type = GetAssetType(m_vecAssetPath[i]);
+	//for (size_t i = 0; i < m_vecAssetPath.size(); ++i)
+	//{
+	//	ASSET_TYPE Type = GetAssetType(m_vecAssetPath[i]);
+	//
+	//	switch (Type)
+	//	{
+	//	case MESH:
+	//		CAssetMgr::GetInst()->Load<CMesh>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case MESH_DATA:
+	//		CAssetMgr::GetInst()->Load<CMeshData>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case TEXTURE:
+	//		CAssetMgr::GetInst()->Load<CTexture>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case SOUND:
+	//		CAssetMgr::GetInst()->Load<CSound>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case PREFAB:
+	//		CAssetMgr::GetInst()->Load<CPrefab>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case FLIPBOOK:
+	//		CAssetMgr::GetInst()->Load<CFlipbook>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case ANIMATION:
+	//		CAssetMgr::GetInst()->Load<CAnimation>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case SPRITE:
+	//		CAssetMgr::GetInst()->Load<CSprite>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	case MATERIAL:
+	//		CAssetMgr::GetInst()->Load<CMaterial>(m_vecAssetPath[i], m_vecAssetPath[i]);
+	//		break;
+	//	}
+	//}
 
-		switch (Type)
+	// TEST : 메모리 프로파일링 asset 타입별로
+	for (UINT i = 0; i < (UINT)ASSET_TYPE::END; ++i)
+	{
+		for (int j = 0; j < m_vecAssetPathByType[i].size(); ++j)
 		{
-		case MESH:
-			CAssetMgr::GetInst()->Load<CMesh>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case MESH_DATA:
-			CAssetMgr::GetInst()->Load<CMeshData>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case TEXTURE:
-			CAssetMgr::GetInst()->Load<CTexture>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case SOUND:
-			CAssetMgr::GetInst()->Load<CSound>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case PREFAB:
-			CAssetMgr::GetInst()->Load<CPrefab>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case FLIPBOOK:
-			CAssetMgr::GetInst()->Load<CFlipbook>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case ANIMATION:
-			CAssetMgr::GetInst()->Load<CAnimation>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case SPRITE:
-			CAssetMgr::GetInst()->Load<CSprite>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
-		case MATERIAL:
-			CAssetMgr::GetInst()->Load<CMaterial>(m_vecAssetPath[i], m_vecAssetPath[i]);
-			break;
+			switch ((ASSET_TYPE)i)
+			{
+			case MESH:
+				CAssetMgr::GetInst()->Load<CMesh>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case MESH_DATA:
+				CAssetMgr::GetInst()->Load<CMeshData>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case TEXTURE:
+				CAssetMgr::GetInst()->Load<CTexture>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case SOUND:
+				CAssetMgr::GetInst()->Load<CSound>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case PREFAB:
+				CAssetMgr::GetInst()->Load<CPrefab>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case FLIPBOOK:
+				CAssetMgr::GetInst()->Load<CFlipbook>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case ANIMATION:
+				CAssetMgr::GetInst()->Load<CAnimation>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case SPRITE:
+				CAssetMgr::GetInst()->Load<CSprite>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			case MATERIAL:
+				CAssetMgr::GetInst()->Load<CMaterial>(m_vecAssetPathByType[i][j], m_vecAssetPathByType[i][j]);
+				break;
+			}
 		}
+
+		CEngine::GetInst()->PrintMemoryUsage(ASSET_TYPE_STRING[i]);
 	}
+
+	// TEST : 메모리 프로파일링 텍스쳐 ScratchImage 해제
+	CAssetMgr::GetInst()->ReleaseTextureSource();
+	CEngine::GetInst()->PrintMemoryUsage("Scratch Released");
 
 	// 에셋의 원본 파일이 존재하는지 체크
 	for (UINT i = 0; i < END; ++i)
@@ -165,6 +218,11 @@ void ContentUI::FindAssetPath(const wstring& _FolderPath)
 			wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
 			wstring RelativePath = FilePath.substr(ContentPath.length(), FilePath.length());
 			m_vecAssetPath.push_back(RelativePath);
+
+			// TEST : 메모리 프로파일링 asset 타입별로
+			ASSET_TYPE type = GetAssetType(RelativePath);
+			if (type != ASSET_TYPE::END)
+				m_vecAssetPathByType[(UINT)GetAssetType(RelativePath)].push_back(RelativePath);
 		}
 	}
 

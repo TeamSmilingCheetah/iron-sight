@@ -198,10 +198,14 @@ void CImGuiMgr::CreateEditorUI()
 	pUI->SetActive(true);
 	m_mapUI.insert(make_pair(pUI->GetID(), pUI));
 
+	CEngine::GetInst()->PrintMemoryUsage("Before Content Loaded");
+
 	// ContentUI
 	pUI = new ContentUI;
 	pUI->SetActive(true);
 	m_mapUI.insert(make_pair(pUI->GetID(), pUI));
+
+	CEngine::GetInst()->PrintMemoryUsage("After Content Loaded");
 
 	// SE_AtlasView
 	auto pSE_AtlasView = new SE_AtlasView;

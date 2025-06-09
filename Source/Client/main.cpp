@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Build/framework.h"
 #include "Client/Build/Resource.h"
 #include "Client/imgui/imgui.h"
@@ -54,6 +54,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 	MSG msg = {};
 
+	// TEST: 콘솔
+	if (!AllocConsole())
+	{
+		MessageBoxA(0, "콘솔 생성 실패", "Error", 0);
+	}
+
+	FILE* fp;
+	freopen_s(&fp, "CONOUT$", "w", stdout); // 표준 출력 재지정
+	freopen_s(&fp, "CONOUT$", "w", stderr);
+	freopen_s(&fp, "CONIN$", "r", stdin);   // 표준 입력도 가능하면 설정
+
+	HWND consoleWnd = GetConsoleWindow();
+	HMENU hMenu = GetSystemMenu(consoleWnd, FALSE);
+	if (hMenu != NULL)
+	{
+		// SC_CLOSE 항목 비활성화
+		EnableMenuItem(hMenu, SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
+		DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
+	}
+
 	// Engine 초기화
 	if (FAILED(CEngine::GetInst()->Init(g_hWnd, 1280, 768
 		, &CLevelMgr::SaveGameObject, &CLevelMgr::LoadGameObject)))
@@ -69,23 +89,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// EditorMgr 초기화
 	CEditorMgr::GetInst()->Init();
-
-	// TEST: 콘솔
-	//AllocConsole(); // 콘솔 할당
-
-	//FILE* fp;
-	//freopen_s(&fp, "CONOUT$", "w", stdout); // 표준 출력 재지정
-	//freopen_s(&fp, "CONOUT$", "w", stderr);
-	//freopen_s(&fp, "CONIN$", "r", stdin);   // 표준 입력도 가능하면 설정
-
-	//HWND consoleWnd = GetConsoleWindow();
-	//HMENU hMenu = GetSystemMenu(consoleWnd, FALSE);
-	//if (hMenu != NULL)
-	//{
-	//	// SC_CLOSE 항목 비활성화
-	//	EnableMenuItem(hMenu, SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
-	//	DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
-	//}
 
 	// 기본 메시지 루프입니다:
 	while (true)

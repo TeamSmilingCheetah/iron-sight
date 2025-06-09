@@ -1,4 +1,5 @@
-﻿#pragma once
+#pragma once
+#include "Common/global.h"
 #include "Engine/System/Public/Asset/Base/CAsset.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 
@@ -20,10 +21,10 @@ class CTexture :
 	public CAsset
 {
 	friend class CAssetMgr;
-
+	
 private:
-	ScratchImage m_Image;
-	ComPtr<ID3D11Texture2D> m_Tex2D;
+	ScratchImage m_Image; // 이미지 파일 로딩 및 저장 기능
+	ComPtr<ID3D11Texture2D> m_Tex2D; // (ScratchImage)SysMem -> GPUMem
 	ComPtr<ID3D11RenderTargetView> m_RTV;
 	ComPtr<ID3D11DepthStencilView> m_DSV;
 	ComPtr<ID3D11ShaderResourceView> m_SRV;

@@ -8,6 +8,10 @@ private:
 	class TreeUI*	m_Tree;
 	vector<wstring> m_vecAssetPath; // Content 폴더에 있는 모든 리소스 경로
 
+	// TEST : 메모리 프로파일링 asset 타입별로
+	vector<wstring> m_vecAssetPathByType[(UINT)ASSET_TYPE::END];
+
+
 	Ptr<CAsset>		m_TargetAsset;
 
 public:

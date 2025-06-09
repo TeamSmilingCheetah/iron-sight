@@ -128,22 +128,22 @@ void TestLevel::CreateTestLevel()
 	// =========
 	// LandScape
 	// =========
-	auto pLandScape = new CGameObject;
-	pLandScape->SetName(L"LandScape");
-	pLandScape->AddComponent(new CLandScape);
-
-	pLandScape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
-	pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-
-	pLandScape->LandScape()->SetFace(32, 32);
-	pLandScape->LandScape()->CreateHeightMap(1024, 1024);
-	//pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
-	pLandScape->LandScape()->SetColorTexture(
-		CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
-	pLandScape->LandScape()->SetNormalTexture(
-		CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
-
-	pLevel->AddObject(0, pLandScape, false);
+	//auto pLandScape = new CGameObject;
+	//pLandScape->SetName(L"LandScape");
+	//pLandScape->AddComponent(new CLandScape);
+	//
+	//pLandScape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
+	//pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	//
+	//pLandScape->LandScape()->SetFace(32, 32);
+	//pLandScape->LandScape()->CreateHeightMap(1024, 1024);
+	////pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
+	//pLandScape->LandScape()->SetColorTexture(
+	//	CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
+	//pLandScape->LandScape()->SetNormalTexture(
+	//	CAssetMgr::GetInst()->FindAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
+	//
+	//pLevel->AddObject(0, pLandScape, false);
 
 
 	// =========

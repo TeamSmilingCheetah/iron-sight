@@ -10,6 +10,18 @@ CAssetMgr::~CAssetMgr()
 {
 }
 
+// TEST : 메모리 프로파일링 
+void CAssetMgr::ReleaseTextureSource()
+{
+	auto iter = m_mapAsset[(UINT)TEXTURE].begin();
+
+	for (; iter != m_mapAsset[(UINT)TEXTURE].end(); ++iter)
+	{
+		Ptr<CTexture> pTex = (CTexture*)(iter->second.Get());
+		pTex->m_Image.Release();
+	}
+}
+
 Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
                                        DXGI_FORMAT _PixelFormat, UINT _BindFlag, D3D11_USAGE _Usage)
 {
