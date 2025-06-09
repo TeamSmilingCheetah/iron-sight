@@ -8,6 +8,7 @@ CTexture::CTexture()
 	  , m_Desc{}
 	  , m_RecentSRVNum(-1)
 	  , m_RecentUAVNum(-1)
+	  , m_bSystemMemoryReleased(false)
 {
 }
 
@@ -53,23 +54,27 @@ int CTexture::Load(const wstring& _FilePath)
 	// Texture2D 객체를 만듬
 	// Texture2D 를 전달할때 사용할 ShaderResourceView
 	CreateShaderResourceView(DEVICE
-	                         , m_Image.GetImages()
-	                         , m_Image.GetImageCount()
-	                         , m_Image.GetMetadata(), m_SRV.GetAddressOf());
+		, m_Image.GetImages()
+		, m_Image.GetImageCount()
+		, m_Image.GetMetadata()
+		, m_SRV.GetAddressOf());
 
-	// 생성된 ShaderResourveView 를 이용해서 원본 객체(Texture2D) 를 알아낸다.
-	m_SRV->GetResource((ID3D11Resource**)m_Tex2D.GetAddressOf());
+	// 생성된 ShaderResourceView 를 이용해서 원본 객체(Texture2D) 를 알아낸다.
+	m_SRV->GetResource(reinterpret_cast<ID3D11Resource**>(m_Tex2D.GetAddressOf()));
 
 	// 생성된 Texture2D 의 Desc 정보를 알아낸다.
 	m_Tex2D->GetDesc(&m_Desc);
 
+	// Release Memory
+	ReleaseSystemMemory();
 	return S_OK;
 }
 
 int CTexture::Save(const wstring& _RelativePath)
 {
 	// GPU -> System
-	CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+	ScratchImage localImage;
+	CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), localImage);
 
 	// System -> File
 	SetRelativePath(_RelativePath);
@@ -77,10 +82,10 @@ int CTexture::Save(const wstring& _RelativePath)
 	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + _RelativePath;
 
 	HRESULT hr = E_FAIL;
-	if (1 == m_Image.GetMetadata().arraySize)
+	if (1 == localImage.GetMetadata().arraySize)
 	{
 		// png, jpg, jpeg, bmp,
-		hr = SaveToWICFile(*m_Image.GetImages()
+		hr = SaveToWICFile(*localImage.GetImages()
 		                   , WIC_FLAGS_NONE
 		                   , GetWICCodec(WIC_CODEC_PNG)
 		                   , FilePath.c_str());
@@ -88,9 +93,9 @@ int CTexture::Save(const wstring& _RelativePath)
 
 	else
 	{
-		hr = SaveToDDSFile(m_Image.GetImages()
-		                   , m_Image.GetMetadata().arraySize
-		                   , m_Image.GetMetadata()
+		hr = SaveToDDSFile(localImage.GetImages()
+		                   , localImage.GetMetadata().arraySize
+		                   , localImage.GetMetadata()
 		                   , DDS_FLAGS_NONE
 		                   , FilePath.c_str());
 	}
