@@ -17,6 +17,17 @@ CFontMgr::~CFontMgr()
 
 	if (nullptr != m_FontWrapper)
 		m_FontWrapper->Release();
+
+	if (nullptr != m_WriteFactory)
+		m_WriteFactory->Release();
+
+	// m_mapFormat의 모든 IDWriteTextFormat 객체 해제
+	for (auto& pair : m_mapFormat)
+	{
+		if (pair.second)
+			pair.second->Release();
+	}
+	m_mapFormat.clear();
 }
 
 void CFontMgr::Init()
@@ -233,7 +244,7 @@ void CFontMgr::Render()
 		}
 
 		// Text Layout을 생성
-		 m_WriteFactory->CreateTextLayout(
+		m_WriteFactory->CreateTextLayout(
 			info.Text.c_str(),
 			static_cast<UINT32>(info.Text.size()),
 			format,
@@ -255,6 +266,10 @@ void CFontMgr::Render()
 			nullptr,
 			FW1_CLIPRECT
 		);
+
+		// 생성된 layout 해제
+		if (layout)
+			layout->Release();
 	}
 
 	// 매 틱마다 등록해줘야 함.
