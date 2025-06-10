@@ -12,6 +12,7 @@ CTimeMgr::CTimeMgr()
 	  , m_fEngineTime(0.f)
 	  , m_Second(0.)
 	  , m_FPS(0)
+	  , m_TotalAverageFPS(0)
 	  , m_IsStop(true)
 	  , m_TimeInfo{}
 {
@@ -47,6 +48,10 @@ void CTimeMgr::Tick()
 	FPSSamples[CurrentSample] = 1.f / m_fEngineDT;
 	CurrentSample = (CurrentSample + 1) % SampleCount;
 
+	// 평균 FPS 연산
+	// TODO(KHJ): Overflow 발생에 유의할 것
+	m_TotalAverageFPS = (m_TotalAverageFPS * (m_fEngineTime - m_fEngineDT) + 1) / m_fEngineTime;
+
 	// 평균 연산
 	float AverageFPS = 0.f;
 	for (int i = 0; i < SampleCount; ++i)
@@ -60,8 +65,9 @@ void CTimeMgr::Tick()
 	{
 		m_FPS = static_cast<int>(AverageFPS);
 		m_Second = 0.f;
-		// 윈도우 타이틀에 FPS 랑 DeltaTime 표시
-		swprintf_s(m_TimeInfo, L"DeltaTime : %.3f, FPS : %d", m_fEngineDT, m_FPS);
+
+		// 프레임 관련 정보 제공
+		swprintf_s(m_TimeInfo, L"FPS : %d, Average FPS : %.1f", m_FPS, m_TotalAverageFPS);
 	}
 
 	m_PrevCount = m_CurrentCount;
@@ -92,4 +98,11 @@ void CTimeMgr::Tick()
 
 	// Tick마다 렌더링은 매번 진행
 	CFontMgr::GetInst()->DrawFont(m_TimeInfo, 10, 20, 16, color);
+}
+
+void CTimeMgr::SetStopMode(bool PIsStop)
+{
+	m_IsStop = PIsStop;
+	if (m_IsStop)
+		m_fDT = 0.f;
 }
