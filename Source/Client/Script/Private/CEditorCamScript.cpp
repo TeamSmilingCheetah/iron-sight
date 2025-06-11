@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/Script/Public/CEditorCamScript.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -7,7 +7,7 @@
 
 CEditorCamScript::CEditorCamScript()
 	: CScript(SCRIPT_TYPE::NONE)
-	  , m_CameraSpeed(500.f)
+	, m_CameraSpeed(500.f)
 {
 }
 

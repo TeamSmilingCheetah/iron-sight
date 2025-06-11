@@ -5,13 +5,23 @@
 
 AssetUI::AssetUI(const string& _ID, ASSET_TYPE _Type)
 	: EditorUI(_ID)
-	  , m_Type(_Type)
+	, m_Type(_Type)
+	, m_DirtyFlag(false)
 {
 	SetActive(false);
 }
 
 AssetUI::~AssetUI()
 {
+}
+
+void AssetUI::SetAsset(Ptr<CAsset> _Asset)
+{
+	if (m_TargetAsset == _Asset)
+		return;
+
+	m_TargetAsset = _Asset;
+	m_DirtyFlag = true;
 }
 
 void AssetUI::AssetTitle()
@@ -38,6 +48,8 @@ void AssetUI::SaveButton()
 
 	if (ImGui::Button("SAVE"))
 	{
+		// TEST : Engine Resource가 아닌 경우 key와 relative path가 동일하다고 가정
+		assert(m_TargetAsset->GetKey() == m_TargetAsset->GetRelativePath());
 		m_TargetAsset->Save(m_TargetAsset->GetKey());
 	}
 }
@@ -45,4 +57,13 @@ void AssetUI::SaveButton()
 void AssetUI::Deactivate()
 {
 	m_TargetAsset = nullptr;
+}
+
+void AssetUI::Tick()
+{
+	if (!IsActive())
+		return;
+
+	// TEST : DirtyFlag가 Render단계에서 설정되므로 다음 프레임 Tick에서 해제해줌
+	m_DirtyFlag = false;
 }

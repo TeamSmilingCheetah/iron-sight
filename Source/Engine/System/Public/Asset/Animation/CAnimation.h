@@ -45,6 +45,8 @@ public:
 
 	void SetTimeMode(FbxTime::EMode _Mode) { m_TimeMode = _Mode; }
 
+	void Crop(int _StartIdx, int _EndIdx);
+
 public:
 	static vector<Ptr<CAnimation>> LoadFromFBX(CFBXLoader& _loader);
 

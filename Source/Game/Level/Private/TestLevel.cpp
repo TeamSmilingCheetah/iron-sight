@@ -133,18 +133,18 @@ void TestLevel::CreateTestLevel()
 	auto pLandScape = new CGameObject;
 	pLandScape->SetName(L"LandScape");
 	pLandScape->AddComponent(new CLandScape);
-
+	
 	pLandScape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
 	pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-
+	
 	pLandScape->LandScape()->SetFace(32, 32);
 	pLandScape->LandScape()->CreateHeightMap(1024, 1024);
-	// pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
+	//pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
 	pLandScape->LandScape()->SetColorTexture(
 		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
 	pLandScape->LandScape()->SetNormalTexture(
 		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
-
+	
 	pLevel->AddObject(0, pLandScape, false);
 
 
@@ -248,7 +248,6 @@ void TestLevel::CreateTestLevel()
 		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 		ChildUI->UI()->SetRectPos(-55.f, 0.f);
 		ChildUI->UI()->SetRectSize(40.f, 40.f);
-		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\Idle_Left.bmp"));
 
 		DragUI->AddChild(ChildUI);
 	}
@@ -278,7 +277,6 @@ void TestLevel::CreateTestLevel()
 		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
 		ChildUI->UI()->SetRectPos(-55.f, 0.f);
 		ChildUI->UI()->SetRectSize(40.f, 40.f);
-		ChildUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\Idle_Left.bmp"));
 
 		DragUI->AddChild(ChildUI);
 	}
@@ -443,8 +441,6 @@ void TestLevel::CreateTestLevel()
 			pInvenScript->SetVicinityUI(Vicinity);
 			pInvenScript->SetInventoryUI(Inventory);
 			pInvenScript->SetPlayer(pObj);
-
-			pObj->Animator3D()->SetClipTime(0, 0.3f * i);
 
 			// 자식 메쉬들 같이 이동
 			pLevel->AddObject(3, pObj, true);

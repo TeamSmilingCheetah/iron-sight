@@ -14,10 +14,11 @@ class CAnimator3D :
 private:
 	vector<Ptr<CAnimation>>		m_vecClip;
 
-	vector<float>	m_vecClipUpdateTime;
+	float			m_AccTime;
+	int				m_FPS; // 30
+	float			m_FrameDuration;
+
 	vector<Matrix>	m_vecFinalBoneMat; // 텍스쳐에 전달할 최종 행렬정보
-	int				m_FrameCount; // 30
-	double			m_CurTime;
 	int				m_CurClip; // 클립 인덱스
 
 	int				m_FrameIdx; // 클립의 현재 프레임
@@ -37,18 +38,27 @@ private:
 
 	vector<Matrix>			m_vecBoneWorldTransform;
 
+	bool	m_Active;
+
 public:
 	void AddAnimClip(Ptr<CAnimation> _pAnim);
 	void SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim);
-	void SetClipTime(int _iClipIdx, float _fTime) { m_vecClipUpdateTime[_iClipIdx] = _fTime; }
+
+	void ClearAnimClip() { m_vecClip.clear(); }
 
 	int GetCurClipIdx() const { return m_CurClip; }
-	double GetCurClipTime() const { return m_CurTime; }
+	double GetCurClipTime() const { return m_FrameDuration * m_CurClip + m_AccTime; }
 	int GetCurFrameIdx() const { return m_FrameIdx; }
+	int GetFrameLength() const { return m_vecClip[m_CurClip]->GetFrameLength(); }
 	float GetRatio() const { return m_Ratio; }
+	bool IsActive() const { return m_Active; }
 
 	const vector<Ptr<CAnimation>>& GetClips() const { return m_vecClip; }
 	void SetCurClip(int _Idx);
+	void SetCurFrame(int _FrameIdx);
+
+	void Play() { m_Active = true; }
+	void Pause() { m_Active = false; }
 
 	UINT GetBoneCount() const { return m_vecClip[m_CurClip]->GetBoneCount(); }
 
@@ -58,6 +68,10 @@ public:
 
 	CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
 	void ClearData();
+
+	// TEST: 일단 여기에 Crop 기능 넣음. 웬만하면 Editor에서만 허용되도록 하고 싶음
+	void Crop(int _StartIdx, int _EndIdx);
+
 
 private:
 	void CreateBoneObject();

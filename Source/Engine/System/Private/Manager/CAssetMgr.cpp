@@ -1,5 +1,6 @@
 #include "pch.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
 
 CAssetMgr::CAssetMgr()
 	: m_bAssetChanged(false)
@@ -109,12 +110,30 @@ bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	if (iter == m_mapAsset[typeToIndex].end())
 	{
 		_Asset->SetKey(_NewKey);
+		_Asset->SetRelativePath(_NewKey);
 
 		return false;
 	}
 
+	// Engine 애셋 여부
+	bool isEngineRes = _Asset->IsEngineAsset();
+
+	// TODO : 파일로 존재하는 Asset은 파일 시스템에서도 변경해준다.
+	if (!isEngineRes)
+	{
+		wstring Path = CPathMgr::GetInst()->GetContentPath();
+		wstring curPath = Path + _Asset->GetKey();
+		wstring newPath = Path + _NewKey;
+		bool result = MoveFileEx(curPath.c_str(), newPath.c_str(), MOVEFILE_REPLACE_EXISTING);
+
+		int a = 0;
+	}
+
 	// map에 새로운 키값으로 등록
-	AddAsset(_NewKey, iter->second);
+	AddAsset(_NewKey, _Asset);
+
+	// FIXME : Relative Path랑 Key랑 동일하게 설정. 진짜 하나로 합치고 싶네 ㅅㅂ
+	_Asset->SetRelativePath(_NewKey);
 
 	// map에서 제거
 	m_mapAsset[typeToIndex].erase(iter);
@@ -155,6 +174,7 @@ Ptr<CAsset> CAssetMgr::CopyAsset(Ptr<CAsset> _Source)
 			else
 			{
 				AddAsset(newKey, pClone);
+				pClone->SetRelativePath(newKey);
 				break;
 			}
 		}

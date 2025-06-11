@@ -16,7 +16,8 @@ void CGameObjectEx::FinalTick_Editor()
 	const vector<CGameObject*>& vecChild = GetChild();
 	for (size_t i = 0; i < vecChild.size(); ++i)
 	{
-		auto pChild = dynamic_cast<CGameObjectEx*>(vecChild[i]);
+		// FIXME : CGameObject를 Ex로 downcasting해서 작동하는지 테스트. 변경 필요함
+		auto pChild = static_cast<CGameObjectEx*>(vecChild[i]);
 		assert(pChild);
 		pChild->FinalTick_Editor();
 	}
@@ -38,7 +39,8 @@ void CGameObjectEx::Render_Editor()
 	const vector<CGameObject*>& vecChild = GetChild();
 	for (size_t i = 0; i < vecChild.size(); ++i)
 	{
-		auto pChild = dynamic_cast<CGameObjectEx*>(vecChild[i]);
+		// FIXME : CGameObject를 Ex로 downcasting해서 작동하는지 테스트. 변경 필요함
+		auto pChild = static_cast<CGameObjectEx*>(vecChild[i]);
 		if (pChild)
 		{
 			pChild->Render_Editor();

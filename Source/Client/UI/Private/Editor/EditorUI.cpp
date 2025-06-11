@@ -22,6 +22,11 @@ void EditorUI::Tick()
 {
     if (!m_Active)
         return;
+
+	for (auto childUI : m_vecChildUI)
+	{
+		childUI->Tick();
+	}
 }
 
 void EditorUI::Render()
