@@ -14,7 +14,7 @@ private:
 	float m_Mass;
 	float m_Speed;
 	float m_GravityAccel;
-	float m_AccTime;
+	float m_CurClipAccTime;
 	float m_TriggeredTime;
 	float m_ThrowAngle;
 

@@ -736,6 +736,8 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 	case ITEM_TYPE::ENERGY_DRINK:
 		m_TotalTime = m_RemainTime = 4.f;
 		m_HealAmount = 40.f;
+		// TEST: Animation Blending
+		Animator3D()->SetCurClipBlend(1, .4f);
 		break;
 	default:
 		break;

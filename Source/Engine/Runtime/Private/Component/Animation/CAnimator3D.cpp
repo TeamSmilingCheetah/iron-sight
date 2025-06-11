@@ -10,13 +10,13 @@
 
 CAnimator3D::CAnimator3D()
 	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
-	, m_AccTime(0.f)
+	, m_CurClipAccTime(0.f)
 	, m_FPS(30)
-	, m_FrameDuration(1.f / m_FPS)
-	, m_CurClip(0)
-	, m_FrameIdx(0)
-	, m_NextFrameIdx(0)
-	, m_Ratio(0.f)
+	, m_FrameDuration(1.f / 30.f)
+	, m_CurClipIdx(-1)
+	, m_NextClipIdx(-1)
+	, m_CurClipCurFrameIdx(0)
+	, m_CurClipNextFrameIdx(0)
 	, m_BoneFinalMatBuffer(nullptr)
 	, m_BonePureMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
@@ -29,14 +29,14 @@ CAnimator3D::CAnimator3D()
 
 CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
-	, m_AccTime(0.f)
+	, m_CurClipAccTime(0.f)
 	, m_FPS(_origin.m_FPS)
 	, m_FrameDuration(_origin.m_FrameDuration)
 	, m_vecClip(_origin.m_vecClip)
-	, m_CurClip(_origin.m_CurClip)
-	, m_FrameIdx(_origin.m_FrameIdx)
-	, m_NextFrameIdx(_origin.m_NextFrameIdx)
-	, m_Ratio(_origin.m_Ratio)
+	, m_CurClipIdx(_origin.m_CurClipIdx)
+	, m_NextClipIdx(_origin.m_NextClipIdx)
+	, m_CurClipCurFrameIdx(_origin.m_CurClipCurFrameIdx)
+	, m_CurClipNextFrameIdx(_origin.m_CurClipNextFrameIdx)
 	, m_BoneFinalMatBuffer(nullptr)
 	, m_BonePureMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
@@ -62,39 +62,105 @@ CAnimator3D::~CAnimator3D()
 void CAnimator3D::Begin()
 {
 }
-	
 
 void CAnimator3D::FinalTick()
 {
-	if (m_Active)
+	if (!m_Active)
+		return;
+
+	bool curClipUpdated = false;
+
+	// 다음 클립이 존재하는 경우 (현재 클립이 끝났으면 다음 클립으로 덮어씌우기 위해 먼저 계산함)
+	if (m_NextClipIdx != -1)
 	{
-		// 현재 재생중인 Clip 의 시간을 진행한다.
-		m_AccTime += EngineDT;
+		// 다음 클립의 시간을 진행한다.
+		m_NextClipAccTime += EngineDT;
 
-		if (m_AccTime >= m_FrameDuration)
+		// 블렌드 시간을 진행한다.
+		m_BlendAccTime += EngineDT;
+
+		// 다음 클립의 현재 프레임 계산
+		while (m_NextClipAccTime >= m_FrameDuration)
 		{
-			while (m_AccTime >= m_FrameDuration)
-			{
-				m_AccTime -= m_FrameDuration;
-				++m_FrameIdx;
-			}
+			m_NextClipAccTime -= m_FrameDuration;
+			++m_NextClipCurFrameIdx;
+		}
 
-			if (m_FrameIdx >= GetFrameLength())
-			{
-				m_FrameIdx -= GetFrameLength();
-				m_CurClip = (m_CurClip + 1) % m_vecClip.size();
-			}
+		// 다음 클립이 종료되었다면
+		// TEST : 일단 다음 클립이 현재 클립보다 먼저 끝나는 경우는 없다고 가정.
+		assert(m_NextClipCurFrameIdx < m_vecClip[m_NextClipIdx]->GetFrameLength());
+
+		// 다음 클립의 다음 프레임 계산
+		if (m_NextClipCurFrameIdx + 1 == m_vecClip[m_NextClipIdx]->GetFrameLength())
+		{
+			m_NextClipNextFrameIdx = m_NextClipCurFrameIdx;
+			m_NextClipRatio = 0.f;
+		}
+		else
+		{
+			m_NextClipNextFrameIdx = m_NextClipCurFrameIdx + 1;
+			m_NextClipRatio = m_NextClipAccTime / m_FrameDuration;
+		}
+
+
+		// Blend 시간을 초과했다면
+		if (m_BlendAccTime > m_BlendDuration)
+		{
+			// 다음 클립 정보를 현재 클립으로 옮김.
+			m_CurClipIdx = m_NextClipIdx;
+			m_CurClipAccTime = m_NextClipAccTime;
+			m_CurClipRatio = m_NextClipRatio;
+			m_CurClipCurFrameIdx = m_NextClipCurFrameIdx;
+			m_CurClipNextFrameIdx = m_NextClipNextFrameIdx;
+
+			// 초기화
+			m_NextClipIdx = -1;
+			m_NextClipCurFrameIdx = 0;
+			m_NextClipNextFrameIdx = 0;
+			m_BlendRatio = 0.f;
+			m_BlendAccTime = 0.f;
+			m_BlendDuration = 0.f;
+
+			curClipUpdated = true;
+		}
+		else
+		{
+			// 현재 클립과 다음 클립의 보간 비율 계산
+			m_BlendRatio = m_BlendAccTime / m_BlendDuration;
 		}
 	}
 
-	// 다음 프레임 인덱스
-	if (m_FrameIdx >= m_vecClip[m_CurClip]->GetFrameLength() - 1)
-		m_NextFrameIdx = m_FrameIdx; // 끝이면 현재 인덱스를 유지
-	else
-		m_NextFrameIdx = m_FrameIdx + 1;
+	if (!curClipUpdated)
+	{
+		// 현재 클립의 시간을 진행한다.
+		m_CurClipAccTime += EngineDT;
 
-	// 프레임간의 시간에 따른 비율을 구해준다.
-	m_Ratio = m_AccTime / m_FrameDuration;
+		// 현재 클립의 현재 프레임 계산
+		while (m_CurClipAccTime >= m_FrameDuration)
+		{
+			m_CurClipAccTime -= m_FrameDuration;
+			++m_CurClipCurFrameIdx;
+		}
+
+		// 현재 클립이 끝난 경우
+		if (m_CurClipCurFrameIdx >= GetFrameLength())
+		{
+			m_CurClipCurFrameIdx -= GetFrameLength();
+		}
+
+		// 현재 클립의 다음 프레임 계산
+		if (m_CurClipCurFrameIdx + 1 == m_vecClip[m_CurClipIdx]->GetFrameLength())
+		{
+			m_CurClipNextFrameIdx = m_CurClipCurFrameIdx;
+			m_CurClipRatio = 0.f;
+		}
+		else
+		{
+			m_CurClipNextFrameIdx = m_CurClipCurFrameIdx + 1;
+			m_CurClipRatio = m_CurClipAccTime / m_FrameDuration;
+		}
+
+	}
 
 	// 컴퓨트 쉐이더 연산여부
 	m_bFinalMatUpdate = false;
@@ -108,13 +174,13 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		// Animation3D Update Compute Shader
 		static Ptr<CBoneMatrixCS> pBoneMatCS = new CBoneMatrixCS;
 
-		Ptr<CAnimation> pCurAnim = m_vecClip[m_CurClip];
+		Ptr<CAnimation> pCurAnim = m_vecClip[m_CurClipIdx];
 
 		const vector<tMTBone>* vecBones = pCurAnim->GetBones();
-		m_vecFinalBoneMat.resize(vecBones->size());
 
 		UINT iBoneCount = static_cast<UINT>(vecBones->size());
 
+		// 같은 skeleton 쓴다는 가정 (당연하긴 함)
 		if (m_BoneFinalMatBuffer->GetElementCount() != iBoneCount)
 		{
 			m_BoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SRV_UAV, false, nullptr);
@@ -122,28 +188,30 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 			m_vecBoneWorldTransform.resize(iBoneCount);
 		}
 
-		pBoneMatCS->SetFrameDataBuffer(pCurAnim->GetBoneFrameDataBuffer());
+		pBoneMatCS->SetBoneCount(iBoneCount);
 		pBoneMatCS->SetOffsetMatBuffer(pCurAnim->GetBoneInverseBuffer());
+		pBoneMatCS->SetCurClipFrameBuffer(pCurAnim->GetBoneFrameDataBuffer());
+
+		if (m_NextClipIdx != -1)
+		{
+			pBoneMatCS->SetNextClipFrameBuffer(m_vecClip[m_NextClipIdx]->GetBoneFrameDataBuffer());
+		}
+
 		pBoneMatCS->SetOutputBuffer(m_BoneFinalMatBuffer);
 		pBoneMatCS->SetPureOutputBuffer(m_BonePureMatBuffer);
 
-		pBoneMatCS->SetBoneCount(iBoneCount);
-		pBoneMatCS->SetFrameIndex(m_FrameIdx);
-		pBoneMatCS->SetNextFrameIdx(m_NextFrameIdx);
-		pBoneMatCS->SetFrameRatio(m_Ratio);
+		pBoneMatCS->SetCurClipFrame(m_CurClipCurFrameIdx + m_CurClipRatio);
+		pBoneMatCS->SetNextClipFrame(m_NextClipCurFrameIdx + m_NextClipRatio);
+		pBoneMatCS->SetBlendRatio(m_BlendRatio);
 
-		// 업데이트 쉐이더 실행
 		pBoneMatCS->Execute();
 
 		// debug skeleton
-		DrawDebugSkeleton(Vec4(0.f, 1.f, 0.f, 1.f), _Renderer->Transform()->GetWorldMat(), m_BonePureMatBuffer, m_vecClip[m_CurClip]->GetBoneParentBuffer(), false, 0.f);
-
-
+		DrawDebugSkeleton(Vec4(0.f, 1.f, 0.f, 1.f), _Renderer->Transform()->GetWorldMat(), m_BonePureMatBuffer, m_vecClip[m_CurClipIdx]->GetBoneParentBuffer(), false, 0.f);
 
 		// Bone Object World Transform 직접 세팅
 		//  TODO : ZCompute shader로 world transform까지 계산해서 pipeline 넘겨주도록 개선하기
 		m_BonePureMatBuffer->GetData(m_vecBoneWorldTransform.data());
-
 
 		for (UINT i = 0; i < iBoneCount; ++i)
 		{
@@ -156,10 +224,6 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 
 				if (m_vecBoneObject[i])
 					m_vecBoneObject[i]->Transform()->SetWorldMat(worldMat);
-
-				//auto it = m_mapBoneObject.find(m_vecBoneObject[i]->GetName());
-				//if (it != m_mapBoneObject.end())
-				//	it->second->Transform()->SetWorldMat(worldMat);
 			}
 			else
 			{
@@ -170,12 +234,9 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 
 				if (m_vecBoneObject[i])
 					m_vecBoneObject[i]->Transform()->SetWorldMat(worldMat);
-
-				//auto it = m_mapBoneObject.find(m_vecBoneObject[i]->GetName());
-				//if (it != m_mapBoneObject.end())
-				//	it->second->Transform()->SetWorldMat(worldMat);
 			}
 		}
+
 		m_bFinalMatUpdate = true;
 	}
 
@@ -240,19 +301,45 @@ void CAnimator3D::CreateBoneObject()
 	GetOwner()->AddChild(m_vecBoneObject[0]);
 }
 
- void CAnimator3D::SetCurClip(int _Idx)
+ void CAnimator3D::SetCurClip(int _ClipIdx)
 {
-	assert(_Idx < m_vecClip.size());
+	assert(_ClipIdx < m_vecClip.size());
 
-	m_CurClip = _Idx;
+	m_CurClipIdx = _ClipIdx;
+
+	// 컴퓨트 쉐이더 연산여부
+	m_bFinalMatUpdate = false;
 }
 
- void CAnimator3D::SetCurFrame(int _FrameIdx)
+ void CAnimator3D::SetCurClipFrame(int _FrameIdx)
  {
-	 assert(_FrameIdx < m_vecClip[m_CurClip]->GetFrameLength());
+	 assert(_FrameIdx < m_vecClip[m_CurClipIdx]->GetFrameLength());
 
-	 m_FrameIdx = _FrameIdx;
-	 m_AccTime = 0.0;
+	 m_CurClipCurFrameIdx = _FrameIdx;
+	 m_CurClipNextFrameIdx = min(_FrameIdx + 1, m_vecClip[m_CurClipIdx]->GetFrameLength() - 1);
+	 m_CurClipAccTime = 0.f;
+	 m_CurClipRatio = 0.f;
+
+	 // 컴퓨트 쉐이더 연산여부
+	 m_bFinalMatUpdate = false;
+ }
+
+ void CAnimator3D::SetCurClipBlend(int _ClipIdx, float _BlendTime)
+ {
+	 if (m_CurClipIdx == _ClipIdx)
+		 return;
+
+	 m_NextClipIdx = _ClipIdx;
+	 m_NextClipCurFrameIdx = 0;
+	 m_NextClipNextFrameIdx = 0;
+	 m_NextClipAccTime = 0.f;
+	 m_NextClipRatio = 0.f;
+
+	 m_BlendDuration = _BlendTime;
+	 m_BlendAccTime = 0.f;
+
+	 // 컴퓨트 쉐이더 연산여부
+	 m_bFinalMatUpdate = false;
  }
 
 void CAnimator3D::ClearData()
@@ -279,7 +366,7 @@ void CAnimator3D::ClearData()
 
 void CAnimator3D::Crop(int _StartIdx, int _EndIdx)
 {
-	m_vecClip[m_CurClip]->Crop(_StartIdx, _EndIdx);
+	m_vecClip[m_CurClipIdx]->Crop(_StartIdx, _EndIdx);
 }
 
 void CAnimator3D::SaveComponent(FILE* _File)

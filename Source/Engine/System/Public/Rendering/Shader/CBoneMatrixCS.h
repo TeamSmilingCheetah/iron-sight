@@ -6,18 +6,20 @@ class CStructuredBuffer;
 class CBoneMatrixCS :
     public CComputeShader
 {
-    CStructuredBuffer* m_FrameDataBuffer; // t16
-    CStructuredBuffer* m_OffsetMatBuffer; // t17
+private:
+    CStructuredBuffer* m_OffsetMatBuffer; // t16
+    CStructuredBuffer* m_CurClipFrameDataBuffer; // t17
+	CStructuredBuffer* m_NextClipFrameDataBuffer; // t18
     CStructuredBuffer* m_OutputBuffer; // u0
 	CStructuredBuffer* m_PureOutputBuffer; // u1
 
 public:
-    // g_int_0 : BonCount, g_int_1 : Frame Index
     void SetBoneCount(int _iBoneCount) { m_Const.iArr[0] = _iBoneCount; }
-    void SetFrameIndex(int _iFrameIdx) { m_Const.iArr[1] = _iFrameIdx; }
-    void SetNextFrameIdx(int _iFrameIdx) { m_Const.iArr[2] = _iFrameIdx; }
-    void SetFrameRatio(float _fFrameRatio) { m_Const.fArr[0] = _fFrameRatio; }
-    void SetFrameDataBuffer(CStructuredBuffer* _buffer) { m_FrameDataBuffer = _buffer; }
+    void SetCurClipFrame(float _Frame) { m_Const.fArr[0] = _Frame; }
+	void SetNextClipFrame(float _Frame) { m_Const.fArr[1] = _Frame; }
+	void SetBlendRatio(float _Ratio) { m_Const.fArr[2] = _Ratio; }
+    void SetCurClipFrameBuffer(CStructuredBuffer* _buffer) { m_CurClipFrameDataBuffer = _buffer; }
+	void SetNextClipFrameBuffer(CStructuredBuffer* _buffer) { m_NextClipFrameDataBuffer = _buffer; }
     void SetOffsetMatBuffer(CStructuredBuffer* _buffer) { m_OffsetMatBuffer = _buffer; }
     void SetOutputBuffer(CStructuredBuffer* _buffer) { m_OutputBuffer = _buffer; }
 	void SetPureOutputBuffer(CStructuredBuffer* _buffer) { m_PureOutputBuffer = _buffer; }

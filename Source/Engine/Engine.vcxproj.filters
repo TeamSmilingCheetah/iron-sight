@@ -680,9 +680,4 @@
       <Filter>01. Header</Filter>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shader\targetpost.fx">
-      <Filter>HLSL\02. Render</Filter>
-    </FxCompile>
-  </ItemGroup>
 </Project>
