@@ -79,11 +79,13 @@ void CEditorMgr::Init()
 	m_EditorSpaceCam = new CGameObjectEx;
 	m_EditorSpaceCam->SetName(L"EditorSpaceCamera");
 	m_EditorSpaceCam->AddComponent(new CCamera);
-	m_EditorSpaceCam->AddComponent(new CEditorSpaceCamScript);
+	m_EditorSpaceCamScript = new CEditorSpaceCamScript;
+	m_EditorSpaceCam->AddComponent(m_EditorSpaceCamScript);
 
 	m_EditorSpaceCam->Transform()->SetRelativePos(0.f, 0.f, -200.f);
 	m_EditorSpaceCam->Camera()->SetProjType(PERSPECTIVE);
 	m_EditorSpaceCam->Camera()->SetFar(100000.f);
+
 
 	// Origin (원점에 구 하나 표시)
 	m_Origin = new CGameObjectEx;

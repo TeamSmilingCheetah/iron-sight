@@ -66,10 +66,9 @@ void EditorUI::Render_Modalless()
     UINT flag = ImGuiWindowFlags_HorizontalScrollbar;
 
     if (m_UseMenuBar)
-        flag = ImGuiWindowFlags_MenuBar;
+        flag |= ImGuiWindowFlags_MenuBar;
     if (!m_Move)
         flag |= ImGuiWindowFlags_NoMove;
-
 
     ImGui::Begin(strID.c_str(), &Active, flag);
 

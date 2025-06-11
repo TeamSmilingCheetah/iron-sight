@@ -5,6 +5,8 @@
 #include "Client/Core/Public/CEditorMgr.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 
+#include "Client/Script/Public/CEditorSpaceCamScript.h"
+
 AnimationUI::AnimationUI()
 	: AssetUI("Animation", ANIMATION)
 {
@@ -48,7 +50,36 @@ void AnimationUI::Render_Update()
 	ImVec4 tint_col = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4 border_col = ImGui::GetStyleColorVec4(ImGuiCol_Border);
 
-	ImGui::Image(pAnimRT->GetSRV().Get(), ImVec2(windowWidth, imageHeight), uv_min, uv_max, tint_col, border_col);
+	//ImGui::Image(pAnimRT->GetSRV().Get(), ImVec2(windowWidth, imageHeight), uv_min, uv_max, tint_col, border_col);
+
+	ImGui::ImageButton(pAnimRT->GetSRV().Get(), ImVec2(windowWidth, imageHeight), uv_min, uv_max, 0);
+
+	if (ImGui::IsItemHovered())
+	{
+		CEditorSpaceCamScript* pCamScript = CEditorMgr::GetInst()->GetEditorSpaceCamScript();
+		
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+		{
+			ImVec2 MouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+			pCamScript->SetMouseButton(ImGuiMouseButton_Left);
+			pCamScript->SetMouseDelta(MouseDelta.x, MouseDelta.y);
+
+			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);
+		}
+		else if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
+		{
+			ImVec2 MouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Right);
+			pCamScript->SetMouseButton(ImGuiMouseButton_Right);
+			pCamScript->SetMouseDelta(MouseDelta.x, MouseDelta.y);
+
+			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Right);
+		}
+		else if (ImGui::GetIO().MouseWheel)
+		{
+			pCamScript->SetMouseButton(ImGuiMouseButton_Middle);
+			pCamScript->SetMouseDelta(0.f, ImGui::GetIO().MouseWheel);
+		}
+	}
 
 	int FrameIdx = m_SkinnedModel->Animator3D()->GetCurFrameIdx();
 	int FrameLength = m_SkinnedModel->Animator3D()->GetFrameLength();
