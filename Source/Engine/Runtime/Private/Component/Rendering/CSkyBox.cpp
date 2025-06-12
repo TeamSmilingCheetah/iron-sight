@@ -5,7 +5,7 @@
 
 CSkyBox::CSkyBox()
     : CRenderComponent(COMPONENT_TYPE::SKYBOX)
-      , m_Mode(SPHERE)
+    , m_Mode(SPHERE)
 {
     SetMode(m_Mode);
     CreateMaterial();
@@ -76,19 +76,25 @@ void CSkyBox::SetMode(SKYBOX_MODE _Mode)
     if (CUBE == m_Mode)
     {
         SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
-        SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl"), 0);
     }
     else
     {
         SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
-        SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl"), 0);
     }
+
+	SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl"), 0);
 }
 
 void CSkyBox::SaveComponent(FILE* _File)
 {
+	SaveAssetRef(m_SkyBoxTex, _File);
+	fwrite(&m_Mode, sizeof(SKYBOX_MODE), 1, _File);
 }
 
 void CSkyBox::LoadComponent(FILE* _File)
 {
+	LoadAssetRef(m_SkyBoxTex, _File);
+	fread(&m_Mode, sizeof(SKYBOX_MODE), 1, _File);
+	SetMode(m_Mode);
+	Transform()->SetFrustumCheck(false);
 }

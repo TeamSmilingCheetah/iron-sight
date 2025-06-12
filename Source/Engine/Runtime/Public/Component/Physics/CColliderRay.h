@@ -40,12 +40,12 @@ class CColliderRay :
 private:
 	Vec3        m_Offset;
 	tRay        m_RayPosDir;
-	Matrix      m_matColliderWorld; // 크기, 회전, 이동
+	Matrix      m_matColliderWorld;		// 크기, 회전, 이동
 
-	Vec3        m_RayFinalPos;    // 최종 레이의 위치
-	Vec3        m_RayFinalDir;      // 최종 레이의 방향
+	Vec3        m_RayFinalPos;			// 최종 레이의 위치
+	Vec3        m_RayFinalDir;			// 최종 레이의 방향
 
-	float        m_RayLength;			// Ray길이
+	float       m_RayLength;			// Ray길이
 	float       m_RayTargetLength;		// 디버그용 임시 길이
 
 	int         m_OverlapCount;

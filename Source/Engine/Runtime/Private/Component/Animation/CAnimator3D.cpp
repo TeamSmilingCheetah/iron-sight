@@ -10,13 +10,21 @@
 
 CAnimator3D::CAnimator3D()
 	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
-	, m_CurClipAccTime(0.f)
 	, m_FPS(30)
 	, m_FrameDuration(1.f / 30.f)
-	, m_CurClipIdx(-1)
+	, m_CurClipAccTime(0.f)
+	, m_CurClipRatio(0.f)
+	, m_NextClipAccTime(0.f)
+	, m_NextClipRatio(0.f)
+	, m_BlendAccTime(0.f)
+	, m_BlendDuration(0.f)
+	, m_BlendRatio(0.f)
+	, m_CurClipIdx(0)
 	, m_NextClipIdx(-1)
 	, m_CurClipCurFrameIdx(0)
 	, m_CurClipNextFrameIdx(0)
+	, m_NextClipCurFrameIdx(0)
+	, m_NextClipNextFrameIdx(0)
 	, m_BoneFinalMatBuffer(nullptr)
 	, m_BonePureMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
@@ -29,18 +37,28 @@ CAnimator3D::CAnimator3D()
 
 CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
-	, m_CurClipAccTime(0.f)
+	, m_vecClip(_origin.m_vecClip)
 	, m_FPS(_origin.m_FPS)
 	, m_FrameDuration(_origin.m_FrameDuration)
-	, m_vecClip(_origin.m_vecClip)
+	, m_CurClipAccTime(0.f)
+	, m_CurClipRatio(0.f)
+	, m_NextClipAccTime(0.f)
+	, m_NextClipRatio(0.f)
+	, m_BlendAccTime(0.f)
+	, m_BlendDuration(0.f)
+	, m_BlendRatio(0.f)
 	, m_CurClipIdx(_origin.m_CurClipIdx)
-	, m_NextClipIdx(_origin.m_NextClipIdx)
-	, m_CurClipCurFrameIdx(_origin.m_CurClipCurFrameIdx)
-	, m_CurClipNextFrameIdx(_origin.m_CurClipNextFrameIdx)
+	, m_NextClipIdx(-1)
+	, m_CurClipCurFrameIdx(0)
+	, m_CurClipNextFrameIdx(0)
+	, m_NextClipCurFrameIdx(0)
+	, m_NextClipNextFrameIdx(0)
 	, m_BoneFinalMatBuffer(nullptr)
 	, m_BonePureMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
 	, m_BindCaller(nullptr)
+	, m_vecBoneObject(_origin.m_vecBoneObject)
+	, m_vecBoneWorldTransform(_origin.m_vecBoneWorldTransform)
 	, m_Active(true)
 {
 	m_BoneFinalMatBuffer = new CStructuredBuffer;
@@ -393,15 +411,12 @@ void CAnimator3D::LoadComponent(FILE* _File)
 {
 	int ClipCnt = 0;
 	fread(&ClipCnt, sizeof(int), 1, _File);
+
+	m_vecClip.resize(ClipCnt);
 	for (int i = 0; i < ClipCnt; ++i)
 	{
-		Ptr<CAnimation> pAnimation;
-		LoadAssetRef(pAnimation, _File);
-		m_vecClip.push_back(pAnimation);
+		LoadAssetRef(m_vecClip[i], _File);
 	}
-
-	int ClipTimeCnt = 0;
-	fread(&ClipTimeCnt, sizeof(int), 1, _File);
 
 	// BoneObject 로드
 	UINT BoneCount = 0;

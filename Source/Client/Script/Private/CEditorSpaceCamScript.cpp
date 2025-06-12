@@ -9,7 +9,7 @@
 
 CEditorSpaceCamScript::CEditorSpaceCamScript()
 	: CScript(SCRIPT_TYPE::NONE)
-	, m_CameraSpeed(500.f)
+	, m_MouseBtn(ImGuiMouseButton_COUNT)	// 이걸 None처럼 사용함
 {
 }
 

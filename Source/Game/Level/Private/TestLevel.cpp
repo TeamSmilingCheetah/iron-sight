@@ -439,7 +439,6 @@ void TestLevel::CreateTestLevel()
 			pObj->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2335431089408_TempMotion1.anim"));
 			pObj->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\Drink.anim"));
 			pObj->Animator3D()->SetCurClip(0);
-			pObj->Animator3D()->SetDefaultClip(0);
 
 			pObj->AddComponent(new InventoryController);
 			InventoryController* pInvenScript = static_cast<InventoryController*>(GetScriptWithType(pObj, SCRIPT_TYPE::INVENTORYSCRIPT));

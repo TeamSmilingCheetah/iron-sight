@@ -84,6 +84,13 @@ void CRenderMgr::ClearMRT()
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->Clear();
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->ClearRenderTargets();
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->ClearRenderTargets();
+
+	// Deferred Texture들이 SRV로 바인딩되고 해제 안되있으면 경고 떠서 해제
+	CTexture::Clear(0);
+	CTexture::Clear(1);
+	CTexture::Clear(2);
+	CTexture::Clear(3);
+	CTexture::Clear(4);
 }
 
 void CRenderMgr::Binding()

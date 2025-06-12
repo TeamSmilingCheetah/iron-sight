@@ -21,7 +21,6 @@
 PlayerCharacter::PlayerCharacter()
 	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_MainCamera(nullptr)
-	, m_PaperBurnIntence(0.f)
 	, m_MouseSensitivity(10.f)
 	, m_Force(0.f)
 	, m_Velocity(0.f)
@@ -36,9 +35,11 @@ PlayerCharacter::PlayerCharacter()
 	, m_bLean(false)
 	, m_bShoot(false)
 	, m_bCanThrow(false)
-	, m_InventoryCanvasUI(nullptr)
-	, m_InventoryOpened(false)
-	, m_CardinalImageUI(nullptr)
+	, m_bThrowBoom(false)
+	, m_CollObject(nullptr)
+	, m_HeadColl(nullptr)
+	, m_CamScript(nullptr)
+	, m_InventoryScript(nullptr)
 	, m_MaxHP(100.f)
 	, m_SemiMaxHP(75.f)
 	, m_CurHP(100.f)
@@ -52,6 +53,11 @@ PlayerCharacter::PlayerCharacter()
 	, m_BoostTotalTime(8.f)
 	, m_BoostUnit(0.3f)
 	, m_BoostSpeed(1.f)
+	, m_InventoryCanvasUI(nullptr)
+	, m_InventoryOpened(false)
+	, m_CardinalImageUI(nullptr)
+	, m_HPUI(nullptr)
+	, m_ItemUseUI(nullptr)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -759,14 +765,12 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 void PlayerCharacter::SaveComponent(FILE* _File)
 {
 	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
-	fwrite(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	SaveAssetRef(m_TargetTex, _File);
 }
 
 void PlayerCharacter::LoadComponent(FILE* _File)
 {
 	//fread(&m_PlayerSpeed, sizeof(float), 1, _File);
-	fread(&m_PaperBurnIntence, sizeof(float), 1, _File);
 	LoadAssetRef(m_TargetTex, _File);
 }
 

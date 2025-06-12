@@ -12,6 +12,11 @@
 
 InteractionHandler::InteractionHandler()
 	: CScript(SCRIPT_TYPE::INTERACTION_HANDLER)
+	, m_Player(nullptr)
+	, m_PlayerScript(nullptr)
+	, m_Interactable(false)
+	, m_InteractableObject(nullptr)
+	, m_InteractionUI(nullptr)
 {
 }
 
@@ -106,7 +111,6 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 		if (m_InteractableObject != _OtherObject)
 		{
 			m_InteractableObject = _OtherObject;
-			// TODO: Interaction UI 설정
 			m_InteractionUI->UI()->GetTextInfoRef()[0].Text = pInteractable->GetInteractionDesc();
 		}
 
