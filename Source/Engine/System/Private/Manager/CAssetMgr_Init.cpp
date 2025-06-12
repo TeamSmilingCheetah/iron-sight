@@ -37,6 +37,14 @@ void CAssetMgr::CreateEngineTexture()
 		L"EffectBlurTargetTex"
 		, static_cast<UINT>(vResolution.x), static_cast<UINT>(vResolution.y)
 		, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
+	// Editor Render Target (애니메이션 등 단일 애셋 확인용)
+	// TODO : 필요에 따라 해상도 조절
+	Ptr<CTexture> pEditorRenderTarget = CreateTexture(
+		L"EditorRenderTargetTex"
+		, static_cast<UINT>(vResolution.x), static_cast<UINT>(vResolution.y)
+		, DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
 }
 
 void CAssetMgr::CreateEngineGraphicShader()

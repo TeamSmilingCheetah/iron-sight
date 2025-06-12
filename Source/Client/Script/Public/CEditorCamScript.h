@@ -4,6 +4,7 @@
 class CEditorCamScript :
 	public CScript
 {
+private:
 	float m_CameraSpeed;
 
 public:
@@ -13,13 +14,8 @@ private:
 	void CameraOrthgraphicMove();
 	void CameraPerspectiveMove();
 
-	void SaveComponent(FILE* _File) override
-	{
-	}
-
-	void LoadComponent(FILE* _FILE) override
-	{
-	}
+	void SaveComponent(FILE* _File) override {}
+	void LoadComponent(FILE* _FILE) override {}
 
 public:
 	CLONE_DISABLE(CEditorCamScript);

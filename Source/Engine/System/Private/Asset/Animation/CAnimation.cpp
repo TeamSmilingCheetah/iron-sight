@@ -41,6 +41,31 @@ CAnimation::~CAnimation()
 		delete m_BoneFrameData;
 }
 
+void CAnimation::Crop(int _StartIdx, int _EndIdx)
+{
+	// TODO : CPU 데이터를 GPU에서 가져오도록 변경
+	m_FrameLength = _EndIdx - _StartIdx + 1;
+
+	assert(m_TimeMode == FbxTime::EMode::eFrames30);
+	m_TimeLength = m_FrameLength / 30.0;
+
+	UINT boneCount = m_Skeleton->GetBoneCount();
+
+	vector<tFrameTrans> croppedKeyFrames(m_FrameLength * boneCount);
+
+	for (int i = _StartIdx; i <= _EndIdx; ++i)
+	{
+		for (UINT j = 0; j < boneCount; ++j)
+		{
+			croppedKeyFrames[(i - _StartIdx) * boneCount + j] = m_vecKeyFrames[i * boneCount + j];
+		}
+	}
+
+	m_vecKeyFrames = std::move(croppedKeyFrames);
+
+	CreateBoneFrameSB();
+}
+
 vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 {
 	vector<Ptr<CAnimation>> vecRetClips;
@@ -192,6 +217,9 @@ int CAnimation::Load(const wstring& _strFilePath)
 
 void CAnimation::CreateBoneFrameSB()
 {
+	if (m_BoneFrameData != nullptr)
+		delete m_BoneFrameData;
+
 	m_BoneFrameData = new CStructuredBuffer;
 	m_BoneFrameData->Create(sizeof(tFrameTrans)
 		, m_Skeleton->GetBoneCount() * m_FrameLength

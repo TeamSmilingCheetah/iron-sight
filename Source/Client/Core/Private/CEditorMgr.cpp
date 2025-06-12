@@ -7,15 +7,32 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Client/Core/Public/CEditorMgr.h"
 #include "Client/Script/Public/CEditorCamScript.h"
+#include "Client/Script/Public/CEditorSpaceCamScript.h"
 #include "Client/Script/Public/CGameObjectEx.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+
+#include "Engine/Runtime/Public/Component/Light/CLight3D.h"
+
+#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
 
 CEditorMgr::CEditorMgr()
+	: m_RenderEditorSpace(false)
+	, m_EditorSpaceCam(nullptr)
+	, m_Light(nullptr)
+	, m_EditorSpaceRT(nullptr)
+	, m_Origin(nullptr)
 {
 }
 
 CEditorMgr::~CEditorMgr()
 {
 	DeleteVec(m_vecEditorObj);
+	DeleteVec(m_vecEditorSpaceObj);
+
+	delete m_EditorSpaceRT;
+	delete m_Light;
+	delete m_EditorSpaceCam;
+	delete m_Origin;
 }
 
 void CEditorMgr::Init()
@@ -34,6 +51,51 @@ void CEditorMgr::Init()
 
 	// Editor 용 카메라 등록
 	CRenderMgr::GetInst()->RegisterEditorCamera(pObject->Camera());
+
+	// ===================
+	// Editor Render Space
+	// ===================
+
+	// Render Target
+	m_EditorSpaceRT = new CMRT;
+	Ptr<CTexture> pRT = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
+	m_EditorSpaceRT->Create(&pRT, 1, nullptr);
+	m_EditorSpaceRT->SetClearColor(0, Vec4(0.343f, 0.343f, 0.343f, 1.f));
+
+	// Light
+	// TODO : RenderMgr에 등록하지 않도록 해야 함
+	m_Light = new CGameObjectEx;
+	m_Light->SetName(L"Directional Light");
+	m_Light->AddComponent(new CLight3D);
+	m_Light->Transform()->SetRelativePos(0.f, 100.f, 0.f);
+	m_Light->Transform()->SetRelativeRotation(45.f, 45.f, 0.f);
+	m_Light->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	m_Light->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	m_Light->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	m_Light->Light3D()->SetSpecularCoefficient(0.3f);
+	m_Light->Light3D()->SetRadius(300.f);
+
+	// Camera
+	m_EditorSpaceCam = new CGameObjectEx;
+	m_EditorSpaceCam->SetName(L"EditorSpaceCamera");
+	m_EditorSpaceCam->AddComponent(new CCamera);
+	m_EditorSpaceCamScript = new CEditorSpaceCamScript;
+	m_EditorSpaceCam->AddComponent(m_EditorSpaceCamScript);
+
+	m_EditorSpaceCam->Transform()->SetRelativePos(0.f, 0.f, -200.f);
+	m_EditorSpaceCam->Camera()->SetProjType(PERSPECTIVE);
+	m_EditorSpaceCam->Camera()->SetFar(100000.f);
+
+
+	// Origin (원점에 구 하나 표시)
+	m_Origin = new CGameObjectEx;
+	m_Origin->SetName(L"OriginSphere");
+	m_Origin->AddComponent(new CMeshRender);
+	m_Origin->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	m_Origin->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
+
+	m_Origin->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	m_Origin->Transform()->SetRelativeScale(10.f, 10.f, 10.f);
 }
 
 void CEditorMgr::Progress()
@@ -55,9 +117,76 @@ void CEditorMgr::Progress()
 	{
 		m_vecEditorObj[i]->Render_Editor();
 	}
+
+	if (m_RenderEditorSpace)
+	{
+		CMRT* pDeferredMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::DEFERRED);
+		pDeferredMRT->Clear();
+		pDeferredMRT->OMSet();
+
+		// Tick
+		m_EditorSpaceCam->Tick();
+		m_Origin->Tick();
+		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
+		{
+			m_vecEditorSpaceObj[i]->Tick();
+		}
+
+		// Final Tick
+		m_EditorSpaceCam->FinalTick_Editor();
+		m_Light->FinalTick_Editor();
+		m_Origin->FinalTick_Editor();
+		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
+		{
+			m_vecEditorSpaceObj[i]->FinalTick_Editor();
+		}
+
+		// Render
+		g_Trans.matView = m_EditorSpaceCam->Camera()->GetViewMat();
+		g_Trans.matProj = m_EditorSpaceCam->Camera()->GetProjMat();
+
+		m_Origin->Render_Editor();
+		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
+		{
+			m_vecEditorSpaceObj[i]->Render_Editor();
+		}
+
+		CMRT* pLightMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::LIGHT);
+		pLightMRT->Clear();
+		pLightMRT->OMSet();
+
+		m_Light->Light3D()->Render();
+
+		m_EditorSpaceRT->Clear();
+		m_EditorSpaceRT->OMSet();
+
+		Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+		Ptr<CMaterial> pMergeMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"MergeMtrl");
+		pMergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+		pMergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+		pMergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+		pMergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+		pMergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+		pMergeMtrl->SetScalarParam(INT_0, 0);
+		pMergeMtrl->Binding();
+
+		pRectMesh->Render(0);
+
+		for (int i = 0; i < 8; ++i)
+		{
+			CTexture::Clear(i);
+		}
+
+		CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->OMSet();
+	}
 }
 
 void CEditorMgr::CreateEditorObj(CGameObjectEx* _EditorObj)
 {
 	m_vecEditorObj.push_back(_EditorObj);
+}
+
+void CEditorMgr::CreateEditorSpaceObj(CGameObjectEx* _EditorSpaceObj)
+{
+	m_vecEditorSpaceObj.push_back(_EditorSpaceObj);
 }

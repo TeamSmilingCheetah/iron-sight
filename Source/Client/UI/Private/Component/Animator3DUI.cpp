@@ -45,11 +45,11 @@ void Animator3DUI::Render_Update()
 
 
 		// CurClipTime
-		double CurClipTime = pAnim3D->GetCurClipTime();
-		ImGui::Text("Current Clip Time:");
-		ImGui::SameLine();
-		ImGui::InputDouble("##ClipTime", &CurClipTime);
-		pAnim3D->SetClipTime(ClipIdx, static_cast<float>(CurClipTime));
+		//double CurClipTime = pAnim3D->GetCurClipTime();
+		//ImGui::Text("Current Clip Time:");
+		//ImGui::SameLine();
+		//ImGui::InputDouble("##ClipTime", &CurClipTime);
+		//pAnim3D->SetClipTime(ClipIdx, static_cast<float>(CurClipTime));
 
 
 		// FrameIdx
@@ -85,22 +85,15 @@ void Animator3DUI::Render_Update()
 
 
 		// Animation Stop & Play
-		static bool bStop = false;
 		static double CurTime = 0.f;
 		if (ImGui::Button("Stop Anim"))
 		{
-			CurTime = CurClipTime;
-			bStop = true;
+			pAnim3D->Pause();
 		}
 		ImGui::SameLine(150);
 		if (ImGui::Button("Play Anim"))
 		{
-			bStop = false;
-		}
-
-		if (bStop)
-		{
-			pAnim3D->SetClipTime(ClipIdx, static_cast<float>(CurTime));
+			pAnim3D->Play();
 		}
 	}
 

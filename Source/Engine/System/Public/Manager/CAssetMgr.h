@@ -163,6 +163,7 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
 }
 
 
+// TEST: Engine Resource가 아닌 경우 key와 relative path가 동일하다고 가정
 template <typename T>
 Ptr<T> CAssetMgr::Load(const wstring& _RelativePath)
 {

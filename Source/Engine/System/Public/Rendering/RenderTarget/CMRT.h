@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Public/CEntity.h"
-#include "System/Public/Asset/Texture/CTexture.h"
+#include "Engine/Core/Public/CEntity.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CMRT :
     public CEntity

@@ -21,6 +21,7 @@ ContentUI::ContentUI()
 	m_Tree->RightOption(true, this);
 
 	m_Tree->AddDynamicSelect(this, static_cast<EUI_DELEGATE_1>(&ContentUI::SelectAsset));
+	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&ContentUI::SelectAsset);
 	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&ContentUI::ChangeName_ContentUI);
 	m_Tree->AddRightItemDelegate((EUI_DELEGATE_1)&ContentUI::CopyAsset);
 
@@ -59,7 +60,7 @@ void ContentUI::ReloadContent()
 {
 	// FileSystem Clear
 	delete m_rootAssetFileSystem;
-	m_rootAssetFileSystem = new tFSNode;
+	m_rootAssetFileSystem = new tFSNode(L"Content");
 
 	FindAssetPath(CPathMgr::GetInst()->GetContentPath(), m_rootAssetFileSystem);
 
@@ -188,7 +189,9 @@ void ContentUI::ChangeName_ContentUI(DWORD_PTR _TreeNode)
 		ImGui::OpenPopup("Name_Setting_popup_Asset");
 
 		auto pNode = reinterpret_cast<TreeNode*>(_TreeNode);
-		m_TargetAsset = reinterpret_cast<CAsset*>(pNode->GetData());
+		tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
+
+		m_TargetAsset = pFSNode->Asset;
 	}
 
 	if (ImGui::BeginPopup("Name_Setting_popup_Asset"))
@@ -219,9 +222,12 @@ void ContentUI::CopyAsset(DWORD_PTR _TreeNode)
 	if (ImGui::Selectable("Copy Asset", false, ImGuiSelectableFlags_DontClosePopups))
 	{
 		auto pNode = reinterpret_cast<TreeNode*>(_TreeNode);
-		m_TargetAsset = reinterpret_cast<CAsset*>(pNode->GetData());
+		tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
 
+		m_TargetAsset = pFSNode->Asset;
 		m_TargetAsset = CAssetMgr::GetInst()->CopyAsset(m_TargetAsset);
+
+		m_TargetAsset->Save(m_TargetAsset->GetRelativePath());
 	}
 }
 

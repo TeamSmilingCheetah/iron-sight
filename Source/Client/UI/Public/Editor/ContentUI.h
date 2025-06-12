@@ -5,12 +5,12 @@ struct tFSNode	// File System Node
 {
 	wstring				Name;
 	bool				isFolder;
-	tFSNode* Parent;
+	tFSNode*			Parent;
 	vector<tFSNode*>	vecChildren;
 	Ptr<CAsset>			Asset;
 
-	tFSNode() : Parent(nullptr) {}
-	tFSNode(const wstring& _Name) : Name(_Name), Parent(nullptr) {}
+	tFSNode() : isFolder(false), Parent(nullptr) {}
+	tFSNode(const wstring& _Name) : Name(_Name), isFolder(false), Parent(nullptr) {}
 
 	~tFSNode()
 	{

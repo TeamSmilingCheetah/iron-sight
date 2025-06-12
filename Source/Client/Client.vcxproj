@@ -177,6 +177,7 @@
     <ClInclude Include="Rendering\Public\ComputeShaderUI.h" />
     <ClInclude Include="Rendering\Public\GraphicShaderUI.h" />
     <ClInclude Include="Script\Public\CEditorCamScript.h" />
+    <ClInclude Include="Script\Public\CEditorSpaceCamScript.h" />
     <ClInclude Include="Script\Public\CGameObjectEx.h" />
     <ClInclude Include="System\Public\CImGuiMgr.h" />
     <ClInclude Include="UI\Public\Asset\AnimationUI.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="Rendering\Private\ComputeShaderUI.cpp" />
     <ClCompile Include="Rendering\Private\GraphicShaderUI.cpp" />
     <ClCompile Include="Script\Private\CEditorCamScript.cpp" />
+    <ClCompile Include="Script\Private\CEditorSpaceCamScript.cpp" />
     <ClCompile Include="Script\Private\CGameObjectEx.cpp" />
     <ClCompile Include="System\Private\CImGuiMgr.cpp" />
     <ClCompile Include="UI\Private\Asset\AnimationUI.cpp" />
