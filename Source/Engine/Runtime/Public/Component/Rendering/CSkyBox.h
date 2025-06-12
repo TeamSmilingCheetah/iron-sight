@@ -18,7 +18,7 @@ public:
     void SetMode(SKYBOX_MODE _Mode);
     void SetSkyBoxTexture(Ptr<CTexture> _Tex) { m_SkyBoxTex = _Tex; }
 
-	SKYBOX_MODE GetMode() { return m_Mode; }
+	SKYBOX_MODE GetMode() const { return m_Mode; }
 
     void FinalTick() override;
     void Render() override;

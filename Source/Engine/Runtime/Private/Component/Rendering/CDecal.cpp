@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Runtime/Public/Component/Rendering/CDecal.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
@@ -11,7 +11,7 @@ CDecal::CDecal()
 	  , m_GlobalAlpha(1.f)
 	  , m_AsLight(false)
 	  , m_LifeTime(0.f)
-	  , m_AccTime(0.f)
+	  , m_CurClipAccTime(0.f)
 {
 	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
 
@@ -29,7 +29,7 @@ void CDecal::FinalTick()
 	              , Transform()->GetWorldScale()
 	              , Transform()->GetRelativeRotation(), true, 0.f);
 
-	m_AccTime += DT;
+	m_CurClipAccTime += DT;
 
 	// 수명이 0이라면 영구
 	if (m_LifeTime == 0)
@@ -37,7 +37,7 @@ void CDecal::FinalTick()
 		return;
 	}
 		
-	if (m_LifeTime < m_AccTime)
+	if (m_LifeTime < m_CurClipAccTime)
 	{
 		DestroyObject(GetOwner());
 	}

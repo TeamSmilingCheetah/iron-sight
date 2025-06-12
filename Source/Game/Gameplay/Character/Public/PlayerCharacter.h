@@ -30,7 +30,6 @@ private:
 	bool m_bLean;
 
 	float m_MouseSensitivity;
-	float m_PaperBurnIntence;
 
 	bool m_bShoot;
 	bool m_bCanThrow;
@@ -76,19 +75,12 @@ private:
 	// =======
 	// UI 관리
 	// =======
-
-	// 인벤토리 UI
-	CGameObject*	m_InventoryCanvasUI;
+	CGameObject*	m_InventoryCanvasUI;	// 인벤토리 UI
 	bool			m_InventoryOpened;
 
-	// 방위 UI
-	CGameObject*	m_CardinalImageUI;
-
-	// HP UI
-	CGameObject*	m_HPUI;
-
-	// 아이템 사용 UI
-	CGameObject*	m_ItemUseUI;
+	CGameObject*	m_CardinalImageUI;		// 방위 UI
+	CGameObject*	m_HPUI;					// HP UI
+	CGameObject*	m_ItemUseUI;			// 아이템 사용 UI
 
 public:
 	void Begin() override;

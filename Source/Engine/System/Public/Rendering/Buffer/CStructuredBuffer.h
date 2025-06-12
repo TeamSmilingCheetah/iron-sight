@@ -38,7 +38,7 @@ public:
     void Binding(UINT _RegisterNum);
 
     // Rendering, t clear
-    void Clear(UINT _RegisterNum);
+    static void Clear(UINT _RegisterNum);
 
     // ComputeShader, t Bindng
     void Binding_CS_SRV(UINT _RegisterNum);
@@ -46,9 +46,9 @@ public:
     void Binding_CS_UAV(UINT _RegisterNum);
 
     // ComputeShader, t Clear
-    void Clear_CS_SRV(UINT _RegisterNum);
+    static void Clear_CS_SRV(UINT _RegisterNum);
     // ComputeShader, U Clear
-    void Clear_CS_UAV(UINT _RegisterNum);
+    static void Clear_CS_UAV(UINT _RegisterNum);
 
     int Create(UINT _ElementSize, UINT _ElementCount, SB_TYPE _Type, bool _SystemMemMove,
                void* _SysMem = nullptr);

@@ -118,15 +118,14 @@ bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	// Engine 애셋 여부
 	bool isEngineRes = _Asset->IsEngineAsset();
 
-	// TODO : 파일로 존재하는 Asset은 파일 시스템에서도 변경해준다.
+	// 파일로 존재하는 Asset은 파일 시스템에서도 변경해준다.
 	if (!isEngineRes)
 	{
 		wstring Path = CPathMgr::GetInst()->GetContentPath();
 		wstring curPath = Path + _Asset->GetKey();
 		wstring newPath = Path + _NewKey;
 		bool result = MoveFileEx(curPath.c_str(), newPath.c_str(), MOVEFILE_REPLACE_EXISTING);
-
-		int a = 0;
+		assert(result == true);
 	}
 
 	// map에 새로운 키값으로 등록

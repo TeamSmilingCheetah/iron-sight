@@ -8,8 +8,6 @@
 
 #include "Engine/Core/Public/CEngine.h"
 
-class Inspector;
-
 tFSNode* ContentUI::m_rootAssetFileSystem = new tFSNode(L"Content");
 
 ContentUI::ContentUI()

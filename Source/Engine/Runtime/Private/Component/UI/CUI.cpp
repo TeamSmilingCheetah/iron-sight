@@ -86,6 +86,8 @@ void CUI::Binding()
 		CONTEXT->RSSetScissorRects(1, &scissor);
 	}
 
+	// TODO : Material Instance로 바꾸고 싶네
+	// FIXME: Pause하면 오류 나는 이유 여기서 GetDynamicMaterial()이 null을 반환해줌
 	UIRender()->GetDynamicMaterial(0)->SetScalarParam(VEC4_0, m_BackGroundColor);
 	UIRender()->GetDynamicMaterial(0)->SetTexParam(TEX_0, m_Image);
 }

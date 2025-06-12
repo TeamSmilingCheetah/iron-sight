@@ -206,18 +206,18 @@ struct tFrameTrans
 	float4 qRot;
 };
 
-StructuredBuffer<tFrameTrans> g_arrFrameTrans : register(t16);
-StructuredBuffer<matrix> g_arrInverse : register(t17);
-StructuredBuffer<tFrameTrans> g_arrBoneWorldFrameTrans : register(t18);
+StructuredBuffer<matrix> g_arrInverse : register(t16);
+StructuredBuffer<tFrameTrans> g_arrCurClipFrameTrans : register(t17);
+StructuredBuffer<tFrameTrans> g_arrNextClipFrameTrans : register(t18);
 RWStructuredBuffer<matrix> g_arrFinalMat : register(u0);
 RWStructuredBuffer<matrix> g_arrPureMat : register(u1);
 
 // ===========================
 // Animation3D Compute Shader
-#define BoneCount   g_int_0
-#define CurFrame    g_int_1
-#define NextFrame   g_int_2
-#define Ratio       g_float_0
+#define BoneCount			g_int_0
+#define CurClipFrame		g_float_0
+#define NextClipFrame       g_float_1
+#define BlendRatio			g_float_2
 // ===========================
 [numthreads(256, 1, 1)]
 void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
@@ -229,38 +229,55 @@ void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
 	float4 vQZero = float4(0.f, 0.f, 0.f, 1.f);
 	matrix matBone = (matrix) 0.f;
 
-	// Frame Data Index == Bone Count * Frame Count + _iThreadIdx.x
-	uint iFrameDataIndex = BoneCount * CurFrame + _iThreadIdx.x;
-	uint iNextFrameDataIdx = BoneCount * NextFrame + _iThreadIdx.x;
+	// CurClipFrame 정보를 분해함
+	int CurClipCurFrame = (int) CurClipFrame;
+	float CurClipRatio = CurClipFrame - CurClipCurFrame;
+	int CurClipNextFrame = CurClipCurFrame + (int) ceil(CurClipRatio);
 
-	float4 vScale = lerp(g_arrFrameTrans[iFrameDataIndex].vScale, g_arrFrameTrans[iNextFrameDataIdx].vScale, Ratio);
-	float4 vTrans = lerp(g_arrFrameTrans[iFrameDataIndex].vTranslate, g_arrFrameTrans[iNextFrameDataIdx].vTranslate, Ratio);
-	float4 qRot = QuternionLerp(g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iNextFrameDataIdx].qRot, Ratio);
+	// Frame Data Index == Bone Count * Frame Count + _iThreadIdx.x
+	uint iFrameDataIndex = BoneCount * CurClipCurFrame + _iThreadIdx.x;
+	uint iNextFrameDataIdx = BoneCount * CurClipNextFrame + _iThreadIdx.x;
+
+	float4 vCurScale = lerp(g_arrCurClipFrameTrans[iFrameDataIndex].vScale, g_arrCurClipFrameTrans[iNextFrameDataIdx].vScale, CurClipRatio);
+	float4 vCurTrans = lerp(g_arrCurClipFrameTrans[iFrameDataIndex].vTranslate, g_arrCurClipFrameTrans[iNextFrameDataIdx].vTranslate, CurClipRatio);
+	float4 qCurRot = QuternionLerp(g_arrCurClipFrameTrans[iFrameDataIndex].qRot, g_arrCurClipFrameTrans[iNextFrameDataIdx].qRot, CurClipRatio);
 
 	// 최종 본행렬 연산
-	MatrixAffineTransformation(vScale, vQZero, qRot, vTrans, matBone);
+	MatrixAffineTransformation(vCurScale, vQZero, qCurRot, vCurTrans, matBone);
 
 	// 최종 본행렬 연산    
 	//MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
 
 	matrix matInverse = transpose(g_arrInverse[_iThreadIdx.x]);
 	
-	// 구조화 버퍼에 결과값 저장
+	// BlendRatio가 0이면 Blend하지 않음
+	if (BlendRatio != 0.f)
+	{
+		int NextClipCurFrame = (int) NextClipFrame;
+		float NextClipRatio = NextClipFrame - NextClipCurFrame;
+		int NextClipNextFrame = NextClipCurFrame + (int) ceil(NextClipRatio);
+		
+		iFrameDataIndex = BoneCount * NextClipCurFrame + _iThreadIdx.x;
+		iNextFrameDataIdx = BoneCount * NextClipNextFrame + _iThreadIdx.x;
+		
+		float4 vNextScale = lerp(g_arrNextClipFrameTrans[iFrameDataIndex].vScale, g_arrNextClipFrameTrans[iNextFrameDataIdx].vScale, NextClipRatio);
+		float4 vNextTrans = lerp(g_arrNextClipFrameTrans[iFrameDataIndex].vTranslate, g_arrNextClipFrameTrans[iNextFrameDataIdx].vTranslate, NextClipRatio);
+		float4 qNextRot = QuternionLerp(g_arrNextClipFrameTrans[iFrameDataIndex].qRot, g_arrNextClipFrameTrans[iNextFrameDataIdx].qRot, NextClipRatio);
+		
+		MatrixAffineTransformation(vNextScale, vQZero, qNextRot, vNextTrans, matBone);
+
+		// 두 애니메이션을 보간
+		vNextScale = lerp(vCurScale, vNextScale, BlendRatio);
+		vNextTrans = lerp(vCurTrans, vNextTrans, BlendRatio);
+		qNextRot = QuternionLerp(qCurRot, qNextRot, BlendRatio);
+		
+		MatrixAffineTransformation(vNextScale, vQZero, qNextRot, vNextTrans, matBone);
+	}
+	
 	g_arrFinalMat[_iThreadIdx.x] = mul(matInverse, matBone);
-	
-	
-	// TEST
-	//matrix matBoneWorld = (matrix) 0.f;
-	//
-	//vScale = lerp(g_arrBoneWorldFrameTrans[iFrameDataIndex].vScale, g_arrBoneWorldFrameTrans[iNextFrameDataIdx].vScale, Ratio);
-	//vTrans = lerp(g_arrBoneWorldFrameTrans[iFrameDataIndex].vTranslate, g_arrBoneWorldFrameTrans[iNextFrameDataIdx].vTranslate, Ratio);
-	//qRot = QuternionLerp(g_arrBoneWorldFrameTrans[iFrameDataIndex].qRot, g_arrBoneWorldFrameTrans[iNextFrameDataIdx].qRot, Ratio);
-	//
-	//// 최종 본행렬 연산
-	//MatrixAffineTransformation(vScale, vQZero, qRot, vTrans, matBoneWorld);
-	
 	g_arrPureMat[_iThreadIdx.x] = matBone;
-	matBone._44 = 1;
+	
+	//matBone._44 = 1;
 }
 
 #endif

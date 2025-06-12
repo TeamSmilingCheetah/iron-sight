@@ -19,7 +19,7 @@ ThrowableController::ThrowableController()
 	, m_Mass(0.f)
 	, m_Speed(8000.f)
 	, m_GravityAccel(1000.f)
-	, m_AccTime(0.f)
+	, m_CurClipAccTime(0.f)
 	, m_TriggeredTime(6.f)
 	, m_bGround(false)
 	, m_bCanThrow(false)
@@ -170,10 +170,10 @@ void ThrowableController::Tick()
 
 void ThrowableController::Triggered()
 {
-	m_AccTime += DT;
+	m_CurClipAccTime += DT;
 
 	// 시간이 지나면 작동한다.
-	if (m_TriggeredTime < m_AccTime)
+	if (m_TriggeredTime < m_CurClipAccTime)
 	{
 		if (m_EquippedOwner != nullptr)
 		{

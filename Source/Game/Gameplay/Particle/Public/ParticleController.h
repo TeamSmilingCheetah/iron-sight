@@ -8,7 +8,7 @@ private:
 	class CParticleSystem* m_ParticleSystem;
 
 	float m_LifeTime;
-	float m_AccTime;
+	float m_CurClipAccTime;
 
 	bool m_SpawnTrigger;
 

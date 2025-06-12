@@ -8,7 +8,7 @@
 DoorScript::DoorScript()
 	: InteractableScript(SCRIPT_TYPE::DOORSCRIPT)
 	, m_Opened(false)
-	, m_AccTime(0.f)
+	, m_CurClipAccTime(0.f)
 	, m_Duration(1.f)
 {
 	m_InteractionDesc = L"문 열기";
@@ -31,19 +31,19 @@ void DoorScript::Tick()
 {
 	if (m_Rotating)
 	{
-		m_AccTime += DT;
+		m_CurClipAccTime += DT;
 
-		if (m_AccTime > m_Duration)
-			m_AccTime = m_Duration;
+		if (m_CurClipAccTime > m_Duration)
+			m_CurClipAccTime = m_Duration;
 
-		float ratio = m_AccTime / m_Duration;
+		float ratio = m_CurClipAccTime / m_Duration;
 
 		if (m_Opened)
 			ratio = 1 - ratio;
 
 		Transform()->SetRelativeRotation(Vec3(0.f, m_OrigAngle + m_ChangeAngle * ratio, 0.f));
 
-		if (m_AccTime == m_Duration)
+		if (m_CurClipAccTime == m_Duration)
 		{
 			m_Rotating = false;
 			m_Opened = !m_Opened;
@@ -103,7 +103,7 @@ void DoorScript::Interact(InteractionHandler* _Handler)
 	else
 		m_ChangeAngle = vDoorToPlayer.Cross(vDoorDir).y > 0.f ? -90.f : 90.f;
 
-	m_AccTime = 0.f;
+	m_CurClipAccTime = 0.f;
 
 	m_Rotating = true;
 }

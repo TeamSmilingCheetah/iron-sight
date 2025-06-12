@@ -28,7 +28,7 @@ CameraController::CameraController()
 	, m_PlayerRot(Vec3(0.f,0.f,0.f))
 	, m_CameraFlag(0)
 	, m_CameraYOffset(0.f)
-	, m_AccTime(0.f)
+	, m_CurClipAccTime(0.f)
 	, m_RecoilTime(0.f)
 	, m_RecoilAmount_vertical(0.f)
 	, m_RecoilAmount_horizontal(0.f)
@@ -381,17 +381,17 @@ void CameraController::HandleRightClickInput()
 		}
 		if (KEY_PRESSED(KEY::RBTN))
 		{
-			m_AccTime += DT;
+			m_CurClipAccTime += DT;
 
 			// 특정 시간 이상 누른상태라면 견착모드로 진입
-			if (0.1f < m_AccTime)
+			if (0.1f < m_CurClipAccTime)
 			{
 				m_CameraFlag |= SHOULDER;
 			}
 		}
 		if (KEY_RELEASED(KEY::RBTN))
 		{
-			m_AccTime = 0.f;
+			m_CurClipAccTime = 0.f;
 			// 특정 시간 이하, 즉 우클릭을 클릭만 했을때는 정조준 진입
 			if (!(m_CameraFlag & SHOULDER) && !(m_CameraFlag & WAS_TPS))
 			{

@@ -6,7 +6,7 @@ class DoorScript
 {
 private:
 	bool	m_Opened;
-	float			m_AccTime;
+	float			m_CurClipAccTime;
 	const float		m_Duration;
 
 	float	m_OrigAngle;

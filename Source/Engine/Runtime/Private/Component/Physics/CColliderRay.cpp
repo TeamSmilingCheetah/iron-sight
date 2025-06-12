@@ -7,7 +7,7 @@
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 
 CColliderRay::CColliderRay()
-	:CComponent(COMPONENT_TYPE::COLLIDERRAY)
+	: CComponent(COMPONENT_TYPE::COLLIDERRAY)
 	, m_Offset(Vec3(0.f))
 	, m_RayLength(1000.f)
 	, m_OverlapCount(0)
@@ -30,6 +30,7 @@ CColliderRay::CColliderRay(const CColliderRay& _Origin)
 	, m_RayTargetAll(_Origin.m_RayTargetAll)
 	, m_IndependentDir(_Origin.m_IndependentDir)
 	, m_TriggerTarget(_Origin.m_TriggerTarget)
+	, m_RayTargetLength(_Origin.m_RayTargetLength)
 	, m_State(_Origin.m_State)
 {
 	m_RayPosDir.vStart = _Origin.m_RayPosDir.vStart;

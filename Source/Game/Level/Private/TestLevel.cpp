@@ -434,6 +434,12 @@ void TestLevel::CreateTestLevel()
 			pObj->Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
 			pObj->Collider3D()->SetIndependentScale(true);
 
+			// TEST: Animation Blending
+			pObj->Animator3D()->ClearAnimClip();
+			pObj->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2335431089408_TempMotion1.anim"));
+			pObj->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\Drink.anim"));
+			pObj->Animator3D()->SetCurClip(0);
+
 			pObj->AddComponent(new InventoryController);
 			InventoryController* pInvenScript = static_cast<InventoryController*>(GetScriptWithType(pObj, SCRIPT_TYPE::INVENTORYSCRIPT));
 

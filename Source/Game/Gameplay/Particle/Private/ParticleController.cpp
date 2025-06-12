@@ -7,7 +7,7 @@
 ParticleController::ParticleController()
 	: CScript(SCRIPT_TYPE::PARTICLESCRIPT)
 	, m_ParticleSystem(nullptr)
-	, m_AccTime(0.f)
+	, m_CurClipAccTime(0.f)
 	, m_LifeTime(30.f)
 	, m_SpawnTrigger(false)
 {
@@ -31,19 +31,19 @@ void ParticleController::Tick()
 
 	tParticleModule pModule = m_ParticleSystem->GetModule();
 	pModule.Module[(UINT)PARTICLE_MODULE::SPAWN] = false;
-	m_AccTime += DT;
+	m_CurClipAccTime += DT;
 
 	// 시간
-	if (2.f < m_AccTime && !m_SpawnTrigger)
+	if (2.f < m_CurClipAccTime && !m_SpawnTrigger)
 	{
 		m_ParticleSystem->SetModule(pModule);
 		m_SpawnTrigger = true;
 	}
 
-	if (m_LifeTime < m_AccTime)
+	if (m_LifeTime < m_CurClipAccTime)
 	{
 		DestroyObject(GetOwner());
-		m_AccTime = 0.f;
+		m_CurClipAccTime = 0.f;
 	}
 
 }

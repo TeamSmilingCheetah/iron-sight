@@ -8,7 +8,7 @@ class CDecal :
 private:
     Ptr<CTexture> m_DecalTex;
     float m_GlobalAlpha;
-	float m_AccTime;
+	float m_CurClipAccTime;
 	float m_LifeTime;
 	bool m_AsLight;
 

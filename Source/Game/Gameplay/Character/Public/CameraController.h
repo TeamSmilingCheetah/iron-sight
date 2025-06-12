@@ -17,7 +17,7 @@ class CameraController :
 	float m_CameraSpeed;
 	float m_CameraYOffset;
 
-	float m_AccTime;
+	float m_CurClipAccTime;
 	float m_RecoilTime;
 	float m_RecoilAmount_vertical;
 	float m_RecoilAmount_horizontal;

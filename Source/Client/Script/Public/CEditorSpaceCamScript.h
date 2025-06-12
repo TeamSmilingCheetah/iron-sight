@@ -7,13 +7,8 @@ class CEditorSpaceCamScript :
 	public CScript
 {
 private:
-	float	m_CameraSpeed;
-
-	Vec2	m_OriginMousePos;
-
-	Vec2	m_MouseDelta;
-
-	ImGuiMouseButton_ m_MouseBtn;
+	Vec2				m_MouseDelta;	// 전 프레임에 비한 변화량
+	ImGuiMouseButton_	m_MouseBtn;		// 입력키에 따라 조건 분기
 
 public:
 	void Tick() override;

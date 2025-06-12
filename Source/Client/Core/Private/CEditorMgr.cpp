@@ -19,8 +19,9 @@ CEditorMgr::CEditorMgr()
 	: m_RenderEditorSpace(false)
 	, m_EditorSpaceCam(nullptr)
 	, m_Light(nullptr)
-	, m_EditorSpaceRT(nullptr)
 	, m_Origin(nullptr)
+	, m_EditorSpaceRT(nullptr)
+	, m_EditorSpaceCamScript(nullptr)
 {
 }
 

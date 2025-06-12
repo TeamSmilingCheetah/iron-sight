@@ -33,7 +33,7 @@ void AnimationUI::Render_Update()
 
 		m_SkinnedModel->Animator3D()->ClearAnimClip();
 		m_SkinnedModel->Animator3D()->AddAnimClip(pAnim);
-		m_SkinnedModel->Animator3D()->SetCurFrame(0);
+		m_SkinnedModel->Animator3D()->SetCurClipFrame(0);
 		m_FrameRange[0] = 0;
 		m_FrameRange[1] = m_SkinnedModel->Animator3D()->GetFrameLength() - 1;
 	}
@@ -64,6 +64,8 @@ void AnimationUI::Render_Update()
 			pCamScript->SetMouseButton(ImGuiMouseButton_Left);
 			pCamScript->SetMouseDelta(MouseDelta.x, MouseDelta.y);
 
+			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
 			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);
 		}
 		else if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
@@ -71,6 +73,8 @@ void AnimationUI::Render_Update()
 			ImVec2 MouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Right);
 			pCamScript->SetMouseButton(ImGuiMouseButton_Right);
 			pCamScript->SetMouseDelta(MouseDelta.x, MouseDelta.y);
+
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
 
 			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Right);
 		}
@@ -103,21 +107,21 @@ void AnimationUI::Render_Update()
 
 	if (ImGui::Button("<##Animation", ImVec2(18.f, 18.f)))
 	{
-		m_SkinnedModel->Animator3D()->SetCurFrame(FrameIdx-1);
+		m_SkinnedModel->Animator3D()->SetCurClipFrame(FrameIdx-1);
 	}
 	
 	ImGui::SameLine();
 
 	if (ImGui::SliderInt("##AnimationFrameControl", &FrameIdx, 0, FrameLength-1))
 	{
-		m_SkinnedModel->Animator3D()->SetCurFrame(FrameIdx);
+		m_SkinnedModel->Animator3D()->SetCurClipFrame(FrameIdx);
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button(">##Animation", ImVec2(18.f, 18.f)))
 	{
-		m_SkinnedModel->Animator3D()->SetCurFrame(FrameIdx + 1);
+		m_SkinnedModel->Animator3D()->SetCurClipFrame(FrameIdx + 1);
 	}
 
 	// Crop
