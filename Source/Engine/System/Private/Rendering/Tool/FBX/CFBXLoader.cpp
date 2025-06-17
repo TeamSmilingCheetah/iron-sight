@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
 
 CFBXLoader::CFBXLoader()
 	: m_pManager(nullptr)
@@ -76,7 +76,7 @@ void CFBXLoader::LoadFbx(const wstring& _strPath)
 	m_pScene->FillAnimStackNameArray(m_arrAnimName);
 
 	// Animation Clip 정보
-	LoadAnimationClip();
+	LoadAnimationInfo();
 
 	// 삼각화(Triangulate)
 	Triangulate(m_pScene->GetRootNode());
@@ -564,7 +564,7 @@ void CFBXLoader::CreateMaterial()
 				, m_vecContainer[i].vecMtrl[j].tMtrl.vEmv);
 
 			CAssetMgr::GetInst()->AddAsset<CMaterial>(pMaterial->GetKey(), pMaterial.Get());
-			pMaterial->Save(CPathMgr::GetInst()->GetContentPath() + strPath);
+			pMaterial->Save(strPath);
 		}
 	}
 }
@@ -598,7 +598,7 @@ void CFBXLoader::LoadSkeleton_Re(FbxNode* _pNode, int _iDepth, int _iIdx, int _i
 	}
 }
 
-void CFBXLoader::LoadAnimationClip()
+void CFBXLoader::LoadAnimationInfo()
 {
 	int iAnimCount = m_arrAnimName.GetCount();
 
@@ -656,7 +656,7 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
 {
 	// Animation Data 로드할 필요가 없음
 	int iSkinCount = _pMesh->GetDeformerCount(FbxDeformer::eSkin);
-	if (iSkinCount <= 0 || m_vecAnimClip.empty())
+	if (iSkinCount <= 0)
 		return;
 
 	_pContainer->bAnimation = true;
@@ -693,7 +693,8 @@ void CFBXLoader::LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer)
 					LoadWeightsAndIndices(pCluster, iBoneIdx, _pContainer);
 
 					// 한 번 읽은 bone 정보는 더 이상 읽지 않는다.
-					if (m_vecBone[iBoneIdx]->vecKeyFrame.size() > 0)
+					// 또는 애니메이션이 포함되지 않은 경우 스킵한다.
+					if (m_vecBone[iBoneIdx]->vecKeyFrame.size() > 0 || m_vecAnimClip.empty())
 						continue;
 
 					// Bone 의 OffSet 행렬 구한다.
@@ -784,6 +785,7 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 	//FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
 	FbxTime::EMode eTimeMode = FbxTime::EMode::eFrames30;
 
+	// FIXME: 애니메이션 반복문 구조 변경해서 개선 할 수 있을 거 같은데
 	// 애니메이션 clip을 각각 추출
 	for (int clipIdx = 0; clipIdx < m_vecAnimClip.size(); ++clipIdx)
 	{

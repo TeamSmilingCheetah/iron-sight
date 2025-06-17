@@ -407,8 +407,8 @@ void TestLevel::CreateTestLevel()
 
 
 		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\AK_ANIMACION.fbx");
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\pubg_test2.fbx");
-		//pMeshData = CAssetMgr::GetInst()->Load<CMeshData>(L"MeshData\\Monster.mdat");
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\Character0.fbx");
+		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\PUBG_ANIMSET_1.fbx");
 
 		Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
 
@@ -433,12 +433,6 @@ void TestLevel::CreateTestLevel()
 			pObj->Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
 			pObj->Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
 			pObj->Collider3D()->SetIndependentScale(true);
-
-			// TEST: Animation Blending
-			pObj->Animator3D()->ClearAnimClip();
-			pObj->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2335431089408_TempMotion1.anim"));
-			pObj->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\Drink.anim"));
-			pObj->Animator3D()->SetCurClip(0);
 
 			pObj->AddComponent(new InventoryController);
 			InventoryController* pInvenScript = static_cast<InventoryController*>(GetScriptWithType(pObj, SCRIPT_TYPE::INVENTORYSCRIPT));
@@ -856,4 +850,22 @@ void TestLevel::CreateTestLevel()
 	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
 	pLevel->AddObject(1, testojb, false);
+
+	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\Character1_MeshOnly.fbx")->Instantiate();
+	testPlayer->SetName(L"Test_Player");
+
+	testPlayer->Transform()->SetRelativePos(Vec3(500.f, -380.f, 1000.f));
+	testPlayer->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+	testPlayer->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+
+	testPlayer->AddComponent(new CAnimator3D);
+	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2220943702784_TempMotion.anim"));
+	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2220943725056_TempMotion.anim"));
+	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2220947420672_TempMotion.anim"));
+	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2220947429888_TempMotion.anim"));
+	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2220947456768_TempMotion.anim"));
+	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2221924983296_TempMotion.anim"));
+	testPlayer->Animator3D()->SetCurClip(1);
+	
+	pLevel->AddObject(1, testPlayer, false);
 }

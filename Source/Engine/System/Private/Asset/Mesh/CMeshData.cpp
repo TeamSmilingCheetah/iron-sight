@@ -1,11 +1,12 @@
 #include "pch.h"
-#include "System/Public/Asset/Mesh/CMeshData.h"
+#include "Engine/System/Public/Asset/Mesh/CMeshData.h"
 
-#include "Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CPathMgr.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 CMeshData::CMeshData(bool _Engine)
 	: CAsset(MESH_DATA, false)
@@ -229,11 +230,15 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		pMeshData->m_vecTrans.push_back(Container.vTrans);
 	}
 
-	// Skeleton 로드하기
-	CSkeleton::LoadFromFBX(loader);
+	// Animation이 있을 때만 새로 저장.
+	if (!loader.GetAnimClip().empty())
+	{
+		// Skeleton 로드하기
+		CSkeleton::LoadFromFBX(loader);
 
-	// Animation 로드하기
-	pMeshData->m_vecAnimSet = CAnimation::LoadFromFBX(loader);
+		// Animation 로드하기
+		pMeshData->m_vecAnimSet = CAnimation::LoadFromFBX(loader);
+	}
 
 	return pMeshData;
 }
@@ -305,7 +310,8 @@ int CMeshData::Load(const wstring& _FilePath)
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, _FilePath.c_str(), L"rb");
 
-	assert(pFile);
+	if (pFile == nullptr)
+		return E_FAIL;
 
 	int meshCnt = 0;
 	fread(&meshCnt, sizeof(int), 1, pFile);
