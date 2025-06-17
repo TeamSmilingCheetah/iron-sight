@@ -64,7 +64,6 @@ void CEditorMgr::Init()
 	m_EditorSpaceRT->SetClearColor(0, Vec4(0.343f, 0.343f, 0.343f, 1.f));
 
 	// Light
-	// TODO : RenderMgr에 등록하지 않도록 해야 함
 	m_Light = new CGameObjectEx;
 	m_Light->SetName(L"Directional Light");
 	m_Light->AddComponent(new CLight3D);
@@ -83,7 +82,8 @@ void CEditorMgr::Init()
 	m_EditorSpaceCamScript = new CEditorSpaceCamScript;
 	m_EditorSpaceCam->AddComponent(m_EditorSpaceCamScript);
 
-	m_EditorSpaceCam->Transform()->SetRelativePos(0.f, 0.f, -200.f);
+	m_EditorSpaceCam->Transform()->SetRelativePos(0.f, 150.f, -150.f);
+	m_EditorSpaceCam->Transform()->SetRelativeRotation(30.f, 0.f, 0.f);
 	m_EditorSpaceCam->Camera()->SetProjType(PERSPECTIVE);
 	m_EditorSpaceCam->Camera()->SetFar(100000.f);
 
@@ -135,6 +135,8 @@ void CEditorMgr::Progress()
 
 		// Final Tick
 		m_EditorSpaceCam->FinalTick_Editor();
+
+		// TODO: RenderMgr에 등록하지 않도록 해야 함
 		m_Light->FinalTick_Editor();
 		m_Origin->FinalTick_Editor();
 		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)

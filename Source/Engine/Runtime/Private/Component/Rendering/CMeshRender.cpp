@@ -22,6 +22,7 @@ CAnimator3D* CMeshRender::GetAnimator()
 
 	CAnimator3D* pAnimator = nullptr;
 
+	// 직속 부모가 Animator을 가지고 있다는 가정.
 	if (GetOwner()->GetParent())
 	{
 		pAnimator = GetOwner()->GetParent()->Animator3D();

@@ -269,28 +269,49 @@ void CAnimator3D::AddAnimClip(Ptr<CAnimation> _pAnim)
 {
 	m_vecClip.push_back(_pAnim);
 
-	CreateBoneObject();
+	// 첫 등록이라면
+	if (m_vecBoneObject.empty())
+	{
+		// 같은 계열의 모든 MeshRender에게 SkinRender을 알린다.
+		CMeshRender* pMeshRender = MeshRender();
+
+		// 1. 자신한테 직접 MeshRender가 있는 경우
+		if (pMeshRender)
+			pMeshRender->SetSkinRender(true);
+
+		// 2. 자식에 있는 경우, 직속 자식인 MeshRender들에만 영향을 준다고 가정하고 설계됨.
+		else
+		{
+			const vector<CGameObject*>& vecTestChild = GetOwner()->GetChild();
+			for (auto child : vecTestChild)
+			{
+				pMeshRender = child->MeshRender();
+				if (pMeshRender)
+				{
+					// 이미 SkinRender인 렌더러가 있다면, 이미 세팅된 경우
+					if (pMeshRender->IsSkinRender())
+						break;
+
+					pMeshRender->SetSkinRender(true);
+				}
+			}
+		}
+
+		// Bone Object 생성
+		CreateBoneObject();
+	}
 }
 
 void CAnimator3D::SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim)
 {
 	m_vecClip = _vecAnim;
 
-	CreateBoneObject();
+	if (m_vecBoneObject.empty())
+		CreateBoneObject();
 }
 
 void CAnimator3D::CreateBoneObject()
 {
-	// 이미 BoneObject가 있다면 생성하지 않는다.
-	if (!m_vecBoneObject.empty())
-	{
-		// Deprecated : 기존에 Bone Object가 존재했다면 삭제하는 코드
-		//DestroyObject(m_vecBoneObject[0]);
-		//m_vecBoneObject.clear();
-
-		return;
-	}
-
 	// Clip 0번의 Bone 정보를 가져옴
 	const vector<tMTBone>* vecBones = m_vecClip[0]->GetBones();
 	UINT BoneCount = static_cast<UINT>(vecBones->size());
@@ -331,7 +352,8 @@ void CAnimator3D::CreateBoneObject()
 
  void CAnimator3D::SetCurClipFrame(int _FrameIdx)
  {
-	 assert(_FrameIdx < m_vecClip[m_CurClipIdx]->GetFrameLength());
+	 if (_FrameIdx < 0 || _FrameIdx >= m_vecClip[m_CurClipIdx]->GetFrameLength())
+		 return;
 
 	 m_CurClipCurFrameIdx = _FrameIdx;
 	 m_CurClipNextFrameIdx = min(_FrameIdx + 1, m_vecClip[m_CurClipIdx]->GetFrameLength() - 1);

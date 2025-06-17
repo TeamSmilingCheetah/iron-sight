@@ -22,7 +22,7 @@ void AnimationUI::Render_Update()
 
 	if (!m_SkinnedModel)
 	{
-		m_SkinnedModel = CAssetMgr::GetInst()->Load<CMeshData>(L"MeshData\\pubg_test2.mdat")->Instantiate();
+		m_SkinnedModel = CAssetMgr::GetInst()->Load<CMeshData>(L"MeshData\\Character0.mdat")->Instantiate();
 		CEditorMgr::GetInst()->SetEditorSpaceRender(true);
 		CEditorMgr::GetInst()->CreateEditorSpaceObj((CGameObjectEx*)m_SkinnedModel);
 	}

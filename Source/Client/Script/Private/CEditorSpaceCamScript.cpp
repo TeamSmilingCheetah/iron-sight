@@ -89,7 +89,7 @@ void CEditorSpaceCamScript::CameraPerspectiveMove()
 		zAxis.Normalize();
 
 		Vec3 vPos = Transform()->GetRelativePos();
-		vPos.z += m_MouseDelta.y * 15.f;
+		vPos += zAxis * m_MouseDelta.y * 15.f;
 
 		Transform()->SetRelativePos(vPos);
 	}

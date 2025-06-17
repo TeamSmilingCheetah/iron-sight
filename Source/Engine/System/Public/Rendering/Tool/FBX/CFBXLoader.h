@@ -90,6 +90,7 @@ class CMesh;
 
 class CFBXLoader
 {
+private:
 	FbxManager* m_pManager;
 	FbxScene* m_pScene;
 	FbxImporter* m_pImporter;
@@ -130,7 +131,7 @@ private:
 	// Animation
 	void LoadSkeleton(FbxNode* _pNode);
 	void LoadSkeleton_Re(FbxNode* _pNode, int _iDepth, int _iIdx, int _iParentIdx);
-	void LoadAnimationClip();
+	void LoadAnimationInfo();
 	void Triangulate(FbxNode* _pNode);
 
 	void LoadAnimationData(FbxMesh* _pMesh, tContainer* _pContainer);
