@@ -279,14 +279,17 @@ void CRenderMgr::Render_Play()
 		// 비활성화된 카메라는 렌더하지 않음.
 		if (!m_vecCam[i]->GetOwner()->IsActive())
 			continue;
+		if (!m_vecCam[i]->Camera()->IsActvie())
+			continue;
 
 		m_vecCam[i]->SortObject();
 
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
 		g_Trans.matProj = m_vecCam[i]->GetProjMat();
 
-		if (i == 0)
+		if (i != 1)
 		{
+
 			// Deferred
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
 			m_vecCam[i]->render_deferred();

@@ -28,6 +28,7 @@ private:
 
 	bool m_IsGround;				// 지상위에 서있는지 판정
 	bool m_bLean;
+	bool m_bMouseActive;			//  마우스 활성화
 
 	float m_MouseSensitivity;
 

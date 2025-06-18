@@ -75,6 +75,7 @@ int g_arrKeyValue[static_cast<int>(KEY::END)] =
 	VK_F11,
 	VK_F12,
 
+	VK_ESCAPE,
 
 	VK_LBUTTON,
 	VK_RBUTTON,
@@ -82,8 +83,7 @@ int g_arrKeyValue[static_cast<int>(KEY::END)] =
 
 
 CKeyMgr::CKeyMgr()
-	: m_CursorFixed(false)
-	, m_ScreenCenter(Vec2(640.f, 384.f))
+	: m_ScreenCenter(Vec2(640.f, 384.f))
 {
 }
 
@@ -156,16 +156,6 @@ void CKeyMgr::Tick()
 		m_MousePos = Vec2(static_cast<float>(Pos.x), static_cast<float>(Pos.y));
 		m_MouseDir = m_MousePos - m_MousePrevPos;
 
-		// 마우스 커서를 중앙에 고정
-		if (m_CursorFixed)
-		{
-			POINT centerPoint = { static_cast<LONG>(m_ScreenCenter.x), static_cast<LONG>(m_ScreenCenter.y) };
-			ClientToScreen(CEngine::GetInst()->GetMainWnd(), &centerPoint);
-			SetCursorPos(centerPoint.x, centerPoint.y);
-
-			// 마우스 위치를 중앙으로 설정
-			m_MousePos = m_ScreenCenter;
-		}
 	}
 
 	// 포커싱 중인 윈도우가 없으면
@@ -188,12 +178,18 @@ void CKeyMgr::Tick()
 	}
 }
 
-void CKeyMgr::SetCursorFix(bool _bFix)
-{
-	m_CursorFixed = _bFix;
 
-	// 커서 표시/숨김 설정
-	ShowCursor(!m_CursorFixed);
+
+void CKeyMgr::SetCursorVisible(bool _bVisible)
+{
+	if (_bVisible)
+	{
+		while (ShowCursor(true) < 0);  // 커서 보이게: count를 0 이상으로 만들어야 함
+	}
+	else
+	{
+		while (ShowCursor(false) >= 0); // 커서 숨기게: count를 음수로 만들어야 함
+	}
 }
 
 void CKeyMgr::SetMousePosAsCenter()

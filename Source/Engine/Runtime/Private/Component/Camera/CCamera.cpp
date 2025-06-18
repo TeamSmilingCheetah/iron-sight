@@ -18,15 +18,16 @@
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
-	  , m_Frustum(nullptr)
-	  , m_ProjType(ORTHOGRAPHIC)
-	  , m_Far(10000.f)
-	  , m_AspectRatio(1.f)
-	  , m_LayerCheck(0)
-	  , m_Priority(-1)
-	  , m_FOV(XM_PI / 2.f)
-	  , m_Width(0)
-	  , m_Scale(1.f)
+	, m_Frustum(nullptr)
+	, m_ProjType(ORTHOGRAPHIC)
+	, m_Far(10000.f)
+	, m_AspectRatio(1.f)
+	, m_LayerCheck(0)
+	, m_Priority(-1)
+	, m_FOV(XM_PI / 2.f)
+	, m_Width(0)
+	, m_Scale(1.f)
+	, m_bCamActive(true)
 {
 	m_Frustum = new CFrustum;
 	m_Frustum->SetOwner(this);

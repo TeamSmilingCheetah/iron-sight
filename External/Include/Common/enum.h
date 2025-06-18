@@ -366,6 +366,10 @@ enum CAM_FLAG
 	CHANGE_STANCE			= 1 << 11,
 	SITTING					= 1 << 12,
 	LAYING					= 1 << 13,
+	FREE_PS					= 1 << 14,
+	OBSTACLE_DETECT         = 1 << 15,
+	OBSTACLE_CLEAR_PENDING  = 1 << 16,
+	OBSTACLE_DETECT_END     = 1 << 17,
 };
 
 // FACE TYPE
