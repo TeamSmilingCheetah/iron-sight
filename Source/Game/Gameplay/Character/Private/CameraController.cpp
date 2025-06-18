@@ -1,8 +1,10 @@
 #include "pch.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
-
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -21,7 +23,7 @@ CameraController::CameraController()
 	, m_Player(nullptr)
 	, m_PlayerScript(nullptr)
 	, m_InventoryScript(nullptr)
-	, m_CameraSpeed(100.f)
+	, m_CameraSpeed(500.f)
 	, m_CameraPos(Vec3(0.f,0.f,0.f))
 	, m_CameraRot(Vec3(0.f,0.f,0.f))
 	, m_PlayerPos(Vec3(0.f,0.f,0.f))
@@ -59,10 +61,43 @@ void CameraController::Begin()
 
 void CameraController::Tick()
 {
-	if (ORTHOGRAPHIC == Camera()->GetProjType())
-		CameraOrthgraphicMove();
+
+	if (KEY_TAP(KEY::F1))
+	{
+		if (GetOwner()->GetName() == L"Cam Ray")
+		{
+			if (!(m_CameraFlag & FREE_PS))
+			{
+				// 부모를 없는 독립 개체로 바꿔준다.
+				AddChild(nullptr, GetOwner());
+				Transform()->SetRelativePos(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->GetRelativePos());
+				Transform()->SetRelativeRotation(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->GetRelativeRotation());
+			}
+			else
+			{
+				AddChild(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera"), GetOwner());
+				Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+				Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+			}
+		}
+		m_CameraFlag ^= FREE_PS;
+	}
+
+	if (GetOwner()->GetName() == L"Cam Ray")
+		return;
+
+	if (m_CameraFlag & FREE_PS)
+	{
+		CameraDebugMove();
+	}
 	else
-		CameraPerspectiveMove();
+	{
+		if (ORTHOGRAPHIC == Camera()->GetProjType())
+			CameraOrthgraphicMove();
+		else
+			CameraPerspectiveMove();
+	}
+
 
 
 	// 소리테스트 위치 업데이트
@@ -70,6 +105,7 @@ void CameraController::Tick()
 	Vec3 vforward = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	Vec3 vUp = Transform()->GetWorldDir(DIR_TYPE::UP);
 	CSoundMgr::GetInst()->UpdateListener(vPos, vforward, vUp);
+	
 }
 
 void CameraController::CameraOrthgraphicMove()
@@ -127,6 +163,7 @@ void CameraController::CameraPerspectiveMove()
 	m_PlayerPos = m_Player->Transform()->GetRelativePos();
 	m_PlayerRot = m_Player->Transform()->GetRelativeRotation();
 
+
 	// 카메라 전환
 	if (KEY_TAP(KEY::V))
 	{
@@ -137,14 +174,35 @@ void CameraController::CameraPerspectiveMove()
 	}
 
 	// TPS
- 	if (m_CameraFlag & TPS)
+	if (m_CameraFlag & TPS)
 	{
+
+		/*if (m_CameraFlag & OBSTACLE_DETECT_END)
+		{
+			ColliderRay()->SetOffset(Vec3(0.f,0.f, -m_RayDistance));
+			if(GetOwner()->GetChild().size() != 0)
+				GetOwner()->GetChild()[0]->ColliderRay()->SetOffset(Vec3(0.f, 0.f, -m_RayDistance));
+
+			if (abs(m_OriginDistance) < abs(m_RayDistance))
+			{
+				ColliderRay()->SetOffset(Vec3(0.f, 0.f, 0.f));
+				if (GetOwner()->GetChild().size() != 0)
+					GetOwner()->GetChild()[0]->ColliderRay()->SetOffset(Vec3(0.f, 0.f, 0.f));
+
+				m_CameraFlag &= ~OBSTACLE_DETECT;
+				m_CameraFlag &= ~OBSTACLE_DETECT_END;
+			}
+
+			m_RayDistance += 1000.f * DT;
+		}*/
+
+
 		// TPS의 카메라 기본위치들 변수 업데이트
 		UpdateTPSCameraAdjustments();
 		UpdateStance();
 
 		// 줌 회복 상태가 아니거나 둘러보기 상태가 아니라면 줌을 활성화 한다.
-		if (!(m_CameraFlag & SHOULDER_RECOVER)&& !(m_CameraFlag & SEARCH) && iWeaponIdx <= SECONDARY_FIRST)
+		if (!(m_CameraFlag & SHOULDER_RECOVER) && !(m_CameraFlag & SEARCH) && iWeaponIdx <= SECONDARY_FIRST)
 		{
 			// 우클릭 동작 수행 (줌과 견착)
 			HandleRightClickInput();
@@ -165,15 +223,16 @@ void CameraController::CameraPerspectiveMove()
 		}
 
 		// 줌 회복
-		else
+		else if (m_CameraFlag & SHOULDER_RECOVER)
 		{
 			UpdateShoulderRecover();
+
 		}
 
 		if (!(m_CameraFlag & SHOULDER))
 		{
 			UpdateTPSLean();
-		}			
+		}
 
 		// Player 위치에 보정값을 더해 위치를 고정시킨다.
 		m_CameraPos.x = m_PlayerPos.x + m_AdjustFinalDistance * m_Player->Transform()->GetWorldDir(DIR_TYPE::FRONT).x;
@@ -184,11 +243,11 @@ void CameraController::CameraPerspectiveMove()
 		//  Player가 Camera상에서 약간 왼쪽에 위치하게끔 보정한다.
 		m_CameraPos.x += m_LateralOffset * -m_Player->Transform()->GetWorldDir(DIR_TYPE::RIGHT).x;
 		m_CameraPos.z += m_LateralOffset * -m_Player->Transform()->GetWorldDir(DIR_TYPE::RIGHT).z;
-			
+
+
 		// Search
 		UpdateSearchMode();
 	}
-
 
 	// FPS
 	else
@@ -232,7 +291,6 @@ void CameraController::CameraPerspectiveMove()
 	}
 
 
-
 	//
 	// 반동
 	//
@@ -245,9 +303,9 @@ void CameraController::CameraPerspectiveMove()
 	}
 
 
-
 	Transform()->SetRelativeRotation(m_CameraRot);
 	Transform()->SetRelativePos(m_CameraPos);
+
 }
 
 void CameraController::ApplyZoom(bool _IsADS)
@@ -344,29 +402,92 @@ void CameraController::UpdateTPSCameraAdjustments()
 {
 	float RadianPitch = m_CameraRot.x * XM_PI / 180.f;
 	float DistanceRatio = 1000.f;
-	float HeightRatio = 2000.f;
+	float HeightRatio = 1700.f;
 
 	// 평상시에 카메라 있을 위치를 계산해 놓는다.
 	m_AdjustNormalDistance = DistanceRatio * cosf(RadianPitch);
 	m_AdjustNormalHeight = HeightRatio + DistanceRatio * sinf(RadianPitch);
 
+	float targetDistance = m_AdjustNormalDistance;
+	float targetHeight = m_AdjustNormalHeight;
 
-	// 평상시 상태에서 위치 값
-	if (!(m_CameraFlag & SHOULDER))
+	// 견착시 목표값
+	if (m_CameraFlag & SHOULDER)
 	{
-		m_AdjustFinalDistance = m_AdjustNormalDistance;
-		m_AdjustFinalHeight = m_AdjustNormalHeight;
-	}
-	// 견착상태에서 카메라가 향할 위치를 계산해놓는다.
-	else
-	{
-		m_ObjectiveShoulderDistance = m_AdjustNormalDistance * 0.5f;
-		m_ObjectiveShoulderHeight = m_AdjustNormalHeight * 0.9f;
-
-		m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, m_ObjectiveShoulderDistance, 50.f);
-		m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, m_ObjectiveShoulderHeight, 50.f);
+		targetDistance *= 0.5f;
+		targetHeight *= 0.9f;
 	}
 
+	// 장애물 충돌시 목표값
+	if (m_CameraFlag & OBSTACLE_DETECT)
+	{
+		float obstacleDist = 0.f;
+		float corValue = 0.f;
+		Vec3 Dir = m_PlayerPos - m_ObstaclePos;
+		Dir.Normalize();
+
+		if (abs(Dir.z) > abs(Dir.x))
+		{
+			if (Dir.z > 0.5f)
+			{
+				m_ObstacleAdjustPos.z = m_ObstaclePos.z + m_ObstacleScale.z / 2.f + corValue;
+				obstacleDist = m_PlayerPos.z - m_ObstacleAdjustPos.z;
+			}
+			if (Dir.z < -0.5f)
+			{
+				m_ObstacleAdjustPos.z = m_ObstaclePos.z - m_ObstacleScale.z / 2.f - corValue;
+				obstacleDist = m_PlayerPos.z - m_ObstacleAdjustPos.z;
+			}
+		}
+	
+		if(abs(Dir.z) < abs(Dir.x))
+		if (Dir.x > 0.5f)
+		{
+			m_ObstacleAdjustPos.x = m_ObstaclePos.x + m_ObstacleScale.x / 2.f + corValue;
+			obstacleDist = m_PlayerPos.x - m_ObstacleAdjustPos.x;
+		}
+		if (Dir.x < -0.5f)
+		{
+			m_ObstacleAdjustPos.x = m_ObstaclePos.x - m_ObstacleScale.x / 2.f - corValue;
+			obstacleDist = m_PlayerPos.x - m_ObstacleAdjustPos.x;
+		}
+
+		m_OriginDistance = targetDistance;
+		targetDistance = min(targetDistance, obstacleDist);		
+	}
+
+	// 충돌 콜백이 끊김 -> 클리어 검증
+	if (m_CameraFlag & OBSTACLE_CLEAR_PENDING)
+	{
+		m_ObstalceResetTime += DT;
+		if (2.f < m_ObstalceResetTime)
+		{
+			// 이제 진짜 복구 단계로 전환
+			m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
+			m_CameraFlag |= OBSTACLE_DETECT_END;
+			// 복구 시작 거리를 현재 보정된 최종값으로 초기화
+			m_RayDistance = m_AdjustFinalDistance;
+		}
+	}
+
+	// 복구 단계
+	if (m_CameraFlag & OBSTACLE_DETECT_END)
+	{
+		ColliderRay()->SetOffset(Vec3(0, 0, -m_RayDistance));
+		m_RayDistance += 500.f * DT;
+
+		// 원래 거리까지 도달했거나 약간 넘어섰을 때
+		if (abs(m_RayDistance) >= abs(m_OriginDistance))
+		{
+			// 콜백으로도 다시 Overlap이 안 들어온 상태이므로
+			ColliderRay()->SetOffset(Vec3(0, 0, 0));
+			m_CameraFlag &= ~OBSTACLE_DETECT_END;
+			m_ObstalceResetTime = 0.f;
+		}
+	}
+
+	m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, 50.f);
+	m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, targetHeight, 50.f);
 }
 
 
@@ -590,6 +711,7 @@ void CameraController::UpdateFPSLean()
 	m_CameraPos.z += leanOffset;
 }
 
+
 void CameraController::UpdateStance()
 {
 	static float DesPosY = 0.f;
@@ -667,6 +789,7 @@ void CameraController::ChangePS(bool _IsTps)
 }
 
 
+
 void CameraController::SaveComponent(FILE* _File)
 {
 	fwrite(&m_CameraSpeed, sizeof(float), 1, _File);
@@ -677,10 +800,194 @@ void CameraController::LoadComponent(FILE* _File)
 	fread(&m_CameraSpeed, sizeof(float), 1, _File);
 }
 
+
 void CameraController::SetFlag(CAM_FLAG _flag, bool _value)
 {
 	if (_value)
 		m_CameraFlag |= _flag;
 	else
 		m_CameraFlag &= ~_flag;
+}
+
+void CameraController::CameraDebugMove()
+{
+	float Speed = m_CameraSpeed;
+	if (KEY_PRESSED(KEY::LSHIFT))
+		Speed *= 5.f;
+
+	Vec3 vFront = Transform()->GetLocalDir(DIR_TYPE::FRONT);
+	Vec3 vRight = Transform()->GetLocalDir(DIR_TYPE::RIGHT);
+
+	Vec3 vPos = Transform()->GetRelativePos();
+
+	if (KEY_PRESSED(KEY::W))
+		vPos += vFront * EngineDT * Speed;
+	if (KEY_PRESSED(KEY::S))
+		vPos -= vFront * EngineDT * Speed;
+	if (KEY_PRESSED(KEY::A))
+		vPos -= vRight * EngineDT * Speed;
+	if (KEY_PRESSED(KEY::D))
+		vPos += vRight * EngineDT * Speed;
+
+	Transform()->SetRelativePos(vPos);
+
+	// 마우스 방향에 따른 오브젝트 회전
+	if (KEY_PRESSED(KEY::RBTN))
+	{
+		Vec3 vRot = Transform()->GetRelativeRotation();
+
+		Vec2 vDir = CKeyMgr::GetInst()->GetMouseDir();
+		vRot.y += vDir.x * EngineDT * 15.f;
+		vRot.x += vDir.y * EngineDT * 10.f;
+
+		Transform()->SetRelativeRotation(vRot);
+	}
+}
+
+
+
+
+void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+	if (_OtherObject->GetName() == L"DeathBox")
+	{
+		m_ObstalceResetTime = 0.f;
+		m_CameraFlag |= OBSTACLE_DETECT;
+		m_ObstaclePos = _OtherObject->Transform()->GetRelativePos();
+		m_ObstacleScale = _OtherObject->Collider3D()->GetScale();
+		m_HitRayDir = ColliderRay()->GetRayFinalDir();
+
+		m_ObstacleAdjustPos = m_ObstaclePos;
+		m_ObstacleAdjustPos.y = m_PlayerPos.y;
+		m_CameraFlag &= ~OBSTACLE_DETECT_END;
+		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
+	}
+	if (_OtherObject->GetName() == L"Interaction Handler")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Cam Ray")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Player")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"MainCamera")
+	{
+		return;
+	}
+
+
+}
+
+void CameraController::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+	if (_OtherObject->GetName() == L"DeathBox")
+	{
+		m_CameraFlag |= OBSTACLE_DETECT;
+		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
+		m_CameraFlag &= ~OBSTACLE_DETECT_END;
+		m_ObstalceResetTime = 0.f;
+	}
+	if (_OtherObject->GetName() == L"Interaction Handler")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Cam Ray")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Player")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"MainCamera")
+	{
+		return;
+	}
+
+}
+
+
+void CameraController::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+{
+	if (_OtherObject->GetName() == L"DeathBox")
+	{
+		m_CameraFlag |= OBSTACLE_CLEAR_PENDING;
+		m_CameraFlag &= ~OBSTACLE_DETECT_END;
+		m_ObstalceResetTime = 0.f;
+	}
+	if (_OtherObject->GetName() == L"Interaction Handler")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Cam Ray")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Player")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"MainCamera")
+	{
+		return;
+	}
+
+
+}
+
+
+
+void CameraController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+	if (_OtherObject->GetName() == L"Interaction Handler")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Cam Ray")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"MainCamera")
+	{
+		return;
+	}
+
+}
+
+void CameraController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+	if (_OtherObject->GetName() == L"Interaction Handler")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Cam Ray")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Player")
+	{
+		return;
+	}
+	//m_CameraFlag |= OBSTACLE_DETECT;
+}
+
+void CameraController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+{
+	if (_OtherObject->GetName() == L"Interaction Handler")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Cam Ray")
+	{
+		return;
+	}
+	if (_OtherObject->GetName() == L"Player")
+	{
+		return;
+	}
+	//m_CameraFlag &= ~OBSTACLE_DETECT;
 }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
 class CFrustum;
@@ -45,6 +45,8 @@ class CCamera :
 	vector<CGameObject*>                m_vecPostprocess;   // 후처리 오브젝트
 	vector<CGameObject*>                m_vecUI;            // UI
 
+
+	bool m_bCamActive;
 public:
 	void SetProjType(PROJ_TYPE _Type) { m_ProjType = _Type; }
 	void SetWidth(float _Width) { m_Width = _Width; }
@@ -93,6 +95,9 @@ public:
 	void render_postprocess();
 	void render_ui();
 	void render_clear();
+
+	void SetActive(bool _Active) { m_bCamActive = _Active; }
+	bool IsActvie() { return m_bCamActive; }
 
 private:
 	bool IsObjectInFrustum(const CGameObject* _Object);

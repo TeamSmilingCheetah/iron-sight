@@ -745,7 +745,7 @@ void InventoryController::PlayerInteractWeapon()
 	}
 
 	// 모든 무기 내리기 (무기 미착용 상태로)
-	if (KEY_TAP(KEY::B))
+	if (KEY_TAP(KEY::X))
 	{
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));
 

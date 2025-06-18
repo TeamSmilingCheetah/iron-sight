@@ -13,12 +13,19 @@ class CameraController :
 	Vec3 m_PlayerPos;
 	Vec3 m_PlayerRot;
 
+	Vec3 m_HitRayDir;
+	Vec3 m_ObstacleAdjustPos;
+	Vec3 m_ObstaclePos;
+	Vec3 m_ObstacleScale;
+	float m_OriginDistance;
+	float m_RayDistance;
 
 	float m_CameraSpeed;
 	float m_CameraYOffset;
 
 	float m_CurClipAccTime;
 	float m_RecoilTime;
+	float m_ObstalceResetTime;
 	float m_RecoilAmount_vertical;
 	float m_RecoilAmount_horizontal;
 
@@ -34,13 +41,24 @@ class CameraController :
 	float m_ObjectiveShoulderHeight;
 
 	UINT m_CameraFlag;
-
+	bool m_bObstacleHitFame;
 
 public:
 	void Begin() override;
 	void Tick() override;
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
+
+	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+
+	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
+		CCollider3D* _OtherCollider) override;
+	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
+		CCollider3D* _OtherCollider) override;
+	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
+		CCollider3D* _OtherCollider) override;
 
 	void SetFlag(CAM_FLAG _flag, bool _value);
 	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }
@@ -50,6 +68,7 @@ public:
 private:
 	void CameraOrthgraphicMove();
 	void CameraPerspectiveMove();
+	void CameraDebugMove();
 
 	void UpdateTPSCameraAdjustments();
 

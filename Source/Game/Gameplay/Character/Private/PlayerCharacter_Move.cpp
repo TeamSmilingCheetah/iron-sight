@@ -199,7 +199,7 @@ void PlayerCharacter::gravityCalcul()
 	}
 
 	// 점프 기능
-	if (m_IsGround && KEY_TAP(KEY::X))
+	if (m_IsGround && KEY_TAP(KEY::SPACE))
 	{
 		m_GravityVelocity += Vec3(0.f,1.f,0.f) * m_JumpPower;
 	}

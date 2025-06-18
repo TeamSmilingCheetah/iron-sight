@@ -66,6 +66,7 @@ void TestLevel::CreateTestLevel()
 
 	// 충돌 설정
 	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
+	CCollisionMgr::GetInst()->CollisionCheck(0, 1);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 6);
 	CCollisionMgr::GetInst()->CollisionCheck(3, 1);
@@ -88,13 +89,47 @@ void TestLevel::CreateTestLevel()
 	pObject->SetName(L"MainCamera");
 	pObject->AddComponent(new CCamera);
 	pObject->AddComponent(new CameraController);
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CColliderRay);
+
+	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+	pObject->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
+	pObject->ColliderRay()->SetRayLength(2000.f);
 
 	pObject->Camera()->SetProjType(PERSPECTIVE);
 	pObject->Camera()->SetPriority(0);
 	pObject->Camera()->LayerCheckAll();
 	pObject->Camera()->LayerCheck(4);
 
+	// Camera Check
+	/*CGameObject* pCamRay = new CGameObject;
+	pCamRay->SetName(L"Cam Ray");
+	pCamRay->AddComponent(new CCollider3D);
+	pCamRay->AddComponent(new CColliderRay);
+	pCamRay->AddComponent(new CameraController);
+
+	pCamRay->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pCamRay->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+	pCamRay->Collider3D()->SetTrigger(true);
+
+	pCamRay->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
+	pCamRay->ColliderRay()->SetTriggerTarget(true);
+	pCamRay->ColliderRay()->SetRayLength(2000.f);
+
+	pObject->AddChild(pCamRay);*/
+
 	pLevel->AddObject(0, pObject, false);
+
+	//pObject = new CGameObject;
+	//pObject->SetName(L"DebugCamera");
+	//pObject->AddComponent(new CCamera);
+	//pObject->AddComponent(new CameraController);
+
+	//pObject->Camera()->SetProjType(PERSPECTIVE);
+	//pObject->Camera()->SetPriority(1);
+	//pObject->Camera()->LayerCheckAll();
+
+	//pLevel->AddObject(0, pObject, false);
 
 	// =================
 	// 광원 오브젝트 추가
@@ -476,6 +511,7 @@ void TestLevel::CreateTestLevel()
 			pHeadColl->Collider3D()->SetTrigger(false);
 
 			pObj->AddChild(pHeadColl);
+
 			//
 			// AKM
 			//
@@ -847,9 +883,9 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
-	pLevel->AddObject(1, testojb, false);
+	//pLevel->AddObject(1, testojb, false);
 
 	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\Character1_MeshOnly.fbx")->Instantiate();
 	testPlayer->SetName(L"Test_Player");

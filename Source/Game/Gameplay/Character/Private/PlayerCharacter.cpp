@@ -101,6 +101,9 @@ void PlayerCharacter::Begin()
 	// Script
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
+
+	// 마우스 끄기
+	CKeyMgr::GetInst()->SetCursorVisible(false);
 }
 
 void PlayerCharacter::Tick()
@@ -111,11 +114,16 @@ void PlayerCharacter::Tick()
 	// 항상 작동하는 로직
 	// =================
 
-	// 이동 로직
-	PlayerMove();
+	// 마우스가 켜진 상태에서 키입력 방지, 
+	if (!m_bMouseActive && !m_CamScript->GetFlag(FREE_PS))
+	{
+		// 이동 로직
+		PlayerMove();
 
-	// 행동 로직
-	PlayerStance();
+		// 행동 로직
+		PlayerStance();
+	}
+
 
 	// UI 관리
 	PlayerControlUI();
@@ -128,6 +136,41 @@ void PlayerCharacter::Tick()
 	// 조건부 로직
 	// ==========
 
+	if (KEY_TAP(KEY::F1))
+	{
+		m_bMouseActive = !m_bMouseActive;
+
+		// 마우스 가둠
+		if (!m_bMouseActive)
+		{
+			CKeyMgr::GetInst()->SetCursorVisible(false);
+			CKeyMgr::GetInst()->SetMousePosAsCenter();
+		}
+		else
+		{
+			CKeyMgr::GetInst()->SetCursorVisible(true);
+		}
+	}
+
+	if (!m_CamScript->GetFlag(FREE_PS))
+	{
+		if (KEY_TAP(KEY::ESC) || KEY_TAP(KEY::TAB))
+		{
+			m_bMouseActive = !m_bMouseActive;
+
+			// 마우스 가둠
+			if (!m_bMouseActive)
+			{
+				CKeyMgr::GetInst()->SetCursorVisible(false);
+				CKeyMgr::GetInst()->SetMousePosAsCenter();
+			}
+			else
+			{
+				CKeyMgr::GetInst()->SetCursorVisible(true);
+			}
+		}
+	}
+
 	// 인벤토리 UI를 켠 상태라면 다른 로직 block
 	if (m_InventoryOpened)
 	{
@@ -136,13 +179,8 @@ void PlayerCharacter::Tick()
 
 	else
 	{
-		// 마우스 가둠
-		if (KEY_TAP(KEY::SPACE))
-		{
-			CKeyMgr::GetInst()->SetMousePosAsCenter();
-		}
 
-		if (KEY_PRESSED(KEY::SPACE))
+		if (!m_bMouseActive)
 		{
 			PlayerView();
 		}
