@@ -12,6 +12,8 @@
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
+#include "Client/System/Public/CImGuiMgr.h"
+#include "Client/UI/Public/TargetOBUI.h"
 
 class Inspector;
 class CLayer;
@@ -97,6 +99,13 @@ void Outliner::SelectGameObject(DWORD_PTR _TreeNode)
 
 	Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
 	pInspector->SetTargetObject(pTarget);
+
+	// 추가로 TargetOB에 변경사항 전달
+	TargetOBUI* FindUI = (TargetOBUI*)CImGuiMgr::GetInst()->FindUI("TargetObject");
+	if (nullptr != FindUI)
+	{
+		FindUI->TraceTargetObject(pTarget);
+	}
 }
 
 void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
@@ -149,6 +158,76 @@ void Outliner::DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode)
 	AddChild(pDropObj, pDragObj);
 }
 
+void Outliner::SelectAndScrollToObject(CGameObject* _TargetObject)
+{
+	if (!_TargetObject || !m_Tree)
+		return;
+
+	// 루트 노드부터 시작해서 해당 오브젝트 노드 찾기
+	TreeNode* pRootNode = m_Tree->GetRootNode();
+	if (!pRootNode)
+		return;
+
+	TreeNode* pTargetNode = FindNodeByGameObject(pRootNode, _TargetObject);
+	if (pTargetNode)
+	{
+		// 부모 노드들 펼치기
+		ExpandParentNodes(pTargetNode);
+
+		// 노드 선택
+		m_Tree->AddSelectedNode(pTargetNode);
+
+		// 해당 노드위치로 스크롤
+		pTargetNode->SetScroll(true);
+
+		// 해당 노드위치 선택 상태로
+		pTargetNode->SetScroll(true);
+	}
+}
+
+TreeNode* Outliner::FindNodeByGameObject(TreeNode* _StartNode, CGameObject* _TargetObject)
+{
+	if (!_StartNode || !_TargetObject)
+		return nullptr;
+
+	// 현재 노드의 데이터가 찾는 오브젝트인지 확인
+	// 100보다 큰 값은 오브젝트 포인터
+	if (_StartNode->GetData() > static_cast<DWORD_PTR>(100LL))
+	{
+		CGameObject* pNodeObject = reinterpret_cast<CGameObject*>(_StartNode->GetData());
+		if (pNodeObject == _TargetObject)
+		{
+			return _StartNode;
+		}
+	}
+
+	// 자식 노드들에서 재귀적으로 찾기
+	const vector<TreeNode*>& vecChild = _StartNode->GetChildren();
+	for (TreeNode* pChild : vecChild)
+	{
+		TreeNode* pFound = FindNodeByGameObject(pChild, _TargetObject);
+		if (pFound)
+			return pFound;
+	}
+
+	return nullptr;
+}
+
+void Outliner::ExpandParentNodes(TreeNode* _Node)
+{
+	if (!_Node)
+		return;
+
+	TreeNode* pParent = _Node->GetParent();
+	if (pParent)
+	{
+		// 부모 노드를 먼저 펼치기
+		ExpandParentNodes(pParent);
+
+		// 현재 부모 노드 펼치기
+		pParent->SetExpanded(true);
+	}
+}
 
 void Outliner::CreateObject_Outliner(Ptr<CMesh> _pMesh)
 {

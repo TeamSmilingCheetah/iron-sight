@@ -29,6 +29,9 @@ struct VS_OUT
     float3 vViewTangent : TANGENT;
     float3 vViewNormal : NORMAL;
     float3 vViewBirnormal : BINORMAL;
+
+    int parentID : TEXCOORD1;
+    int objectID : TEXCOORD2;
 };
 
 VS_OUT VS_Std3D_Deferred(VS_IN _in)
@@ -52,6 +55,10 @@ VS_OUT VS_Std3D_Deferred(VS_IN _in)
     output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV).xyz);
     output.vViewBirnormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV).xyz);
 
+    // ID 전달
+    output.parentID = g_int_2;
+    output.objectID = g_int_3;
+
     return output;
 }
 
@@ -72,6 +79,8 @@ struct VS_IN_Inst
     row_major matrix matWV : WV;
     row_major matrix matWVP : WVP;
     uint iRowIndex : ROWINDEX; // 자신의 애니메이션 최종 행렬 데이터가 몇번째 행에 있는지
+    int parentID : TEXCOORD1;
+    int objectID : TEXCOORD2;
 };
 
 
@@ -95,6 +104,10 @@ VS_OUT VS_Std3D_Deferred_Inst(VS_IN_Inst _in)
     output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), _in.matWV).xyz);
     output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), _in.matWV).xyz);
     output.vViewBirnormal = normalize(mul(float4(_in.vBinormal, 0.f), _in.matWV).xyz);
+
+    // 인스턴싱 데이터에서 ID 전달
+    output.parentID = _in.parentID;
+    output.objectID = _in.objectID;
     
     return output;
 }
@@ -149,7 +162,7 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
     output.Normal = float4(vNormal, 1.f);
     output.Position = float4(_in.vViewPos, 1.f);
     output.Emissive = (float4) 0.f;
-    output.Data = float4((float) g_int_2, (float) g_int_3, 0.f, 0.f);
+    output.Data = float4((float) _in.parentID, (float) _in.objectID, 0.f, 0.f);
 
     return output;
 }

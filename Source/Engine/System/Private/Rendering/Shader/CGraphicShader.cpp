@@ -280,7 +280,7 @@ void CGraphicShader::Binding_Inst()
 int CGraphicShader::CreateInputLayout()
 {
 	// InputLayout
-	D3D11_INPUT_ELEMENT_DESC LayoutDesc[21] = {};
+	D3D11_INPUT_ELEMENT_DESC LayoutDesc[23] = {};
 
 	LayoutDesc[0].AlignedByteOffset = 0;
 	LayoutDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -461,7 +461,25 @@ int CGraphicShader::CreateInputLayout()
 		LayoutDesc[20].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
 		LayoutDesc[20].InstanceDataStepRate = 1;
 
-		if (FAILED(DEVICE->CreateInputLayout(LayoutDesc, 21
+		// parentID 용으로 추가 (TEXCOORD1)
+		LayoutDesc[21].SemanticName = "TEXCOORD";
+		LayoutDesc[21].SemanticIndex = 1;
+		LayoutDesc[21].AlignedByteOffset = 196;  // int(4바이트) 다음
+		LayoutDesc[21].Format = DXGI_FORMAT_R32_SINT;
+		LayoutDesc[21].InputSlot = 1;
+		LayoutDesc[21].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+		LayoutDesc[21].InstanceDataStepRate = 1;
+
+		// objectID 용으로 추가 (TEXCOORD2)
+		LayoutDesc[22].SemanticName = "TEXCOORD";
+		LayoutDesc[22].SemanticIndex = 2;
+		LayoutDesc[22].AlignedByteOffset = 200;  // int(4바이트) 다음
+		LayoutDesc[22].Format = DXGI_FORMAT_R32_SINT;
+		LayoutDesc[22].InputSlot = 1;
+		LayoutDesc[22].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+		LayoutDesc[22].InstanceDataStepRate = 1;
+
+		if (FAILED(DEVICE->CreateInputLayout(LayoutDesc, 23
 			, m_VSInstBlob->GetBufferPointer()
 			, m_VSInstBlob->GetBufferSize()
 			, m_LayoutInst.GetAddressOf())))
