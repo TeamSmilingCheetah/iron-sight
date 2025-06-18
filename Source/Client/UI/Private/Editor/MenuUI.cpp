@@ -136,6 +136,11 @@ void MenuUI::Editor()
 		{
 			CImGuiMgr::GetInst()->FindUI("PrefabEditor")->SetActive(true);
 		}
+
+		if (ImGui::MenuItem("Target Object"))
+		{
+			CImGuiMgr::GetInst()->FindUI("TargetObject")->SetActive(true);
+		}
 		ImGui::EndMenu();
 	}
 }

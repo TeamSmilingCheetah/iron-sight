@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Client/UI/Public/Editor/EditorUI.h"
 
 class TreeNode;
@@ -14,6 +14,7 @@ class Outliner :
 
 public:
 	void Render_Update() override;
+	void SelectAndScrollToObject(CGameObject* _TargetObject);
 
 private:
 	void RenewGameObject();
@@ -21,6 +22,10 @@ private:
 
 	void SelectGameObject(DWORD_PTR _TreeNode);
 	void DragDrop(DWORD_PTR _DragNode, DWORD_PTR _DropNode);
+
+	// TargetObject 노드추적용 추가 기능
+	TreeNode* FindNodeByGameObject(TreeNode* _StartNode, CGameObject* _TargetObject);
+	void ExpandParentNodes(TreeNode* _Node);
 
 	// Outliner 빈 땅에 우클릭 관련 함수
 	void CreateObject_Outliner(Ptr<CMesh> _pMesh);

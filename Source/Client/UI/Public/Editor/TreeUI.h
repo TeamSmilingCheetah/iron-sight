@@ -19,6 +19,8 @@ private:
 	bool m_Frame;
 	bool m_FrameListMode;
 	bool m_Selected;
+	bool m_Expanded;	// 노드 펼치기 명령
+	bool m_Scrolled;	// 해당 노드중심으로 스크롤 명령
 
 public:
 	DWORD_PTR GetData() { return m_Data; }
@@ -30,6 +32,15 @@ public:
 		m_vecChild.push_back(_ChildNode);
 		_ChildNode->m_Parent = this;
 	}
+
+	TreeNode* GetParent() { return m_Parent; }
+	const vector<TreeNode*>& GetChildren() { return m_vecChild; }
+
+	void SetSelected(bool _Expanded) { m_Selected = _Expanded; }
+	void SetExpanded(bool _Expanded) { m_Expanded = _Expanded; }
+	bool IsExpanded() const { return m_Expanded; }
+	void SetScroll(bool _Scroll) { m_Scrolled = _Scroll; }
+
 
 	TreeNode();
 	~TreeNode();
@@ -102,6 +113,8 @@ public:
 			delete m_Root;
 		m_Root = nullptr;
 	}
+
+	TreeNode* GetRootNode() { return m_Root; }
 
 	void Render_Update() override;
 

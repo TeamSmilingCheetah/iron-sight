@@ -21,8 +21,10 @@ public:
 	void Init();
 	virtual void Render_Update() override;
 
+	void TraceTargetObject(CGameObject* _Object);
+
 	virtual void Activate() override {};
-	virtual void Deactivate() override {};
+	virtual void Deactivate() override;
 
 public:
 	TargetOBUI();

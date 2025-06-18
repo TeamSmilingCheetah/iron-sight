@@ -9,6 +9,7 @@
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/Core/Public/CEditorMgr.h"
 #include "Client/Script/Public/CGameObjectEx.h"
+#include "Client/UI/Public/Editor/Outliner.h"
 
 TargetOBUI::TargetOBUI()
 	: EditorUI("TargetObject")
@@ -79,35 +80,77 @@ void TargetOBUI::Render_Update()
 				if (pixelIndex < pixels.size())
 				{
 					Vec4 Data = pixels[pixelIndex];
+					UINT parentID = (UINT)Data.x;   // 부모 ID
+					UINT childID = (UINT)Data.y;    // 자식 ID
 
-					// 만일 x값이 0이아니면서 현재 타겟값과 같다면 자식오브젝트인 y값으로 본다.
-					if (Data.x != 0 && Data.x == m_TargetID)
+					// 클릭한 위치에 오브젝트가 있는 경우
+					if (childID != 0)
 					{
-						m_TargetID = (UINT)Data.y;
-						m_ParentClick = false;
-					}
-					// 그 외의 경우는 부모 오브젝트id를 찾는다.
-					else
-					{
-						m_TargetID = (UINT)Data.x;
-						m_ParentClick = true;
-					}
+						UINT newTargetID = 0;
+						bool newParentClick = false;
 
-					// 타겟 값이 0이 아닌경우에만 inspector에 검색하여 타겟오브젝트 설정
-					if (m_TargetID != 0)
-					{
-						// ID로 오브젝트 검색
-						CGameObject* FindObject = CLevelMgr::GetInst()->FindObjectByID(m_TargetID);
+						// 클릭된 자식오브젝트, 부모 클릭상태아님-> 그대로 유지
+						if (m_TargetID == childID && !m_ParentClick)
+						{
+							newTargetID = childID;
+							newParentClick = false;
+						}
+						// 부모와 현재 타겟이 같음, 부모선택 상태-> 자식으로 접근
+						else if (m_TargetID == parentID && m_ParentClick)
+						{
+							newTargetID = childID;
+							newParentClick = false;
+						}
+						// 같은 부모, 다른 자식, 자식 클릭상태 -> 해당 자식으로 이동
+						else if (!m_ParentClick && m_TargetID != childID)
+						{
+							// 먼저 현재 선택된 자식의 부모 ID를 확인
+							CGameObject* currentObject = CLevelMgr::GetInst()->FindObjectByID(m_TargetID);
+							if (currentObject && currentObject->GetParent() &&
+								currentObject->GetParentObjectID() == parentID)
+							{
+								newTargetID = childID;
+								newParentClick = false;
+							}
+							// 자식의 부모가 다름 -> 해당 부모로 접근
+							else
+							{
+								newTargetID = parentID;
+								newParentClick = true;
+							}
+						}
+						// 기타 경우 -> 부모 ID로 선택
+						else
+						{
+							newTargetID = parentID;
+							newParentClick = true;
+						}
 
-						Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
-						pInspector->SetTargetObject(FindObject);
+						m_TargetID = newTargetID;
+						m_ParentClick = newParentClick;
 
+						// 타겟 값이 0이 아닌경우에만 inspector에 검색하여 타겟오브젝트 설정
+						if (m_TargetID != 0)
+						{
+							// ID로 오브젝트 검색
+							CGameObject* FindObject = CLevelMgr::GetInst()->FindObjectByID(m_TargetID);
+
+							Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
+							pInspector->SetTargetObject(FindObject);
+
+
+							// Outliner에서 해당 오브젝트 선택 및 스크롤
+							Outliner* pOutliner = (Outliner*)CImGuiMgr::GetInst()->FindUI("Outliner");
+							if (pOutliner && FindObject)
+							{
+								pOutliner->SelectAndScrollToObject(FindObject);
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-
 
 	// PostProcess를 담당하는 Object에 추적할 ID값을 보내준다.
 	m_PostObject->GetRenderComponent()->GetMaterial(0)->SetScalarParam(INT_0, m_TargetID);
@@ -117,7 +160,53 @@ void TargetOBUI::Render_Update()
 
 
 	ImGui::Text("Current ID: %u", m_TargetID);
+	if (m_TargetID != 0)
+	{
+		ImGui::Text("Current Object Name: ");
+		CGameObject* FindObject = CLevelMgr::GetInst()->FindObjectByID(m_TargetID);
 
+		if (nullptr != FindObject && !(FindObject->IsDead()))
+		{
+			auto strKey = WStringToString(FindObject->GetName());
+			ImGui::InputText("##TexName", (char*)strKey.c_str(), strKey.length(), ImGuiInputTextFlags_ReadOnly);
+		}
+		else
+		{
+			// 삭제 예정인 오브젝트이거나 없을 경우
+			m_TargetID = 0;
+			m_ParentClick = false;
+		}
+	}
 
+	// 초기화 버튼
+	if (ImGui::Button("Target Reset"))
+	{
+		m_TargetID = 0;
+		m_ParentClick = false;
+	}
 
+}
+
+void TargetOBUI::TraceTargetObject(CGameObject* _Object)
+{
+	m_TargetID = _Object->GetObjectID();
+
+	// 부모 여부 판단
+	CGameObject* parent = _Object->GetParent();
+	if (parent)
+	{
+		// 자식 오브젝트인 경우
+		m_ParentClick = false;
+	}
+	else
+	{
+		// 부모가 없다는건 최상위 오브젝트
+		m_ParentClick = true;
+	}
+}
+
+void TargetOBUI::Deactivate()
+{
+	m_PostObject->GetRenderComponent()->GetMaterial(0)->SetScalarParam(INT_0, 0);
+	m_PostObject->GetRenderComponent()->GetMaterial(0)->SetScalarParam(INT_1, 0);
 }

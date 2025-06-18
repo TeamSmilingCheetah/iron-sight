@@ -256,6 +256,9 @@ struct tInstancingData
 	Matrix matWV;
 	Matrix matWVP;
 	int    iRowIdx;
+	int    parentID;
+	int    objectID;
+	int    reserved[2]; // 패딩
 };
 
 

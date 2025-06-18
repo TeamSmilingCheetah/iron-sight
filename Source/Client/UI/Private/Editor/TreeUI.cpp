@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 
 // =========
@@ -13,6 +13,8 @@ TreeNode::TreeNode()
 	, m_Frame(false)
 	, m_Selected(false)
 	, m_FrameListMode(false)
+	, m_Expanded(false)
+	, m_Scrolled(false)
 {
 	char buff[50] = {};
 	sprintf_s(buff, 50, "##%d", g_GlobalID++);
@@ -35,7 +37,7 @@ void TreeNode::Render_Update()
 		Flag |= ImGuiTreeNodeFlags_Leaf;
 	if (m_Frame)
 		Flag |= ImGuiTreeNodeFlags_Framed;
-	if (m_FrameListMode)
+	if (m_FrameListMode || m_Expanded)
 		Flag |= ImGuiTreeNodeFlags_DefaultOpen;
 	if (m_Selected)
 		Flag |= ImGuiTreeNodeFlags_Selected;
@@ -43,9 +45,23 @@ void TreeNode::Render_Update()
 	if (m_Frame && m_vecChild.empty())
 		padding = "   ";
 
+	// 펼치기 명령은 한번만 사용
+	if (m_Expanded)
+	{
+		ImGui::SetNextItemOpen(true);
+		m_Expanded = false;
+	}
+
 	string Name = padding + m_Name + m_ID;
 
 	bool Open = ImGui::TreeNodeEx(Name.c_str(), Flag);
+
+	// 강제 스크롤 처리
+	if (m_Scrolled)
+	{
+		ImGui::SetScrollHereY(0.5f);
+		m_Scrolled = false;
+	}
 
 	// 노드를 클릭하면, 선택 상태로 만들어 준다.
 	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -201,6 +217,7 @@ void TreeUI::AddSelectedNode(TreeNode* _Node)
 	if (m_MultiSelection)
 	{
 		m_vecSelected.push_back(_Node);
+		_Node->m_Selected = true;
 	}
 	else
 	{
@@ -210,6 +227,7 @@ void TreeUI::AddSelectedNode(TreeNode* _Node)
 		}
 		m_vecSelected.clear();
 		m_vecSelected.push_back(_Node);
+		_Node->m_Selected = true;
 	}
 
 	// 가장 최근에 선택된 노드에 대해서 Delegate 를 호출시킨다.

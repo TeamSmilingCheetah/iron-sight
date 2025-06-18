@@ -278,6 +278,10 @@ void CCamera::render_deferred()
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
 
+			// ID 정보 추가 (이 부분이 빠져있었음!)
+			tInstData.parentID = (int)pair.second[i].pObj->GetParentObjectID();
+			tInstData.objectID = (int)pair.second[i].pObj->GetObjectID();
+
 			if (pair.second[i].pObj->MeshRender()->IsSkinRender() && pair.second[i].pObj->Animator3D())
 			{
 				pair.second[i].pObj->Animator3D()->Binding(pair.second[i].pObj->MeshRender());
@@ -394,6 +398,10 @@ void CCamera::render_forward()
 			tInstData.matWorld = pair.second[i].pObj->Transform()->GetWorldMat();
 			tInstData.matWV = tInstData.matWorld * m_matView;
 			tInstData.matWVP = tInstData.matWV * m_matProj;
+
+			// ID 정보 추가
+			tInstData.parentID = (int)pair.second[i].pObj->GetParentObjectID();
+			tInstData.objectID = (int)pair.second[i].pObj->GetObjectID();
 
 			if (pair.second[i].pObj->MeshRender()->IsSkinRender() && pair.second[i].pObj->Animator3D())
 			{
