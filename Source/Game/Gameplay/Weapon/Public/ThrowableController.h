@@ -24,6 +24,7 @@ private:
 	bool m_bThrow;
 	bool m_bTrigger;
 
+	CGameObject* m_ThownOwner;
 	CGameObject* m_Player;
 	PlayerCharacter* m_PlayerScript;
 

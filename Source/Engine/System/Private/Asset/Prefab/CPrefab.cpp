@@ -45,7 +45,7 @@ CGameObject* CPrefab::Instantiate()
 
 int CPrefab::Save(const wstring& _RelativePath)
 {
-	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+	wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(_RelativePath);
 	SetRelativePath(strRelativePath);
 
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;

@@ -811,33 +811,6 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(7, pObject, false);
 
-	// 파티클 테스트
-	//CGameObject* pTestObj = nullptr;
-	//pTestObj = new CGameObject;
-
-	//pTestObj->SetName(L"Test Object");
-	//pTestObj->AddComponent(new CParticleSystem);
-	//pTestObj->AddComponent(new ParticleController);
-
-	//pTestObj->ParticleSystem()->SetParticleTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\particle\\smokeparticle.png", L"Texture\\particle\\smokeparticle.png"));
-	//pTestObj->Transform()->SetRelativePos(Vec3(350.f, 100.f, 350.f));
-	////pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
-	////pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	////pObject->Transform()->SetFrustumRadius(750.f);
-
-	//pLevel->AddObject(0, pTestObj, false);
-
-	//pTestObj = new CGameObject;
-
-	//pTestObj->SetName(L"Test Object2");
-	//pTestObj->AddComponent(new CParticleSystem);
-	//pTestObj->AddComponent(new ParticleController);
-
-	//pTestObj->ParticleSystem()->SetParticleTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\particle\\TX_HitFlash02.png", L"Texture\\particle\\TX_HitFlash02.png"));
-	//pTestObj->Transform()->SetRelativePos(Vec3(350.f, 100.f, 350.f));
-	//pLevel->AddObject(0, pTestObj, false);
-
-
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
@@ -876,9 +849,9 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
-	pLevel->AddObject(1, testojb, false);
+	//pLevel->AddObject(1, testojb, false);
 
 	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\Character1_MeshOnly.fbx")->Instantiate();
 	testPlayer->SetName(L"Test_Player");

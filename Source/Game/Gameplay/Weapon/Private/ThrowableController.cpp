@@ -10,6 +10,7 @@
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/Gameplay/BombController.h"
 
 
 ThrowableController::ThrowableController()
@@ -25,6 +26,7 @@ ThrowableController::ThrowableController()
 	, m_bCanThrow(false)
 	, m_bThrow(false)
 	, m_bTrigger(false)
+	, m_ThownOwner(nullptr)
 
 {
 	m_Mass = 4.f;
@@ -66,6 +68,7 @@ void ThrowableController::Tick()
 	{
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
+		m_ThownOwner = m_EquippedOwner;
 	}
 	// 소유주가 없다면 return
 	else if(m_EquippedOwner == nullptr && m_bThrow == false)
@@ -95,7 +98,6 @@ void ThrowableController::Tick()
 		AddChild(nullptr, GetOwner());
 		// 본래 Layer로 변경해준다.
 		ChangeLayer(GetOwner(), 0);
-		//GetOwner()->SetLayerIdx(0);
 
 		// 현재 Player 위치에 무기를 다시 생성시킨다.
 		Vec3 vSpanwPos = vPlayerPos;
@@ -131,7 +133,6 @@ void ThrowableController::Tick()
 		AddChild(nullptr, GetOwner());
 		// 본래 Layer로 변경해준다.
 		ChangeLayer(GetOwner(), 0);
-		//GetOwner()->SetLayerIdx(0);
 
 		// 현재 Player 위치에 무기를 다시 생성시킨다.
 		Vec3 vSpanwPos = vPlayerPos;
@@ -189,6 +190,20 @@ void ThrowableController::Triggered()
 				vPos.y += 800.f;
 
 				Instantiate(SmokeParticelPrefab, vPos, 0);
+			}
+		}
+		if (GetOwner()->GetName() == L"Grenade")
+		{
+			if (!GetOwner()->IsDead())
+			{
+				Ptr<CPrefab> GrenadeBombPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\GrenadeBomb.pref", L"Prefab\\GrenadeBomb.pref");
+				BombController* pBombScript = static_cast<BombController*>(GetScriptWithType(GrenadeBombPrefab->GetProtoObject(), SCRIPT_TYPE::BOMBSCRIPT));
+				pBombScript->SetWeaponOwner(m_ThownOwner);
+				Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
+				//vPos.y += 800.f;
+
+				// ** 폭발 생성 레이어 고민 필요 (피아 구분없이 영향을 줘야 함)
+				Instantiate(GrenadeBombPrefab, vPos, 0);
 			}
 		}
 		DestroyObject(GetOwner());
