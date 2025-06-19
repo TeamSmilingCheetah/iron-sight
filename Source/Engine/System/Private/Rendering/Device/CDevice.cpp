@@ -173,7 +173,7 @@ int CDevice::CreateRasterizerState()
 	D3D11_RASTERIZER_DESC Desc = {};
 	Desc.CullMode = D3D11_CULL_BACK;
 	Desc.FillMode = D3D11_FILL_SOLID;
-	Desc.ScissorEnable = true;	// TEST : Scissor
+	Desc.ScissorEnable = true;
 	DEVICE->CreateRasterizerState(
 		&Desc, m_RSState[static_cast<UINT>(RS_TYPE::CULL_BACK)].GetAddressOf());
 
@@ -182,21 +182,21 @@ int CDevice::CreateRasterizerState()
 	// CULL_FRONT
 	Desc.CullMode = D3D11_CULL_FRONT;
 	Desc.FillMode = D3D11_FILL_SOLID;
-	Desc.ScissorEnable = true;	// TEST : Scissor
+	Desc.ScissorEnable = true;
 	DEVICE->CreateRasterizerState(
 		&Desc, m_RSState[static_cast<UINT>(RS_TYPE::CULL_FRONT)].GetAddressOf());
 
 	// CULL_NONE
 	Desc.CullMode = D3D11_CULL_NONE;
 	Desc.FillMode = D3D11_FILL_SOLID;
-	Desc.ScissorEnable = true;	// TEST : Scissor
+	Desc.ScissorEnable = true;
 	DEVICE->CreateRasterizerState(
 		&Desc, m_RSState[static_cast<UINT>(RS_TYPE::CULL_NONE)].GetAddressOf());
 
 	// WIRE_FRAME
 	Desc.CullMode = D3D11_CULL_NONE;
 	Desc.FillMode = D3D11_FILL_WIREFRAME;
-	Desc.ScissorEnable = true;	// TEST : Scissor
+	Desc.ScissorEnable = true;
 	DEVICE->CreateRasterizerState(
 		&Desc, m_RSState[static_cast<UINT>(RS_TYPE::WIRE_FRAME)].GetAddressOf());
 

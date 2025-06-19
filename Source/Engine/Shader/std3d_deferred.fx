@@ -127,15 +127,22 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 
     float4 vColor = float4(1.f, 0.f, 1.f, 1.f);
     float3 vNormal = _in.vViewNormal;
+    
+	const float maxLOD = 6.f;
+	const float threshold = 1200.f;
+    float dist = clamp(length(_in.vViewPos), 0.f, threshold) / threshold;
+	//float dist = saturate(length(_in.vViewPos) / threshold);
+    
+	const float level = dist * maxLOD;
 
     if (g_btex_0)
     {
-        vColor = g_tex_0.Sample(g_sam_0, _in.vUV);
-    }
+		vColor = g_tex_0.SampleLevel(g_sam_0, _in.vUV, level);
+	}
 
     if (g_btex_1)
     {
-        vNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;
+		vNormal = g_tex_1.SampleLevel(g_sam_0, _in.vUV, level).xyz;
 
         // 추출한 색상값(0~1 범위) 을 방향벡터 값의 범위(-1 ~ 1) 로 변경한다.
         vNormal = (vNormal * 2.f) - 1.f;
@@ -154,11 +161,10 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 
     if(g_btex_2)
     {
-        float4 vSpefCoeffic = g_tex_2.Sample(g_sam_0, _in.vUV);
+		float4 vSpefCoeffic = g_tex_2.SampleLevel(g_sam_0, _in.vUV, level);
+	}
 
-    }
-
-    output.Color = vColor;
+	output.Color = vColor;
     output.Normal = float4(vNormal, 1.f);
     output.Position = float4(_in.vViewPos, 1.f);
     output.Emissive = (float4) 0.f;
