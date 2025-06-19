@@ -13,7 +13,6 @@ class CameraController :
 	Vec3 m_PlayerPos;
 	Vec3 m_PlayerRot;
 
-	Vec3 m_HitRayDir;
 	Vec3 m_ObstacleAdjustPos;
 	Vec3 m_ObstaclePos;
 	Vec3 m_ObstacleScale;

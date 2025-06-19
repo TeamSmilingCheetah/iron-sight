@@ -42,6 +42,11 @@ CameraController::CameraController()
 	, m_AdjustFinalHeight(0.f)
 	, m_ObjectiveShoulderDistance(0.f)
 	, m_ObjectiveShoulderHeight(0.f)
+	, m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
+	, m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
+	, m_ObstacleScale(Vec3(0.f, 0.f, 0.f))
+	, m_OriginDistance(0.f)
+	, m_RayDistance(0.f)
 {
 }
 
@@ -163,6 +168,11 @@ void CameraController::CameraPerspectiveMove()
 	m_PlayerPos = m_Player->Transform()->GetRelativePos();
 	m_PlayerRot = m_Player->Transform()->GetRelativeRotation();
 
+	
+	Vec3 vDirtoPlayer = m_PlayerPos - m_CameraPos;
+	vDirtoPlayer.Normalize();
+
+	ColliderRay()->SetRayDir(vDirtoPlayer);
 
 	// 카메라 전환
 	if (KEY_TAP(KEY::V))
@@ -176,27 +186,6 @@ void CameraController::CameraPerspectiveMove()
 	// TPS
 	if (m_CameraFlag & TPS)
 	{
-
-		/*if (m_CameraFlag & OBSTACLE_DETECT_END)
-		{
-			ColliderRay()->SetOffset(Vec3(0.f,0.f, -m_RayDistance));
-			if(GetOwner()->GetChild().size() != 0)
-				GetOwner()->GetChild()[0]->ColliderRay()->SetOffset(Vec3(0.f, 0.f, -m_RayDistance));
-
-			if (abs(m_OriginDistance) < abs(m_RayDistance))
-			{
-				ColliderRay()->SetOffset(Vec3(0.f, 0.f, 0.f));
-				if (GetOwner()->GetChild().size() != 0)
-					GetOwner()->GetChild()[0]->ColliderRay()->SetOffset(Vec3(0.f, 0.f, 0.f));
-
-				m_CameraFlag &= ~OBSTACLE_DETECT;
-				m_CameraFlag &= ~OBSTACLE_DETECT_END;
-			}
-
-			m_RayDistance += 1000.f * DT;
-		}*/
-
-
 		// TPS의 카메라 기본위치들 변수 업데이트
 		UpdateTPSCameraAdjustments();
 		UpdateStance();
@@ -855,7 +844,6 @@ void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _Ot
 		m_CameraFlag |= OBSTACLE_DETECT;
 		m_ObstaclePos = _OtherObject->Transform()->GetRelativePos();
 		m_ObstacleScale = _OtherObject->Collider3D()->GetScale();
-		m_HitRayDir = ColliderRay()->GetRayFinalDir();
 
 		m_ObstacleAdjustPos = m_ObstaclePos;
 		m_ObstacleAdjustPos.y = m_PlayerPos.y;
