@@ -10,6 +10,7 @@
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/TestSound.h"
+#include "Game/Gameplay/BombController.h"
 #include "Game\Gameplay\Character\Public\TestCharacter.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
@@ -34,6 +35,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"EnemyVision");
 	_vec.push_back(L"InteractionHandler");
 	_vec.push_back(L"DoorScript");
+	_vec.push_back(L"BombScript");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -70,6 +72,8 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new InteractionHandler;
 	if (L"DoorScript" == _strScriptName)
 		return new DoorScript;
+	if (L"BombScript" == _strScriptName)
+		return new BombController;
 	return nullptr;
 }
 
@@ -124,6 +128,9 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(SCRIPT_TYPE::DOORSCRIPT):
 		return new DoorScript;
+		break;
+	case static_cast<UINT>(SCRIPT_TYPE::BOMBSCRIPT):
+		return new BombController;
 		break;
 	}
 	return nullptr;
@@ -194,6 +201,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case SCRIPT_TYPE::DOORSCRIPT:
 		return L"DoorScript";
+		break;
+
+	case SCRIPT_TYPE::BOMBSCRIPT:
+		return L"BombScript";
 		break;
 	}
 	return nullptr;
