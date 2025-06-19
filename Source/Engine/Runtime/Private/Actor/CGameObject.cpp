@@ -4,6 +4,7 @@
 #include "Runtime/Public/Actor/CLevel.h"
 #include "Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Runtime/Public/Component/Rendering/CParticleSystem.h"
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
@@ -375,13 +376,23 @@ bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
 
 	// 1. 메시 렌더러가 없는 경우 실패
 	CMeshRender* pMeshRender = MeshRender();
-	if (!pMeshRender)
+	CParticleSystem* pParticleSystem = ParticleSystem();
+	if (!pMeshRender && !pParticleSystem)
 	{
 		return false;
 	}
 
 	// 2. 메시가 없는 경우 실패
-	Ptr<CMesh> pMesh = pMeshRender->GetMesh();
+	Ptr<CMesh> pMesh = nullptr;
+	if (pMeshRender)
+	{
+		pMesh = pMeshRender->GetMesh();
+	}
+	if (pParticleSystem)
+	{
+		pMesh = pParticleSystem->GetMesh();
+	}
+
 	if (pMesh == nullptr)
 	{
 		return false;
