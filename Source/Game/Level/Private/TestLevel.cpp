@@ -186,7 +186,7 @@ void TestLevel::CreateTestLevel()
 	UICamera->AddComponent(new CCamera);
 	UICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
 	UICamera->Camera()->SetPriority(1);
-	UICamera->Camera()->SetFar(10.f);	// 1-10 까지 UI 계층 (Canvas)
+	UICamera->Camera()->SetFar(10.f);
 
 	assert(pLevel->GetLayer(8)->GetName() == L"UI");
 	UICamera->Camera()->LayerCheck(8);
@@ -849,9 +849,9 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
-	//pLevel->AddObject(1, testojb, false);
+	pLevel->AddObject(1, testojb, false);
 
 	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\Character1_MeshOnly.fbx")->Instantiate();
 	testPlayer->SetName(L"Test_Player");
