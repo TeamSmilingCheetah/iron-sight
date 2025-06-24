@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Client/UI/Public/Editor/Outliner.h"
+#include "Client/UI/Public/Editor/ContentUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLayer.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -325,6 +326,45 @@ void Outliner::MakePrefab(DWORD_PTR _TreeNode)
 		Ptr<CPrefab> pPrefab = new CPrefab;
 		pPrefab->SetProtoObject(m_TargetObject->Clone());
 		CAssetMgr::GetInst()->AddAsset(m_TargetObject->GetName(), pPrefab);
+
+		// 파일생성
+		// contentUI 로드방식벼경으로 파일이 생성되어야 보임
+
+		wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+		strContentPath += L"Prefab\\";
+
+		// 파일 경로 문자열
+		wchar_t szFilePath[255] = {};
+
+		OPENFILENAME Desc = {};
+
+		Desc.lStructSize = sizeof(OPENFILENAME);
+		Desc.hwndOwner = nullptr;
+		Desc.lpstrFile = szFilePath;
+		Desc.nMaxFile = 255;
+		Desc.lpstrFilter = L"Prefab\0*.pref\0ALL\0*.*";
+		Desc.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		Desc.lpstrInitialDir = strContentPath.c_str();
+
+		if (GetSaveFileName(&Desc))
+		{
+			wstring strFilePath = szFilePath;
+			size_t strLen = strFilePath.size();
+
+			if (strLen != 0)
+			{
+				if (strFilePath.substr(strLen - 5, 5) != L".pref")
+				{
+					strFilePath += L".pref";
+				}
+
+				pPrefab->Save(strFilePath);
+			}
+		}
+
+		// 목록 업데이트
+		//ContentUI* CUI = (ContentUI*)CImGuiMgr::GetInst()->FindUI("Content");
+		//CUI->Reset();
 	}
 }
 

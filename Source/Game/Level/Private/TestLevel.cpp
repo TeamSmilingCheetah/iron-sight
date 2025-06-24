@@ -26,6 +26,7 @@
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Character/Public/TestCharacter.h"
 #include "Game/Gameplay/Particle/Public/ParticleController.h"
+#include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 
@@ -789,10 +790,27 @@ void TestLevel::CreateTestLevel()
 	//pLevel->AddObject(0, pObject, false);
 
 	// 1) Prefab 로드
-	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\TestBullet.pref", L"Prefab\\TestBullet.pref");
+	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
 
 	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
 
+	// 총알 프리팹 생성용 임시
+	//Ptr<CMeshData> pBulletModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\9mmBullet.fbx");
+	//pObject = pBulletModel->Instantiate();
+	//
+	//pObject->SetName(L"9mm");
+	//pObject->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+	//
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetScale(Vec3(20.f, 20.f, 100.f));
+	//pObject->Collider3D()->SetIndependentScale(true);
+	//
+	//pObject->AddComponent(new MissileProjectile);
+	//
+	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\9mm_head.jpg", L"Texture\\9mm_head.jpg"));
+	//pObject->GetRenderComponent()->GetMaterial(1)->SetTexParam(TEX_0, CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\9mm_head.jpg", L"Texture\\9mm_head.jpg"));
+	//
+	//pLevel->AddObject(5, pObject, false);
 
 	// 적 테스트
 
