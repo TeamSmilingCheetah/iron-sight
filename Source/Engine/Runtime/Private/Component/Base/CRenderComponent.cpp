@@ -82,6 +82,10 @@ void CRenderComponent::SetMaterial(Ptr<CMaterial> _Mtrl, UINT _idx)
 
 Ptr<CMaterial> CRenderComponent::GetMaterial(UINT _idx)
 {
+	// 가져오는 조건추가, 가진 재질수가0이거나 이상한 번호를 가져오면 nullptr반환
+	if (m_vecMtrls.size() == 0 || m_vecMtrls.size() < _idx)
+		return nullptr;
+
     return m_vecMtrls[_idx].pCurMtrl;
 }
 

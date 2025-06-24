@@ -219,7 +219,7 @@ void GunController::Firing()
 		m_CurRounds -= 1;
 
 		// 풀에서 꺼내기
-		CGameObject* go = CObjectPoolMgr::GetInst()->GetPoolObject(L"TestBullet", 10);
+		CGameObject* go = CObjectPoolMgr::GetInst()->GetPoolObject(L"9mm", 10);
 
 		// 변형값 세팅
 		go->Transform()->SetRelativePos(vRayPos);

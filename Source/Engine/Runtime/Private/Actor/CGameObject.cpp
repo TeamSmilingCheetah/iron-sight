@@ -5,6 +5,7 @@
 #include "Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Runtime/Public/Component/Rendering/CParticleSystem.h"
+#include "Runtime/Public/Component/Rendering/CDecal.h"
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
@@ -377,7 +378,8 @@ bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
 	// 1. 메시 렌더러가 없는 경우 실패
 	CMeshRender* pMeshRender = MeshRender();
 	CParticleSystem* pParticleSystem = ParticleSystem();
-	if (!pMeshRender && !pParticleSystem)
+	CDecal* pDecal = Decal();
+	if (!pMeshRender && !pParticleSystem && !pDecal)
 	{
 		return false;
 	}
@@ -391,6 +393,10 @@ bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
 	if (pParticleSystem)
 	{
 		pMesh = pParticleSystem->GetMesh();
+	}
+	if (pDecal)
+	{
+		pMesh = pDecal->GetMesh();
 	}
 
 	if (pMesh == nullptr)
