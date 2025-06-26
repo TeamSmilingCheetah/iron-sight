@@ -283,7 +283,7 @@ void CameraController::CameraPerspectiveMove()
 	//
 	// 반동
 	//
-	// 플레이어가 총기를 발사하는 중이라면s
+	// 플레이어가 총기를 발사하는 중이라면
 	if (m_PlayerScript->IsShot())
 	{
 		m_RecoilTime += DT;
@@ -291,10 +291,14 @@ void CameraController::CameraPerspectiveMove()
 		ApplyRecoil();
 	}
 
+	// 반동 적용
+	if (m_CameraFlag & RECOIL_UPDATE)
+	{
+		UpdateRecoil();
+	}
 
 	Transform()->SetRelativeRotation(m_CameraRot);
 	Transform()->SetRelativePos(m_CameraPos);
-
 }
 
 void CameraController::ApplyZoom(bool _IsADS)
@@ -342,19 +346,20 @@ void CameraController::ApplyZoom(bool _IsADS)
 
 void CameraController::ApplyRecoil()
 {
-	if (0.05f < m_RecoilTime)
-	{
-		m_RecoilTime = 0.0f;  // 타이머 초기화
+	// 총기의 발사 딜레이 시간을 가져와 반동 텀으로 둔다.
+	GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
+	float FireDelay = pGunScript->GetFireDelay();
 
+	if (!pGunScript->IsAuto())
+	{
 		// 반동 적용
 		float recoilPower_vertical = 1.2f;
 		float recoilPower_horizontal = 0.5f;
-		float maxRecoli_vertical = 1.5f;
-		float maxRecoli_horizontal = 1.f;
+		float maxRecoli_vertical = 2.5f;
+		float maxRecoli_horizontal = 1.5f;
 		float maxTotalYaw = 10.f;
 
 		// 현재 Player가 들고 있는 무기의 반동 변수 값을 가져온다.
-		GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
 		recoilPower_horizontal = pGunScript->GetHorizontalPower();
 		recoilPower_vertical = pGunScript->GetVerticalPower();
 
@@ -374,16 +379,66 @@ void CameraController::ApplyRecoil()
 		}
 		m_RecoilAmount_horizontal = m_RecoilAmount_horizontal * (1.f - 0.7f) + randomRecoil_horizontal * 0.7f;
 
+		m_TargetRecoilRotX = m_CameraRot.x - m_RecoilAmount_vertical;
+		m_TargetRecoilRotY = m_PlayerRot.y - m_RecoilAmount_horizontal;
 
-		m_CameraRot.x -= m_RecoilAmount_vertical;
-		m_PlayerRot.y -= m_RecoilAmount_horizontal;
-		if (m_CameraRot.x < -90.f)
+		m_CameraFlag |= RECOIL_UPDATE;
+	}
+
+	if (FireDelay < m_RecoilTime)
+	{
+		m_RecoilTime = 0.0f;  // 타이머 초기화
+
+		// 반동 적용
+		float recoilPower_vertical = 1.2f;
+		float recoilPower_horizontal = 0.5f;
+		float maxRecoli_vertical = 2.5f;
+		float maxRecoli_horizontal = 1.5f;
+		float maxTotalYaw = 10.f;
+
+		// 현재 Player가 들고 있는 무기의 반동 변수 값을 가져온다.
+		recoilPower_horizontal = pGunScript->GetHorizontalPower();
+		recoilPower_vertical = pGunScript->GetVerticalPower();
+
+
+		// 랜덤한 수직 반동값을 만들어준다
+		float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;
+		m_RecoilAmount_vertical = m_RecoilAmount_vertical * (1.f - 0.1f) + randomRecoil_vertical * 0.1f;
+
+
+		// 랜덤한 수평 반동값을 반들어준다
+		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal * recoilPower_horizontal;
+
+		// 반동값 보정 (한쪽으로 치우치지 않게)
+		if (abs(m_RecoilAmount_horizontal + randomRecoil_horizontal) > maxTotalYaw)
 		{
-			m_CameraRot.x = -90.f;
+			randomRecoil_horizontal = -randomRecoil_horizontal * 0.5f;
 		}
+		m_RecoilAmount_horizontal = m_RecoilAmount_horizontal * (1.f - 0.7f) + randomRecoil_horizontal * 0.7f;
 
-		Transform()->SetRelativeRotation(m_CameraRot);
-		m_Player->Transform()->SetRelativeRotation(m_PlayerRot);
+		m_TargetRecoilRotX = m_CameraRot.x - m_RecoilAmount_vertical;
+		m_TargetRecoilRotY = m_PlayerRot.y - m_RecoilAmount_horizontal;
+
+		m_CameraFlag |= RECOIL_UPDATE;
+	}
+}
+
+void CameraController::UpdateRecoil()
+{
+	m_CameraRot.x = FloatLerp(m_CameraRot.x, m_TargetRecoilRotX, 10.f);
+	m_PlayerRot.y = FloatLerp(m_PlayerRot.y, m_TargetRecoilRotY, 10.f);
+
+	if (m_CameraRot.x < -90.f)
+	{
+		m_CameraRot.x = -90.f;
+	}
+
+	Transform()->SetRelativeRotation(m_CameraRot);
+	m_Player->Transform()->SetRelativeRotation(m_PlayerRot);
+
+	if (fabs(m_CameraRot.x - m_TargetRecoilRotX) < 1.f)
+	{
+		m_CameraFlag &= ~RECOIL_UPDATE;
 	}
 }
 

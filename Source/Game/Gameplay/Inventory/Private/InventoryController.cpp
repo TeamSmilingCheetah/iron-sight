@@ -740,6 +740,7 @@ void InventoryController::PlayerInteractWeapon()
 			}
 			m_CamScript->SetFlag(SHOULDER, false);
 
+			m_bWeaponChange = true;
 			break;
 		}
 	}
@@ -752,6 +753,7 @@ void InventoryController::PlayerInteractWeapon()
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;
 		m_CurWeaponController = nullptr;
+		m_bWeaponChange = true;
 	}
 
 	// 현재 들고 있는 무기를 버린다.
@@ -761,6 +763,7 @@ void InventoryController::PlayerInteractWeapon()
 		{
 			// 인벤토리에서 아이템 개수 관리
 			DropItem(m_vecWeaponSlot[m_CurSlotIdx].Type, 1);
+			m_bWeaponChange = true;
 		}
 	}
 

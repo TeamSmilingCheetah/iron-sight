@@ -12,6 +12,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
 GunController::GunController()
 	: WeaponController(SCRIPT_TYPE::GUNSCRIPT)
@@ -27,12 +28,15 @@ GunController::GunController()
 	, m_CurRounds(0)
 	, m_bFire(false)
 	, m_bReload(false)
+	, m_bAuto(false)
 	, m_PlayerScript(nullptr)
+	, m_InventoryScript(nullptr)
+	, m_WeaponRoundType()
 {
 
 	// 무기 종류에 따라 변수 값 설정
-	m_VerticalRecoilPower = 1.2f;
-	m_HorizontalRecoilPower = 0.5f;
+	m_VerticalRecoilPower = 2.2f;
+	m_HorizontalRecoilPower = 1.f;
 
 	m_InitFirePower = 20000.f;
 
@@ -40,6 +44,9 @@ GunController::GunController()
 	m_MaxRounds = 30;
 
 	m_ReloadingTime = 3.f;
+
+	// 무기의 총알 타입 정의
+	m_WeaponRoundType = ITEM_TYPE::AMMO_5;
 }
 
 GunController::~GunController()
@@ -51,6 +58,8 @@ void GunController::Begin()
 {
 	WeaponController::Begin();
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
+
+	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
 }
 
 void GunController::Tick()
@@ -58,6 +67,9 @@ void GunController::Tick()
 	// 소유주가 없다면 return
 	if (m_EquippedOwner == nullptr || m_bIsEquipped == false)
 	{
+		// 진행중이던 상태 모두 초기화
+		m_bFire = false;
+		m_bReload = false;
 		return;
 	}
 
@@ -76,6 +88,8 @@ void GunController::Tick()
 				if (0 < m_CurRounds && !m_bReload)
 				{
 					m_PlayerScript->SetShot(true);
+					m_bFire = true;
+					ClearKey();
 				}
 			}
 
@@ -85,21 +99,26 @@ void GunController::Tick()
 				{
 					m_PlayerScript->SetShot(false);
 					m_bReload = true;
+					ClearKey();
+				}
+			}
+
+			if (m_CurKey == KEY::B && m_CurKeyState == KEY_STATE::TAP)
+			{
+				if (m_bReload)
+				{
+					ClearKey();
+				}
+				else
+				{
+					m_PlayerScript->SetShot(false);
+					m_bFire = false;
+					m_bAuto = !m_bAuto;
+					ClearKey();
 				}
 			}
 
 			AdjustFPSPos();
-		}
-		else
-		{
-			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
-			{
-				if (!m_bReload && m_CurRounds != m_MaxRounds)
-				{
-					m_bReload = true;
-				}
-
-			}
 		}
 	}
 	// ai일시 처리
@@ -118,7 +137,7 @@ void GunController::Tick()
 	// 총알을 발사한다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
 	{
-		if (0 < m_CurRounds)
+		if (0 < m_CurRounds && m_bAuto)
 			m_bFire = true;
 	}
 
@@ -126,6 +145,7 @@ void GunController::Tick()
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
 	{
 		m_bFire = false;
+		ClearKey();
 	}
 
 
@@ -213,9 +233,8 @@ void GunController::Firing()
 	m_AccTime_Fire += DT;
 
 	// 발사 딜레이를 넘어서면 총알을 발사한다.
-	if (m_FireDelay < m_AccTime_Fire)
+	if (!m_bAuto)
 	{
-		m_AccTime_Fire = 0.f;
 		m_CurRounds -= 1;
 
 		// 풀에서 꺼내기
@@ -233,7 +252,39 @@ void GunController::Firing()
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
 		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+
+		
+		// 단발이라면 한발을 소모하고 사격을 비활성화 한다.
+		m_CamScript->ApplyRecoil();
+		m_bFire = false;
+		m_PlayerScript->SetShot(false);
 	}
+	else
+	{
+		if (m_FireDelay < m_AccTime_Fire)
+		{
+			m_AccTime_Fire = 0.f;
+			m_CurRounds -= 1;
+
+			// 풀에서 꺼내기
+			CGameObject* go = CObjectPoolMgr::GetInst()->GetPoolObject(L"9mm", 10);
+
+			// 변형값 세팅
+			go->Transform()->SetRelativePos(vRayPos);
+
+			// 스크립트에 값 전달
+			MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
+			BulletScript->SetDir(vFinalDir);
+			BulletScript->SetSpeed(m_InitFirePower);
+			BulletScript->SetBulletInfo(m_EquippedOwner, m_BulletDmg);
+
+			// 사운드 재생
+			// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
+			m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+		}
+	}
+
+
 
 }
 
@@ -241,8 +292,7 @@ void GunController::Reload()
 {
 
 	// 플레이어의 인벤토리에서 남아있는 총알 정보를 가져온다.
-	// PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player")->GetScripts()[0]);
-	static int iLeftRounds = 70; // 임시 코드
+	int iLeftRounds = m_InventoryScript->GetItemCount(m_WeaponRoundType);
 
 	// 여분의탄창이 없다면
 	if (iLeftRounds == 0)
@@ -289,7 +339,8 @@ void GunController::Reload()
 		}
 
 		// 남은 총알 update
-		iLeftRounds -= iFilledRounds;
+		m_InventoryScript->UseItem(m_WeaponRoundType, iFilledRounds);
+		//iLeftRounds -= iFilledRounds;
 		m_AccTime_Reload = 0.f;
 		m_bReload = false;
 	}

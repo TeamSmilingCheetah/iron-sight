@@ -10,7 +10,7 @@
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
-#include "Game/Gameplay/BombController.h"
+#include "Game/Gameplay/Weapon/public/BombController.h"
 
 
 ThrowableController::ThrowableController()

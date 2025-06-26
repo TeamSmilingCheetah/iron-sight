@@ -73,6 +73,16 @@ void CUI::AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize
 	m_TextInfo.push_back(info);
 }
 
+void CUI::ModifyText(int idx, const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font)
+{
+	m_TextInfo[idx].Text = _Text;
+	m_TextInfo[idx].Pos.x = _posX;
+	m_TextInfo[idx].Pos.y = _posY;
+	m_TextInfo[idx].FontSize = _FontSize;
+	m_TextInfo[idx].Color = _Color;
+	m_TextInfo[idx].Font = _Font;
+}
+
 void CUI::Binding()
 {
 	if (m_UIType & UI_CANVAS)

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game\Gameplay\Character\Public\TestCharacter.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
@@ -70,6 +71,14 @@ void TestCharacter::Begin()
 
 void TestCharacter::Tick()
 {
+	// 사망 상태 시
+	if (m_State == Enemy_State::Death)
+	{
+		Death();
+		// 다른 코드 접근 못하게 한다.
+		return;
+	}
+
 	// 아무것도 아닌 상태일 시
 	if (m_State == Enemy_State::None)
 	{
@@ -88,11 +97,7 @@ void TestCharacter::Tick()
 		Attack();
 	}
 
-	// 사망 상태 시
-	if (m_State == Enemy_State::Death)
-	{
-		Death();
-	}
+
 
 	// 이전상태가 뭔지 저장
 	m_PrevState = m_State;
@@ -103,6 +108,12 @@ void TestCharacter::Tick()
 
 void TestCharacter::DemageCalcul(CGameObject* _AtkObject, float _Demage)
 {
+	// 이미 죽은 상태라면 데미지 계산을 하지 않는다.
+	if (m_State == Enemy_State::Death)
+	{
+		return;
+	}
+
 	m_HP -= _Demage;
 
 	// 0보다 낮으면 사망
@@ -117,7 +128,14 @@ void TestCharacter::DemageCalcul(CGameObject* _AtkObject, float _Demage)
 
 void TestCharacter::DeathEntry()
 {
+	// 현재 들고 있는 무기를 떨어뜨린다.
+	m_WeaponScript->SetEquippedOwner(nullptr);
+	m_WeaponScript->SetEquip(false);
+	m_WeaponScript->SetEquipEnemy(false);
+	DetachItem(m_CurWeapon);
 
+	// 충돌체 비활성화
+	Collider3D()->Deactivate();
 }
 
 void TestCharacter::None()
@@ -187,6 +205,13 @@ void TestCharacter::Death()
 	Vec3 vRot = Transform()->GetRelativeRotation();
 	vRot.y += DT * 360;
 	Transform()->SetRelativeRotation(vRot);
+	m_DeatTime += DT;
+
+	// 죽어있는 상태에서 일정 시간이 지나면 아예 오브젝트를 삭제해준다.
+	if (5.f < m_DeatTime)
+	{
+		DestroyObject(GetOwner());
+	}
 }
 
 void TestCharacter::Attack()

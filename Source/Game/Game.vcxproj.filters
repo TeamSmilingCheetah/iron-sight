@@ -74,8 +74,11 @@
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp">
       <Filter>02. Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\BombController.cpp">
-      <Filter>02. Gameplay</Filter>
+    <ClCompile Include="Gameplay\Weapon\Private\BombController.cpp">
+      <Filter>02. Gameplay\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\UI\Private\RoundsUIScript.cpp">
+      <Filter>02. Gameplay\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,8 +160,11 @@
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h">
       <Filter>02. Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\BombController.h">
-      <Filter>02. Gameplay</Filter>
+    <ClInclude Include="Gameplay\Weapon\Public\BombController.h">
+      <Filter>02. Gameplay\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\UI\Public\RoundsUIScript.h">
+      <Filter>02. Gameplay\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +200,9 @@
     </Filter>
     <Filter Include="02. Gameplay\Door">
       <UniqueIdentifier>{2328b0b2-80ab-4896-80ff-ebf73cf1b4d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\UI">
+      <UniqueIdentifier>{81977f8a-4778-49e0-a186-a81c40a67a6e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

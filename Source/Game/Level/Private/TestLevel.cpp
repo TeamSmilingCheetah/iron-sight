@@ -26,6 +26,7 @@
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Character/Public/TestCharacter.h"
 #include "Game/Gameplay/Particle/Public/ParticleController.h"
+#include "Game/Gameplay/UI/Public/RoundsUIScript.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
@@ -420,6 +421,12 @@ void TestLevel::CreateTestLevel()
 
 	interactionUI->AddChild(childUI);
 
+	// Rounds UI
+	CGameObject* RoundsUI = new CGameObject;
+	RoundsUI->SetName(L"RoundsView_UI");
+	RoundsUI->AddComponent(new CUI);
+	RoundsUI->UI()->SetRectPos(Vec2(0.f, -320.f));
+	RoundsUI->UI()->SetRectSize(Vec2(100.f, 40.f));
 	// 크로스헤어 UI
 	childUI = new CGameObject;
 	childUI->SetName(L"CrosshairUI");
@@ -429,6 +436,11 @@ void TestLevel::CreateTestLevel()
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 	childUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
 
+	RoundsUI->AddComponent(new CUIRender);
+	RoundsUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+
+	RoundsUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	//RoundsUI->UI()->AddText(L"", 11.f, 4.f, 25, FONT_RGBA(255, 255, 255, 255));
 	childUI->AddComponent(new CUIRender);
 	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(INT_0, 1);
@@ -437,7 +449,13 @@ void TestLevel::CreateTestLevel()
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.2f);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
+	RoundsUI->AddComponent(new RoundsUIScript);
 	CanvasUI->AddChild(childUI);
+
+	CanvasUI->AddChild(RoundsUI);
+
+
+
 
 	// 아이템 매니저 Initialize
 	ItemMgr::GetInst()->Init();
@@ -883,9 +901,9 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
-	pLevel->AddObject(1, testojb, false);
+	//pLevel->AddObject(1, testojb, false);
 
 	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\Character1_MeshOnly.fbx")->Instantiate();
 	testPlayer->SetName(L"Test_Player");
@@ -902,6 +920,9 @@ void TestLevel::CreateTestLevel()
 	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2220947456768_TempMotion.anim"));
 	testPlayer->Animator3D()->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(L"Animation\\2221924983296_TempMotion.anim"));
 	testPlayer->Animator3D()->SetCurClip(1);
-	
+
+
+
 	pLevel->AddObject(1, testPlayer, false);
+
 }

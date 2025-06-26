@@ -322,6 +322,9 @@ enum class SCRIPT_TYPE : UINT8
 
 	INTERACTABLE,
 
+	// UI
+	ROUNDSSUI,
+
 	NONE = 0xFF,
 };
 
@@ -371,6 +374,7 @@ enum CAM_FLAG
 	OBSTACLE_DETECT         = 1 << 15,
 	OBSTACLE_CLEAR_PENDING  = 1 << 16,
 	OBSTACLE_DETECT_END     = 1 << 17,
+	RECOIL_UPDATE			= 1 << 18,
 };
 
 // FACE TYPE
