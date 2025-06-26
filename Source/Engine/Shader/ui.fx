@@ -13,6 +13,13 @@
 #define UseImage g_btex_0
 #define Image g_tex_0
 
+// 크로스헤어 전용 값들
+#define CrosshairColor g_vec4_1
+#define UseDynamicCrosshair g_int_0    // 0: 정적(이미지), 1: 동적(직접 그림)
+#define LineLength g_float_0           // 크로스헤어 막대기 길이 (NDC 좌표계)
+#define LineThickness g_float_1        // 크로스헤어 막대기 두께 (NDC 좌표계)
+#define CrosshairGap g_float_2         // 크로스헤어 중앙 간격 (NDC 좌표계)
+
 struct VS_IN
 {
 	float3 vPos : POSITION;
@@ -208,5 +215,72 @@ float4 PS_UI_ItemUse(VS_OUT _in) : SV_Target
 	return (r > 0.45f && angleRatio < timeRatio) ? float4(1.f, 1.f, 1.f, 1.f) : Color;
 }
 
+
+float4 PS_UI_Crosshair(VS_OUT _in) : SV_Target
+{
+    float4 output = (float4) 0.f;
+	
+	// 정적 크로스헤어 (텍스쳐 사용)
+    if (UseDynamicCrosshair == 0)
+    {
+		// 텍스쳐가 있다면 사용
+        if (UseImage)
+        {
+            output = Image.Sample(g_sam_1, _in.vUV);
+        }
+
+		// 이미지가 없거나 a 값이 0.3이하인 부분이라면 제거
+        if (output.a <= 0.5f)
+        {
+            discard;
+        }
+    }
+	// 동적 크로스헤어 (텍스쳐 x)
+    else
+    {
+		// UV를 중앙 기준 좌표계로 변환 (-0.5 ~ 0.5)
+        float2 centerUV = _in.vUV - float2(0.5f, 0.5f);
+
+		// 화면 비율에 따른 보정
+        float Ratio = g_RenderResolution.x / g_RenderResolution.y;
+        centerUV.x *= Ratio;
+		
+        float halfThickness = LineThickness * 0.5f;
+        float crosshair = 0.0f;
+		
+		// 상단 막대기 (위쪽)
+        if (centerUV.y < -CrosshairGap && centerUV.y > -(CrosshairGap + LineLength) && abs(centerUV.x) <= halfThickness * Ratio)
+            crosshair = 1.0f;
+		
+		// 하단 막대기 (아래쪽)
+        if (centerUV.y > CrosshairGap && centerUV.y < (CrosshairGap + LineLength ) && abs(centerUV.x) <= halfThickness * Ratio)
+            crosshair = 1.0f;
+		
+		// 좌측 막대기 (왼쪽)
+        if (centerUV.x < -(CrosshairGap * Ratio) && centerUV.x > -((CrosshairGap + LineLength) * Ratio) && abs(centerUV.y) <= halfThickness)
+            crosshair = 1.0f;
+		
+		// 우측 막대기 (오른쪽)
+        if (centerUV.x > (CrosshairGap * Ratio) && centerUV.x < ((CrosshairGap + LineLength) * Ratio) && abs(centerUV.y) <= halfThickness)
+            crosshair = 1.0f;
+
+		// 테스트: 중앙에 작은 점 그려보기
+        if (abs(centerUV.x) < 0.02f * Ratio && abs(centerUV.y) < 0.02f)
+            crosshair = 1.0f;
+		
+		// 크로스헤어가 그려질 부분이면 크로스헤어 색상
+        if (crosshair > 0.0f)
+        {
+            output = CrosshairColor;
+        }
+        else
+        {
+			// 배경색으로
+            output = Color;
+        }
+    }
+
+    return output;
+}
 
 #endif
