@@ -175,6 +175,20 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	GetInst()->AddAsset(L"UIItemUseShader", pShader);
 
+	// =============================
+	// UICrosshair : UI 크로스헤어 전용 셰이더
+	// =============================
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
+	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI_Crosshair");
+
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	GetInst()->AddAsset(L"UICrosshair", pShader);
+
 
 	// ==================================
 	// TileMapShader : 타일맵 전용 쉐이더
@@ -383,6 +397,12 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"UIItemUseMtrl");
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UIItemUseShader"));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// UICrosshairMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"UICrosshairMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UICrosshair"));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// TileMapMaterial

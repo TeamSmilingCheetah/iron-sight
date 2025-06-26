@@ -420,8 +420,24 @@ void TestLevel::CreateTestLevel()
 
 	interactionUI->AddChild(childUI);
 
+	// 크로스헤어 UI
+	childUI = new CGameObject;
+	childUI->SetName(L"CrosshairUI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	childUI->UI()->SetRectSize(Vec2(70.f, 70.f));
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	childUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
 
+	childUI->AddComponent(new CUIRender);
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
+	childUI->UIRender()->GetMaterial(0)->SetScalarParam(INT_0, 1);
+	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 0.08f);
+	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, 0.03f);
+	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.2f);
+	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
+	CanvasUI->AddChild(childUI);
 
 	// 아이템 매니저 Initialize
 	ItemMgr::GetInst()->Init();
@@ -814,20 +830,20 @@ void TestLevel::CreateTestLevel()
 
 	// 적 테스트
 
-	Ptr<CMeshData> pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
+	//Ptr<CMeshData> pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
 
-	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"TestTarget");
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new TestCharacter);
-
-	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
-	pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
-	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-
-	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-
-	pLevel->AddObject(7, pObject, false);
+	//pObject = pMeshData->Instantiate();
+	//pObject->SetName(L"TestTarget");
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->AddComponent(new TestCharacter);
+	//
+	//pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
+	//pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
+	//pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	//
+	//pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+	//
+	//pLevel->AddObject(7, pObject, false);
 
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
