@@ -31,7 +31,7 @@ private:
 
 	bool					m_VicinityChanged;
 	bool					m_InventoryChanged;
-
+	bool					m_bWeaponChange;
 
 	// 슬롯
 	int			 m_CurSlotIdx;
@@ -67,8 +67,12 @@ public:
 
 	void ConvertPS();
 
+	bool IsChange() {return m_bWeaponChange;}
+	void OffChange() { m_bWeaponChange = false; }
+
 	bool UseItem(ITEM_TYPE _Type, int _Count = 1);	// 아이템이 남으면 true 리턴
 	void DropItem(ITEM_TYPE _Type, int _Count);		// 아이템이 남으면 true 리턴
+	int GetItemCount(ITEM_TYPE _Type) { return m_arrInventory[(UINT)_Type]; }
 
 	void PlayerInteractWeapon();
 

@@ -567,6 +567,16 @@ void PlayerCharacter::PlayerAttack()
 				}
 			}
 		}
+
+		if (KEY_TAP(KEY::B))
+		{
+			// 현재 무기 슬롯이 총이라면
+			if (m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
+			{
+				pWeaponController->SetCurKey(KEY::B);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			}
+		}
 	}
 }
 

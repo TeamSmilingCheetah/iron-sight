@@ -156,7 +156,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Gameplay\BombController.h" />
     <ClInclude Include="Gameplay\Character\Public\InteractionHandler.h" />
     <ClInclude Include="Gameplay\Door\Public\DoorScript.h" />
     <ClInclude Include="Gameplay\Interaction\Public\InteractableScript.h" />
@@ -171,6 +170,8 @@
     <ClInclude Include="Gameplay\Character\Public\TestCharacter.h" />
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
+    <ClInclude Include="Gameplay\UI\Public\RoundsUIScript.h" />
+    <ClInclude Include="Gameplay\Weapon\Public\BombController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\WeaponController.h" />
@@ -184,7 +185,6 @@
     <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Gameplay\BombController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\InteractionHandler.cpp" />
     <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp" />
     <ClCompile Include="Gameplay\Interaction\Private\InteractableScript.cpp" />
@@ -199,6 +199,8 @@
     <ClCompile Include="Gameplay\Character\Public\EnemyVisionScript.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
+    <ClCompile Include="Gameplay\UI\Private\RoundsUIScript.cpp" />
+    <ClCompile Include="Gameplay\Weapon\Private\BombController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\WeaponController.cpp" />

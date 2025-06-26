@@ -27,7 +27,9 @@ class CameraController :
 	float m_ObstalceResetTime;
 	float m_RecoilAmount_vertical;
 	float m_RecoilAmount_horizontal;
-
+	float m_TargetRecoilRotX;
+	float m_TargetRecoilRotY;
+	
 	float m_LateralOffset;
 	float m_ObjectiveLateralOff;
 
@@ -63,6 +65,7 @@ public:
 	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }
 
 	void ChangePS(bool _bTPS);
+	void ApplyRecoil();
 
 private:
 	void CameraOrthgraphicMove();
@@ -72,7 +75,8 @@ private:
 	void UpdateTPSCameraAdjustments();
 
 	void ApplyZoom(bool _IsADS);
-	void ApplyRecoil();
+	
+	void UpdateRecoil();
 
 	void HandleRightClickInput();
 

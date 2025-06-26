@@ -4,14 +4,15 @@
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
+#include "Game/Gameplay/UI/Public/RoundsUIScript.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/TestSound.h"
-#include "Game/Gameplay/BombController.h"
-#include "Game\Gameplay\Character\Public\TestCharacter.h"
+#include "Game/Gameplay/Weapon/Public/BombController.h"
+#include "Game/Gameplay/Character/Public/TestCharacter.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
@@ -36,6 +37,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"InteractionHandler");
 	_vec.push_back(L"DoorScript");
 	_vec.push_back(L"BombScript");
+	_vec.push_back(L"RoundsUIScript");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -74,6 +76,9 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new DoorScript;
 	if (L"BombScript" == _strScriptName)
 		return new BombController;
+	if (L"RoundsUIScript" == _strScriptName)
+		return new RoundsUIScript;
+
 	return nullptr;
 }
 
@@ -131,6 +136,9 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(SCRIPT_TYPE::BOMBSCRIPT):
 		return new BombController;
+		break;
+	case static_cast<UINT>(SCRIPT_TYPE::ROUNDSSUI):
+		return new RoundsUIScript;
 		break;
 	}
 	return nullptr;
@@ -205,6 +213,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case SCRIPT_TYPE::BOMBSCRIPT:
 		return L"BombScript";
+		break;
+
+	case SCRIPT_TYPE::ROUNDSSUI:
+		return L"RoundsUIScript";
 		break;
 	}
 	return nullptr;

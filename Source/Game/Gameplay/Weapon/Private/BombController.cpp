@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "BombController.h"
-#include "Game/Gameplay/BombController.h"
+#include "Game/Gameplay/Weapon/Public/BombController.h"
 
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -52,18 +51,29 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 	Vec3 vOtherPos = _OtherObject->Transform()->GetRelativePos();
 	Vec3 vOwnPos = Transform()->GetRelativePos();
 
+	// 폭발이 발생한 지점과 피격 오브젝트의 거리를 구한다.
 	float fDis = (vOtherPos - vOwnPos).Length();
 	float fDisRatio = 1.f - (fDis / m_MaxLength);
 
 	float finalDMG = 0.f;
 
+
+
+	// 최대 데미지가 적용되는 범위를 보장해준다.
 	if (0.8f < fDisRatio)
 	{
 		finalDMG = m_DMG;
 	}
 	else
 	{
+		// 거리 비율에 따라 데미지를 결정한다.
 		finalDMG = fDisRatio* m_DMG;
+	}
+
+	// 최소 데미지 20으로 보장해준다.
+	if (finalDMG < 20.f)
+	{
+		finalDMG = 20.f;
 	}
 
 

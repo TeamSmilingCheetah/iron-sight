@@ -62,8 +62,7 @@ void EnemyController::DemageCalcul(CGameObject* _AtkObject, float _Demage)
 	if (m_HP < 0)
 	{
 		m_HP = 0;
-		
-		//DestroyObject(GetOwner());
+	
 	}
 
 }

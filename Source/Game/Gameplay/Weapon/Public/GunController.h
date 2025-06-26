@@ -3,6 +3,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
 class PlayerCharacter;
+class InventoryController;
 
 class GunController :
 	public WeaponController
@@ -27,8 +28,13 @@ private:
 
 	bool m_bFire;
 	bool m_bReload;
+	bool m_bAuto;
 
 	PlayerCharacter* m_PlayerScript;
+	InventoryController* m_InventoryScript;
+
+
+	ITEM_TYPE m_WeaponRoundType;
 
 public:
 	void Begin() override;
@@ -38,12 +44,16 @@ public:
 public:
 	float GetHorizontalPower() { return m_HorizontalRecoilPower; }
 	float GetVerticalPower() { return m_VerticalRecoilPower; }
+	float GetFireDelay() { return m_FireDelay; }
 
 	int GetCurRound() { return m_CurRounds; }
+	int GetMaxRound() { return m_MaxRounds; }
 
 	bool IsReload() { return m_bReload; }
 	bool IsFire() { return m_bFire; }
+	bool IsAuto() { return m_bAuto; }
 
+	ITEM_TYPE GetRoundType() { return m_WeaponRoundType; }
 private:
 	void Firing();
 	void Reload();

@@ -13,6 +13,7 @@ private:
 
 	float m_AttackDeley;		// 발사 간격시간
 	float m_AttackTime;			// 발사한 시간
+	float m_DeatTime;			// 죽어 있는 시간
 	bool  m_IsAttack;			// 공격 딜레이판정
 
 public:
