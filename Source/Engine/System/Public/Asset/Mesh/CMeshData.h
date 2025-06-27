@@ -23,6 +23,12 @@ public:
     CGameObject* Instantiate();
 	void Instantiate(CGameObject* _Obj);
 
+	const vector<Ptr<CAnimation>>& GetAnimations() const { return m_vecAnimSet; }
+
+	// MeshData 편집기능
+	void RemoveMesh(int _Idx);
+	void RemoveAnimation(int _Idx);
+
     int Save(const wstring& _RelativePath) override;
     int Load(const wstring& _strFilePath) override;
 

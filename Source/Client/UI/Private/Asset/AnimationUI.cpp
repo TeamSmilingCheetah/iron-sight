@@ -22,9 +22,12 @@ void AnimationUI::Render_Update()
 
 	if (!m_SkinnedModel)
 	{
-		m_SkinnedModel = CAssetMgr::GetInst()->Load<CMeshData>(L"MeshData\\Character0.mdat")->Instantiate();
+		m_SkinnedModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James.fbx")->Instantiate();
 		CEditorMgr::GetInst()->SetEditorSpaceRender(true);
 		CEditorMgr::GetInst()->CreateEditorSpaceObj((CGameObjectEx*)m_SkinnedModel);
+
+		if (!m_SkinnedModel->Animator3D())
+			m_SkinnedModel->AddComponent(new CAnimator3D);
 	}
 
 	if (IsDirty())
@@ -35,7 +38,7 @@ void AnimationUI::Render_Update()
 		m_SkinnedModel->Animator3D()->AddAnimClip(pAnim);
 		m_SkinnedModel->Animator3D()->SetCurClipFrame(0);
 		m_FrameRange[0] = 0;
-		m_FrameRange[1] = m_SkinnedModel->Animator3D()->GetFrameLength() - 1;
+		m_FrameRange[1] = m_SkinnedModel->Animator3D()->GetCurClip()->GetFrameLength() - 1;
 	}
 
 	Ptr<CTexture> pAnimRT = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
@@ -86,7 +89,7 @@ void AnimationUI::Render_Update()
 	}
 
 	int FrameIdx = m_SkinnedModel->Animator3D()->GetCurFrameIdx();
-	int FrameLength = m_SkinnedModel->Animator3D()->GetFrameLength();
+	int FrameLength = m_SkinnedModel->Animator3D()->GetCurClip()->GetFrameLength();
 
 	if (m_SkinnedModel->Animator3D()->IsActive())
 	{

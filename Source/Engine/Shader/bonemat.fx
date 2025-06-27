@@ -241,13 +241,8 @@ void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
 	float4 vCurScale = lerp(g_arrCurClipFrameTrans[iFrameDataIndex].vScale, g_arrCurClipFrameTrans[iNextFrameDataIdx].vScale, CurClipRatio);
 	float4 vCurTrans = lerp(g_arrCurClipFrameTrans[iFrameDataIndex].vTranslate, g_arrCurClipFrameTrans[iNextFrameDataIdx].vTranslate, CurClipRatio);
 	float4 qCurRot = QuternionLerp(g_arrCurClipFrameTrans[iFrameDataIndex].qRot, g_arrCurClipFrameTrans[iNextFrameDataIdx].qRot, CurClipRatio);
-
-	// 최종 본행렬 연산
-	MatrixAffineTransformation(vCurScale, vQZero, qCurRot, vCurTrans, matBone);
-
-	// 최종 본행렬 연산    
-	//MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
-
+	
+	// Bind Pose Inverse
 	matrix matInverse = transpose(g_arrInverse[_iThreadIdx.x]);
 	
 	// BlendRatio가 0이면 Blend하지 않음
@@ -264,14 +259,21 @@ void CS_BoneMatrix(int3 _iThreadIdx : SV_DispatchThreadID)
 		float4 vNextTrans = lerp(g_arrNextClipFrameTrans[iFrameDataIndex].vTranslate, g_arrNextClipFrameTrans[iNextFrameDataIdx].vTranslate, NextClipRatio);
 		float4 qNextRot = QuternionLerp(g_arrNextClipFrameTrans[iFrameDataIndex].qRot, g_arrNextClipFrameTrans[iNextFrameDataIdx].qRot, NextClipRatio);
 		
-		MatrixAffineTransformation(vNextScale, vQZero, qNextRot, vNextTrans, matBone);
-
 		// 두 애니메이션을 보간
 		vNextScale = lerp(vCurScale, vNextScale, BlendRatio);
 		vNextTrans = lerp(vCurTrans, vNextTrans, BlendRatio);
 		qNextRot = QuternionLerp(qCurRot, qNextRot, BlendRatio);
-		
+
+		// 최종 본행렬 연산
 		MatrixAffineTransformation(vNextScale, vQZero, qNextRot, vNextTrans, matBone);
+	}
+	else
+	{
+		// 최종 본행렬 연산
+		MatrixAffineTransformation(vCurScale, vQZero, qCurRot, vCurTrans, matBone);
+
+		// 최종 본행렬 연산    
+		//MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
 	}
 	
 	g_arrFinalMat[_iThreadIdx.x] = mul(matInverse, matBone);

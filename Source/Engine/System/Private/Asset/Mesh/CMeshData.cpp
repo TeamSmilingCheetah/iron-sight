@@ -57,7 +57,7 @@ CGameObject* CMeshData::Instantiate()
 
 			// 애니메이션을 설정하면서 bone object를 생성해서 자식에 넣음
 			pAnimator->SetAnimClip(m_vecAnimSet);
-			pAnimator->SetCurClip(0);
+			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
 		
 		// 빈 오브젝트 밑에 mesh에 대응되는 오브젝트를 추가
@@ -122,7 +122,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 			
 			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
 			pAnimator->SetAnimClip(m_vecAnimSet);
-			pAnimator->SetCurClip(0);
+			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
 	}
 
@@ -137,7 +137,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 
 			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
 			pAnimator->SetAnimClip(m_vecAnimSet);
-			pAnimator->SetCurClip(0);
+			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
 
 		for (int idx = 0; idx < meshCnt; ++idx)
@@ -243,6 +243,36 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 	return pMeshData;
 }
 
+
+void CMeshData::RemoveMesh(int _Idx)
+{
+	assert(0 <= _Idx && _Idx < m_vecMesh.size());
+
+	auto meshiter = m_vecMesh.begin();
+	auto matiter = m_vecMtrlSet.begin();
+	for (int i = 0; i < _Idx; ++i)
+	{
+		++meshiter;
+		++matiter;
+	}
+
+	m_vecMesh.erase(meshiter);
+	m_vecMtrlSet.erase(matiter);
+}
+
+void CMeshData::RemoveAnimation(int _Idx)
+{
+	assert(0 <= _Idx && _Idx < m_vecAnimSet.size());
+
+	auto iter = m_vecAnimSet.begin();
+
+	for (int i = 0; i < _Idx; ++i)
+	{
+		++iter;
+	}
+
+	m_vecAnimSet.erase(iter);
+}
 
 int CMeshData::Save(const wstring& _RelativePath)
 {
