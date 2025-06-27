@@ -118,6 +118,11 @@ void CEditorMgr::Progress()
 	{
 		m_vecEditorObj[i]->Render_Editor();
 	}
+	
+	for (int i = 0; i < 8; ++i)
+	{
+		CTexture::Clear(i);
+	}
 
 	if (m_RenderEditorSpace)
 	{

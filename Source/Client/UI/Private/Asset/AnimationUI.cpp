@@ -34,6 +34,7 @@ void AnimationUI::Render_Update()
 		m_SkinnedModel->Animator3D()->ClearAnimClip();
 		m_SkinnedModel->Animator3D()->AddAnimClip(pAnim);
 		m_SkinnedModel->Animator3D()->SetCurClipFrame(0);
+		m_SkinnedModel->Animator3D()->SetCurClip(pAnim->GetKey());
 		m_FrameRange[0] = 0;
 		m_FrameRange[1] = m_SkinnedModel->Animator3D()->GetFrameLength() - 1;
 	}
