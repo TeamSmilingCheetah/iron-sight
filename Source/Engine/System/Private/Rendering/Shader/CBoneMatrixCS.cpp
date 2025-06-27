@@ -23,6 +23,8 @@ int CBoneMatrixCS::Binding()
 	m_CurClipFrameDataBuffer->Binding_CS_SRV(17); // t17
 	if (m_NextClipFrameDataBuffer)
 		m_NextClipFrameDataBuffer->Binding_CS_SRV(18); // t18
+	else
+		CStructuredBuffer::Clear_CS_SRV(18);
 	m_OutputBuffer->Binding_CS_UAV(0); // u0
 	m_PureOutputBuffer->Binding_CS_UAV(1); // u1
 

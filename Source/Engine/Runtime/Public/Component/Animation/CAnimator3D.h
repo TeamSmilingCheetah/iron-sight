@@ -13,7 +13,7 @@ class CAnimator3D :
 {
 private:
 	// 애니메이션 목록
-	vector<Ptr<CAnimation>>		m_vecClip;
+	map<wstring, Ptr<CAnimation>>		m_mapClip;
 
 	const int		m_FPS;		// 30
 	const float		m_FrameDuration;	// 1 / 30
@@ -28,8 +28,8 @@ private:
 	float			m_BlendRatio;
 
 	// 클립 인덱스
-	int				m_CurClipIdx;			
-	int				m_NextClipIdx;
+	Ptr<CAnimation>			m_CurClip;			
+	Ptr<CAnimation>			m_NextClip;
 
 	// 프레임 인덱스
 	int				m_CurClipCurFrameIdx;	// 현재 클립의 현재 프레임
@@ -55,27 +55,29 @@ private:
 public:
 	void AddAnimClip(Ptr<CAnimation> _pAnim);
 	void SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim);
+	Ptr<CAnimation> GetAnimClip(const wstring _AnimName);
 
-	void ClearAnimClip() { m_vecClip.clear(); }
+	void ClearAnimClip() { m_mapClip.clear(); }
 
-	int GetCurClipIdx() const { return m_CurClipIdx; }
-	double GetCurClipTime() const { return m_FrameDuration * m_CurClipIdx + m_CurClipAccTime; }
+	Ptr<CAnimation> GetCurClip() const { return m_CurClip; }
+	Ptr<CAnimation> GetNextClip() const { return m_NextClip; }
+
 	int GetCurFrameIdx() const { return m_CurClipCurFrameIdx; }
-	int GetFrameLength() const { return m_vecClip[m_CurClipIdx]->GetFrameLength(); }
+	int GetNextFrameIdx() const { return m_NextClipCurFrameIdx; }
 	float GetRatio() const { return m_CurClipRatio; }
 	bool IsActive() const { return m_Active; }
 
-	const vector<Ptr<CAnimation>>& GetClips() const { return m_vecClip; }
-	void SetCurClip(int _ClipIdx);
+	const map<wstring, Ptr<CAnimation>>& GetClips() const { return m_mapClip; }
+	void SetCurClip(const wstring& _AnimName);
 	void SetCurClipFrame(int _FrameIdx);
 
-	// TEST: 애니메이션 전환 기능
-	void SetCurClipBlend(int _ClipIdx, float _BlendTime);
+	// 애니메이션 Blending
+	void SetCurClipBlend(const wstring& _AnimName, float _BlendTime);
 
 	void Play() { m_Active = true; }
 	void Pause() { m_Active = false; }
 
-	UINT GetBoneCount() const { return m_vecClip[m_CurClipIdx]->GetBoneCount(); }
+	UINT GetBoneCount() const { return m_CurClip->GetBoneCount(); }
 
 	vector<CGameObject*> GetvecBone() { return m_vecBoneObject; }
 	vector<Matrix> GetvecBoneWorldTrasnform() { return m_vecBoneWorldTransform; }
@@ -83,7 +85,6 @@ public:
 	CStructuredBuffer* GetFinalBoneMat() { return m_BoneFinalMatBuffer; }
 	void ClearData();
 
-	// TEST: 일단 여기에 Crop 기능 넣음. 웬만하면 Editor에서만 허용되도록 하고 싶음
 	void Crop(int _StartIdx, int _EndIdx);
 
 private:

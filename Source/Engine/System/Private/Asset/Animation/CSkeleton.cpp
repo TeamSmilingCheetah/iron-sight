@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "System/Public/Asset/Animation/CSkeleton.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/System/Public/Asset/Animation/CSkeleton.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 struct tBone;
 
@@ -33,14 +34,16 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 		return nullptr;
 
 	// 이미 (루트 본 이름으로) 등록된 skeleton이라면 로드하지 않음
-	pSkeleton = CAssetMgr::GetInst()->FindAsset<CSkeleton>(vecBones[0]->strBoneName);
+	wstring fileName = L"Skeleton\\" + vecBones[0]->strBoneName + L".bone";
+
+	pSkeleton = CAssetMgr::GetInst()->Load<CSkeleton>(fileName);
 	if (pSkeleton != nullptr)
 		return pSkeleton;
 
 	pSkeleton = new CSkeleton;
-	pSkeleton->SetName(vecBones[0]->strBoneName + L".bone");
-
-
+	pSkeleton->SetName(fileName);
+	pSkeleton->SetKey(fileName);
+	pSkeleton->SetRelativePath(fileName);
 
 	for (UINT i = 0; i < vecBones.size(); ++i)
 	{
@@ -92,8 +95,7 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 	CAssetMgr::GetInst()->AddAsset<CSkeleton>(pSkeleton->GetName(), pSkeleton);
 
 	// Save (relative path 설정)
-	wstring strFilePath = L"Skeleton\\" + pSkeleton->GetName();
-	pSkeleton->Save(strFilePath);
+	pSkeleton->Save(fileName);
 
 	return pSkeleton;
 }
@@ -139,6 +141,9 @@ int CSkeleton::Load(const wstring& _strFilePath)
 	// 읽기모드로 파일열기
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
+
+	if (pFile == nullptr)
+		return E_FAIL;
 
 	// 키값, 상대경로
 	wstring strName, strKey, strRelativePath;

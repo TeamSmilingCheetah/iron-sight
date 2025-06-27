@@ -42,7 +42,9 @@ int CTexture::Load(const wstring& PFilePath)
 
 	if (FAILED(hr))
 	{
-		MessageBox(nullptr, L"텍스쳐 로딩 실패", L"리소스 로딩 실패", MB_OK);
+		wstring message = L"텍스쳐 로딩 실패\n: ";
+		message += PFilePath;
+		MessageBox(nullptr, message.c_str(), L"리소스 로딩 실패", MB_OK);
 		return E_FAIL;
 	}
 
@@ -64,8 +66,8 @@ int CTexture::Load(const wstring& PFilePath)
 
 	// MipMap 생성
 	m_Desc = {};
-	m_Desc.Width = m_Image.GetMetadata().width;
-	m_Desc.Height = m_Image.GetMetadata().height;
+	m_Desc.Width = static_cast<UINT>(m_Image.GetMetadata().width);
+	m_Desc.Height = static_cast<UINT>(m_Image.GetMetadata().height);
 	m_Desc.MipLevels = 0; // 자동 생성
 	m_Desc.ArraySize = 1;
 	m_Desc.Format = m_Image.GetMetadata().format;
@@ -94,7 +96,7 @@ int CTexture::Load(const wstring& PFilePath)
 
 	// 원본 이미지 업로드 (0번 mip level만)
 	CONTEXT->UpdateSubresource(m_Tex2D.Get(), 0, nullptr, m_Image.GetImages()->pixels,
-		m_Image.GetImages()->rowPitch, m_Image.GetImages()->slicePitch);
+		static_cast<UINT>(m_Image.GetImages()->rowPitch), static_cast<UINT>(m_Image.GetImages()->slicePitch));
 
 	// Mipmap 자동 생성 (0번 텍스쳐를 기반으로 mipmap을 생성함)
 	CONTEXT->GenerateMips(m_SRV.Get());

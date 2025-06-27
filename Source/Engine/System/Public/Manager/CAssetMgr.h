@@ -49,7 +49,6 @@ public:
 		return FindAsset<CComputeShader>(_Key).Get();
 	}
 
-	// TEST : Asset key 변경
 	bool ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey);
 
 	Ptr<CTexture> CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
