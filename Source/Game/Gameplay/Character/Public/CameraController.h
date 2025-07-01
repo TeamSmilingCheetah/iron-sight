@@ -54,13 +54,6 @@ public:
 	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
 	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
 
-	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-
 	void SetFlag(CAM_FLAG _flag, bool _value);
 	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }
 

@@ -291,8 +291,18 @@ void GunController::Firing()
 void GunController::Reload()
 {
 
+	int iLeftRounds = 0;
+	
+	if (m_bEnemy)
+	{
+		iLeftRounds = 90;
+	}
 	// 플레이어의 인벤토리에서 남아있는 총알 정보를 가져온다.
-	int iLeftRounds = m_InventoryScript->GetItemCount(m_WeaponRoundType);
+	else
+	{
+		iLeftRounds = m_InventoryScript->GetItemCount(m_WeaponRoundType);
+	}
+	
 
 	// 여분의탄창이 없다면
 	if (iLeftRounds == 0)
