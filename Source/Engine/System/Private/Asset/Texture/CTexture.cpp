@@ -64,42 +64,56 @@ int CTexture::Load(const wstring& PFilePath)
 	//// 생성된 Texture2D 의 Desc 정보를 알아낸다.
 	//m_Tex2D->GetDesc(&m_Desc);
 
-	// MipMap 생성
-	m_Desc = {};
-	m_Desc.Width = static_cast<UINT>(m_Image.GetMetadata().width);
-	m_Desc.Height = static_cast<UINT>(m_Image.GetMetadata().height);
-	m_Desc.MipLevels = 0; // 자동 생성
-	m_Desc.ArraySize = 1;
-	m_Desc.Format = m_Image.GetMetadata().format;
-	m_Desc.SampleDesc.Count = 1;
-	m_Desc.Usage = D3D11_USAGE_DEFAULT;
-	m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	m_Desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
-
-	// 텍스쳐를 생성 (주의 : 생성할 때 리소스를 넘겨주지 않는다!!)
-	if (FAILED(DEVICE->CreateTexture2D(&m_Desc, nullptr, &m_Tex2D)))
+	// MipMap이 포함되어 있다면 (.dds)
+	if (m_Image.GetMetadata().mipLevels > 1)
 	{
-		return E_FAIL;
+		// SRV 생성 (DirectX Tex 함수)
+		if (FAILED(CreateShaderResourceView(DEVICE, m_Image.GetImages(), m_Image.GetImageCount(), m_Image.GetMetadata(), m_SRV.GetAddressOf())))
+		{
+			return E_FAIL;
+		}
 	}
 
-	// ShaderResourceView 생성 (mip level 전체 범위 지정)
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = m_Desc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = -1;
-
-	if (FAILED(DEVICE->CreateShaderResourceView(m_Tex2D.Get(), &srvDesc, &m_SRV)))
+	// MipMap이 포함되어 있지 않다면
+	else
 	{
-		return E_FAIL;
+		// MipMap 생성
+		m_Desc = {};
+		m_Desc.Width = static_cast<UINT>(m_Image.GetMetadata().width);
+		m_Desc.Height = static_cast<UINT>(m_Image.GetMetadata().height);
+		m_Desc.MipLevels = 0; // 자동 생성
+		m_Desc.ArraySize = 1;
+		m_Desc.Format = m_Image.GetMetadata().format;
+		m_Desc.SampleDesc.Count = 1;
+		m_Desc.Usage = D3D11_USAGE_DEFAULT;
+		m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+		m_Desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+
+		// 텍스쳐를 생성 (주의 : 생성할 때 리소스를 넘겨주지 않는다!!)
+		if (FAILED(DEVICE->CreateTexture2D(&m_Desc, nullptr, &m_Tex2D)))
+		{
+			return E_FAIL;
+		}
+
+		// ShaderResourceView 생성 (mip level 전체 범위 지정)
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = m_Desc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = -1;
+
+		if (FAILED(DEVICE->CreateShaderResourceView(m_Tex2D.Get(), &srvDesc, &m_SRV)))
+		{
+			return E_FAIL;
+		}
+
+		// 원본 이미지 업로드 (0번 mip level만)
+		CONTEXT->UpdateSubresource(m_Tex2D.Get(), 0, nullptr, m_Image.GetImages()->pixels,
+			static_cast<UINT>(m_Image.GetImages()->rowPitch), static_cast<UINT>(m_Image.GetImages()->slicePitch));
+
+		// Mipmap 자동 생성 (0번 텍스쳐를 기반으로 mipmap을 생성함)
+		CONTEXT->GenerateMips(m_SRV.Get());
 	}
-
-	// 원본 이미지 업로드 (0번 mip level만)
-	CONTEXT->UpdateSubresource(m_Tex2D.Get(), 0, nullptr, m_Image.GetImages()->pixels,
-		static_cast<UINT>(m_Image.GetImages()->rowPitch), static_cast<UINT>(m_Image.GetImages()->slicePitch));
-
-	// Mipmap 자동 생성 (0번 텍스쳐를 기반으로 mipmap을 생성함)
-	CONTEXT->GenerateMips(m_SRV.Get());
 
 	// Release Memory
 	ReleaseSystemMemory();
