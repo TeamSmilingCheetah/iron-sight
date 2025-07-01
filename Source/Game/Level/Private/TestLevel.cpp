@@ -91,10 +91,10 @@ void TestLevel::CreateTestLevel()
 	pObject->SetName(L"MainCamera");
 	pObject->AddComponent(new CCamera);
 	pObject->AddComponent(new CameraController);
-	pObject->AddComponent(new CCollider3D);
+//	pObject->AddComponent(new CCollider3D);
 	pObject->AddComponent(new CColliderRay);
 
-	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+	//pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
 	pObject->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
 	pObject->ColliderRay()->SetRayLength(2000.f);
 	pObject->ColliderRay()->SetIndependentDir(true);
