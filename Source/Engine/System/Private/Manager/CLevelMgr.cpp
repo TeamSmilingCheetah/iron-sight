@@ -5,6 +5,7 @@
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
 
+
 #include "Engine/Runtime/Public/Component/Base/components.h"
 #include "Game/System/Public/GameplayManager.h"
 
@@ -82,6 +83,9 @@ void CLevelMgr::ChangeLevelState(LEVEL_STATE _NextState)
 	{
 		CTimeMgr::GetInst()->SetStopMode(false);
 		CRenderMgr::GetInst()->SetEditorMode(false);
+
+		// 레벨이 Play될 때 오브젝트 풀 Preload 실행
+		ExcutePreload();
 	}
 
 	// Stop -> Play

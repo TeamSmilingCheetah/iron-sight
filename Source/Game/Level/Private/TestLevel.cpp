@@ -827,9 +827,9 @@ void TestLevel::CreateTestLevel()
 	//pLevel->AddObject(0, pObject, false);
 
 	// 1) Prefab 로드
-	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
+	//Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
 
-	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
+	//CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
 
 	// 총알 프리팹 생성용 임시
 	//Ptr<CMeshData> pBulletModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\9mmBullet.fbx");
@@ -904,9 +904,9 @@ void TestLevel::CreateTestLevel()
 
 	pLevel->AddObject(1, pDoorObj, false);
 
-	CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
+	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
-	pLevel->AddObject(1, testojb, false);
+	//pLevel->AddObject(1, testojb, false);
 		
 	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
 	testPlayer->SetName(L"Test_Player");
