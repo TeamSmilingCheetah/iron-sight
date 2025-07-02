@@ -22,7 +22,6 @@ CGameObject* CObjectPoolMgr::GetPoolObject(const wstring& _Name, int _Layer)
 
 		SetObjectActive(obj, true);
 		ChangeLayer(obj, _Layer);
-		//obj->Reset();  // 초기화
 		return obj;
 	}
 	else
@@ -40,7 +39,6 @@ void CObjectPoolMgr::ReturnObject(CGameObject* _Obj)
 
 	SetObjectActive(_Obj, false);
 	ChangeLayer(_Obj, 9);
-	//obj->Reset();  // 상태 초기화
 	wstring objName = _Obj->GetName();
 	m_mapPool[objName].push_back(_Obj);
 	
@@ -52,6 +50,9 @@ void CObjectPoolMgr::Preload(const wstring& _Name, size_t _Count)
 
 	// count만큼 Clone & 비활성화 후 저장
 	vector<CGameObject*>& pool = m_mapPool[_Name];
+
+	// 벡터 초기화
+	pool.clear();
 	for (size_t i = 0; i < _Count; ++i)
 	{
 		CGameObject* obj = pPrefab->GetProtoObject()->Clone();

@@ -46,10 +46,10 @@ void MissileProjectile::Tick()
 	Vec3 vWorldPos = Transform()->GetRelativePos();
 
 	// 초기 속도 설정
-	if (m_LifeTime <= DT)
-	{
-		m_Velocity = m_Dir * m_Speed;
-	}
+	//if (m_LifeTime <= DT)
+	//{
+	//	m_Velocity = m_Dir * m_Speed;
+	//}
 
 	// 중력 적용
 	m_Velocity.y -= m_GravityAccel * DT;

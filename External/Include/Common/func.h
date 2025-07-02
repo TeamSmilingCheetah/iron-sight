@@ -7,6 +7,8 @@ class CGameObject;
 class CLevel;
 class CScript;
 
+void ExcutePreload();
+
 void CreateObject(CGameObject* _NewObj, int LayerIdx, bool _bChildMove);
 void DestroyObject(CGameObject* _TargetObj);
 void ChangeLevelState(LEVEL_STATE _NextState);

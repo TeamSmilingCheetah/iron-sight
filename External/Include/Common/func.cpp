@@ -6,7 +6,7 @@
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Runtime/Public/Component/Base/components.h"
-
+#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
 
 void SaveObjectRef(CGameObject* _Object, FILE* _File)
 {
@@ -28,6 +28,13 @@ void LoadObjectRef(CGameObject*& _MissingAddress, FILE* _File)
 		return;
 
 	CLevelMgr::GetInst()->AddObjectRefResolution(_MissingAddress, ObjectID);
+}
+
+void ExcutePreload()
+{
+	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
+	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 30);
+
 }
 
 void CreateObject(CGameObject* _NewObj, int LayerIdx, bool _bMoveChild)

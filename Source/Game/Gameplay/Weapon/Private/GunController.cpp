@@ -248,6 +248,7 @@ void GunController::Firing()
 		BulletScript->SetDir(vFinalDir);
 		BulletScript->SetSpeed(m_InitFirePower);
 		BulletScript->SetBulletInfo(m_EquippedOwner, m_BulletDmg);
+		BulletScript->SetVelocity(vFinalDir * m_InitFirePower);
 
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
@@ -277,6 +278,7 @@ void GunController::Firing()
 			BulletScript->SetDir(vFinalDir);
 			BulletScript->SetSpeed(m_InitFirePower);
 			BulletScript->SetBulletInfo(m_EquippedOwner, m_BulletDmg);
+			BulletScript->SetVelocity(vFinalDir* m_InitFirePower);
 
 			// 사운드 재생
 			// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
