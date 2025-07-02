@@ -58,6 +58,28 @@ void MissileProjectile::Tick()
 	vWorldPos += m_Velocity * DT;
 	Transform()->SetRelativePos(vWorldPos);
 
+
+	// 회전 업데이트
+	if (m_Velocity.Length() > 0.01f)
+	{
+		Vec3 CurVelNormal = m_Velocity;
+		CurVelNormal.Normalize();
+
+		// 플레이어와 같은 방식으로 회전값 계산
+		Vec3 rotation = Transform()->GetRelativeRotation();
+
+		// Y축 회전
+		rotation.y = atan2f(CurVelNormal.x, CurVelNormal.z) * (180.0f / XM_PI);
+
+		// X축 회전
+		rotation.x = asinf(-CurVelNormal.y) * (180.0f / XM_PI);
+
+		// Z축은 0으로 유지
+		rotation.z = 0.0f;
+
+		Transform()->SetRelativeRotation(rotation);
+	}
+
 	// 일정 시간 후 총알 삭제
 	if (5.f < m_LifeTime)
 	{
