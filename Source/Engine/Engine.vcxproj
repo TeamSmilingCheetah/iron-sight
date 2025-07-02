@@ -340,6 +340,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\copybone.fx">
       <EntrypointName>CS_CopyBoneMatrix</EntrypointName>
@@ -347,94 +348,95 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>VS_DebugShape</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_vs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>PS_DebugShape</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>VS_DebugShapeSphere</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_sphere_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_sphere_vs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>PS_DebugShapeSphere</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_sphere_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_sphere_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>VS_DebugShapeLine</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_line_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_line_vs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>GS_DebugShapeLine</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_line_gs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_line_gs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>PS_DebugShapeLine</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_shape_line_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_shape_line_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>VS_DebugSkeleton</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_skeleton_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_skeleton_vs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>GS_DebugSkeleton</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_skeleton_gs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_skeleton_gs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\debug.fx">
+    <HLSL Include="debug.fx">
       <EntryPointName>PS_DebugSkeleton</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\debug_skeleton_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\debug_skeleton_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\decal.fx">
+    <HLSL Include="decal.fx">
       <EntryPointName>VS_Decal</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\decal.fx">
       <EntryPointName>PS_Decal</EntryPointName>
@@ -442,7 +444,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\heightmap.fx">
       <EntrypointName>CS_HeightMap</EntrypointName>
@@ -450,6 +452,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\landscape.fx">
       <EntrypointName>VS_LandScape</EntrypointName>
@@ -457,7 +460,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\landscape.fx">
       <EntrypointName>HS_LandScape</EntrypointName>
@@ -465,7 +468,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_hs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_hs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\landscape.fx">
       <EntrypointName>DS_LandScape</EntrypointName>
@@ -473,7 +476,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ds.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ds.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\landscape.fx">
       <EntrypointName>PS_LandScape</EntrypointName>
@@ -481,47 +484,47 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\light.fx">
+    <HLSL Include="light.fx">
       <EntryPointName>VS_DirLight</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\dirlight_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\dirlight_vs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\light.fx">
+    <HLSL Include="light.fx">
       <EntryPointName>PS_DirLight</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\dirlight_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\dirlight_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\light.fx">
+    <HLSL Include="light.fx">
       <EntryPointName>VS_PointLight</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\pointlight_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\pointlight_vs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\light.fx">
+    <HLSL Include="light.fx">
       <EntryPointName>PS_PointLight</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\pointlight_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\pointlight_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\merge.fx">
+    <HLSL Include="merge.fx">
       <EntryPointName>VS_Merge</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\merge.fx">
       <EntryPointName>PS_Merge</EntryPointName>
@@ -529,15 +532,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\particle.fx">
+    <HLSL Include="particle.fx">
       <EntryPointName>VS_Particle</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\particle.fx">
       <EntryPointName>PS_Particle</EntryPointName>
@@ -545,7 +548,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\particle.fx">
       <EntryPointName>GS_Particle</EntryPointName>
@@ -553,21 +556,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_gs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_gs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\particle_tick.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\postprocess.fx">
+    <HLSL Include="postprocess.fx">
       <EntryPointName>VS_Post</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\postprocess.fx">
       <EntryPointName>PS_Post</EntryPointName>
@@ -575,15 +579,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\postprocess.fx">
+    <HLSL Include="postprocess.fx">
       <EntryPointName>VS_Distortion</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_distortion_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_distortion_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\postprocess.fx">
       <EntryPointName>PS_Distortion</EntryPointName>
@@ -591,15 +595,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_distortion_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_distortion_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\postprocess.fx">
+    <HLSL Include="postprocess.fx">
       <EntryPointName>VS_Vortex</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_vortex_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_vortex_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\postprocess.fx">
       <EntryPointName>PS_Vortex</EntryPointName>
@@ -607,15 +611,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_vortex_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_vortex_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\postprocess.fx">
+    <HLSL Include="postprocess.fx">
       <EntryPointName>VS_Blur</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_blur_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_blur_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\postprocess.fx">
       <EntryPointName>PS_Blur</EntryPointName>
@@ -623,15 +627,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_blur_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_blur_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\postprocess.fx">
+    <HLSL Include="postprocess.fx">
       <EntryPointName>VS_EffectMerge</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_effect_merge_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_effect_merge_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\postprocess.fx">
       <EntryPointName>PS_EffectMerge</EntryPointName>
@@ -639,21 +643,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\postprocess_effect_merge_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\postprocess_effect_merge_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\raycast.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\skybox.fx">
+    <HLSL Include="skybox.fx">
       <EntryPointName>VS_SkyBox</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\skybox.fx">
       <EntryPointName>PS_SkyBox</EntryPointName>
@@ -661,15 +666,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\std2d.fx">
+    <HLSL Include="std2d.fx">
       <EntryPointName>VS_Std2D</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\std2d.fx">
       <EntryPointName>PS_Std2D</EntryPointName>
@@ -677,15 +682,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\std3d.fx">
+    <HLSL Include="std3d.fx">
       <EntryPointName>VS_Std3D</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\std3d.fx">
       <EntryPointName>PS_Std3D</EntryPointName>
@@ -693,15 +698,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\std3d.fx">
+    <HLSL Include="std3d.fx">
       <EntryPointName>VS_Std3D_Deferred</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\std3d.fx">
       <EntryPointName>PS_Std3D_Deferred</EntryPointName>
@@ -709,7 +714,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\tess.fx">
       <EntrypointName>VS_Tess</EntrypointName>
@@ -717,7 +722,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\tess.fx">
       <EntrypointName>HS_Tess</EntrypointName>
@@ -725,7 +730,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_hs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_hs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\tess.fx">
       <EntrypointName>DS_Tess</EntrypointName>
@@ -733,7 +738,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ds.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ds.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\tess.fx">
       <EntrypointName>PS_Tess</EntrypointName>
@@ -741,21 +746,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\test.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\tilemap.fx">
+    <HLSL Include="tilemap.fx">
       <EntryPointName>VS_TileMap</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\tilemap.fx">
       <EntryPointName>PS_TileMap</EntryPointName>
@@ -763,15 +769,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
-    <HLSL Include="Shaders\ui.fx">
+    <HLSL Include="ui.fx">
       <EntryPointName>VS_UI</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\ui.fx">
       <EntryPointName>PS_UI</EntryPointName>
@@ -779,13 +785,14 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\weightmap.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_cs.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\targetpost.fx">
       <EntryPointName>PS_TargetPost</EntryPointName>
@@ -793,7 +800,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_ps.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_ps.cso</ObjectFileOutput>
     </HLSL>
     <HLSL Include="Shader\targetpost.fx">
       <EntryPointName>VS_TargetPost</EntryPointName>
@@ -801,7 +808,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <ObjectFileOutput>$(OutDir)Shaders\%(Filename)_vs.cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)OutputFile\Content\Shader\%(Filename)_vs.cso</ObjectFileOutput>
     </HLSL>
   </ItemGroup>
   <ItemGroup>

@@ -3,17 +3,17 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CRaycastCS::CRaycastCS()
-	: CComputeShader(L"shader\\raycast.fx", "CS_Raycast", 32, 32, 1)
+	: CComputeShader(L"raycast_cs.cso", L"raycast.fx", "CS_Raycast", 32, 32, 1)
 	  , m_FaceX(0)
 	  , m_FaceZ(0)
 	  , m_Ray{}
 	  , m_OutBuffer(nullptr)
+	  , m_RayInOutBuffer(nullptr)
+	  , m_RayInoutCount(0)
 {
 }
 
-CRaycastCS::~CRaycastCS()
-{
-}
+CRaycastCS::~CRaycastCS() = default;
 
 int CRaycastCS::Binding()
 {

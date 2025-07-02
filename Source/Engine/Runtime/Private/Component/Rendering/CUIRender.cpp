@@ -1,19 +1,17 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
-
-#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
-
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 
 CUIRender::CUIRender()
 	: CRenderComponent(COMPONENT_TYPE::UIRENDER)
 {
 }
 
-CUIRender::~CUIRender()
-{
-}
+CUIRender::~CUIRender() = default;
 
 void CUIRender::Init()
 {
@@ -62,7 +60,7 @@ void CUIRender::SaveComponent(FILE* _File)
 
 	// 재질 참조정보 저장
 	UINT iMtrlCount = GetMaterialCount();
-	fwrite(&iMtrlCount, sizeof(UINT), 1, _File);
+	(void)fwrite(&iMtrlCount, sizeof(UINT), 1, _File);
 
 	for (UINT i = 0; i < iMtrlCount; ++i)
 	{
@@ -80,7 +78,7 @@ void CUIRender::LoadComponent(FILE* _FILE)
 
 	// 재질 참조정보 불러오기
 	UINT iMtrlCount = GetMaterialCount();
-	fread(&iMtrlCount, sizeof(UINT), 1, _FILE);
+	(void)fread(&iMtrlCount, sizeof(UINT), 1, _FILE);
 
 	SetMaterialSize(iMtrlCount);
 
