@@ -15,6 +15,7 @@ CAnimation::CAnimation(bool _bEngineRes)
 	, m_EndTime(0.)
 	, m_TimeLength(0.)
 	, m_TimeMode(FbxTime::EMode::eFrames30)
+	, m_Loop(true)
 	, m_BoneFrameData(nullptr)
 {
 }
@@ -141,6 +142,8 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 int CAnimation::Save(const wstring& _RelativePath)
 {
 	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
+
+	SetKey(strRelativePath);
 	SetRelativePath(strRelativePath);
 
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
@@ -168,6 +171,9 @@ int CAnimation::Save(const wstring& _RelativePath)
 
 	// Keyframe 정보
 	fwrite(m_vecKeyFrames.data(), sizeof(tFrameTrans), static_cast<size_t>(m_Skeleton->GetBoneCount() * m_FrameLength), pFile);
+
+	// Loop 정보
+	fwrite(&m_Loop, sizeof(bool), 1, pFile);
 
 	fclose(pFile);
 
@@ -206,6 +212,9 @@ int CAnimation::Load(const wstring& _strFilePath)
 	m_vecKeyFrames.resize(m_Skeleton->GetBoneCount() * m_FrameLength);
 	for (int i = 0; i < m_vecKeyFrames.size(); ++i)
 		fread(&m_vecKeyFrames[i], sizeof(tFrameTrans), 1, pFile);
+
+	// Loop 정보
+	fread(&m_Loop, sizeof(bool), 1, pFile);
 
 	// Structured Buffer 생성
 	CreateBoneFrameSB();

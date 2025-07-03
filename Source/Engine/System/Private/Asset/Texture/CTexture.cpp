@@ -86,7 +86,7 @@ int CTexture::Load(const wstring& PFilePath)
 		m_Desc.Format = m_Image.GetMetadata().format;
 		m_Desc.SampleDesc.Count = 1;
 		m_Desc.Usage = D3D11_USAGE_DEFAULT;
-		m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+		m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;	// 왜인지 모르겠으나 render target도 해줘야 함
 		m_Desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		// 텍스쳐를 생성 (주의 : 생성할 때 리소스를 넘겨주지 않는다!!)

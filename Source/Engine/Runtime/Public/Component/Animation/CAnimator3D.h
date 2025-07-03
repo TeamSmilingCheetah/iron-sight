@@ -27,7 +27,7 @@ private:
 	float			m_BlendDuration;
 	float			m_BlendRatio;
 
-	// 클립 인덱스
+	// 클립
 	Ptr<CAnimation>			m_CurClip;			
 	Ptr<CAnimation>			m_NextClip;
 
@@ -37,7 +37,7 @@ private:
 	int				m_NextClipCurFrameIdx;	// 다음 클립의 현재 프레임
 	int				m_NextClipNextFrameIdx; // 다음 클립의 다음 프레임
 
-	
+	// Render
 	CStructuredBuffer*	m_BoneFinalMatBuffer;	// 특정 프레임(보간)의 최종 행렬 (origin bone mat inverse * cur frame bone world mat)
 	CStructuredBuffer*	m_BonePureMatBuffer;	// 특정 프레임(보간)의 bone 행렬 (origin bone mat inverse가 곱해지지 않은)
 
@@ -49,8 +49,8 @@ private:
 	vector<CGameObject*>	m_vecBoneObject;
 	vector<Matrix>			m_vecBoneWorldTransform;
 
+	// 활성화
 	bool	m_Active;
-	
 
 public:
 	void AddAnimClip(Ptr<CAnimation> _pAnim);

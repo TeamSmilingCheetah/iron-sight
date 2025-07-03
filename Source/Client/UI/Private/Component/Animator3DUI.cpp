@@ -19,7 +19,6 @@ void Animator3DUI::Render_Update()
 {
 	ComponentTitle("Animator3DUI");
 	CAnimator3D* pAnim3D = GetTargetObject()->Animator3D();
-	//CMesh* pMesh = GetTargetObject()->MeshRender()->GetM
 
 	const map<wstring, Ptr<CAnimation>>& mapClip = pAnim3D->GetClips();
 

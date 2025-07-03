@@ -166,7 +166,21 @@ void CAnimator3D::FinalTick()
 		// 현재 클립이 끝난 경우
 		if (m_CurClipCurFrameIdx >= m_CurClip->GetFrameLength())
 		{
-			m_CurClipCurFrameIdx -= m_CurClip->GetFrameLength();
+			// 다음 애니메이션이 있거나 다음 애니메이션이 없지만 Repeat인 경우
+			if (m_NextClip != nullptr || m_CurClip->IsLoop())
+			{
+				while (m_CurClipCurFrameIdx >= m_CurClip->GetFrameLength())
+				{
+					m_CurClipCurFrameIdx -= m_CurClip->GetFrameLength();
+				}
+			}
+
+			// 다음 애니메이션이 없고 Repeat이 아닌 경우. 마지막 프레임에서 정지
+			else
+			{
+				m_CurClipCurFrameIdx = m_CurClip->GetFrameLength() - 1;
+				Pause();
+			}
 		}
 
 		// 현재 클립의 다음 프레임 계산
@@ -383,7 +397,14 @@ void CAnimator3D::CreateBoneObject()
 	if (pClip == nullptr)
 		return;
 
+	Play();
+
 	m_CurClip = pClip;
+
+	m_CurClipCurFrameIdx = 0;
+	m_CurClipNextFrameIdx = 1;
+	m_CurClipAccTime = 0.f;
+	m_CurClipRatio = 0.f;
 
 	// 컴퓨트 쉐이더 연산여부
 	m_bFinalMatUpdate = false;
@@ -408,11 +429,15 @@ void CAnimator3D::CreateBoneObject()
 	 if (m_CurClip->GetKey() == _AnimName)
 		 return;
 
-	 m_NextClip = GetAnimClip(_AnimName);
+	 Ptr<CAnimation> pNextClip = GetAnimClip(_AnimName);
 
-	 if (m_NextClip == nullptr)
+	 // 지정한 clip이 없다면
+	 if (pNextClip == nullptr)
 		 return;
 
+	 Play();
+
+	 m_NextClip = pNextClip;
 	 m_NextClipCurFrameIdx = 0;
 	 m_NextClipNextFrameIdx = 0;
 	 m_NextClipAccTime = 0.f;

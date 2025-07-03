@@ -10,18 +10,20 @@ class CAnimation :
 {
 private:
 	// Bone 정보
-	Ptr<CSkeleton> m_Skeleton;
+	Ptr<CSkeleton>		m_Skeleton;
 
 	// Animation3D 정보
-	int m_StartFrame;
-	int m_EndFrame;
-	int m_FrameLength;
+	int			m_StartFrame;
+	int			m_EndFrame;
+	int			m_FrameLength;
 
-	double m_StartTime;
-	double m_EndTime;
-	double m_TimeLength;
+	double		m_StartTime;
+	double		m_EndTime;
+	double		m_TimeLength;
 
-	FbxTime::EMode m_TimeMode;
+	FbxTime::EMode		m_TimeMode;
+
+	bool		m_Loop;	// 반복
 
 	// KeyFrame 정보
 	vector<tFrameTrans>		m_vecKeyFrames;
@@ -44,6 +46,9 @@ public:
 	int GetFrameLength() const { return m_FrameLength; }
 
 	void SetTimeMode(FbxTime::EMode _Mode) { m_TimeMode = _Mode; }
+
+	void SetLoop(bool _b) { m_Loop = _b; }
+	bool IsLoop() const { return m_Loop; }
 
 	void Crop(int _StartIdx, int _EndIdx);
 

@@ -25,6 +25,7 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define KEY_TAP(KEY) KEY_CHECK(KEY, KEY_STATE::TAP)
 #define KEY_RELEASED(KEY) KEY_CHECK(KEY, KEY_STATE::RELEASED)
 #define KEY_PRESSED(KEY) KEY_CHECK(KEY, KEY_STATE::PRESSED)
+#define KEY_NONE(KEY) KEY_CHECK(KEY, KEY_STATE::NONE)
 
 #define DT CTimeMgr::GetInst()->GetDeltaTime()
 #define EngineDT CTimeMgr::GetInst()->GetEngineDeltaTime()

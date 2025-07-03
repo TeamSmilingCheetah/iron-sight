@@ -148,6 +148,15 @@ void AnimationUI::Render_Update()
 	ImGui::SetNextItemWidth(150.f);
 	ImGui::InputInt("##AnimationCropFrame2", &m_FrameRange[1]);
 
+	// Loop
+	ImGui::Text("Loop");
+	ImGui::SameLine();
+
+	bool isLoop = m_SkinnedModel->Animator3D()->GetCurClip()->IsLoop();
+	if (ImGui::Checkbox("##LoopAnimation", &isLoop))
+	{
+		m_SkinnedModel->Animator3D()->GetCurClip()->SetLoop(isLoop);
+	}
 
 	SaveButton();
 }
