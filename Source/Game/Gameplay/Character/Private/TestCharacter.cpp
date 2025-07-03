@@ -106,7 +106,7 @@ void TestCharacter::Tick()
 	EnemyController::Tick();
 }
 
-void TestCharacter::DemageCalcul(CGameObject* _AtkObject, float _Demage)
+void TestCharacter::DemageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage)
 {
 	// 이미 죽은 상태라면 데미지 계산을 하지 않는다.
 	if (m_State == Enemy_State::Death)
@@ -114,14 +114,10 @@ void TestCharacter::DemageCalcul(CGameObject* _AtkObject, float _Demage)
 		return;
 	}
 
-	m_HP -= _Demage;
-
+	EnemyController::DemageCalcul(_AtkObject, _Weapon, _Damage);
 	// 0보다 낮으면 사망
-	if (m_HP < 0)
+	if (m_State == Enemy_State::Death)
 	{
-		m_HP = 0;
-
-		m_State = Enemy_State::Death;
 		DeathEntry();
 	}
 }

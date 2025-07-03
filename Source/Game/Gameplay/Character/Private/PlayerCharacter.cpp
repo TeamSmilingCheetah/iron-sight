@@ -15,6 +15,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
+#include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 
 
@@ -40,6 +41,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_HeadColl(nullptr)
 	, m_CamScript(nullptr)
 	, m_InventoryScript(nullptr)
+	, m_KillinfoScript(nullptr)
 	, m_MaxHP(100.f)
 	, m_SemiMaxHP(75.f)
 	, m_CurHP(100.f)
@@ -58,6 +60,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_CardinalImageUI(nullptr)
 	, m_HPUI(nullptr)
 	, m_ItemUseUI(nullptr)
+	, m_KillCounts(0)
 {
 	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -101,7 +104,8 @@ void PlayerCharacter::Begin()
 	// Script
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
-
+	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
+	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
 	// 마우스 끄기
 	CKeyMgr::GetInst()->SetCursorVisible(false);
 }
@@ -734,9 +738,17 @@ void PlayerCharacter::PlayerHeal()
 	}
 }
 
-void PlayerCharacter::DemageCalcul(CGameObject* _AtkObj, float _Demage)
+void PlayerCharacter::DemageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage)
 {
-	m_CurHP -= _Demage;
+	m_CurHP -= _Damage;
+
+	// 사망
+	if (m_CurHP <= 0)
+	{
+		m_CurHP = 0;
+		m_KillinfoScript->SetKillInfo(_AtkObj->GetName(), GetOwner()->GetName(), _Weapon->GetName());
+		m_KillinfoScript->OnEvent();
+	}
 
 }
 

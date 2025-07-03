@@ -38,6 +38,7 @@
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
+#include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 
 #include "Engine/Core/Public/CEngine.h"
 
@@ -427,6 +428,30 @@ void TestLevel::CreateTestLevel()
 	RoundsUI->AddComponent(new CUI);
 	RoundsUI->UI()->SetRectPos(Vec2(0.f, -320.f));
 	RoundsUI->UI()->SetRectSize(Vec2(100.f, 40.f));
+
+	RoundsUI->AddComponent(new CUIRender);
+	RoundsUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+
+	RoundsUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	RoundsUI->AddComponent(new RoundsUIScript);
+
+	CanvasUI->AddChild(RoundsUI);
+
+	// Kill Info
+	CGameObject* KillinfoUI = new CGameObject;
+	KillinfoUI->SetName(L"Killinfo_UI");
+	KillinfoUI->AddComponent(new CUI);
+	KillinfoUI->UI()->SetRectPos(Vec2(0.f, -200.f));
+	KillinfoUI->UI()->SetRectSize(Vec2(500.f, 40.f));
+
+	KillinfoUI->AddComponent(new CUIRender);
+	KillinfoUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+
+	KillinfoUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	KillinfoUI->AddComponent(new KillinfoUIScript);
+
+	CanvasUI->AddChild(KillinfoUI);
+
 	// 크로스헤어 UI
 	childUI = new CGameObject;
 	childUI->SetName(L"CrosshairUI");
@@ -436,11 +461,7 @@ void TestLevel::CreateTestLevel()
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 	childUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
 
-	RoundsUI->AddComponent(new CUIRender);
-	RoundsUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-
-	RoundsUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
-	//RoundsUI->UI()->AddText(L"", 11.f, 4.f, 25, FONT_RGBA(255, 255, 255, 255));
+	
 	childUI->AddComponent(new CUIRender);
 	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(INT_0, 1);
@@ -449,10 +470,10 @@ void TestLevel::CreateTestLevel()
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.2f);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	RoundsUI->AddComponent(new RoundsUIScript);
+	
 	CanvasUI->AddChild(childUI);
 
-	CanvasUI->AddChild(RoundsUI);
+
 
 
 
@@ -853,18 +874,18 @@ void TestLevel::CreateTestLevel()
 
 	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
 
-	//pObject = pMeshData->Instantiate();
-	//pObject->SetName(L"TestTarget");
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->AddComponent(new TestCharacter);
-	//
-	//pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
-	//pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
-	//pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	//
-	//pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-	//
-	//pLevel->AddObject(7, pObject, false);
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"TestTarget");
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new TestCharacter);
+	
+	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
+	pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
+	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	
+	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+	
+	pLevel->AddObject(7, pObject, false);
 
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;

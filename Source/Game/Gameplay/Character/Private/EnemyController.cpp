@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/EnemyController.h"
+#include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
@@ -21,9 +23,12 @@ EnemyController::EnemyController(SCRIPT_TYPE _Type)
 	, m_GravityAccel(10.f)
 	, m_GravityMaxSpeed(30.f)
 	, m_IsGround(true)
-	, m_HP(10)
+	, m_HP(100.f)
 	, m_State(Enemy_State::None)
 	, m_PrevState(Enemy_State::None)
+	, m_KillinfoScript(nullptr)
+	, m_Player(nullptr)
+	, m_PlayerScript(nullptr)
 {
 }
 
@@ -37,6 +42,12 @@ void EnemyController::Begin()
 	{
 		m_vecAIKey.push_back(AItKeyInfo{KEY_STATE::NONE, false});
 	}
+
+	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
+
+	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
+	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
 }
 
 void EnemyController::Tick()
@@ -54,15 +65,23 @@ void EnemyController::Tick()
 	UpdateRotation();
 }
 
-void EnemyController::DemageCalcul(CGameObject* _AtkObject, float _Demage)
+void EnemyController::DemageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage)
 {
-	m_HP -= _Demage;
+	m_HP -= _Damage;
 
 	// 0보다 낮으면 사망
-	if (m_HP < 0)
+	if (m_HP <= 0)
 	{
 		m_HP = 0;
-	
+		m_State = Enemy_State::Death;
+
+		// Player가 죽인 경우
+		if (_AtkObject->GetName() == L"Player")
+		{
+			m_PlayerScript->PlusKillCount();
+			m_KillinfoScript->SetKillInfo(_AtkObject->GetName(), GetOwner()->GetName(), _Weapon->GetName());
+			m_KillinfoScript->OnEvent();
+		}
 	}
 
 }
