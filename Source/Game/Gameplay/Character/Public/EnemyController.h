@@ -26,6 +26,11 @@ class EnemyController :
     public CScript
 {
 public:
+	// Player
+	CGameObject* m_Player;
+	class PlayerCharacter* m_PlayerScript;
+	class KillinfoUIScript* m_KillinfoScript;
+
 	// 현재 사용중인 무기
 	CGameObject*	m_CurWeapon;
 	int				m_CurWeaponIdx;
@@ -80,7 +85,7 @@ public:
 	void LoadComponent(FILE* _File) override;
 
 public:
-	virtual void DemageCalcul(CGameObject* _AtkObject, float _Demage);		// 피격 처리
+	virtual void DemageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage);		// 피격 처리
 	virtual void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
 	virtual void DetachItem(CGameObject* _Item);
 

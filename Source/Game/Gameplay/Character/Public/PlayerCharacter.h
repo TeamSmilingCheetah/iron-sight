@@ -49,7 +49,7 @@ private:
 	// ======
 	class CameraController*		m_CamScript;
 	class InventoryController*	m_InventoryScript;
-	
+	class KillinfoUIScript*		m_KillinfoScript;
 
 	// ======
 	// Status
@@ -72,6 +72,7 @@ private:
 	const float		m_BoostUnit;	// 시간 지나면 boost가 빠질 단위
 	float			m_BoostSpeed;	// 부스트로 인한 이동속도 보정
 
+	int				m_KillCounts; // 킬 카운트
 
 	// =======
 	// UI 관리
@@ -135,7 +136,10 @@ public:
 
 	void TriggerHeal(ITEM_TYPE _HealType);
 
-	void DemageCalcul(CGameObject* _AtkObj, float _Demage);	// 공격 피격 처리
+	void DemageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage);	// 공격 피격 처리
+
+	void PlusKillCount() { m_KillCounts += 1; }
+	int GetKillCount() { return m_KillCounts; }
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

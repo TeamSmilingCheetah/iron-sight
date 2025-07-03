@@ -20,7 +20,7 @@ public:
 	void Begin() override;
 	void Tick() override;
 
-	virtual void DemageCalcul(CGameObject* _AtkObject, float _Demage) override;
+	virtual void DemageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage) override;
 
 	void DeathEntry();
 

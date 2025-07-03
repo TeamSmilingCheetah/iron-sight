@@ -197,7 +197,7 @@ struct FontRenderInfo
 struct BULLETINFO
 {
 	CGameObject* m_Owner;	// 총알 주인
-	ITEM_TYPE    m_ShotWeapon;	// 해당 총알을 발사한 무기 타입
+	CGameObject* m_ShotWeapon;	// 해당 총알을 발사한 무기
 	float				m_Dmg;	// 총알 데미지
 };
 

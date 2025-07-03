@@ -56,9 +56,6 @@
     <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp">
       <Filter>02. Gameplay\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp">
-      <Filter>02. Gameplay\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\Character\Public\EnemyVisionScript.cpp">
       <Filter>02. Gameplay\Enemy</Filter>
     </ClCompile>
@@ -79,6 +76,12 @@
     </ClCompile>
     <ClCompile Include="Gameplay\UI\Private\RoundsUIScript.cpp">
       <Filter>02. Gameplay\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp">
+      <Filter>02. Gameplay\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp">
+      <Filter>02. Gameplay\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +167,9 @@
       <Filter>02. Gameplay\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\UI\Public\RoundsUIScript.h">
+      <Filter>02. Gameplay\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\UI\Public\KillinfoUIScript.h">
       <Filter>02. Gameplay\UI</Filter>
     </ClInclude>
   </ItemGroup>

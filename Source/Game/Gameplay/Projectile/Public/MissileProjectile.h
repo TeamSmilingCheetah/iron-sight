@@ -26,7 +26,7 @@ public:
 	void SetSpeed(float _Speed) { m_Speed = _Speed; }
 	void SetDir(Vec3 _Dir) { m_Dir = _Dir; }
 
-	void SetBulletInfo(CGameObject* _Object, float _Dmg) { m_BulletDmg.m_Owner = _Object, m_BulletDmg.m_Dmg = _Dmg; }
+	void SetBulletInfo(CGameObject* _Object, CGameObject* _Weapon, float _Dmg) { m_BulletDmg.m_Owner = _Object, m_BulletDmg.m_ShotWeapon = _Weapon, m_BulletDmg.m_Dmg = _Dmg; }
 
 	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 		CCollider3D* _OtherCollider) override;

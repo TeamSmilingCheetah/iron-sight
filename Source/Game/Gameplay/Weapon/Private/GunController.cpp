@@ -21,7 +21,7 @@ GunController::GunController()
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
 	, m_InitFirePower(0.f)
-	, m_BulletDmg(1.f)
+	, m_BulletDmg(25.f)
 	, m_AccTime_Fire(0.f)
 	, m_AccTime_Reload(0.f)
 	, m_MaxRounds(0)
@@ -79,47 +79,50 @@ void GunController::Tick()
 		if (!m_PlayerScript)
 			m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
 
-		// 소유주가 있다면 플레이어 기반 행동
-		if (m_EquippedOwner != nullptr)
+		// 총알을 발사한다.
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 		{
-			// 총알을 발사한다.
-			if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
+			if (0 < m_CurRounds && !m_bReload)
 			{
-				if (0 < m_CurRounds && !m_bReload)
-				{
-					m_PlayerScript->SetShot(true);
-					m_bFire = true;
-					ClearKey();
-				}
+				m_PlayerScript->SetShot(true);
+				m_bFire = true;
+				ClearKey();
 			}
-
-			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
-			{
-				if (!m_bReload && m_CurRounds != m_MaxRounds)
-				{
-					m_PlayerScript->SetShot(false);
-					m_bReload = true;
-					ClearKey();
-				}
-			}
-
-			if (m_CurKey == KEY::B && m_CurKeyState == KEY_STATE::TAP)
-			{
-				if (m_bReload)
-				{
-					ClearKey();
-				}
-				else
-				{
-					m_PlayerScript->SetShot(false);
-					m_bFire = false;
-					m_bAuto = !m_bAuto;
-					ClearKey();
-				}
-			}
-
-			AdjustFPSPos();
 		}
+
+		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
+		{
+			if (!m_bReload && m_CurRounds != m_MaxRounds)
+			{
+				m_PlayerScript->SetShot(false);
+				m_bReload = true;
+				ClearKey();
+			}
+		}
+
+		if (m_CurKey == KEY::B && m_CurKeyState == KEY_STATE::TAP)
+		{
+			if (m_bReload)
+			{
+				ClearKey();
+			}
+			else
+			{
+				m_PlayerScript->SetShot(false);
+				m_bFire = false;
+				m_bAuto = !m_bAuto;
+				ClearKey();
+			}
+		}
+
+		// 총알을 발사한다.
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
+		{
+			if (0 < m_CurRounds && m_bAuto)
+				m_bFire = true;
+		}
+
+		AdjustFPSPos();
 	}
 	// ai일시 처리
 	else
@@ -130,16 +133,19 @@ void GunController::Tick()
 			{
 				m_bReload = true;
 			}
+		}
 
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
+		{
+			if (0 < m_CurRounds)
+			{
+				m_bFire = true;
+				m_bAuto = true;
+			}
+				
 		}
 	}
 
-	// 총알을 발사한다.
-	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
-	{
-		if (0 < m_CurRounds && m_bAuto)
-			m_bFire = true;
-	}
 
 	// 총알 발사가 끝난다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
@@ -247,7 +253,7 @@ void GunController::Firing()
 		MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
 		BulletScript->SetDir(vFinalDir);
 		BulletScript->SetSpeed(m_InitFirePower);
-		BulletScript->SetBulletInfo(m_EquippedOwner, m_BulletDmg);
+		BulletScript->SetBulletInfo(m_EquippedOwner,GetOwner(), m_BulletDmg);
 		BulletScript->SetVelocity(vFinalDir * m_InitFirePower);
 
 		// 사운드 재생
@@ -277,7 +283,7 @@ void GunController::Firing()
 			MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
 			BulletScript->SetDir(vFinalDir);
 			BulletScript->SetSpeed(m_InitFirePower);
-			BulletScript->SetBulletInfo(m_EquippedOwner, m_BulletDmg);
+			BulletScript->SetBulletInfo(m_EquippedOwner, GetOwner() , m_BulletDmg);
 			BulletScript->SetVelocity(vFinalDir* m_InitFirePower);
 
 			// 사운드 재생
@@ -326,7 +332,7 @@ void GunController::Reload()
 	if (m_ReloadingTime < m_AccTime_Reload)
 	{
 		// 여분의 탄창이 모두 있다면
-		if (m_MaxRounds < iLeftRounds)
+			if (m_MaxRounds < iLeftRounds)
 		{
 			// 현재 총알에서 부족한 만큼을 계산한다.
 			iFilledRounds = m_MaxRounds - m_CurRounds;
@@ -351,8 +357,11 @@ void GunController::Reload()
 		}
 
 		// 남은 총알 update
-		m_InventoryScript->UseItem(m_WeaponRoundType, iFilledRounds);
-		//iLeftRounds -= iFilledRounds;
+		if(m_bEnemy)
+			iLeftRounds -= iFilledRounds;
+		else
+			m_InventoryScript->UseItem(m_WeaponRoundType, iFilledRounds);
+		
 		m_AccTime_Reload = 0.f;
 		m_bReload = false;
 	}

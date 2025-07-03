@@ -17,6 +17,7 @@
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
 #include "Game/Gameplay/Particle/Public/ParticleController.h"
+#include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -38,6 +39,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"DoorScript");
 	_vec.push_back(L"BombScript");
 	_vec.push_back(L"RoundsUIScript");
+	_vec.push_back(L"KillinfoUIScript");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -78,6 +80,8 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new BombController;
 	if (L"RoundsUIScript" == _strScriptName)
 		return new RoundsUIScript;
+	if (L"KillinfoUIScript" == _strScriptName)
+		return new KillinfoUIScript;
 
 	return nullptr;
 }
@@ -139,6 +143,9 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(SCRIPT_TYPE::ROUNDSSUI):
 		return new RoundsUIScript;
+		break;
+	case static_cast<UINT>(SCRIPT_TYPE::KILLINFOUI):
+		return new KillinfoUIScript;
 		break;
 	}
 	return nullptr;
@@ -217,6 +224,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case SCRIPT_TYPE::ROUNDSSUI:
 		return L"RoundsUIScript";
+		break;
+
+	case SCRIPT_TYPE::KILLINFOUI:
+		return L"KillinfoUIScript";
 		break;
 	}
 	return nullptr;

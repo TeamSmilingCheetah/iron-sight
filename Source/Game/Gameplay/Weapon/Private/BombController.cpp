@@ -83,7 +83,7 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 	{
 		// 플레이어 스크립트 접근
 		PlayerCharacter* PlayerScript = (PlayerCharacter*)pScript;
-		PlayerScript->DemageCalcul(m_WeaponOwner, finalDMG);
+		PlayerScript->DemageCalcul(m_WeaponOwner, GetOwner(), finalDMG);
 
 
 		// 강제 종료
@@ -96,7 +96,7 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 	{
 		// 적 스크립트 접근
 		EnemyController* EnemyScript = (EnemyController*)pScript;
-		EnemyScript->DemageCalcul(m_WeaponOwner, finalDMG);
+		EnemyScript->DemageCalcul(m_WeaponOwner, GetOwner(), finalDMG);
 
 		// 강제 종료
 		return;

@@ -324,6 +324,7 @@ enum class SCRIPT_TYPE : UINT8
 
 	// UI
 	ROUNDSSUI,
+	KILLINFOUI,
 
 	NONE = 0xFF,
 };
