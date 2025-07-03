@@ -55,8 +55,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// Std2DShader : 표준 2D 쉐이더
 	// ===========================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\std2d.fx", "VS_Std2D");
-	pShader->CreatePixelShader(L"Shader\\std2d.fx", "PS_Std2D");
+	pShader->CreateVertexShader(L"std2d.cso",L"std2d.fx", L"VS_Std2D");
+	pShader->CreatePixelShader(L"std2d.cso", L"std2d.fx", L"PS_Std2D");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::DEFAULT);
@@ -66,150 +66,150 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->AddScalarParam("Test Parameter", VEC2_2, true);
 	pShader->AddTexParam("Output Texture", TEX_0);
 
-	GetInst()->AddAsset(L"Std2DShader", pShader);
+	AddAsset(L"Std2DShader", pShader);
 
 
 	// ================================================
 	// Std2DAlphaBlendShader : 표준 알파블렌드 2D 쉐이더
 	// ================================================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\std2d.fx", "VS_Std2D");
-	pShader->CreatePixelShader(L"Shader\\std2d.fx", "PS_Std2D_AlphaBlend");
+	pShader->CreateVertexShader(L"std2d_vs.cso", L"std2d.fx", L"VS_Std2D");
+	pShader->CreatePixelShader(L"std2d_ps.cso", L"std2d.fx", L"PS_Std2D_AlphaBlend");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_TRANSPARENT);
-	GetInst()->AddAsset(L"Std2DAlphaBlendShader", pShader);
+	AddAsset(L"Std2DAlphaBlendShader", pShader);
 
 
 	// ===========================
 	// Std3DShader : 표준 3D 쉐이더
 	// ===========================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D");
-	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3D");
+	pShader->CreateVertexShader(L"std3d_vs.cso", L"std3d.fx", L"VS_Std3D");
+	pShader->CreatePixelShader(L"std3d_ps.cso", L"std3d.fx", L"PS_Std3D");
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
 	//pShader->SetRSState(RS_TYPE::WIRE_FRAME);
 
 	pShader->AddScalarParam("Shading Type", INT_0);
 
-	GetInst()->AddAsset(L"Std3DShader", pShader);
+	AddAsset(L"Std3DShader", pShader);
 
 	// ============================================
 	// Std3D_DeferredShader : 표준 3D Deferred 쉐이더
 	// ============================================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\std3d_deferred.fx", "VS_Std3D_Deferred");
-	pShader->CreatePixelShader(L"Shader\\std3d_deferred.fx", "PS_Std3D_Deferred");
+	pShader->CreateVertexShader(L"std3d_deferred_vs.cso", L"std3d_deferred.fx", L"VS_Std3D_Deferred");
+	pShader->CreatePixelShader(L"std3d_deferred_ps.cso", L"std3d_deferred.fx", L"PS_Std3D_Deferred");
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
 	pShader->AddTexParam("Base Color", TEX_0);
 	pShader->AddTexParam("Normal", TEX_1);
-	GetInst()->AddAsset(L"Std3D_DeferredShader", pShader);
+	AddAsset(L"Std3D_DeferredShader", pShader);
 
 
 	// =================================
 	// Std2D_PaperBurn : PaperBurn 쉐이더
 	// =================================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\std2d.fx", "VS_Std2D");
-	pShader->CreatePixelShader(L"Shader\\std2d.fx", "PS_Std2D_PaperBurn");
+	pShader->CreateVertexShader(L"std2d_paper_burn_vs.cso", L"std2d.fx", L"VS_Std2D");
+	pShader->CreatePixelShader(L"std2d_paper_burn_ps.cso", L"std2d.fx", L"PS_Std2D_PaperBurn");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 
-	GetInst()->AddAsset(L"Std2DPaperBurnShader", pShader);
+	AddAsset(L"Std2DPaperBurnShader", pShader);
 
 	// ========================
 	// UIShader : UI 전용 셰이더
 	// ========================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
-	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI");
+	pShader->CreateVertexShader(L"ui_vs.cso", L"ui.fx", L"VS_UI");
+	pShader->CreatePixelShader(L"ui_ps.cso", L"ui.fx", L"PS_UI");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
-	GetInst()->AddAsset(L"UIShader", pShader);
+	AddAsset(L"UIShader", pShader);
 
 	// ========================
 	// UICardinalShader : UI Cardinal 전용 셰이더
 	// ========================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI_Cardinal");
-	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI");
+	pShader->CreateVertexShader(L"ui_cardinal_vs.cso", L"ui.fx", L"VS_UI_Cardinal");
+	pShader->CreatePixelShader(L"ui_cardinal_ps.cso", L"ui.fx", L"PS_UI");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
-	GetInst()->AddAsset(L"UICardinalShader", pShader);
+	AddAsset(L"UICardinalShader", pShader);
 
 	// =============================
 	// UIHPShader : UI HP 전용 셰이더
 	// =============================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
-	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI_HP");
+	pShader->CreateVertexShader(L"ui_hp_vs.cso", L"ui.fx", L"VS_UI");
+	pShader->CreatePixelShader(L"ui_hp_ps.cso", L"ui.fx", L"PS_UI_HP");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
-	GetInst()->AddAsset(L"UIHPShader", pShader);
+	AddAsset(L"UIHPShader", pShader);
 
 	// =============================
 	// UIHPShader : UI HP 전용 셰이더
 	// =============================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
-	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI_ItemUse");
+	pShader->CreateVertexShader(L"ui_item_use_vs.cso", L"ui.fx", L"VS_UI");
+	pShader->CreatePixelShader(L"ui_item_use_ps.cso", L"ui.fx", L"PS_UI_ItemUse");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
-	GetInst()->AddAsset(L"UIItemUseShader", pShader);
+	AddAsset(L"UIItemUseShader", pShader);
 
 	// =============================
 	// UICrosshair : UI 크로스헤어 전용 셰이더
 	// =============================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\ui.fx", "VS_UI");
-	pShader->CreatePixelShader(L"Shader\\ui.fx", "PS_UI_Crosshair");
+	pShader->CreateVertexShader(L"ui_crosshair_vs.cso", L"ui.fx", L"VS_UI");
+	pShader->CreatePixelShader(L"ui_crosshair_ps.cso", L"ui.fx", L"PS_UI_Crosshair");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
 
-	GetInst()->AddAsset(L"UICrosshair", pShader);
+	AddAsset(L"UICrosshair", pShader);
 
 
 	// ==================================
 	// TileMapShader : 타일맵 전용 쉐이더
 	// ==================================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\tilemap.fx", "VS_TileMap");
-	pShader->CreatePixelShader(L"Shader\\tilemap.fx", "PS_TileMap");
+	pShader->CreateVertexShader(L"tilemap_vs.cso", L"tilemap.fx", L"VS_TileMap");
+	pShader->CreatePixelShader(L"tilemap_vs.cso", L"tilemap.fx", L"PS_TileMap");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDSState(DS_TYPE::LESS);
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
-	GetInst()->AddAsset(L"TileMapShader", pShader);
+	AddAsset(L"TileMapShader", pShader);
 
 	// ===========
 	// PostProcess
 	// ===========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_Post");
-	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_Post");
+	pShader->CreateVertexShader(L"postprocess_vs.cso", L"postprocess.fx", L"VS_Post");
+	pShader->CreatePixelShader(L"postprocess_ps.cso", L"postprocess.fx", L"PS_Post");
 
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
@@ -217,14 +217,14 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
 
-	GetInst()->AddAsset(L"PostProcessShader", pShader);
+	AddAsset(L"PostProcessShader", pShader);
 
 	// ===========
 	// TargetObjectPostProcess
 	// ===========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\targetpost.fx", "VS_TargetPost");
-	pShader->CreatePixelShader(L"Shader\\targetpost.fx", "PS_TargetPost");
+	pShader->CreateVertexShader(L"targetpost_vs.cso", L"targetpost.fx", L"VS_TargetPost");
+	pShader->CreatePixelShader(L"targetpost_ps.cso", L"targetpost.fx", L"PS_TargetPost");
 
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
@@ -232,15 +232,14 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
 
-	CAssetMgr::GetInst()->AddAsset(L"TargetPostShader", pShader);
-
+	AddAsset(L"TargetPostShader", pShader);
 
 	// ===========
 	// Distortion
 	// ===========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_Distortion");
-	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_Distortion");
+	pShader->CreateVertexShader(L"postprocess_distortion_vs.cso", L"postprocess.fx", L"VS_Distortion");
+	pShader->CreatePixelShader(L"postprocess_distortion_ps.cso", L"postprocess.fx", L"PS_Distortion");
 
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
@@ -248,14 +247,14 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
 
-	GetInst()->AddAsset(L"DistortionShader", pShader);
+	AddAsset(L"DistortionShader", pShader);
 
 	// ======
 	// Vortex
 	// ======
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_Vortex");
-	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_Vortex");
+	pShader->CreateVertexShader(L"postprocess_vortex_vs.cso", L"postprocess.fx", L"VS_Vortex");
+	pShader->CreatePixelShader(L"postprocess_vortex_ps.cso", L"postprocess.fx", L"PS_Vortex");
 
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
@@ -263,29 +262,28 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
 
-	GetInst()->AddAsset(L"VortexShader", pShader);
-
+	AddAsset(L"VortexShader", pShader);
 
 	// ==============
 	// ParticleShader
 	// ==============
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\particle.fx", "VS_Particle");
-	pShader->CreateGeometryShader(L"Shader\\particle.fx", "GS_Particle");
-	pShader->CreatePixelShader(L"Shader\\particle.fx", "PS_Particle");
+	pShader->CreateVertexShader(L"particle_vs.cso", L"particle.fx", L"VS_Particle");
+	pShader->CreateGeometryShader(L"particle_gs.cso", L"particle.fx", L"GS_Particle");
+	pShader->CreatePixelShader(L"particle_ps.cso", L"particle.fx", L"PS_Particle");
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	pShader->SetDSState(DS_TYPE::NO_WRITE);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_PARTICLE);
-	GetInst()->AddAsset(L"ParticleShader", pShader);
+	AddAsset(L"ParticleShader", pShader);
 
 	// ============
 	// EffectShader
 	// ============
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"shader\\std2d.fx", "VS_Effect");
-	pShader->CreatePixelShader(L"shader\\std2d.fx", "PS_Effect");
+	pShader->CreateVertexShader(L"std2d_vs.cso", L"std2d.fx", L"VS_Effect");
+	pShader->CreatePixelShader(L"std2d_ps.cso", L"std2d.fx", L"PS_Effect");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetDSState(DS_TYPE::LESS);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
@@ -296,8 +294,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// BlurShader
 	// ==========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"shader\\postprocess.fx", "VS_Blur");
-	pShader->CreatePixelShader(L"shader\\postprocess.fx", "PS_Blur");
+	pShader->CreateVertexShader(L"postprocess_blur_vs.cso", L"postprocess.fx", L"VS_Blur");
+	pShader->CreatePixelShader(L"postprocess_blur_ps.cso", L"postprocess.fx", L"PS_Blur");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
@@ -308,8 +306,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// EffectMerge
 	// ===========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"shader\\postprocess.fx", "VS_EffectMerge");
-	pShader->CreatePixelShader(L"shader\\postprocess.fx", "PS_EffectMerge");
+	pShader->CreateVertexShader(L"postprocess_effect_merge_vs.cso", L"postprocess.fx", L"VS_EffectMerge");
+	pShader->CreatePixelShader(L"postprocess_effect_merge_ps.cso", L"postprocess.fx", L"PS_EffectMerge");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
@@ -321,10 +319,10 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// TessTest
 	// ========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"shader\\tess.fx", "VS_Tess");
-	pShader->CreateHullShader(L"shader\\tess.fx", "HS_Tess");
-	pShader->CreateDomainShader(L"shader\\tess.fx", "DS_Tess");
-	pShader->CreatePixelShader(L"shader\\tess.fx", "PS_Tess");
+	pShader->CreateVertexShader(L"tess_vs.cso", L"tess.fx", L"VS_Tess");
+	pShader->CreateHullShader(L"tess_hs.cso", L"tess.fx", L"HS_Tess");
+	pShader->CreateDomainShader(L"tess_ds.cso", L"tess.fx", L"DS_Tess");
+	pShader->CreatePixelShader(L"tess_ps.cso", L"tess.fx", L"PS_Tess");
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 	pShader->SetRSState(RS_TYPE::WIRE_FRAME);
@@ -495,12 +493,12 @@ void CAssetMgr::CreateEngineSprite()
 	//	pFlipbook->AddSprite(pSprite);
 	//
 	//	// Sprite 저장
-	//	pSprite->Save(CPathMgr::GetInst()->GetContentPath() + pSprite->GetKey());
+	//	pSprite->Save(CPathMgr::GetContentPath() + pSprite->GetKey());
 	//}
 
 	//// flipbook 등록
 	//AddAsset(L"Flipbook\\LinkWalkDown.flip", pFlipbook);
 
 	//// Flipbook 저장
-	//pFlipbook->Save(CPathMgr::GetInst()->GetContentPath() + pFlipbook->GetKey());
+	//pFlipbook->Save(CPathMgr::GetContentPath() + pFlipbook->GetKey());
 }

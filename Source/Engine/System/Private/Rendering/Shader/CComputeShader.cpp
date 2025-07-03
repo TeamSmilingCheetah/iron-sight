@@ -4,58 +4,49 @@
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 
-CComputeShader::CComputeShader(const wstring& _RelativeFilePath, const string& _FuncName,
-                               int _GroupPerX, int _GroupPerY, int _GroupPerZ)
+CComputeShader::CComputeShader(const wstring& PBlobPath, const wstring& PRelativeFilePath, const wstring& PFunctionName,
+                               int PGroupPerX, int PGroupPerY, int PGroupPerZ)
 	: CShader(COMPUTE_SHADER)
-	  , m_GroupPerThreadX(_GroupPerX)
-	  , m_GroupPerThreadY(_GroupPerY)
-	  , m_GroupPerThreadZ(_GroupPerZ)
+	  , m_GroupPerThreadX(PGroupPerX)
+	  , m_GroupPerThreadY(PGroupPerY)
+	  , m_GroupPerThreadZ(PGroupPerZ)
 	  , m_GroupX(1)
 	  , m_GroupY(1)
 	  , m_GroupZ(1)
 {
-	if (FAILED(CreateComputeShader(_RelativeFilePath, _FuncName)))
+	if (FAILED(CreateComputeShader(PBlobPath, PRelativeFilePath, PFunctionName)))
 	{
 		assert(nullptr);
 	}
 }
 
-CComputeShader::~CComputeShader()
+CComputeShader::~CComputeShader() = default;
+
+/**
+ * @brief Compute Shader를 생성하는 함수
+ * 생성한 Shader는 m_CSBlob에 저장된다
+ * @param PBlobFilePath 컴파일된 Blob File Path (.cso)
+ * @param PEffectsFilePath Effects File Path (.fx)
+ * @param PEntryPointName Effects Entry Point
+ * @return 처리 결과
+ */
+int CComputeShader::CreateComputeShader(const wstring& PBlobFilePath,
+                                        const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-}
+	// Setting Variable
+	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
+	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
 
-// TODO(KHJ): Source 폴더로 변경해두었으나 Output만 가지고 실행할 수 없다는 문제가 있음, 결과물은 CSO에서 로드할 수 있도록 처리 필요
-int CComputeShader::CreateComputeShader(const wstring& _RelativePath, const string& _FuncName)
-{
-	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
+	// Load Compute Shader Blob
+	m_CSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"cs_5_0");
 
-	HRESULT hr = S_OK;
-	UINT Flag = D3DCOMPILE_DEBUG;
-
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , _FuncName.c_str(), "cs_5_0", Flag, 0
-	                        , m_CSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
-
-	if (FAILED(hr))
+	// Early Return
+	if (!m_CSBlob)
 	{
-		errno_t errNum = GetLastError();
-
-		if (2 == errNum || 3 == errNum)
-		{
-			// 잘못된 경로
-			MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
-		}
-
-		else
-		{
-			auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-			MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
-		}
-
 		return E_FAIL;
 	}
 
+	// Create Object
 	DEVICE->CreateComputeShader(m_CSBlob->GetBufferPointer()
 	                            , m_CSBlob->GetBufferSize()
 	                            , nullptr, m_CS.GetAddressOf());
@@ -63,27 +54,31 @@ int CComputeShader::CreateComputeShader(const wstring& _RelativePath, const stri
 	return S_OK;
 }
 
+/**
+ * Compute Shader의 연산 실행 함수
+ * @return 처리 결과
+ */
 int CComputeShader::Execute()
 {
-	// CS 를 실행시키기 위해서 필요한 리소스들을 바인딩한다.
+	// Resource Binding
 	if (FAILED(Binding()))
 	{
 		return E_FAIL;
 	}
 
-	// 필요한 그룹 수를 계산한다.
+	// Calculate Groups
 	CalcGroupCount();
 
-	// 상수 데이터를 상수버퍼에 전달 및 바인딩
+	// Const Buffer Setting & Binding
 	static CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::MATERIAL);
 	pCB->SetData(&m_Const);
 	pCB->Binding_CS();
 
-	// 컴퓨트 쉐이더 실행
+	// Execution
 	CONTEXT->CSSetShader(m_CS.Get(), nullptr, 0);
 	CONTEXT->Dispatch(m_GroupX, m_GroupY, m_GroupZ);
 
-	// 바인딩한 리소스 정리
+	// Clear Resource
 	Clear();
 
 	return S_OK;

@@ -14,55 +14,37 @@ CGraphicShader::CGraphicShader()
 {
 }
 
-CGraphicShader::~CGraphicShader()
-{
-}
+CGraphicShader::~CGraphicShader() = default;
 
-int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const string& _FuncName)
+int CGraphicShader::CreateVertexShader(const wstring& PBlobFilePath,
+                                       const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// 쉐이더 컴파일
-	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
-	UINT Flag = D3DCOMPILE_DEBUG;
-	HRESULT hr = S_OK;
+	// Setting Variable
+	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
+	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
 
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , _FuncName.c_str(), "vs_5_0", Flag, 0
-	                        , m_VSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
-	if (FAILED(hr))
+	// Load Vertex Shader Blob
+	m_VSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"vs_5_0");
+
+	// Early Return
+	if (!m_VSBlob)
 	{
-		errno_t errNum = GetLastError();
-
-		if (2 == errNum || 3 == errNum)
-		{
-			// 잘못된 경로
-			MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
-		}
-
-		else
-		{
-			auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-			MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
-		}
-
 		return E_FAIL;
 	}
 
+	// Create Object
 	DEVICE->CreateVertexShader(m_VSBlob->GetBufferPointer()
 	                           , m_VSBlob->GetBufferSize()
 	                           , nullptr, m_VS.GetAddressOf());
 
-	// 추가 버텍스쉐이더(Instancing 버전) 컴파일
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , (_FuncName + "_Inst").c_str(), "vs_5_0", Flag, 0
-	                        , m_VSInstBlob.GetAddressOf()
-	                        , m_ErrBlob.GetAddressOf());
+	// Load Instancing Vertex Shader Blob
+	wstring BlobInstancingFilePath =
+		CPathMgr::GetInst()->GetShaderBlobPath() + path(PBlobFilePath).stem().wstring() + L"_Inst.cso";
+	m_VSInstBlob = LoadBlob(BlobInstancingFilePath, EffectsFilePath, PEntryPointName + L"_Inst", L"vs_5_0");
 
-	// 추가 인스턴싱 VS 가 존재한다면
-	if (S_OK == hr)
+	// Create Object If Instancing Blob Exist
+	if (m_VSInstBlob)
 	{
-		// 컴파일 된 코드로 Vertex Instancing Shader 객체 만들기
 		DEVICE->CreateVertexShader(m_VSInstBlob->GetBufferPointer()
 		                           , m_VSInstBlob->GetBufferSize()
 		                           , nullptr, m_VSInst.GetAddressOf());
@@ -77,37 +59,23 @@ int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const strin
 	return S_OK;
 }
 
-int CGraphicShader::CreateHullShader(const wstring& _RelativePath, const string& _FuncName)
+int CGraphicShader::CreateHullShader(const wstring& PBlobFilePath,
+                                     const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
+	// Setting Variable
+	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
+	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
 
-	HRESULT hr = S_OK;
-	UINT Flag = D3DCOMPILE_DEBUG;
+	// Load Hull Shader Blob
+	m_HSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"hs_5_0");
 
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , _FuncName.c_str(), "hs_5_0", Flag, 0
-	                        , m_HSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
-
-	if (FAILED(hr))
+	// Early Return
+	if (!m_HSBlob)
 	{
-		errno_t errNum = GetLastError();
-
-		if (2 == errNum || 3 == errNum)
-		{
-			// 잘못된 경로
-			MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
-		}
-
-		else
-		{
-			auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-			MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
-		}
-
 		return E_FAIL;
 	}
 
+	// Create Object
 	DEVICE->CreateHullShader(m_HSBlob->GetBufferPointer()
 	                         , m_HSBlob->GetBufferSize()
 	                         , nullptr, m_HS.GetAddressOf());
@@ -115,37 +83,23 @@ int CGraphicShader::CreateHullShader(const wstring& _RelativePath, const string&
 	return S_OK;
 }
 
-int CGraphicShader::CreateDomainShader(const wstring& _RelativePath, const string& _FuncName)
+int CGraphicShader::CreateDomainShader(const wstring& PBlobFilePath,
+                                       const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
+	// Setting Variable
+	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
+	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
 
-	HRESULT hr = S_OK;
-	UINT Flag = D3DCOMPILE_DEBUG;
+	// Load Domain Shader Blob
+	m_DSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"ds_5_0");
 
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , _FuncName.c_str(), "ds_5_0", Flag, 0
-	                        , m_DSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
-
-	if (FAILED(hr))
+	// Early Return
+	if (!m_DSBlob)
 	{
-		errno_t errNum = GetLastError();
-
-		if (2 == errNum || 3 == errNum)
-		{
-			// 잘못된 경로
-			MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
-		}
-
-		else
-		{
-			auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-			MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
-		}
-
 		return E_FAIL;
 	}
 
+	// Create Object
 	DEVICE->CreateDomainShader(m_DSBlob->GetBufferPointer()
 	                           , m_DSBlob->GetBufferSize()
 	                           , nullptr, m_DS.GetAddressOf());
@@ -153,37 +107,23 @@ int CGraphicShader::CreateDomainShader(const wstring& _RelativePath, const strin
 	return S_OK;
 }
 
-int CGraphicShader::CreateGeometryShader(const wstring& _RelativePath, const string& _FuncName)
+int CGraphicShader::CreateGeometryShader(const wstring& PBlobFilePath,
+                                         const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
+	// Setting Variable
+	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
+	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
 
-	HRESULT hr = S_OK;
-	UINT Flag = D3DCOMPILE_DEBUG;
+	// Load Domain Shader Blob
+	m_GSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"gs_5_0");
 
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , _FuncName.c_str(), "gs_5_0", Flag, 0
-	                        , m_GSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
-
-	if (FAILED(hr))
+	// Early Return
+	if (!m_GSBlob)
 	{
-		errno_t errNum = GetLastError();
-
-		if (2 == errNum || 3 == errNum)
-		{
-			// 잘못된 경로
-			MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
-		}
-
-		else
-		{
-			auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-			MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
-		}
-
 		return E_FAIL;
 	}
 
+	// Create Object
 	DEVICE->CreateGeometryShader(m_GSBlob->GetBufferPointer()
 	                             , m_GSBlob->GetBufferSize()
 	                             , nullptr, m_GS.GetAddressOf());
@@ -191,43 +131,29 @@ int CGraphicShader::CreateGeometryShader(const wstring& _RelativePath, const str
 	return S_OK;
 }
 
-int CGraphicShader::CreatePixelShader(const wstring& _RelativePath, const string& _FuncName)
+int CGraphicShader::CreatePixelShader(const wstring& PBlobFilePath,
+                                      const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	wstring SourcePath = CPathMgr::GetInst()->GetSrcPath();
+	// Setting Variable
+	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
+	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
 
-	HRESULT hr = S_OK;
-	UINT Flag = D3DCOMPILE_DEBUG;
+	// Load Pixel Shader Blob
+	m_PSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"ps_5_0");
 
-	hr = D3DCompileFromFile(wstring(SourcePath + _RelativePath).c_str()
-	                        , nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-	                        , _FuncName.c_str(), "ps_5_0", Flag, 0
-	                        , m_PSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
-	if (FAILED(hr))
+	// Early Return
+	if (!m_PSBlob)
 	{
-		errno_t errNum = GetLastError();
-
-		if (2 == errNum || 3 == errNum)
-		{
-			// 잘못된 경로
-			MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
-		}
-
-		else
-		{
-			auto pErrMsg = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-			MessageBoxA(nullptr, pErrMsg, "쉐이더 컴파일 실패", MB_OK);
-		}
-
 		return E_FAIL;
 	}
 
+	// Create Object
 	DEVICE->CreatePixelShader(m_PSBlob->GetBufferPointer()
 	                          , m_PSBlob->GetBufferSize()
 	                          , nullptr, m_PS.GetAddressOf());
 
 	return S_OK;
 }
-
 
 void CGraphicShader::Binding()
 {
@@ -253,7 +179,7 @@ void CGraphicShader::Binding()
 	CONTEXT->OMSetDepthStencilState(pDSState.Get(), m_StencilRef);
 }
 
-void CGraphicShader::Binding_Inst()
+void CGraphicShader::BindingWithInstancing()
 {
 	CONTEXT->IASetPrimitiveTopology(m_Topology); // 도형의 위상(위치, 상태)
 	CONTEXT->IASetInputLayout(m_LayoutInst.Get());
@@ -464,7 +390,7 @@ int CGraphicShader::CreateInputLayout()
 		// parentID 용으로 추가 (TEXCOORD1)
 		LayoutDesc[21].SemanticName = "TEXCOORD";
 		LayoutDesc[21].SemanticIndex = 1;
-		LayoutDesc[21].AlignedByteOffset = 196;  // int(4바이트) 다음
+		LayoutDesc[21].AlignedByteOffset = 196; // int(4바이트) 다음
 		LayoutDesc[21].Format = DXGI_FORMAT_R32_SINT;
 		LayoutDesc[21].InputSlot = 1;
 		LayoutDesc[21].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
@@ -473,7 +399,7 @@ int CGraphicShader::CreateInputLayout()
 		// objectID 용으로 추가 (TEXCOORD2)
 		LayoutDesc[22].SemanticName = "TEXCOORD";
 		LayoutDesc[22].SemanticIndex = 2;
-		LayoutDesc[22].AlignedByteOffset = 200;  // int(4바이트) 다음
+		LayoutDesc[22].AlignedByteOffset = 200; // int(4바이트) 다음
 		LayoutDesc[22].Format = DXGI_FORMAT_R32_SINT;
 		LayoutDesc[22].InputSlot = 1;
 		LayoutDesc[22].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;

@@ -3,7 +3,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CWeightMapCS::CWeightMapCS()
-	: CComputeShader(L"shader\\weightmap.fx", "CS_WeightMap", 32, 32, 1)
+	: CComputeShader(L"weightmap_cs.cso", L"weightmap.fx", L"CS_WeightMap", 32, 32, 1)
 	  , m_WeightMap(nullptr)
 	  , m_RaycastOut(nullptr)
 	  , m_WeightIdx(0)
@@ -12,9 +12,7 @@ CWeightMapCS::CWeightMapCS()
 {
 }
 
-CWeightMapCS::~CWeightMapCS()
-{
-}
+CWeightMapCS::~CWeightMapCS() = default;
 
 int CWeightMapCS::Binding()
 {

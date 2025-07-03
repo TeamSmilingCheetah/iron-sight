@@ -1,13 +1,9 @@
 #include "pch.h"
 #include "System/Public/Manager/CPathMgr.h"
 
-CPathMgr::CPathMgr()
-{
-}
+CPathMgr::CPathMgr() = default;
 
-CPathMgr::~CPathMgr()
-{
-}
+CPathMgr::~CPathMgr() = default;
 
 void CPathMgr::Init()
 {
@@ -20,11 +16,13 @@ void CPathMgr::Init()
 	m_BinPath = bin_dir.wstring() + L"\\";
 	m_ContentPath = bin_dir.parent_path().wstring() + L"\\Content\\";
 	m_SourcePath = bin_dir.parent_path().parent_path().wstring() + L"\\Source\\Engine\\";
+	m_EffectsFilePath = m_SourcePath + L"\\Shader\\";
+	m_ShaderBlobPath = m_ContentPath + L"\\Shader\\";
 }
 
-wstring CPathMgr::MakeFileName(const wstring& _Name)
+wstring CPathMgr::MakeFileName(const wstring& PName)
 {
-	wstring strName = _Name;;
+	wstring strName = PName;;
 
 	int Len = static_cast<int>(strName.length());
 
@@ -43,34 +41,34 @@ wstring CPathMgr::MakeFileName(const wstring& _Name)
 	return strName;
 }
 
-wstring CPathMgr::GetFileExtension(const wstring& _FilePath)
+wstring CPathMgr::GetFileExtension(const wstring& PFilePath)
 {
-	path RelativePath = _FilePath;
+	path RelativePath = PFilePath;
 
 	return RelativePath.extension();
 }
 
-wstring CPathMgr::GetKeyWithoutExtension(const wstring& _FilePath)
+wstring CPathMgr::GetKeyWithoutExtension(const wstring& PFilePath)
 {
-	size_t ExtPos = _FilePath.rfind(L".");
+	size_t ExtPos = PFilePath.rfind(L".");
 	if (ExtPos == wstring::npos)
 		return L"";
 
-	return _FilePath.substr(0, ExtPos);
+	return PFilePath.substr(0, ExtPos);
 }
 
-wstring CPathMgr::GetFileStem(const wstring& _FilePath)
+wstring CPathMgr::GetFileStem(const wstring& PFilePath)
 {
-	path RelativePath = _FilePath;
+	path RelativePath = PFilePath;
 
 	return RelativePath.stem();
 }
 
-wstring CPathMgr::GetRelativePath(const wstring& _FilePath)
+wstring CPathMgr::GetRelativePath(const wstring& PFilePath)
 {
-	size_t FindPos = _FilePath.find(m_ContentPath);
+	size_t FindPos = PFilePath.find(m_ContentPath);
 	if (FindPos == wstring::npos)
 		return L"";
 
-	return _FilePath.substr(FindPos + m_ContentPath.length(), _FilePath.length());
+	return PFilePath.substr(FindPos + m_ContentPath.length(), PFilePath.length());
 }

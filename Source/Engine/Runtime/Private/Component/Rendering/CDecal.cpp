@@ -36,13 +36,13 @@ void CDecal::FinalTick()
 	{
 		return;
 	}
-		
+
 	if (m_LifeTime < m_CurClipAccTime)
 	{
 		DestroyObject(GetOwner());
 	}
 
-	
+
 }
 
 void CDecal::Render()
@@ -86,8 +86,8 @@ void CDecal::CreateMaterial()
 	}
 
 	Ptr<CGraphicShader> pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\decal.fx", "VS_Decal");
-	pShader->CreatePixelShader(L"Shader\\decal.fx", "PS_Decal");
+	pShader->CreateVertexShader(L"decal.cso", L"decal.fx", L"VS_Decal");
+	pShader->CreatePixelShader(L"decal.cso", L"decal.fx", L"PS_Decal");
 	pShader->SetRSState(RS_TYPE::CULL_FRONT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::DECAL);
@@ -109,7 +109,7 @@ void CDecal::SaveComponent(FILE* _File)
 {
 	fwrite(&m_GlobalAlpha, sizeof(float), 1, _File);
 	fwrite(&m_AsLight, sizeof(bool), 1, _File);
-	
+
 	SaveAssetRef(m_DecalTex, _File);
 }
 

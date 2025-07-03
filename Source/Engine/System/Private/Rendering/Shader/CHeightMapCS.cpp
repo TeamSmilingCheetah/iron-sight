@@ -1,15 +1,14 @@
 #include "pch.h"
 #include "System/Public/Rendering/Shader/CHeightMapCS.h"
+
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CHeightMapCS::CHeightMapCS()
-	: CComputeShader(L"Shader\\heightmap.fx", "CS_HeightMap", 32, 32, 1)
+	: CComputeShader(L"heightmap_cs.cso", L"heightmap.fx", L"CS_HeightMap", 32, 32, 1), m_RaycastOut(nullptr)
 {
 }
 
-CHeightMapCS::~CHeightMapCS()
-{
-}
+CHeightMapCS::~CHeightMapCS() = default;
 
 int CHeightMapCS::Binding()
 {
@@ -47,5 +46,6 @@ void CHeightMapCS::CalcGroupCount()
 void CHeightMapCS::Clear()
 {
 	m_HeightMap->Clear_UAV_CS();
-	m_RaycastOut->Clear_CS_SRV(20);
+	m_HeightMap = nullptr;
+	CStructuredBuffer::Clear_CS_SRV(20);
 }

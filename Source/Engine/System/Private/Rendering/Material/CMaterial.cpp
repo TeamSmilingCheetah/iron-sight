@@ -82,7 +82,7 @@ void CMaterial::Binding_Inst()
 	pMtrlCB->Binding();
 
 	// Shader Binding
-	m_Shader->Binding_Inst();
+	m_Shader->BindingWithInstancing();
 }
 
 void* CMaterial::GetScalarParam(SCALAR_PARAM _Type)

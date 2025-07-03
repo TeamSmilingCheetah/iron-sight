@@ -144,8 +144,8 @@ void CRenderMgr::CreateDebugMtrl()
 	// DebugShapeShader : 디버그용 쉐이더
 	// =================================
 	Ptr<CGraphicShader> pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\debug.fx", "VS_DebugShape");
-	pShader->CreatePixelShader(L"Shader\\debug.fx", "PS_DebugShape");
+	pShader->CreateVertexShader(L"debug_shape_vs.cso", L"debug.fx", L"VS_DebugShape");
+	pShader->CreatePixelShader(L"debug_shape_ps.cso", L"debug.fx", L"PS_DebugShape");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 	CAssetMgr::GetInst()->AddAsset(L"DebugShapeShader", pShader);
@@ -161,8 +161,8 @@ void CRenderMgr::CreateDebugMtrl()
 	// DebugShapeSphere
 	// ================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\debug.fx", "VS_DebugShapeSphere");
-	pShader->CreatePixelShader(L"Shader\\debug.fx", "PS_DebugShapeSphere");
+	pShader->CreateVertexShader(L"debug_shape_sphere_vs.cso", L"debug.fx", L"VS_DebugShapeSphere");
+	pShader->CreatePixelShader(L"debug_shape_sphere_ps.cso", L"debug.fx", L"PS_DebugShapeSphere");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	CAssetMgr::GetInst()->AddAsset(L"DebugShapeSphereShader", pShader);
@@ -177,9 +177,9 @@ void CRenderMgr::CreateDebugMtrl()
 	// DebugShapeLine
 	// ==============
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\debug.fx", "VS_DebugShapeLine");
-	pShader->CreateGeometryShader(L"Shader\\debug.fx", "GS_DebugShapeLine");
-	pShader->CreatePixelShader(L"Shader\\debug.fx", "PS_DebugShapeLine");
+	pShader->CreateVertexShader(L"debug_shape_line_vs.cso", L"debug.fx", L"VS_DebugShapeLine");
+	pShader->CreateGeometryShader(L"debug_shape_line_gs.cso", L"debug.fx", L"GS_DebugShapeLine");
+	pShader->CreatePixelShader(L"debug_shape_line_ps.cso", L"debug.fx", L"PS_DebugShapeLine");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST); // 입력 메쉬 기준
 	CAssetMgr::GetInst()->AddAsset(L"DebugShapeLineShader", pShader);
@@ -193,9 +193,9 @@ void CRenderMgr::CreateDebugMtrl()
 	// Skeleton Debug
 	// ==============
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\debug.fx", "VS_DebugSkeleton");
-	pShader->CreateGeometryShader(L"Shader\\debug.fx", "GS_DebugSkeleton");
-	pShader->CreatePixelShader(L"Shader\\debug.fx", "PS_DebugSkeleton");
+	pShader->CreateVertexShader(L"debug_skeleton_vs.cso", L"debug.fx", L"VS_DebugSkeleton");
+	pShader->CreateGeometryShader(L"debug_skeleton_vs.cso", L"debug.fx", L"GS_DebugSkeleton");
+	pShader->CreatePixelShader(L"debug_skeleton_vs.cso", L"debug.fx", L"PS_DebugSkeleton");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	CAssetMgr::GetInst()->AddAsset(L"DebugSkeletonShader", pShader);
@@ -212,8 +212,8 @@ void CRenderMgr::CreateRenderMtrl()
 	// MergeShader
 	// ===========
 	Ptr<CGraphicShader> pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\merge.fx", "VS_Merge");
-	pShader->CreatePixelShader(L"Shader\\merge.fx", "PS_Merge");
+	pShader->CreateVertexShader(L"merge_vs.cso", L"merge.fx", L"VS_Merge");
+	pShader->CreatePixelShader(L"merge_ps.cso", L"merge.fx", L"PS_Merge");
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
 	CAssetMgr::GetInst()->AddAsset(L"MergeShader", pShader);
@@ -228,8 +228,8 @@ void CRenderMgr::CreateRenderMtrl()
 	// DirLightShader
 	// ==============
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_DirLight");
-	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_DirLight");
+	pShader->CreateVertexShader(L"directional_light_vs.cso", L"light.fx", L"VS_DirLight");
+	pShader->CreatePixelShader(L"directional_light_ps.cso", L"light.fx", L"PS_DirLight");
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ONE_ONE);
 	CAssetMgr::GetInst()->AddAsset(L"DirLightShader", pShader);
@@ -246,8 +246,8 @@ void CRenderMgr::CreateRenderMtrl()
 	// PointLightShader
 	// ================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_PointLight");
-	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_PointLight");
+	pShader->CreateVertexShader(L"point_light_vs.cso", L"light.fx", L"VS_PointLight");
+	pShader->CreatePixelShader(L"point_light_ps.cso", L"light.fx", L"PS_PointLight");
 	pShader->SetRSState(RS_TYPE::CULL_FRONT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ONE_ONE);
