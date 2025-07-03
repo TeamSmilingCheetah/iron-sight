@@ -5,7 +5,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CParticleTickCS::CParticleTickCS()
-	: CComputeShader(L"particle_tick_cs.cso", L"particle_tick.fx", "CS_ParticleTick", 1024, 1, 1)
+	: CComputeShader(L"particle_tick_cs.cso", L"particle_tick.fx", L"CS_ParticleTick", 1024, 1, 1)
 	  , m_ParticleBuffer(nullptr), m_SpawnCountBuffer(nullptr), m_ModuleBuffer(nullptr)
 {
 	m_NoiseTex = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\noise\\noise_03.jpg",

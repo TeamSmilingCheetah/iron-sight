@@ -3,7 +3,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CCopyBoneCS::CCopyBoneCS()
-	: CComputeShader(L"copybone_cs.cso", L"copybone.fx", "CS_CopyBoneMatrix", 256, 1, 1)
+	: CComputeShader(L"copybone_cs.cso", L"copybone.fx", L"CS_CopyBoneMatrix", 256, 1, 1)
 	  , m_SrcBuffer(nullptr)
 	  , m_DestBuffer(nullptr)
 {

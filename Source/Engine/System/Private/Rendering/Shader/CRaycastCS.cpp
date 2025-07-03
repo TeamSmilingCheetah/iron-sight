@@ -3,7 +3,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CRaycastCS::CRaycastCS()
-	: CComputeShader(L"raycast_cs.cso", L"raycast.fx", "CS_Raycast", 32, 32, 1)
+	: CComputeShader(L"raycast_cs.cso", L"raycast.fx", L"CS_Raycast", 32, 32, 1)
 	  , m_FaceX(0)
 	  , m_FaceZ(0)
 	  , m_Ray{}

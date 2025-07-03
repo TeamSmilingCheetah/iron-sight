@@ -2,7 +2,7 @@
 #include "System/Public/Rendering/Shader/CClearColorCS.h"
 
 CClearColorCS::CClearColorCS()
-	: CComputeShader(L"test_cs.cso", L"test.fx", "CS_ClearTexture", 32, 32, 1)
+	: CComputeShader(L"test_cs.cso", L"test.fx", L"CS_ClearTexture", 32, 32, 1)
 {
 }
 

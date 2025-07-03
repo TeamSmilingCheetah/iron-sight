@@ -4,7 +4,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CHeightMapCS::CHeightMapCS()
-	: CComputeShader(L"heightmap_cs.cso", L"heightmap.fx", "CS_HeightMap", 32, 32, 1), m_RaycastOut(nullptr)
+	: CComputeShader(L"heightmap_cs.cso", L"heightmap.fx", L"CS_HeightMap", 32, 32, 1), m_RaycastOut(nullptr)
 {
 }
 

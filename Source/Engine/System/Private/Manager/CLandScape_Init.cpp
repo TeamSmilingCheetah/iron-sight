@@ -94,10 +94,10 @@ void CLandScape::CreateMaterial()
 
     Ptr<CGraphicShader> pShader = new CGraphicShader;
 
-    pShader->CreateVertexShader(L"Shader\\landscape.fx", "VS_LandScape");
-    pShader->CreateHullShader(L"Shader\\landscape.fx", "HS_LandScape");
-    pShader->CreateDomainShader(L"Shader\\landscape.fx", "DS_LandScape");
-    pShader->CreatePixelShader(L"Shader\\landscape.fx", "PS_LandScape");
+    pShader->CreateVertexShader(L"landscape_vs.cso", L"landscape.fx", L"VS_LandScape");
+    pShader->CreateHullShader(L"landscape_hs.cso", L"landscape.fx", L"HS_LandScape");
+    pShader->CreateDomainShader(L"landscape_ds.cso", L"landscape.fx", L"DS_LandScape");
+    pShader->CreatePixelShader(L"landscape_ps.cso", L"landscape.fx", L"PS_LandScape");
 
     pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
     pShader->SetRSState(RS_TYPE::CULL_BACK);

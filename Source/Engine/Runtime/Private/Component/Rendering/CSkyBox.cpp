@@ -53,8 +53,8 @@ void CSkyBox::CreateMaterial()
     }
 
     Ptr<CGraphicShader> pSkyBoxShader = new CGraphicShader;
-    pSkyBoxShader->CreateVertexShader(L"Shader\\skybox.fx", "VS_SkyBox");
-    pSkyBoxShader->CreatePixelShader(L"Shader\\skybox.fx", "PS_SkyBox");
+    pSkyBoxShader->CreateVertexShader(L"skybox_vs.cso", L"skybox.fx", L"VS_SkyBox");
+    pSkyBoxShader->CreatePixelShader(L"skybox_ps.cso", L"skybox.fx", L"PS_SkyBox");
     pSkyBoxShader->SetRSState(RS_TYPE::CULL_FRONT);
     pSkyBoxShader->SetDSState(DS_TYPE::LESS_EQUAL);
     pSkyBoxShader->SetBSState(BS_TYPE::DEFAULT);

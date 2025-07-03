@@ -48,12 +48,12 @@ struct tTask
 
 struct tLight2DInfo
 {
-	Vec3 vColor; // 광원 색상	
+	Vec3 vColor; // 광원 색상
 	Vec3 vWorldPos; // 광원 위치
 	Vec3 vDir; // 광원 진행 방향
 	int Type; // 광원 타입(LIGHT_TYPE)
 	float Radius; // 광원 범위반경
-	float Angle; // 광원 범위각도	
+	float Angle; // 광원 범위각도
 };
 
 
@@ -66,11 +66,11 @@ struct tLightColor
 
 struct tLight3DInfo
 {
-	tLightColor info; // 광원 색상 정보	
-	LIGHT_TYPE Type; // 광원 타입(LIGHT_TYPE)			
+	tLightColor info; // 광원 색상 정보
+	LIGHT_TYPE Type; // 광원 타입(LIGHT_TYPE)
 	Vec3 WorldPos; // 광원 위치
 	float Radius; // 광원 범위반경 (Point)
-	Vec3 Dir; // 광원 진행 방향	
+	Vec3 Dir; // 광원 진행 방향
 	float Angle; // 광원 범위각도	(Spot)
 };
 
@@ -135,7 +135,7 @@ struct tParticleModule
 	float SpawnBurstRepeatTime;
 
 	// Add Velocity
-	UINT AddVelocityType; // 0 : Random, 1 : FromCenter, 2 : ToCenter, 4 : Fixed 
+	UINT AddVelocityType; // 0 : Random, 1 : FromCenter, 2 : ToCenter, 4 : Fixed
 	Vec3 AddVelocityFixedDir;
 	float AddMinSpeed;
 	float AddMaxSpeed;
@@ -324,7 +324,19 @@ struct GlobalData
 	int Light3DCount; // 3D 광원 개수
 };
 
+// Graphic Shader
+
+struct tScalarParam
+{
+	string Desc;
+	SCALAR_PARAM eParam;
+	bool Drag;
+};
+
+struct tTexParam
+{
+	string Desc;
+	TEX_PARAM eParam;
+};
+
 extern GlobalData g_Data;
-
-
-

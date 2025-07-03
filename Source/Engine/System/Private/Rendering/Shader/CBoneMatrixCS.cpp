@@ -3,7 +3,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CBoneMatrixCS::CBoneMatrixCS()
-	: CComputeShader(L"bonemat_cs.cso", L"bonemat.fx", "CS_BoneMatrix", 256, 1, 1)
+	: CComputeShader(L"bonemat_cs.cso", L"bonemat.fx", L"CS_BoneMatrix", 256, 1, 1)
 	, m_OffsetMatBuffer(nullptr)
 	, m_CurClipFrameDataBuffer(nullptr)
 	, m_NextClipFrameDataBuffer(nullptr)

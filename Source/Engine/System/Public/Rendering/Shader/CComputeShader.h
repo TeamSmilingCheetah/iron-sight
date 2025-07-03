@@ -35,7 +35,7 @@ protected:
 
 private:
 	int CreateComputeShader(const wstring& PBlobFilePath,
-	                        const wstring& PEffectFilePath, const string& PFunctionName);
+	                        const wstring& PEffectsFilePath, const wstring& PEntryPointName);
 
 public:
 	int Execute();
@@ -45,7 +45,7 @@ public:
 
 	// Special Member Function
 	CLONE_DISABLE(CComputeShader);
-	CComputeShader(const wstring& PBlobPath, const wstring& PRelativeFilePath, const string& PFunctionName,
+	CComputeShader(const wstring& PBlobPath, const wstring& PRelativeFilePath, const wstring& PFunctionName,
 	               int PGroupPerX, int PGroupPerY, int PGroupPerZ);
 	~CComputeShader() override;
 };
