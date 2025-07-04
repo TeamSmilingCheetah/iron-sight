@@ -31,6 +31,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -38,13 +39,14 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -52,7 +54,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -135,7 +137,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path \"$(SolutionDir)OutputFile\Content\Shader\") { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path \"$(SolutionDir)OutputFile\Content\Shader\\*\" -Recurse -Force; Write-Host 'Done!' }"</Command>
+      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader') { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader\*' -Recurse -Force; Write-Host 'Done!' }; Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path 'C:\Projects\iron-sight\Source\Client\' -Filter 'unity_*.cpp' -File; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,6 +164,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader') { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader\*' -Recurse -Force; Write-Host 'Done!' }; Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path 'C:\Projects\iron-sight\Source\Client\' -Filter 'unity_*.cpp' -File; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Build\framework.h" />
