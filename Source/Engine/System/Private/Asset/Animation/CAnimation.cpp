@@ -138,6 +138,16 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 	return vecRetClips;
 }
 
+int CAnimation::FindBoneIndex(const wstring& _BoneName)
+{
+	if (m_Skeleton != nullptr)
+	{
+		int BornIndex = m_Skeleton->FindBoneIndex(_BoneName);
+		return BornIndex;
+	}
+	return -1;
+}
+
 int CAnimation::Save(const wstring& _RelativePath)
 {
 	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);

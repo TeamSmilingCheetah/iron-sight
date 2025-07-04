@@ -87,6 +87,10 @@ public:
 
 	void Crop(int _StartIdx, int _EndIdx);
 
+	int FindBoneIndex(const wstring& _BoneName);
+	Matrix GetBoneWorldTransform(int _BoneIndex);
+	Matrix GetBoneWorldTransform(const wstring& _BoneName);
+
 private:
 	void CreateBoneObject();
 	void LinkBoneObject();

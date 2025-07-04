@@ -23,6 +23,31 @@ CSkeleton::~CSkeleton()
 }
 
 
+int CSkeleton::FindBoneIndex(const wstring& _BoneName) const
+{
+	for (int i = 0; i < m_vecBones.size(); ++i)
+	{
+		if (m_vecBones[i].strBoneName == _BoneName)
+			return i;
+	}
+
+	// 검색 실패시 존재하지않는 인덱스 -1 반환
+	return -1;
+}
+
+const tMTBone* CSkeleton::FindBone(const wstring& _BoneName) const
+{
+	// 존재하는지 검색
+	int index = FindBoneIndex(_BoneName);
+	if (index >= 0)
+	{
+		// 존재하면 해당 본 데이터 반환
+		return &m_vecBones[index];
+	}
+
+	return nullptr;
+}
+
 Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 {
 	Ptr<CSkeleton> pSkeleton = nullptr;

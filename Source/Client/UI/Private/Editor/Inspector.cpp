@@ -30,6 +30,7 @@
 #include "Client/UI/Public/Component/DecalUI.h"
 #include "Client/UI/Public/Component/TransformUI.h"
 #include "Client/UI/Public/Component/ParticleUI.h"
+#include "Client/UI/Public/Asset/SkeletonUI.h"
 
 class CScript;
 
@@ -432,12 +433,10 @@ void Inspector::CreateAssetUI()
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::FLIPBOOK)] = new FlipbookUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SPRITE)] = new SpriteUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::MATERIAL)] = new MaterialUI;
+	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SKELETON)] = new SkeletonUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::GRAPHIC_SHADER)] = new GraphicShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::COMPUTE_SHADER)] = new ComputeShaderUI;
 	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::ANIMATION)] = new AnimationUI;
-
-	// FIXME : 애셋 UI 추가
-	m_arrAssetUI[static_cast<UINT>(ASSET_TYPE::SKELETON)] = new ComputeShaderUI;
 
 
 	for (UINT i = 0; i < static_cast<UINT>(ASSET_TYPE::END); ++i)

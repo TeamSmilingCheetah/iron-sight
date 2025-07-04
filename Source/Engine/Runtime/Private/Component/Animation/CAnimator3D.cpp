@@ -454,6 +454,29 @@ void CAnimator3D::Crop(int _StartIdx, int _EndIdx)
 	m_CurClip->Crop(_StartIdx, _EndIdx);
 }
 
+int CAnimator3D::FindBoneIndex(const wstring& _BoneName)
+{
+	if (m_CurClip == nullptr)
+		return -1;
+
+	return m_CurClip->FindBoneIndex(_BoneName);
+}
+
+Matrix CAnimator3D::GetBoneWorldTransform(int _BoneIndex)
+{
+	// 유효하지 않은 인덱스 번호일 경우 단위행렬 반환
+	if (_BoneIndex < 0 || _BoneIndex >= m_vecBoneWorldTransform.size())
+		return XMMatrixIdentity();
+
+	return m_vecBoneWorldTransform[_BoneIndex];
+}
+
+Matrix CAnimator3D::GetBoneWorldTransform(const wstring& _BoneName)
+{
+	int index = FindBoneIndex(_BoneName);
+	return GetBoneWorldTransform(index);
+}
+
 void CAnimator3D::SaveComponent(FILE* _File)
 {
 	int ClipCnt = static_cast<int>(m_mapClip.size());

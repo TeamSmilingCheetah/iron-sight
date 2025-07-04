@@ -175,6 +175,8 @@ ASSET_TYPE ContentUI::GetAssetType(const wstring& _Path)
 		return SPRITE;
 	if (L".mtrl" == Ext)
 		return MATERIAL;
+	if (L".bone" == Ext)
+		return SKELETON;
 
 	return END;
 }
@@ -299,6 +301,9 @@ Ptr<CAsset> ContentUI::LoadAsset(tFSNode* _FSNode)
 			break;
 		case ANIMATION:
 			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CAnimation>(RelativeFilePath, RelativeFilePath).Get());
+			break;
+		case SKELETON:
+			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CSkeleton>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case SPRITE:
 			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CSprite>(RelativeFilePath, RelativeFilePath).Get());

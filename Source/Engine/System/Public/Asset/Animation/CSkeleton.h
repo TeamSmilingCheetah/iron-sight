@@ -26,6 +26,11 @@ public:
 
 	const vector<Matrix> GetBindLocal() const { return m_vecBindLocal; }
 
+	// 뼈대 이름으로 인덱스 찾기
+	int FindBoneIndex(const wstring& _BoneName) const;
+	// 뼈대 이름으로 뼈대 정보 가져오기
+	const tMTBone* FindBone(const wstring& _BoneName) const;
+
 public:
 	static Ptr<CSkeleton> LoadFromFBX(CFBXLoader& _loader);
 

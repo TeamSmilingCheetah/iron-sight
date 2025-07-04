@@ -47,6 +47,8 @@ public:
 
 	void Crop(int _StartIdx, int _EndIdx);
 
+	int FindBoneIndex(const wstring& _BoneName);
+
 public:
 	static vector<Ptr<CAnimation>> LoadFromFBX(CFBXLoader& _loader);
 
