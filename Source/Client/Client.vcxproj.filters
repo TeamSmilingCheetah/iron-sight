@@ -503,5 +503,11 @@
     <ClCompile Include="Script\Private\CEditorSpaceCamScript.cpp">
       <Filter>02. EditorMgr\EditorCamScript</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Private\FClientApp.cpp">
+      <Filter>Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Private\FWindow.cpp">
+      <Filter>Core\Private</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
