@@ -55,8 +55,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// Std2DShader : 표준 2D 쉐이더
 	// ===========================
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"std2d.cso",L"std2d.fx", L"VS_Std2D");
-	pShader->CreatePixelShader(L"std2d.cso", L"std2d.fx", L"PS_Std2D");
+	pShader->CreateVertexShader(L"std2d_vs.cso",L"std2d.fx", L"VS_Std2D");
+	pShader->CreatePixelShader(L"std2d_ps.cso", L"std2d.fx", L"PS_Std2D");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::DEFAULT);
@@ -195,7 +195,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// ==================================
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"tilemap_vs.cso", L"tilemap.fx", L"VS_TileMap");
-	pShader->CreatePixelShader(L"tilemap_vs.cso", L"tilemap.fx", L"PS_TileMap");
+	pShader->CreatePixelShader(L"tilemap_ps.cso", L"tilemap.fx", L"PS_TileMap");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::DEFAULT);

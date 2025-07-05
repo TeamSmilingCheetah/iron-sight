@@ -194,8 +194,8 @@ void CRenderMgr::CreateDebugMtrl()
 	// ==============
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"debug_skeleton_vs.cso", L"debug.fx", L"VS_DebugSkeleton");
-	pShader->CreateGeometryShader(L"debug_skeleton_vs.cso", L"debug.fx", L"GS_DebugSkeleton");
-	pShader->CreatePixelShader(L"debug_skeleton_vs.cso", L"debug.fx", L"PS_DebugSkeleton");
+	pShader->CreateGeometryShader(L"debug_skeleton_gs.cso", L"debug.fx", L"GS_DebugSkeleton");
+	pShader->CreatePixelShader(L"debug_skeleton_ps.cso", L"debug.fx", L"PS_DebugSkeleton");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	CAssetMgr::GetInst()->AddAsset(L"DebugSkeletonShader", pShader);

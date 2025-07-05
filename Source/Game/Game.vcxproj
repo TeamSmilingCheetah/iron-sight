@@ -181,7 +181,6 @@
     <ClInclude Include="System\Public\GameplayManager.h" />
     <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
-    <ClInclude Include="Gameplay\Component\Public\WeaponComponent.h" />
     <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h" />
     <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
@@ -197,7 +196,7 @@
     <ClCompile Include="Gameplay\Inventory\Private\UI_Vicinity.cpp" />
     <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
-    <ClCompile Include="Gameplay\Character\Public\EnemyVisionScript.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp" />
@@ -217,7 +216,6 @@
     <ClCompile Include="System\Private\GameplayManager.cpp" />
     <ClCompile Include="Gameplay\Character\Private\CameraController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp" />
-    <ClInclude Include="Gameplay\Component\Private\WeaponComponent.cpp" />
     <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
     <ClCompile Include="Level\Private\TestLevel.cpp" />
   </ItemGroup>
