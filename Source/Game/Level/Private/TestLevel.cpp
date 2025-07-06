@@ -68,20 +68,20 @@ void TestLevel::CreateTestLevel()
 	pLevel->GetLayer(10)->SetName(L"BulletLayer");
 
 	// 충돌 설정
-	CCollisionMgr::GetInst()->CollisionCheck(0, 0);
-	CCollisionMgr::GetInst()->CollisionCheck(0, 1);
-	CCollisionMgr::GetInst()->CollisionCheck(3, 0);
-	CCollisionMgr::GetInst()->CollisionCheck(3, 6);
-	CCollisionMgr::GetInst()->CollisionCheck(3, 1);
-	CCollisionMgr::GetInst()->CollisionCheck(3, 7);
-	CCollisionMgr::GetInst()->CollisionCheck(0, 7);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 0);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 1);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 7);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 0);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 1);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 6);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 7);
 
 	// 총알이 충돌될 레이어
-	CCollisionMgr::GetInst()->CollisionCheck(0, 10);
-	CCollisionMgr::GetInst()->CollisionCheck(1, 10);
-	CCollisionMgr::GetInst()->CollisionCheck(3, 10);
-	CCollisionMgr::GetInst()->CollisionCheck(4, 10);
-	CCollisionMgr::GetInst()->CollisionCheck(7, 10);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 10);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(1, 10);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 10);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(4, 10);
+	CCollisionMgr::GetInst()->ToggleLayerCollision(7, 10);
 
 	CGameObject* pObject = nullptr;
 
@@ -461,7 +461,7 @@ void TestLevel::CreateTestLevel()
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 	childUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
 
-	
+
 	childUI->AddComponent(new CUIRender);
 	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(INT_0, 1);
@@ -470,7 +470,7 @@ void TestLevel::CreateTestLevel()
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.2f);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	
+
 	CanvasUI->AddChild(childUI);
 
 
@@ -485,7 +485,7 @@ void TestLevel::CreateTestLevel()
 	// ============
 	// FBX Loading
 	// ============
-	
+
 	Ptr<CMeshData> pMeshData = nullptr;
 	CGameObject* pObj = nullptr;
 
@@ -495,7 +495,7 @@ void TestLevel::CreateTestLevel()
 
 	// TEST: LoadAnimationFrom FBX
 	Ptr<CMeshData> pAnimationSet = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James_Anim.fbx");
-		
+
 	Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
 
 	int modelCnt = 1;
@@ -878,13 +878,13 @@ void TestLevel::CreateTestLevel()
 	pObject->SetName(L"TestTarget");
 	pObject->AddComponent(new CCollider3D);
 	pObject->AddComponent(new TestCharacter);
-	
+
 	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
 	pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
 	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	
+
 	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-	
+
 	pLevel->AddObject(7, pObject, false);
 
 	// 적 시야 테스트
@@ -928,16 +928,16 @@ void TestLevel::CreateTestLevel()
 	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
 
 	//pLevel->AddObject(1, testojb, false);
-		
+
 	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
 	testPlayer->SetName(L"Test_Player");
-	
+
 	testPlayer->Transform()->SetRelativePos(Vec3(500.f, -380.f, 1000.f));
 	testPlayer->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 	testPlayer->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
 
 	testPlayer->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
-	
+
 	pLevel->AddObject(1, testPlayer, false);
-	
+
 }

@@ -4,6 +4,7 @@
 class CComponent;
 class CRenderComponent;
 class CScript;
+class CMeshCollider;
 
 class CGameObject :
 	public CEntity
@@ -99,6 +100,7 @@ public:
 	class CLandScape* LandScape() const { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
 	class CUI* UI() const { return (CUI*)GetComponent(COMPONENT_TYPE::UI); }
 	class CUIRender* UIRender() const { return (CUIRender*)GetComponent(COMPONENT_TYPE::UIRENDER); }
+	class CMeshCollider* MeshCollider() const { return (CMeshCollider*)GetComponent(COMPONENT_TYPE::MESH_COLLIDER); }
 
 	bool GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const;
 

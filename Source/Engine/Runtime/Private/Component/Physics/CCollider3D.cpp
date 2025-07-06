@@ -1,32 +1,34 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 
-#include "Runtime/Public/Component/Script/CScript.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
-
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 
 CCollider3D::CCollider3D()
-	:CComponent(COMPONENT_TYPE::COLLIDER3D)
-	, m_IndependentScale(false)
-	, m_OverlapCount(0)
-	, m_Offset(Vec3(0.f))
-	, m_Scale(Vec3(0.f))
-	, m_State(ACTIVE)
-	, m_Status(0)
+	: CComponent(COMPONENT_TYPE::COLLIDER3D)
+	  , m_Offset(Vec3(0.f))
+	  , m_Scale(Vec3(0.f))
+	  , m_RotY(0)
+	  , m_OverlapCount(0)
+	  , m_Status(0), m_State(ACTIVE)
+	  , m_IndependentScale(false)
 {
 }
 
-CCollider3D::CCollider3D(const CCollider3D& _Origin)
-	: CComponent(_Origin)
-	, m_Offset(_Origin.m_Offset)
-	, m_Scale(_Origin.m_Scale)
-	, m_FinalPos(_Origin.m_FinalPos)
-	, m_IndependentScale(_Origin.m_IndependentScale)
-	, m_OverlapCount(0)
-	, m_State(_Origin.m_State)
-	, m_Status(_Origin.m_Status)
+CCollider3D::~CCollider3D() = default;
+
+CCollider3D::CCollider3D(const CCollider3D& POrigin)
+	: CComponent(POrigin)
+	  , m_Offset(POrigin.m_Offset)
+	  , m_Scale(POrigin.m_Scale)
+	  , m_RotY(0), m_FinalPos(POrigin.m_FinalPos)
+	  , m_OverlapCount(0)
+	  , m_Status(POrigin.m_Status)
+	  , m_State(POrigin.m_State)
+	  , m_IndependentScale(POrigin.m_IndependentScale)
 {
 }
 
@@ -39,10 +41,6 @@ void CCollider3D::Deactivate()
 {
 	if (m_State != SEMIDEACTIVE)
 		m_State = SEMIDEACTIVE;
-}
-
-CCollider3D::~CCollider3D()
-{
 }
 
 void CCollider3D::FinalTick()
@@ -69,12 +67,12 @@ void CCollider3D::FinalTick()
 		if (m_IndependentScale)
 		{
 			Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
-			Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));			
+			Matrix matScaleInv = XMMatrixInverse(
+				nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
 			m_matColliderWorld = matScale * matRot * matTrans * matScaleInv * ownerMatNoRot;
 		}
 		else
 		{
-			Matrix ownerTrans = XMMatrixTranslationFromVector(GetOwner()->Transform()->GetWorldPos() * GetOwner()->Transform()->GetWorldScale());
 			m_matColliderWorld = matScale * matRot * matTrans * ownerMatNoRot;
 		}
 	}
@@ -83,9 +81,9 @@ void CCollider3D::FinalTick()
 		if (m_IndependentScale)
 		{
 			Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
-			Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
+			Matrix matScaleInv = XMMatrixInverse(
+				nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
 			m_matColliderWorld = matScale * matRot * matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
-
 		}
 		else
 		{
@@ -105,90 +103,119 @@ void CCollider3D::FinalTick()
 }
 
 
-void CCollider3D::BeginOverlap(CCollider3D* _Other)
+void CCollider3D::BeginOverlap(CCollider3D* POther)
 {
 	++m_OverlapCount;
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider3D::Overlap(CCollider3D* _Other)
+void CCollider3D::Overlap(CCollider3D* POther)
 {
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->Overlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider3D::EndOverlap(CCollider3D* _Other)
+void CCollider3D::EndOverlap(CCollider3D* POther)
 {
 	--m_OverlapCount;
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider3D::BeginOverlap(CColliderRay* _Other)
+void CCollider3D::BeginOverlap(CColliderRay* POther)
 {
 	++m_OverlapCount;
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->BeginOverlap(_Other, _Other->GetOwner(), this);
+		vecScript[i]->BeginOverlap(POther, POther->GetOwner(), this);
 	}
 }
 
-void CCollider3D::Overlap(CColliderRay* _Other)
+void CCollider3D::Overlap(CColliderRay* POther)
 {
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->Overlap(_Other, _Other->GetOwner(), this);
+		vecScript[i]->Overlap(POther, POther->GetOwner(), this);
 	}
 }
 
-void CCollider3D::EndOverlap(CColliderRay* _Other)
+void CCollider3D::EndOverlap(CColliderRay* POther)
 {
 	--m_OverlapCount;
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->EndOverlap(_Other, _Other->GetOwner(), this);
+		vecScript[i]->EndOverlap(POther, POther->GetOwner(), this);
 	}
 }
 
-void CCollider3D::BeginOverlap(CLandScape* _Other)
+void CCollider3D::BeginOverlap(CLandScape* POther)
 {
 	++m_OverlapCount;
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider3D::Overlap(CLandScape* _Other)
+void CCollider3D::Overlap(CLandScape* POther)
 {
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->Overlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider3D::EndOverlap(CLandScape* _Other)
+void CCollider3D::EndOverlap(CLandScape* POther)
 {
 	--m_OverlapCount;
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
+	}
+}
+
+void CCollider3D::BeginOverlap(CMeshCollider* POther)
+{
+	++m_OverlapCount;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->BeginOverlap(POther, POther->GetOwner(), this);
+	}
+}
+
+void CCollider3D::Overlap(CMeshCollider* POther)
+{
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->Overlap(POther, POther->GetOwner(), this);
+	}
+}
+
+void CCollider3D::EndOverlap(CMeshCollider* POther)
+{
+	--m_OverlapCount;
+	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
+	for (size_t i = 0; i < vecScript.size(); ++i)
+	{
+		vecScript[i]->EndOverlap(POther, POther->GetOwner(), this);
 	}
 }
 
@@ -204,7 +231,7 @@ void CCollider3D::SetTrigger(bool _true)
 	}
 }
 
-void CCollider3D::SetIndependetRot(bool _true)
+void CCollider3D::SetIndependentRot(bool _true)
 {
 	if (_true)
 	{
@@ -216,24 +243,24 @@ void CCollider3D::SetIndependetRot(bool _true)
 	}
 }
 
-void CCollider3D::SaveComponent(FILE* _File)
+void CCollider3D::SaveComponent(FILE* PFile)
 {
-	fwrite(&m_Offset, sizeof(Vec3), 1, _File);
-	fwrite(&m_Scale, sizeof(Vec3), 1, _File);
-	fwrite(&m_FinalPos, sizeof(Vec3), 1, _File);
-	fwrite(&m_IndependentScale, sizeof(bool), 1, _File);
+	(void)fwrite(&m_Offset, sizeof(Vec3), 1, PFile);
+	(void)fwrite(&m_Scale, sizeof(Vec3), 1, PFile);
+	(void)fwrite(&m_FinalPos, sizeof(Vec3), 1, PFile);
+	(void)fwrite(&m_IndependentScale, sizeof(bool), 1, PFile);
 
 	// 추가 필요 저장 데이터
-	fwrite(&m_Status, sizeof(int), 1, _File);
+	(void)fwrite(&m_Status, sizeof(int), 1, PFile);
 }
 
-void CCollider3D::LoadComponent(FILE* _File)
+void CCollider3D::LoadComponent(FILE* PFile)
 {
-	fread(&m_Offset, sizeof(Vec3), 1, _File);
-	fread(&m_Scale, sizeof(Vec3), 1, _File);
-	fread(&m_FinalPos, sizeof(Vec3), 1, _File);
-	fread(&m_IndependentScale, sizeof(bool), 1, _File);
+	(void)fread(&m_Offset, sizeof(Vec3), 1, PFile);
+	(void)fread(&m_Scale, sizeof(Vec3), 1, PFile);
+	(void)fread(&m_FinalPos, sizeof(Vec3), 1, PFile);
+	(void)fread(&m_IndependentScale, sizeof(bool), 1, PFile);
 
 	// 추가 필요 로드 데이터
-	fread(&m_Status, sizeof(int), 1, _File);
+	(void)fread(&m_Status, sizeof(int), 1, PFile);
 }

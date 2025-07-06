@@ -1,215 +1,240 @@
 #include "pch.h"
-#include "System/Public/Manager/CCollisionMgr.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Actor/CLevel.h"
-#include "Runtime/Public/Component/Physics/CCollider2D.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
-#include "System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 
-CCollisionMgr::CCollisionMgr()
-{
+#include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 
-}
+CCollisionMgr::CCollisionMgr() = default;
 
-CCollisionMgr::~CCollisionMgr()
-{
+CCollisionMgr::~CCollisionMgr() = default;
 
-}
-
-// 충돌 체크가 필요한 레이어인지 확인
+/**
+ * @brief 전체 충돌 처리 로직의 처리 함수
+ */
 void CCollisionMgr::Tick()
 {
+	// 0. Early Return
 	if (!CLevelMgr::GetInst()->GetCurrentLevel())
 		return;
 
+	// 1. Layer 간의 충돌 처리
+	ProcessCollisionMatrix();
 
-	for (UINT Row = 0; Row < MAX_LAYER; ++Row)
-	{
-		for (UINT Col = Row; Col < MAX_LAYER; ++Col)
-		{
-			// 1이란 값이 없는 레이어면 확인 하지않음
-			if (!(m_Matrix[Row] & (1 << Col)))
-				continue;
-
-			// Row, Col 두 레이어 충돌체크를 해야한다.
-			CollisionBtwLayer(Row, Col);
-		}
-	}
-
-
-	// LandScape의 충돌 작업(Ray만 판별, 3D는 이미 먼저 처리됨, 복수타겟 레이도 여기서 처리됨)
+	// 2. LandScape의 충돌 작업 (Ray만 판별, 3D는 이미 먼저 처리됨, 복수타겟 레이도 여기서 처리됨)
 	LandCheak();
 
-
-	// Ray충돌 작업(단일 타겟만 여기서 추가 연산됨)
+	// 3. 단일 타겟 Ray 충돌에 대한 추가 연산 처리
 	RayOverlapCheak();
 
-
-	// 정보 초기화
+	// 4. Reset Information
 	m_LandObject.clear();
 	m_RayColInfo.clear();
 }
 
-// 각 레이어에 들어있는 오브젝트들을 확인
-void CCollisionMgr::CollisionBtwLayer(UINT _Left, UINT _Right)
+/**
+ * @brief 레이어 간의 충돌 설정을 변경하는 함수
+ * 충돌 On의 경우 Off, Off인 경우 On으로 변경하도록 구현되어 있음
+ */
+void CCollisionMgr::ToggleLayerCollision(UINT PLeft, UINT PRight)
 {
-	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	UINT Row = PLeft;
+	UINT Col = PRight;
 
-	const vector<CGameObject*>& vecLeft = pCurLevel->GetLayer(_Left)->GetObjects();
-	const vector<CGameObject*>& vecRight = pCurLevel->GetLayer(_Right)->GetObjects();
-
-	// 충돌 검사를 하려는 두 레이어가 다른 레이어인 경우
-	if (_Left != _Right)
+	if (Col < Row)
 	{
-		for (size_t i = 0; i < vecLeft.size(); ++i)
-		{
-			// 2D 충돌체 검사
-			if (vecLeft[i]->Collider2D())
-			{
-				for (size_t j = 0; j < vecRight.size(); ++j)
-				{
-					if (vecRight[j]->Collider2D())
-						CollisionBtwCollider2D(vecLeft[i]->Collider2D(), vecRight[j]->Collider2D());
-				}
-			}
-
-			// 3D 충돌체 검사
-			if (vecLeft[i]->Collider3D())
-			{
-				for (size_t j = 0; j < vecRight.size(); ++j)
-				{
-					// 3D간 충돌의 경우
-					if (vecRight[j]->Collider3D())
-						CollisionBtwCollider3D(vecLeft[i]->Collider3D(), vecRight[j]->Collider3D());
-
-					// LandScape와 충돌의 경우
-					if (vecRight[j]->LandScape())
-					{
-						CollisionBtwLandScape3D(vecLeft[i]->Collider3D(), vecRight[j]->LandScape());
-					}
-
-					// Ray와 충돌의 경우
-					if (vecRight[j]->ColliderRay())
-					{
-						CollisionBtwColliderRay(vecRight[j]->ColliderRay(), vecLeft[i]->Collider3D());
-					}
-				}
-			}
-
-			// LandScape 검사
-			if (vecLeft[i]->LandScape())
-			{
-				for (size_t j = 0; j < vecRight.size(); ++j)
-				{
-					// 3D간 충돌의 경우
-					if (vecRight[j]->Collider3D())
-						CollisionBtwLandScape3D(vecRight[j]->Collider3D(), vecLeft[i]->LandScape());
-
-					// Ray와 충돌의 경우
-					if (vecRight[j]->ColliderRay())
-						CollisionBtwLandScapeRay(vecRight[j]->ColliderRay(), vecLeft[i]->LandScape());
-				}
-			}
-
-			// RayCast 검사
-			if (vecLeft[i]->ColliderRay())
-			{
-				for (size_t j = 0; j < vecRight.size(); ++j)
-				{
-					if (vecRight[j]->Collider3D())
-						CollisionBtwColliderRay(vecLeft[i]->ColliderRay(), vecRight[j]->Collider3D());
-
-					if (vecRight[j]->LandScape())
-						CollisionBtwLandScapeRay(vecLeft[i]->ColliderRay(), vecRight[j]->LandScape());
-				}
-
-			}
-		}
+		Row = PRight;
+		Col = PLeft;
 	}
 
-	// 두 레이어가 동일한 경우
+	if (m_Matrix[Row] & (1 << Col))
+	{
+		m_Matrix[Row] &= ~(1 << Col);
+	}
 	else
 	{
-		for (size_t i = 0; i < vecLeft.size(); ++i)
+		m_Matrix[Row] |= (1 << Col);
+	}
+}
+
+/** Collision In Matrix **/
+
+/**
+ * @brief Layer 간의 충돌에 대해서 처리하는 함수
+ */
+void CCollisionMgr::ProcessCollisionMatrix()
+{
+	// Layer Matching
+	for (UINT Row = 0; Row < MAX_LAYER; ++Row)
+	{
+		for (UINT Col = Row; Col < MAX_LAYER; ++Col)
 		{
-			// 2D 충돌체 검사
-			if (vecLeft[i]->Collider2D())
+			if (m_Matrix[Row] & (1 << Col))
 			{
-				// 두 레이어가 동일한경우면 전에 검사한 오브젝트를 검사하는 경우를 제외해야한다.
-				// 그러니 i +1 부터 시작하도록 한다.
-				for (size_t j = i + 1; j < vecRight.size(); ++j)
+				// 1. 단일 레이어 내의 충돌 처리
+				if (Row == Col)
 				{
-					if (vecRight[j]->Collider2D())
-						CollisionBtwCollider2D(vecLeft[i]->Collider2D(), vecRight[j]->Collider2D());
+					CollisionsInLayer(Row);
 				}
-			}
-
-			// 3D 충돌체 검사
-			if (vecLeft[i]->Collider3D())
-			{
-				for (size_t j = i + 1; j < vecRight.size(); ++j)
+				// 2. Matching된 Layer 간의 발생하는 충돌 처리
+				else
 				{
-					if (vecRight[j]->Collider3D())
-						CollisionBtwCollider3D(vecLeft[i]->Collider3D(), vecRight[j]->Collider3D());
-
-					// LandScape와 충돌의 경우
-					if (vecRight[j]->LandScape())
-					{
-						CollisionBtwLandScape3D(vecLeft[i]->Collider3D(), vecRight[j]->LandScape());
-					}
-
-					// Ray와 충돌의 경우
-					if (vecRight[j]->ColliderRay())
-					{
-						CollisionBtwColliderRay(vecRight[j]->ColliderRay(), vecLeft[i]->Collider3D());
-					}
+					CollisionBtwLayer(Row, Col);
 				}
-			}
-
-			// LandScape 검사
-			if (vecLeft[i]->LandScape())
-			{
-				for (size_t j = i + 1; j < vecRight.size(); ++j)
-				{
-					// 3D간 충돌의 경우
-					if (vecRight[j]->Collider3D())
-						CollisionBtwLandScape3D(vecRight[j]->Collider3D(), vecLeft[i]->LandScape());
-
-					// Ray와 충돌의 경우
-					if (vecRight[j]->ColliderRay())
-						CollisionBtwLandScapeRay(vecRight[j]->ColliderRay(), vecLeft[i]->LandScape());
-				}
-			}
-
-			// RayCast검사
-			if (vecLeft[i]->ColliderRay())
-			{
-				for (size_t j = i + 1; j < vecRight.size(); ++j)
-				{
-					if (vecRight[j]->Collider3D())
-						CollisionBtwColliderRay(vecLeft[i]->ColliderRay(), vecRight[j]->Collider3D());
-
-					// LandScape와 충돌의 경우
-					if (vecRight[j]->LandScape())
-					{
-						CollisionBtwLandScapeRay(vecLeft[i]->ColliderRay(), vecRight[j]->LandScape());
-					}
-				}
-
 			}
 		}
 	}
+}
 
+/**
+ * @brief 단일 레이어 내의 오브젝트 간의 충돌에 대해 처리하는 함수
+ *
+ * @param PLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index
+ */
+void CCollisionMgr::CollisionsInLayer(UINT PLayerIndex)
+{
+	const vector<CGameObject*>& ObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
+	                                                               ->GetLayer(PLayerIndex)->GetObjects();
+
+	// 동일 레이어 내에서는 중복을 고려하여 절반의 횟수만 처리하면 된다
+	for (size_t i = 0; i < ObjectVector.size(); ++i)
+	{
+		for (size_t j = i + 1; j < ObjectVector.size(); ++j)
+		{
+			CollisionCheckWithTypeMatching(ObjectVector[i], ObjectVector[j]);
+		}
+	}
+}
+
+/**
+ * @brief 두 레이어 간의 충돌 처리 함수
+ *
+ * @param PLeftIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 1
+ * @param PRightIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 2
+ */
+void CCollisionMgr::CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex)
+{
+	const vector<CGameObject*>& LeftObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
+	                                                                   ->GetLayer(PLeftIndex)->GetObjects();
+	const vector<CGameObject*>& RightObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
+	                                                                    ->GetLayer(PRightIndex)->GetObjects();
+
+	// 서로 다른 레이어의 경우 모든 충돌 검사를 위해서는 sizeL * sizeR 전부 확인해야 한다
+	for (size_t i = 0; i < LeftObjectVector.size(); ++i)
+	{
+		for (size_t j = 0; j < RightObjectVector.size(); ++j)
+		{
+			CollisionCheckWithTypeMatching(LeftObjectVector[i], RightObjectVector[j]);
+		}
+	}
+}
+
+/**
+ * @brief 해당 오브젝트의 충돌 컴포넌트 타입에 맞춰 적절하게 충돌 체크를 진행하는 함수
+ *
+ * @param PLeftObject Object 1
+ * @param PRightObject Object 2
+ */
+void CCollisionMgr::CollisionCheckWithTypeMatching(const CGameObject* PLeftObject, const CGameObject* PRightObject)
+{
+	// 1. 2D 충돌체 검사
+	if (PLeftObject->Collider2D())
+	{
+		if (PRightObject->Collider2D())
+		{
+			CollisionBtwCollider2D(PLeftObject->Collider2D(), PRightObject->Collider2D());
+			return;
+		}
+	}
+
+	// 2. 3D 충돌체 검사
+	if (PLeftObject->Collider3D())
+	{
+		if (PRightObject->Collider3D())
+		{
+			CollisionBtwCollider3D(PLeftObject->Collider3D(), PRightObject->Collider3D());
+			return;
+		}
+
+		if (PRightObject->LandScape())
+		{
+			CollisionBtwLandScape3D(PLeftObject->Collider3D(), PRightObject->LandScape());
+			return;
+		}
+
+		if (PRightObject->ColliderRay())
+		{
+			CollisionBtwColliderRay(PRightObject->ColliderRay(), PLeftObject->Collider3D());
+			return;
+		}
+	}
+
+	// 3. LandScape 검사
+	if (PLeftObject->LandScape())
+	{
+		// 3D간 충돌의 경우
+		if (PRightObject->Collider3D())
+		{
+			CollisionBtwLandScape3D(PRightObject->Collider3D(), PLeftObject->LandScape());
+			return;
+		}
+
+		// Ray와 충돌의 경우
+		if (PRightObject->ColliderRay())
+		{
+			CollisionBtwLandScapeRay(PRightObject->ColliderRay(), PLeftObject->LandScape());
+			return;
+		}
+	}
+
+	// 4. RayCast 검사
+	if (PLeftObject->ColliderRay())
+	{
+		if (PRightObject->Collider3D())
+		{
+			CollisionBtwColliderRay(PLeftObject->ColliderRay(), PRightObject->Collider3D());
+			return;
+		}
+
+		// LandScape와 충돌의 경우
+		if (PRightObject->LandScape())
+		{
+			CollisionBtwLandScapeRay(PLeftObject->ColliderRay(), PRightObject->LandScape());
+			return;
+		}
+	}
+
+	// 5. Mesh Collider
+	if (PLeftObject->MeshCollider())
+	{
+		if (PRightObject->MeshCollider())
+		{
+			CollisionWithMesh(PLeftObject->MeshCollider(), PRightObject->MeshCollider());
+			return;
+		}
+
+		if (PRightObject->Collider3D())
+		{
+			CollisionWithMesh(PLeftObject->MeshCollider(), PRightObject->Collider3D());
+			return;
+		}
+
+		// TODO(KHJ): 나머지 충돌체 판정도 필요하다면 구현할 것
+	}
 }
 
 // Collider 컴포넌트 충돌체크 후 알맞게 호출
-void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _RightCol)
+void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* PLeftCol, CCollider2D* PRightCol)
 {
-	COLLIDER_ID id = {};
-	id.Left = _LeftCol->GetID();
-	id.Right = _RightCol->GetID();
+	COLLIDER_ID id;
+	id.Left = PLeftCol->GetID();
+	id.Right = PRightCol->GetID();
 
 	map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
 
@@ -222,26 +247,23 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
 	}
 
 	// 한쪽이 Dead상태
-	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
+	bool IsDead = PLeftCol->GetOwner()->IsDead() || PRightCol->GetOwner()->IsDead();
 
 	// 현재 겹쳐있다.
-	if (IsCollision(_LeftCol, _RightCol))
+	if (IsCollision(PLeftCol, PRightCol))
 	{
-
 		//충돌중이다.
 		if (iter->second)
 		{
 			// 둘중 하나가 곧 삭제 예정이다.
 			if (IsDead)
 			{
-
 			}
 			else
 			{
-				_LeftCol->Overlap(_RightCol);
-				_RightCol->Overlap(_LeftCol);
+				PLeftCol->Overlap(PRightCol);
+				PRightCol->Overlap(PLeftCol);
 			}
-
 		}
 		// 이전에는 떨어져 있었다.
 		else
@@ -249,12 +271,11 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
 			// 둘중 하나가 dead상태가 아니다
 			if (!IsDead)
 			{
-				_LeftCol->BeginOverlap(_RightCol);
-				_RightCol->BeginOverlap(_LeftCol);
+				PLeftCol->BeginOverlap(PRightCol);
+				PRightCol->BeginOverlap(PLeftCol);
 			}
 			iter->second = true;
 		}
-
 	}
 
 	// 현재 떨어져 있다.
@@ -262,20 +283,18 @@ void CCollisionMgr::CollisionBtwCollider2D(CCollider2D* _LeftCol, CCollider2D* _
 	{
 		if (iter->second == true)
 		{
-			_LeftCol->EndOverlap(_RightCol);
-			_RightCol->EndOverlap(_LeftCol);
+			PLeftCol->EndOverlap(PRightCol);
+			PRightCol->EndOverlap(PLeftCol);
 			iter->second = false;
 		}
-
 	}
-
 }
 
-void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _RightCol)
+void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* PLeftCol, CCollider3D* PRightCol)
 {
-	COLLIDER_ID id = {};
-	id.Left = _LeftCol->GetID();
-	id.Right = _RightCol->GetID();
+	COLLIDER_ID id;
+	id.Left = PLeftCol->GetID();
+	id.Right = PRightCol->GetID();
 
 	map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
 
@@ -285,37 +304,38 @@ void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _
 		iter = m_ColInfo.find(id.ID);
 	}
 
-	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated() || _RightCol->GetOwner()->IsDeactivated();
-	bool IsLayerChanged = _LeftCol->GetOwner()->IsLayerMove() || _RightCol->GetOwner()->IsLayerMove();
+	bool IsDead = PLeftCol->GetOwner()->IsDead() || PRightCol->GetOwner()->IsDead();
+	bool IsDeactive = PLeftCol->GetState() == DEACTIVE || PRightCol->GetState() == DEACTIVE || PLeftCol->GetOwner()->
+		IsDeactivated() || PRightCol->GetOwner()->IsDeactivated();
+	bool IsLayerChanged = PLeftCol->GetOwner()->IsLayerMove() || PRightCol->GetOwner()->IsLayerMove();
 
 
 	// 정책 변경 : 레이어 변경 만으로도 EndOverlap을 시키자.
 	// 바뀐 레이어도 충돌된다면 새로 BeginOverlap하는 방향이 맞아 보임
 
-	if (IsCollision3D(_LeftCol, _RightCol))
+	if (IsCollision3D(PLeftCol, PRightCol))
 	{
 		if (iter->second)
 		{
 			// 둘중 하나가 곧 삭제 예정이다.
 			if (IsDead || IsDeactive || IsLayerChanged)
 			{
-				_LeftCol->EndOverlap(_RightCol);
-				_RightCol->EndOverlap(_LeftCol);
+				PLeftCol->EndOverlap(PRightCol);
+				PRightCol->EndOverlap(PLeftCol);
 				iter->second = false;
 			}
 			else
 			{
-				_LeftCol->Overlap(_RightCol);
-				_RightCol->Overlap(_LeftCol);
+				PLeftCol->Overlap(PRightCol);
+				PRightCol->Overlap(PLeftCol);
 			}
 		}
 		else
 		{
 			if (!IsDead && !IsDeactive)
 			{
-				_LeftCol->BeginOverlap(_RightCol);
-				_RightCol->BeginOverlap(_LeftCol);
+				PLeftCol->BeginOverlap(PRightCol);
+				PRightCol->BeginOverlap(PLeftCol);
 				iter->second = true;
 			}
 		}
@@ -324,18 +344,18 @@ void CCollisionMgr::CollisionBtwCollider3D(CCollider3D* _LeftCol, CCollider3D* _
 	{
 		if (iter->second)
 		{
-			_LeftCol->EndOverlap(_RightCol);
-			_RightCol->EndOverlap(_LeftCol);
+			PLeftCol->EndOverlap(PRightCol);
+			PRightCol->EndOverlap(PLeftCol);
 			iter->second = false;
 		}
 	}
 }
 
-void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _RightCol)
+void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* PLeftCol, CLandScape* PRightCol)
 {
-	COLLIDER_ID id = {};
-	id.Left = _LeftCol->GetID();
-	id.Right = _RightCol->GetID();
+	COLLIDER_ID id;
+	id.Left = PLeftCol->GetID();
+	id.Right = PRightCol->GetID();
 
 	map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
 
@@ -345,29 +365,29 @@ void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _
 		iter = m_ColInfo.find(id.ID);
 	}
 
-	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated();
+	bool IsDead = PLeftCol->GetOwner()->IsDead() || PRightCol->GetOwner()->IsDead();
+	bool IsDeactive = PLeftCol->GetState() == DEACTIVE || PLeftCol->GetOwner()->IsDeactivated();
 
-	if (IsCollision3DLand(_LeftCol, _RightCol))
+	if (IsCollision3DLand(PLeftCol, PRightCol))
 	{
 		if (iter->second)
 		{
 			// 둘중 하나가 곧 삭제 예정이다.
 			if (IsDead || IsDeactive)
 			{
-				_LeftCol->EndOverlap(_RightCol);
+				PLeftCol->EndOverlap(PRightCol);
 				iter->second = false;
 			}
 			else
 			{
-				_LeftCol->Overlap(_RightCol);
+				PLeftCol->Overlap(PRightCol);
 			}
 		}
 		else
 		{
 			if (!IsDead && !IsDeactive)
 			{
-				_LeftCol->BeginOverlap(_RightCol);
+				PLeftCol->BeginOverlap(PRightCol);
 				iter->second = true;
 			}
 		}
@@ -376,24 +396,24 @@ void CCollisionMgr::CollisionBtwLandScape3D(CCollider3D* _LeftCol, CLandScape* _
 	{
 		if (iter->second)
 		{
-			_LeftCol->EndOverlap(_RightCol);
+			PLeftCol->EndOverlap(PRightCol);
 			iter->second = false;
 		}
 	}
 }
 
-void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D* _RightCol)
+void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* PLeftCol, CCollider3D* PRightCol)
 {
 	// Ray가 트리거를 감지할지 확인하고 판단
-	if (!(_LeftCol->IsTriggerTarget()) && _RightCol->IsTrigger())
+	if (!(PLeftCol->IsTriggerTarget()) && PRightCol->IsTrigger())
 	{
 		//트리거용 타겟을 감지하지 않아야하면 종료
 		return;
 	}
 
-	COLLIDER_ID id = {};
-	id.Left = _LeftCol->GetID();
-	id.Right = _RightCol->GetID();
+	COLLIDER_ID id;
+	id.Left = PLeftCol->GetID();
+	id.Right = PRightCol->GetID();
 
 	map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
 
@@ -403,41 +423,41 @@ void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D*
 		iter = m_ColInfo.find(id.ID);
 	}
 
-	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _RightCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated() || _RightCol->GetOwner()->IsDeactivated();
+	bool IsDead = PLeftCol->GetOwner()->IsDead() || PRightCol->GetOwner()->IsDead();
+	bool IsDeactive = PLeftCol->GetState() == DEACTIVE || PRightCol->GetState() == DEACTIVE || PLeftCol->GetOwner()->
+		IsDeactivated() || PRightCol->GetOwner()->IsDeactivated();
 
 	// 단일 타겟이면 Ray용 연산을 위해 연산 후 저장
-	if (!(_LeftCol->IsTargetAllMode()))
+	if (!(PLeftCol->IsTargetAllMode()))
 	{
-		if(!(IsDead) || !(IsDeactive))
-			IsCollisionRay(_LeftCol, _RightCol);
+		if (!(IsDead) || !(IsDeactive))
+			IsCollisionRay(PLeftCol, PRightCol);
 	}
 	else
 	{
-
-		if (IsCollisionRay(_LeftCol, _RightCol))
+		if (IsCollisionRay(PLeftCol, PRightCol))
 		{
 			if (iter->second)
 			{
 				// 둘중 하나가 곧 삭제 예정이다.
 				if (IsDead || IsDeactive)
 				{
-					_LeftCol->EndOverlap(_RightCol);
-					_RightCol->EndOverlap(_LeftCol);
+					PLeftCol->EndOverlap(PRightCol);
+					PRightCol->EndOverlap(PLeftCol);
 					iter->second = false;
 				}
 				else
 				{
-					_LeftCol->Overlap(_RightCol);
-					_RightCol->Overlap(_LeftCol);
+					PLeftCol->Overlap(PRightCol);
+					PRightCol->Overlap(PLeftCol);
 				}
 			}
 			else
 			{
 				if (!IsDead && !IsDeactive)
 				{
-					_LeftCol->BeginOverlap(_RightCol);
-					_RightCol->BeginOverlap(_LeftCol);
+					PLeftCol->BeginOverlap(PRightCol);
+					PRightCol->BeginOverlap(PLeftCol);
 					iter->second = true;
 				}
 			}
@@ -446,20 +466,19 @@ void CCollisionMgr::CollisionBtwColliderRay(CColliderRay* _LeftCol, CCollider3D*
 		{
 			if (iter->second)
 			{
-				_LeftCol->EndOverlap(_RightCol);
-				_RightCol->EndOverlap(_LeftCol);
+				PLeftCol->EndOverlap(PRightCol);
+				PRightCol->EndOverlap(PLeftCol);
 				iter->second = false;
 			}
 		}
 	}
-
 }
 
-void CCollisionMgr::CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape* _RightCol)
+void CCollisionMgr::CollisionBtwLandScapeRay(CColliderRay* PLeftCol, CLandScape* PRightCol)
 {
-	COLLIDER_ID id = {};
-	id.Left = _LeftCol->GetID();
-	id.Right = _RightCol->GetID();
+	COLLIDER_ID id;
+	id.Left = PLeftCol->GetID();
+	id.Right = PRightCol->GetID();
 
 	map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
 
@@ -470,11 +489,11 @@ void CCollisionMgr::CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape*
 	}
 
 	// LandScape에 Ray정보 등록
-	bool IsDead = _LeftCol->GetOwner()->IsDead() || _RightCol->GetOwner()->IsDead();
-	bool IsDeactive = _LeftCol->GetState() == DEACTIVE || _LeftCol->GetOwner()->IsDeactivated();
+	bool IsDead = PLeftCol->GetOwner()->IsDead() || PRightCol->GetOwner()->IsDead();
+	bool IsDeactive = PLeftCol->GetState() == DEACTIVE || PLeftCol->GetOwner()->IsDeactivated();
 
-	if(!(IsDead) && !(IsDeactive))
-		IsCollisionRayLand(_LeftCol, _RightCol);
+	if (!(IsDead) && !(IsDeactive))
+		IsCollisionRayLand(PLeftCol, PRightCol);
 
 
 	//// 단일 타겟이면 Ray용 연산만 진행
@@ -522,254 +541,9 @@ void CCollisionMgr::CollisionBtwLandScapeRay(CColliderRay* _LeftCol, CLandScape*
 	//}
 }
 
-void CCollisionMgr::LandCheak()
-{
-	// LandScape에서 ray연산호출 이후 값 보관
-	set<CLandScape*>::iterator Lnaditer = m_LandObject.begin();
-	for (; Lnaditer != m_LandObject.end(); ++Lnaditer)
-	{
-		CLandScape* pLandscape = *Lnaditer;
+/** Collision Detail Logic **/
 
-		// 연산 이후 데이터 받아오기
-		vector<tRayCollision>& RayCol = pLandscape->Collidercalcul();
-		CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-
-		// 연산된 데이터 처리
-		for (size_t i = 0; i < RayCol.size(); ++i)
-		{
-			// 레이 콜라이더 찾기
-			CColliderRay* Ray = (CColliderRay*)RayCol[i].RayObj;
-
-			COLLIDER_ID id = {};
-			id.Left = Ray->GetID();
-			id.Right = pLandscape->GetID();
-
-			// 다중타겟모드시 overlap처리
-			if (Ray->IsTargetAllMode())
-			{
-
-				map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
-
-				if (iter == m_ColInfo.end())
-				{
-					m_ColInfo.insert(make_pair(id.ID, false));
-					iter = m_ColInfo.find(id.ID);
-				}
-
-				bool IsDead = Ray->GetOwner()->IsDead() || pLandscape->GetOwner()->IsDead();
-				bool IsDeactive = Ray->GetState() == DEACTIVE || Ray->GetOwner()->IsDeactivated();
-
-				if (RayCol[i].Success == 1)
-				{
-					if (iter->second)
-					{
-						// 둘중 하나가 곧 삭제 예정이다.
-						if (IsDead || IsDeactive)
-						{
-							Ray->EndOverlap(pLandscape);
-							iter->second = false;
-						}
-						else
-						{
-							Ray->Overlap(pLandscape);
-						}
-					}
-					else
-					{
-						if (!IsDead)
-						{
-							Ray->BeginOverlap(pLandscape);
-						}
-						iter->second = true;
-					}
-				}
-				else
-				{
-					if (iter->second)
-					{
-						Ray->EndOverlap(pLandscape);
-						iter->second = false;
-					}
-				}
-				Ray->SetRayTargetLength(static_cast<float>(RayCol[i].Distance));
-			}
-			// 단일 타겟 모드 시
-			else
-			{
-				m_RayColInfo.insert(Ray);
-
-				if (RayCol[i].Success == 1)
-				{
-					// 단일타겟모드시 ray콜라이더에 전용 데이터 삽입
-					Ray->UpdateRayColInfo(pLandscape->GetOwner(), static_cast<float>(RayCol[i].Distance));
-				}
-			}
-
-		}
-
-	}
-
-}
-
-void CCollisionMgr::RayOverlapCheak()
-{
-	// 비어잇을경우 정지
-	if (m_RayColInfo.empty())
-		return;
-
-	set<CColliderRay*>::iterator setiter = m_RayColInfo.begin();
-
-	// 거리순으로 정렬된 상태에서 각 객체의 충돌 상태 확인 및 처리
-	for (; setiter != m_RayColInfo.end(); ++setiter)
-	{
-		CColliderRay* pRay = *setiter;
-
-		// 단일충돌용 데이터 가져오기
-		RAYCOLLIDERDATA& data = (*setiter)->GetTargetInfoRef();
-
-		// 충돌되는 오브젝트가 있나 확인
-		if (data.HitObject != nullptr)
-		{
-			// 현재 충돌 오브젝트부터 판단
-			COLLIDER_ID hitid = {};
-			hitid.Left = (*setiter)->GetID();
-			hitid.Right = data.HitObject->GetID();
-
-			map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(hitid.ID);
-
-			if (iter == m_ColInfo.end())
-			{
-				m_ColInfo.insert(make_pair(hitid.ID, false));
-				iter = m_ColInfo.find(hitid.ID);
-			}
-
-
-
-			// 콜라이더 가져오기
-			CGameObject* RightObject = data.HitObject;
-
-			bool IsDead = pRay->GetOwner()->IsDead() || RightObject->IsDead();
-			bool IsDeactive = pRay->GetState() == DEACTIVE || pRay->GetOwner()->IsDeactivated();
-
-			// LandScape인지 3D인지 구분해서 처리
-			if (RightObject->Collider3D())	// 3D타입
-			{
-				CCollider3D* p3DCol = RightObject->Collider3D();
-
-				IsDeactive = p3DCol->GetState() == DEACTIVE || p3DCol->GetOwner()->IsDeactivated();
-
-				if (iter->second)
-				{
-					// 둘중 하나가 곧 삭제 예정이다.
-					if (IsDead || IsDeactive)
-					{
-						pRay->EndOverlap(p3DCol);
-						p3DCol->EndOverlap(pRay);
-						iter->second = false;
-					}
-					else
-					{
-						pRay->Overlap(p3DCol);
-						p3DCol->Overlap(pRay);
-					}
-				}
-				else
-				{
-					if (!IsDead && !IsDeactive)
-					{
-						pRay->BeginOverlap(p3DCol);
-						p3DCol->BeginOverlap(pRay);
-						iter->second = true;
-					}
-				}
-
-
-			}
-			else if (RightObject->LandScape())// LANDSCAPE 타입
-			{
-				CLandScape* pLandCol = RightObject->LandScape();
-
-				if (iter->second)
-				{
-					// 둘중 하나가 곧 삭제 예정이다.
-					if (IsDead || IsDeactive)
-					{
-						pRay->EndOverlap(pLandCol);
-						iter->second = false;
-					}
-					else
-					{
-						pRay->Overlap(pLandCol);
-					}
-				}
-				else
-				{
-					if (!IsDead && !IsDeactive)
-					{
-						pRay->BeginOverlap(pLandCol);
-						iter->second = true;
-					}
-				}
-			}
-		}
-
-
-
-		// Prev오브젝트 판단
-		// 이전오브젝트와 현재 오브젝트가 같다 = 위에서 overlap처리되어 해당 사항 넘김
-		if (data.HitObject == data.PrevObject || data.PrevObject == nullptr)
-			continue;
-
-		COLLIDER_ID Previd = {};
-		Previd.Left = (*setiter)->GetID();
-		Previd.Right = data.PrevObject->GetID();
-
-		map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(Previd.ID);
-
-		// 등록 하는게 없는 이유는 이전에 충돌도 안햇는데 이전 충돌했다고 보고 해버리면 그것대로 문제
-		iter = m_ColInfo.find(Previd.ID);
-
-		if (iter == m_ColInfo.end())
-			assert(true);
-
-
-		CGameObject* RightObject = data.PrevObject;
-
-		bool IsDead = pRay->GetOwner()->IsDead() || RightObject->IsDead();
-		bool IsDeactive = pRay->GetState() == DEACTIVE || pRay->GetOwner()->IsDeactivated();
-
-		// LandScape인지 3D인지 구분해서 처리
-		if (RightObject->Collider3D())	// 3D타입
-		{
-			CCollider3D* p3DCol = RightObject->Collider3D();
-
-			IsDeactive = p3DCol->GetState() == DEACTIVE || p3DCol->GetOwner()->IsDeactivated();
-
-			// 서로 떨어진 것은 확정
-			if (iter->second)
-			{
-				pRay->EndOverlap(p3DCol);
-				p3DCol->EndOverlap(pRay);
-				iter->second = false;
-			}
-
-		}
-		else if (RightObject->LandScape())// LANDSCAPE 타입
-		{
-			CLandScape* pLandCol = RightObject->LandScape();
-
-			// 서로 떨어진 것은 확정
-			if (iter->second)
-			{
-				pRay->EndOverlap(pLandCol);
-				iter->second = false;
-			}
-		}
-	}
-}
-
-// 충돌 체크
-bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
+bool CCollisionMgr::IsCollision(CCollider2D* PLeft, CCollider2D* PRight)
 {
 	// 0 -- 1
 	// | \  |
@@ -783,8 +557,8 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
 		Vec3(-0.5f, -0.5f, 0.f)
 	};
 
-	Matrix matColLeft = _Left->GetColliderWorldMat();
-	Matrix matColRight = _Right->GetColliderWorldMat();
+	Matrix matColLeft = PLeft->GetColliderWorldMat();
+	Matrix matColRight = PRight->GetColliderWorldMat();
 
 	// 투영축 구하기, 투영축 == 투영을 시킬 대상
 	Vec3 arrProj[4] = {};
@@ -799,16 +573,16 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
 	arrProj[3] = XMVector3TransformCoord(arrRect[3], matColRight) - XMVector3TransformCoord(arrRect[0], matColRight);
 
 	// 월드 공간에서 두 충돌체의 중심을 이은 벡터
-	Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft) - XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
+	Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft) - XMVector3TransformCoord(
+		Vec3(0.f, 0.f, 0.f), matColRight);
 
 	for (int i = 0; i < 4; ++i)
 	{
 		Vec3 vProj = arrProj[i];
-		vProj.Normalize();	// 노말라이즈 해서 투영면의 길이를 1로 만든다.
-
+		vProj.Normalize(); // 노말라이즈 해서 투영면의 길이를 1로 만든다.
 
 		// 각도가 90도 이상이면 음수가 나오니 절대값을 해준다.
-		float fCenter = fabs(vCenter.Dot(vProj));	// 센터끼리 이은길이
+		float fCenter = fabs(vCenter.Dot(vProj)); // 센터끼리 이은길이
 		float fDist = 0.f;
 		for (int j = 0; j < 4; ++j)
 		{
@@ -824,26 +598,26 @@ bool CCollisionMgr::IsCollision(CCollider2D* _Left, CCollider2D* _Right)
 	return true;
 }
 
-bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
+bool CCollisionMgr::IsCollision3D(CCollider3D* PLeft, CCollider3D* PRight)
 {
-	const float EPSILON = 0.0001f;
+	constexpr float EPSILON = 0.0001f;
 
 	// 로컬 큐브의 정점 위치 (8개의 정점)
 	static Vec3 arrCube[8] =
 	{
-		Vec3(-0.5f, 0.5f, 0.5f),   // 전면 좌상단
-		Vec3(0.5f, 0.5f, 0.5f),    // 전면 우상단
-		Vec3(0.5f, -0.5f, 0.5f),   // 전면 우하단
-		Vec3(-0.5f, -0.5f, 0.5f),  // 전면 좌하단
-		Vec3(-0.5f, 0.5f, -0.5f),  // 후면 좌상단
-		Vec3(0.5f, 0.5f, -0.5f),   // 후면 우상단
-		Vec3(0.5f, -0.5f, -0.5f),  // 후면 우하단
-		Vec3(-0.5f, -0.5f, -0.5f)  // 후면 좌하단
+		Vec3(-0.5f, 0.5f, 0.5f), // 전면 좌상단
+		Vec3(0.5f, 0.5f, 0.5f), // 전면 우상단
+		Vec3(0.5f, -0.5f, 0.5f), // 전면 우하단
+		Vec3(-0.5f, -0.5f, 0.5f), // 전면 좌하단
+		Vec3(-0.5f, 0.5f, -0.5f), // 후면 좌상단
+		Vec3(0.5f, 0.5f, -0.5f), // 후면 우상단
+		Vec3(0.5f, -0.5f, -0.5f), // 후면 우하단
+		Vec3(-0.5f, -0.5f, -0.5f) // 후면 좌하단
 	};
 
 
-	Matrix matColLeft = _Left->GetColliderWorldMat();
-	Matrix matColRight = _Right->GetColliderWorldMat();
+	Matrix matColLeft = PLeft->GetColliderWorldMat();
+	Matrix matColRight = PRight->GetColliderWorldMat();
 
 	Vec3 leftCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft);
 	Vec3 rightCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
@@ -890,7 +664,7 @@ bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
 		for (int j = 0; j < 3; j++)
 		{
 			Vec3 crossAxis = leftAxis[i].Cross(rightAxis[j]);
-			if (crossAxis.Length() > EPSILON)  // 0벡터 제외
+			if (crossAxis.Length() > EPSILON) // 0벡터 제외
 			{
 				crossAxis.Normalize();
 				axes[axisCount++] = crossAxis;
@@ -952,30 +726,30 @@ bool CCollisionMgr::IsCollision3D(CCollider3D* _Left, CCollider3D* _Right)
 			minPenetrationAxis = -minPenetrationAxis;
 
 		// 충돌 노말 설정
-		_Left->SetHitNormal(-minPenetrationAxis);   // Left에서 Right로 향하는 방향
-		_Right->SetHitNormal(minPenetrationAxis); // Right에서 Left로 향하는 방향
+		PLeft->SetHitNormal(-minPenetrationAxis); // Left에서 Right로 향하는 방향
+		PRight->SetHitNormal(minPenetrationAxis); // Right에서 Left로 향하는 방향
 	}
 
 	return true;
 }
 
-bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCol)
+bool CCollisionMgr::IsCollisionRay(CColliderRay* PLeftCol, CCollider3D* PRightCol)
 {
 	// 로컬 큐브의 정점 위치 (8개의 정점)
 	static Vec3 arrCube[8] =
 	{
-		Vec3(-0.5f, 0.5f, 0.5f),   // 전면 좌상단
-		Vec3(0.5f, 0.5f, 0.5f),    // 전면 우상단
-		Vec3(0.5f, -0.5f, 0.5f),   // 전면 우하단
-		Vec3(-0.5f, -0.5f, 0.5f),  // 전면 좌하단
-		Vec3(-0.5f, 0.5f, -0.5f),  // 후면 좌상단
-		Vec3(0.5f, 0.5f, -0.5f),   // 후면 우상단
-		Vec3(0.5f, -0.5f, -0.5f),  // 후면 우하단
-		Vec3(-0.5f, -0.5f, -0.5f)  // 후면 좌하단
+		Vec3(-0.5f, 0.5f, 0.5f), // 전면 좌상단
+		Vec3(0.5f, 0.5f, 0.5f), // 전면 우상단
+		Vec3(0.5f, -0.5f, 0.5f), // 전면 우하단
+		Vec3(-0.5f, -0.5f, 0.5f), // 전면 좌하단
+		Vec3(-0.5f, 0.5f, -0.5f), // 후면 좌상단
+		Vec3(0.5f, 0.5f, -0.5f), // 후면 우상단
+		Vec3(0.5f, -0.5f, -0.5f), // 후면 우하단
+		Vec3(-0.5f, -0.5f, -0.5f) // 후면 좌하단
 	};
 
 	// 충돌체의 월드 행렬
-	Matrix matWorld = _RightCol->GetColliderWorldMat();
+	Matrix matWorld = PRightCol->GetColliderWorldMat();
 
 	// 충돌체의 월드 공간 정점 계산
 	Vec3 worldVerts[8];
@@ -1004,14 +778,12 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 	};
 
 	// 레이 정보 가져오기
-	Vec3 rayPos = _LeftCol->GetRayFinalPos();
-	Vec3 rayDir = _LeftCol->GetRayFinalDir();
-	float rayMaxDist = _LeftCol->GetRayLength(); // 레이 최대 거리
+	Vec3 rayPos = PLeftCol->GetRayFinalPos();
+	Vec3 rayDir = PLeftCol->GetRayFinalDir();
+	float rayMaxDist = PLeftCol->GetRayLength(); // 레이 최대 거리
 
 	// 가장 가까운 충돌 거리 및 충돌 여부
 	float closestDist = FLT_MAX;
-	Vec3 closestHitPoint;
-	Vec3 closestHitNormal;
 	bool hasCollision = false;
 
 	// 각 삼각형에 대해 레이 충돌 검사
@@ -1044,8 +816,6 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 				if (dist >= 0.f && dist <= rayMaxDist && dist < closestDist)
 				{
 					closestDist = dist;
-					closestHitPoint = crossPos;
-					closestHitNormal = triangleNormal;
 					hasCollision = true;
 				}
 			}
@@ -1056,17 +826,17 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 	if (hasCollision)
 	{
 		// 모든타겟인지 단일타겟인지 확인
-		if (_LeftCol->IsTargetAllMode())
+		if (PLeftCol->IsTargetAllMode())
 		{
-			_LeftCol->SetRayTargetLength(closestDist);
+			PLeftCol->SetRayTargetLength(closestDist);
 			return true;
 		}
 		else
 		{
 			// Update후 정리
-			_LeftCol->UpdateRayColInfo(_RightCol->GetOwner(), closestDist);
+			PLeftCol->UpdateRayColInfo(PRightCol->GetOwner(), closestDist);
 
-			m_RayColInfo.insert(_LeftCol);
+			m_RayColInfo.insert(PLeftCol);
 
 			return true;
 		}
@@ -1076,15 +846,13 @@ bool CCollisionMgr::IsCollisionRay(CColliderRay* _LeftCol, CCollider3D* _RightCo
 	return false;
 }
 
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-
-bool CCollisionMgr::IsCollision3DLand(CCollider3D* _LeftCol, CLandScape* _RightCol)
+bool CCollisionMgr::IsCollision3DLand(CCollider3D* PLeftCol, CLandScape* PRightCol)
 {
 	// 오브젝트는 Transform기준 위치를 발로 잡는다.
-	Vec3 ObjectPos = _LeftCol->Transform()->GetWorldPos();
+	Vec3 ObjectPos = PLeftCol->Transform()->GetWorldPos();
 
 	// 오브젝트 위치 기준으로 LandScape의 높이 측정
-	Vec3 LandScapePos = _RightCol->GetWorldPosByLandScape(ObjectPos);
+	Vec3 LandScapePos = PRightCol->GetWorldPosByLandScape(ObjectPos);
 
 	// 말도 안되는 값이 들어오면 LandScpae위치를 벗어난 위치
 	// y축 기준으로 오브젝트가 아래에 있다면 충돌
@@ -1094,18 +862,18 @@ bool CCollisionMgr::IsCollision3DLand(CCollider3D* _LeftCol, CLandScape* _RightC
 	return true;
 }
 
-bool CCollisionMgr::IsCollisionRayLand(CColliderRay* _LeftCol, CLandScape* _RightCol)
+bool CCollisionMgr::IsCollisionRayLand(CColliderRay* PLeftCol, CLandScape* PRightCol)
 {
 	// Ray의 월드 위치, 방향정보를 받아온다.
 	tRayCollision RayInfo;
-	RayInfo.RayObj = _LeftCol;
-	RayInfo.RayWorldPos = _LeftCol->GetRayFinalPos();
-	RayInfo.RayDir = _LeftCol->GetRayFinalDir();
-	RayInfo.RayLength = _LeftCol->GetRayLength();
+	RayInfo.RayObj = PLeftCol;
+	RayInfo.RayWorldPos = PLeftCol->GetRayFinalPos();
+	RayInfo.RayDir = PLeftCol->GetRayFinalDir();
+	RayInfo.RayLength = PLeftCol->GetRayLength();
 
 	// LandScape에서 해당 Ray정보를 넘겨준다.(나중에 처리됨)
-	_RightCol->AddRayCol(RayInfo);
-	m_LandObject.insert(_RightCol);
+	PRightCol->AddRayCol(RayInfo);
+	m_LandObject.insert(PRightCol);
 
 	//if (calculInfo.Success && calculInfo.Distance > 0.f && calculInfo.Distance <= rayMaxDist)
 	//{
@@ -1124,25 +892,334 @@ bool CCollisionMgr::IsCollisionRayLand(CColliderRay* _LeftCol, CLandScape* _Righ
 	return false;
 }
 
-// 충돌레이어 등록
-void CCollisionMgr::CollisionCheck(UINT _Left, UINT _Right)
+/**
+ * @brief 각 메시 충돌체의 바운딩 박스끼리 충돌했는지 여부를 확인하는 함수
+ *
+ * @param PLeftCollider Mesh Collider 1
+ * @param PRightCollider Mesh Collider 2
+ * @return 충돌 여부
+ */
+bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider)
 {
-	UINT Row = _Left;
-	UINT Col = _Right;
+	// Get Bounding Box
+	Vec3 LeftMin, LeftMax, RightMin, RightMax;
+	PLeftCollider->GetOwner()->GetWorldBoundingBox(LeftMin, LeftMax);
+	PRightCollider->GetOwner()->GetWorldBoundingBox(RightMin, RightMax);
 
-	if (Col < Row)
+	// AABB Collision Test
+	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
 	{
-		Row = _Right;
-		Col = _Left;
+		return false;
+	}
+	if (LeftMax.y < RightMin.y || LeftMin.y > RightMax.y)
+	{
+		return false;
+	}
+	if (LeftMax.z < RightMin.z || LeftMin.z > RightMax.z)
+	{
+		return false;
 	}
 
+	return true;
+}
 
-	if (m_Matrix[Row] & (1 << Col))
+/**
+ * @brief 메시 충돌체의 바운딩 박스와 충돌체가 충돌했는지 여부를 확인하는 함수
+ *
+ * @param PMeshCollider Mesh Collider
+ * @param P3DCollider 3D Collider
+ * @return 충돌 여부
+ */
+bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider)
+{
+	// Get Bounding Box
+	Vec3 MeshMin, MeshMax;
+	PMeshCollider->GetOwner()->GetWorldBoundingBox(MeshMin, MeshMax);
+
+	// Get 3D Collider Vertexs
+	static Vec3 CubeArr[8] = {
+		Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f),
+		Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
+		Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f),
+		Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
+	};
+	Matrix OBBMatrix = P3DCollider->GetColliderWorldMat();
+	Vec3 OBBVtxs[8];
+	for (int i = 0; i < 8; ++i)
 	{
-		m_Matrix[Row] &= ~(1 << Col);
+		OBBVtxs[i] = XMVector3TransformCoord(CubeArr[i], OBBMatrix);
 	}
-	else
+
+	// Vertex Check
+	for (int i = 0; i < 8; ++i)
 	{
-		m_Matrix[Row] |= (1 << Col);
+		const Vec3& Vtx = OBBVtxs[i];
+		if (Vtx.x >= MeshMin.x && Vtx.x <= MeshMax.x &&
+			Vtx.y >= MeshMin.y && Vtx.y <= MeshMax.y &&
+			Vtx.z >= MeshMin.z && Vtx.z <= MeshMax.z)
+			return true;
+	}
+
+	return false;
+}
+
+/**
+ * @brief 실제 메시 충돌체끼리 충돌했는지 여부를 세부적으로 확인하는 함수
+ *
+ * @param PLeftCollider Mesh Collider 1
+ * @param PRightCollider Mesh Collider 2
+ * @return 충돌 여부
+ */
+bool CCollisionMgr::IsMeshCollided(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider)
+{
+	// TBD
+	return true;
+}
+
+/**
+ * @brief 메시 충돌체의 각 정점 중 하나라도 3D 충돌체와 충돌했는지 판단하는 함수
+ *
+ * @param PMeshCollider Mesh Collider
+ * @param P3DCollider 3D Collider
+ * @return 충돌 여부
+ */
+bool CCollisionMgr::IsMeshCollided(const CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider)
+{
+	// TBD
+	return true;
+}
+
+/** Collision In LandScape **/
+
+void CCollisionMgr::LandCheak()
+{
+	// LandScape에서 ray연산호출 이후 값 보관
+	set<CLandScape*>::iterator Lnaditer = m_LandObject.begin();
+	for (; Lnaditer != m_LandObject.end(); ++Lnaditer)
+	{
+		CLandScape* pLandscape = *Lnaditer;
+
+		// 연산 이후 데이터 받아오기
+		vector<tRayCollision>& RayCol = pLandscape->Collidercalcul();
+
+		// 연산된 데이터 처리
+		for (size_t i = 0; i < RayCol.size(); ++i)
+		{
+			// 레이 콜라이더 찾기
+			CColliderRay* Ray = static_cast<CColliderRay*>(RayCol[i].RayObj);
+
+			COLLIDER_ID id = {};
+			id.Left = Ray->GetID();
+			id.Right = pLandscape->GetID();
+
+			// 다중타겟모드시 overlap처리
+			if (Ray->IsTargetAllMode())
+			{
+				map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(id.ID);
+
+				if (iter == m_ColInfo.end())
+				{
+					m_ColInfo.insert(make_pair(id.ID, false));
+					iter = m_ColInfo.find(id.ID);
+				}
+
+				bool IsDead = Ray->GetOwner()->IsDead() || pLandscape->GetOwner()->IsDead();
+				bool IsDeactive = Ray->GetState() == DEACTIVE || Ray->GetOwner()->IsDeactivated();
+
+				if (RayCol[i].Success == 1)
+				{
+					if (iter->second)
+					{
+						// 둘중 하나가 곧 삭제 예정이다.
+						if (IsDead || IsDeactive)
+						{
+							Ray->EndOverlap(pLandscape);
+							iter->second = false;
+						}
+						else
+						{
+							Ray->Overlap(pLandscape);
+						}
+					}
+					else
+					{
+						if (!IsDead)
+						{
+							Ray->BeginOverlap(pLandscape);
+						}
+						iter->second = true;
+					}
+				}
+				else
+				{
+					if (iter->second)
+					{
+						Ray->EndOverlap(pLandscape);
+						iter->second = false;
+					}
+				}
+				Ray->SetRayTargetLength(static_cast<float>(RayCol[i].Distance));
+			}
+			// 단일 타겟 모드 시
+			else
+			{
+				m_RayColInfo.insert(Ray);
+
+				if (RayCol[i].Success == 1)
+				{
+					// 단일타겟모드시 ray콜라이더에 전용 데이터 삽입
+					Ray->UpdateRayColInfo(pLandscape->GetOwner(), static_cast<float>(RayCol[i].Distance));
+				}
+			}
+		}
+	}
+}
+
+/** Additional Calc **/
+
+void CCollisionMgr::RayOverlapCheak()
+{
+	// 비어잇을경우 정지
+	if (m_RayColInfo.empty())
+		return;
+
+	set<CColliderRay*>::iterator setiter = m_RayColInfo.begin();
+
+	// 거리순으로 정렬된 상태에서 각 객체의 충돌 상태 확인 및 처리
+	for (; setiter != m_RayColInfo.end(); ++setiter)
+	{
+		CColliderRay* pRay = *setiter;
+
+		// 단일충돌용 데이터 가져오기
+		RAYCOLLIDERDATA& data = (*setiter)->GetTargetInfoRef();
+
+		// 충돌되는 오브젝트가 있나 확인
+		if (data.HitObject != nullptr)
+		{
+			// 현재 충돌 오브젝트부터 판단
+			COLLIDER_ID hitid = {};
+			hitid.Left = (*setiter)->GetID();
+			hitid.Right = data.HitObject->GetID();
+
+			map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(hitid.ID);
+
+			if (iter == m_ColInfo.end())
+			{
+				m_ColInfo.insert(make_pair(hitid.ID, false));
+				iter = m_ColInfo.find(hitid.ID);
+			}
+
+
+			// 콜라이더 가져오기
+			CGameObject* RightObject = data.HitObject;
+
+			bool IsDead = pRay->GetOwner()->IsDead() || RightObject->IsDead();
+			bool IsDeactive = pRay->GetState() == DEACTIVE || pRay->GetOwner()->IsDeactivated();
+
+			// LandScape인지 3D인지 구분해서 처리
+			if (RightObject->Collider3D()) // 3D타입
+			{
+				CCollider3D* p3DCol = RightObject->Collider3D();
+
+				IsDeactive = p3DCol->GetState() == DEACTIVE || p3DCol->GetOwner()->IsDeactivated();
+
+				if (iter->second)
+				{
+					// 둘중 하나가 곧 삭제 예정이다.
+					if (IsDead || IsDeactive)
+					{
+						pRay->EndOverlap(p3DCol);
+						p3DCol->EndOverlap(pRay);
+						iter->second = false;
+					}
+					else
+					{
+						pRay->Overlap(p3DCol);
+						p3DCol->Overlap(pRay);
+					}
+				}
+				else
+				{
+					if (!IsDead && !IsDeactive)
+					{
+						pRay->BeginOverlap(p3DCol);
+						p3DCol->BeginOverlap(pRay);
+						iter->second = true;
+					}
+				}
+			}
+			else if (RightObject->LandScape()) // LANDSCAPE 타입
+			{
+				CLandScape* pLandCol = RightObject->LandScape();
+
+				if (iter->second)
+				{
+					// 둘중 하나가 곧 삭제 예정이다.
+					if (IsDead || IsDeactive)
+					{
+						pRay->EndOverlap(pLandCol);
+						iter->second = false;
+					}
+					else
+					{
+						pRay->Overlap(pLandCol);
+					}
+				}
+				else
+				{
+					if (!IsDead && !IsDeactive)
+					{
+						pRay->BeginOverlap(pLandCol);
+						iter->second = true;
+					}
+				}
+			}
+		}
+
+
+		// Prev오브젝트 판단
+		// 이전오브젝트와 현재 오브젝트가 같다 = 위에서 overlap처리되어 해당 사항 넘김
+		if (data.HitObject == data.PrevObject || data.PrevObject == nullptr)
+			continue;
+
+		COLLIDER_ID Previd = {};
+		Previd.Left = (*setiter)->GetID();
+		Previd.Right = data.PrevObject->GetID();
+
+		map<ULONGLONG, bool>::iterator iter = m_ColInfo.find(Previd.ID);
+
+		// 등록 하는게 없는 이유는 이전에 충돌도 안햇는데 이전 충돌했다고 보고 해버리면 그것대로 문제
+		iter = m_ColInfo.find(Previd.ID);
+
+		if (iter == m_ColInfo.end())
+			assert(true);
+
+
+		CGameObject* RightObject = data.PrevObject;
+
+		// LandScape인지 3D인지 구분해서 처리
+		if (RightObject->Collider3D()) // 3D타입
+		{
+			CCollider3D* p3DCol = RightObject->Collider3D();
+
+			// 서로 떨어진 것은 확정
+			if (iter->second)
+			{
+				pRay->EndOverlap(p3DCol);
+				p3DCol->EndOverlap(pRay);
+				iter->second = false;
+			}
+		}
+		else if (RightObject->LandScape()) // LANDSCAPE 타입
+		{
+			CLandScape* pLandCol = RightObject->LandScape();
+
+			// 서로 떨어진 것은 확정
+			if (iter->second)
+			{
+				pRay->EndOverlap(pLandCol);
+				iter->second = false;
+			}
+		}
 	}
 }
