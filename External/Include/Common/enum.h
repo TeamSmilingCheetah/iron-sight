@@ -127,6 +127,8 @@ enum class COMPONENT_TYPE : UINT
 	UI,			// UI 컴포넌트
 	UIRENDER,
 
+	MESH_COLLIDER,
+
 	END,
 
 	SCRIPT, // 대본

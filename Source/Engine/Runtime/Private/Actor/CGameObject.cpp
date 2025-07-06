@@ -373,7 +373,7 @@ void CGameObject::RegisterAsParent()
  *
  * @return 로직 정상 처리 여부
  */
-bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
+bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 {
 	// 바운딩 박스가 존재하기 위한 최소 조건 확인
 

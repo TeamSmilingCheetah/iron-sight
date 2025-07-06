@@ -100,7 +100,7 @@ public:
 	class CUI* UI() const { return (CUI*)GetComponent(COMPONENT_TYPE::UI); }
 	class CUIRender* UIRender() const { return (CUIRender*)GetComponent(COMPONENT_TYPE::UIRENDER); }
 
-	bool CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const;
+	bool GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const;
 
 private:
 	void DisconnectWithLayer();

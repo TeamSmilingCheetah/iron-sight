@@ -648,7 +648,7 @@ bool CCamera::IsObjectInFrustum(const CGameObject* _Object)
 	// 오브젝트의 바운딩 박스 가져오기
 	// TODO(KHJ): 현재 bounding box 계산하지 못했다면 무조건 rendering하지 않는데, 누락되는 케이스 없는지 확인 필요
 	Vec3 vMin, vMax;
-	if (!_Object->CalculateBoundingBox(vMin, vMax))
+	if (!_Object->GetWorldBoundingBox(vMin, vMax))
 	{
 		return false;
 	}
