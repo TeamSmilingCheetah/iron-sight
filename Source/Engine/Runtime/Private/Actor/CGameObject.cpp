@@ -370,6 +370,8 @@ void CGameObject::RegisterAsParent()
  *
  * @param PMin 바운딩 박스의 최소 좌표를 저장할 벡터
  * @param PMax 바운딩 박스의 최대 좌표를 저장할 벡터
+ *
+ * @return 로직 정상 처리 여부
  */
 bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
 {
@@ -406,14 +408,43 @@ bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
 
 	// TODO(KHJ): Animation 기반 Bounding Box Checking
 
-	// get mesh local bound
-	Vec3 vMin, vMax;
-	pMesh->GetLocalBound(vMin, vMax);
+	// Get Local Bound
+	Vec3 LocalMin, LocalMax;
+	pMesh->GetLocalBound(LocalMin, LocalMax);
 
-	// world 값으로 변환
-	const Matrix& matWorld = Transform()->GetWorldMat();
-	PMin = XMVector3TransformCoord(vMin, matWorld);
-	PMax = XMVector3TransformCoord(vMax, matWorld);
+	Vec3 Vertices[8] = {
+		{LocalMin.x, LocalMin.y, LocalMin.z},
+		{LocalMin.x, LocalMin.y, LocalMax.z},
+		{LocalMin.x, LocalMax.y, LocalMin.z},
+		{LocalMin.x, LocalMax.y, LocalMax.z},
+		{LocalMax.x, LocalMin.y, LocalMin.z},
+		{LocalMax.x, LocalMin.y, LocalMax.z},
+		{LocalMax.x, LocalMax.y, LocalMin.z},
+		{LocalMax.x, LocalMax.y, LocalMax.z}
+	};
+
+	const Matrix& WorldMatrix = Transform()->GetWorldMat();
+
+	// Initialize World Bounding Box
+	Vec3 WorldMin = XMVector3TransformCoord(Vertices[0], WorldMatrix);
+	Vec3 WorldMax = WorldMin;
+
+	// Calculate Min & Max
+	for (int i = 1; i < 8; ++i)
+	{
+		Vec3 WorldPoint = XMVector3TransformCoord(Vertices[i], WorldMatrix);
+		WorldMin.x = min(WorldMin.x, WorldPoint.x);
+		WorldMin.y = min(WorldMin.y, WorldPoint.y);
+		WorldMin.z = min(WorldMin.z, WorldPoint.z);
+
+		WorldMax.x = max(WorldMax.x, WorldPoint.x);
+		WorldMax.y = max(WorldMax.y, WorldPoint.y);
+		WorldMax.z = max(WorldMax.z, WorldPoint.z);
+	}
+
+	// Return
+	PMin = WorldMin;
+	PMax = WorldMax;
 
 	return true;
 }
