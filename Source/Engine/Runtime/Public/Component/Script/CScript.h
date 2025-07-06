@@ -132,6 +132,19 @@ public:
 	{
 	}
 
+	// Col3D - MeshCollider
+	virtual void BeginOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void Overlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
 	// ========
 	// UI Event
 	// ========

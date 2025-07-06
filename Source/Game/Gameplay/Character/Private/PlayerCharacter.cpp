@@ -738,21 +738,21 @@ void PlayerCharacter::PlayerHeal()
 	}
 }
 
-void PlayerCharacter::DemageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage)
+void PlayerCharacter::DemageCalcul(CGameObject* PAtkObj, CGameObject* PWeapon, float PDamage)
 {
-	m_CurHP -= _Damage;
+	m_CurHP -= PDamage;
 
 	// 사망
 	if (m_CurHP <= 0)
 	{
 		m_CurHP = 0;
-		m_KillinfoScript->SetKillInfo(_AtkObj->GetName(), GetOwner()->GetName(), _Weapon->GetName());
+		m_KillinfoScript->SetKillInfo(PAtkObj->GetName(), GetOwner()->GetName(), PWeapon->GetName());
 		m_KillinfoScript->OnEvent();
 	}
 
 }
 
-void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
+void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 {
 	// 고려사항
 	// 1. item 사용 딜레이
@@ -762,7 +762,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 
 	bool CantHeal = false;
 
-	switch (_HealType)
+	switch (PHealType)
 	{
 	case ITEM_TYPE::FIRST_AID_KIT:
 		if (m_CurHP >= m_SemiMaxHP)
@@ -816,20 +816,20 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE _HealType)
 	// ui 활성화
 	SetObjectActive(m_ItemUseUI, true);
 
-	m_HealType = _HealType;
+	m_HealType = PHealType;
 }
 
 
-void PlayerCharacter::SaveComponent(FILE* _File)
+void PlayerCharacter::SaveComponent(FILE* PFile)
 {
 	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
-	SaveAssetRef(m_TargetTex, _File);
+	SaveAssetRef(m_TargetTex, PFile);
 }
 
-void PlayerCharacter::LoadComponent(FILE* _File)
+void PlayerCharacter::LoadComponent(FILE* PFile)
 {
 	//fread(&m_PlayerSpeed, sizeof(float), 1, _File);
-	LoadAssetRef(m_TargetTex, _File);
+	LoadAssetRef(m_TargetTex, PFile);
 }
 
 void PlayerCharacter::LoadComponentReference()

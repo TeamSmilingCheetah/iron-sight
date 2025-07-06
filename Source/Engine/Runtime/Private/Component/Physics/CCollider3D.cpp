@@ -196,7 +196,7 @@ void CCollider3D::BeginOverlap(CMeshCollider* POther)
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->BeginOverlap(POther, POther->GetOwner(), this);
+		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
@@ -205,7 +205,7 @@ void CCollider3D::Overlap(CMeshCollider* POther)
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->Overlap(POther, POther->GetOwner(), this);
+		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
 	}
 }
 
@@ -215,7 +215,7 @@ void CCollider3D::EndOverlap(CMeshCollider* POther)
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->EndOverlap(POther, POther->GetOwner(), this);
+		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
