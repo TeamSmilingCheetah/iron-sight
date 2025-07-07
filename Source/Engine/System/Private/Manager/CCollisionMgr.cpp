@@ -932,7 +932,7 @@ bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PLeftCollider, CMeshCol
  * @param P3DCollider 3D Collider
  * @return 충돌 여부
  */
-bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider)
+bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider)
 {
 	// Get Bounding Box
 	Vec3 MeshMin, MeshMax;
@@ -995,17 +995,17 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* 
 	}
 
 	// 2. Triangle Counting
-	UINT LeftTriCount = 0;
-	UINT RightTriCount = 0;
+	INT32 LeftTriCount = 0;
+	INT32 RightTriCount = 0;
 
 	for (UINT i = 0; i < LeftMesh->GetSubsetCount(); ++i)
 	{
-		UINT LeftIdxCount = LeftMesh->GetIndexInfo()[i].IdxCount;
+		INT32 LeftIdxCount = LeftMesh->GetIndexInfo()[i].IdxCount;
 		LeftTriCount += LeftIdxCount / 3;
 	}
 	for (UINT i = 0; i < RightMesh->GetSubsetCount(); ++i)
 	{
-		UINT RightIdxCount = RightMesh->GetIndexInfo()[i].IdxCount;
+		INT32 RightIdxCount = RightMesh->GetIndexInfo()[i].IdxCount;
 		RightTriCount += RightIdxCount / 3;
 	}
 
@@ -1035,7 +1035,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* 
 	for (UINT i = 0; i < LeftMesh->GetSubsetCount(); ++i)
 	{
 		UINT* LeftIdxArr = static_cast<UINT*>(LeftMesh->GetIndexInfo()[i].IdxSysMem);
-		for (UINT j = 0; j < LeftMesh->GetIndexInfo()[i].IdxCount / 3; ++j)
+		for (size_t j = 0; j < LeftMesh->GetIndexInfo()[i].IdxCount / 3; ++j)
 		{
 			LeftIdxVector[TotalLeftIdx] = {LeftIdxArr[j * 3], LeftIdxArr[j * 3 + 1], LeftIdxArr[j * 3 + 2]};
 			++TotalLeftIdx;
@@ -1047,7 +1047,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* 
 	for (UINT i = 0; i < RightMesh->GetSubsetCount(); ++i)
 	{
 		UINT* RightIdxArr = static_cast<UINT*>(RightMesh->GetIndexInfo()[i].IdxSysMem);
-		for (UINT j = 0; j < RightMesh->GetIndexInfo()[i].IdxCount / 3; ++j)
+		for (size_t j = 0; j < RightMesh->GetIndexInfo()[i].IdxCount / 3; ++j)
 		{
 			RightIdxVector[TotalRightIdx] = {RightIdxArr[j * 3], RightIdxArr[j * 3 + 1], RightIdxArr[j * 3 + 2]};
 			++TotalRightIdx;
@@ -1136,7 +1136,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 	}
 
 	// 2. Triangle Counting
-	UINT TriCount = 0;
+	INT32 TriCount = 0;
 	for (UINT i = 0; i < Mesh->GetSubsetCount(); ++i)
 	{
 		TriCount += Mesh->GetIndexInfo()[i].IdxCount / 3;
@@ -1165,7 +1165,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 	for (UINT i = 0; i < Mesh->GetSubsetCount(); ++i)
 	{
 		UINT* IdxArr = static_cast<UINT*>(Mesh->GetIndexInfo()[i].IdxSysMem);
-		for (UINT j = 0; j < Mesh->GetIndexInfo()[i].IdxCount / 3; ++j)
+		for (size_t j = 0; j < Mesh->GetIndexInfo()[i].IdxCount / 3; ++j)
 		{
 			IdxVector[TotalIdx] = {IdxArr[j * 3], IdxArr[j * 3 + 1], IdxArr[j * 3 + 2]};
 			++TotalIdx;
@@ -1195,6 +1195,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 		{4, 5, 6}, {4, 6, 7}, {0, 4, 7}, {0, 7, 3},
 		{4, 5, 1}, {4, 1, 0}, {3, 2, 6}, {3, 6, 7}
 	};
+
 	for (int i = 0; i < 12; ++i)
 	{
 		AABBIdxVector[i] = { Triangles[i][0], Triangles[i][1], Triangles[i][2] };

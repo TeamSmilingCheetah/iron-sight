@@ -31,7 +31,7 @@ public:
     void SetBrushTex(Ptr<CTexture> _BrushTex) { m_BrushTex = _BrushTex; }
 
     int Binding() override;
-    void CalcGroupCount() override;
+    void CalculateGroupCount() override;
     void Clear() override;
 
     CWeightMapCS();

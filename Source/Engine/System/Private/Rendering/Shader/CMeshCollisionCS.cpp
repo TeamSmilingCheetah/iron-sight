@@ -44,7 +44,7 @@ int CMeshCollisionCS::Binding()
 	return S_OK;
 }
 
-void CMeshCollisionCS::CalcGroupCount()
+void CMeshCollisionCS::CalculateGroupCount()
 {
 	m_GroupX = MLeftTriCount / m_GroupPerThreadX + (MLeftTriCount % m_GroupPerThreadX ? 1 : 0);
 	m_GroupY = MRightTriCount / m_GroupPerThreadY + (MRightTriCount % m_GroupPerThreadY ? 1 : 0);

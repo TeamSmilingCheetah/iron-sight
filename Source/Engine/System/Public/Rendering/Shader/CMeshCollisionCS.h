@@ -15,8 +15,8 @@ private:
 	CStructuredBuffer* MRightIndices;
 	CStructuredBuffer* MCollisionCount;
 	CStructuredBuffer* MResults;
-	UINT MLeftTriCount;
-	UINT MRightTriCount;
+	INT32 MLeftTriCount;
+	INT32 MRightTriCount;
 
 public:
 	void SetLeftVertices(CStructuredBuffer* PBuf) { MLeftVertices = PBuf; }
@@ -25,10 +25,10 @@ public:
 	void SetRightIndices(CStructuredBuffer* PBuf) { MRightIndices = PBuf; }
 	void SetCount(CStructuredBuffer* PBuf) { MCollisionCount = PBuf; }
 	void SetResults(CStructuredBuffer* PBuf) { MResults = PBuf; }
-	void SetTriCounts(UINT PLeft, UINT PRight) { MLeftTriCount = PLeft; MRightTriCount = PRight; }
+	void SetTriCounts(INT32 PLeft, INT32 PRight) { MLeftTriCount = PLeft; MRightTriCount = PRight; }
 
 	int Binding() override;
-	void CalcGroupCount() override;
+	void CalculateGroupCount() override;
 	void Clear() override;
 
 	CMeshCollisionCS();

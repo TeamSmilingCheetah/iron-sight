@@ -41,7 +41,7 @@ int CParticleTickCS::Binding()
 	return S_OK;
 }
 
-void CParticleTickCS::CalcGroupCount()
+void CParticleTickCS::CalculateGroupCount()
 {
 	m_GroupX = m_ParticleBuffer->GetElementCount() / m_GroupPerThreadX;
 	if (m_ParticleBuffer->GetElementCount() % m_GroupPerThreadX)

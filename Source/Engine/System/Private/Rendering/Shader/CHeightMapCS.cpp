@@ -34,7 +34,7 @@ int CHeightMapCS::Binding()
 	return S_OK;
 }
 
-void CHeightMapCS::CalcGroupCount()
+void CHeightMapCS::CalculateGroupCount()
 {
 	m_GroupX = (m_HeightMap->GetWidth() / m_GroupPerThreadX) + !!(m_HeightMap->GetWidth() %
 		m_GroupPerThreadX);

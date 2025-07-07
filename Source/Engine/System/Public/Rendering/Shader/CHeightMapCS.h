@@ -19,7 +19,7 @@ public:
     void SetBrushScale(Vec2 _Scale) { m_BrushScale = _Scale; }
 
     int Binding() override;
-    void CalcGroupCount() override;
+    void CalculateGroupCount() override;
     void Clear() override;
 
     CHeightMapCS();

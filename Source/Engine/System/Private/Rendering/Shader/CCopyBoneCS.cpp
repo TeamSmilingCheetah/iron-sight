@@ -20,7 +20,7 @@ int CCopyBoneCS::Binding()
 	return S_OK;
 }
 
-void CCopyBoneCS::CalcGroupCount()
+void CCopyBoneCS::CalculateGroupCount()
 {
 	// 그룹 수 계산
 	int iBoneCount = m_Const.iArr[0];
