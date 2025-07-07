@@ -2,11 +2,12 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
-#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 
 class CGameObject;
 class CLandScape;
-
+class KillinfoUIScript;
+class InventoryController;
+class CameraController;
 
 class PlayerCharacter :
 	public CScript
@@ -47,9 +48,9 @@ private:
 	// ======
 	// Script
 	// ======
-	class CameraController*		m_CamScript;
-	class InventoryController*	m_InventoryScript;
-	class KillinfoUIScript*		m_KillinfoScript;
+	CameraController*		m_CamScript;
+	InventoryController*	m_InventoryScript;
+	KillinfoUIScript*		m_KillinfoScript;
 
 	// ======
 	// Status
@@ -87,28 +88,28 @@ private:
 public:
 	void Begin() override;
 	void Tick() override;
-	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-	                  CCollider3D* _OtherCollider) override;
-	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-	             CCollider3D* _OtherCollider) override;
-	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-	                CCollider3D* _OtherCollider) override;
 
+	void BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider) override;
+	void Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider) override;
+	void EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider) override;
 
-	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
-	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
-	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+	void BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider) override;
+	void Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider) override;
+	void EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider) override;
 
+	void BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
+	void Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
+	void EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
 
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	void BeginOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
+	void Overlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
+	void EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
 
 private:
 	void PlayerMove();
 	void PlayerView();
 	void PlayerStance();
-	
+
 	void PlayerReload();
 	void PlayerAttack();
 
@@ -119,30 +120,27 @@ private:
 	void gravityCalcul();
 	void ColliderCalcul();
 
-	
-	
-
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
 
-	void SetShot(bool _Shot) { m_bShoot = _Shot; }
-	void SetThrow(bool _Throw) { m_bCanThrow = _Throw; }
-	void SetThrowBoom(bool _Boom) { m_bThrowBoom = _Boom; }
+	void SetShot(bool PShot) { m_bShoot = PShot; }
+	void SetThrow(bool PThrow) { m_bCanThrow = PThrow; }
+	void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
 
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
 
-	void TriggerHeal(ITEM_TYPE _HealType);
+	void TriggerHeal(ITEM_TYPE PHealType);
 
-	void DemageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage);	// 공격 피격 처리
+	void DemageCalcul(CGameObject* PAtkObj, CGameObject* PWeapon, float PDamage);	// 공격 피격 처리
 
 	void PlusKillCount() { m_KillCounts += 1; }
-	int GetKillCount() { return m_KillCounts; }
+	int GetKillCount() const { return m_KillCounts; }
 
-	void SaveComponent(FILE* _File) override;
-	void LoadComponent(FILE* _File) override;
+	void SaveComponent(FILE* PFile) override;
+	void LoadComponent(FILE* PFile) override;
 	void LoadComponentReference() override;
 
 public:

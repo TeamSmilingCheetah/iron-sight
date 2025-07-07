@@ -3,15 +3,12 @@
 
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 
-
 Collider3DUI::Collider3DUI()
 	: ComponentUI("Collider3DUI", COMPONENT_TYPE::COLLIDER3D)
 {
 }
 
-Collider3DUI::~Collider3DUI()
-{
-}
+Collider3DUI::~Collider3DUI() = default;
 
 void Collider3DUI::Render_Update()
 {
@@ -51,28 +48,28 @@ void Collider3DUI::Render_Update()
 	ImGui::SameLine(100);
 	if (ImGui::Checkbox("##IsActive", &bActive))
 	{
-		if(bActive)
+		if (bActive)
+		{
 			pCollider3D->Activate();
+		}
 		else
+		{
 			pCollider3D->Deactivate();
+		}
 	}
 
 	ImGui::Text("IsIndependentRotation");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##IsIndependentRotation", &bIndependentRot);
-	pCollider3D->SetIndependetRot(bIndependentRot);
+	pCollider3D->SetIndependentRot(bIndependentRot);
 
 	ImGui::Text("IsTrigger");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##IsTrigger", &bTrigger);
 	pCollider3D->SetTrigger(bTrigger);
 
-	
-
-
 	if (ImGui::Button("DELETE##Collider3D"))
 	{
 		DeleteComponent(COMPONENT_TYPE::COLLIDER3D);
 	}
-
 }

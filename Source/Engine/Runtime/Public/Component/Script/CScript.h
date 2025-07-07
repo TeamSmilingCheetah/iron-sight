@@ -1,8 +1,11 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
-#include "Game/System/Public/GameplayManager.h"
 
 class CPrefab;
+class CCollider2D;
+class CCollider3D;
+class CColliderRay;
+class CMeshCollider;
 
 struct tScriptParam
 {
@@ -23,54 +26,147 @@ private:
 public:
 	SCRIPT_TYPE GetScriptType() const { return m_ScriptType; }
 	virtual SCRIPT_TYPE GetParentScriptType() { return m_ParentType; }
-	void AddScriptParam(tScriptParam _Param) { m_vecScriptParam.push_back(_Param); }
+	void AddScriptParam(tScriptParam PParam) { m_vecScriptParam.push_back(PParam); }
 	const vector<tScriptParam>& GetScriptParam() { return m_vecScriptParam; }
-	void Instantiate(Ptr<CPrefab> _Pref, Vec3 _WorldPos, int _Layer);
+	void Instantiate(Ptr<CPrefab> PPref, Vec3 PWorldPos, int PLayer);
 
 	void Tick() override = 0;
 
-	void FinalTick() final {}
+	void FinalTick() final
+	{
+	}
 
 	// ==============
 	// Collider Event
 	// ==============
 
-	// TODO(KHJ): 컴포지션 패턴 적용해보고 싶을지도
+	// XXX(KHJ): 컴포지션 패턴 적용 시도
 	// Col2D - Col2D
-	virtual void BeginOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
-	virtual void Overlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
-	virtual void EndOverlap(class CCollider2D* _Collider, CGameObject* _OtherObject, CCollider2D* _OtherCollider) {}
+	virtual void BeginOverlap(CCollider2D* PCollider, CGameObject* POtherObject, CCollider2D* POtherCollider)
+	{
+	}
+
+	virtual void Overlap(CCollider2D* PCollider, CGameObject* POtherObject, CCollider2D* POtherCollider)
+	{
+	}
+
+	virtual void EndOverlap(CCollider2D* PCollider, CGameObject* POtherObject, CCollider2D* POtherCollider)
+	{
+	}
 
 	// Col3D - Col3D
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) {}
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) {}
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) {}
+	virtual void BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+	{
+	}
+
+	virtual void Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+	{
+	}
+
+	virtual void EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+	{
+	}
 
 	// Ray - Col3D
-	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) {}
-	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)	{}
-	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) {}
+	virtual void BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
+	{
+	}
+
+	virtual void Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
+	{
+	}
+
+	virtual void EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
+	{
+	}
 
 	// Col3D - LandScape
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
+	virtual void BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
+
+	virtual void Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
+
+	virtual void EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
 
 	// Ray - LandScape
-	virtual void BeginOverlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
-	virtual void Overlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
-	virtual void EndOverlap(class CColliderRay* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) {}
+	virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
+
+	virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
+
+	virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
+
+	// MeshCollider - MeshCollider
+	virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+	{
+	}
+
+	virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+	{
+	}
+
+	virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+	{
+	}
+
+	// MeshCollider - Col3D
+	virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+	{
+	}
+
+	virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+	{
+	}
+
+	virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+	{
+	}
+
+	// Col3D - MeshCollider
+	virtual void BeginOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void Overlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
 
 	// ========
 	// UI Event
 	// ========
-	virtual void OnMouseClick() {}
-	virtual void OnMouseRightClick() {}
-	virtual void OnMouseHover() {}
+	virtual void OnMouseClick()
+	{
+	}
+
+	virtual void OnMouseRightClick()
+	{
+	}
+
+	virtual void OnMouseHover()
+	{
+	}
+
 	virtual PayLoad OnMouseBeginDrag() { return PayLoad{}; }
-	virtual void OnMouseDrop(const PayLoad& _PayLoad) {}
+
+	virtual void OnMouseDrop(const PayLoad& PPayLoad)
+	{
+	}
 
 
-	CScript(SCRIPT_TYPE _ScriptType);
+	CScript(SCRIPT_TYPE PScriptType);
 	~CScript() override;
 };

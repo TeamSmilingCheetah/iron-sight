@@ -373,7 +373,7 @@ void CGameObject::RegisterAsParent()
  *
  * @return 로직 정상 처리 여부
  */
-bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
+bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 {
 	// 바운딩 박스가 존재하기 위한 최소 조건 확인
 
@@ -411,6 +411,32 @@ bool CGameObject::CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const
 	// Get Local Bound
 	Vec3 LocalMin, LocalMax;
 	pMesh->GetLocalBound(LocalMin, LocalMax);
+
+	// Set Min Thickness
+	constexpr float MIN_THICKNESS = 0.1f;
+
+	Vec3 size = LocalMax - LocalMin;
+
+	if (size.x < MIN_THICKNESS)
+	{
+		float center = (LocalMin.x + LocalMax.x) * 0.5f;
+		LocalMin.x = center - MIN_THICKNESS * 0.5f;
+		LocalMax.x = center + MIN_THICKNESS * 0.5f;
+	}
+
+	if (size.y < MIN_THICKNESS)
+	{
+		float center = (LocalMin.y + LocalMax.y) * 0.5f;
+		LocalMin.y = center - MIN_THICKNESS * 0.5f;
+		LocalMax.y = center + MIN_THICKNESS * 0.5f;
+	}
+
+	if (size.z < MIN_THICKNESS)
+	{
+		float center = (LocalMin.z + LocalMax.z) * 0.5f;
+		LocalMin.z = center - MIN_THICKNESS * 0.5f;
+		LocalMax.z = center + MIN_THICKNESS * 0.5f;
+	}
 
 	Vec3 Vertices[8] = {
 		{LocalMin.x, LocalMin.y, LocalMin.z},

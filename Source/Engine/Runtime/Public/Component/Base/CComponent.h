@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 #define GET_OTHER_COMPONENT(Type) C##Type* Type() { return m_Owner->Type(); }
@@ -32,6 +31,7 @@ public:
 	GET_OTHER_COMPONENT(LandScape);
 	GET_OTHER_COMPONENT(UI);
 	GET_OTHER_COMPONENT(UIRender);
+	GET_OTHER_COMPONENT(MeshCollider);
 
 	virtual void Init()
 	{

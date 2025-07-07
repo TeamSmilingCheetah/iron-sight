@@ -340,3 +340,16 @@ struct tTexParam
 };
 
 extern GlobalData g_Data;
+
+// Mesh Collision
+
+struct MeshCollisionInfo {
+	UINT LeftTriCount;
+	UINT RightTriCount;
+	UINT Padding[2];
+};
+
+struct CollisionResult {
+	Vec3 LeftNormal;
+	Vec3 RightNormal;
+};

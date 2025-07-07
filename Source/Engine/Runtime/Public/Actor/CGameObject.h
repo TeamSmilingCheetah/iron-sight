@@ -4,6 +4,7 @@
 class CComponent;
 class CRenderComponent;
 class CScript;
+class CMeshCollider;
 
 class CGameObject :
 	public CEntity
@@ -49,6 +50,9 @@ public:
 	UINT GetObjectID() const { return m_ObjectID; }
 	UINT GetParentObjectID() const;
 	void SetObjectID(UINT _ID);
+
+	template <typename T>
+	void AddComponentRecursive();
 
 	const unordered_map<SCRIPT_TYPE, UINT>& GetScriptShortcut() const { return m_scriptShortcut; }
 	CGameObject* GetParent() const { return m_Parent; }
@@ -99,8 +103,9 @@ public:
 	class CLandScape* LandScape() const { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
 	class CUI* UI() const { return (CUI*)GetComponent(COMPONENT_TYPE::UI); }
 	class CUIRender* UIRender() const { return (CUIRender*)GetComponent(COMPONENT_TYPE::UIRENDER); }
+	class CMeshCollider* MeshCollider() const { return (CMeshCollider*)GetComponent(COMPONENT_TYPE::MESH_COLLIDER); }
 
-	bool CalculateBoundingBox(Vec3& PMin, Vec3& PMax) const;
+	bool GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const;
 
 private:
 	void DisconnectWithLayer();
@@ -115,3 +120,31 @@ public:
 	CGameObject(const CGameObject& _Origin);
 	~CGameObject() override;
 };
+
+/**
+ * @brief 메인 오브젝트 이하 하위 오브젝트에 컴포넌트를 제공하는 함수
+ * 타입 정보는 템플릿 인자로 전달하도록 처리
+ */
+template <typename T>
+void CGameObject::AddComponentRecursive()
+{
+	for (auto ChildObject : m_vecChild)
+	{
+		ChildObject->AddComponentRecursive<T>();
+	}
+
+	// FIXME(KHJ): 템플릿 특수화 시도할 경우 빌드 에러 발생, 매크로 관련으로 추정
+
+	// Add Component
+	if (this->MeshRender())
+	{
+		auto ChildMesh = this->MeshRender()->GetMesh();
+
+		// 특이 케이스를 여기서 배제
+		// TODO(KHJ): 너무 특정된 케이스, 배제 방식을 고려할 것
+		if (ChildMesh.Get() && ChildMesh->GetKey() != L"Downtown_Alley_Scene_SkySphereMesh.mesh")
+		{
+			this->AddComponent(new T);
+		}
+	}
+}

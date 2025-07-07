@@ -7,9 +7,9 @@ enum class CB_TYPE
 	MATERIAL,
 	SPRITE,
 	GLOBAL,
+	MESH_COLLISION,
 	END,
 };
-
 
 // RasterizerState Type
 enum class RS_TYPE
@@ -20,7 +20,6 @@ enum class RS_TYPE
 	WIRE_FRAME,		// WireFrame 모드
 	END,
 };
-
 
 // BlendState
 enum class BS_TYPE
@@ -126,6 +125,8 @@ enum class COMPONENT_TYPE : UINT
 
 	UI,			// UI 컴포넌트
 	UIRENDER,
+
+	MESH_COLLIDER,
 
 	END,
 

@@ -1,20 +1,14 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
-#include "Engine/System/Public/Rendering/Device/CDevice.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
-
-#include "Engine/Runtime/Public/Actor/CLayer.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-
 #include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/Weapon/Public/WeaponController.h"
-#include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
 void PlayerCharacter::PlayerMove()
 {
@@ -44,22 +38,23 @@ void PlayerCharacter::MoveCalcul()
 	// 방향키입력 확인
 	Vec3 vRot = Transform()->GetRelativeRotation();
 	//float radian = vRot.y * XM_PI / 180.f;
-	
+
 	//Vec3 vFowardDir = { -sinf(radian), 0.f, -cosf(radian) };
 	Vec3 vFowardDir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	//Vec3 vRightDir = { -cosf(radian), 0.f, sinf(radian) };
 	Vec3 vRightDir = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-	Vec3 vInputDir = { 0.f,0.f,0.f };
+	Vec3 vInputDir = {0.f, 0.f, 0.f};
 
 	// 이전 틱의 이동방향저장
 	Vec3 vPrevVelocityDir = m_Velocity;
-	if (vPrevVelocityDir.Length() > 0.001f) {
+	if (vPrevVelocityDir.Length() > 0.001f)
+	{
 		vPrevVelocityDir.Normalize();
 	}
 
 	// 힘의 량
 	float ForceScar;
-	
+
 	if (KEY_PRESSED(KEY::LSHIFT) &&
 		KEY_PRESSED(KEY::W) &&
 		!(KEY_PRESSED(KEY::A)) &&
@@ -88,7 +83,7 @@ void PlayerCharacter::MoveCalcul()
 		ForceScar = 50.f;
 		m_MaxSpeed = 10.f;
 	}
-	
+
 	// 해당하는 방향으로 벡터를 추가한다.
 	if (KEY_PRESSED(KEY::W))
 	{
@@ -107,10 +102,9 @@ void PlayerCharacter::MoveCalcul()
 		vInputDir += -vRightDir;
 	}
 
-
 	// 부스트에 의한 이동속도 보정
 	m_MaxSpeed *= m_BoostSpeed;
-	
+
 	// 입력이 있는 경우
 	if (vInputDir.Length() > 0.f)
 	{
@@ -142,10 +136,10 @@ void PlayerCharacter::MoveCalcul()
 			m_Velocity.Normalize();
 			m_Velocity *= m_MaxSpeed;
 		}
-		
 	}
+
 	// 방향키 입력이 없다면 마칠계수에 따라 감속(땅에있다는 조건추가)
-	else if(m_IsGround)
+	else if (m_IsGround)
 	{
 		// 속도의 반대방향으로 마찰계수*질량을 곱합
 		Vec3 vFriction = -m_Velocity;
@@ -162,12 +156,11 @@ void PlayerCharacter::MoveCalcul()
 			m_Velocity += vFriction;
 		}
 	}
-
 }
 
 void PlayerCharacter::gravityCalcul()
 {
-	// 땅 위에있나 판단
+	// 땅 위에 있나 판단
 	m_IsGround = false;
 	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
 	{
@@ -186,8 +179,7 @@ void PlayerCharacter::gravityCalcul()
 		m_GravityVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
 
 		// 최대 중력속도 제한
-		if (m_GravityVelocity.y < -m_GravityMaxSpeed)
-			m_GravityVelocity.y = -m_GravityMaxSpeed;
+		m_GravityVelocity.y = max(m_GravityVelocity.y, -m_GravityMaxSpeed);
 	}
 	else
 	{
@@ -201,7 +193,7 @@ void PlayerCharacter::gravityCalcul()
 	// 점프 기능
 	if (m_IsGround && KEY_TAP(KEY::SPACE))
 	{
-		m_GravityVelocity += Vec3(0.f,1.f,0.f) * m_JumpPower;
+		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
 	}
 
 	m_Velocity += m_GravityVelocity;
@@ -224,21 +216,16 @@ void PlayerCharacter::ColliderCalcul()
 }
 
 
-
-
-void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
 {
 	// 트리거용 충돌체면 해당 코드 사용 x
-	if (_OtherCollider->IsTrigger())
+	if (POtherCollider->IsTrigger())
 	{
 		return;
-
 	}
 	else
 	{
-		Vec3 pPos = Transform()->GetRelativePos();
-
-		Vec3 hitNormal = _Collider->GetHitNormal();
+		Vec3 hitNormal = PCollider->GetHitNormal();
 		hitNormal.Normalize();
 
 		//Vec3 hitPoint = _Collider->GetHitPoint();
@@ -253,7 +240,7 @@ void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 		else
 		{
 			Vec3 myPos = Transform()->GetRelativePos();
-			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+			Vec3 otherPos = POtherObject->Transform()->GetRelativePos();
 			Vec3 normal = myPos - otherPos;
 			normal.Normalize();
 
@@ -263,16 +250,15 @@ void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 	}
 }
 
-void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
 {
 	// 트리거용 충돌체면 해당 코드 사용 x
-	if (_OtherCollider->IsTrigger())
+	if (POtherCollider->IsTrigger())
 	{
-		
 	}
 	else
 	{
-		Vec3 hitNormal = _Collider->GetHitNormal();
+		Vec3 hitNormal = PCollider->GetHitNormal();
 		// 노말이 유효하면 사용
 		if (hitNormal.Length() > 0.001f)
 		{
@@ -281,10 +267,6 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 		}
 		else
 		{
-			Vec3 myPos = Transform()->GetRelativePos();
-			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-			Vec3 normal = myPos - otherPos;
-			normal.Normalize();
 			// 노말이 유효하면 사용
 			if (hitNormal.Length() > 0.001f)
 			{
@@ -294,7 +276,7 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 			else
 			{
 				Vec3 myPos = Transform()->GetRelativePos();
-				Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+				Vec3 otherPos = POtherObject->Transform()->GetRelativePos();
 				Vec3 normal = myPos - otherPos;
 				normal.Normalize();
 
@@ -305,42 +287,35 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
 {
 }
 
 
-void PlayerCharacter::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void PlayerCharacter::BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
 {
-	m_CollObject = _OtherObject;
+	m_CollObject = POtherObject;
 }
 
-void PlayerCharacter::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void PlayerCharacter::Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
 {
-	if (_3DCollider->IsTrigger())
-	{
-		
-	}
 }
 
-void PlayerCharacter::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void PlayerCharacter::EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
 {
-	if (m_CollObject == _OtherObject)
+	if (m_CollObject == POtherObject)
 		m_CollObject = nullptr;
 }
 
-
-
-void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 {
-
 	Vec3 pPos = Transform()->GetRelativePos();
 
 	//// 충돌 전 위치로 약간 되돌림
 	//Vec3 prevPos = pPos - m_Velocity * DT;
 
 	// 지형의 노말 벡터를 얻음
-	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+	Vec3 LandNormal = POtherCollider->GetWorldPosLandNormal(pPos);
 
 	Transform()->SetRelativePos(pPos);
 
@@ -359,10 +334,9 @@ void PlayerCharacter::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 		//	Transform()->SetRelativePos(adjustedPos);
 		//}
 	}
-
 }
 
-void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -370,7 +344,7 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	//Vec3 prevPos = pPos - m_Velocity * DT;
 
 	// 지형의 노말 벡터를 얻음
-	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+	Vec3 LandNormal = POtherCollider->GetWorldPosLandNormal(pPos);
 
 	// 노말이 유효하면 사용
 	if (LandNormal.Length() > 0.001f)
@@ -389,6 +363,61 @@ void PlayerCharacter::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+{
+}
+
+/**
+ * @brief 플레이어 기준, 3D Collider와 Mesh Collider가 충돌했을 때 처리하는 BeginOverlap 함수
+ *
+ * @param PCollider
+ * @param POtherObject
+ * @param POtherCollider
+ */
+void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+{
+	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
+
+	// Valid Check
+	if (CollisionNormal.Length() > 0.001f)
+	{
+		// Add Normal
+		m_vecCollisionNormal.push_back(CollisionNormal);
+
+		// FIXME(KHJ): 충돌 깊이 계산
+		float penetrationDepth = 0.1f;
+
+		// Correction Position
+		Vec3 Correction = CollisionNormal * penetrationDepth;
+		Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+	}
+}
+
+/**
+ * @brief 플레이어 기준, 3D Collider와 Mesh Collider가 충돌했을 때 처리하는 Overlap 함수
+ *
+ * @param PCollider
+ * @param POtherObject
+ * @param POtherCollider
+ */
+void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+{
+	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
+
+	if (CollisionNormal.Length() > 0.001f)
+	{
+		// Add Normal
+		m_vecCollisionNormal.push_back(CollisionNormal);
+
+		// FIXME(KHJ): 충돌 깊이 계산
+		float penetrationDepth = 0.05f;
+
+		// Correction Position
+		Vec3 Correction = CollisionNormal * penetrationDepth;
+		Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+	}
+}
+
+void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 }
