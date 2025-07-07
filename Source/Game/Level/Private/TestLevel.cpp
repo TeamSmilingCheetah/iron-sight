@@ -779,17 +779,13 @@ void TestLevel::CreateTestLevel()
 	pObj = pMeshData->Instantiate();
 	pObj->SetName(L"DeathBox");
 
-	pObj->AddComponent(new CCollider3D);
-
-	pObj->Collider3D()->SetIndependentScale(true);
-	pObj->Collider3D()->SetScale(Vec3(3900.f, 3900.f, 2300.f));
-	pObj->Collider3D()->SetOffset(Vec3(0.f, 1868.f, 0.f));
+	pObj->AddComponentRecursive<CMeshCollider>();
 
 	pObj->Transform()->SetRelativePos(Vec3(6590.f, -410.f, 5000.f));
 	pObj->Transform()->SetRelativeScale(Vec3(700.f, 2000.f, 700.f));
 	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
-	pLevel->AddObject(1, pObj, false);
+	pLevel->AddObject(1, pObj, true);
 
 
 	/*

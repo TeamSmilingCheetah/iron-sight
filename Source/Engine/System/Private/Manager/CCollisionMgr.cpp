@@ -10,6 +10,8 @@
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "System/Public/Rendering/Shader/CMeshCollisionCS.h"
 
 CCollisionMgr::CCollisionMgr() = default;
 
@@ -930,7 +932,7 @@ bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PLeftCollider, CMeshCol
  * @param P3DCollider 3D Collider
  * @return 충돌 여부
  */
-bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider)
+bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider)
 {
 	// Get Bounding Box
 	Vec3 MeshMin, MeshMax;
@@ -943,17 +945,18 @@ bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, const CC
 		Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f),
 		Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
 	};
-	Matrix OBBMatrix = P3DCollider->GetColliderWorldMat();
-	Vec3 OBBVtxs[8];
+
+	Matrix AABBMatrix = P3DCollider->GetColliderWorldMat();
+	Vec3 AABBVtxs[8];
 	for (int i = 0; i < 8; ++i)
 	{
-		OBBVtxs[i] = XMVector3TransformCoord(CubeArr[i], OBBMatrix);
+		AABBVtxs[i] = XMVector3TransformCoord(CubeArr[i], AABBMatrix);
 	}
 
 	// Vertex Check
 	for (int i = 0; i < 8; ++i)
 	{
-		const Vec3& Vtx = OBBVtxs[i];
+		const Vec3& Vtx = AABBVtxs[i];
 		if (Vtx.x >= MeshMin.x && Vtx.x <= MeshMax.x &&
 			Vtx.y >= MeshMin.y && Vtx.y <= MeshMax.y &&
 			Vtx.z >= MeshMin.z && Vtx.z <= MeshMax.z)
@@ -970,10 +973,140 @@ bool CCollisionMgr::IsBoundingBoxCollided(CMeshCollider* PMeshCollider, const CC
  * @param PRightCollider Mesh Collider 2
  * @return 충돌 여부
  */
-bool CCollisionMgr::IsMeshCollided(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider)
+bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider)
 {
-	// TBD
-	return true;
+	// 1. Variable Setting
+	Ptr<CMesh> LeftMesh = PLeftCollider->GetMesh();
+	Ptr<CMesh> RightMesh = PRightCollider->GetMesh();
+
+	// Early Return
+	if (!LeftMesh.Get() || !RightMesh.Get())
+	{
+		return false;
+	}
+
+	UINT LeftVtxCount = LeftMesh->GetVertexCount();
+	UINT RightVtxCount = RightMesh->GetVertexCount();
+
+	// Early Return
+	if (!LeftVtxCount || !RightVtxCount)
+	{
+		return false;
+	}
+
+	// 2. Triangle Counting
+	UINT LeftTriCount = 0;
+	UINT RightTriCount = 0;
+
+	for (UINT i = 0; i < LeftMesh->GetSubsetCount(); ++i)
+	{
+		UINT LeftIdxCount = LeftMesh->GetIndexInfo()[i].IdxCount;
+		LeftTriCount += LeftIdxCount / 3;
+	}
+	for (UINT i = 0; i < RightMesh->GetSubsetCount(); ++i)
+	{
+		UINT RightIdxCount = RightMesh->GetIndexInfo()[i].IdxCount;
+		RightTriCount += RightIdxCount / 3;
+	}
+
+	// Early Return
+	if (!LeftTriCount || !RightTriCount)
+		return false;
+
+	// 3. Prepare Buffer
+	struct SimpleVtx { Vec3 pos; };
+	struct SimpleIdx { uint32_t x, y, z; };
+
+	vector<SimpleVtx> LeftVtxVector(LeftVtxCount);
+	vector<SimpleVtx> RightVtxVector(RightVtxCount);
+	Vtx* LeftVtxArr = static_cast<Vtx*>(LeftMesh->GetVtxSysMem());
+	Vtx* RightVtxArr = static_cast<Vtx*>(RightMesh->GetVtxSysMem());
+	for (UINT i = 0; i < LeftVtxCount; ++i)
+	{
+		LeftVtxVector[i].pos = LeftVtxArr[i].vPos;
+	}
+	for (UINT i = 0; i < RightVtxCount; ++i)
+	{
+		RightVtxVector[i].pos = RightVtxArr[i].vPos;
+	}
+
+	vector<SimpleIdx> LeftIdxVector(LeftTriCount);
+	UINT TotalLeftIdx = 0;
+	for (UINT i = 0; i < LeftMesh->GetSubsetCount(); ++i)
+	{
+		UINT* LeftIdxArr = static_cast<UINT*>(LeftMesh->GetIndexInfo()[i].IdxSysMem);
+		for (UINT j = 0; j < LeftMesh->GetIndexInfo()[i].IdxCount / 3; ++j)
+		{
+			LeftIdxVector[TotalLeftIdx] = {LeftIdxArr[j * 3], LeftIdxArr[j * 3 + 1], LeftIdxArr[j * 3 + 2]};
+			++TotalLeftIdx;
+		}
+	}
+
+	vector<SimpleIdx> RightIdxVector(RightTriCount);
+	UINT TotalRightIdx = 0;
+	for (UINT i = 0; i < RightMesh->GetSubsetCount(); ++i)
+	{
+		UINT* RightIdxArr = static_cast<UINT*>(RightMesh->GetIndexInfo()[i].IdxSysMem);
+		for (UINT j = 0; j < RightMesh->GetIndexInfo()[i].IdxCount / 3; ++j)
+		{
+			RightIdxVector[TotalRightIdx] = {RightIdxArr[j * 3], RightIdxArr[j * 3 + 1], RightIdxArr[j * 3 + 2]};
+			++TotalRightIdx;
+		}
+	}
+
+	// 4. Create StructuredBuffer
+	CStructuredBuffer LeftVtxBuffer, RightVtxBuffer, LeftIdxBuffer, RightIdxBuffer;
+	LeftVtxBuffer.Create(sizeof(SimpleVtx), LeftVtxCount, SB_TYPE::SRV_ONLY, true, LeftVtxVector.data());
+	RightVtxBuffer.Create(sizeof(SimpleVtx), RightVtxCount, SB_TYPE::SRV_ONLY, true, RightVtxVector.data());
+	LeftIdxBuffer.Create(sizeof(SimpleIdx), LeftTriCount, SB_TYPE::SRV_ONLY, true, LeftIdxVector.data());
+	RightIdxBuffer.Create(sizeof(SimpleIdx), RightTriCount, SB_TYPE::SRV_ONLY, true, RightIdxVector.data());
+
+	CStructuredBuffer CountBuffer, OutputBuffer;
+
+	UINT MaxCollision = 4096;
+	vector<UINT> CountArr(1);
+	vector<CollisionResult> CollisionArr(MaxCollision);
+	CountArr[0] = 0;
+
+	CountBuffer.Create(sizeof(UINT), 1, SB_TYPE::SRV_UAV, true, CountArr.data());
+	OutputBuffer.Create(sizeof(CollisionResult), MaxCollision, SB_TYPE::SRV_UAV, true, CollisionArr.data());
+
+	// 5. ComputeShader Execute
+	CMeshCollisionCS ComputeShader;
+	ComputeShader.SetLeftVertices(&LeftVtxBuffer);
+	ComputeShader.SetLeftIndices(&LeftIdxBuffer);
+	ComputeShader.SetRightVertices(&RightVtxBuffer);
+	ComputeShader.SetRightIndices(&RightIdxBuffer);
+	ComputeShader.SetCount(&CountBuffer);
+	ComputeShader.SetResults(&OutputBuffer);
+	ComputeShader.SetTriCounts(LeftTriCount, RightTriCount);
+	ComputeShader.Execute();
+
+	// 6. Result Check
+	CountBuffer.GetData(CountArr.data());
+	OutputBuffer.GetData(CollisionArr.data());
+
+	static int CollisionCount = CountArr[0];
+
+	if (CollisionCount)
+	{
+		// Calculate Average Normal
+		Vec3 LeftAverageNormal = {0, 0, 0};
+		Vec3 RightAverageNormal = {0, 0, 0};
+
+		for (int i = 0; i < CollisionCount; ++i)
+		{
+			LeftAverageNormal += CollisionArr[i].LeftNormal;
+			RightAverageNormal += CollisionArr[i].RightNormal;
+		}
+
+		PLeftCollider->SetCollisionNormal(LeftAverageNormal / static_cast<float>(CollisionCount));
+		PRightCollider->SetCollisionNormal(RightAverageNormal / static_cast<float>(CollisionCount));
+
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -983,10 +1116,142 @@ bool CCollisionMgr::IsMeshCollided(const CMeshCollider* PLeftCollider, const CMe
  * @param P3DCollider 3D Collider
  * @return 충돌 여부
  */
-bool CCollisionMgr::IsMeshCollided(const CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider)
+bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider)
 {
-	// TBD
-	return true;
+	// 1. Variable Setting
+	Ptr<CMesh> Mesh = PMeshCollider->GetMesh();
+
+	// Early Return
+	if (!Mesh.Get())
+	{
+		return false;
+	}
+
+	UINT VtxCount = Mesh->GetVertexCount();
+
+	// Early Return
+	if (!VtxCount)
+	{
+		return false;
+	}
+
+	// 2. Triangle Counting
+	UINT TriCount = 0;
+	for (UINT i = 0; i < Mesh->GetSubsetCount(); ++i)
+	{
+		TriCount += Mesh->GetIndexInfo()[i].IdxCount / 3;
+	}
+
+	// Early Return
+	if (!TriCount)
+	{
+		return false;
+	}
+
+	// 3. Prepare Buffer
+	struct SimpleVtx { Vec3 pos; };
+	struct SimpleIdx { uint32_t x, y, z; };
+	Matrix WorldMatrix = PMeshCollider->GetOwner()->Transform()->GetWorldMat();
+
+	vector<SimpleVtx> VtxVector(VtxCount);
+	Vtx* VtxArr = static_cast<Vtx*>(Mesh->GetVtxSysMem());
+	for (UINT i = 0; i < VtxCount; ++i)
+	{
+		VtxVector[i].pos = XMVector3TransformCoord(VtxArr[i].vPos, WorldMatrix);
+	}
+
+	vector<SimpleIdx> IdxVector(TriCount);
+	UINT TotalIdx = 0;
+	for (UINT i = 0; i < Mesh->GetSubsetCount(); ++i)
+	{
+		UINT* IdxArr = static_cast<UINT*>(Mesh->GetIndexInfo()[i].IdxSysMem);
+		for (UINT j = 0; j < Mesh->GetIndexInfo()[i].IdxCount / 3; ++j)
+		{
+			IdxVector[TotalIdx] = {IdxArr[j * 3], IdxArr[j * 3 + 1], IdxArr[j * 3 + 2]};
+			++TotalIdx;
+		}
+	}
+
+	// Prepare 3D Collider Buffer
+	vector<SimpleVtx> AABBVtxVector(8);
+	vector<SimpleIdx> AABBIdxVector(12);
+
+	Vec3 CubeArr[8] = {
+		Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f),
+		Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
+		Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f),
+		Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
+	};
+
+	// 3D Collider Vertex
+	for (int i = 0; i < 8; ++i)
+	{
+		AABBVtxVector[i].pos = XMVector3TransformCoord(CubeArr[i], P3DCollider->GetColliderWorldMat());
+	}
+
+	// 3D Collider Triangle Index
+	uint32_t Triangles[12][3] = {
+		{0, 2, 1}, {0, 3, 2}, {1, 5, 6}, {1, 6, 2},
+		{4, 5, 6}, {4, 6, 7}, {0, 4, 7}, {0, 7, 3},
+		{4, 5, 1}, {4, 1, 0}, {3, 2, 6}, {3, 6, 7}
+	};
+	for (int i = 0; i < 12; ++i)
+	{
+		AABBIdxVector[i] = { Triangles[i][0], Triangles[i][1], Triangles[i][2] };
+	}
+
+	// 4. Create StructuredBuffer
+	CStructuredBuffer MeshVtxBuffer, MeshIdxBuffer, AABBVtxBuffer, AABBIdxBuffer;
+	MeshVtxBuffer.Create(sizeof(SimpleVtx), VtxCount, SB_TYPE::SRV_ONLY, true, VtxVector.data());
+	MeshIdxBuffer.Create(sizeof(SimpleIdx), TriCount, SB_TYPE::SRV_ONLY, true, IdxVector.data());
+	AABBVtxBuffer.Create(sizeof(SimpleVtx), 8, SB_TYPE::SRV_ONLY, true, AABBVtxVector.data());
+	AABBIdxBuffer.Create(sizeof(SimpleIdx), 12, SB_TYPE::SRV_ONLY, true, AABBIdxVector.data());
+
+	CStructuredBuffer CountBuffer, OutputBuffer;
+
+	UINT MaxCollision = 4096;
+	vector<UINT> CountArr(1, 0);
+	vector<CollisionResult> CollisionArr(MaxCollision);
+
+	CountBuffer.Create(sizeof(UINT), 1, SB_TYPE::SRV_UAV, true, CountArr.data());
+	OutputBuffer.Create(sizeof(CollisionResult), MaxCollision, SB_TYPE::SRV_UAV, true, CollisionArr.data());
+
+	// 5. ComputeShader Execute
+	CMeshCollisionCS ComputeShader;
+	ComputeShader.SetLeftVertices(&MeshVtxBuffer);
+	ComputeShader.SetLeftIndices(&MeshIdxBuffer);
+	ComputeShader.SetRightVertices(&AABBVtxBuffer);
+	ComputeShader.SetRightIndices(&AABBIdxBuffer);
+	ComputeShader.SetCount(&CountBuffer);
+	ComputeShader.SetResults(&OutputBuffer);
+	ComputeShader.SetTriCounts(TriCount, 12);
+	ComputeShader.Execute();
+
+	// 6. Result Check
+	CountBuffer.GetData(CountArr.data());
+	OutputBuffer.GetData(CollisionArr.data());
+
+	int CollisionCount = CountArr[0];
+
+	if (CollisionCount)
+	{
+		// Calculate Average Normal
+		Vec3 LeftAverageNormal = {0, 0, 0};
+		Vec3 RightAverageNormal = {0, 0, 0};
+
+		for (int i = 0; i < CollisionCount; ++i)
+		{
+			LeftAverageNormal += CollisionArr[i].LeftNormal;
+			RightAverageNormal += CollisionArr[i].RightNormal;
+		}
+
+		PMeshCollider->SetCollisionNormal(LeftAverageNormal / static_cast<float>(CollisionCount));
+		P3DCollider->SetHitNormal(RightAverageNormal / static_cast<float>(CollisionCount));
+
+		return true;
+	}
+
+	return false;
 }
 
 /** Collision In LandScape **/

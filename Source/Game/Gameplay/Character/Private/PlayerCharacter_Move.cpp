@@ -2,6 +2,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
@@ -366,15 +367,57 @@ void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObje
 {
 }
 
-// MeshCollider 충돌 대응
-void PlayerCharacter::BeginOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+/**
+ * @brief 플레이어 기준, 3D Collider와 Mesh Collider가 충돌했을 때 처리하는 BeginOverlap 함수
+ *
+ * @param PCollider
+ * @param POtherObject
+ * @param POtherCollider
+ */
+void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
+	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
+
+	// Valid Check
+	if (CollisionNormal.Length() > 0.001f)
+	{
+		// Add Normal
+		m_vecCollisionNormal.push_back(CollisionNormal);
+
+		// FIXME(KHJ): 충돌 깊이 계산
+		float penetrationDepth = 0.1f;
+
+		// Correction Position
+		Vec3 Correction = CollisionNormal * penetrationDepth;
+		Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+	}
 }
 
-void PlayerCharacter::Overlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+/**
+ * @brief 플레이어 기준, 3D Collider와 Mesh Collider가 충돌했을 때 처리하는 Overlap 함수
+ *
+ * @param PCollider
+ * @param POtherObject
+ * @param POtherCollider
+ */
+void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
+	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
+
+	if (CollisionNormal.Length() > 0.001f)
+	{
+		// Add Normal
+		m_vecCollisionNormal.push_back(CollisionNormal);
+
+		// FIXME(KHJ): 충돌 깊이 계산
+		float penetrationDepth = 0.05f;
+
+		// Correction Position
+		Vec3 Correction = CollisionNormal * penetrationDepth;
+		Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 }

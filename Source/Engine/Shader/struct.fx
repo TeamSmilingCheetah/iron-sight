@@ -3,12 +3,12 @@
 
 struct tLight2DInfo
 {
-    float3  vColor; // 광원 색상	
+    float3  vColor; // 광원 색상
     float3  vWorldPos; // 광원 위치
     float3  vDir; // 광원 진행 방향
     int     Type; // 광원 타입(LIGHT_TYPE)
     float   Radius; // 광원 범위반경
-    float   Angle; // 광원 범위각도	  
+    float   Angle; // 광원 범위각도
 };
 
 
@@ -16,16 +16,16 @@ struct tLightColor
 {
     float3  vColor; // 광원의 빛 자체 색상
     float   SpecCoeff; // 반사 계수
-    float3  vAmbient; // 환경광(광원으로 인해서 생긴 최소한의 빛)    
+    float3  vAmbient; // 환경광(광원으로 인해서 생긴 최소한의 빛)
 };
 
 struct tLight3DInfo
 {
-    tLightColor info; // 광원 색상 정보	   	
-    int         Type; // 광원 타입(LIGHT_TYPE)		
+    tLightColor info; // 광원 색상 정보
+    int         Type; // 광원 타입(LIGHT_TYPE)
     float3      WorldPos; // 광원 위치
     float       Radius; // 광원 범위반경 (Point)
-    float3      vDir; // 광원 진행 방향	   
+    float3      vDir; // 광원 진행 방향
     float       Angle; // 광원 범위각도	(Spot)
 };
 
@@ -40,19 +40,19 @@ struct tParticle
     float3  vWorldInitScale;
     float3  vWorldCurrentScale;
     float3  vWorldRotation;
-    
+
     float3  vForce;
     float3  vVelocity;
-        
+
     float   NoiseForceAccTime; // Noise Force 텀에 도달하는 누적 시간
     float3  NoiseForceDir; // 적용된 Noise Forec 의 방향
-            
+
     float   Mass;
     float   Life;
     float   Age;
     float   NormalizedAge;
     int     Active;
-    
+
     float2  padding;
 };
 
@@ -72,39 +72,39 @@ struct tParticleModule
     float3  SpawnShapeScale;    // SpawnShapeScale.x == Radius
 
     uint    BlockSpawnShape;    // 0 : Box,  1: Sphere
-    float3  BlockSpawnShapeScale; // SpawnShapeScale.x == Radius    
-    
+    float3  BlockSpawnShapeScale; // SpawnShapeScale.x == Radius
+
     uint    SpaceType;          // 0 : LocalSpcae, 1 : WorldSpace
-    
+
     // Spawn Burst
     uint    SpawnBurstCount;    // 한번에 발생시키는 Particle 수
     uint    SpawnBurstRepeat;
     float   SpawnBurstRepeatTime;
-    
+
     // Add Velocity
-    uint    AddVelocityType;    // 0 : Random, 1 : FromCenter, 2 : ToCenter, 4 : Fixed 
+    uint    AddVelocityType;    // 0 : Random, 1 : FromCenter, 2 : ToCenter, 4 : Fixed
     float3  AddVelocityFixedDir;
     float   AddMinSpeed;
     float   AddMaxSpeed;
-    
+
     // Scale Module
     float   StartScale;
     float   EndScale;
-    
+
     // Drag Module
     float   DestNormalizedAge;
-    float   LimitSpeed;    
-    
+    float   LimitSpeed;
+
     // Noise Force Module
     float   NoiseForceTerm;     // Noise Force 적용시키는 텀
     float   NoiseForceScale;    // Noise Force 의 크기
-       
+
     // Render Module
     float3  EndColor;           // 최종 색상
     uint    FadeOut;            // 0 : Off, 1 : Normalized Age
     float   StartRatio;         // FadeOut 효과가 시작되는 Normalized Age 지점
     uint    VelocityAlignment;  // 속도 정렬 0 : Off, 1 : On
-    
+
 	// Module On / Off
     int     Module[7];
 };
@@ -142,6 +142,21 @@ struct tSkinningInfo
     float3 vTangent;
     float3 vBinormal;
     float3 vNormal;
+};
+
+struct Vtx {
+    float3 Pos;
+};
+
+/**
+ * 충돌 결과를 반환하는 struct
+ *
+ * @param LeftNormal LeftMesh 삼각형 노멀
+ * @param RightNormal RightMesh 삼각형 노멀
+ */
+struct CollisionResult {
+    float3 LeftNormal;
+    float3 RightNormal;
 };
 
 #endif

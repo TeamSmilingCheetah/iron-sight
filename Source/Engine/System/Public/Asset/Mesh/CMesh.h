@@ -11,6 +11,17 @@ struct tIndexInfo
 	void* IdxSysMem;
 };
 
+/**
+ * @brief 메시(3D Mesh) 데이터를 관리하는 클래스
+ *
+ * @var m_VB         버텍스 버퍼 (GPU용, ID3D11Buffer)
+ * @var m_VBDesc     버텍스 버퍼의 DirectX11 버퍼 설명 구조체
+ * @var m_VtxCount   버텍스 개수
+ * @var m_VtxSysMem  버텍스 데이터의 시스템 메모리 포인터 (Vtx 배열)
+ * @var m_vecIdxInfo 인덱스 버퍼 정보의 벡터, 서브셋 단위 관리
+ * @var m_BoundMin   메시의 로컬 바운딩 박스 최소 좌표
+ * @var m_BoundMax   메시의 로컬 바운딩 박스 최대 좌표
+ */
 class CMesh :
 	public CAsset
 {
@@ -38,6 +49,7 @@ public:
 
 	UINT GetVertexCount() const { return m_VtxCount; }
 	UINT GetSubsetCount() const { return static_cast<UINT>(m_vecIdxInfo.size()); }
+	vector<tIndexInfo>& GetIndexInfo() { return m_vecIdxInfo; }
 	void* GetVtxSysMem() const { return m_VtxSysMem; }
 
 	// Local Bound

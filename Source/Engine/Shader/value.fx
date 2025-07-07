@@ -9,7 +9,7 @@ cbuffer Transform : register(b0)
     row_major matrix g_matWorld;
     row_major matrix g_matView;
     row_major matrix g_matProj;
-    
+
     row_major matrix g_matWV;
     row_major matrix g_matWVP;
 };
@@ -21,32 +21,32 @@ cbuffer Material : register(b1)
     float4           g_vSpec;
     float4           g_vAmb;
     float4           g_vEmv;
-    
+
     int              g_int_0;
     int              g_int_1;
     int              g_int_2;
-    int              g_int_3;   
-    
+    int              g_int_3;
+
     float            g_float_0;
     float            g_float_1;
     float            g_float_2;
-    float            g_float_3;    
-    
+    float            g_float_3;
+
     float2           g_vec2_0;
     float2           g_vec2_1;
     float2           g_vec2_2;
     float2           g_vec2_3;
-    
+
     float4           g_vec4_0;
     float4           g_vec4_1;
     float4           g_vec4_2;
-    float4           g_vec4_3;  
-    
+    float4           g_vec4_3;
+
     row_major Matrix g_mat_0;
     row_major Matrix g_mat_1;
     row_major Matrix g_mat_2;
     row_major Matrix g_mat_3;
-    
+
     int              g_btex_0;
     int              g_btex_1;
     int              g_btex_2;
@@ -59,7 +59,7 @@ cbuffer Material : register(b1)
     int              g_btexarr_3;
     int              g_btexcube_0;
     int              g_btexcube_1;
-    
+
     // 3D Animation 정보
     int             g_iAnim;
     int             g_iBoneCount;
@@ -71,8 +71,8 @@ cbuffer SPRITE : register(b2)
     float2  g_LeftTopUV;
     float2  g_SliceUV;
     float2  g_BackgroundUV;
-    float2  g_OffsetUV;    
-    
+    float2  g_OffsetUV;
+
     int     g_SpriteUse;
     int3    g_SpritePadding;
 }
@@ -86,6 +86,12 @@ cbuffer GLOBAL : register(b3)
     float   g_Time_Engine;        // 누적시간
     int     g_Light2DCount;       // 2D 광원 개수
     int     g_Light3DCount;       // 3D 광원 개수
+}
+
+cbuffer MeshCollisionInfo : register(b4)
+{
+    uint LeftTriCount;
+    uint RightTriCount;
 }
 
 Texture2D       g_tex_0 : register(t0);
@@ -111,6 +117,14 @@ StructuredBuffer<tLight3DInfo>   g_Light3DInfo : register(t14); // 3D 광원 정
 // Animation3D Bone Matrix Buffer
 StructuredBuffer<Matrix>        g_arrBoneMat     : register(t17);
 StructuredBuffer<Matrix>        g_arrPureBoneMat : register(t18);
+
+// Mesh Collision
+StructuredBuffer<Vtx> LeftVertices : register(t22);
+StructuredBuffer<uint3> LeftIndices : register(t23);
+StructuredBuffer<Vtx> RightVertices : register(t24);
+StructuredBuffer<uint3> RightIndices : register(t25);
+RWStructuredBuffer<uint> CollisionCount : register(u0);
+RWStructuredBuffer<CollisionResult> Results : register(u1);
 
 SamplerState    g_sam_0 : register(s1); // 이방성 필터링
 SamplerState    g_sam_1 : register(s2); // MIN_MAG_POINT 필터링

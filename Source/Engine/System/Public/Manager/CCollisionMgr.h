@@ -62,9 +62,9 @@ private:
 	bool IsCollisionRayLand(CColliderRay* PLeftCol, CLandScape* PRightCol);
 
 	bool IsBoundingBoxCollided(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider);
-	bool IsBoundingBoxCollided(CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider);
-	bool IsMeshCollided(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider);
-	bool IsMeshCollided(const CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider);
+	bool IsBoundingBoxCollided(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider);
+	bool IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider);
+	bool IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider);
 
 	// Landscape & Ray
 	void LandCheak();

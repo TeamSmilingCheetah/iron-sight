@@ -245,6 +245,7 @@
     <ClInclude Include="System\Public\Rendering\Shader\CCopyBoneCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CGraphicShader.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CHeightMapCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CMeshCollisionCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CParticleTickCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CRaycastCS.h" />
     <ClInclude Include="System\Public\Rendering\Shader\CShader.h" />
@@ -315,6 +316,7 @@
     <ClCompile Include="System\Private\Rendering\Shader\CComputeShader.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CGraphicShader.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CHeightMapCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CMeshCollisionCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CParticleTickCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CRaycastCS.cpp" />
     <ClCompile Include="System\Private\Rendering\Shader\CShader.cpp" />
