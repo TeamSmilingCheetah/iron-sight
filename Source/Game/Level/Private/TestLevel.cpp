@@ -1,73 +1,323 @@
 #include "pch.h"
 #include "Game/Level/Public/TestLevel.h"
+
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
-#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
+
 #include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
-#include "Game/Gameplay/Weapon/Public/GunController.h"
-#include "Game/Gameplay/Weapon/Public/ThrowableController.h"
-#include "Game/Gameplay/TestSound.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/TestCharacter.h"
-#include "Game/Gameplay/Particle/Public/ParticleController.h"
-#include "Game/Gameplay/UI/Public/RoundsUIScript.h"
-#include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
-
-#include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
-
+#include "Game/Gameplay/Door/Public/DoorScript.h"
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
-#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
-#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
-#include "Game/Gameplay/Door/Public/DoorScript.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
-
-#include "Engine/Core/Public/CEngine.h"
+#include "Game/Gameplay/UI/Public/RoundsUIScript.h"
+#include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Game/Gameplay/Weapon/Public/ThrowableController.h"
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
 
 void TestLevel::CreateTestLevel()
 {
-	// Texture 로딩하기
-	Ptr<CTexture> pTex = CAssetMgr::GetInst()->Load<CTexture>(
-		L"PlayerTex", L"Texture\\Character.png");
-	Ptr<CTexture> pAtlasTex = CAssetMgr::GetInst()->Load<CTexture>(
-		L"TileMapTex", L"Texture\\TILE.bmp");
-
-	CLevel* pLevel = new CLevel;
+	CLevel* LevelForTest = new CLevel;
 
 	// 테스트 레벨을 현재 레벨로 지정
-	ChangeLevel(pLevel, LEVEL_STATE::STOP);
+	ChangeLevel(LevelForTest, LEVEL_STATE::STOP);
 
-	pLevel->GetLayer(0)->SetName(L"Background");
-	pLevel->GetLayer(1)->SetName(L"Structure");	// 건물, 구조물 등
-	pLevel->GetLayer(2)->SetName(L"Default");
-	pLevel->GetLayer(3)->SetName(L"PlayerTPS");
-	pLevel->GetLayer(4)->SetName(L"PlayerFPS");
-	pLevel->GetLayer(5)->SetName(L"PlayerObject");
-	pLevel->GetLayer(6)->SetName(L"Item");
-	pLevel->GetLayer(7)->SetName(L"MonsterObject");
-	pLevel->GetLayer(8)->SetName(L"UI");
-	pLevel->GetLayer(9)->SetName(L"ObjectPool");
-	pLevel->GetLayer(10)->SetName(L"BulletLayer");
+	SetUpLayer(LevelForTest);
+	SetUpCollision(LevelForTest);
+	SetUpCamera(LevelForTest);
+	SetUpLight(LevelForTest);
+	SetUpSkyBox(LevelForTest);
+	SetUpLandscape(LevelForTest);
 
-	// 충돌 설정
+	// Initialize Item Parts
+	auto UIInfo = SetUpUI(LevelForTest);
+	ItemMgr::GetInst()->Init();
+
+	SetUpPlayer(LevelForTest, UIInfo);
+
+	// Smoke
+	SetupFBX(
+	LevelForTest,
+	L"FBX\\Props\\Throwable\\M18_Smoke.fbx",
+	L"Smoke Grenade",
+	Vec3(0.f, 0.f, 10000.f),
+	Vec3(15.f, 15.f, 15.f),
+	Vec3(0.f, 0.f, 0.f),
+	{
+		[](CGameObject* obj) {
+			obj->AddComponent(new CCollider3D);
+			obj->Collider3D()->SetName(L"Weapon");
+			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+			obj->Collider3D()->SetIndependentScale(true);
+			obj->Collider3D()->SetTrigger(true);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new ThrowableController);
+			WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+			script->SetWeaponType(WEAPON_TYPE::THROWABLE);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new ItemScript(ITEM_TYPE::SMOKEBOMB));
+		}
+	},
+	6,
+	false
+	);
+
+	// Test Primary Weapon
+	SetupFBX(
+	LevelForTest,
+	L"FBX\\Props\\Heal\\Energy Drink.fbx",
+	L"Energy Drink",
+	Vec3(0.f, 0.f, 1000.f),
+	Vec3(500.f, 500.f, 500.f),
+	Vec3(0.f, 0.f, 0.f),
+	{
+		[](CGameObject* obj) {
+			obj->AddComponent(new CCollider3D);
+			obj->Collider3D()->SetName(L"Weapon");
+			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+			obj->Collider3D()->SetIndependentScale(true);
+			obj->Collider3D()->SetTrigger(true);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new GunController);
+			WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+			script->SetWeaponType(WEAPON_TYPE::SECONDARY);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new ItemScript(ITEM_TYPE::ENERGY_DRINK));
+		}
+	},
+	6,
+	false
+	);
+
+	// Test Secondary Weapon
+	SetupFBX(
+	LevelForTest,
+	L"FBX\\Props\\Heal\\First Aid Kit.fbx",
+	L"First Aid Kit",
+	Vec3(0.f, 0.f, 3000.f),
+	Vec3(500.f, 500.f, 500.f),
+	Vec3(0.f, 0.f, 0.f),
+	{
+		[](CGameObject* obj) {
+			obj->AddComponent(new CCollider3D);
+			obj->Collider3D()->SetName(L"Weapon");
+			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+			obj->Collider3D()->SetIndependentScale(true);
+			obj->Collider3D()->SetTrigger(true);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new GunController);
+			WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+			script->SetWeaponType(WEAPON_TYPE::PRIMARY);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new ItemScript(ITEM_TYPE::FIRST_AID_KIT));
+		}
+	},
+	6,
+	false
+	);
+
+	SetupFBX(
+	LevelForTest,
+	L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx",
+	L"Adrenaline",
+	Vec3(0.f, 0.f, 0.f), // 위치값이 원본 코드에선 따로 없음(필요시 Vec3(0.f, 0.f, 0.f) 등으로)
+	Vec3(150.f, 150.f, 150.f),
+	Vec3(0.f, 0.f, 0.f),
+	{
+		[](CGameObject* obj) {
+			obj->AddComponent(new CCollider3D);
+			obj->Collider3D()->SetName(L"Weapon");
+			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+			obj->Collider3D()->SetIndependentScale(true);
+			obj->Collider3D()->SetTrigger(true);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new ItemScript(ITEM_TYPE::ADRENALINE_SYRINGE));
+		}
+	},
+	6,
+	false
+	);
+
+	auto* Bandage = SetupFBX(
+	LevelForTest,
+	L"FBX\\Props\\Heal\\Bandage.fbx",
+	L"Bandage",
+	Vec3(0.f, 0.f, 0.f), // 위치값이 원본 코드에선 따로 없음(필요시 Vec3(0.f, 0.f, 0.f) 등으로)
+	Vec3(150.f, 150.f, 150.f),
+	Vec3(0.f, 0.f, 0.f),
+	{
+		[](CGameObject* obj) {
+			obj->AddComponent(new CCollider3D);
+			obj->Collider3D()->SetName(L"Weapon");
+			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+			obj->Collider3D()->SetIndependentScale(true);
+			obj->Collider3D()->SetTrigger(true);
+		},
+		[](CGameObject* obj) {
+			obj->AddComponent(new ItemScript(ITEM_TYPE::AMMO_5));
+		}
+	},
+	6,
+	false
+);
+
+	MakeClone(LevelForTest, Bandage, 6, false, 7);
+
+	SetupFBX(
+		LevelForTest,
+		L"FBX\\Props\\Death Box\\box.fbx",
+		L"DeathBox",
+		Vec3(6590.f, -410.f, 5000.f),
+		Vec3(700.f, 2000.f, 700.f),
+		Vec3(0.f, 0.f, 0.f),
+		{
+			[](CGameObject* obj) {
+				obj->AddComponentRecursive<CMeshCollider>();
+				obj->Transform()->SetRelativeScaleMultiply(0.3f);
+			}
+		},
+		1,
+		true
+	);
+
+	// 적 테스트
+	auto* TestTarget = SetupFBX(
+		LevelForTest,
+		L"FBX\\Testasset.fbx",
+		L"TestTarget",
+		Vec3(3000.f, 0.f, 1000.f),
+		Vec3(5.f, 5.f, 5.f),
+		Vec3(0.f, 0.f, 0.f),
+		{
+			[](CGameObject* obj) {
+				obj->AddComponent(new CCollider3D);
+				obj->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+			},
+			[](CGameObject* obj) {
+				obj->AddComponent(new TestCharacter);
+			}
+		},
+		7,
+		false
+	);
+
+	// 적 시야 테스트
+	CGameObject* pVision = new CGameObject;
+	pVision->SetName(L"TestVision");
+	pVision->AddComponent(new CCollider3D);
+	pVision->AddComponent(new CColliderRay);
+	pVision->AddComponent(new EnemyVisionScript);
+	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+
+	pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
+	pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2500.f));
+	pVision->Collider3D()->SetIndependentScale(true);
+	pVision->Collider3D()->SetTrigger(true);
+
+	pVision->ColliderRay()->SetRayLength(1000);
+	pVision->ColliderRay()->SetIndependentDir(true);
+	pVision->ColliderRay()->SetTriggerTarget(false);
+
+	TestTarget->AddChild(pVision);
+
+	// Door
+	SetupFBX(
+		LevelForTest,
+		L"FBX\\door.fbx",
+		L"Door",
+		Vec3(2000.f, -500.f, 1500.f),
+		Vec3(1000.f, 1000.f, 1000.f),
+		Vec3(0.f, 0.f, 0.f),
+		{
+			[](CGameObject* obj) {
+				obj->AddComponent(new CCollider3D);
+				obj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
+				obj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
+				obj->Collider3D()->SetIndependentScale(true);
+			},
+			[](CGameObject* obj) {
+				obj->AddComponent(new DoorScript);
+			}
+		},
+		1,
+		false
+	);
+	//
+	// CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
+	// testPlayer->SetName(L"Test_Player");
+	//
+	// testPlayer->Transform()->SetRelativePos(Vec3(500.f, -380.f, 1000.f));
+	// testPlayer->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+	// testPlayer->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+	//
+	// testPlayer->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
+	//
+	// pLevel->AddObject(1, testPlayer, false);
+
+	// Downtown Alley
+	SetupFBX(
+		LevelForTest,
+		L"FBX\\Downtown_Alley_Scene.fbx",
+		L"Downtown_Alley",
+		Vec3(0.f, -1500.f, 0.f),
+		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+		Vec3(0.f, 0.f, 0.f),
+		{
+			[](CGameObject* obj) {
+				obj->Transform()->SetRelativeScaleMultiply(4.f);
+				obj->AddComponentRecursive<CMeshCollider>();
+			}
+		},
+		1,
+		true
+	);
+}
+
+// TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
+
+// Setting Level
+void TestLevel::SetUpLayer(CLevel* PLevel)
+{
+	PLevel->GetLayer(0)->SetName(L"Background");
+	PLevel->GetLayer(1)->SetName(L"Structure"); // 건물, 구조물 등
+	PLevel->GetLayer(2)->SetName(L"Default");
+	PLevel->GetLayer(3)->SetName(L"PlayerTPS");
+	PLevel->GetLayer(4)->SetName(L"PlayerFPS");
+	PLevel->GetLayer(5)->SetName(L"PlayerObject");
+	PLevel->GetLayer(6)->SetName(L"Item");
+	PLevel->GetLayer(7)->SetName(L"MonsterObject");
+	PLevel->GetLayer(8)->SetName(L"UI");
+	PLevel->GetLayer(9)->SetName(L"ObjectPool");
+	PLevel->GetLayer(10)->SetName(L"BulletLayer");
+}
+
+// Collision Layer Setting
+void TestLevel::SetUpCollision(CLevel* PLevel)
+{
 	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 0);
 	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 1);
 	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 7);
@@ -82,107 +332,86 @@ void TestLevel::CreateTestLevel()
 	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 10);
 	CCollisionMgr::GetInst()->ToggleLayerCollision(4, 10);
 	CCollisionMgr::GetInst()->ToggleLayerCollision(7, 10);
+}
 
-	CGameObject* pObject = nullptr;
+// Main Camera
+void TestLevel::SetUpCamera(CLevel* PLevel)
+{
+	CGameObject* MainCamera = new CGameObject();
+	MainCamera->SetName(L"MainCamera");
+	MainCamera->AddComponent(new CameraController);
 
-	// ==========
-	// MainCamera
-	// ==========
-	pObject = new CGameObject;
-	pObject->SetName(L"MainCamera");
-	pObject->AddComponent(new CCamera);
-	pObject->AddComponent(new CameraController);
-//	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new CColliderRay);
+	MainCamera->AddComponent(new CCamera);
+	MainCamera->Camera()->SetProjType(PERSPECTIVE);
+	MainCamera->Camera()->SetPriority(0);
+	MainCamera->Camera()->LayerCheckAll();
+	MainCamera->Camera()->LayerCheck(4);
 
-	//pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-	pObject->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
-	pObject->ColliderRay()->SetRayLength(2000.f);
-	pObject->ColliderRay()->SetIndependentDir(true);
+	MainCamera->AddComponent(new CColliderRay);
+	MainCamera->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
+	MainCamera->ColliderRay()->SetRayLength(2000.f);
+	MainCamera->ColliderRay()->SetIndependentDir(true);
 
-	pObject->Camera()->SetProjType(PERSPECTIVE);
-	pObject->Camera()->SetPriority(0);
-	pObject->Camera()->LayerCheckAll();
-	pObject->Camera()->LayerCheck(4);
+	PLevel->AddObject(0, MainCamera, false);
+}
 
-	// Camera Check
-	//CGameObject* pCamRay = new CGameObject;
-	//pCamRay->SetName(L"Cam Ray");
-	//pCamRay->AddComponent(new CCollider3D);
-	//pCamRay->AddComponent(new CColliderRay);
-	//pCamRay->AddComponent(new CameraController);
+// Point Light
+void TestLevel::SetUpLight(CLevel* PLevel)
+{
+	CGameObject* PointLight = new CGameObject();
+	PointLight->SetName(L"PointLight");
 
-	//pCamRay->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	//pCamRay->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-	//pCamRay->Collider3D()->SetTrigger(true);
+	PointLight->AddComponent(new CLight3D);
+	PointLight->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	PointLight->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	PointLight->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	PointLight->Light3D()->SetSpecularCoefficient(0.3f);
+	PointLight->Light3D()->SetRadius(300.f);
 
-	//pCamRay->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
-	//pCamRay->ColliderRay()->SetTriggerTarget(true);
-	//pCamRay->ColliderRay()->SetRayLength(2000.f);
-	//pCamRay->ColliderRay()->SetIndependentDir(true);
+	PointLight->Transform()->SetRelativePos(0.f, -450.f, 0.f);
+	PointLight->Transform()->SetRelativeRotation(45.f, 45.f, 0.f);
 
-	//pObject->AddChild(pCamRay);
+	PLevel->AddObject(0, PointLight, false);
+}
 
-	pLevel->AddObject(0, pObject, false);
+// Sky Box
+void TestLevel::SetUpSkyBox(CLevel* PLevel)
+{
+	CGameObject* SkyBox = new CGameObject();
+	SkyBox->SetName(L"SkyBox");
+	Ptr<CTexture> SkyBoxTexture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\skybox\\Sky01.png");
 
-
-
-	// =================
-	// 광원 오브젝트 추가
-	// =================
-	auto pLightObj = new CGameObject;
-	pLightObj->SetName(L"Point Light");
-	pLightObj->AddComponent(new CLight3D);
-	pLightObj->Transform()->SetRelativePos(0.f, -450.f, 0.f);
-	pLightObj->Transform()->SetRelativeRotation(45.f, 45.f, 0.f);
-	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
-	pLightObj->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
-	pLightObj->Light3D()->SetSpecularCoefficient(0.3f);
-	pLightObj->Light3D()->SetRadius(300.f);
-	pLevel->AddObject(0, pLightObj, false);
-
-	// ======
-	// SkyBox
-	// ======
-	auto pSkyBox = new CGameObject;
-	pSkyBox->SetName(L"SkyBox");
-	pSkyBox->AddComponent(new CSkyBox);
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->Load<CTexture>(
-		L"Texture\\skybox\\Sky01.png");
+	SkyBox->AddComponent(new CSkyBox);
+	SkyBox->SkyBox()->SetMode(SPHERE);
+	SkyBox->SkyBox()->SetSkyBoxTexture(SkyBoxTexture);
 
 	// FrustumCheck 비활성화
-	pSkyBox->Transform()->SetFrustumCheck(false);
+	SkyBox->Transform()->SetFrustumCheck(false);
 
-	pSkyBox->SkyBox()->SetMode(SPHERE);
-	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pLevel->AddObject(0, pSkyBox, false);
+	PLevel->AddObject(0, SkyBox, false);
+}
 
-	// =========
-	// LandScape
-	// =========
-	auto pLandScape = new CGameObject;
-	pLandScape->SetName(L"LandScape");
-	pLandScape->AddComponent(new CLandScape);
+// Landscape
+void TestLevel::SetUpLandscape(CLevel* PLevel)
+{
+	CGameObject* Landscape = new CGameObject();
+	Landscape->SetName(L"LandScape");
+	Landscape->AddComponent(new CLandScape);
 
-	pLandScape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
-	pLandScape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	Landscape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
+	Landscape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
 
-	pLandScape->LandScape()->SetFace(32, 32);
-	pLandScape->LandScape()->CreateHeightMap(1024, 1024);
-	//pLandScape->LandScape()->SetHeightMapTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\HeightMap\\HeightMap_01.jpg"));
-	pLandScape->LandScape()->SetColorTexture(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
-	pLandScape->LandScape()->SetNormalTexture(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
+	Landscape->LandScape()->SetFace(32, 32);
+	Landscape->LandScape()->CreateHeightMap(1024, 1024);
+	Landscape->LandScape()->SetColorTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
+	Landscape->LandScape()->SetNormalTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
 
-	pLevel->AddObject(0, pLandScape, false);
+	PLevel->AddObject(0, Landscape, false);
+}
 
-
-	// =========
-	// UI Preset
-	// =========
-
+// UI Preset
+vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
+{
 	// UI Camera
 	CGameObject* UICamera = new CGameObject;
 	UICamera->SetName(L"UICamera");
@@ -191,10 +420,10 @@ void TestLevel::CreateTestLevel()
 	UICamera->Camera()->SetPriority(1);
 	UICamera->Camera()->SetFar(10.f);
 
-	assert(pLevel->GetLayer(8)->GetName() == L"UI");
+	assert(PLevel->GetLayer(8)->GetName() == L"UI");
 	UICamera->Camera()->LayerCheck(8);
 
-	pLevel->AddObject(0, UICamera, false);
+	PLevel->AddObject(0, UICamera, false);
 
 	// "Inventory CanvasUI"
 	CGameObject* CanvasUI = new CGameObject;
@@ -209,7 +438,7 @@ void TestLevel::CreateTestLevel()
 
 	SetObjectActive(CanvasUI, false);
 
-	pLevel->AddObject(8, CanvasUI, false);	// UI layer
+	PLevel->AddObject(8, CanvasUI, false);	// UI layer
 
 	// DropUI
 	CGameObject* UI = new CGameObject;
@@ -323,7 +552,7 @@ void TestLevel::CreateTestLevel()
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
 	CanvasUI->UI()->SetPriority(1);
 
-	pLevel->AddObject(8, CanvasUI, false);
+	PLevel->AddObject(8, CanvasUI, false);
 
 	CGameObject* pImageUI = new CGameObject;
 	pImageUI->SetName(L"Cardinal_ImageUI");
@@ -359,7 +588,7 @@ void TestLevel::CreateTestLevel()
 
 	CanvasUI->AddComponent(new CUIRender);
 
-	pLevel->AddObject(8, CanvasUI, false);
+	PLevel->AddObject(8, CanvasUI, false);
 
 	// HP UI
 	CGameObject* childUI = new CGameObject;
@@ -461,7 +690,6 @@ void TestLevel::CreateTestLevel()
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 	childUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
 
-
 	childUI->AddComponent(new CUIRender);
 	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(INT_0, 1);
@@ -470,470 +698,184 @@ void TestLevel::CreateTestLevel()
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.2f);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-
 	CanvasUI->AddChild(childUI);
 
+	return {Vicinity, Inventory, interactionUI};
+}
 
+// TODO(KHJ): FBX 기반 Common Load Method 구축할 것
 
-
-
-
-	// 아이템 매니저 Initialize
-	ItemMgr::GetInst()->Init();
-
-
-	// ============
-	// FBX Loading
-	// ============
-
-	Ptr<CMeshData> pMeshData = nullptr;
-	CGameObject* pObj = nullptr;
-
-	//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\AK_ANIMACION.fbx");
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James.fbx");
-	//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\PUBG_ANIMSET_1.fbx");
-
-	// TEST: LoadAnimationFrom FBX
+void TestLevel::SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo)
+{
+	// Load Animation & MeshData From FBX
+	Ptr<CMeshData> PlayerMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James.fbx");
 	Ptr<CMeshData> pAnimationSet = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James_Anim.fbx");
 
-	Ptr<CMeshData> pWeaponModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
+	CGameObject* Player = PlayerMeshData->Instantiate();
+	Player->SetName(L"Player");
+	Player->AddComponent(new CCollider3D);
+	Player->AddComponent(new CColliderRay);
+	Player->AddComponent(new PlayerCharacter);
+	Player->AddComponent(new InventoryController);
 
-	int modelCnt = 1;
-	for (int i = 0; i < modelCnt; ++i)
+	Player->Transform()->SetRelativePos(Vec3(6500.f, 5000.f, 4500.f));
+	Player->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
+	Player->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
+
+	Player->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
+	Player->ColliderRay()->SetOffset(Vec3(0.f, 1500.f, 0.f));
+	Player->ColliderRay()->SetRayLength(5000.f);
+	Player->ColliderRay()->SetTriggerTarget(true);
+
+	Player->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
+
+	Player->Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
+	Player->Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
+	Player->Collider3D()->SetIndependentScale(true);
+
+
+	InventoryController* InventoryScript = static_cast<InventoryController*>(GetScriptWithType(
+		Player, SCRIPT_TYPE::INVENTORYSCRIPT));
+
+	// 주변 및 인벤토리 UI를 등록함
+	InventoryScript->SetVicinityUI(PUIInfo[0]);
+	InventoryScript->SetInventoryUI(PUIInfo[1]);
+	InventoryScript->SetPlayer(Player);
+
+	// Interaction Object
+	CGameObject* pInteractionHandler = new CGameObject;
+	pInteractionHandler->SetName(L"Interaction Handler");
+	pInteractionHandler->AddComponent(new CCollider3D);
+
+	pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
+	pInteractionHandler->Collider3D()->SetIndependentScale(true);
+	pInteractionHandler->Collider3D()->SetTrigger(true);
+	pInteractionHandler->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
+
+	auto pHandlerScript = new InteractionHandler;
+
+	pHandlerScript->SetPlayer(Player);
+	pHandlerScript->SetInteractionUI(PUIInfo[2]);
+
+	pInteractionHandler->AddComponent(pHandlerScript);
+
+	Player->AddChild(pInteractionHandler);
+
+	// Player Head Collider
+	CGameObject* pHeadColl = new CGameObject;
+	pHeadColl->SetName(L"Player Head");
+	pHeadColl->AddComponent(new CCollider3D);
+
+	pHeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
+
+	pHeadColl->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+	pHeadColl->Collider3D()->SetIndependentScale(true);
+	pHeadColl->Collider3D()->SetTrigger(false);
+
+	Player->AddChild(pHeadColl);
+
+	PLevel->AddObject(3, Player, true);
+}
+
+void TestLevel::SetUpWeapon(CLevel* PLevel)
+{
+	Ptr<CMeshData> WeaponFBX = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
+
+	CGameObject* Weapon = WeaponFBX->Instantiate();
+	Weapon->SetName(L"AKM");
+	Weapon->AddComponent(new CColliderRay);
+	Weapon->AddComponent(new CCollider3D);
+	Weapon->AddComponent(new GunController);
+
+	WeaponController* pScript = static_cast<WeaponController*>(Weapon->GetScripts()[0]);
+	pScript->SetWeaponType(WEAPON_TYPE::PRIMARY);
+
+	Weapon->Transform()->SetRelativePos(Vec3(90.f, 0.f, 30.f));
+	Weapon->Transform()->SetRelativeScale(Vec3(900.f, 900.f, 900.f));
+	Weapon->Transform()->SetRelativeRotation(0.f, -2.f, -4.3f);
+	Weapon->Transform()->SetIndependentScale(true);
+
+	Weapon->Collider3D()->SetName(L"Weapon");
+	Weapon->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+	Weapon->Collider3D()->SetIndependentScale(true);
+	Weapon->Collider3D()->SetTrigger(true);
+
+	Weapon->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
+	Weapon->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
+	Weapon->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
+
+	Weapon->AddComponent(new ItemScript(ITEM_TYPE::AKM));
+
+	PLevel->AddObject(6, Weapon, false);
+}
+
+void TestLevel::SetUpGrenade(CLevel* PLevel)
+{
+	Ptr<CMeshData> GrenadeFBX = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\GRENADE.fbx");
+
+	CGameObject* Grenade = GrenadeFBX->Instantiate();
+	Grenade->SetName(L"Grenade");
+	Grenade->AddComponent(new CCollider3D);
+	Grenade->AddComponent(new ThrowableController);
+
+	WeaponController* pScript1 = static_cast<WeaponController*>(Grenade->GetScripts()[0]);
+	pScript1->SetWeaponType(WEAPON_TYPE::THROWABLE);
+
+	Grenade->Collider3D()->SetName(L"Weapon");
+	Grenade->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+	Grenade->Collider3D()->SetIndependentScale(true);
+	Grenade->Collider3D()->SetTrigger(true);
+
+	Grenade->Transform()->SetRelativePos(0.f, 0.f, 5000.f);
+	Grenade->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
+	Grenade->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+	Grenade->Transform()->SetIndependentScale(true);
+
+	Grenade->AddComponent(new ItemScript(ITEM_TYPE::GRENADE));
+
+	// TODO(KHJ): Clone 용이성 고려할 것
+	PLevel->AddObject(6, Grenade, false);
+	PLevel->AddObject(6, Grenade->Clone(), false);
+}
+
+CGameObject* TestLevel::SetupFBX(
+	CLevel* PLevel,
+	const wstring& PFilePath,
+	const wstring& PName,
+	const Vec3& PPos,
+	const Vec3& PScale,
+	const Vec3& PRotation,
+	const vector<function<void(CGameObject*)>>& ComponentSetups,
+	int PLayer,
+	bool PMoveWithChild
+)
+{
+	// FBX 로드 및 인스턴스화
+	Ptr<CMeshData> MeshData = CAssetMgr::GetInst()->LoadFBX(PFilePath.c_str());
+	CGameObject* Object = MeshData->Instantiate();
+	Object->SetName(PName.c_str());
+
+	// Transform 세팅
+	Object->Transform()->SetRelativePos(PPos);
+	Object->Transform()->SetRelativeScale(PScale);
+	Object->Transform()->SetRelativeRotation(PRotation);
+
+	// 컴포넌트 추가 및 세팅
+	for (const auto& Setup : ComponentSetups)
 	{
-		pObj = pMeshData->Instantiate();
-		pObj->SetName(L"Player");
-		pObj->AddComponent(new CCollider3D);
-		pObj->AddComponent(new CColliderRay);
-
-		pObj->Transform()->SetRelativePos(Vec3(500.f + i * 200.f, -380.f, 500.f));
-		pObj->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-		pObj->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
-
-		pObj->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
-		pObj->ColliderRay()->SetOffset(Vec3(0.f, 1500.f, 0.f));
-		pObj->ColliderRay()->SetRayLength(5000.f);
-		pObj->ColliderRay()->SetTriggerTarget(true);
-
-		//pObj->AddComponent(new CAnimator3D);
-		pObj->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
-
-		pObj->AddComponent(new PlayerCharacter);
-		pObj->Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
-		pObj->Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
-		pObj->Collider3D()->SetIndependentScale(true);
-
-		pObj->AddComponent(new InventoryController);
-		InventoryController* pInvenScript = static_cast<InventoryController*>(GetScriptWithType(pObj, SCRIPT_TYPE::INVENTORYSCRIPT));
-
-		// 주변 및 인벤토리 UI를 등록함
-		pInvenScript->SetVicinityUI(Vicinity);
-		pInvenScript->SetInventoryUI(Inventory);
-		pInvenScript->SetPlayer(pObj);
-
-		// 자식 메쉬들 같이 이동
-		pLevel->AddObject(3, pObj, true);
-
-		// Interaction Object
-		CGameObject* pInteractionHandler = new CGameObject;
-		pInteractionHandler->SetName(L"Interaction Handler");
-		pInteractionHandler->AddComponent(new CCollider3D);
-
-		pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
-		pInteractionHandler->Collider3D()->SetIndependentScale(true);
-		pInteractionHandler->Collider3D()->SetTrigger(true);
-		pInteractionHandler->Collider3D()->SetOffset(Vec3(0.f, 1000.f, 0.f));
-
-		auto pHandlerScript = new InteractionHandler;
-
-		pHandlerScript->SetPlayer(pObj);
-		pHandlerScript->SetInteractionUI(interactionUI);
-
-		pInteractionHandler->AddComponent(pHandlerScript);
-
-		pObj->AddChild(pInteractionHandler);
-
-		// Player Head Collider
-		CGameObject* pHeadColl = new CGameObject;
-		pHeadColl->SetName(L"Player Head");
-		pHeadColl->AddComponent(new CCollider3D);
-
-		pHeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
-
-		pHeadColl->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-		pHeadColl->Collider3D()->SetIndependentScale(true);
-		pHeadColl->Collider3D()->SetTrigger(false);
-
-		pObj->AddChild(pHeadColl);
-
-		//
-		// AKM
-		//
-		CGameObject* pWeaponObj = pWeaponModel->Instantiate();
-		pWeaponObj->SetName(L"AKM");
-		pWeaponObj->AddComponent(new CColliderRay);
-		pWeaponObj->AddComponent(new CCollider3D);
-		pWeaponObj->AddComponent(new GunController);
-
-		WeaponController* pScript = static_cast<WeaponController*>(pWeaponObj->GetScripts()[0]);
-		//pScript->SetEquippedOwner(pObj);
-		pScript->SetWeaponType(WEAPON_TYPE::PRIMARY);
-
-		pWeaponObj->Transform()->SetRelativePos(Vec3(90.f, 0.f, 30.f));
-		pWeaponObj->Transform()->SetRelativeScale(Vec3(900.f, 900.f, 900.f));
-		pWeaponObj->Transform()->SetRelativeRotation(0.f, -2.f, -4.3f);
-		pWeaponObj->Transform()->SetIndependentScale(true);
-
-		pWeaponObj->Collider3D()->SetName(L"Weapon");
-		pWeaponObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Collider3D()->SetIndependentScale(true);
-		pWeaponObj->Collider3D()->SetTrigger(true);
-
-		pWeaponObj->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
-		pWeaponObj->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
-		pWeaponObj->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
-
-		pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::AKM));
-
-		pLevel->AddObject(6, pWeaponObj, false);
-		//PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(pObj->GetScripts()[0]);
-		//pPlayerScript->SetCurWeapon(pWeaponObj);
-
-		//pObj->AddChild(pWeaponObj);
-
-		//
-		// nade
-		//
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\GRENADE.fbx");
-		pWeaponObj = pMeshData->Instantiate();
-		pWeaponObj->SetName(L"Grenade");
-		pWeaponObj->AddComponent(new CCollider3D);
-		pWeaponObj->AddComponent(new ThrowableController);
-
-		WeaponController* pScript1 = static_cast<WeaponController*>(pWeaponObj->GetScripts()[0]);
-		pScript1->SetWeaponType(WEAPON_TYPE::THROWABLE);
-
-		pWeaponObj->Collider3D()->SetName(L"Weapon");
-		pWeaponObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Collider3D()->SetIndependentScale(true);
-		pWeaponObj->Collider3D()->SetTrigger(true);
-
-		pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 5000.f);
-		pWeaponObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
-		pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pWeaponObj->Transform()->SetIndependentScale(true);
-
-		pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::GRENADE));
-
-		pLevel->AddObject(6, pWeaponObj, false);
-
-		pLevel->AddObject(6, pWeaponObj->Clone(), false);
-
-		//
-		// smoke
-		//
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\M18_Smoke.fbx");
-		pWeaponObj = pMeshData->Instantiate();
-		pWeaponObj->SetName(L"Smoke Grenade");
-		pWeaponObj->AddComponent(new CCollider3D);
-		pWeaponObj->AddComponent(new ThrowableController);
-
-		WeaponController* pScript2 = static_cast<WeaponController*>(pWeaponObj->GetScripts()[0]);
-		pScript2->SetWeaponType(WEAPON_TYPE::THROWABLE);
-
-		pWeaponObj->Collider3D()->SetName(L"Weapon");
-		pWeaponObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Collider3D()->SetIndependentScale(true);
-		pWeaponObj->Collider3D()->SetTrigger(true);
-
-		pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 10000.f);
-		pWeaponObj->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
-		pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-		pWeaponObj->Transform()->SetIndependentScale(true);
-
-		pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::SMOKEBOMB));
-
-		pLevel->AddObject(6, pWeaponObj, false);
-
-		//
-		// Test PrimaryWeapon
-		//
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Energy Drink.fbx");
-		pWeaponObj = pMeshData->Instantiate();
-		pWeaponObj->SetName(L"Energy Drink");
-		pWeaponObj->AddComponent(new CCollider3D);
-		pWeaponObj->AddComponent(new GunController);
-
-		WeaponController* pScript3 = static_cast<WeaponController*>(pWeaponObj->GetScripts()[0]);
-		pScript3->SetWeaponType(WEAPON_TYPE::SECONDARY);
-
-		pWeaponObj->Collider3D()->SetName(L"Weapon");
-		pWeaponObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Collider3D()->SetIndependentScale(true);
-		pWeaponObj->Collider3D()->SetTrigger(true);
-
-		pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 1000.f);
-		pWeaponObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
-		pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::ENERGY_DRINK));
-
-		pLevel->AddObject(6, pWeaponObj, false);
-
-		//
-		// Test SecondaryWeapon
-		//
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\First Aid Kit.fbx");
-		pWeaponObj = pMeshData->Instantiate();
-		pWeaponObj->SetName(L"First Aid Kit");
-		pWeaponObj->AddComponent(new CCollider3D);
-		pWeaponObj->AddComponent(new GunController);
-
-		WeaponController* pScript4 = static_cast<WeaponController*>(pWeaponObj->GetScripts()[0]);
-		pScript4->SetWeaponType(WEAPON_TYPE::PRIMARY);
-
-		pWeaponObj->Collider3D()->SetName(L"Weapon");
-		pWeaponObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Collider3D()->SetIndependentScale(true);
-		pWeaponObj->Collider3D()->SetTrigger(true);
-
-		pWeaponObj->Transform()->SetRelativePos(0.f, 0.f, 3000.f);
-		pWeaponObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-		pWeaponObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
-		pWeaponObj->AddComponent(new ItemScript(ITEM_TYPE::FIRST_AID_KIT));
-
-		pLevel->AddObject(6, pWeaponObj, false);
+		Setup(Object);
 	}
 
-	// 모바일 배그 애셋 테스트
-	//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\hG.fbx");
-	//pObj = pMeshData->Instantiate();
-	//pObj->SetName(L"Wall");
-	//pObj->AddComponent(new CCollider3D);
+	// 레벨에 오브젝트 추가
+	PLevel->AddObject(PLayer, Object, PMoveWithChild);
 
-	//pObj->Collider3D()->SetScale(Vec3(8.f, 5.f, 4.5f));
-	//pObj->Collider3D()->SetRotY(13.31f);
+	return Object;
+}
 
-	//pObj->Transform()->SetRelativePos(Vec3(3208.f, 0.f, -1066.f));
-	//pObj->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-	//pObj->Transform()->SetRelativeRotation(0.f, 138.5f, 0.f);
-	//pLevel->AddObject(0, pObj, false);
-
-	//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Air Drop\\DROP.fbx");
-	//pObj = pMeshData->Instantiate();
-	//pObj->SetName(L"Airdrop");
-
-	//pObj->AddComponent(new CCollider3D);
-
-	//pObj->Collider3D()->SetIndependentScale(true);
-	//pObj->Collider3D()->SetScale(Vec3(2850.f, 2850.f, 2850.f));
-	//pObj->Collider3D()->SetOffset(Vec3(0.f, 1500.f, 0.f));
-
-	//pObj->Transform()->SetRelativePos(Vec3(2867.f, -494.f, 321.f));
-	//pObj->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
-	//pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-	//pLevel->AddObject(0, pObj, false);
-
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx");
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"Adrenaline");
-	pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
-	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
-	pObj->AddComponent(new CCollider3D);
-	pObj->Collider3D()->SetName(L"Weapon");
-	pObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-	pObj->Collider3D()->SetIndependentScale(true);
-	pObj->Collider3D()->SetTrigger(true);
-
-	pObj->AddComponent(new ItemScript(ITEM_TYPE::ADRENALINE_SYRINGE));
-
-	pLevel->AddObject(6, pObj, false);
-
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Bandage.fbx");
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"Bandage");
-	pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
-	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
-	pObj->AddComponent(new CCollider3D);
-	pObj->Collider3D()->SetName(L"Weapon");
-	pObj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-	pObj->Collider3D()->SetIndependentScale(true);
-	pObj->Collider3D()->SetTrigger(true);
-
-	pObj->AddComponent(new ItemScript(ITEM_TYPE::AMMO_5));
-
-	pLevel->AddObject(6, pObj, false);
-
-	pLevel->AddObject(6, pObj->Clone(), false);
-	pLevel->AddObject(6, pObj->Clone(), false);
-	pLevel->AddObject(6, pObj->Clone(), false);
-	pLevel->AddObject(6, pObj->Clone(), false);
-	pLevel->AddObject(6, pObj->Clone(), false);
-	pLevel->AddObject(6, pObj->Clone(), false);
-	pLevel->AddObject(6, pObj->Clone(), false);
-
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Death Box\\box.fbx");
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"DeathBox");
-
-	pObj->AddComponentRecursive<CMeshCollider>();
-
-	pObj->Transform()->SetRelativePos(Vec3(6590.f, -410.f, 5000.f));
-	pObj->Transform()->SetRelativeScale(Vec3(700.f, 2000.f, 700.f));
-	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
-	pLevel->AddObject(1, pObj, true);
-
-
-	/*
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Med Kit.fbx");
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"Med Kit");
-	pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
-	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-	pLevel->AddObject(0, pObj, false);
-
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\Molotov.fbx");
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"Molotov");
-	pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
-	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-	pLevel->AddObject(0, pObj, false);
-
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Heal\\Painkiller.fbx");
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"Painkiller");
-	pObj->Transform()->SetRelativeScale(Vec3(150.f, 150.f, 150.f));
-	pObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-	pLevel->AddObject(0, pObj, false);
-	*/
-
-	// 배경 사운드 테스트
-	//Ptr<CSound> soundBGM = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\Menu_Theme.wav");
-	//CSoundMgr::GetInst()->SetGameBGM(soundBGM, false);
-	//CSoundMgr::GetInst()->PlayGameBGM(true, 0.5f, false);
-
-
-	//// 적 총기 음성 테스트
-	//pObject = new CGameObject;
-	//pObject->SetName(L"TestSound");
-	//pObject->AddComponent(new CMeshRender);
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->AddComponent(new TestSound);
-
-	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->Load<CMesh>(L"SphereMesh"));
-	//pObject->MeshRender()->SetMaterial(
-	//	CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
-
-	//pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
-	//pObject->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-	//pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	//pObject->Transform()->SetFrustumRadius(750.f);
-
-	//pObject->Collider3D()->SetScale(Vec3(1.f, 1.f, 1.f));
-
-	//Ptr<CTexture> pColor = CAssetMgr::GetInst()->Load<CTexture>(
-	//	L"Texture\\HeightMap\\MoonCrater.png");
-	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, pColor);
-
-	//Ptr<CTexture> pNormal = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
-	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, pNormal);
-	//pLevel->AddObject(0, pObject, false);
-
-	// 1) Prefab 로드
-	//Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
-
-	//CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 5);
-
-	// 총알 프리팹 생성용 임시
-	//Ptr<CMeshData> pBulletModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\9mmBullet.fbx");
-	//pObject = pBulletModel->Instantiate();
-	//
-	//pObject->SetName(L"9mm");
-	//pObject->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-	//
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->Collider3D()->SetScale(Vec3(20.f, 20.f, 100.f));
-	//pObject->Collider3D()->SetIndependentScale(true);
-	//
-	//pObject->AddComponent(new MissileProjectile);
-	//
-	//pObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\9mm_head.jpg", L"Texture\\9mm_head.jpg"));
-	//pObject->GetRenderComponent()->GetMaterial(1)->SetTexParam(TEX_0, CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\9mm_head.jpg", L"Texture\\9mm_head.jpg"));
-	//
-	//pLevel->AddObject(5, pObject, false);
-
-	// 적 테스트
-
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Testasset.fbx");
-
-	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"TestTarget");
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new TestCharacter);
-
-	pObject->Transform()->SetRelativePos(Vec3(3000.f, 0.f, 1000.f));
-	pObject->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
-	pObject->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-
-	pObject->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-
-	pLevel->AddObject(7, pObject, false);
-
-	// 적 시야 테스트
-	CGameObject* pVision = new CGameObject;
-	pVision->SetName(L"TestVision");
-	pVision->AddComponent(new CCollider3D);
-	pVision->AddComponent(new CColliderRay);
-	pVision->AddComponent(new EnemyVisionScript);
-	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-
-	pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
-	pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2500.f));
-	pVision->Collider3D()->SetIndependentScale(true);
-	pVision->Collider3D()->SetTrigger(true);
-
-	pVision->ColliderRay()->SetRayLength(1000);
-	pVision->ColliderRay()->SetIndependentDir(true);
-	pVision->ColliderRay()->SetTriggerTarget(false);
-
-	pObject->AddChild(pVision);
-
-
-
-
-	// Door
-	CGameObject* pDoorObj = CAssetMgr::GetInst()->LoadFBX(L"FBX\\door.fbx")->Instantiate();
-	pDoorObj->SetName(L"Door");
-	pDoorObj->Transform()->SetRelativePos(Vec3(2000.f, -500.f, 1500.f));
-	pDoorObj->Transform()->SetRelativeScale(Vec3(1000.f, 1000.f, 1000.f));
-	pDoorObj->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-
-	pDoorObj->AddComponent(new CCollider3D);
-	pDoorObj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
-	pDoorObj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
-	pDoorObj->Collider3D()->SetIndependentScale(true);
-
-	pDoorObj->AddComponent(new DoorScript);
-
-	pLevel->AddObject(1, pDoorObj, false);
-
-	//CGameObject* testojb = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Downtown_Alley_Scene.fbx")->Instantiate();
-
-	//pLevel->AddObject(1, testojb, false);
-
-	CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
-	testPlayer->SetName(L"Test_Player");
-
-	testPlayer->Transform()->SetRelativePos(Vec3(500.f, -380.f, 1000.f));
-	testPlayer->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-	testPlayer->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
-
-	testPlayer->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
-
-	pLevel->AddObject(1, testPlayer, false);
-
+void TestLevel::MakeClone(CLevel* PLevel, CGameObject* POrigin, int PLayer, bool PMoveWithChild, int PCopyNum)
+{
+	for (int i = 0; i <= PCopyNum; i++)
+	{
+		PLevel->AddObject(PLayer, POrigin->Clone(), PMoveWithChild);
+	}
 }

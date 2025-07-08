@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game/Gameplay/Particle/Public/ParticleController.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 

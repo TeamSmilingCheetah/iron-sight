@@ -1,7 +1,24 @@
 #pragma once
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
-#define GET_OTHER_COMPONENT(Type) C##Type* Type() { return m_Owner->Type(); }
+class CMeshCollider;
+class CUIRender;
+class CUI;
+class CLandScape;
+class CDecal;
+class CSkyBox;
+class CParticleSystem;
+class CAnimator3D;
+class CLight3D;
+class CLight2D;
+class CFlipbookPlayer;
+class CCollider3D;
+class CTileMap;
+class CColliderRay;
+class CCollider2D;
+class CCamera;
+class CMeshRender;
+class CTransform;
+class CGameObject;
 
 class CComponent :
 	public CEntity
@@ -13,25 +30,6 @@ private:
 public:
 	COMPONENT_TYPE GetType() { return m_Type; }
 	CGameObject* GetOwner() { return m_Owner; }
-
-	GET_OTHER_COMPONENT(Transform);
-	GET_OTHER_COMPONENT(MeshRender);
-	GET_OTHER_COMPONENT(Camera);
-	GET_OTHER_COMPONENT(Collider2D);
-	GET_OTHER_COMPONENT(Collider3D);
-	GET_OTHER_COMPONENT(ColliderRay);
-	GET_OTHER_COMPONENT(FlipbookPlayer);
-	GET_OTHER_COMPONENT(TileMap);
-	GET_OTHER_COMPONENT(Light2D);
-	GET_OTHER_COMPONENT(Light3D);
-	GET_OTHER_COMPONENT(Animator3D);
-	GET_OTHER_COMPONENT(ParticleSystem);
-	GET_OTHER_COMPONENT(SkyBox);
-	GET_OTHER_COMPONENT(Decal);
-	GET_OTHER_COMPONENT(LandScape);
-	GET_OTHER_COMPONENT(UI);
-	GET_OTHER_COMPONENT(UIRender);
-	GET_OTHER_COMPONENT(MeshCollider);
 
 	virtual void Init()
 	{
@@ -56,6 +54,25 @@ public:
 	virtual void SaveComponent(FILE* _File) = 0;
 	virtual void LoadComponent(FILE* _File) = 0;
 	virtual void LoadComponentReference() {}
+
+	CTransform* Transform() const;
+	CMeshRender* MeshRender() const;
+	CCamera* Camera() const;
+	CCollider2D* Collider2D() const;
+	CCollider3D* Collider3D() const;
+	CColliderRay* ColliderRay() const;
+	CFlipbookPlayer* FlipbookPlayer() const;
+	CTileMap* TileMap() const;
+	CLight2D* Light2D() const;
+	CLight3D* Light3D() const;
+	CAnimator3D* Animator3D() const;
+	CParticleSystem* ParticleSystem() const;
+	CSkyBox* SkyBox() const;
+	CDecal* Decal() const;
+	CLandScape* LandScape() const;
+	CUI* UI() const;
+	CUIRender* UIRender() const;
+	CMeshCollider* MeshCollider() const;
 
 	CComponent(COMPONENT_TYPE _TYPE);
 	~CComponent() override;

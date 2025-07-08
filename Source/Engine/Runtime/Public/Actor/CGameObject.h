@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Core/Public/CEntity.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 class CComponent;
 class CRenderComponent;

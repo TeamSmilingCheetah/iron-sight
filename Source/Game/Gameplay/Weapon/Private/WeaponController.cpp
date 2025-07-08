@@ -1,16 +1,12 @@
 #include "pch.h"
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/System/Public/Manager/CTimeMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
 
-#include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
-
-
 
 WeaponController::WeaponController(SCRIPT_TYPE _Type)
 	: CScript(_Type)
@@ -103,12 +99,12 @@ void WeaponController::AdjustFPSPos()
 		Vec3 vCamRot = m_MainCamera->Transform()->GetRelativeRotation();
 
 		Vec3 vFoward = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::FRONT);
-		Vec3 vRight = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::RIGHT);		
+		Vec3 vRight = m_MainCamera->Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 
 		// 카메라의 위아래 회전값에 따라 앞뒤로 위치를 조정해준다
 		Vec3 pitchMove = vFoward * -vCamRot.x;
 
-	
+
 		// 무기의 회전값을 보정해준다.
 		Vec3 vRot = Vec3(0.f, 0.f, 0.f);
 		vRot.y = vCamRot.y - 90.f;
@@ -143,7 +139,7 @@ void WeaponController::AdjustFPSPos()
 		}
 		// 아닐 때의 위치
 		else
-		{	
+		{
 			// 무기를 카메라 기준 오른쪽 앞에 위치할수 있도록 해준다.
 			vOffset = vRight * 220.f + vFoward * 125.f;
 			vPos = vCamPos + vOffset + pitchMove;

@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
-#include "Engine/Runtime/Public/Component/Base/components.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Base/components.h"
 
 EnemyVisionScript::EnemyVisionScript()
 	:CScript(SCRIPT_TYPE::ENEMYVISION)

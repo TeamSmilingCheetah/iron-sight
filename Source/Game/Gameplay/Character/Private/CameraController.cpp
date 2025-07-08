@@ -1,10 +1,10 @@
 #include "pch.h"
-
 #include "Game/Gameplay/Character/Public/CameraController.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -14,9 +14,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
-#include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
-
 
 CameraController::CameraController()
 	: CScript(SCRIPT_TYPE::CAMERASCRIPT)
@@ -110,7 +108,7 @@ void CameraController::Tick()
 	Vec3 vforward = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	Vec3 vUp = Transform()->GetWorldDir(DIR_TYPE::UP);
 	CSoundMgr::GetInst()->UpdateListener(vPos, vforward, vUp);
-	
+
 }
 
 void CameraController::CameraOrthgraphicMove()
@@ -168,7 +166,7 @@ void CameraController::CameraPerspectiveMove()
 	m_PlayerPos = m_Player->Transform()->GetRelativePos();
 	m_PlayerRot = m_Player->Transform()->GetRelativeRotation();
 
-	
+
 	Vec3 vDirtoPlayer = m_PlayerPos - m_CameraPos;
 	vDirtoPlayer.Normalize();
 
@@ -255,8 +253,8 @@ void CameraController::CameraPerspectiveMove()
 
 
 		UpdateFPSLean();
-		
-		
+
+
 		// 줌 활성화
 		if (iWeaponIdx <= SECONDARY_FIRST)
 		{
@@ -483,7 +481,7 @@ void CameraController::UpdateTPSCameraAdjustments()
 				obstacleDist = m_PlayerPos.z - m_ObstacleAdjustPos.z;
 			}
 		}
-	
+
 		if(abs(Dir.z) < abs(Dir.x))
 		if (Dir.x > 0.5f)
 		{
@@ -497,7 +495,7 @@ void CameraController::UpdateTPSCameraAdjustments()
 		}
 
 		m_OriginDistance = targetDistance;
-		targetDistance = min(targetDistance, obstacleDist);		
+		targetDistance = min(targetDistance, obstacleDist);
 	}
 
 	// 충돌 콜백이 끊김 -> 클리어 검증
@@ -772,13 +770,13 @@ void CameraController::UpdateStance()
 		if (m_CameraFlag & SITTING)
 		{
 			DesPosY = 0.f;
-		}			
+		}
 		else
 		{
 			DesPosY = -600.f;
 		}
-			
-		m_CameraFlag ^= SITTING;		
+
+		m_CameraFlag ^= SITTING;
 	}
 
 	if (KEY_TAP(KEY::Z))
@@ -811,7 +809,7 @@ void CameraController::UpdateStance()
 			m_CameraFlag &= ~CHANGE_STANCE;
 		}
 	}
-	
+
 }
 
 

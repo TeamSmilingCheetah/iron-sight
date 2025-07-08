@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Client/UI/Public/Component/MeshRenderUI.h"
+
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Client/System/Public/CImGuiMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 #include "Client/UI/Public/Editor/ContentUI.h"
@@ -153,7 +155,7 @@ void MeshRenderUI::Render_Update()
 			ImGui::SetNextItemWidth(400);
 			ImGui::InputText(mtrlID.c_str(), (char*)MtrlName.c_str(), MtrlName.length(),
 				ImGuiInputTextFlags_ReadOnly);
-		}		
+		}
 	}
 
 

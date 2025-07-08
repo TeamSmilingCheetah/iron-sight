@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "Game\Gameplay\Character\Public\TestCharacter.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
