@@ -6,6 +6,7 @@
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 CCollider3D::CCollider3D()
 	: CComponent(COMPONENT_TYPE::COLLIDER3D)

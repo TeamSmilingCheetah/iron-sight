@@ -29,6 +29,7 @@ public:
 	void FinalTick();
 
 	void AddObject(int _LayerIdx, CGameObject* _Object, bool _MoveWithChild);
+	void AddObject(int _LayerIdx, unique_ptr<CGameObject> _Object, bool _MoveWithChild);
 
 private:
 	void ChangeState(LEVEL_STATE _NextState);

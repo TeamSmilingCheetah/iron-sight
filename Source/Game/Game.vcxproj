@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Factory\Public\GameFactory.h" />
     <ClInclude Include="Gameplay\Character\Public\InteractionHandler.h" />
     <ClInclude Include="Gameplay\Door\Public\DoorScript.h" />
     <ClInclude Include="Gameplay\Interaction\Public\InteractableScript.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Level\Public\TestLevel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Factory\Private\GameFactory.cpp" />
     <ClCompile Include="Gameplay\Character\Private\InteractionHandler.cpp" />
     <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp" />
     <ClCompile Include="Gameplay\Interaction\Private\InteractableScript.cpp" />

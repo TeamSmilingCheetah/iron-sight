@@ -118,12 +118,22 @@ ImGui::EndDisabled();
 	{
 		for (int i = 0; i < MAX_LAYER; ++i)
 		{
-			if (LayerName[i] == "") continue;
-
-			// 변화가 생기면 LayerCheck(토글)
-			if (ImGui::Selectable(LayerName[i].c_str(), layerCheck & (1 << i)))
+			if (LayerName[i] == "")
 			{
-				pCamera->LayerCheck(i);
+				continue;
+			}
+
+			bool Selected = layerCheck & (1 << i);
+			if (ImGui::Selectable(LayerName[i].c_str(), Selected))
+			{
+				if (Selected)
+				{
+					pCamera->LayerOff(i);
+				}
+				else
+				{
+					pCamera->LayerOn(i);
+				}
 			}
 		}
 		ImGui::TreePop();

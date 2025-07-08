@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Runtime/Public/Component/Physics/CCollider2D.h"
+
+#include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 

@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "Engine/System/Public/Asset/Mesh/CMeshData.h"
 
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 #include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 CMeshData::CMeshData(bool _Engine)
 	: CAsset(MESH_DATA, false)
@@ -48,7 +49,7 @@ CGameObject* CMeshData::Instantiate()
 	// Animation이 있거나, mesh가 여러 개라면
 	else
 	{
-		// Animation이 있다면, 
+		// Animation이 있다면,
 		if (!m_vecAnimSet.empty())
 		{
 			// 부모에 애니메이터 추가
@@ -59,7 +60,7 @@ CGameObject* CMeshData::Instantiate()
 			pAnimator->SetAnimClip(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
-		
+
 		// 빈 오브젝트 밑에 mesh에 대응되는 오브젝트를 추가
 		for (int idx = 0; idx < meshCnt; ++idx)
 		{
@@ -91,7 +92,7 @@ CGameObject* CMeshData::Instantiate()
 		}
 	}
 
-	
+
 
 	return pNewObj;
 }
@@ -119,7 +120,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 			CAnimator3D* pAnimator = new CAnimator3D;
 			_Obj->AddComponent(pAnimator);
 			_Obj->MeshRender()->SetSkinRender(true);
-			
+
 			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
 			pAnimator->SetAnimClip(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());

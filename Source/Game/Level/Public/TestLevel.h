@@ -5,9 +5,6 @@ class TestLevel
 public:
 	static void CreateTestLevel();
 
-	static void SetUpLayer(CLevel* PLevel);
-	static void SetUpCollision(CLevel* PLevel);
-	static void SetUpCamera(CLevel* PLevel);
 	static void SetUpLight(CLevel* PLevel);
 	static void SetUpSkyBox(CLevel* PLevel);
 	static void SetUpLandscape(CLevel* PLevel);

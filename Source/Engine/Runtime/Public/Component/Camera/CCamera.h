@@ -71,7 +71,8 @@ public:
 	const Matrix& GetProjMat() { return m_matProj; }
 	const Matrix& GetProjInvMat() { return m_matProjInv; }
 
-	void LayerCheck(int _LayerIdx);
+	void LayerOn(int PLayerIdx);
+	void LayerOff(int PLayerIdx);
 	void LayerCheckAll() { m_LayerCheck = 0xffffffff; }
 	void LayerCheckClear() { m_LayerCheck = 0; }
 	UINT GetLayerCheck() const { return m_LayerCheck; }
