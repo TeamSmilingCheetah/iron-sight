@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 
 #include "Client/UI/Public/PrefabEditor/PrefabEditor.h"
 
@@ -23,7 +23,7 @@ PrefabEditor::PrefabEditor()
 
 PrefabEditor::~PrefabEditor()
 {
-
+	DELETE(m_ProtoObject);
 }
 
 void PrefabEditor::Init()

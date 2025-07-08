@@ -12,7 +12,7 @@ public:
 private:
 	virtual void Render_Update() override;
 
-	void SelectPrefab(DWORD_PTR _ListUI, DWORD_PTR _SelectString);
+	//void SelectPrefab(DWORD_PTR _ListUI, DWORD_PTR _SelectString);
 
 public:
 	AddObjectUI();

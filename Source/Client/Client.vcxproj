@@ -211,6 +211,7 @@
     <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
     <ClInclude Include="UI\Public\Component\Light2DUI.h" />
     <ClInclude Include="UI\Public\Component\Light3DUI.h" />
+    <ClInclude Include="UI\Public\Component\MeshColliderUI.h" />
     <ClInclude Include="UI\Public\Component\MeshRenderUI.h" />
     <ClInclude Include="UI\Public\Component\ParticleUI.h" />
     <ClInclude Include="UI\Public\Component\ScriptUI.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />
     <ClCompile Include="UI\Private\Component\Light2DUI.cpp" />
     <ClCompile Include="UI\Private\Component\Light3DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\MeshColliderUI.cpp" />
     <ClCompile Include="UI\Private\Component\MeshRenderUI.cpp" />
     <ClCompile Include="UI\Private\Component\ParticleUI.cpp" />
     <ClCompile Include="UI\Private\Component\ScriptUI.cpp" />

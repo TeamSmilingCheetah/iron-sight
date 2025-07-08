@@ -30,6 +30,7 @@
 #include "Client/UI/Public/Component/DecalUI.h"
 #include "Client/UI/Public/Component/TransformUI.h"
 #include "Client/UI/Public/Component/ParticleUI.h"
+#include "Client/UI/Public/Component/MeshColliderUI.h"
 
 class CScript;
 
@@ -135,6 +136,8 @@ void Inspector::Render_Update()
 					break;
 				case COMPONENT_TYPE::UIRENDER:
 					ComponentName = "UIRender";
+				case COMPONENT_TYPE::MESH_COLLIDER:
+					ComponentName = "Mesh_Collider";
 					break;
 				}
 				strStorage.push_back(ComponentName);  // string을 저장하여 유효하게 유지
@@ -411,6 +414,10 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::PARTICLE_SYSTEM)] = static_cast<ComponentUI*>(
 		AddChildUI(new ParticleUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::PARTICLE_SYSTEM)]->SetChildSize(ImVec2(0.f, 300.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESH_COLLIDER)] = static_cast<ComponentUI*>(
+		AddChildUI(new MeshColliderUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESH_COLLIDER)]->SetChildSize(ImVec2(0.f, 300.f));
 
 	// FIXME : UI / UIRender ui 추가
 	/*m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UI)] = static_cast<ComponentUI*>(
