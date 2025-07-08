@@ -819,15 +819,23 @@ void CameraController::ChangePS(bool _IsTps)
 	if (_IsTps)
 	{
 		m_CameraFlag |= TPS;
+
+		// Player Layer On
+		GetOwner()->Camera()->LayerOn(3);
+		GetOwner()->Camera()->LayerOff(4);
 	}
 	// FPS로 전환
 	else
 	{
 		m_CameraFlag &= ~TPS;
+
+		// Player Layer Off
+		GetOwner()->Camera()->LayerOff(3);
+		GetOwner()->Camera()->LayerOn(4);
 	}
+
+	// Common Logic
 	m_InventoryScript->ConvertPS();
-	GetOwner()->Camera()->LayerCheck(3);
-	GetOwner()->Camera()->LayerCheck(4);
 }
 
 

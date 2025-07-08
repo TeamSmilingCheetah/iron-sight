@@ -615,17 +615,22 @@ void CCamera::render_clear()
 	m_vecUI.clear();
 }
 
-void CCamera::LayerCheck(int _LayerIdx)
+/**
+ * @brief 특정 레이어를 볼 수 있도록 하는 함수
+ * @param PLayerIdx 켤 레이어의 번호
+ */
+void CCamera::LayerOn(int PLayerIdx)
 {
-	if (m_LayerCheck & (1 << _LayerIdx))
-	{
-		m_LayerCheck &= ~(1 << _LayerIdx);
-	}
+	m_LayerCheck |= (1 << PLayerIdx);
+}
 
-	else
-	{
-		m_LayerCheck |= (1 << _LayerIdx);
-	}
+/**
+ * @brief 특정 레이어를 보지 않도록 하는 함수
+ * @param PLayerIdx 끌 레이어의 번호
+ */
+void CCamera::LayerOff(int PLayerIdx)
+{
+	m_LayerCheck &= ~(1 << PLayerIdx);
 }
 
 /**

@@ -41,11 +41,16 @@ void CLevel::FinalTick()
 	}
 }
 
+// TODO(KHJ): 포인터 사용에 대해 일원화할 것
 void CLevel::AddObject(int _LayerIdx, CGameObject* _Object, bool _MoveWithChild)
 {
 	m_arrLayer[_LayerIdx].AddObject(_Object, _MoveWithChild);
 }
 
+void CLevel::AddObject(int _LayerIdx, unique_ptr<CGameObject> _Object, bool _MoveWithChild)
+{
+	m_arrLayer[_LayerIdx].AddObject(_Object.release(), _MoveWithChild);
+}
 
 /**
  * 레벨 내의 오브젝트를 전체 탐색하여 해당 이름을 가진 오브젝트를 반환하는 함수

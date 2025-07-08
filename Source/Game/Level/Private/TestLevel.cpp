@@ -14,6 +14,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Game/Factory/Public/GameFactory.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
@@ -32,30 +33,40 @@
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 
+class CLevel;
+
+// XXX(KHJ): 스마트 포인터로 관리 시도? 일단 받아오는 과정은 스마트 포인터로 처리
 void TestLevel::CreateTestLevel()
 {
-	CLevel* LevelForTest = new CLevel;
+	// Level Creation By Game Factory & Setting Current Level
+	unique_ptr<CLevel> LevelForTest = GameFactory::CreateLevel();
 
-	// 테스트 레벨을 현재 레벨로 지정
-	ChangeLevel(LevelForTest, LEVEL_STATE::STOP);
+	// Release Unique Ptr & Use Raw Ptr
+	CLevel* LevelRawPtr = LevelForTest.get();
+	LevelForTest.release();
 
-	SetUpLayer(LevelForTest);
-	SetUpCollision(LevelForTest);
-	SetUpCamera(LevelForTest);
-	SetUpLight(LevelForTest);
-	SetUpSkyBox(LevelForTest);
-	SetUpLandscape(LevelForTest);
-	SetUpGrenade(LevelForTest);
+	ChangeLevel(LevelRawPtr, LEVEL_STATE::STOP);
+
+
+	// Level Base Setting
+	GameFactory::SetUpLayer(LevelRawPtr);
+	GameFactory::SetUpCollision();
+	GameFactory::SetUpCamera(LevelRawPtr);
+
+	SetUpLight(LevelRawPtr);
+	SetUpSkyBox(LevelRawPtr);
+	SetUpLandscape(LevelRawPtr);
+	SetUpGrenade(LevelRawPtr);
 
 	// Initialize Item Parts
-	auto UIInfo = SetUpUI(LevelForTest);
+	auto UIInfo = SetUpUI(LevelRawPtr);
 	ItemMgr::GetInst()->Init();
 
-	SetUpPlayer(LevelForTest, UIInfo);
+	SetUpPlayer(LevelRawPtr, UIInfo);
 
 	// Smoke
 	SetupFBX(
-	LevelForTest,
+	LevelRawPtr,
 	L"FBX\\Props\\Throwable\\M18_Smoke.fbx",
 	L"Smoke Grenade",
 	Vec3(0.f, 0.f, 10000.f),
@@ -84,7 +95,7 @@ void TestLevel::CreateTestLevel()
 
 	// Test Primary Weapon
 	SetupFBX(
-	LevelForTest,
+	LevelRawPtr,
 	L"FBX\\Props\\Heal\\Energy Drink.fbx",
 	L"Energy Drink",
 	Vec3(0.f, 0.f, 1000.f),
@@ -113,7 +124,7 @@ void TestLevel::CreateTestLevel()
 
 	// Test Secondary Weapon
 	SetupFBX(
-	LevelForTest,
+	LevelRawPtr,
 	L"FBX\\Props\\Heal\\First Aid Kit.fbx",
 	L"First Aid Kit",
 	Vec3(0.f, 0.f, 3000.f),
@@ -141,7 +152,7 @@ void TestLevel::CreateTestLevel()
 	);
 
 	SetupFBX(
-	LevelForTest,
+	LevelRawPtr,
 	L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx",
 	L"Adrenaline",
 	Vec3(0.f, 0.f, 0.f), // 위치값이 원본 코드에선 따로 없음(필요시 Vec3(0.f, 0.f, 0.f) 등으로)
@@ -164,7 +175,7 @@ void TestLevel::CreateTestLevel()
 	);
 
 	auto* Bandage = SetupFBX(
-	LevelForTest,
+	LevelRawPtr,
 	L"FBX\\Props\\Heal\\Bandage.fbx",
 	L"Bandage",
 	Vec3(0.f, 0.f, 0.f), // 위치값이 원본 코드에선 따로 없음(필요시 Vec3(0.f, 0.f, 0.f) 등으로)
@@ -186,10 +197,10 @@ void TestLevel::CreateTestLevel()
 	false
 );
 
-	MakeClone(LevelForTest, Bandage, 6, false, 7);
+	MakeClone(LevelRawPtr, Bandage, 6, false, 7);
 
 	SetupFBX(
-		LevelForTest,
+		LevelRawPtr,
 		L"FBX\\Props\\Death Box\\box.fbx",
 		L"DeathBox",
 		Vec3(6590.f, -410.f, 5000.f),
@@ -207,7 +218,7 @@ void TestLevel::CreateTestLevel()
 
 	// 적 테스트
 	auto* TestTarget = SetupFBX(
-		LevelForTest,
+		LevelRawPtr,
 		L"FBX\\Testasset.fbx",
 		L"TestTarget",
 		Vec3(3000.f, 0.f, 1000.f),
@@ -247,7 +258,7 @@ void TestLevel::CreateTestLevel()
 
 	// Door
 	SetupFBX(
-		LevelForTest,
+		LevelRawPtr,
 		L"FBX\\door.fbx",
 		L"Door",
 		Vec3(2000.f, -500.f, 1500.f),
@@ -299,62 +310,6 @@ void TestLevel::CreateTestLevel()
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
-
-// Setting Level
-void TestLevel::SetUpLayer(CLevel* PLevel)
-{
-	PLevel->GetLayer(0)->SetName(L"Background");
-	PLevel->GetLayer(1)->SetName(L"Structure"); // 건물, 구조물 등
-	PLevel->GetLayer(2)->SetName(L"Default");
-	PLevel->GetLayer(3)->SetName(L"PlayerTPS");
-	PLevel->GetLayer(4)->SetName(L"PlayerFPS");
-	PLevel->GetLayer(5)->SetName(L"PlayerObject");
-	PLevel->GetLayer(6)->SetName(L"Item");
-	PLevel->GetLayer(7)->SetName(L"MonsterObject");
-	PLevel->GetLayer(8)->SetName(L"UI");
-	PLevel->GetLayer(9)->SetName(L"ObjectPool");
-	PLevel->GetLayer(10)->SetName(L"BulletLayer");
-}
-
-// Collision Layer Setting
-void TestLevel::SetUpCollision(CLevel* PLevel)
-{
-	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 0);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 1);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 7);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 0);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 1);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 6);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 7);
-
-	// 총알이 충돌될 레이어
-	CCollisionMgr::GetInst()->ToggleLayerCollision(0, 10);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(1, 10);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(3, 10);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(4, 10);
-	CCollisionMgr::GetInst()->ToggleLayerCollision(7, 10);
-}
-
-// Main Camera
-void TestLevel::SetUpCamera(CLevel* PLevel)
-{
-	CGameObject* MainCamera = new CGameObject();
-	MainCamera->SetName(L"MainCamera");
-	MainCamera->AddComponent(new CameraController);
-
-	MainCamera->AddComponent(new CCamera);
-	MainCamera->Camera()->SetProjType(PERSPECTIVE);
-	MainCamera->Camera()->SetPriority(0);
-	MainCamera->Camera()->LayerCheckAll();
-	MainCamera->Camera()->LayerCheck(4);
-
-	MainCamera->AddComponent(new CColliderRay);
-	MainCamera->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, 1.f));
-	MainCamera->ColliderRay()->SetRayLength(2000.f);
-	MainCamera->ColliderRay()->SetIndependentDir(true);
-
-	PLevel->AddObject(0, MainCamera, false);
-}
 
 // Point Light
 void TestLevel::SetUpLight(CLevel* PLevel)
@@ -422,7 +377,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	UICamera->Camera()->SetFar(10.f);
 
 	assert(PLevel->GetLayer(8)->GetName() == L"UI");
-	UICamera->Camera()->LayerCheck(8);
+	UICamera->Camera()->LayerOff(8);
 
 	PLevel->AddObject(0, UICamera, false);
 

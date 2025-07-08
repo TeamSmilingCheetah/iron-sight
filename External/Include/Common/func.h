@@ -1,10 +1,10 @@
 #pragma once
 #include "Ptr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
 
 enum class SCRIPT_TYPE : UINT8;
 class CGameObject;
-class CLevel;
 class CScript;
 
 void ExcutePreload();
