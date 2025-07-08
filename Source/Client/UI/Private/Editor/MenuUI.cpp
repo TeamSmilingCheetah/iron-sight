@@ -49,24 +49,66 @@ void MenuUI::File()
 	{
 		if (ImGui::MenuItem("Level Save"))
 		{
-			wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-			strFilePath += L"Level\\Test.lv";
+			// 파일 경로 문자열
+			wchar_t szFilePath[255] = {};
 
-			CLevel* CurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-			CLevelMgr::SaveLevel(strFilePath, CurLevel);
+			OPENFILENAME Desc = {};
+
+			Desc.lStructSize = sizeof(OPENFILENAME);
+			Desc.hwndOwner = nullptr;
+			Desc.lpstrFile = szFilePath;
+			Desc.nMaxFile = 255;
+			Desc.lpstrFilter = L"Level\0*.lv\0ALL\0*.*";
+			Desc.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+			wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+			strFilePath += L"Level";
+			Desc.lpstrInitialDir = strFilePath.c_str();
+
+
+
+			if (GetSaveFileName(&Desc))
+			{
+				if (wcslen(szFilePath) != 0)
+				{
+					CLevel* CurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+					CLevelMgr::SaveLevel(szFilePath, CurLevel);
+				}
+			}
 		}
 
 		if (ImGui::MenuItem("Level Load"))
 		{
-			wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-			strFilePath += L"Level\\Test.lv";
+			wstring m_SelectedFilePath;
+			OPENFILENAME ofn;
+			wchar_t filePath[MAX_PATH] = L"";
 
-			CLevel* pLoadedLevel = CLevelMgr::LoadLevel(strFilePath);
-			ChangeLevel(pLoadedLevel, LEVEL_STATE::STOP);
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = NULL;
+			ofn.lpstrFile = filePath;
+			ofn.nMaxFile = sizeof(filePath);
+			ofn.lpstrFilter = L"Level Files (*.lv)\0*.lv\0All Files (*.*)\0*.*\0";
+			ofn.nFilterIndex = 1;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-			// 레벨이 로드될때 Inspector 에서 보여주던 정보를 전부 제거한다. (삭제된 객체를 가리키고 있을 수 있기 때문)
-			auto pInspector = static_cast<Inspector*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
-			pInspector->SetTargetObject(nullptr);
+			wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + L"Level";;
+			ofn.lpstrInitialDir = strFilePath.c_str();
+
+
+			// 다이얼로그 취소시 아무 행동 안함 -> EndMenu로
+			if (GetOpenFileName(&ofn) && wcslen(filePath) > 0)
+			{
+				m_SelectedFilePath = filePath;
+
+				CLevel* pLoadedLevel = CLevelMgr::LoadLevel(m_SelectedFilePath);
+				ChangeLevel(pLoadedLevel, LEVEL_STATE::STOP);
+
+
+				// 레벨이 로드될때 Inspector 에서 보여주던 정보를 전부 제거한다. (삭제된 객체를 가리키고 있을 수 있기 때문)
+				Inspector* pInspector = (Inspector*)CImGuiMgr::GetInst()->FindUI("Inspector");
+				pInspector->SetTargetObject(nullptr);
+			}		
 		}
 
 		ImGui::EndMenu();

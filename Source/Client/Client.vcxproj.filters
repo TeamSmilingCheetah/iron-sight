@@ -177,6 +177,11 @@
     <ClInclude Include="Script\Public\CEditorSpaceCamScript.h">
       <Filter>02. EditorMgr\EditorCamScript</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Public\FClientApp.h" />
+    <ClInclude Include="Core\Public\FWindow.h" />
+    <ClInclude Include="UI\Public\Component\MeshColliderUI.h">
+      <Filter>03. EditorUI\Inspector\ComponentUI\MeshColliderUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico">
@@ -330,6 +335,9 @@
     </Filter>
     <Filter Include="03. EditorUI\TargetOBUI">
       <UniqueIdentifier>{8c112495-7643-4f78-9c4c-747927c5fb75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. EditorUI\Inspector\ComponentUI\MeshColliderUI">
+      <UniqueIdentifier>{d31cf30f-738d-4346-be88-8adb11e2cf67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -503,11 +511,10 @@
     <ClCompile Include="Script\Private\CEditorSpaceCamScript.cpp">
       <Filter>02. EditorMgr\EditorCamScript</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Private\FClientApp.cpp">
-      <Filter>Core\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Private\FWindow.cpp">
-      <Filter>Core\Private</Filter>
+    <ClCompile Include="Core\Private\FClientApp.cpp" />
+    <ClCompile Include="Core\Private\FWindow.cpp" />
+    <ClCompile Include="UI\Private\Component\MeshColliderUI.cpp">
+      <Filter>03. EditorUI\Inspector\ComponentUI\MeshColliderUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -50,9 +50,11 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 
 	Vec3 vOtherPos = _OtherObject->Transform()->GetRelativePos();
 	Vec3 vOwnPos = Transform()->GetRelativePos();
+	Vec3 vClosestPoint = _OtherCollider->GetClosestPoint();
+	Vec3 TestPoint = _Collider->GetClosestPoint();
 
 	// 폭발이 발생한 지점과 피격 오브젝트의 거리를 구한다.
-	float fDis = (vOtherPos - vOwnPos).Length();
+	float fDis = (vClosestPoint - vOwnPos).Length();
 	float fDisRatio = 1.f - (fDis / m_MaxLength);
 
 	float finalDMG = 0.f;

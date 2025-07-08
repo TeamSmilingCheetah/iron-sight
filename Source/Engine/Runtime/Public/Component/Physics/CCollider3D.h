@@ -26,7 +26,8 @@ private:
 	Vec3        m_FinalPos;
 	Vec3		m_HitNormal;
 	Vec3		m_HitPoint;
-	Matrix      m_matColliderWorld;
+	Vec3		m_ClosestPoint;
+	Matrix      m_matColliderWorld; // 크기, 회전, 이동
 
 	int         m_OverlapCount;
 	int			m_Status;
@@ -76,12 +77,14 @@ public:
 	void SetHitNormal(Vec3 PNor) { m_HitNormal = PNor; }
 	void SetHitPoint(Vec3 PhitPoint) { m_HitPoint = PhitPoint; }
 	void SetIndependentScale(bool PScale) { m_IndependentScale = PScale; }
+	void SetClosestPoint(Vec3 PclosestPoint) { m_ClosestPoint = PclosestPoint; }
 
 	Vec3 GetOffset() const { return m_Offset; }
 	Vec3 GetScale() const { return m_Scale; }
 	float GetRotY() const { return m_RotY; }
 	Vec3 GetHitNormal() const { return m_HitNormal; }
 	Vec3 GetHitPoint() const { return m_HitPoint; }
+	Vec3 GetClosestPoint() { return m_ClosestPoint; }
 	COLLIDER_STATE GetState() const { return m_State; }
 
 	bool IsTrigger() const { return (m_Status & TRIGGER); }

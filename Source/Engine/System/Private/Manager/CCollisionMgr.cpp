@@ -679,6 +679,33 @@ bool CCollisionMgr::IsCollision3D(CCollider3D* PLeft, CCollider3D* PRight)
 	float minPenetration = FLT_MAX;
 	bool foundSeparatingAxis = false;
 
+	// Right의 꼭짓점 중, Left의 중심에서 가장 가까운 꼭짓점 구하기
+	Vec3 closestPoint;
+	float minDistSq = FLT_MAX;
+	for (int i = 0; i < 8; ++i)
+	{
+		float distSq = (rightVertices[i] - leftCenter).Length();
+		if (distSq < minDistSq)
+		{
+			minDistSq = distSq;
+			closestPoint = rightVertices[i];
+		}
+	}
+	PRight->SetClosestPoint(closestPoint);
+
+	// Left의 꼭짓점 중, Right의 중심에서 가장 가까운 꼭짓점 구하기
+	minDistSq = FLT_MAX;
+	for (int i = 0; i < 8; ++i)
+	{
+		float distSq = (leftVertices[i] - rightCenter).Length();
+		if (distSq < minDistSq)
+		{
+			minDistSq = distSq;
+			closestPoint = leftVertices[i];
+		}
+	}
+	PLeft->SetClosestPoint(closestPoint);
+
 	// 각 축에 대해 분리축 테스트 수행
 	for (int a = 0; a < axisCount; ++a)
 	{

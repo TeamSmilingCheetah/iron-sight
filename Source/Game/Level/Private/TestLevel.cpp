@@ -45,6 +45,7 @@ void TestLevel::CreateTestLevel()
 	SetUpLight(LevelForTest);
 	SetUpSkyBox(LevelForTest);
 	SetUpLandscape(LevelForTest);
+	SetUpGrenade(LevelForTest);
 
 	// Initialize Item Parts
 	auto UIInfo = SetUpUI(LevelForTest);
@@ -279,22 +280,22 @@ void TestLevel::CreateTestLevel()
 	// pLevel->AddObject(1, testPlayer, false);
 
 	// Downtown Alley
-	SetupFBX(
-		LevelForTest,
-		L"FBX\\Downtown_Alley_Scene.fbx",
-		L"Downtown_Alley",
-		Vec3(0.f, -1500.f, 0.f),
-		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
-		Vec3(0.f, 0.f, 0.f),
-		{
-			[](CGameObject* obj) {
-				obj->Transform()->SetRelativeScaleMultiply(4.f);
-				obj->AddComponentRecursive<CMeshCollider>();
-			}
-		},
-		1,
-		true
-	);
+	//SetupFBX(
+	//	LevelForTest,
+	//	L"FBX\\Downtown_Alley_Scene.fbx",
+	//	L"Downtown_Alley",
+	//	Vec3(0.f, -1500.f, 0.f),
+	//	Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+	//	Vec3(0.f, 0.f, 0.f),
+	//	{
+	//		[](CGameObject* obj) {
+	//			obj->Transform()->SetRelativeScaleMultiply(4.f);
+	//			obj->AddComponentRecursive<CMeshCollider>();
+	//		}
+	//	},
+	//	1,
+	//	true
+	//);
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
