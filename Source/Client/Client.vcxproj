@@ -232,6 +232,7 @@
     <ClInclude Include="UI\Public\SpriteEditor\SE_Sub.h" />
     <ClInclude Include="UI\Public\SpriteEditor\SpriteEditor.h" />
     <ClInclude Include="UI\Public\TargetOBUI.h" />
+    <ClInclude Include="API\Public\ClientFacade.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Private\CEditorMgr.cpp" />
@@ -297,6 +298,7 @@
     <ClCompile Include="UI\Private\SpriteEditor\SE_Sub.cpp" />
     <ClCompile Include="UI\Private\SpriteEditor\SpriteEditor.cpp" />
     <ClCompile Include="UI\Private\TargetOBUI.cpp" />
+    <ClCompile Include="API\Private\ClientFacade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Build\Client.ico" />
