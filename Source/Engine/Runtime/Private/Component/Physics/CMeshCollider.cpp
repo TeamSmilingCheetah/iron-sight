@@ -75,7 +75,7 @@ void CMeshCollider::SaveComponent(FILE* PFile)
 	{
 		assert("일단 mesh가 없으면 save 안하는 걸로 정책 설정");
 	}
-	wstring MeshKey = MMeshPtr->GetKey().empty() ? MMeshPtr->GetKey() : L"";
+	wstring MeshKey = MMeshPtr->GetKey().empty() ? L"" : MMeshPtr->GetKey();
 	SaveWString(MeshKey, PFile);
 }
 
