@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
+
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Engine/Runtime/Public/Component/Camera/CFrustum.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -13,8 +17,6 @@
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)

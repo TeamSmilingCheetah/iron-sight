@@ -1,12 +1,13 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
-#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "System/Public/Rendering/Shader/CBoneMatrixCS.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/System/Public/Rendering/Shader/CBoneMatrixCS.h"
 
 CAnimator3D::CAnimator3D()
 	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
@@ -183,7 +184,7 @@ void CAnimator3D::FinalTick()
 			m_CurClipRatio = m_CurClipAccTime / m_FrameDuration;
 		}
 
-	}	
+	}
 
 	// 컴퓨트 쉐이더 연산여부
 	m_bFinalMatUpdate = false;

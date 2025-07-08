@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
+
 #include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
-
-#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 CUIMgr::CUIMgr()
 	: m_HoverUI(nullptr)
@@ -188,8 +189,8 @@ void CUIMgr::Tick()
 	// =========
 	// Event 처리
 	// =========
-	
-	// HoverUI가 있다면 
+
+	// HoverUI가 있다면
 	if (m_HoverUI)
 	{
 		// Hover Event 옵션이 있다면

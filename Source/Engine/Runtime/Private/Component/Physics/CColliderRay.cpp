@@ -1,10 +1,11 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 
-#include "Runtime/Public/Component/Script/CScript.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 
 CColliderRay::CColliderRay()
 	: CComponent(COMPONENT_TYPE::COLLIDERRAY)
