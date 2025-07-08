@@ -417,6 +417,8 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new CUI;
 	case COMPONENT_TYPE::UIRENDER:
 		return new CUIRender;
+	case COMPONENT_TYPE::MESH_COLLIDER:
+		return new CMeshCollider;
 	}
 
 	return nullptr;
