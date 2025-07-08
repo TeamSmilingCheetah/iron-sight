@@ -22,7 +22,7 @@ public:
 
 public:
 	virtual int Binding() override;
-	virtual void CalcGroupCount() override;
+	virtual void CalculateGroupCount() override;
 	virtual void Clear() override;
 
 public:

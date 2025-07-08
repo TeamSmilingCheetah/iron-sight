@@ -1,16 +1,16 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/EnemyController.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
-
-#include "Engine/Runtime/Public/Actor/CLayer.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 
 EnemyController::EnemyController(SCRIPT_TYPE _Type)
 	: CScript(_Type)

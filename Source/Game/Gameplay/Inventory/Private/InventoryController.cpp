@@ -1,5 +1,14 @@
 #include "pch.h"
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
@@ -8,15 +17,6 @@
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
-
-#include "Engine/System/Public/Manager/CKeyMgr.h"
-#include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
-#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 
 InventoryController::InventoryController()
 	: CScript(SCRIPT_TYPE::INVENTORYSCRIPT)
@@ -252,7 +252,7 @@ void InventoryController::ConvertPS()
 		m_CurTempWeapon = m_CurWeapon;
 		DetachItem(m_CurWeapon, false, 4);
 	}
-	
+
 }
 
 
@@ -543,7 +543,7 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 	if (_SlotIdx == m_CurSlotIdx)
 		return;
 
-	
+
 	DeactivateSlot(!m_CamScript->GetFlag(TPS));
 
 
@@ -675,7 +675,7 @@ void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect, int _
 
 	// 주인 해제
 	auto pWeaponScript = static_cast<WeaponController*>(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
-	
+
 	if (pWeaponScript && _Disconnect)
 	{
 		pWeaponScript->SetEquippedOwner(nullptr);

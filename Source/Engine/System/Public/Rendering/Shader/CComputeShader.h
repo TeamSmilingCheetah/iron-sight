@@ -40,7 +40,7 @@ private:
 public:
 	int Execute();
 	virtual int Binding() = 0;
-	virtual void CalcGroupCount() = 0;
+	virtual void CalculateGroupCount() = 0;
 	virtual void Clear() = 0;
 
 	// Special Member Function

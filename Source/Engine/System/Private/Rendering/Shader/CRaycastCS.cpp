@@ -39,7 +39,7 @@ int CRaycastCS::Binding()
 	return S_OK;
 }
 
-void CRaycastCS::CalcGroupCount()
+void CRaycastCS::CalculateGroupCount()
 {
 	m_GroupX = (m_FaceX * 2) / m_GroupPerThreadX;
 	m_GroupY = m_FaceZ / m_GroupPerThreadY;

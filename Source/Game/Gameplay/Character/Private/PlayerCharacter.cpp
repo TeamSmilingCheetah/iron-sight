@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
@@ -118,7 +119,7 @@ void PlayerCharacter::Tick()
 	// 항상 작동하는 로직
 	// =================
 
-	// 마우스가 켜진 상태에서 키입력 방지, 
+	// 마우스가 켜진 상태에서 키입력 방지,
 	if (!m_bMouseActive && !m_CamScript->GetFlag(FREE_PS))
 	{
 		// 이동 로직

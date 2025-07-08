@@ -1,14 +1,13 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
-#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
-#include "Game/Gameplay/Inventory/Public/InventoryController.h"
-#include "Game/Gameplay/Interaction/Public/InteractableScript.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/Runtime/Public/Actor/CLayer.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+#include "Game/Gameplay/Interaction/Public/InteractableScript.h"
 
 InteractionHandler::InteractionHandler()
 	: CScript(SCRIPT_TYPE::INTERACTION_HANDLER)
@@ -80,7 +79,7 @@ void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _Othe
 {
 	// Interactable Script
 	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
-	
+
 	if (!pInteractable)
 		return;
 

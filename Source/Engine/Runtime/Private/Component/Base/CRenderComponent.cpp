@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Base/CRenderComponent.h"
-#include "Runtime/Public/Actor/CLevel.h"
-#include "System/Public/Manager/CLevelMgr.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+
+#include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _Type)
     : CComponent(_Type)

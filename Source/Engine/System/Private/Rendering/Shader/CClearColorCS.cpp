@@ -26,7 +26,7 @@ int CClearColorCS::Binding()
 	return S_OK;
 }
 
-void CClearColorCS::CalcGroupCount()
+void CClearColorCS::CalculateGroupCount()
 {
 	m_GroupX = m_TargetTex->GetWidth() / m_GroupPerThreadX;
 	m_GroupY = m_TargetTex->GetHeight() / m_GroupPerThreadY;

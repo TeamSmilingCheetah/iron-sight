@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
+
+#include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
 DoorScript::DoorScript()
 	: InteractableScript(SCRIPT_TYPE::DOORSCRIPT)

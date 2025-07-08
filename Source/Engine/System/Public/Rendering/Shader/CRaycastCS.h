@@ -28,7 +28,7 @@ public:
 	void SetLandWorldMat(const Matrix& _Mat) { m_LandWorldMat = _Mat; }
 
     int Binding() override;
-    void CalcGroupCount() override;
+    void CalculateGroupCount() override;
     void Clear() override;
 
     CRaycastCS();

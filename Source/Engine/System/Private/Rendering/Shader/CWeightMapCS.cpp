@@ -32,7 +32,7 @@ int CWeightMapCS::Binding()
 	return S_OK;
 }
 
-void CWeightMapCS::CalcGroupCount()
+void CWeightMapCS::CalculateGroupCount()
 {
 	m_GroupX = m_WeightMapWidth / m_GroupPerThreadX;
 	m_GroupY = m_WeightMapHeight / m_GroupPerThreadY;

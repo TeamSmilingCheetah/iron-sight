@@ -29,7 +29,7 @@ int CBoneMatrixCS::Binding()
 	return S_OK;
 }
 
-void CBoneMatrixCS::CalcGroupCount()
+void CBoneMatrixCS::CalculateGroupCount()
 {
 	m_GroupX = (m_Const.iArr[0] / m_GroupPerThreadX) + 1;
 	m_GroupY = 1;

@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Game/Gameplay/Weapon/Public/BombController.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/EnemyController.h"
@@ -47,7 +47,7 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 	{
 		return;
 	}
-		
+
 	Vec3 vOtherPos = _OtherObject->Transform()->GetRelativePos();
 	Vec3 vOwnPos = Transform()->GetRelativePos();
 

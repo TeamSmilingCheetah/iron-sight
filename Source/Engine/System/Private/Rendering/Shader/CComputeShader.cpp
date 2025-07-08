@@ -67,7 +67,7 @@ int CComputeShader::Execute()
 	}
 
 	// Calculate Groups
-	CalcGroupCount();
+	CalculateGroupCount();
 
 	// Const Buffer Setting & Binding
 	static CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::MATERIAL);

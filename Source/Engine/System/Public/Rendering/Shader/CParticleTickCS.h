@@ -24,7 +24,7 @@ public:
 
 private:
     int Binding() override;
-    void CalcGroupCount() override;
+    void CalculateGroupCount() override;
     void Clear() override;
 
 public:

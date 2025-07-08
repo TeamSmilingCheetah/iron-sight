@@ -25,7 +25,7 @@ public:
 	void SetPureOutputBuffer(CStructuredBuffer* _buffer) { m_PureOutputBuffer = _buffer; }
 
     int Binding() override;
-    void CalcGroupCount() override;
+    void CalculateGroupCount() override;
     void Clear() override;
 
     CBoneMatrixCS();

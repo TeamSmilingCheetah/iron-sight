@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/System/Public/Manager/CObjectPoolMgr.h"

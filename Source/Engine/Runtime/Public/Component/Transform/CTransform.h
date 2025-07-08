@@ -28,6 +28,8 @@ public:
 	void SetRelativeScale(Vec3 _Scale) { m_RelativeScale = _Scale; }
 	void SetRelativeScale(float _x, float _y, float _z) { m_RelativeScale = Vec3(_x, _y, _z); }
 
+	void SetRelativeScaleMultiply(float PScale) { m_RelativeScale *= PScale; }
+
 	void SetRelativeRotation(Vec3 _Rotation);
 	void SetRelativeRotation(float _x, float _y, float _z);
 	void RotateAxis(Vec3 _Axis, float _Angle);
