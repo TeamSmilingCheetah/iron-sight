@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
+#include "Engine/System/Public/Manager/CUIMgr.h"
 
 CUI::CUI()
 	: CComponent(COMPONENT_TYPE::UI)
@@ -155,7 +157,7 @@ void CUI::Begin()
 
 		assert(pParent != nullptr);		// 끝까지 올라가도 찾을 수 없었다면
 	}
-	
+
 }
 
 void CUI::FinalTick()

@@ -1,8 +1,10 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Runtime/Public/Component/Animation/CFlipBookPlayer.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Animation/CFlipBookPlayer.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CMeshRender::CMeshRender()
