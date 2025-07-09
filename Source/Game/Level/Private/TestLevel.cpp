@@ -707,34 +707,11 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 // TODO(KHJ): FBX 기반 Common Load Method 구축할 것
 
-void TestLevel::SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo)
+void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 {
-	// Load Animation & MeshData From FBX
-	Ptr<CMeshData> PlayerMeshData = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James.fbx");
-	Ptr<CMeshData> pAnimationSet = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James_Anim.fbx");
-
-	CGameObject* Player = PlayerMeshData->Instantiate();
-	Player->SetName(L"Player");
-	Player->AddComponent(new CCollider3D);
-	Player->AddComponent(new CColliderRay);
+	auto* Player = GameFactory::LoadDefaultPlayer(PLevel, {4000.f, 500.f, 1500.f});
 	Player->AddComponent(new PlayerCharacter);
 	Player->AddComponent(new InventoryController);
-
-	Player->Transform()->SetRelativePos(Vec3(0.f, 5000.f, 0.f));
-	Player->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
-	Player->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
-
-	Player->ColliderRay()->SetRayDir(Vec3(0.f, 0.f, -1.f));
-	Player->ColliderRay()->SetOffset(Vec3(0.f, 1500.f, 0.f));
-	Player->ColliderRay()->SetRayLength(5000.f);
-	Player->ColliderRay()->SetTriggerTarget(true);
-
-	Player->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
-
-	Player->Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
-	Player->Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
-	Player->Collider3D()->SetIndependentScale(true);
-
 
 	InventoryController* InventoryScript = static_cast<InventoryController*>(GetScriptWithType(
 		Player, SCRIPT_TYPE::INVENTORYSCRIPT));
@@ -762,19 +739,4 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo)
 	pInteractionHandler->AddComponent(pHandlerScript);
 
 	Player->AddChild(pInteractionHandler);
-
-	// Player Head Collider
-	CGameObject* pHeadColl = new CGameObject;
-	pHeadColl->SetName(L"Player Head");
-	pHeadColl->AddComponent(new CCollider3D);
-
-	pHeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
-
-	pHeadColl->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
-	pHeadColl->Collider3D()->SetIndependentScale(true);
-	pHeadColl->Collider3D()->SetTrigger(false);
-
-	Player->AddChild(pHeadColl);
-
-	PLevel->AddObject(3, Player, true);
 }

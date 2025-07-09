@@ -18,6 +18,7 @@ namespace Engine
 		CGameObject* InstantiateNewObject(Ptr<CMeshData> PMeshData);
 		void SetObjectName(CGameObject* PObject, const wstring& PName);
 		CComponent* GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType);
+		void AddChild(CGameObject* PObject, CGameObject* PChild);
 
 		template <class T>
 		void AddComponentToObject(CGameObject* PObject);
@@ -61,8 +62,14 @@ namespace Engine
 
 	namespace Collider
 	{
-		void SetColliderRayOptions(CGameObject* PColliderObject,
-		                           Vec3 PDirection, float PLength, bool PIsIndependant);
+		void SetColliderProperties(CGameObject* PObject, Vec3 PScale, Vec3 POffset,
+		                        bool PIsIndependentScale, bool PIsTrigger = false);
+
+		// TODO(KHJ): Common Form 구축할 것
+		void SetColliderRayProperties(CGameObject* PObject, Vec3 PDirection, Vec3 POffset,
+		                           float PLength, bool PIsTriggerTarget);
+		void SetColliderRayProperties(CGameObject* PObject, Vec3 PDirection,
+		                           float PLength, bool PIsIndependant);
 	}
 
 	namespace Light
@@ -81,6 +88,11 @@ namespace Engine
 		void SetLandscapeProperties(CGameObject* PLandscape, UnsignedIntegerSquare PFaceSize,
 		                            UnsignedIntegerSquare PHeightMapSize,
 		                            Ptr<CTexture> PColorTexture, Ptr<CTexture> PNormalTexture);
+	}
+
+	namespace Animation
+	{
+		void SetAnimationClip(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
 	}
 }
 

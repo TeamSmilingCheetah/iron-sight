@@ -6,13 +6,13 @@
 
 // TODO(KHJ): 해당 헤더들과의 결합성 배제할 방법 찾기
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
-// XXX(KHJ): namespace 사용해서 코드 작성을 편하게 할지, 가독성을 좋게 할지 고민해야 할 부분
-// using namespace Engine;
+using namespace Engine;
 
 /** Creation **/
 
@@ -20,13 +20,13 @@ class CameraController;
 
 unique_ptr<CGameObject> GameFactory::CreateObject()
 {
-	unique_ptr<CGameObject> ObjectPtr = Engine::Common::CreateNewObject();
+	unique_ptr<CGameObject> ObjectPtr = Common::CreateNewObject();
 	return std::move(ObjectPtr);
 }
 
 unique_ptr<CLevel> GameFactory::CreateLevel()
 {
-	unique_ptr<CLevel> LevelPtr = Engine::Level::CreateNewLevel();
+	unique_ptr<CLevel> LevelPtr = Level::CreateNewLevel();
 	return std::move(LevelPtr);
 }
 
@@ -37,17 +37,17 @@ unique_ptr<CLevel> GameFactory::CreateLevel()
  */
 void GameFactory::LoadDefaultLayer(CLevel* PLevel)
 {
-	Engine::Layer::SetLayerName(PLevel, 0, L"Background");
-	Engine::Layer::SetLayerName(PLevel, 1, L"Structure");
-	Engine::Layer::SetLayerName(PLevel, 2, L"Default");
-	Engine::Layer::SetLayerName(PLevel, 3, L"PlayerTPS");
-	Engine::Layer::SetLayerName(PLevel, 4, L"PlayerFPS");
-	Engine::Layer::SetLayerName(PLevel, 5, L"PlayerObject");
-	Engine::Layer::SetLayerName(PLevel, 6, L"Item");
-	Engine::Layer::SetLayerName(PLevel, 7, L"MonsterObject");
-	Engine::Layer::SetLayerName(PLevel, 8, L"UI");
-	Engine::Layer::SetLayerName(PLevel, 9, L"ObjectPool");
-	Engine::Layer::SetLayerName(PLevel, 10, L"BulletLayer");
+	Layer::SetLayerName(PLevel, 0, L"Background");
+	Layer::SetLayerName(PLevel, 1, L"Structure");
+	Layer::SetLayerName(PLevel, 2, L"Default");
+	Layer::SetLayerName(PLevel, 3, L"PlayerTPS");
+	Layer::SetLayerName(PLevel, 4, L"PlayerFPS");
+	Layer::SetLayerName(PLevel, 5, L"PlayerObject");
+	Layer::SetLayerName(PLevel, 6, L"Item");
+	Layer::SetLayerName(PLevel, 7, L"MonsterObject");
+	Layer::SetLayerName(PLevel, 8, L"UI");
+	Layer::SetLayerName(PLevel, 9, L"ObjectPool");
+	Layer::SetLayerName(PLevel, 10, L"BulletLayer");
 }
 
 /**
@@ -57,20 +57,20 @@ void GameFactory::LoadDefaultCollisionSetting()
 {
 	// TODO(KHJ): 한 레이어가 Args 다수에 대해 지정하는 형태로 API 구축하기
 	// Toggle 대신 Default가 충돌 안함 상태, Setting 하면 충돌하는 것으로 변경되도록 한 함수가 하나의 기능만 맡도록 변경하기
-	Engine::Layer::SetLayerCollision(0, 0);
-	Engine::Layer::SetLayerCollision(0, 1);
-	Engine::Layer::SetLayerCollision(0, 7);
-	Engine::Layer::SetLayerCollision(3, 0);
-	Engine::Layer::SetLayerCollision(3, 1);
-	Engine::Layer::SetLayerCollision(3, 6);
-	Engine::Layer::SetLayerCollision(3, 7);
+	Layer::SetLayerCollision(0, 0);
+	Layer::SetLayerCollision(0, 1);
+	Layer::SetLayerCollision(0, 7);
+	Layer::SetLayerCollision(3, 0);
+	Layer::SetLayerCollision(3, 1);
+	Layer::SetLayerCollision(3, 6);
+	Layer::SetLayerCollision(3, 7);
 
 	// 총알이 충돌될 레이어
-	Engine::Layer::SetLayerCollision(0, 10);
-	Engine::Layer::SetLayerCollision(1, 10);
-	Engine::Layer::SetLayerCollision(3, 10);
-	Engine::Layer::SetLayerCollision(4, 10);
-	Engine::Layer::SetLayerCollision(7, 10);
+	Layer::SetLayerCollision(0, 10);
+	Layer::SetLayerCollision(1, 10);
+	Layer::SetLayerCollision(3, 10);
+	Layer::SetLayerCollision(4, 10);
+	Layer::SetLayerCollision(7, 10);
 }
 
 /**
@@ -79,22 +79,22 @@ void GameFactory::LoadDefaultCollisionSetting()
  */
 void GameFactory::LoadMainCamera(CLevel* PLevel)
 {
-	auto Camera = Engine::Common::CreateNewObject();
-	Engine::Common::SetObjectName(Camera.get(), L"MainCamera");
+	auto Camera = Common::CreateNewObject();
+	Common::SetObjectName(Camera.get(), L"MainCamera");
 
 	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
 	auto RawCameraPtr = Camera.get();
 	Camera.release();
 
-	Engine::Common::AddScriptToObject<CameraController>(RawCameraPtr);
+	Common::AddScriptToObject<CameraController>(RawCameraPtr);
 
-	Engine::Common::AddComponentToObject<CCamera>(RawCameraPtr);
-	Engine::Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
+	Common::AddComponentToObject<CCamera>(RawCameraPtr);
+	Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
 
-	Engine::Common::AddComponentToObject<CColliderRay>(RawCameraPtr);
-	Engine::Collider::SetColliderRayOptions(RawCameraPtr, {0, 0, 0}, 2000.f, true);
+	Common::AddComponentToObject<CColliderRay>(RawCameraPtr);
+	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
 
-	Engine::Level::AddObjectToLayer(PLevel, RawCameraPtr, 0, false);
+	Level::AddObjectToLayer(PLevel, RawCameraPtr, 0, false);
 }
 
 /**
@@ -103,21 +103,21 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
  */
 void GameFactory::LoadDefaultLight(CLevel* PLevel)
 {
-	auto PointLight = Engine::Common::CreateNewObject();
+	auto PointLight = Common::CreateNewObject();
 
 	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
 	auto RawPointLightPtr = PointLight.get();
 	PointLight.release();
 
-	Engine::Common::SetObjectName(RawPointLightPtr, L"PointLight");
+	Common::SetObjectName(RawPointLightPtr, L"PointLight");
 
-	Engine::Common::AddComponentToObject<CLight3D>(RawPointLightPtr);
-	Engine::Light::Set3DLightProperties(RawPointLightPtr, LIGHT_TYPE::DIRECTIONAL,
-	                                    {1.f, 1.f, 1.f}, {0.15f, 0.15f, 0.15f}, 0.3f, 300.f);
+	Common::AddComponentToObject<CLight3D>(RawPointLightPtr);
+	Light::Set3DLightProperties(RawPointLightPtr, LIGHT_TYPE::DIRECTIONAL,
+	                            {1.f, 1.f, 1.f}, {0.15f, 0.15f, 0.15f}, 0.3f, 300.f);
 
-	Engine::Transform::SetPositionAndRotation(RawPointLightPtr, {0.f, -450.f, 0.f}, {45.f, 45.f, 0.f});
+	Transform::SetPositionAndRotation(RawPointLightPtr, {0.f, -450.f, 0.f}, {45.f, 45.f, 0.f});
 
-	Engine::Level::AddObjectToLayer(PLevel, RawPointLightPtr, 0, false);
+	Level::AddObjectToLayer(PLevel, RawPointLightPtr, 0, false);
 }
 
 /**
@@ -126,22 +126,22 @@ void GameFactory::LoadDefaultLight(CLevel* PLevel)
  */
 void GameFactory::LoadDefaultSkyBox(CLevel* PLevel)
 {
-	auto SkyBox = Engine::Common::CreateNewObject();
+	auto SkyBox = Common::CreateNewObject();
 
 	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
 	auto RawSkyBoxPtr = SkyBox.get();
 	SkyBox.release();
 
-	Engine::Common::SetObjectName(RawSkyBoxPtr, L"SkyBox");
+	Common::SetObjectName(RawSkyBoxPtr, L"SkyBox");
 
-	Engine::Common::AddComponentToObject<CSkyBox>(RawSkyBoxPtr);
-	auto SkyBoxTexture = Engine::IO::LoadAsset<CTexture>(L"Texture\\skybox\\Sky01.png");
-	Engine::SkyBox::SetSkyBoxProperties(RawSkyBoxPtr, SKYBOX_MODE::SPHERE, SkyBoxTexture);
+	Common::AddComponentToObject<CSkyBox>(RawSkyBoxPtr);
+	auto SkyBoxTexture = IO::LoadAsset<CTexture>(L"Texture\\skybox\\Sky01.png");
+	SkyBox::SetSkyBoxProperties(RawSkyBoxPtr, SKYBOX_MODE::SPHERE, SkyBoxTexture);
 
 	// FrustumCheck 비활성화
-	Engine::Transform::SetFrustumCheck(RawSkyBoxPtr, false);
+	Transform::SetFrustumCheck(RawSkyBoxPtr, false);
 
-	Engine::Level::AddObjectToLayer(PLevel, RawSkyBoxPtr, 0, false);
+	Level::AddObjectToLayer(PLevel, RawSkyBoxPtr, 0, false);
 }
 
 /**
@@ -150,24 +150,65 @@ void GameFactory::LoadDefaultSkyBox(CLevel* PLevel)
  */
 void GameFactory::LoadDefaultLandscape(CLevel* PLevel)
 {
-	auto Landscape = Engine::Common::CreateNewObject();
+	auto Landscape = Common::CreateNewObject();
 
 	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
 	auto RawLandscapePtr = Landscape.get();
 	Landscape.release();
 
-	Engine::Common::SetObjectName(RawLandscapePtr, L"LandScape");
+	Common::SetObjectName(RawLandscapePtr, L"LandScape");
 
-	Engine::Common::AddComponentToObject<CLandScape>(RawLandscapePtr);
-	Engine::Transform::SetPosition(RawLandscapePtr, {0.f, -500.f, 0.f});
-	Engine::Transform::SetScale(RawLandscapePtr, {500.f, 500.f, 500.f});
+	Common::AddComponentToObject<CLandScape>(RawLandscapePtr);
+	Transform::SetPosition(RawLandscapePtr, {0.f, -500.f, 0.f});
+	Transform::SetScale(RawLandscapePtr, {5000.f, 5000.f, 5000.f});
 
-	auto ColorTexture = Engine::IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds");
-	auto NormalTexture = Engine::IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds");
+	auto ColorTexture = IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds");
+	auto NormalTexture = IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds");
 
-	Engine::Landscape::SetLandscapeProperties(RawLandscapePtr, {32, 32}, {1024, 1024}, ColorTexture, NormalTexture);
+	Landscape::SetLandscapeProperties(RawLandscapePtr, {32, 32}, {1024, 1024}, ColorTexture, NormalTexture);
 
-	Engine::Level::AddObjectToLayer(PLevel, RawLandscapePtr, 0, false);
+	Level::AddObjectToLayer(PLevel, RawLandscapePtr, 0, false);
+}
+
+CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPosition)
+{
+	// Load Animation & MeshData From FBX
+	Ptr<CMeshData> PlayerMeshData = IO::LoadFBX(L"FBX\\Character\\James.fbx");
+	Ptr<CMeshData> AnimationSet = IO::LoadFBX(L"FBX\\Character\\James_Anim.fbx");
+
+	CGameObject* Player = Common::InstantiateNewObject(PlayerMeshData);
+	Common::SetObjectName(Player, L"Player");
+
+	Transform::SetPositionAndRotation(Player, PPosition, {0.f, 90.f, 0.f});
+	Transform::SetScale(Player, {6.f, 6.f, 6.f});
+
+	Common::AddComponentToObject<CColliderRay>(Player);
+	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 1500.f, 0.f}, 5000.f, true);
+
+	Animation::SetAnimationClip(Player, AnimationSet);
+
+	Common::AddComponentToObject<CCollider3D>(Player);
+	Collider::SetColliderProperties(Player, {550.f, 1600.f, 385.f}, {35.f, 760.f, 0.f}, true);
+
+	// Player Head Collider
+	auto HeaderCollider = Common::CreateNewObject();
+
+	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
+	auto RawHeaderCollider = HeaderCollider.get();
+	HeaderCollider.release();
+
+	// Object Setting
+	Common::SetObjectName(RawHeaderCollider, L"Player Head");
+	Common::AddComponentToObject<CCollider3D>(RawHeaderCollider);
+
+	Transform::SetPosition(RawHeaderCollider, {0.f, 170.f, 0.f});
+	Collider::SetColliderProperties(RawHeaderCollider, {200.f, 200.f, 200.f}, {0, 0, 0}, true, false);
+
+	Common::AddChild(Player, RawHeaderCollider);
+
+	Level::AddObjectToLayer(PLevel, Player, 3, true);
+
+	return Player;
 }
 
 CGameObject* GameFactory::MakeFBXObject(
@@ -183,14 +224,14 @@ CGameObject* GameFactory::MakeFBXObject(
 )
 {
 	// FBX Load & Instantiate
-	Ptr<CMeshData> MeshData = Engine::IO::LoadFBX(PFilePath);
-	auto FBXObject = Engine::Common::InstantiateNewObject(MeshData);
+	Ptr<CMeshData> MeshData = IO::LoadFBX(PFilePath);
+	auto FBXObject = Common::InstantiateNewObject(MeshData);
 
-	Engine::Common::SetObjectName(FBXObject, PName);
+	Common::SetObjectName(FBXObject, PName);
 
 	// Set Transform
-	Engine::Transform::SetPositionAndRotation(FBXObject, PPosition, PRotation);
-	Engine::Transform::SetScale(FBXObject, PScale);
+	Transform::SetPositionAndRotation(FBXObject, PPosition, PRotation);
+	Transform::SetScale(FBXObject, PScale);
 
 	// Set Components
 	for (const auto& Setup : PComponentSetups)
@@ -199,7 +240,7 @@ CGameObject* GameFactory::MakeFBXObject(
 	}
 
 	// Add Object
-	Engine::Level::AddObjectToLayer(PLevel, FBXObject, PLayer, PMoveWithChild);
+	Level::AddObjectToLayer(PLevel, FBXObject, PLayer, PMoveWithChild);
 
 	return FBXObject;
 }
@@ -208,6 +249,6 @@ void GameFactory::MakeCloneObject(CLevel* PLevel, CGameObject* POrigin, bool PMo
 {
 	for (int i = 0; i <= PCopyMount; i++)
 	{
-		Engine::Level::AddObjectToLayer(PLevel, POrigin->Clone(), POrigin->GetLayerIdx(), PMoveWithChild);
+		Level::AddObjectToLayer(PLevel, POrigin->Clone(), POrigin->GetLayerIdx(), PMoveWithChild);
 	}
 }

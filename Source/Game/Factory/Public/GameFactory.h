@@ -12,14 +12,15 @@ public:
 	static void LoadDefaultLight(CLevel* PLevel);
 	static void LoadDefaultSkyBox(CLevel* PLevel);
 	static void LoadDefaultLandscape(CLevel* PLevel);
+	static void MakeCloneObject(CLevel* PLevel, CGameObject* POrigin, bool PMoveWithChild, int PCopyMount);
 
+	// TODO(KHJ): 임시 Return, 전부 Engine 지원 함수 통해서 Add 할 수 있도록 처리할 것
+	static CGameObject* LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPosition);
 	static CGameObject* MakeFBXObject(CLevel* PLevel, const wstring& PFilePath, const wstring& PName,
 	                                  const Vec3& PPosition, const Vec3& PRotation, const Vec3& PScale,
 	                                  const vector<std::function<void(CGameObject*)>>& PComponentSetups,
 	                                  int PLayer, bool PMoveWithChild);
 
-	static void MakeCloneObject(CLevel* PLevel, CGameObject* POrigin, bool PMoveWithChild, int PCopyMount);
 
 	// vector<CGameObject*> SetUpUI(CLevel* PLevel);
-	// void SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo);
 };
