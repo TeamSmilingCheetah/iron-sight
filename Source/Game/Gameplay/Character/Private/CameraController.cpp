@@ -6,51 +6,49 @@
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 CameraController::CameraController()
 	: CScript(SCRIPT_TYPE::CAMERASCRIPT)
-	, m_Player(nullptr)
-	, m_PlayerScript(nullptr)
-	, m_InventoryScript(nullptr)
-	, m_CameraSpeed(500.f)
-	, m_CameraPos(Vec3(0.f,0.f,0.f))
-	, m_CameraRot(Vec3(0.f,0.f,0.f))
-	, m_PlayerPos(Vec3(0.f,0.f,0.f))
-	, m_PlayerRot(Vec3(0.f,0.f,0.f))
-	, m_CameraFlag(0)
-	, m_CameraYOffset(0.f)
-	, m_CurClipAccTime(0.f)
-	, m_RecoilTime(0.f)
-	, m_RecoilAmount_vertical(0.f)
-	, m_RecoilAmount_horizontal(0.f)
-	, m_LateralOffset(300.f)
-	, m_ObjectiveLateralOff(0.f)
-	, m_AdjustNormalDistance(0.f)
-	, m_AdjustNormalHeight(0.f)
-	, m_AdjustFinalDistance(0.f)
-	, m_AdjustFinalHeight(0.f)
-	, m_ObjectiveShoulderDistance(0.f)
-	, m_ObjectiveShoulderHeight(0.f)
-	, m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
-	, m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
-	, m_ObstacleScale(Vec3(0.f, 0.f, 0.f))
-	, m_OriginDistance(0.f)
-	, m_RayDistance(0.f)
+	  , m_Player(nullptr)
+	  , m_PlayerScript(nullptr)
+	  , m_InventoryScript(nullptr)
+	  , m_CameraPos(Vec3(0.f, 0.f, 0.f))
+	  , m_CameraRot(Vec3(0.f, 0.f, 0.f))
+	  , m_PlayerPos(Vec3(0.f, 0.f, 0.f))
+	  , m_PlayerRot(Vec3(0.f, 0.f, 0.f))
+	  , m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
+	  , m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
+	  , m_OriginDistance(0.f)
+	  , m_RayDistance(0.f)
+	  , m_CameraSpeed(500.f)
+	  , m_CameraYOffset(0.f), m_CurClipAccTime(0.f)
+	  , m_RecoilTime(0.f)
+	  , m_ObstalceResetTime(0), m_RecoilAmount_vertical(0), m_RecoilAmount_horizontal(0.f)
+	  , m_TargetRecoilRotX(0)
+	  , m_TargetRecoilRotY(0)
+	  , m_LateralOffset(300.f)
+	  , m_ObjectiveLateralOff(0.f)
+	  , m_AdjustNormalDistance(0.f)
+	  , m_AdjustNormalHeight(0.f)
+	  , m_AdjustFinalDistance(0.f)
+	  , m_AdjustFinalHeight(0.f)
+	  , m_ObjectiveShoulderDistance(0.f)
+	  , m_ObjectiveShoulderHeight(0.f)
+	  , m_CameraFlag(0)
+	  , m_bObstacleHitFame(false)
 {
 }
 
-CameraController::~CameraController()
-{
-}
+CameraController::~CameraController() = default;
 
 void CameraController::Begin()
 {
@@ -64,7 +62,6 @@ void CameraController::Begin()
 
 void CameraController::Tick()
 {
-
 	if (KEY_TAP(KEY::F1))
 	{
 		if (GetOwner()->GetName() == L"Cam Ray")
@@ -73,8 +70,12 @@ void CameraController::Tick()
 			{
 				// 부모를 없는 독립 개체로 바꿔준다.
 				AddChild(nullptr, GetOwner());
-				Transform()->SetRelativePos(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->GetRelativePos());
-				Transform()->SetRelativeRotation(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->GetRelativeRotation());
+				Transform()->SetRelativePos(
+					CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->
+					                      GetRelativePos());
+				Transform()->SetRelativeRotation(
+					CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->
+					                      GetRelativeRotation());
 			}
 			else
 			{
@@ -102,13 +103,11 @@ void CameraController::Tick()
 	}
 
 
-
 	// 소리테스트 위치 업데이트
 	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vforward = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	Vec3 vUp = Transform()->GetWorldDir(DIR_TYPE::UP);
 	CSoundMgr::GetInst()->UpdateListener(vPos, vforward, vUp);
-
 }
 
 void CameraController::CameraOrthgraphicMove()
@@ -213,7 +212,6 @@ void CameraController::CameraPerspectiveMove()
 		else if (m_CameraFlag & SHOULDER_RECOVER)
 		{
 			UpdateShoulderRecover();
-
 		}
 
 		if (!(m_CameraFlag & SHOULDER))
@@ -269,7 +267,6 @@ void CameraController::CameraPerspectiveMove()
 				m_CameraFlag ^= ADS;
 			}
 		}
-
 	}
 
 	if (m_CameraFlag & CHANGE_FOV)
@@ -368,7 +365,8 @@ void CameraController::ApplyRecoil()
 
 
 		// 랜덤한 수평 반동값을 반들어준다
-		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal * recoilPower_horizontal;
+		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal *
+			recoilPower_horizontal;
 
 		// 반동값 보정 (한쪽으로 치우치지 않게)
 		if (abs(m_RecoilAmount_horizontal + randomRecoil_horizontal) > maxTotalYaw)
@@ -385,7 +383,7 @@ void CameraController::ApplyRecoil()
 
 	if (FireDelay < m_RecoilTime)
 	{
-		m_RecoilTime = 0.0f;  // 타이머 초기화
+		m_RecoilTime = 0.0f; // 타이머 초기화
 
 		// 반동 적용
 		float recoilPower_vertical = 1.2f;
@@ -403,9 +401,9 @@ void CameraController::ApplyRecoil()
 		float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;
 		m_RecoilAmount_vertical = m_RecoilAmount_vertical * (1.f - 0.1f) + randomRecoil_vertical * 0.1f;
 
-
 		// 랜덤한 수평 반동값을 반들어준다
-		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal * recoilPower_horizontal;
+		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal *
+			recoilPower_horizontal;
 
 		// 반동값 보정 (한쪽으로 치우치지 않게)
 		if (abs(m_RecoilAmount_horizontal + randomRecoil_horizontal) > maxTotalYaw)
@@ -426,10 +424,7 @@ void CameraController::UpdateRecoil()
 	m_CameraRot.x = FloatLerp(m_CameraRot.x, m_TargetRecoilRotX, 10.f);
 	m_PlayerRot.y = FloatLerp(m_PlayerRot.y, m_TargetRecoilRotY, 10.f);
 
-	if (m_CameraRot.x < -90.f)
-	{
-		m_CameraRot.x = -90.f;
-	}
+	m_CameraRot.x = max(m_CameraRot.x, -90.f);
 
 	Transform()->SetRelativeRotation(m_CameraRot);
 	m_Player->Transform()->SetRelativeRotation(m_PlayerRot);
@@ -482,16 +477,18 @@ void CameraController::UpdateTPSCameraAdjustments()
 			}
 		}
 
-		if(abs(Dir.z) < abs(Dir.x))
-		if (Dir.x > 0.5f)
+		if (abs(Dir.z) < abs(Dir.x))
 		{
-			m_ObstacleAdjustPos.x = m_ObstaclePos.x + m_ObstacleScale.x / 2.f + corValue;
-			obstacleDist = m_PlayerPos.x - m_ObstacleAdjustPos.x;
-		}
-		if (Dir.x < -0.5f)
-		{
-			m_ObstacleAdjustPos.x = m_ObstaclePos.x - m_ObstacleScale.x / 2.f - corValue;
-			obstacleDist = m_PlayerPos.x - m_ObstacleAdjustPos.x;
+			if (Dir.x > 0.5f)
+			{
+				m_ObstacleAdjustPos.x = m_ObstaclePos.x + m_ObstacleScale.x / 2.f + corValue;
+				obstacleDist = m_PlayerPos.x - m_ObstacleAdjustPos.x;
+			}
+			if (Dir.x < -0.5f)
+			{
+				m_ObstacleAdjustPos.x = m_ObstaclePos.x - m_ObstacleScale.x / 2.f - corValue;
+				obstacleDist = m_PlayerPos.x - m_ObstacleAdjustPos.x;
+			}
 		}
 
 		m_OriginDistance = targetDistance;
@@ -678,7 +675,8 @@ void CameraController::UpdateShoulderRecover()
 	{
 		m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, m_AdjustNormalHeight, 50.f);
 	}
-	if (abs(m_AdjustFinalHeight - m_AdjustNormalHeight) < 5.f && abs(m_AdjustFinalDistance - m_AdjustNormalDistance) < 5.f)
+	if (abs(m_AdjustFinalHeight - m_AdjustNormalHeight) < 5.f
+		&& abs(m_AdjustFinalDistance - m_AdjustNormalDistance) < 5.f)
 	{
 		m_CameraFlag &= ~SHOULDER_RECOVER;
 	}
@@ -709,8 +707,6 @@ void CameraController::UpdateTPSLean()
 	{
 		m_LateralOffset = 300.f;
 	}
-
-
 }
 
 void CameraController::UpdateFPSLean()
@@ -809,7 +805,6 @@ void CameraController::UpdateStance()
 			m_CameraFlag &= ~CHANGE_STANCE;
 		}
 	}
-
 }
 
 
@@ -837,7 +832,6 @@ void CameraController::ChangePS(bool _IsTps)
 	// Common Logic
 	m_InventoryScript->ConvertPS();
 }
-
 
 
 void CameraController::SaveComponent(FILE* _File)
@@ -895,8 +889,6 @@ void CameraController::CameraDebugMove()
 }
 
 
-
-
 void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
 {
 	if (_OtherObject->GetName() == L"DeathBox")
@@ -927,8 +919,6 @@ void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _Ot
 	{
 		return;
 	}
-
-
 }
 
 void CameraController::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
@@ -956,7 +946,6 @@ void CameraController::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherOb
 	{
 		return;
 	}
-
 }
 
 
@@ -984,6 +973,4 @@ void CameraController::EndOverlap(CColliderRay* _RayCollider, CGameObject* _Othe
 	{
 		return;
 	}
-
-
 }
