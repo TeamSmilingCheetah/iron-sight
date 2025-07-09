@@ -377,7 +377,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	UICamera->Camera()->SetFar(10.f);
 
 	assert(PLevel->GetLayer(8)->GetName() == L"UI");
-	UICamera->Camera()->LayerOff(8);
+	UICamera->Camera()->LayerOn(8);
 
 	PLevel->AddObject(0, UICamera, false);
 
