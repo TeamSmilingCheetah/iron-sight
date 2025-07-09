@@ -1,37 +1,32 @@
 #include "pch.h"
 #include "Game/Level/Public/TestLevel.h"
 
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Light/CLight3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
-#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
-#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
-#include "Engine/System/Public/Manager/CCollisionMgr.h"
-#include "Game/Factory/Public/GameFactory.h"
+#include "Engine/API/Public/EngineFacade.h"
 
-#include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
-#include "Game/Gameplay/Character/Public/InteractionHandler.h"
-#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
-#include "Game/Gameplay/Character/Public/TestCharacter.h"
-#include "Game/Gameplay/Door/Public/DoorScript.h"
-#include "Game/GamePlay/Inventory/Public/InventoryController.h"
+#include "Game/Factory/Public/GameFactory.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/UI/Public/RoundsUIScript.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Weapon/Public/ThrowableController.h"
-#include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Game/Gameplay/Character/Public/TestCharacter.h"
+#include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
+#include "Game/Gameplay/Character/Public/InteractionHandler.h"
+#include "Game/Gameplay/Door/Public/DoorScript.h"
+
+// TODO(KHJ): 이하 헤더 배제 시도
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 
 class CLevel;
 
@@ -47,168 +42,262 @@ void TestLevel::CreateTestLevel()
 
 	ChangeLevel(LevelRawPtr, LEVEL_STATE::STOP);
 
-
 	// Level Base Setting
-	GameFactory::SetUpLayer(LevelRawPtr);
-	GameFactory::SetUpCollision();
-	GameFactory::SetUpCamera(LevelRawPtr);
-
-	SetUpLight(LevelRawPtr);
-	SetUpSkyBox(LevelRawPtr);
-	SetUpLandscape(LevelRawPtr);	
+	GameFactory::LoadDefaultLayer(LevelRawPtr);
+	GameFactory::LoadDefaultCollisionSetting();
+	GameFactory::LoadMainCamera(LevelRawPtr);
+	GameFactory::LoadDefaultLight(LevelRawPtr);
+	GameFactory::LoadDefaultSkyBox(LevelRawPtr);
+	GameFactory::LoadDefaultLandscape(LevelRawPtr);
 
 	// Initialize Item Parts
 	auto UIInfo = SetUpUI(LevelRawPtr);
 	ItemMgr::GetInst()->Init();
 
 	SetUpPlayer(LevelRawPtr, UIInfo);
-	SetUpWeapon(LevelRawPtr);
-	SetUpGrenade(LevelRawPtr);
+
+	// Weapon
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\ak47_test.fbx",
+		L"AKM",
+		Vec3(90.f, 0.f, 30.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(900.f, 900.f, 900.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CColliderRay>(obj);
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+			},
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddScriptToObject<GunController>(obj);
+				// TODO(KHJ): Wrapping
+				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+				script->SetWeaponType(WEAPON_TYPE::PRIMARY);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::AKM));
+			}
+		},
+		6,
+		false
+	);
+
+	// Grenade
+	auto* Grenade = GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Throwable\\GRENADE.fbx",
+		L"Grenade",
+		Vec3(0.f, 0.f, 5000.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(15.f, 15.f, 15.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
+				obj->Collider3D()->SetName(L"Weapon");
+				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+				obj->Collider3D()->SetIndependentScale(true);
+				obj->Collider3D()->SetTrigger(true);
+			},
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddScriptToObject<ThrowableController>(obj);
+				// TODO(KHJ): Wrapping
+				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+				script->SetWeaponType(WEAPON_TYPE::THROWABLE);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::GRENADE));
+			}
+		},
+		6,
+		false
+	);
+
+	GameFactory::MakeCloneObject(LevelRawPtr, Grenade, false, 1);
 
 	// Smoke
-	SetupFBX(
-	LevelRawPtr,
-	L"FBX\\Props\\Throwable\\M18_Smoke.fbx",
-	L"Smoke Grenade",
-	Vec3(0.f, 0.f, 10000.f),
-	Vec3(15.f, 15.f, 15.f),
-	Vec3(0.f, 0.f, 0.f),
-	{
-		[](CGameObject* obj) {
-			obj->AddComponent(new CCollider3D);
-			obj->Collider3D()->SetName(L"Weapon");
-			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-			obj->Collider3D()->SetIndependentScale(true);
-			obj->Collider3D()->SetTrigger(true);
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Throwable\\M18_Smoke.fbx",
+		L"Smoke Grenade",
+		Vec3(0.f, 0.f, 10000.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(15.f, 15.f, 15.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
+				obj->Collider3D()->SetName(L"Weapon");
+				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+				obj->Collider3D()->SetIndependentScale(true);
+				obj->Collider3D()->SetTrigger(true);
+			},
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddScriptToObject<ThrowableController>(obj);
+				// TODO(KHJ): Wrapping
+				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+				script->SetWeaponType(WEAPON_TYPE::THROWABLE);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::SMOKEBOMB));
+			}
 		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new ThrowableController);
-			WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
-			script->SetWeaponType(WEAPON_TYPE::THROWABLE);
-		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new ItemScript(ITEM_TYPE::SMOKEBOMB));
-		}
-	},
-	6,
-	false
+		6,
+		false
 	);
 
 	// Test Primary Weapon
-	SetupFBX(
-	LevelRawPtr,
-	L"FBX\\Props\\Heal\\Energy Drink.fbx",
-	L"Energy Drink",
-	Vec3(0.f, 0.f, 1000.f),
-	Vec3(500.f, 500.f, 500.f),
-	Vec3(0.f, 0.f, 0.f),
-	{
-		[](CGameObject* obj) {
-			obj->AddComponent(new CCollider3D);
-			obj->Collider3D()->SetName(L"Weapon");
-			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-			obj->Collider3D()->SetIndependentScale(true);
-			obj->Collider3D()->SetTrigger(true);
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Heal\\Energy Drink.fbx",
+		L"Energy Drink",
+		Vec3(0.f, 0.f, 1000.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(500.f, 500.f, 500.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
+				obj->Collider3D()->SetName(L"Weapon");
+				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+				obj->Collider3D()->SetIndependentScale(true);
+				obj->Collider3D()->SetTrigger(true);
+			},
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddScriptToObject<GunController>(obj);
+				// TODO(KHJ): Wrapping
+				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+				script->SetWeaponType(WEAPON_TYPE::SECONDARY);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::ENERGY_DRINK));
+			}
 		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new GunController);
-			WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
-			script->SetWeaponType(WEAPON_TYPE::SECONDARY);
-		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new ItemScript(ITEM_TYPE::ENERGY_DRINK));
-		}
-	},
-	6,
-	false
+		6,
+		false
 	);
 
-	// Test Secondary Weapon
-	SetupFBX(
-	LevelRawPtr,
-	L"FBX\\Props\\Heal\\First Aid Kit.fbx",
-	L"First Aid Kit",
-	Vec3(0.f, 0.f, 3000.f),
-	Vec3(500.f, 500.f, 500.f),
-	Vec3(0.f, 0.f, 0.f),
-	{
-		[](CGameObject* obj) {
-			obj->AddComponent(new CCollider3D);
-			obj->Collider3D()->SetName(L"Weapon");
-			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-			obj->Collider3D()->SetIndependentScale(true);
-			obj->Collider3D()->SetTrigger(true);
+	// Secondary Weapon
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Heal\\First Aid Kit.fbx",
+		L"First Aid Kit",
+		Vec3(0.f, 0.f, 3000.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(500.f, 500.f, 500.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
+				obj->Collider3D()->SetName(L"Weapon");
+				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+				obj->Collider3D()->SetIndependentScale(true);
+				obj->Collider3D()->SetTrigger(true);
+			},
+			[](CGameObject* obj)
+			{
+				obj->AddComponent(new GunController);
+				// TODO(KHJ): Wrapping
+				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
+				script->SetWeaponType(WEAPON_TYPE::PRIMARY);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::FIRST_AID_KIT));
+			}
 		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new GunController);
-			WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
-			script->SetWeaponType(WEAPON_TYPE::PRIMARY);
-		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new ItemScript(ITEM_TYPE::FIRST_AID_KIT));
-		}
-	},
-	6,
-	false
+		6,
+		false
 	);
 
-	SetupFBX(
-	LevelRawPtr,
-	L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx",
-	L"Adrenaline",
-	Vec3(0.f, 0.f, 0.f), // 위치값이 원본 코드에선 따로 없음(필요시 Vec3(0.f, 0.f, 0.f) 등으로)
-	Vec3(150.f, 150.f, 150.f),
-	Vec3(0.f, 0.f, 0.f),
-	{
-		[](CGameObject* obj) {
-			obj->AddComponent(new CCollider3D);
-			obj->Collider3D()->SetName(L"Weapon");
-			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-			obj->Collider3D()->SetIndependentScale(true);
-			obj->Collider3D()->SetTrigger(true);
+	// Adrenaline
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Heal\\Adrenaline Syringe.fbx",
+		L"Adrenaline",
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(150.f, 150.f, 150.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
+				obj->Collider3D()->SetName(L"Weapon");
+				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+				obj->Collider3D()->SetIndependentScale(true);
+				obj->Collider3D()->SetTrigger(true);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::ADRENALINE_SYRINGE));
+			}
 		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new ItemScript(ITEM_TYPE::ADRENALINE_SYRINGE));
-		}
-	},
-	6,
-	false
+		6,
+		false
 	);
 
-	auto* Bandage = SetupFBX(
-	LevelRawPtr,
-	L"FBX\\Props\\Heal\\Bandage.fbx",
-	L"Bandage",
-	Vec3(0.f, 0.f, 0.f), // 위치값이 원본 코드에선 따로 없음(필요시 Vec3(0.f, 0.f, 0.f) 등으로)
-	Vec3(150.f, 150.f, 150.f),
-	Vec3(0.f, 0.f, 0.f),
-	{
-		[](CGameObject* obj) {
-			obj->AddComponent(new CCollider3D);
-			obj->Collider3D()->SetName(L"Weapon");
-			obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-			obj->Collider3D()->SetIndependentScale(true);
-			obj->Collider3D()->SetTrigger(true);
+	// Bandage
+	auto* Bandage = GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Heal\\Bandage.fbx",
+		L"Bandage",
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(150.f, 150.f, 150.f),
+		{
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
+				obj->Collider3D()->SetName(L"Weapon");
+				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
+				obj->Collider3D()->SetIndependentScale(true);
+				obj->Collider3D()->SetTrigger(true);
+			},
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
+				obj->AddComponent(new ItemScript(ITEM_TYPE::AMMO_5));
+			}
 		},
-		[](CGameObject* obj) {
-			obj->AddComponent(new ItemScript(ITEM_TYPE::AMMO_5));
-		}
-	},
-	6,
-	false
-);
+		6,
+		false
+	);
 
-	MakeClone(LevelRawPtr, Bandage, 6, false, 7);
+	GameFactory::MakeCloneObject(LevelRawPtr, Bandage, false, 7);
 
-	SetupFBX(
+	// Box
+	GameFactory::MakeFBXObject(
 		LevelRawPtr,
 		L"FBX\\Props\\Death Box\\box.fbx",
 		L"DeathBox",
 		Vec3(6590.f, -410.f, 5000.f),
-		Vec3(700.f, 2000.f, 700.f),
 		Vec3(0.f, 0.f, 0.f),
+		Vec3(700.f, 2000.f, 700.f),
 		{
-			[](CGameObject* obj) {
+			[](CGameObject* obj)
+			{
 				obj->AddComponentRecursive<CMeshCollider>();
 				obj->Transform()->SetRelativeScaleMultiply(0.3f);
 			}
@@ -217,20 +306,24 @@ void TestLevel::CreateTestLevel()
 		true
 	);
 
-	// 적 테스트
-	auto* TestTarget = SetupFBX(
+	// Enemy Test
+	auto* TestTarget = GameFactory::MakeFBXObject(
 		LevelRawPtr,
 		L"FBX\\Testasset.fbx",
 		L"TestTarget",
 		Vec3(3000.f, 0.f, 1000.f),
-		Vec3(5.f, 5.f, 5.f),
 		Vec3(0.f, 0.f, 0.f),
+		Vec3(5.f, 5.f, 5.f),
 		{
-			[](CGameObject* obj) {
-				obj->AddComponent(new CCollider3D);
+			[](CGameObject* obj)
+			{
+				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
 			},
-			[](CGameObject* obj) {
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
 				obj->AddComponent(new TestCharacter);
 			}
 		},
@@ -258,28 +351,32 @@ void TestLevel::CreateTestLevel()
 	TestTarget->AddChild(pVision);
 
 	// Door
-	SetupFBX(
+	GameFactory::MakeFBXObject(
 		LevelRawPtr,
 		L"FBX\\door.fbx",
 		L"Door",
 		Vec3(2000.f, -500.f, 1500.f),
-		Vec3(1000.f, 1000.f, 1000.f),
 		Vec3(0.f, 0.f, 0.f),
+		Vec3(1000.f, 1000.f, 1000.f),
 		{
-			[](CGameObject* obj) {
+			[](CGameObject* obj)
+			{
 				obj->AddComponent(new CCollider3D);
+				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
 				obj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
 				obj->Collider3D()->SetIndependentScale(true);
 			},
-			[](CGameObject* obj) {
+			[](CGameObject* obj)
+			{
+				// TODO(KHJ): Wrapping
 				obj->AddComponent(new DoorScript);
 			}
 		},
 		1,
 		false
 	);
-	//
+
 	// CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
 	// testPlayer->SetName(L"Test_Player");
 	//
@@ -291,80 +388,26 @@ void TestLevel::CreateTestLevel()
 	//
 	// pLevel->AddObject(1, testPlayer, false);
 
-	// Downtown Alley
-	//SetupFBX(
-	//	LevelForTest,
-	//	L"FBX\\Downtown_Alley_Scene.fbx",
-	//	L"Downtown_Alley",
-	//	Vec3(0.f, -1500.f, 0.f),
-	//	Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
-	//	Vec3(0.f, 0.f, 0.f),
-	//	{
-	//		[](CGameObject* obj) {
-	//			obj->Transform()->SetRelativeScaleMultiply(4.f);
-	//			obj->AddComponentRecursive<CMeshCollider>();
-	//		}
-	//	},
-	//	1,
-	//	true
-	//);
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Downtown_Alley_Scene.fbx",
+		L"Downtown_Alley",
+		Vec3(0.f, -1500.f, 0.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+		{
+			[](CGameObject* obj)
+			{
+				obj->Transform()->SetRelativeScaleMultiply(4.f);
+				obj->AddComponentRecursive<CMeshCollider>();
+			}
+		},
+		1,
+		true
+	);
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
-
-// Point Light
-void TestLevel::SetUpLight(CLevel* PLevel)
-{
-	CGameObject* PointLight = new CGameObject();
-	PointLight->SetName(L"PointLight");
-
-	PointLight->AddComponent(new CLight3D);
-	PointLight->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	PointLight->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
-	PointLight->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
-	PointLight->Light3D()->SetSpecularCoefficient(0.3f);
-	PointLight->Light3D()->SetRadius(300.f);
-
-	PointLight->Transform()->SetRelativePos(0.f, -450.f, 0.f);
-	PointLight->Transform()->SetRelativeRotation(45.f, 45.f, 0.f);
-
-	PLevel->AddObject(0, PointLight, false);
-}
-
-// Sky Box
-void TestLevel::SetUpSkyBox(CLevel* PLevel)
-{
-	CGameObject* SkyBox = new CGameObject();
-	SkyBox->SetName(L"SkyBox");
-	Ptr<CTexture> SkyBoxTexture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\skybox\\Sky01.png");
-
-	SkyBox->AddComponent(new CSkyBox);
-	SkyBox->SkyBox()->SetMode(SPHERE);
-	SkyBox->SkyBox()->SetSkyBoxTexture(SkyBoxTexture);
-
-	// FrustumCheck 비활성화
-	SkyBox->Transform()->SetFrustumCheck(false);
-
-	PLevel->AddObject(0, SkyBox, false);
-}
-
-// Landscape
-void TestLevel::SetUpLandscape(CLevel* PLevel)
-{
-	CGameObject* Landscape = new CGameObject();
-	Landscape->SetName(L"LandScape");
-	Landscape->AddComponent(new CLandScape);
-
-	Landscape->Transform()->SetRelativePos(Vec3(0.f, -500.f, 0.f));
-	Landscape->Transform()->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
-
-	Landscape->LandScape()->SetFace(32, 32);
-	Landscape->LandScape()->CreateHeightMap(1024, 1024);
-	Landscape->LandScape()->SetColorTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds"));
-	Landscape->LandScape()->SetNormalTexture(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds"));
-
-	PLevel->AddObject(0, Landscape, false);
-}
 
 // UI Preset
 vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
@@ -395,7 +438,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	SetObjectActive(CanvasUI, false);
 
-	PLevel->AddObject(8, CanvasUI, false);	// UI layer
+	PLevel->AddObject(8, CanvasUI, false); // UI layer
 
 	// DropUI
 	CGameObject* UI = new CGameObject;
@@ -514,7 +557,8 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	CGameObject* pImageUI = new CGameObject;
 	pImageUI->SetName(L"Cardinal_ImageUI");
 	pImageUI->AddComponent(new CUI);
-	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
+	pImageUI->UI()->SetImage(
+		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
 	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
 	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
 
@@ -526,7 +570,8 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pImageUI = new CGameObject;
 	pImageUI->SetName(L"Cardinal_ArrowUI");
 	pImageUI->AddComponent(new CUI);
-	pImageUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
+	pImageUI->UI()->SetImage(
+		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
 	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
 	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
 
@@ -732,108 +777,4 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo)
 	Player->AddChild(pHeadColl);
 
 	PLevel->AddObject(3, Player, true);
-}
-
-void TestLevel::SetUpWeapon(CLevel* PLevel)
-{
-	Ptr<CMeshData> WeaponFBX = CAssetMgr::GetInst()->LoadFBX(L"FBX\\ak47_test.fbx");
-
-	CGameObject* Weapon = WeaponFBX->Instantiate();
-	Weapon->SetName(L"AKM");
-	Weapon->AddComponent(new CColliderRay);
-	Weapon->AddComponent(new CCollider3D);
-	Weapon->AddComponent(new GunController);
-
-	WeaponController* pScript = static_cast<WeaponController*>(Weapon->GetScripts()[0]);
-	pScript->SetWeaponType(WEAPON_TYPE::PRIMARY);
-
-	Weapon->Transform()->SetRelativePos(Vec3(90.f, 0.f, 30.f));
-	Weapon->Transform()->SetRelativeScale(Vec3(900.f, 900.f, 900.f));
-	Weapon->Transform()->SetRelativeRotation(0.f, -2.f, -4.3f);
-	Weapon->Transform()->SetIndependentScale(true);
-
-	Weapon->Collider3D()->SetName(L"Weapon");
-	Weapon->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-	Weapon->Collider3D()->SetIndependentScale(true);
-	Weapon->Collider3D()->SetTrigger(true);
-
-	Weapon->ColliderRay()->SetRayPos(Vec3(-30.f, 100.f, 0.f));
-	Weapon->ColliderRay()->SetRayDir(Vec3(1.f, 0.f, 0.f));
-	Weapon->ColliderRay()->SetOffset(Vec3(556.f, 72.f, 0.f));
-
-	Weapon->AddComponent(new ItemScript(ITEM_TYPE::AKM));
-
-	PLevel->AddObject(6, Weapon, false);
-}
-
-void TestLevel::SetUpGrenade(CLevel* PLevel)
-{
-	Ptr<CMeshData> GrenadeFBX = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Props\\Throwable\\GRENADE.fbx");
-
-	CGameObject* Grenade = GrenadeFBX->Instantiate();
-	Grenade->SetName(L"Grenade");
-	Grenade->AddComponent(new CCollider3D);
-	Grenade->AddComponent(new ThrowableController);
-
-	WeaponController* pScript1 = static_cast<WeaponController*>(Grenade->GetScripts()[0]);
-	pScript1->SetWeaponType(WEAPON_TYPE::THROWABLE);
-
-	Grenade->Collider3D()->SetName(L"Weapon");
-	Grenade->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
-	Grenade->Collider3D()->SetIndependentScale(true);
-	Grenade->Collider3D()->SetTrigger(true);
-
-	Grenade->Transform()->SetRelativePos(0.f, 0.f, 5000.f);
-	Grenade->Transform()->SetRelativeScale(Vec3(15.f, 15.f, 15.f));
-	Grenade->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-	Grenade->Transform()->SetIndependentScale(true);
-
-	Grenade->AddComponent(new ItemScript(ITEM_TYPE::GRENADE));
-
-	// TODO(KHJ): Clone 용이성 고려할 것
-	PLevel->AddObject(6, Grenade, false);
-	PLevel->AddObject(6, Grenade->Clone(), false);
-
-}
-
-CGameObject* TestLevel::SetupFBX(
-	CLevel* PLevel,
-	const wstring& PFilePath,
-	const wstring& PName,
-	const Vec3& PPos,
-	const Vec3& PScale,
-	const Vec3& PRotation,
-	const vector<function<void(CGameObject*)>>& ComponentSetups,
-	int PLayer,
-	bool PMoveWithChild
-)
-{
-	// FBX 로드 및 인스턴스화
-	Ptr<CMeshData> MeshData = CAssetMgr::GetInst()->LoadFBX(PFilePath.c_str());
-	CGameObject* Object = MeshData->Instantiate();
-	Object->SetName(PName.c_str());
-
-	// Transform 세팅
-	Object->Transform()->SetRelativePos(PPos);
-	Object->Transform()->SetRelativeScale(PScale);
-	Object->Transform()->SetRelativeRotation(PRotation);
-
-	// 컴포넌트 추가 및 세팅
-	for (const auto& Setup : ComponentSetups)
-	{
-		Setup(Object);
-	}
-
-	// 레벨에 오브젝트 추가
-	PLevel->AddObject(PLayer, Object, PMoveWithChild);
-
-	return Object;
-}
-
-void TestLevel::MakeClone(CLevel* PLevel, CGameObject* POrigin, int PLayer, bool PMoveWithChild, int PCopyNum)
-{
-	for (int i = 0; i <= PCopyNum; i++)
-	{
-		PLevel->AddObject(PLayer, POrigin->Clone(), PMoveWithChild);
-	}
 }

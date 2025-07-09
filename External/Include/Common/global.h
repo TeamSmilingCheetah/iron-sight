@@ -31,6 +31,7 @@ using std::wstring;
 using std::min;
 using std::max;
 using std::pair;
+using std::make_unique;
 using std::unique_ptr;
 
 #include <filesystem>
