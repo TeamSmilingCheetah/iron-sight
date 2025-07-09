@@ -69,6 +69,11 @@ void Engine::Collider::SetColliderRayOptions(CGameObject* PColliderObject,
 	PColliderObject->ColliderRay()->SetIndependentDir(PIsIndependant);
 }
 
+void Engine::Transform::SetPosition(CGameObject* PObject, Vec3 PPosition)
+{
+	PObject->Transform()->SetRelativePos(PPosition);
+}
+
 void Engine::Transform::SetPositionAndRotation(CGameObject* PObject, Vec3 PPosition, Vec3 PRotation)
 {
 	PObject->Transform()->SetRelativePos(PPosition);
@@ -77,7 +82,7 @@ void Engine::Transform::SetPositionAndRotation(CGameObject* PObject, Vec3 PPosit
 
 void Engine::Transform::SetScale(CGameObject* PObject, Vec3 PScale)
 {
-	PObject->Transform()->SetRelativeRotation(PScale);
+	PObject->Transform()->SetRelativeScale(PScale);
 }
 
 void Engine::Transform::SetFrustumCheck(CGameObject* PObject, bool PCheck)

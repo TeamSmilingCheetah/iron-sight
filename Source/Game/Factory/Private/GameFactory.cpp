@@ -159,7 +159,8 @@ void GameFactory::LoadDefaultLandscape(CLevel* PLevel)
 	Engine::Common::SetObjectName(RawLandscapePtr, L"LandScape");
 
 	Engine::Common::AddComponentToObject<CLandScape>(RawLandscapePtr);
-	Engine::Transform::SetPositionAndRotation(RawLandscapePtr, {0.f, -500.f, 0.f}, {500.f, 500.f, 500.f});
+	Engine::Transform::SetPosition(RawLandscapePtr, {0.f, -500.f, 0.f});
+	Engine::Transform::SetScale(RawLandscapePtr, {500.f, 500.f, 500.f});
 
 	auto ColorTexture = Engine::IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds");
 	auto NormalTexture = Engine::IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds");
