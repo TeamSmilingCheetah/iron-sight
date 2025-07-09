@@ -55,8 +55,7 @@ void TestLevel::CreateTestLevel()
 
 	SetUpLight(LevelRawPtr);
 	SetUpSkyBox(LevelRawPtr);
-	SetUpLandscape(LevelRawPtr);
-	SetUpGrenade(LevelRawPtr);
+	SetUpLandscape(LevelRawPtr);	
 
 	// Initialize Item Parts
 	auto UIInfo = SetUpUI(LevelRawPtr);
@@ -64,6 +63,7 @@ void TestLevel::CreateTestLevel()
 
 	SetUpPlayer(LevelRawPtr, UIInfo);
 	SetUpWeapon(LevelRawPtr);
+	SetUpGrenade(LevelRawPtr);
 
 	// Smoke
 	SetupFBX(
@@ -793,6 +793,7 @@ void TestLevel::SetUpGrenade(CLevel* PLevel)
 	// TODO(KHJ): Clone 용이성 고려할 것
 	PLevel->AddObject(6, Grenade, false);
 	PLevel->AddObject(6, Grenade->Clone(), false);
+
 }
 
 CGameObject* TestLevel::SetupFBX(
