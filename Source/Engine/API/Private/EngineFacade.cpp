@@ -7,7 +7,9 @@
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Runtime/Public/Component/Light/CLight3D.h"
+#include "Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Runtime/Public/Component/Rendering/CSkyBox.h"
 
@@ -29,6 +31,11 @@ void Engine::Common::SetObjectName(CGameObject* PObject, const wstring& PName)
 CComponent* Engine::Common::GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType)
 {
 	return PObject->GetComponent(PComponentType);
+}
+
+void Engine::Common::AddChild(CGameObject* PObject, CGameObject* PChild)
+{
+	PObject->AddChild(PChild);
 }
 
 void Engine::Layer::SetLayerName(CLevel* PLevel, int PLayerNumber, const ::wstring& PLayerName)
@@ -61,12 +68,30 @@ void Engine::Camera::SetCameraOptions(CGameObject* PCameraObject, PROJ_TYPE PPro
 	PCameraObject->Camera()->LayerOff(4);
 }
 
-void Engine::Collider::SetColliderRayOptions(CGameObject* PColliderObject,
+void Engine::Collider::SetColliderProperties(CGameObject* PObject, Vec3 PScale, Vec3 POffset,
+                                          bool PIsIndependentScale, bool PIsTrigger)
+{
+	PObject->Collider3D()->SetScale(PScale);
+	PObject->Collider3D()->SetOffset(POffset);
+	PObject->Collider3D()->SetIndependentScale(PIsIndependentScale);
+	PObject->Collider3D()->SetTrigger(PIsTrigger);
+}
+
+void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
                                              Vec3 PDirection, float PLength, bool PIsIndependant)
 {
-	PColliderObject->ColliderRay()->SetRayDir(PDirection);
-	PColliderObject->ColliderRay()->SetRayLength(PLength);
-	PColliderObject->ColliderRay()->SetIndependentDir(PIsIndependant);
+	PObject->ColliderRay()->SetRayDir(PDirection);
+	PObject->ColliderRay()->SetRayLength(PLength);
+	PObject->ColliderRay()->SetIndependentDir(PIsIndependant);
+}
+
+void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
+                                             Vec3 PDirection, Vec3 POffset, float PLength, bool PIsTriggerTarget)
+{
+	PObject->ColliderRay()->SetRayDir(PDirection);
+	PObject->ColliderRay()->SetOffset(POffset);
+	PObject->ColliderRay()->SetRayLength(PLength);
+	PObject->ColliderRay()->SetTriggerTarget(PIsTriggerTarget);
 }
 
 void Engine::Transform::SetPosition(CGameObject* PObject, Vec3 PPosition)
@@ -96,8 +121,9 @@ void Engine::SkyBox::SetSkyBoxProperties(CGameObject* PSkyBox, SKYBOX_MODE PMode
 	PSkyBox->SkyBox()->SetSkyBoxTexture(PTexture);
 }
 
-void Engine::Light::Set3DLightProperties(CGameObject* PLightObject, LIGHT_TYPE PLightType, Vec3 PLightColor, Vec3 PAmbient,
-                                      float PSpecularCoefficient, float PRadius)
+void Engine::Light::Set3DLightProperties(CGameObject* PLightObject, LIGHT_TYPE PLightType, Vec3 PLightColor,
+                                         Vec3 PAmbient,
+                                         float PSpecularCoefficient, float PRadius)
 {
 	PLightObject->Light3D()->SetLightType(PLightType);
 	PLightObject->Light3D()->SetLightColor(PLightColor);
@@ -107,7 +133,8 @@ void Engine::Light::Set3DLightProperties(CGameObject* PLightObject, LIGHT_TYPE P
 }
 
 void Engine::Landscape::SetLandscapeProperties(CGameObject* PLandscape, UnsignedIntegerSquare PFaceSize,
-	UnsignedIntegerSquare PHeightMapSize, Ptr<CTexture> PColorTexture, Ptr<CTexture> PNormalTexture)
+                                               UnsignedIntegerSquare PHeightMapSize, Ptr<CTexture> PColorTexture,
+                                               Ptr<CTexture> PNormalTexture)
 {
 	PLandscape->LandScape()->SetFace(PFaceSize.X, PFaceSize.Y);
 	PLandscape->LandScape()->CreateHeightMap(PHeightMapSize.X, PHeightMapSize.Y);
@@ -118,4 +145,9 @@ void Engine::Landscape::SetLandscapeProperties(CGameObject* PLandscape, Unsigned
 Ptr<CMeshData> Engine::IO::LoadFBX(const wstring& PRelativeFilePath)
 {
 	return CAssetMgr::GetInst()->LoadFBX(PRelativeFilePath.c_str());
+}
+
+void Engine::Animation::SetAnimationClip(CGameObject* PObject, Ptr<CMeshData> PAnimationSet)
+{
+	PObject->Animator3D()->SetAnimClip(PAnimationSet->GetAnimations());
 }
