@@ -63,6 +63,7 @@ void TestLevel::CreateTestLevel()
 	ItemMgr::GetInst()->Init();
 
 	SetUpPlayer(LevelRawPtr, UIInfo);
+	SetUpWeapon(LevelRawPtr);
 
 	// Smoke
 	SetupFBX(
