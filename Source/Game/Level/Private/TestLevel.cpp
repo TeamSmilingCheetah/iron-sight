@@ -720,7 +720,7 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo)
 	Player->AddComponent(new PlayerCharacter);
 	Player->AddComponent(new InventoryController);
 
-	Player->Transform()->SetRelativePos(Vec3(6500.f, 5000.f, 4500.f));
+	Player->Transform()->SetRelativePos(Vec3(0.f, 5000.f, 0.f));
 	Player->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 	Player->Transform()->SetRelativeRotation(0.f, 90.f, 0.f);
 

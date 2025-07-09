@@ -28,6 +28,7 @@ namespace Engine
 
 	namespace Transform
 	{
+		void SetPosition(CGameObject* PObject, Vec3 PPosition);
 		void SetPositionAndRotation(CGameObject* PObject, Vec3 PPosition, Vec3 PRotation);
 		void SetScale(CGameObject* PObject, Vec3 PScale);
 		void SetFrustumCheck(CGameObject* PObject, bool PCheck);
