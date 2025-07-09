@@ -353,3 +353,11 @@ struct CollisionResult {
 	Vec3 LeftNormal;
 	Vec3 RightNormal;
 };
+
+// Facade 자료형
+
+struct UnsignedIntegerSquare
+{
+	UINT X;
+	UINT Y;
+};

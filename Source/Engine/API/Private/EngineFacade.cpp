@@ -3,13 +3,22 @@
 
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CCollisionMgr.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Runtime/Public/Component/Light/CLight3D.h"
+#include "Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Runtime/Public/Component/Rendering/CSkyBox.h"
 
-std::unique_ptr<CGameObject> Engine::Common::CreateNewObject()
+unique_ptr<CGameObject> Engine::Common::CreateNewObject()
 {
-	return std::make_unique<CGameObject>();
+	return make_unique<CGameObject>();
+}
+
+CGameObject* Engine::Common::InstantiateNewObject(Ptr<CMeshData> PMeshData)
+{
+	return PMeshData->Instantiate();
 }
 
 void Engine::Common::SetObjectName(CGameObject* PObject, const wstring& PName)
@@ -32,9 +41,9 @@ void Engine::Layer::SetLayerCollision(int PLayer, int POtherLayer)
 	CCollisionMgr::GetInst()->ToggleLayerCollision(PLayer, POtherLayer);
 }
 
-std::unique_ptr<CLevel> Engine::Level::CreateNewLevel()
+unique_ptr<CLevel> Engine::Level::CreateNewLevel()
 {
-	return std::make_unique<CLevel>();
+	return make_unique<CLevel>();
 }
 
 void Engine::Level::AddObjectToLayer(CLevel* PLevel, CGameObject* PObject, int PLayerIdx, bool PMoveWithChild)
@@ -42,21 +51,66 @@ void Engine::Level::AddObjectToLayer(CLevel* PLevel, CGameObject* PObject, int P
 	PLevel->AddObject(PLayerIdx, PObject, PMoveWithChild);
 }
 
-void Engine::Camera::SetCameraOptions(CGameObject* CameraObject, PROJ_TYPE PProjectionType, int PPriority)
+void Engine::Camera::SetCameraOptions(CGameObject* PCameraObject, PROJ_TYPE PProjectionType, int PPriority)
 {
-	CameraObject->Camera()->SetProjType(PProjectionType);
-	CameraObject->Camera()->SetPriority(PPriority);
+	PCameraObject->Camera()->SetProjType(PProjectionType);
+	PCameraObject->Camera()->SetPriority(PPriority);
 
 	// TPS Layer 제외하고 Init
-	CameraObject->Camera()->LayerCheckAll();
-	CameraObject->Camera()->LayerOff(4);
+	PCameraObject->Camera()->LayerCheckAll();
+	PCameraObject->Camera()->LayerOff(4);
 }
 
-
-void Engine::Collider::SetColliderRayOptions(CGameObject* ColliderObject,
+void Engine::Collider::SetColliderRayOptions(CGameObject* PColliderObject,
                                              Vec3 PDirection, float PLength, bool PIsIndependant)
 {
-	ColliderObject->ColliderRay()->SetRayDir(PDirection);
-	ColliderObject->ColliderRay()->SetRayLength(PLength);
-	ColliderObject->ColliderRay()->SetIndependentDir(PIsIndependant);
+	PColliderObject->ColliderRay()->SetRayDir(PDirection);
+	PColliderObject->ColliderRay()->SetRayLength(PLength);
+	PColliderObject->ColliderRay()->SetIndependentDir(PIsIndependant);
+}
+
+void Engine::Transform::SetPositionAndRotation(CGameObject* PObject, Vec3 PPosition, Vec3 PRotation)
+{
+	PObject->Transform()->SetRelativePos(PPosition);
+	PObject->Transform()->SetRelativeRotation(PRotation);
+}
+
+void Engine::Transform::SetScale(CGameObject* PObject, Vec3 PScale)
+{
+	PObject->Transform()->SetRelativeRotation(PScale);
+}
+
+void Engine::Transform::SetFrustumCheck(CGameObject* PObject, bool PCheck)
+{
+	PObject->Transform()->SetFrustumCheck(PCheck);
+}
+
+void Engine::SkyBox::SetSkyBoxProperties(CGameObject* PSkyBox, SKYBOX_MODE PMode, Ptr<CTexture> PTexture)
+{
+	PSkyBox->SkyBox()->SetMode(PMode);
+	PSkyBox->SkyBox()->SetSkyBoxTexture(PTexture);
+}
+
+void Engine::Light::Set3DLightProperties(CGameObject* PLightObject, LIGHT_TYPE PLightType, Vec3 PLightColor, Vec3 PAmbient,
+                                      float PSpecularCoefficient, float PRadius)
+{
+	PLightObject->Light3D()->SetLightType(PLightType);
+	PLightObject->Light3D()->SetLightColor(PLightColor);
+	PLightObject->Light3D()->SetAmbient(PAmbient);
+	PLightObject->Light3D()->SetSpecularCoefficient(PSpecularCoefficient);
+	PLightObject->Light3D()->SetRadius(PRadius);
+}
+
+void Engine::Landscape::SetLandscapeProperties(CGameObject* PLandscape, UnsignedIntegerSquare PFaceSize,
+	UnsignedIntegerSquare PHeightMapSize, Ptr<CTexture> PColorTexture, Ptr<CTexture> PNormalTexture)
+{
+	PLandscape->LandScape()->SetFace(PFaceSize.X, PFaceSize.Y);
+	PLandscape->LandScape()->CreateHeightMap(PHeightMapSize.X, PHeightMapSize.Y);
+	PLandscape->LandScape()->SetColorTexture(PColorTexture);
+	PLandscape->LandScape()->SetNormalTexture(PNormalTexture);
+}
+
+Ptr<CMeshData> Engine::IO::LoadFBX(const wstring& PRelativeFilePath)
+{
+	return CAssetMgr::GetInst()->LoadFBX(PRelativeFilePath.c_str());
 }

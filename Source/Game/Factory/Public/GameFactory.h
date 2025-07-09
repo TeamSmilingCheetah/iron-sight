@@ -6,21 +6,20 @@ public:
 	static unique_ptr<CGameObject> CreateObject();
 	static unique_ptr<CLevel> CreateLevel();
 
-	static void SetUpLayer(CLevel* PLevel);
-	static void SetUpCollision();
-	static void SetUpCamera(CLevel* PLevel);
+	static void LoadDefaultLayer(CLevel* PLevel);
+	static void LoadDefaultCollisionSetting();
+	static void LoadMainCamera(CLevel* PLevel);
+	static void LoadDefaultLight(CLevel* PLevel);
+	static void LoadDefaultSkyBox(CLevel* PLevel);
+	static void LoadDefaultLandscape(CLevel* PLevel);
 
-	// void SetUpLight(CLevel* PLevel);
-	// void SetUpSkyBox(CLevel* PLevel);
-	// void SetUpLandscape(CLevel* PLevel);
+	static CGameObject* MakeFBXObject(CLevel* PLevel, const wstring& PFilePath, const wstring& PName,
+	                                  const Vec3& PPosition, const Vec3& PRotation, const Vec3& PScale,
+	                                  const vector<std::function<void(CGameObject*)>>& PComponentSetups,
+	                                  int PLayer, bool PMoveWithChild);
+
+	static void MakeCloneObject(CLevel* PLevel, CGameObject* POrigin, bool PMoveWithChild, int PCopyMount);
+
 	// vector<CGameObject*> SetUpUI(CLevel* PLevel);
 	// void SetUpPlayer(CLevel* PLevel, vector<CGameObject*>& PUIInfo);
-	//
-	// void SetUpWeapon(CLevel* PLevel);
-	// void SetUpGrenade(CLevel* PLevel);
-	// CGameObject* SetupFBX(CLevel* PLevel, const wstring& PFilePath, const wstring& PName, const Vec3& PPos,
-	// 			  const Vec3& PScale, const Vec3& PRotation, const vector<std::function<void(CGameObject*)>>& ComponentSetups,
-	// 			  int PLayer, bool PMoveWithChild);
-	// void MakeClone(CLevel* PLevel, CGameObject* POrigin, int PLayer, bool PMoveWithChild, int PCopyNum);
 };
-
