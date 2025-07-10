@@ -31,6 +31,7 @@ private:
 
 	int         m_OverlapCount;
 	int			m_Status;
+	float		m_PenetrationDepth;
 
 	COLLIDER_STATE  m_State;
 
@@ -78,6 +79,7 @@ public:
 	void SetHitPoint(Vec3 PhitPoint) { m_HitPoint = PhitPoint; }
 	void SetIndependentScale(bool PScale) { m_IndependentScale = PScale; }
 	void SetClosestPoint(Vec3 PclosestPoint) { m_ClosestPoint = PclosestPoint; }
+	void SetPenetrationDepth(float PPenetrationDepth) { m_PenetrationDepth = PPenetrationDepth; }
 
 	Vec3 GetOffset() const { return m_Offset; }
 	Vec3 GetScale() const { return m_Scale; }
@@ -85,6 +87,7 @@ public:
 	Vec3 GetHitNormal() const { return m_HitNormal; }
 	Vec3 GetHitPoint() const { return m_HitPoint; }
 	Vec3 GetClosestPoint() { return m_ClosestPoint; }
+	float GetPenetrationDepth() const { return m_PenetrationDepth; }
 	COLLIDER_STATE GetState() const { return m_State; }
 
 	bool IsTrigger() const { return (m_Status & TRIGGER); }

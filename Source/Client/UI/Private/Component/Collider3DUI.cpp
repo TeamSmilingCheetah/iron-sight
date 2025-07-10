@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Client/UI/Public/Component/Collider3DUI.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 
 Collider3DUI::Collider3DUI()
@@ -67,6 +68,12 @@ void Collider3DUI::Render_Update()
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##IsTrigger", &bTrigger);
 	pCollider3D->SetTrigger(bTrigger);
+
+	// Penetration Depth (Read Only)
+	float PenetrationDepth = pCollider3D->GetPenetrationDepth();
+	ImGui::Text("Penetration Depth");
+	ImGui::SameLine(100);
+	ImGui::Text("%.3f", PenetrationDepth);
 
 	if (ImGui::Button("DELETE##Collider3D"))
 	{

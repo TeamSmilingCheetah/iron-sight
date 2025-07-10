@@ -9,6 +9,7 @@ CMeshCollider::CMeshCollider()
 	: CComponent(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MMeshPtr(nullptr)
 	  , MOverlapCount(0)
+	  , MPenetrationDepth(0.f)
 {
 }
 
@@ -18,6 +19,7 @@ CMeshCollider::CMeshCollider(const CMeshCollider& POrigin)
 	: CComponent(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MMeshPtr(POrigin.GetMesh())
 	  , MOverlapCount(POrigin.MOverlapCount)
+	  , MPenetrationDepth(POrigin.MPenetrationDepth)
 {
 }
 

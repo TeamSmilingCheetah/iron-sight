@@ -38,9 +38,10 @@ bool Separated(float3 axis, float3 A0, float3 A1, float3 A2, float3 B0, float3 B
  * Separating Axis Theorem을 활용한 판정 처리
  * @param A0, A1, A2 [IN] 삼각형 A의 꼭지점 좌표
  * @param B0, B1, B2 [IN] 삼각형 B의 꼭지점 좌표
+ * @param penetrationDepth [OUT] 침투 깊이
  * @return 충돌 여부
  */
-bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, float3 B2)
+bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, float3 B2, out float penetrationDepth)
 {
     float3 AEdge[3] = { A1 - A0, A2 - A1, A0 - A2 };
     float3 BEdge[3] = { B1 - B0, B2 - B1, B0 - B2 };
@@ -50,10 +51,12 @@ bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, f
     // Axis Check
     if (Separated(ANormal, A0, A1, A2, B0, B1, B2))
     {
+        penetrationDepth = 0.0f;
         return false;
     }
     if (Separated(BNormal, A0, A1, A2, B0, B1, B2))
     {
+        penetrationDepth = 0.0f;
         return false;
     }
 
@@ -65,10 +68,24 @@ bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, f
             float3 axis = cross(AEdge[i], BEdge[j]);
             if (Separated(axis, A0, A1, A2, B0, B1, B2))
             {
+                penetrationDepth = 0.0f;
                 return false;
             }
         }
     }
+
+    // Calculate Depth
+    // 두 삼각형의 중심점 사이의 거리를 기반으로 계산
+    float3 ACenter = (A0 + A1 + A2) / 3.0f;
+    float3 BCenter = (B0 + B1 + B2) / 3.0f;
+    float3 CenterToCenter = BCenter - ACenter;
+
+    // Calculate Normal Direction Distance
+    // 범위 제한 적용
+    float3 AvgNormal = normalize(ANormal + BNormal);
+    float RawPenetration = abs(dot(CenterToCenter, AvgNormal));
+    penetrationDepth = min(RawPenetration * 0.05f, 1.0f);
+
     return true;
 }
 
@@ -92,7 +109,8 @@ void CS_MeshCollision(uint3 DTid : SV_DispatchThreadID)
     float3 R1 = RightVertices[RightIdx.y].Pos;
     float3 R2 = RightVertices[RightIdx.z].Pos;
 
-    if (TrianglesIntersect(L0, L1, L2, R0, R1, R2))
+    float PenetrationDepth;
+    if (TrianglesIntersect(L0, L1, L2, R0, R1, R2, PenetrationDepth))
     {
         uint Idx;
         InterlockedAdd(CollisionCount[0], 1, Idx);
@@ -100,6 +118,7 @@ void CS_MeshCollision(uint3 DTid : SV_DispatchThreadID)
         {
             Results[Idx].LeftNormal = normalize(cross(L1 - L0, L2 - L0));
             Results[Idx].RightNormal = normalize(cross(R1 - R0, R2 - R0));
+            Results[Idx].PenetrationDepth = PenetrationDepth;
         }
     }
 }

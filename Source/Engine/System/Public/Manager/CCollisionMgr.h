@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 
 union COLLIDER_ID
 {
@@ -36,6 +37,17 @@ private:
 	map<ULONGLONG, bool> m_ColInfo;
 	set<CColliderRay*> m_RayColInfo;
 	set<CLandScape*> m_LandObject;
+	CMeshCollisionCS m_MeshCollisionCS;
+
+public:
+	struct SimpleVtx
+	{
+		Vec3 pos;
+	};
+	struct SimpleIdx
+	{
+		uint32_t x, y, z;
+	};
 
 private:
 	// Layer Collision Main Logic
