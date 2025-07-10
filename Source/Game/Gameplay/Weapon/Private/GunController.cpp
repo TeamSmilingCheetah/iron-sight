@@ -15,6 +15,9 @@
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
+
 GunController::GunController()
 	: WeaponController(SCRIPT_TYPE::GUNSCRIPT)
 	, m_AkSoundIdx(-1)
@@ -61,6 +64,7 @@ void GunController::Begin()
 	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
 
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
+	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
 }
 
 void GunController::Tick()
@@ -123,6 +127,12 @@ void GunController::Tick()
 				m_bFire = true;
 		}
 
+		if (m_CurKey == KEY::F && m_CurKeyState == KEY_STATE::TAP && m_bReload)
+		{			
+			m_bReload = false;
+			m_AccTime_Reload = 0.f;
+			ClearKey();			
+		}
 		AdjustFPSPos();
 	}
 	// ai일시 처리
@@ -320,20 +330,32 @@ void GunController::Reload()
 		return;
 	}
 
-	// 총기 애니메이션 재생
-
-
 	m_AccTime_Reload += DT;
 
 	// 사격중에 장전으로 넘어온 경우 사격을 비활성화 해준다.
 	m_bFire = false;
 
 	int iFilledRounds = 0;
+
+	if (!m_bEnemy)
+	{
+		// ReloadUI : Reload Delay UI
+		m_ReloadUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - (m_ReloadingTime - m_AccTime_Reload) / m_ReloadingTime);
+
+		// 남은 시간 글씨 출력
+		wchar_t text[4]{};	// 3글자 출력
+		if (m_ReloadingTime - m_AccTime_Reload > 0.f)
+		{
+			swprintf_s(text, L"%.1f", m_ReloadingTime - m_AccTime_Reload);
+		}			
+		m_ReloadUI->UI()->GetTextInfoRef()[0].Text = text;
+	}
+
 	// 장전 시간이 지나면
 	if (m_ReloadingTime < m_AccTime_Reload)
 	{
 		// 여분의 탄창이 모두 있다면
-			if (m_MaxRounds < iLeftRounds)
+		if (m_MaxRounds < iLeftRounds)
 		{
 			// 현재 총알에서 부족한 만큼을 계산한다.
 			iFilledRounds = m_MaxRounds - m_CurRounds;
@@ -358,14 +380,22 @@ void GunController::Reload()
 		}
 
 		// 남은 총알 update
-		if(m_bEnemy)
+		if (m_bEnemy)
+		{
 			iLeftRounds -= iFilledRounds;
+		}			
 		else
+		{
 			m_InventoryScript->UseItem(m_WeaponRoundType, iFilledRounds);
-
+		}
+			
 		m_AccTime_Reload = 0.f;
 		m_bReload = false;
+		SetObjectActive(m_ReloadUI, false);
+		m_PlayerScript->SetReloading(false);
+		m_PlayerScript->SetReloadingEnd(true);
 	}
+
 }
 
 

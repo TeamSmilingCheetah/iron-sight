@@ -9,6 +9,7 @@ class KillinfoUIScript;
 class InventoryController;
 class CameraController;
 
+
 class PlayerCharacter :
 	public CScript
 {
@@ -34,6 +35,8 @@ private:
 	float m_MouseSensitivity;
 
 	bool m_bShoot;
+	bool m_bReloading;
+	bool m_bReloadingEnd;
 	bool m_bCanThrow;
 	bool m_bThrowBoom;
 
@@ -84,6 +87,7 @@ private:
 	CGameObject*	m_CardinalImageUI;		// 방위 UI
 	CGameObject*	m_HPUI;					// HP UI
 	CGameObject*	m_ItemUseUI;			// 아이템 사용 UI
+	CGameObject*	m_ReloadUI;				// 재장전 UI
 
 public:
 	void Begin() override;
@@ -126,11 +130,16 @@ public:
 	void SetShot(bool PShot) { m_bShoot = PShot; }
 	void SetThrow(bool PThrow) { m_bCanThrow = PThrow; }
 	void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
+	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
+	void SetReloadingEnd(bool PReloadingEnd) { m_bReloadingEnd = PReloadingEnd; }
 
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
+	bool IsPlayerReloading() { return m_bReloading; }
+	bool IsPlayerReloadingEnd() { return m_bReloadingEnd; }
+
 
 	void TriggerHeal(ITEM_TYPE PHealType);
 
