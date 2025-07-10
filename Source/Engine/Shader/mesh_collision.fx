@@ -84,7 +84,7 @@ bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, f
     // 범위 제한 적용
     float3 AvgNormal = normalize(ANormal + BNormal);
     float RawPenetration = abs(dot(CenterToCenter, AvgNormal));
-    penetrationDepth = min(RawPenetration * 0.05f, 1.0f);
+    penetrationDepth = min(RawPenetration * 0.05f, 10.0f);
 
     return true;
 }

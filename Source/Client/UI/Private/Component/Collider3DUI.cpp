@@ -71,9 +71,9 @@ void Collider3DUI::Render_Update()
 
 	// Penetration Depth (Read Only)
 	float PenetrationDepth = pCollider3D->GetPenetrationDepth();
-	ImGui::Text("Penetration Depth");
+	ImGui::Text("Penetration");
 	ImGui::SameLine(100);
-	ImGui::Text("%.3f", PenetrationDepth);
+	ImGui::DragFloat("##ColliderRotation", &PenetrationDepth, 0.01f);
 
 	if (ImGui::Button("DELETE##Collider3D"))
 	{
