@@ -717,6 +717,13 @@ void InventoryController::PlayerInteractWeapon()
 
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
+			// 장전중이라면 취소시킨다.
+			if (m_PlayerScript->IsPlayerReloading())
+			{
+				m_PlayerScript->SetReloading(false);
+				m_PlayerScript->SetReloadingEnd(true);
+			}
+
 			if (!m_CamScript->GetFlag(TPS))
 			{
 				// 현재 FPS모드라면 비활성화할 무기 대상을 바꿔준다.
@@ -749,6 +756,13 @@ void InventoryController::PlayerInteractWeapon()
 	if (KEY_TAP(KEY::X))
 	{
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));
+
+		// 장전중이라면 취소시킨다.
+		if (m_PlayerScript->IsPlayerReloading())
+		{
+			m_PlayerScript->SetReloading(false);
+			m_PlayerScript->SetReloadingEnd(true);
+		}
 
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;

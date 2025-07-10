@@ -38,6 +38,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_bShoot(false)
 	, m_bCanThrow(false)
 	, m_bThrowBoom(false)
+	, m_bReloading(false)
 	, m_CollObject(nullptr)
 	, m_HeadColl(nullptr)
 	, m_CamScript(nullptr)
@@ -101,6 +102,7 @@ void PlayerCharacter::Begin()
 	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
 
 	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
+	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
 
 	// Script
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
@@ -413,8 +415,26 @@ void PlayerCharacter::PlayerReload()
 			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
 			pGunScript->SetCurKey(KEY::R);
 			pGunScript->SetCurKeyState(KEY_STATE::TAP);
+			SetObjectActive(m_ReloadUI, true);
+			m_bReloading = true;
 		}
 	}
+
+	if (!m_bReloading)
+	{
+		SetObjectActive(m_ReloadUI, false);
+	}
+	else
+	{
+		if (KEY_TAP(KEY::F))
+		{
+			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+			pGunScript->SetCurKey(KEY::F);
+			pGunScript->SetCurKeyState(KEY_STATE::TAP);
+			m_bReloading = false;
+		}
+	}
+		
 }
 
 void PlayerCharacter::PlayerAttack()

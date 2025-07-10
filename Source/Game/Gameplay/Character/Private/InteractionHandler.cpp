@@ -56,6 +56,19 @@ void InteractionHandler::Tick()
 	{
 		SetInteractable(false);
 	}
+
+	// 재장전중이라면 취소 UI 띄어줌
+	if (m_PlayerScript->IsPlayerReloading())
+	{
+		SetInteractable(true);
+	}
+
+	// 재장전이 끝나면 UI 종료
+	if (m_PlayerScript->IsPlayerReloadingEnd())
+	{
+		SetInteractable(false);
+		m_PlayerScript->SetReloadingEnd(false);
+	}
 }
 
 void InteractionHandler::SaveComponent(FILE* _File)

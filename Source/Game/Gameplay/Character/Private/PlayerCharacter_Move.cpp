@@ -65,7 +65,8 @@ void PlayerCharacter::MoveCalcul()
 		!m_CamScript->GetFlag(ADS) &&
 		!m_CamScript->GetFlag(SITTING) &&
 		!m_CamScript->GetFlag(LAYING) &&
-		!m_bLean)
+		!m_bLean &&
+		!m_bReloading)
 	{
 		ForceScar = 80.f;
 		m_MaxSpeed = 20.f;

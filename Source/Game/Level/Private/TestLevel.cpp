@@ -622,6 +622,22 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddChild(childUI);
 
+	// Reload UI
+	childUI = new CGameObject;
+	childUI->SetName(L"Reload_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
+
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
+
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
+	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
+	SetObjectActive(childUI, false);
+
+	CanvasUI->AddChild(childUI);
+
 	// Interaction UI
 	CGameObject* interactionUI = new CGameObject;
 	interactionUI->SetName(L"Interaction_UI");

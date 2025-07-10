@@ -30,9 +30,9 @@ private:
 	bool m_bReload;
 	bool m_bAuto;
 
-	PlayerCharacter* m_PlayerScript;
-	InventoryController* m_InventoryScript;
-
+	PlayerCharacter*		m_PlayerScript;
+	InventoryController*	m_InventoryScript;
+	CGameObject*			m_ReloadUI;
 
 	ITEM_TYPE m_WeaponRoundType;
 
