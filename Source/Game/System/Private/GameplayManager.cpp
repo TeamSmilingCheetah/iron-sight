@@ -18,6 +18,8 @@
 #include "Game/Gameplay/Door/Public/DoorScript.h"
 #include "Game/Gameplay/Particle/Public/ParticleController.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
+#include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
+#include "Game/Gameplay/UI/Public/MinimapUIScript.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -40,6 +42,8 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"BombScript");
 	_vec.push_back(L"RoundsUIScript");
 	_vec.push_back(L"KillinfoUIScript");
+	_vec.push_back(L"MinimapCameraScript");
+	_vec.push_back(L"MinimapUIScript");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -82,6 +86,10 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new RoundsUIScript;
 	if (L"KillinfoUIScript" == _strScriptName)
 		return new KillinfoUIScript;
+	if (L"MinimapCameraScript" == _strScriptName)
+		return new MinimapCameraScript;
+	if (L"MinimapUIScript" == _strScriptName)
+		return new MinimapUIScript;
 
 	return nullptr;
 }
@@ -146,6 +154,12 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(SCRIPT_TYPE::KILLINFOUI):
 		return new KillinfoUIScript;
+		break;
+	case static_cast<UINT>(SCRIPT_TYPE::MINIMAPCAMERA):
+		return new MinimapCameraScript;
+		break;
+	case static_cast<UINT>(SCRIPT_TYPE::MINIMAPUI):
+		return new MinimapUIScript;
 		break;
 	}
 	return nullptr;
@@ -228,6 +242,14 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case SCRIPT_TYPE::KILLINFOUI:
 		return L"KillinfoUIScript";
+		break;
+
+	case SCRIPT_TYPE::MINIMAPCAMERA:
+		return L"MinimapCameraScript";
+		break;
+
+	case SCRIPT_TYPE::MINIMAPUI:
+		return L"MinimapUIScript";
 		break;
 	}
 	return nullptr;

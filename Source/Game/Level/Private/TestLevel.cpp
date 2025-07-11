@@ -17,6 +17,8 @@
 #include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Door/Public/DoorScript.h"
+#include "Game/Gameplay/UI/Public/MinimapUIScript.h"
+#include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
 
 // TODO(KHJ): 이하 헤더 배제 시도
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -388,23 +390,23 @@ void TestLevel::CreateTestLevel()
 	//
 	// pLevel->AddObject(1, testPlayer, false);
 
-	GameFactory::MakeFBXObject(
-		LevelRawPtr,
-		L"FBX\\Downtown_Alley_Scene.fbx",
-		L"Downtown_Alley",
-		Vec3(0.f, -1500.f, 0.f),
-		Vec3(0.f, 0.f, 0.f),
-		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
-		{
-			[](CGameObject* obj)
-			{
-				obj->Transform()->SetRelativeScaleMultiply(4.f);
-				obj->AddComponentRecursive<CMeshCollider>();
-			}
-		},
-		1,
-		true
-	);
+	//GameFactory::MakeFBXObject(
+	//	LevelRawPtr,
+	//	L"FBX\\Downtown_Alley_Scene.fbx",
+	//	L"Downtown_Alley",
+	//	Vec3(0.f, -1500.f, 0.f),
+	//	Vec3(0.f, 0.f, 0.f),
+	//	Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+	//	{
+	//		[](CGameObject* obj)
+	//		{
+	//			obj->Transform()->SetRelativeScaleMultiply(4.f);
+	//			obj->AddComponentRecursive<CMeshCollider>();
+	//		}
+	//	},
+	//	1,
+	//	true
+	//);
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
@@ -412,12 +414,62 @@ void TestLevel::CreateTestLevel()
 // UI Preset
 vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 {
+	// ==========
+	// MiniMapCamera
+	// ==========
+	CGameObject* MinimapCamera = new CGameObject;
+	MinimapCamera->SetName(L"MinimapCamera");
+	MinimapCamera->AddComponent(new CCamera);
+	MinimapCamera->Camera()->SetProjType(ORTHOGRAPHIC);
+	MinimapCamera->Camera()->SetPriority(1);
+	MinimapCamera->Camera()->SetScale(13.0);
+
+	MinimapCamera->Camera()->LayerCheckClear();
+	//MinimapCamera->Camera()->LayerOn(0); // Background
+	MinimapCamera->Camera()->LayerOn(1); // Structure
+
+	MinimapCamera->AddComponent(new MinimapCameraScript);
+
+	// 임시 배치
+	MinimapCamera->Transform()->SetRelativePos(Vec3(0, 7000, 0));
+	MinimapCamera->Transform()->SetRelativeRotation(Vec3(90, 0, 0));
+
+	PLevel->AddObject(0, MinimapCamera, false);
+
+	//Minimap CanvasUI
+	CGameObject* MapCanvasUI = new CGameObject;
+	MapCanvasUI->SetName(L"MiniMap_CanvasUI");
+	MapCanvasUI->AddComponent(new CUI(UI_CANVAS));
+
+	MapCanvasUI->AddComponent(new CUIRender);
+	MapCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
+	MapCanvasUI->UI()->SetPriority(0);
+	MapCanvasUI->UI()->SetRectPos(485.f, -230.f);
+	MapCanvasUI->UI()->SetRectSize(300.f, 300.f);
+
+	PLevel->AddObject(8, MapCanvasUI, false);
+
+	// MinimapUI
+	CGameObject* pMinimapUI = new CGameObject;
+	pMinimapUI->SetName(L"MinimapUI");
+	pMinimapUI->AddComponent(new CUI);
+	Ptr<CTexture> pMinimapTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"MinimapTargetTex");
+	pMinimapUI->UI()->SetImage(pMinimapTex);
+	pMinimapUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	pMinimapUI->UI()->SetRectSize(Vec2(300.f, 300.f));
+	pMinimapUI->UI()->SetColor(Vec4(1.f, 1.f, 1.f, 1.f));
+
+	pMinimapUI->AddComponent(new CUIRender);
+	pMinimapUI->AddComponent(new MinimapUIScript);
+
+	MapCanvasUI->AddChild(pMinimapUI);
+
 	// UI Camera
 	CGameObject* UICamera = new CGameObject;
 	UICamera->SetName(L"UICamera");
 	UICamera->AddComponent(new CCamera);
 	UICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-	UICamera->Camera()->SetPriority(1);
+	UICamera->Camera()->SetPriority(2);
 	UICamera->Camera()->SetFar(10.f);
 
 	assert(PLevel->GetLayer(8)->GetName() == L"UI");
@@ -622,22 +674,6 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddChild(childUI);
 
-	// Reload UI
-	childUI = new CGameObject;
-	childUI->SetName(L"Reload_UI");
-	childUI->AddComponent(new CUI);
-	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
-	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
-
-	childUI->AddComponent(new CUIRender);
-	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
-
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
-	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
-	SetObjectActive(childUI, false);
-
-	CanvasUI->AddChild(childUI);
-
 	// Interaction UI
 	CGameObject* interactionUI = new CGameObject;
 	interactionUI->SetName(L"Interaction_UI");
@@ -653,6 +689,22 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	SetObjectActive(interactionUI, false);
 
 	CanvasUI->AddChild(interactionUI);
+
+	// Reload UI
+	childUI = new CGameObject;
+	childUI->SetName(L"Reload_UI");
+	childUI->AddComponent(new CUI);
+	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
+
+	childUI->AddComponent(new CUIRender);
+	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
+
+	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
+	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
+	SetObjectActive(childUI, false);
+
+	CanvasUI->AddChild(childUI);
 
 	// Interaction Key UI
 	childUI = new CGameObject;
@@ -718,7 +770,8 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddChild(childUI);
 
-	return {Vicinity, Inventory, interactionUI};
+
+	return { Vicinity, Inventory, interactionUI };
 }
 
 // TODO(KHJ): FBX 기반 Common Load Method 구축할 것

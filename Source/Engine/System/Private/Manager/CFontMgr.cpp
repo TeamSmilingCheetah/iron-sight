@@ -149,7 +149,8 @@ void CFontMgr::DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _f
 	//	-1.f, 1.f, 0.f, 1.f,
 	//};
 
-	//Vec4 right	 = XMVectorSet(g_Trans.matWorld._11, g_Trans.matWorld._12, g_Trans.matWorld._13, 0.0f);
+	//Vec4 right	 = XMVectorSet(
+	// .matWorld._11, g_Trans.matWorld._12, g_Trans.matWorld._13, 0.0f);
 	//Vec4 up		 = XMVectorSet(g_Trans.matWorld._21, g_Trans.matWorld._22, g_Trans.matWorld._23, 0.0f);
 	//
 	//float scaleX = right.Length();
