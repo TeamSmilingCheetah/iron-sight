@@ -18,33 +18,32 @@ private:
 	float m_TriggeredTime;
 	float m_ThrowAngle;
 
-
 	bool m_bGround;
 	bool m_bCanThrow;
 	bool m_bThrow;
+	bool m_bAfterThrow;
 	bool m_bTrigger;
 
 	CGameObject* m_ThownOwner;
 	CGameObject* m_Player;
 	PlayerCharacter* m_PlayerScript;
 
-public:
-	void Begin() override;
-	void Tick() override;
+	float m_AfterThrowAccTime;
+	const float m_ActionEndTime = 1.f;
 
-
+private:
 	void Triggered();
 	void Throw();
 
 	void MakeBounce(Vec3 _Normal, float _elastic, float _friction);
-public:
-	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
 
+public:
+	void Begin() override;
+	void Tick() override;
+
+	virtual void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
 
 	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;

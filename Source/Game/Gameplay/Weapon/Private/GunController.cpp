@@ -4,6 +4,8 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -37,7 +39,6 @@ GunController::GunController()
 	, m_InventoryScript(nullptr)
 	, m_WeaponRoundType()
 {
-
 	// 무기 종류에 따라 변수 값 설정
 	m_VerticalRecoilPower = 2.2f;
 	m_HorizontalRecoilPower = 1.f;
@@ -61,7 +62,7 @@ GunController::~GunController()
 void GunController::Begin()
 {
 	WeaponController::Begin();
-	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
+	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav");
 
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
 	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
@@ -78,6 +79,11 @@ void GunController::Tick()
 		return;
 	}
 
+	// 연사 시간 간격은 Firing이 아닐 때도 계산해둠.
+	// 좌클릭을 누르고 있을 때만 시간이 흐르는 것 방지.
+	if (m_FireDelay > m_AccTime_Fire)
+		m_AccTime_Fire += DT;
+
 	// 플레이어일 시 처리
 	if (!m_bEnemy)
 	{
@@ -89,9 +95,16 @@ void GunController::Tick()
 		{
 			if (0 < m_CurRounds && !m_bReload)
 			{
-				m_PlayerScript->SetShot(true);
-				m_bFire = true;
-				ClearKey();
+				if (0 < m_CurRounds && !m_bReload)
+				{
+					m_PlayerScript->SetShot(true);
+					m_bFire = true;
+					ClearKey();
+
+					// 상태
+					m_PlayerScript->SetActionState(ACTION_STATE::GUN_FIRE);
+					
+				}
 			}
 		}
 
@@ -103,6 +116,10 @@ void GunController::Tick()
 				m_bReload = true;
 				ClearKey();
 			}
+
+			// 상태
+			m_PlayerScript->SetActionState(ACTION_STATE::GUN_RELOAD);
+
 		}
 
 		if (m_CurKey == KEY::B && m_CurKeyState == KEY_STATE::TAP)
@@ -161,10 +178,8 @@ void GunController::Tick()
 	// 총알 발사가 끝난다.
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
 	{
-		m_bFire = false;
-		ClearKey();
+		StopFiring();
 	}
-
 
 	if (m_bFire && !m_bReload)
 	{
@@ -179,8 +194,6 @@ void GunController::Tick()
 
 void GunController::Firing()
 {
-	// 총기 애니메이션 재생
-
 	// 총알의 시작 위치를 정해준다.
 	Vec3 vRayPos = ColliderRay()->GetRayFinalPos();
 	Vec3 vFinalDir = GetFireDir();
@@ -247,8 +260,6 @@ void GunController::Firing()
 	vFinalDir = XMVector3TransformNormal(vFinalDir, spreadRot);
 	vFinalDir.Normalize();
 
-	m_AccTime_Fire += DT;
-
 	// 발사 딜레이를 넘어서면 총알을 발사한다.
 	if (!m_bAuto)
 	{
@@ -274,8 +285,7 @@ void GunController::Firing()
 
 		// 단발이라면 한발을 소모하고 사격을 비활성화 한다.
 		m_CamScript->ApplyRecoil();
-		m_bFire = false;
-		m_PlayerScript->SetShot(false);
+		StopFiring();
 	}
 	else
 	{
@@ -394,8 +404,29 @@ void GunController::Reload()
 		SetObjectActive(m_ReloadUI, false);
 		m_PlayerScript->SetReloading(false);
 		m_PlayerScript->SetReloadingEnd(true);
+
+		if (!m_bEnemy)
+		{
+			// 상태
+			m_PlayerScript->SetActionState(ACTION_STATE::NONE);
+		}
 	}
 
+}
+
+void GunController::StopFiring()
+{
+	m_bFire = false;
+
+	if (!m_bEnemy)
+	{
+		m_PlayerScript->SetShot(false);
+
+		// 상태
+		m_PlayerScript->SetActionState(ACTION_STATE::NONE);
+	}
+
+	ClearKey();
 }
 
 

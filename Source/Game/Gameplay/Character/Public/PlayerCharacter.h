@@ -9,12 +9,39 @@ class KillinfoUIScript;
 class InventoryController;
 class CameraController;
 
+enum class MOTION_STATE : uint8_t
+{
+	STAND,	// 서 있음
+	CROUCH,	// 앉아 있음
+	PRONE,	// 엎드려 있음
+};
+
+enum class ACTION_STATE : uint8_t
+{
+	JUMP,
+
+	GUN_FIRE,
+	GUN_RELOAD,
+	GRENADE,
+
+	BANDAGE,
+	MED_KIT,
+	FIRST_AID_KIT,
+
+	ENERGY_DRINK,
+	PAIN_KILLER,
+	ADRENALINE_SYRINGE,
+
+	DEAD,
+
+	NONE,
+};
 
 class PlayerCharacter :
 	public CScript
 {
 private:
-	CGameObject* m_MainCamera;
+	CGameObject*	m_MainCamera;
 
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
@@ -58,25 +85,31 @@ private:
 	// ======
 	// Status
 	// ======
-	const float		m_MaxHP;	// 최대 체력
+	const float		m_MaxHP;		// 최대 체력
 	const float		m_SemiMaxHP;	// 붕대, 구급상자로 회복할 수 있는 최대치의 비율
-	float			m_CurHP;	// 현재 체력
+	float			m_CurHP;		// 현재 체력
 
-	const float		m_MaxBoost;	// 최대 Boost
-	float			m_CurBoost;	// 에너지
+	const float		m_MaxBoost;		// 최대 Boost
+	float			m_CurBoost;		// 에너지
 
-	ITEM_TYPE		m_HealType;	// 힐 아이템 종류
+	ITEM_TYPE		m_HealType;		// 힐 아이템 종류
 
-	float			m_RemainTime;
-	float			m_TotalTime;
-	float			m_HealAmount;	// heal 또는 boost 양
+	float			m_HealRemainTime;
+	float			m_HealTotalTime;
+	float			m_HealAmount;		// heal 또는 boost 양
 
 	float			m_BoostRemainTime;
 	const float		m_BoostTotalTime;	// boost가 수행되는 시간 단위
-	const float		m_BoostUnit;	// 시간 지나면 boost가 빠질 단위
-	float			m_BoostSpeed;	// 부스트로 인한 이동속도 보정
+	const float		m_BoostUnit;		// 시간 지나면 boost가 빠질 단위
+	float			m_BoostSpeed;		// 부스트로 인한 이동속도 보정
 
-	int				m_KillCounts; // 킬 카운트
+	int				m_KillCounts;	// 킬 카운트
+
+	// =====
+	// State
+	// =====
+	MOTION_STATE		m_MotionState;
+	ACTION_STATE		m_ActionState;
 
 	// =======
 	// UI 관리
@@ -113,16 +146,19 @@ private:
 	void PlayerMove();
 	void PlayerView();
 	void PlayerStance();
-
-	void PlayerReload();
-	void PlayerAttack();
+	
+	void PlayerControlWeapon();
 
 	void PlayerControlUI();
 	void PlayerHeal();
 
-	void MoveCalcul();
-	void gravityCalcul();
-	void ColliderCalcul();
+	void InitMove();
+	void UpdateMove();
+	void UpdateGravity();
+	void UpdateCollision();
+	void AnimationControl();
+	
+	
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
@@ -140,13 +176,17 @@ public:
 	bool IsPlayerReloading() { return m_bReloading; }
 	bool IsPlayerReloadingEnd() { return m_bReloadingEnd; }
 
-
 	void TriggerHeal(ITEM_TYPE PHealType);
-
-	void DemageCalcul(CGameObject* PAtkObj, CGameObject* PWeapon, float PDamage);	// 공격 피격 처리
+	void DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage);	// 공격 피격 처리
 
 	void PlusKillCount() { m_KillCounts += 1; }
 	int GetKillCount() const { return m_KillCounts; }
+
+	void SetMotionState(MOTION_STATE _State) { m_MotionState = _State; }
+	void SetActionState(ACTION_STATE _State) { m_ActionState = _State; }
+
+	MOTION_STATE GetMotionState() const { return m_MotionState; }
+	ACTION_STATE GetActionState() const { return m_ActionState; }
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;

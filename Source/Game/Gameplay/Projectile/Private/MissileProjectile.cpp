@@ -115,7 +115,7 @@ void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 		// 플레이어에 피격(공격한 사람이 플레이어면 처리x)
 		if (m_BulletDmg.m_Owner != _OtherObject)
 		{
-			PlayerScript->DemageCalcul(m_BulletDmg.m_Owner, m_BulletDmg.m_ShotWeapon ,m_BulletDmg.m_Dmg);
+			PlayerScript->DamageCalcul(m_BulletDmg.m_Owner, m_BulletDmg.m_ShotWeapon ,m_BulletDmg.m_Dmg);
 
 
 			// 총알 삭제
@@ -136,7 +136,7 @@ void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 		// 적 피격(공격한 사람이 적이면 처리x)
 		if (m_BulletDmg.m_Owner != _OtherObject)
 		{
-			EnemyScript->DemageCalcul(m_BulletDmg.m_Owner, m_BulletDmg.m_ShotWeapon, m_BulletDmg.m_Dmg);
+			EnemyScript->DamageCalcul(m_BulletDmg.m_Owner, m_BulletDmg.m_ShotWeapon, m_BulletDmg.m_Dmg);
 
 			// 총알 삭제
 			CObjectPoolMgr::GetInst()->ReturnObject(GetOwner());

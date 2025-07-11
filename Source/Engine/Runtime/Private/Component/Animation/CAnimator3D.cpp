@@ -79,8 +79,6 @@ void CAnimator3D::Begin()
 {
 }
 
-#include <iostream>
-
 void CAnimator3D::FinalTick()
 {
 	if (!m_Active)

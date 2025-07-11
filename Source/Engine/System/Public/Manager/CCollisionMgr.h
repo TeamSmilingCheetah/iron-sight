@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 
@@ -79,8 +79,8 @@ private:
 	bool IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider);
 
 	// Landscape & Ray
-	void LandCheak();
-	void RayOverlapCheak();
+	void LandCheck();
+	void RayOverlapCheck();
 
 public:
 	void Tick();

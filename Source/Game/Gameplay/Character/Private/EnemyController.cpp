@@ -65,7 +65,7 @@ void EnemyController::Tick()
 	UpdateRotation();
 }
 
-void EnemyController::DemageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage)
+void EnemyController::DamageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage)
 {
 	m_HP -= _Damage;
 
@@ -95,13 +95,13 @@ void EnemyController::UpdatePosition()
 	Vec3 vPos = Transform()->GetRelativePos();
 
 	// 이동할 방향 연산
-	MoveCalcul();
+	UpdateMove();
 
 	// 중력 연산
-	gravityCalcul();
+	UpdateGravity();
 
 	// 충돌 연산
-	ColliderCalcul();
+	UpdateCollision();
 
 	vPos += m_Velocity;
 	Transform()->SetRelativePos(vPos);
@@ -149,7 +149,7 @@ void EnemyController::UpdateRotation()
 	}
 }
 
-void EnemyController::MoveCalcul()
+void EnemyController::UpdateMove()
 {
 	// 이전 틱의 이동방향저장
 	Vec3 vPrevVelocityDir = m_Velocity;
@@ -215,7 +215,7 @@ void EnemyController::MoveCalcul()
 	}
 }
 
-void EnemyController::gravityCalcul()
+void EnemyController::UpdateGravity()
 {
 	// 땅 위에있나 판단
 	m_IsGround = false;
@@ -251,7 +251,7 @@ void EnemyController::gravityCalcul()
 	m_Velocity += m_GravidyVelocity;
 }
 
-void EnemyController::ColliderCalcul()
+void EnemyController::UpdateCollision()
 {
 	// 충돌 처리
 	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)

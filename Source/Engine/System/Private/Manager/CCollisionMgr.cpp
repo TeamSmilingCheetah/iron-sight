@@ -30,10 +30,10 @@ void CCollisionMgr::Tick()
 	ProcessCollisionMatrix();
 
 	// 2. LandScape의 충돌 작업 (Ray만 판별, 3D는 이미 먼저 처리됨, 복수타겟 레이도 여기서 처리됨)
-	LandCheak();
+	LandCheck();
 
 	// 3. 단일 타겟 Ray 충돌에 대한 추가 연산 처리
-	RayOverlapCheak();
+	RayOverlapCheck();
 
 	// 4. Reset Information
 	m_LandObject.clear();
@@ -1319,7 +1319,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 
 /** Collision In LandScape **/
 
-void CCollisionMgr::LandCheak()
+void CCollisionMgr::LandCheck()
 {
 	// LandScape에서 ray연산호출 이후 값 보관
 	set<CLandScape*>::iterator Lnaditer = m_LandObject.begin();
@@ -1405,7 +1405,7 @@ void CCollisionMgr::LandCheak()
 
 /** Additional Calc **/
 
-void CCollisionMgr::RayOverlapCheak()
+void CCollisionMgr::RayOverlapCheck()
 {
 	// 비어잇을경우 정지
 	if (m_RayColInfo.empty())

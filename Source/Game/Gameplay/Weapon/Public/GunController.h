@@ -42,21 +42,23 @@ public:
 
 
 public:
-	float GetHorizontalPower() { return m_HorizontalRecoilPower; }
-	float GetVerticalPower() { return m_VerticalRecoilPower; }
-	float GetFireDelay() { return m_FireDelay; }
+	float GetHorizontalPower() const { return m_HorizontalRecoilPower; }
+	float GetVerticalPower() const { return m_VerticalRecoilPower; }
+	float GetFireDelay() const { return m_FireDelay; }
 
-	int GetCurRound() { return m_CurRounds; }
-	int GetMaxRound() { return m_MaxRounds; }
+	int GetCurRound() const { return m_CurRounds; }
+	int GetMaxRound() const { return m_MaxRounds; }
 
-	bool IsReload() { return m_bReload; }
-	bool IsFire() { return m_bFire; }
-	bool IsAuto() { return m_bAuto; }
+	bool IsReload() const { return m_bReload; }
+	bool IsFire() const { return m_bFire; }
+	bool IsAuto() const { return m_bAuto; }
 
-	ITEM_TYPE GetRoundType() { return m_WeaponRoundType; }
+	ITEM_TYPE GetRoundType() const { return m_WeaponRoundType; }
+
 private:
 	void Firing();
 	void Reload();
+	void StopFiring();
 
 public:
 	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT);

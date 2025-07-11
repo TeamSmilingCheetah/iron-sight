@@ -24,7 +24,7 @@ class CameraController :
 
 	float m_CurClipAccTime;
 	float m_RecoilTime;
-	float m_ObstalceResetTime;
+	float m_ObstacleResetTime;
 	float m_RecoilAmount_vertical;
 	float m_RecoilAmount_horizontal;
 	float m_TargetRecoilRotX;

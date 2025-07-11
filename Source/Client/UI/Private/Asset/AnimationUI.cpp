@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Client/UI/Public/Asset/AnimationUI.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Client/Core/Public/CEditorMgr.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-
 #include "Client/Script/Public/CEditorSpaceCamScript.h"
+
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 AnimationUI::AnimationUI()
 	: AssetUI("Animation", ANIMATION)
