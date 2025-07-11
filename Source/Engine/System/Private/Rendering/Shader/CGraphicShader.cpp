@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Public/Rendering/Shader/CGraphicShader.h"
 #include "System/Public/Manager/CPathMgr.h"
+#include "System/Public/Manager/FShaderManager.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 
 CGraphicShader::CGraphicShader()
@@ -19,12 +20,8 @@ CGraphicShader::~CGraphicShader() = default;
 int CGraphicShader::CreateVertexShader(const wstring& PBlobFilePath,
                                        const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// Setting Variable
-	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
-	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
-
-	// Load Vertex Shader Blob
-	m_VSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"vs_5_0");
+	// Get Shader Blob From Manager
+	m_VSBlob = FShaderManager::GetInst()->GetBlob(PBlobFilePath);
 
 	// Early Return
 	if (!m_VSBlob)
@@ -39,8 +36,8 @@ int CGraphicShader::CreateVertexShader(const wstring& PBlobFilePath,
 
 	// Load Instancing Vertex Shader Blob
 	wstring BlobInstancingFilePath =
-		CPathMgr::GetInst()->GetShaderBlobPath() + path(PBlobFilePath).stem().wstring() + L"_Inst.cso";
-	m_VSInstBlob = LoadBlob(BlobInstancingFilePath, EffectsFilePath, PEntryPointName + L"_Inst", L"vs_5_0");
+		CPathMgr::GetInst()->GetShaderBlobFolderPath() + path(PBlobFilePath).stem().wstring() + L"_Inst.cso";
+	m_VSInstBlob = FShaderManager::GetInst()->GetBlob(BlobInstancingFilePath);
 
 	// Create Object If Instancing Blob Exist
 	if (m_VSInstBlob)
@@ -62,12 +59,8 @@ int CGraphicShader::CreateVertexShader(const wstring& PBlobFilePath,
 int CGraphicShader::CreateHullShader(const wstring& PBlobFilePath,
                                      const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// Setting Variable
-	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
-	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
-
-	// Load Hull Shader Blob
-	m_HSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"hs_5_0");
+	// Get Shader Blob From Manager
+	m_HSBlob = FShaderManager::GetInst()->GetBlob(PBlobFilePath);
 
 	// Early Return
 	if (!m_HSBlob)
@@ -86,12 +79,8 @@ int CGraphicShader::CreateHullShader(const wstring& PBlobFilePath,
 int CGraphicShader::CreateDomainShader(const wstring& PBlobFilePath,
                                        const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// Setting Variable
-	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
-	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
-
-	// Load Domain Shader Blob
-	m_DSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"ds_5_0");
+	// Get Shader Blob From Manager
+	m_DSBlob = FShaderManager::GetInst()->GetBlob(PBlobFilePath);
 
 	// Early Return
 	if (!m_DSBlob)
@@ -110,12 +99,8 @@ int CGraphicShader::CreateDomainShader(const wstring& PBlobFilePath,
 int CGraphicShader::CreateGeometryShader(const wstring& PBlobFilePath,
                                          const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// Setting Variable
-	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
-	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
-
-	// Load Domain Shader Blob
-	m_GSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"gs_5_0");
+	// Get Shader Blob From Manager
+	m_GSBlob = FShaderManager::GetInst()->GetBlob(PBlobFilePath);
 
 	// Early Return
 	if (!m_GSBlob)
@@ -134,12 +119,8 @@ int CGraphicShader::CreateGeometryShader(const wstring& PBlobFilePath,
 int CGraphicShader::CreatePixelShader(const wstring& PBlobFilePath,
                                       const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// Setting Variable
-	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
-	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
-
-	// Load Pixel Shader Blob
-	m_PSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"ps_5_0");
+	// Get Shader Blob From Manager
+	m_PSBlob = FShaderManager::GetInst()->GetBlob(PBlobFilePath);
 
 	// Early Return
 	if (!m_PSBlob)

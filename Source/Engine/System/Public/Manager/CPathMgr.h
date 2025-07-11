@@ -25,6 +25,6 @@ public:
     const wstring& GetContentPath() { return m_ContentPath; }
     const wstring& GetBinPath() { return m_BinPath; }
 	const wstring& GetSrcPath() { return m_SourcePath; }
-	const wstring& GetEffectsFilePath() { return m_EffectsFilePath; }
-	const wstring& GetShaderBlobPath() { return m_ShaderBlobPath; }
+	const wstring& GetEffectsFolderPath() { return m_EffectsFilePath; }
+	const wstring& GetShaderBlobFolderPath() { return m_ShaderBlobPath; }
 };

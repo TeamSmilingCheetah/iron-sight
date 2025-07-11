@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Public/Rendering/Shader/CComputeShader.h"
 #include "System/Public/Manager/CPathMgr.h"
+#include "System/Public/Manager/FShaderManager.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 
@@ -33,12 +34,8 @@ CComputeShader::~CComputeShader() = default;
 int CComputeShader::CreateComputeShader(const wstring& PBlobFilePath,
                                         const wstring& PEffectsFilePath, const wstring& PEntryPointName)
 {
-	// Setting Variable
-	wstring EffectsFilePath = CPathMgr::GetInst()->GetEffectsFilePath() + PEffectsFilePath;
-	wstring BlobFilePath = CPathMgr::GetInst()->GetShaderBlobPath() + PBlobFilePath;
-
-	// Load Compute Shader Blob
-	m_CSBlob = LoadBlob(BlobFilePath, EffectsFilePath, PEntryPointName, L"cs_5_0");
+	// Get Shader Blob From Manager
+	m_CSBlob = FShaderManager::GetInst()->GetBlob(PBlobFilePath);
 
 	// Early Return
 	if (!m_CSBlob)

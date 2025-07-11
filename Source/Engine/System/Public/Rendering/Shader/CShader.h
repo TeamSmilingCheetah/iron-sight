@@ -10,8 +10,6 @@ protected:
 public:
 	int Load(const wstring& _strFilepath) override { return S_OK; }
 	int Save(const wstring& _strFilepath) override { return S_OK; }
-	ComPtr<ID3DBlob> LoadBlob(const wstring& PBlobFilePath, const wstring& PEffectsFilePath,
-	                          const wstring& PEntryPointName, const wstring& PShaderInfo);
 
 	CShader(ASSET_TYPE PType);
 	~CShader() override;

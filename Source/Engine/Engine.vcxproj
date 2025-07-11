@@ -233,6 +233,8 @@
     <ClInclude Include="System\Public\Manager\CTaskMgr.h" />
     <ClInclude Include="System\Public\Manager\CTimeMgr.h" />
     <ClInclude Include="System\Public\Manager\CUIMgr.h" />
+    <ClInclude Include="System\Public\Manager\FShaderInfoMap.h" />
+    <ClInclude Include="System\Public\Manager\FShaderManager.h" />
     <ClInclude Include="System\Public\Rendering\Buffer\CConstBuffer.h" />
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h" />
     <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h" />
@@ -305,6 +307,7 @@
     <ClCompile Include="System\Private\Manager\CTaskMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CTimeMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CUIMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\FShaderManager.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp" />
     <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp" />

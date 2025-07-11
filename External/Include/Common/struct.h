@@ -1,6 +1,5 @@
 #pragma once
 
-
 struct Vtx
 {
 	Vec3 vPos;
@@ -361,4 +360,12 @@ struct UnsignedIntegerSquare
 {
 	UINT X;
 	UINT Y;
+};
+
+// Shader Info
+
+struct ShaderInfo
+{
+	wstring EffectsFileName;
+	wstring EntryPoint;
 };

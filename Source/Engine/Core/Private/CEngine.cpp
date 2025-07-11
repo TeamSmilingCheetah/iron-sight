@@ -13,6 +13,7 @@
 #include "System/Public/Manager/CUIMgr.h"
 #include "System/Public/Manager/CSoundMgr.h"
 #include "System/Public/Asset/Prefab/CPrefab.h"
+#include "System/Public/Manager/FShaderManager.h"
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
 CEngine::CEngine()
@@ -64,6 +65,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 	// Manager 초기화
 	CPathMgr::GetInst()->Init();
+	FShaderManager::GetInst()->Init();
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
 	CAssetMgr::GetInst()->Init();
@@ -96,7 +98,7 @@ void CEngine::Progress()
 }
 
 
-#include <psapi.h> 
+#include <psapi.h>
 #include <iostream>
 
 void CEngine::PrintMemoryUsage(const string& _Text)
