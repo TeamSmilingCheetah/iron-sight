@@ -352,6 +352,7 @@ struct MeshCollisionInfo {
 struct CollisionResult {
 	Vec3 LeftNormal;
 	Vec3 RightNormal;
+	float PenetrationDepth;
 };
 
 // Facade 자료형

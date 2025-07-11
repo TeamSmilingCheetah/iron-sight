@@ -380,6 +380,7 @@ void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObje
 void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
+	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
 
 	// Valid Check
 	if (CollisionNormal.Length() > 0.001f)
@@ -387,12 +388,20 @@ void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherOb
 		// Add Normal
 		m_vecCollisionNormal.push_back(CollisionNormal);
 
-		// FIXME(KHJ): 충돌 깊이 계산
-		float penetrationDepth = 0.1f;
-
-		// Correction Position
-		Vec3 Correction = CollisionNormal * penetrationDepth;
-		Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+		// Position Correction
+		// 보정 제한은 임의의 값 Setting
+		if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
+		{
+			Vec3 Correction = CollisionNormal * PenetrationDepth;
+			Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+		}
+		else
+		{
+			// Set Default Margin
+			constexpr float DefaultMargin = 0.05f;
+			Vec3 Correction = CollisionNormal * DefaultMargin;
+			Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+		}
 	}
 }
 
@@ -406,18 +415,30 @@ void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherOb
 void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
+	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
 
+	// Valid Check
 	if (CollisionNormal.Length() > 0.001f)
 	{
 		// Add Normal
 		m_vecCollisionNormal.push_back(CollisionNormal);
 
-		// FIXME(KHJ): 충돌 깊이 계산
-		float penetrationDepth = 0.05f;
+		// Position Correction
+		// 보정 제한은 임의의 값 Setting
+		if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
+		{
+			// Speed Decay By Direction
+			float VelocityDotNormal = m_Velocity.Dot(CollisionNormal);
+			if (VelocityDotNormal < 0.0f)
+			{
+				Vec3 ReflectedVelocity = m_Velocity - 2.0f * VelocityDotNormal * CollisionNormal;
+				m_Velocity = ReflectedVelocity * 0.8f;
 
-		// Correction Position
-		Vec3 Correction = CollisionNormal * penetrationDepth;
-		Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+				// Additional Position Correction
+				Vec3 SmallCorrection = CollisionNormal * 0.01f;
+				Transform()->SetRelativePos(Transform()->GetRelativePos() + SmallCorrection);
+			}
+		}
 	}
 }
 
