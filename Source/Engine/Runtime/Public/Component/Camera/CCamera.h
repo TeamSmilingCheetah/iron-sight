@@ -101,7 +101,7 @@ public:
 	bool IsActvie() { return m_bCamActive; }
 
 private:
-	bool IsObjectInFrustum(const CGameObject* _Object);
+	bool IsObjectInFrustum(CGameObject* PObject) const;
 	void CalcRay();
 
 public:

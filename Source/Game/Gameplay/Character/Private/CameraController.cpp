@@ -525,8 +525,8 @@ void CameraController::UpdateTPSCameraAdjustments()
 		}
 	}
 
-	m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, 50.f);
-	m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, targetHeight, 50.f);
+	m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, 20.f);
+	m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, targetHeight, 20.f);
 }
 
 

@@ -97,6 +97,16 @@ public:
 		SetLayerMove(true);
 		MNextLayerIdx = PIdx;
 	}
+	void SetInFrustumPrevious(bool PStatus) {
+		if (PStatus)
+		{
+			MObjectStatus |= (1 << 4);
+		}
+		else
+		{
+			MObjectStatus &= ~(1 << 4);
+		}
+	}
 
 private:
 	void DisconnectWithLayer();
@@ -104,8 +114,8 @@ private:
 	void RegisterAsParent();
 
 	void LayerMoveDone() { SetLayerMove(false); }
-	void SetActive(bool _b) {
-		if (_b)
+	void SetActive(bool PStatus) {
+		if (PStatus)
 		{
 			MObjectStatus |= (1 << 0);
 		}
@@ -114,8 +124,8 @@ private:
 			MObjectStatus &= ~(1 << 0);
 		}
 	}
-	void SetDead(bool _b) {
-		if (_b)
+	void SetDead(bool PStatus) {
+		if (PStatus)
 		{
 			MObjectStatus |= (1 << 1);
 		}
@@ -124,8 +134,8 @@ private:
 			MObjectStatus &= ~(1 << 1);
 		}
 	}
-	void SetDeactivated(bool _b) {
-		if (_b)
+	void SetDeactivated(bool PStatus) {
+		if (PStatus)
 		{
 			MObjectStatus |= (1 << 2);
 		}
@@ -134,24 +144,14 @@ private:
 			MObjectStatus &= ~(1 << 2);
 		}
 	}
-	void SetLayerMove(bool _b) {
-		if (_b)
+	void SetLayerMove(bool PStatus) {
+		if (PStatus)
 		{
 			MObjectStatus |= (1 << 3);
 		}
 		else
 		{
 			MObjectStatus &= ~(1 << 3);
-		}
-	}
-	void SetInFrustumPrevious(bool _b) {
-		if (_b)
-		{
-			MObjectStatus |= (1 << 4);
-		}
-		else
-		{
-			MObjectStatus &= ~(1 << 4);
 		}
 	}
 
