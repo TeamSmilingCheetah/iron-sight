@@ -14,241 +14,240 @@
 UINT CGameObject::GUID = 0;
 
 CGameObject::CGameObject()
-	: m_ObjectID(GUID++)
-	, m_arrCom{}
-	, m_RenderCom(nullptr)
-	, m_Parent(nullptr)
-	, m_LayerIdx(-1) // -1 == 특정 레이어에 소속이 아니다 --> Level 안에 존재하지 않은 상태
-	, m_NextLayerIdx(-1)
-	, m_Active(true)
-	, m_Dead(false)
-	, m_Deactivate(false)
-	, m_LayerMove(false)
+	: MObjectID(GUID++)
+	, MComponentArray{}
+	, MRenderComponent(nullptr)
+	, MParent(nullptr)
+	, MLayerIdx(-1) // 레벨 및 레이어에 속하지 않음
+	, MNextLayerIdx(-1)
 {
-	// Transform 컴포넌트는 무조건 가져야 되는 기본 컴포넌트
+	// Status Boolean Setting
+	SetActive(true);
+	SetDead(false);
+	SetDeactivated(false);
+	SetLayerMove(false);
+
+	// Trasform Is Default Component
 	AddComponent(new CTransform);
 }
 
-CGameObject::CGameObject(const CGameObject& _Origin)
-	: CEntity(_Origin)
-	, m_ObjectID(GUID++)
-	, m_arrCom{}
-	, m_RenderCom(nullptr)
-	, m_Parent(nullptr)
-	, m_LayerIdx(-1)
-	, m_Active(_Origin.m_Active)
-	, m_Dead(false)
+CGameObject::CGameObject(const CGameObject& POrigin)
+	: CEntity(POrigin)
+	, MObjectID(GUID++)
+	, MComponentArray{}
+	, MRenderComponent(nullptr)
+	, MParent(nullptr)
+	, MLayerIdx(-1)
 {
-	for (size_t i = 0; i < _Origin.m_vecChild.size(); ++i)
+	SetActive(POrigin.IsActive());
+	SetDead(false);
+
+	for (size_t i = 0; i < POrigin.MChildVector.size(); ++i)
 	{
-		AddChild(_Origin.m_vecChild[i]->Clone());
+		AddChild(POrigin.MChildVector[i]->Clone());
 	}
 
-	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
+	for (auto* Component : POrigin.MComponentArray)
 	{
-		if (nullptr == _Origin.m_arrCom[i])
-			continue;
-
-		AddComponent(_Origin.m_arrCom[i]->Clone());
+		if (Component)
+		{
+			AddComponent(Component->Clone());
+		}
 	}
 
-	for (size_t i = 0; i < _Origin.m_vecScripts.size(); ++i)
+	for (size_t i = 0; i < POrigin.MScriptsVector.size(); ++i)
 	{
-		AddComponent(_Origin.m_vecScripts[i]->Clone());
+		AddComponent(POrigin.MScriptsVector[i]->Clone());
 	}
 }
 
 CGameObject::~CGameObject()
 {
-	DeleteArray(m_arrCom);
-
-	DeleteVec(m_vecScripts);
-
-	DeleteVec(m_vecChild);
+	DeleteArray(MComponentArray);
+	DeleteVec(MScriptsVector);
+	DeleteVec(MChildVector);
 }
 
-void CGameObject::Begin()
+void CGameObject::Begin() const
 {
-	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
+	for (auto* Component : MComponentArray)
 	{
-		if (!m_arrCom[i])
-			continue;
-
-		m_arrCom[i]->Begin();
+		if (Component)
+		{
+			Component->Begin();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecScripts.size(); ++i)
+	for (size_t i = 0; i < MScriptsVector.size(); ++i)
 	{
-		m_vecScripts[i]->Begin();
+		MScriptsVector[i]->Begin();
 	}
 
-
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (size_t i = 0; i < MChildVector.size(); ++i)
 	{
-		m_vecChild[i]->Begin();
+		MChildVector[i]->Begin();
 	}
 }
 
-void CGameObject::Tick()
+void CGameObject::Tick() const
 {
-	if (!m_Active)
-		return;
-
-	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
+	if (IsActive())
 	{
-		if (!m_arrCom[i])
-			continue;
+		for (auto* Component : MComponentArray)
+		{
+			if (Component)
+			{
+				Component->Tick();
+			}
+		}
 
-		m_arrCom[i]->Tick();
-	}
+		for (size_t i = 0; i < MScriptsVector.size(); ++i)
+		{
+			MScriptsVector[i]->Tick();
+		}
 
-	for (size_t i = 0; i < m_vecScripts.size(); ++i)
-	{
-		m_vecScripts[i]->Tick();
-	}
-
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
-	{
-		m_vecChild[i]->Tick();
+		for (size_t i = 0; i < MChildVector.size(); ++i)
+		{
+			MChildVector[i]->Tick();
+		}
 	}
 }
 
 void CGameObject::FinalTick()
 {
-	if (!m_Active)
-		return;
-
-	// Layer 등록
-	CLevelMgr::GetInst()->RegisterObject(this);
-
-	if (m_Parent != nullptr && m_Parent->IsDead())
+	if (IsActive())
 	{
-		m_Dead = true;
-	}
+		// Layer 등록
+		CLevelMgr::GetInst()->RegisterObject(this);
 
-	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
-	{
-		if (!m_arrCom[i])
-			continue;
-
-		m_arrCom[i]->FinalTick();
-	}
-
-	auto iter = m_vecChild.begin();
-	for (; iter != m_vecChild.end();)
-	{
-		bool ChildDead = (*iter)->IsDead();
-
-		(*iter)->FinalTick();
-
-		if (ChildDead)
+		if (MParent && MParent->IsDead())
 		{
-			iter = m_vecChild.erase(iter);
+			SetDead(true);
 		}
-		else
+
+		for (auto* Component : MComponentArray)
 		{
-			++iter;
+			if (Component)
+			{
+				Component->FinalTick();
+			}
+		}
+
+		auto iter = MChildVector.begin();
+		for (; iter != MChildVector.end();)
+		{
+			bool ChildDead = (*iter)->IsDead();
+
+			(*iter)->FinalTick();
+
+			if (ChildDead)
+			{
+				iter = MChildVector.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
 		}
 	}
 }
 
-void CGameObject::Render()
+void CGameObject::Render() const
 {
-	if (!m_Active)
-		return;
-
-	m_RenderCom->Render();
+	if (IsActive())
+	{
+		MRenderComponent->Render();
+	}
 }
 
-void CGameObject::AddComponent(CComponent* _Component)
+void CGameObject::AddComponent(CComponent* PComponent)
 {
-	COMPONENT_TYPE Type = _Component->GetType();
+	COMPONENT_TYPE Type = PComponent->GetType();
 
 	if (COMPONENT_TYPE::SCRIPT == Type)
 	{
 		// 오브젝트에 script 추가
-		m_vecScripts.push_back(static_cast<CScript*>(_Component));
-		// script가 몇 번 위치에 존재하는지 기록
-		m_scriptShortcut[static_cast<CScript*>(_Component)->GetScriptType()] = static_cast<UINT>(m_vecScripts.size()) - 1;
+		MScriptsVector.push_back(static_cast<CScript*>(PComponent));
 
-		// 부모 스크립트 정보로 들고 있는 경우, 해당 정보도 Shortcut에 등록해야 조회 시 문제가 없다
-		if (static_cast<CScript*>(_Component)->GetParentScriptType() != SCRIPT_TYPE::NONE)
+		// script가 몇 번 위치에 존재하는지 기록
+		MScriptShortcut[static_cast<CScript*>(PComponent)->GetScriptType()] = static_cast<UINT>(MScriptsVector.size()) - 1;
+
+		// 부모 스크립트 정보로 들고 있는 경우, 해당 정보도 Shortcut에 등록해야 조회 시 문제가 없음
+		if (static_cast<CScript*>(PComponent)->GetParentScriptType() != SCRIPT_TYPE::NONE)
 		{
-			m_scriptShortcut[static_cast<CScript*>(_Component)->GetParentScriptType()] = static_cast<UINT>(m_vecScripts.size()) - 1;
+			MScriptShortcut[static_cast<CScript*>(PComponent)->GetParentScriptType()] = static_cast<UINT>(MScriptsVector.size()) - 1;
 		}
 	}
 	else
 	{
 		// 입력으로 들어오는 컴포넌트와 이미 동일한 컴포넌트를 오브젝트가 가지고 있는 경우
-		assert(!m_arrCom[static_cast<UINT>(Type)]);
+		assert(!MComponentArray[static_cast<UINT>(Type)]);
 
-		// 입력된 컴포넌트가 CRenderComponent 의 자식클래스 타입인지 확인
-		if (dynamic_cast<CRenderComponent*>(_Component))
+		// 입력된 컴포넌트가 CRenderComponent의 자식 클래스 타입인지 확인
+		if (dynamic_cast<CRenderComponent*>(PComponent))
 		{
-			assert(!m_RenderCom);
-			m_RenderCom = static_cast<CRenderComponent*>(_Component);
+			assert(!MRenderComponent);
+			MRenderComponent = static_cast<CRenderComponent*>(PComponent);
 		}
 
 		// 입력된 컴포넌트의 주소를 저장
-		m_arrCom[static_cast<UINT>(Type)] = _Component;
+		MComponentArray[static_cast<UINT>(Type)] = PComponent;
 	}
 
 	// 컴포넌트의 소유오브젝트를 세팅
-	_Component->SetOwner(this);
+	PComponent->SetOwner(this);
 
 	// 컴포넌트 초기화
-	_Component->Init();
+	PComponent->Init();
 }
 
-void CGameObject::AddChild(CGameObject* _Child)
+void CGameObject::AddChild(CGameObject* PChild)
 {
-	m_vecChild.push_back(_Child);
-	_Child->m_Parent = this;
-	_Child->m_LayerIdx = m_LayerIdx;
+	MChildVector.push_back(PChild);
+	PChild->MParent = this;
+	PChild->MLayerIdx = MLayerIdx;
 }
 
-void CGameObject::DeleteComponent(COMPONENT_TYPE _Type)
+void CGameObject::DeleteComponent(COMPONENT_TYPE PType)
 {
-	if (COMPONENT_TYPE::SCRIPT == _Type)
-	{
-		return;
-	}
-	else
+	if (COMPONENT_TYPE::SCRIPT != PType)
 	{
 		// 입력으로 들어오는 컴포넌트가 없는 경우
-		assert(m_arrCom[(UINT)_Type]);
+		assert(MComponentArray[static_cast<UINT>(PType)]);
 
 		// 입력된 컴포넌트가 CRenderComponent 의 자식클래스 타입인지 확인
-		if (_Type == COMPONENT_TYPE::TILEMAP || _Type == COMPONENT_TYPE::MESHRENDER || _Type == COMPONENT_TYPE::PARTICLE_SYSTEM)
+		if (PType == COMPONENT_TYPE::TILEMAP || PType == COMPONENT_TYPE::MESHRENDER || PType == COMPONENT_TYPE::PARTICLE_SYSTEM)
 		{
-			assert(m_RenderCom);
-			m_RenderCom = nullptr;
+			assert(MRenderComponent);
+			MRenderComponent = nullptr;
 		}
 
 		// 해당 컴퍼넌트 삭제
-		if (nullptr != m_arrCom[(UINT)_Type])
-			delete m_arrCom[(UINT)_Type];
+		if (nullptr != MComponentArray[static_cast<UINT>(PType)])
+		{
+			delete MComponentArray[static_cast<UINT>(PType)];
+		}
 
-		m_arrCom[(UINT)_Type] = nullptr;
+		MComponentArray[static_cast<UINT>(PType)] = nullptr;
 	}
 }
 
-void CGameObject::DeleteScript(wstring& _ScriptName)
+void CGameObject::DeleteScript(const wstring& PScriptName)
 {
-	CScript* pScript = GameplayManager::GetScript(_ScriptName);
+	CScript* pScript = GameplayManager::GetScript(PScriptName);
 
-	for (UINT i = 0; i < m_vecScripts.size(); ++i)
+	for (UINT i = 0; i < MScriptsVector.size(); ++i)
 	{
-		if (m_vecScripts[i]->GetName() == pScript->GetName())
+		if (MScriptsVector[i]->GetName() == pScript->GetName())
 		{
 			// 해당 스크립트 관련 정보 일괄 제거
-			m_vecScripts.erase(m_vecScripts.begin() + i);
-			m_scriptShortcut.erase(pScript->GetScriptType());
+			MScriptsVector.erase(MScriptsVector.begin() + i);
+			MScriptShortcut.erase(pScript->GetScriptType());
 
 			// 부모 스크립트 정보로 들고 있는 경우, Trailing Delete
 			if (pScript->GetParentScriptType() != SCRIPT_TYPE::NONE)
 			{
-				m_scriptShortcut.erase(pScript->GetParentScriptType());
+				MScriptShortcut.erase(pScript->GetParentScriptType());
 			}
 		}
 	}
@@ -257,97 +256,105 @@ UINT CGameObject::GetParentObjectID() const
 {
 	UINT ParentID;
 
-
-	if (m_Parent != nullptr)
+	if (MParent != nullptr)
 	{
-		// 재귀 순회로 부모 ID검색
-		ParentID = m_Parent->GetParentObjectID();
+		// 재귀 순회로 부모 ID 검색
+		ParentID = MParent->GetParentObjectID();
 	}
 	else
 	{
-		ParentID = m_ObjectID;
+		ParentID = MObjectID;
 	}
 
 	return ParentID;
 }
-void CGameObject::SetObjectID(UINT _ID)
+
+void CGameObject::SetObjectID(UINT PID)
 {
-	m_ObjectID = _ID;
-	GUID = max(GUID, _ID + 1);
+	MObjectID = PID;
+	GUID = max(GUID, PID + 1);
 }
 
-bool CGameObject::IsAncestor(CGameObject* _Other)
+bool CGameObject::IsAncestor(const CGameObject* POther) const
 {
-	CGameObject* pParent = m_Parent;
+	CGameObject* Parent = MParent;
 
-	while (pParent)
+	while (Parent)
 	{
-		if (pParent == _Other)
+		if (Parent == POther)
+		{
 			return true;
+		}
 
-		pParent = pParent->m_Parent;
+		Parent = Parent->MParent;
 	}
 
 	return false;
 }
 
-CGameObject* CGameObject::GetChildByName(const wstring& _Name)
+CGameObject* CGameObject::GetChildByName(const wstring& PName)
 {
-	queue<CGameObject*> Q;
-	Q.emplace(this);
+	queue<CGameObject*> ObjectQueue;
+	ObjectQueue.emplace(this);
 
-	while (!Q.empty())
+	while (!ObjectQueue.empty())
 	{
-		CGameObject* pObj = Q.front();
-		Q.pop();
+		CGameObject* Object = ObjectQueue.front();
+		ObjectQueue.pop();
 
-		if (pObj->GetName() == _Name)
+		if (Object->GetName() == PName)
 		{
-			return pObj;
+			return Object;
 		}
 
-		for (CGameObject* pChild : pObj->m_vecChild)
+		for (CGameObject* pChild : Object->MChildVector)
 		{
-			Q.emplace(pChild);
+			ObjectQueue.emplace(pChild);
 		}
 	}
 
 	return nullptr;
 }
 
-CAnimator3D* CGameObject::Animator3D()
+CAnimator3D* CGameObject::Animator3D() const
 {
-	CAnimator3D* pAnimator = (CAnimator3D*)GetComponent(COMPONENT_TYPE::ANIMATOR3D);
+	CAnimator3D* AnimatorPtr = reinterpret_cast<CAnimator3D*>(GetComponent(COMPONENT_TYPE::ANIMATOR3D));
 
-	if (!pAnimator && MeshRender() && MeshRender()->IsSkinRender())
-		pAnimator = MeshRender()->GetAnimator();
+	if (!AnimatorPtr && MeshRender() && MeshRender()->IsSkinRender())
+	{
+		AnimatorPtr = MeshRender()->GetAnimator();
+	}
 
-	return pAnimator;
+	return AnimatorPtr;
 }
 
 void CGameObject::DisconnectWithLayer()
 {
 	// 소속 레이어가 없다면
-	if (-1 == m_LayerIdx)
+	if (MLayerIdx == -1)
+	{
 		return;
+	}
 
-	CLayer* pLayer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(m_LayerIdx);
-	pLayer->DisconnectObject(this);
+	CLayer* Layer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(MLayerIdx);
+	Layer->DisconnectObject(this);
 }
 
 void CGameObject::DisconnecntWithParent()
 {
-	if (nullptr == m_Parent)
+	if (!MParent)
+	{
 		return;
+	}
 
-	auto iter = m_Parent->m_vecChild.begin();
+	auto iter = MParent->MChildVector.begin();
 
-	for (; iter != m_Parent->m_vecChild.end(); ++iter)
+	for (; iter != MParent->MChildVector.end(); ++iter)
 	{
 		if (*iter == this)
 		{
-			m_Parent->m_vecChild.erase(iter);
-			m_Parent = nullptr;
+			MParent->MChildVector.erase(iter);
+			MParent = nullptr;
 			return;
 		}
 	}
@@ -358,11 +365,13 @@ void CGameObject::DisconnecntWithParent()
 void CGameObject::RegisterAsParent()
 {
 	// 소속 레이어가 없다면
-	if (-1 == m_LayerIdx)
+	if (MLayerIdx == -1)
+	{
 		return;
+	}
 
-	CLayer* pLayer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(m_LayerIdx);
-	pLayer->RegisterAsParent(this);
+	CLayer* Layer = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(MLayerIdx);
+	Layer->RegisterAsParent(this);
 }
 
 /**
@@ -376,32 +385,31 @@ void CGameObject::RegisterAsParent()
 bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 {
 	// 바운딩 박스가 존재하기 위한 최소 조건 확인
-
 	// 1. 메시 렌더러가 없는 경우 실패
-	CMeshRender* pMeshRender = MeshRender();
-	CParticleSystem* pParticleSystem = ParticleSystem();
+	CMeshRender* MeshRenderPtr = MeshRender();
+	CParticleSystem* ParticleSystemPtr = ParticleSystem();
 	CDecal* pDecal = Decal();
-	if (!pMeshRender && !pParticleSystem && !pDecal)
+	if (!MeshRenderPtr && !ParticleSystemPtr && !pDecal)
 	{
 		return false;
 	}
 
 	// 2. 메시가 없는 경우 실패
-	Ptr<CMesh> pMesh = nullptr;
-	if (pMeshRender)
+	Ptr<CMesh> MeshPtr = nullptr;
+	if (MeshRenderPtr)
 	{
-		pMesh = pMeshRender->GetMesh();
+		MeshPtr = MeshRenderPtr->GetMesh();
 	}
-	if (pParticleSystem)
+	if (ParticleSystemPtr)
 	{
-		pMesh = pParticleSystem->GetMesh();
+		MeshPtr = ParticleSystemPtr->GetMesh();
 	}
 	if (pDecal)
 	{
-		pMesh = pDecal->GetMesh();
+		MeshPtr = pDecal->GetMesh();
 	}
 
-	if (pMesh == nullptr)
+	if (MeshPtr == nullptr)
 	{
 		return false;
 	}
@@ -410,10 +418,10 @@ bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 
 	// Get Local Bound
 	Vec3 LocalMin, LocalMax;
-	pMesh->GetLocalBound(LocalMin, LocalMax);
+	MeshPtr->GetLocalBound(LocalMin, LocalMax);
 
 	// Set Min Thickness
-	constexpr float MIN_THICKNESS = 0.1f;
+	constexpr float MIN_THICKNESS = 1.0f;
 
 	Vec3 size = LocalMax - LocalMin;
 
