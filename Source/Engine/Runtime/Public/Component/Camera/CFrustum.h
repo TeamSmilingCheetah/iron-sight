@@ -14,7 +14,7 @@ class CFrustum :
     void SetOwner(CCamera* _Owner) { m_Owner = _Owner; }
 
 public:
-    bool IsInFrustum(const Vec3& _WorldPos);
+    bool IsInFrustum(const Vec3& PWorldPos) const;
 
     void FinalTick();
 
