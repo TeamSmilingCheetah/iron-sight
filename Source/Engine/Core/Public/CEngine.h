@@ -21,6 +21,5 @@ public:
 	void Shutdown();
 
 	// TEST: memory profiling
-public:
-	void PrintMemoryUsage(const string& _Text);
+	static void PrintMemoryUsage(const string& PText);
 };
