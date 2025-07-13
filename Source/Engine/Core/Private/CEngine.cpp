@@ -22,7 +22,7 @@
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
-	, m_FMODSystem(nullptr)
+	  , m_FMODSystem(nullptr)
 {
 }
 
@@ -37,7 +37,7 @@ CEngine::~CEngine()
 }
 
 int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
-				  , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc)
+                  , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc)
 {
 	m_hMainWnd = _hWnd;
 
@@ -61,7 +61,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 	System_Create(&m_FMODSystem);
 	assert(m_FMODSystem);
 
-    // 32개 채널 생성
+	// 32개 채널 생성
 	m_FMODSystem->init(32, FMOD_INIT_NORMAL, nullptr);
 
 	// 3D 환경 설정(도플러 효과, 거리 단위, 롤오프 스케일)
@@ -83,7 +83,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 void CEngine::Progress()
 {
-    // FMOD Tick
+	// FMOD Tick
 	CSoundMgr::GetInst()->Tick();
 
 	// Engine Tick
@@ -107,17 +107,17 @@ void CEngine::Shutdown()
 	FLogManager::GetInst()->Shutdown();
 }
 
-void CEngine::PrintMemoryUsage(const string& _Text)
+void CEngine::PrintMemoryUsage(const string& PText)
 {
 	PROCESS_MEMORY_COUNTERS_EX pmc;
-	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	if (GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
 	{
-		std::cout << _Text << std::endl;
-		std::cout << "WorkingSet: " << pmc.WorkingSetSize / (1024.0 * 1024.0) << " MB\n";
-		std::cout << "PrivateUsage: " << pmc.PrivateUsage / (1024.0 * 1024.0) << " MB\n";
+		LOG_INFO(PText);
+		LOG_INFO_F("WorkingSet: %.2fMB", pmc.WorkingSetSize / (1024.0 * 1024.0));
+		LOG_INFO_F("PrivateUsage: %.2fMB", pmc.PrivateUsage / (1024.0 * 1024.0));
 	}
 	else
 	{
-		std::cerr << "Failed to get memory info\n";
+		LOG_ERROR("Failed To Get Memory Info");
 	}
 }

@@ -46,6 +46,7 @@ private:
 	void LogWorker();
 	void ProcessLogMessage(const LogMessage& PMessage);
 	void MakeLog(ELogLevel PLevel, const string& PMessage);
+	void LogVf(ELogLevel PLevel, const char* PFormat, va_list PArgs);
 
 	static string GetLogLevelString(ELogLevel PLevel);
 
@@ -74,7 +75,6 @@ public:
 	void LogCritical(const string& PMessage);
 	void LogUnknown(const string& PMessage);
 
-	void Logf(ELogLevel PLevel, const char* PFormat, ...);
 	void LogTracef(const char* PFormat, ...);
 	void LogDebugf(const char* PFormat, ...);
 	void LogInfof(const char* PFormat, ...);

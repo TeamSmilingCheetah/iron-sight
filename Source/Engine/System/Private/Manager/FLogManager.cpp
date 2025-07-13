@@ -4,11 +4,20 @@
 #include <iostream>
 #include <array>
 
+using std::cout;
+using std::ios;
+
 using std::unique_lock;
 using std::lock_guard;
-using std::cout;
+using std::this_thread::get_id;
+
 using std::array;
+using std::setfill;
+using std::setw;
+
+using std::chrono::milliseconds;
 using std::chrono::duration_cast;
+using std::put_time;
 
 constexpr array<const char*, static_cast<size_t>(ELogLevel::END)>
 LogLevelArr = {
@@ -32,18 +41,18 @@ LogMessage::LogMessage(ELogLevel PLevel, const string& PMessage)
 	// 타임스탬프 생성
 	auto now = system_clock::now();
 	auto time_t_value = system_clock::to_time_t(now);
-	auto ms = duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+	auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
 
 	tm tm_struct;
 	(void)localtime_s(&tm_struct, &time_t_value);
 
 	// 4. stringstream으로 원하는 포맷의 문자열 생성
-	std::stringstream ss;
-	ss << std::put_time(&tm_struct, "%Y-%m-%d %H:%M:%S"); // tm_struct의 주소 전달
-	ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+	stringstream ss;
+	ss << put_time(&tm_struct, "%Y-%m-%d %H:%M:%S"); // tm_struct의 주소 전달
+	ss << '.' << setfill('0') << setw(3) << ms.count();
 
 	TimeStamp = ss.str();
-	ThreadID = std::this_thread::get_id();
+	ThreadID = get_id();
 }
 
 /**
@@ -77,15 +86,15 @@ void FLogManager::Init(bool PConsoleOutput, bool PFileOutput)
 		tm tm_struct;
 		(void)localtime_s(&tm_struct, &time_t_value);
 
-		std::stringstream ss;
-		ss << std::put_time(&tm_struct, "%Y-%m-%d_%H-%M-%S");
+		stringstream ss;
+		ss << put_time(&tm_struct, "%Y-%m-%d_%H-%M-%S");
 		path FileName = ss.str() + ".log";
 
 		// Full Path 생성
 		LogFilePath /= FileName;
 
 		// Path를 활용하여 파일 생성
-		MLogFile.open(LogFilePath, std::ios::out | std::ios::app);
+		MLogFile.open(LogFilePath, ios::out | ios::app);
 	}
 
 	MLogThread = thread(&FLogManager::LogWorker, this);
@@ -192,29 +201,43 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 		switch (PMessage.LogLevel)
 		{
 		case ELogLevel::TRACE:
-			SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			break;
+			{
+				SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+				break;
+			}
 		case ELogLevel::DEBUG:
-			SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			break;
+			{
+				SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+				break;
+			}
 		case ELogLevel::INFO:
-			SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			break;
+			{
+				SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				break;
+			}
 		case ELogLevel::WARNING:
-			SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			break;
+			{
+				SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				break;
+			}
 		case ELogLevel::ERR:
-			SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_INTENSITY);
-			break;
+			{
+				SetConsoleTextAttribute(ConsoleHandle, FOREGROUND_RED | FOREGROUND_INTENSITY);
+				break;
+			}
 		case ELogLevel::CRITICAL:
-			SetConsoleTextAttribute(
-				ConsoleHandle,
-				BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			break;
+			{
+				SetConsoleTextAttribute(
+					ConsoleHandle,
+					BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+				break;
+			}
 		case ELogLevel::UNKNOWN:
-			SetConsoleTextAttribute(
-				ConsoleHandle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			break;
+			{
+				SetConsoleTextAttribute(
+					ConsoleHandle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				break;
+			}
 		default:
 			{
 				assert(!"여기 들어오지 못하도록 세팅해 둠");
@@ -226,6 +249,10 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 		// 기존 색상 복원
 		SetConsoleTextAttribute(ConsoleHandle, OriginalColor);
 	}
+	else
+	{
+		LOG_ERROR("Failed To Print In Console");
+	}
 
 	// File Log
 	if (IsFlagSet(ELogFlag::FileOutput) && MLogFile.is_open())
@@ -233,6 +260,10 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 		lock_guard FileLock(MQueueMutex);
 		MLogFile << FormattedMessage << "\n";
 		MLogFile.flush();
+	}
+	else
+	{
+		LOG_ERROR("Failed To Print In Log File");
 	}
 }
 
@@ -259,7 +290,7 @@ string FLogManager::GetLogLevelString(ELogLevel PLevel)
 /**
  * @brief Log 생성 기본 함수
  */
-void FLogManager::MakeLog(ELogLevel PLevel, const std::string& PMessage)
+void FLogManager::MakeLog(ELogLevel PLevel, const string& PMessage)
 {
 	LogMessage LogMessage(PLevel, PMessage);
 
@@ -308,77 +339,75 @@ void FLogManager::LogUnknown(const string& PMessage)
 	MakeLog(ELogLevel::UNKNOWN, PMessage);
 }
 
-void FLogManager::Logf(ELogLevel PLevel, const char* PFormat, ...)
+void FLogManager::LogVf(ELogLevel PLevel, const char* PFormat, va_list PArgs)
 {
-    va_list args;
-    va_start(args, PFormat);
+	// Copy로 Size 측정
+	va_list args_copy;
+	va_copy(args_copy, PArgs);
+	int Size = vsnprintf(nullptr, 0, PFormat, args_copy);
+	va_end(args_copy);
 
-    int Size = vsnprintf(nullptr, 0, PFormat, args);
-    va_end(args);
-
-    if (Size > 0)
-    {
-        string StringBuffer(Size + 1, '\0');
-        va_start(args, PFormat);
-        (void)vsnprintf(StringBuffer.data(), StringBuffer.size(), PFormat, args);
-        va_end(args);
-
-        MakeLog(PLevel, StringBuffer);
-    }
+	// Buffer 생성 후 Log 추가
+	if (Size > 0)
+	{
+		string StringBuffer(Size, '\0');
+		(void)vsnprintf(StringBuffer.data(), Size + 1, PFormat, PArgs);
+		MakeLog(PLevel, StringBuffer);
+	}
 }
 
 void FLogManager::LogTracef(const char* PFormat, ...)
 {
-    va_list args;
-    va_start(args, PFormat);
-    Logf(ELogLevel::TRACE, PFormat, args);
-    va_end(args);
+	va_list args;
+	va_start(args, PFormat);
+	LogVf(ELogLevel::TRACE, PFormat, args);
+	va_end(args);
 }
 
 void FLogManager::LogDebugf(const char* PFormat, ...)
 {
-    va_list args;
-    va_start(args, PFormat);
-    Logf(ELogLevel::DEBUG, PFormat, args);
-    va_end(args);
+	va_list args;
+	va_start(args, PFormat);
+	LogVf(ELogLevel::DEBUG, PFormat, args);
+	va_end(args);
 }
 
 void FLogManager::LogInfof(const char* PFormat, ...)
 {
-    va_list args;
-    va_start(args, PFormat);
-    Logf(ELogLevel::INFO, PFormat, args);
-    va_end(args);
+	va_list args;
+	va_start(args, PFormat);
+	LogVf(ELogLevel::INFO, PFormat, args);
+	va_end(args);
 }
 
 void FLogManager::LogWarningf(const char* PFormat, ...)
 {
-    va_list args;
-    va_start(args, PFormat);
-    Logf(ELogLevel::WARNING, PFormat, args);
-    va_end(args);
+	va_list args;
+	va_start(args, PFormat);
+	LogVf(ELogLevel::WARNING, PFormat, args);
+	va_end(args);
 }
 
 void FLogManager::LogErrorf(const char* PFormat, ...)
 {
-    va_list args;
-    va_start(args, PFormat);
-    Logf(ELogLevel::ERR, PFormat, args);
-    va_end(args);
+	va_list args;
+	va_start(args, PFormat);
+	LogVf(ELogLevel::ERR, PFormat, args);
+	va_end(args);
 }
 
 void FLogManager::LogCriticalf(const char* PFormat, ...)
 {
-    va_list args;
-    va_start(args, PFormat);
-    Logf(ELogLevel::CRITICAL, PFormat, args);
-    va_end(args);
+	va_list args;
+	va_start(args, PFormat);
+	LogVf(ELogLevel::CRITICAL, PFormat, args);
+	va_end(args);
 }
 
 void FLogManager::LogUnknownf(const char* PFormat, ...)
 {
 	va_list args;
 	va_start(args, PFormat);
-	Logf(ELogLevel::UNKNOWN, PFormat, args);
+	LogVf(ELogLevel::UNKNOWN, PFormat, args);
 	va_end(args);
 }
