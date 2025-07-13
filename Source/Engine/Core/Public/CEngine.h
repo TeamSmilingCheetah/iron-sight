@@ -18,6 +18,7 @@ public:
 	int Init(HWND _hWnd, UINT _Width, UINT _Height
 			 , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc);
 	void Progress();
+	void Shutdown();
 
 	// TEST: memory profiling
 public:
