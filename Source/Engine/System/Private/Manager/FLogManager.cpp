@@ -273,32 +273,112 @@ void FLogManager::MakeLog(ELogLevel PLevel, const std::string& PMessage)
 	MCondition.notify_one();
 }
 
-void FLogManager::LogTrace(const std::string& message)
+void FLogManager::LogTrace(const string& PMessage)
 {
-	MakeLog(ELogLevel::TRACE, message);
+	MakeLog(ELogLevel::TRACE, PMessage);
 }
 
-void FLogManager::LogDebug(const std::string& message)
+void FLogManager::LogDebug(const string& PMessage)
 {
-	MakeLog(ELogLevel::DEBUG, message);
+	MakeLog(ELogLevel::DEBUG, PMessage);
 }
 
-void FLogManager::LogInfo(const std::string& message)
+void FLogManager::LogInfo(const string& PMessage)
 {
-	MakeLog(ELogLevel::INFO, message);
+	MakeLog(ELogLevel::INFO, PMessage);
 }
 
-void FLogManager::LogWarning(const std::string& message)
+void FLogManager::LogWarning(const string& PMessage)
 {
-	MakeLog(ELogLevel::WARNING, message);
+	MakeLog(ELogLevel::WARNING, PMessage);
 }
 
-void FLogManager::LogError(const std::string& message)
+void FLogManager::LogError(const string& PMessage)
 {
-	MakeLog(ELogLevel::ERR, message);
+	MakeLog(ELogLevel::ERR, PMessage);
 }
 
-void FLogManager::LogCritical(const std::string& message)
+void FLogManager::LogCritical(const string& PMessage)
 {
-	MakeLog(ELogLevel::CRITICAL, message);
+	MakeLog(ELogLevel::CRITICAL, PMessage);
+}
+
+void FLogManager::LogUnknown(const string& PMessage)
+{
+	MakeLog(ELogLevel::UNKNOWN, PMessage);
+}
+
+void FLogManager::Logf(ELogLevel PLevel, const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+
+    int Size = vsnprintf(nullptr, 0, PFormat, args);
+    va_end(args);
+
+    if (Size > 0)
+    {
+        string StringBuffer(Size + 1, '\0');
+        va_start(args, PFormat);
+        (void)vsnprintf(StringBuffer.data(), StringBuffer.size(), PFormat, args);
+        va_end(args);
+
+        MakeLog(PLevel, StringBuffer);
+    }
+}
+
+void FLogManager::LogTracef(const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+    Logf(ELogLevel::TRACE, PFormat, args);
+    va_end(args);
+}
+
+void FLogManager::LogDebugf(const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+    Logf(ELogLevel::DEBUG, PFormat, args);
+    va_end(args);
+}
+
+void FLogManager::LogInfof(const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+    Logf(ELogLevel::INFO, PFormat, args);
+    va_end(args);
+}
+
+void FLogManager::LogWarningf(const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+    Logf(ELogLevel::WARNING, PFormat, args);
+    va_end(args);
+}
+
+void FLogManager::LogErrorf(const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+    Logf(ELogLevel::ERR, PFormat, args);
+    va_end(args);
+}
+
+void FLogManager::LogCriticalf(const char* PFormat, ...)
+{
+    va_list args;
+    va_start(args, PFormat);
+    Logf(ELogLevel::CRITICAL, PFormat, args);
+    va_end(args);
+}
+
+void FLogManager::LogUnknownf(const char* PFormat, ...)
+{
+	va_list args;
+	va_start(args, PFormat);
+	Logf(ELogLevel::UNKNOWN, PFormat, args);
+	va_end(args);
 }

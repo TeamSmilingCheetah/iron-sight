@@ -72,4 +72,14 @@ public:
 	void LogWarning(const string& PMessage);
 	void LogError(const string& PMessage);
 	void LogCritical(const string& PMessage);
+	void LogUnknown(const string& PMessage);
+
+	void Logf(ELogLevel PLevel, const char* PFormat, ...);
+	void LogTracef(const char* PFormat, ...);
+	void LogDebugf(const char* PFormat, ...);
+	void LogInfof(const char* PFormat, ...);
+	void LogWarningf(const char* PFormat, ...);
+	void LogErrorf(const char* PFormat, ...);
+	void LogCriticalf(const char* PFormat, ...);
+	void LogUnknownf(const char* PFormat, ...);
 };
