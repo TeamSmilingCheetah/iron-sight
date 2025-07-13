@@ -7,11 +7,14 @@ class CPathMgr
     : public singleton<CPathMgr>
 {
     SINGLE(CPathMgr);
+
+private:
     wstring m_ContentPath;
     wstring m_BinPath;
 	wstring m_SourcePath;
 	wstring m_EffectsFilePath;
 	wstring m_ShaderBlobPath;
+	wstring m_LogFilePath;
 
 public:
 	void Init();
@@ -27,4 +30,5 @@ public:
 	const wstring& GetSrcPath() { return m_SourcePath; }
 	const wstring& GetEffectsFilePath() { return m_EffectsFilePath; }
 	const wstring& GetShaderBlobPath() { return m_ShaderBlobPath; }
+	const wstring& GetLogFilePath() { return m_LogFilePath; }
 };

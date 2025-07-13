@@ -56,6 +56,7 @@ int FClientApp::Run(HINSTANCE PInstanceHandle, int PCmdShow)
 
 	// Termination Process
 	SetCurrentDirectory(CPathMgr::GetInst()->GetBinPath().c_str());
+	CEngine::GetInst()->Shutdown();
 	delete MWindow;
 
 	return static_cast<int>(MMainMessage.wParam);

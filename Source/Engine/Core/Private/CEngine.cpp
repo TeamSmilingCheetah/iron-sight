@@ -1,19 +1,24 @@
 #include "pch.h"
 #include "Core/Public/CEngine.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Manager/CPathMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CLevelMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Manager/CCollisionMgr.h"
-#include "System/Public/Manager/CTaskMgr.h"
-#include "System/Public/Manager/CFontMgr.h"
-#include "System/Public/Manager/CUIMgr.h"
-#include "System/Public/Manager/CSoundMgr.h"
-#include "System/Public/Asset/Prefab/CPrefab.h"
-#include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
+
+#include <psapi.h>
+#include <iostream>
+
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
+#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Engine/System/Public/Manager/CTaskMgr.h"
+#include "Engine/System/Public/Manager/CFontMgr.h"
+#include "Engine/System/Public/Manager/CUIMgr.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/FLogManager.h"
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
@@ -64,6 +69,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 	// Manager 초기화
 	CPathMgr::GetInst()->Init();
+	FLogManager::GetInst()->Init();
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
 	CAssetMgr::GetInst()->Init();
@@ -95,9 +101,11 @@ void CEngine::Progress()
 	CTaskMgr::GetInst()->Tick();
 }
 
-
-#include <psapi.h> 
-#include <iostream>
+void CEngine::Shutdown()
+{
+	LOG_INFO("Engine Shutdown Process");
+	FLogManager::GetInst()->Shutdown();
+}
 
 void CEngine::PrintMemoryUsage(const string& _Text)
 {
