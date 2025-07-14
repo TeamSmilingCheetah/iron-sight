@@ -1041,9 +1041,6 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* 
 		return false;
 
 	// 3. Prepare Buffer
-	struct SimpleVtx { Vec3 pos; };
-	struct SimpleIdx { uint32_t x, y, z; };
-
 	vector<SimpleVtx> LeftVtxVector(LeftVtxCount);
 	vector<SimpleVtx> RightVtxVector(RightVtxCount);
 	Vtx* LeftVtxArr = static_cast<Vtx*>(LeftMesh->GetVtxSysMem());
@@ -1099,15 +1096,14 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* 
 	OutputBuffer.Create(sizeof(CollisionResult), MaxCollision, SB_TYPE::SRV_UAV, true, CollisionArr.data());
 
 	// 5. ComputeShader Execute
-	CMeshCollisionCS ComputeShader;
-	ComputeShader.SetLeftVertices(&LeftVtxBuffer);
-	ComputeShader.SetLeftIndices(&LeftIdxBuffer);
-	ComputeShader.SetRightVertices(&RightVtxBuffer);
-	ComputeShader.SetRightIndices(&RightIdxBuffer);
-	ComputeShader.SetCount(&CountBuffer);
-	ComputeShader.SetResults(&OutputBuffer);
-	ComputeShader.SetTriCounts(LeftTriCount, RightTriCount);
-	ComputeShader.Execute();
+	m_MeshCollisionCS.SetLeftVertices(&LeftVtxBuffer);
+	m_MeshCollisionCS.SetLeftIndices(&LeftIdxBuffer);
+	m_MeshCollisionCS.SetRightVertices(&RightVtxBuffer);
+	m_MeshCollisionCS.SetRightIndices(&RightIdxBuffer);
+	m_MeshCollisionCS.SetCount(&CountBuffer);
+	m_MeshCollisionCS.SetResults(&OutputBuffer);
+	m_MeshCollisionCS.SetTriCounts(LeftTriCount, RightTriCount);
+	m_MeshCollisionCS.Execute();
 
 	// 6. Result Check
 	CountBuffer.GetData(CountArr.data());
@@ -1117,18 +1113,39 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PLeftCollider, CMeshCollider* 
 
 	if (CollisionCount)
 	{
-		// Calculate Average Normal
+		// Calculate Average Normal with Penetration Depth
 		Vec3 LeftAverageNormal = {0, 0, 0};
 		Vec3 RightAverageNormal = {0, 0, 0};
+		float MaxPenetrationDepth;
 
 		for (int i = 0; i < CollisionCount; ++i)
 		{
-			LeftAverageNormal += CollisionArr[i].LeftNormal;
-			RightAverageNormal += CollisionArr[i].RightNormal;
+			Vec3 LeftNormal = CollisionArr[i].LeftNormal;
+			Vec3 RightNormal = CollisionArr[i].RightNormal;
+			float CurrentPenetration = CollisionArr[i].PenetrationDepth;
+
+			LeftAverageNormal += LeftNormal;
+			RightAverageNormal += RightNormal;
+
+			// Update Max Depth
+			MaxPenetrationDepth = max(MaxPenetrationDepth, min(CurrentPenetration, 1.0f));
 		}
 
-		PLeftCollider->SetCollisionNormal(LeftAverageNormal / static_cast<float>(CollisionCount));
-		PRightCollider->SetCollisionNormal(RightAverageNormal / static_cast<float>(CollisionCount));
+		// Calculate Collision Normal
+		LeftAverageNormal = LeftAverageNormal / static_cast<float>(CollisionCount);
+		RightAverageNormal = RightAverageNormal / static_cast<float>(CollisionCount);
+		LeftAverageNormal.Normalize();
+		RightAverageNormal.Normalize();
+
+		// Add Safety Margin
+		constexpr float SafetyMargin = 0.02f;
+		MaxPenetrationDepth = max(0.0f, MaxPenetrationDepth - SafetyMargin);
+
+		// Set Normal & Penetration Depth
+		PLeftCollider->SetCollisionNormal(LeftAverageNormal);
+		PLeftCollider->SetPenetrationDepth(MaxPenetrationDepth);
+		PRightCollider->SetCollisionNormal(RightAverageNormal);
+		PRightCollider->SetPenetrationDepth(MaxPenetrationDepth);
 
 		return true;
 	}
@@ -1176,8 +1193,6 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 	}
 
 	// 3. Prepare Buffer
-	struct SimpleVtx { Vec3 pos; };
-	struct SimpleIdx { uint32_t x, y, z; };
 	Matrix WorldMatrix = PMeshCollider->GetOwner()->Transform()->GetWorldMat();
 
 	vector<SimpleVtx> VtxVector(VtxCount);
@@ -1225,7 +1240,7 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 
 	for (int i = 0; i < 12; ++i)
 	{
-		AABBIdxVector[i] = { Triangles[i][0], Triangles[i][1], Triangles[i][2] };
+		AABBIdxVector[i] = {Triangles[i][0], Triangles[i][1], Triangles[i][2]};
 	}
 
 	// 4. Create StructuredBuffer
@@ -1245,15 +1260,14 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 	OutputBuffer.Create(sizeof(CollisionResult), MaxCollision, SB_TYPE::SRV_UAV, true, CollisionArr.data());
 
 	// 5. ComputeShader Execute
-	CMeshCollisionCS ComputeShader;
-	ComputeShader.SetLeftVertices(&MeshVtxBuffer);
-	ComputeShader.SetLeftIndices(&MeshIdxBuffer);
-	ComputeShader.SetRightVertices(&AABBVtxBuffer);
-	ComputeShader.SetRightIndices(&AABBIdxBuffer);
-	ComputeShader.SetCount(&CountBuffer);
-	ComputeShader.SetResults(&OutputBuffer);
-	ComputeShader.SetTriCounts(TriCount, 12);
-	ComputeShader.Execute();
+	m_MeshCollisionCS.SetLeftVertices(&MeshVtxBuffer);
+	m_MeshCollisionCS.SetLeftIndices(&MeshIdxBuffer);
+	m_MeshCollisionCS.SetRightVertices(&AABBVtxBuffer);
+	m_MeshCollisionCS.SetRightIndices(&AABBIdxBuffer);
+	m_MeshCollisionCS.SetCount(&CountBuffer);
+	m_MeshCollisionCS.SetResults(&OutputBuffer);
+	m_MeshCollisionCS.SetTriCounts(TriCount, 12);
+	m_MeshCollisionCS.Execute();
 
 	// 6. Result Check
 	CountBuffer.GetData(CountArr.data());
@@ -1263,18 +1277,39 @@ bool CCollisionMgr::IsMeshCollided(CMeshCollider* PMeshCollider, CCollider3D* P3
 
 	if (CollisionCount)
 	{
-		// Calculate Average Normal
+		// Calculate Average Normal with Penetration Depth
 		Vec3 LeftAverageNormal = {0, 0, 0};
 		Vec3 RightAverageNormal = {0, 0, 0};
+		float MaxPenetrationDepth;
 
 		for (int i = 0; i < CollisionCount; ++i)
 		{
-			LeftAverageNormal += CollisionArr[i].LeftNormal;
-			RightAverageNormal += CollisionArr[i].RightNormal;
+			Vec3 LeftNormal = CollisionArr[i].LeftNormal;
+			Vec3 RightNormal = CollisionArr[i].RightNormal;
+			float CurrentPenetration = CollisionArr[i].PenetrationDepth;
+
+			LeftAverageNormal += LeftNormal;
+			RightAverageNormal += RightNormal;
+
+			// Update Max Depth
+			MaxPenetrationDepth = max(MaxPenetrationDepth, min(CurrentPenetration, 1.0f));
 		}
 
-		PMeshCollider->SetCollisionNormal(LeftAverageNormal / static_cast<float>(CollisionCount));
-		P3DCollider->SetHitNormal(RightAverageNormal / static_cast<float>(CollisionCount));
+		// Calculate Collision Normal
+		LeftAverageNormal = LeftAverageNormal / static_cast<float>(CollisionCount);
+		RightAverageNormal = RightAverageNormal / static_cast<float>(CollisionCount);
+		LeftAverageNormal.Normalize();
+		RightAverageNormal.Normalize();
+
+		// Add Safety Margin
+		constexpr float SafetyMargin = 0.02f;
+		MaxPenetrationDepth = max(0.0f, MaxPenetrationDepth - SafetyMargin);
+
+		// Set Normal & Penetration Depth
+		PMeshCollider->SetCollisionNormal(LeftAverageNormal);
+		PMeshCollider->SetPenetrationDepth(MaxPenetrationDepth);
+		P3DCollider->SetHitNormal(RightAverageNormal);
+		P3DCollider->SetPenetrationDepth(MaxPenetrationDepth);
 
 		return true;
 	}

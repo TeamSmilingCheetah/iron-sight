@@ -16,6 +16,7 @@ CCollider3D::CCollider3D()
 	  , m_OverlapCount(0)
 	  , m_Status(0), m_State(ACTIVE)
 	  , m_IndependentScale(false)
+	  , m_PenetrationDepth(0.0f)
 {
 }
 
@@ -30,6 +31,7 @@ CCollider3D::CCollider3D(const CCollider3D& POrigin)
 	  , m_Status(POrigin.m_Status)
 	  , m_State(POrigin.m_State)
 	  , m_IndependentScale(POrigin.m_IndependentScale)
+	  , m_PenetrationDepth(POrigin.m_PenetrationDepth)
 {
 }
 

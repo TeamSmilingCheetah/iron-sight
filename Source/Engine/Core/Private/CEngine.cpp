@@ -1,23 +1,28 @@
 #include "pch.h"
 #include "Core/Public/CEngine.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Manager/CPathMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CLevelMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Manager/CCollisionMgr.h"
-#include "System/Public/Manager/CTaskMgr.h"
-#include "System/Public/Manager/CFontMgr.h"
-#include "System/Public/Manager/CUIMgr.h"
-#include "System/Public/Manager/CSoundMgr.h"
-#include "System/Public/Asset/Prefab/CPrefab.h"
-#include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
+
+#include <psapi.h>
+#include <iostream>
+
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
+#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Engine/System/Public/Manager/CTaskMgr.h"
+#include "Engine/System/Public/Manager/CFontMgr.h"
+#include "Engine/System/Public/Manager/CUIMgr.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/FLogManager.h"
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
-	, m_FMODSystem(nullptr)
+	  , m_FMODSystem(nullptr)
 {
 }
 
@@ -32,7 +37,7 @@ CEngine::~CEngine()
 }
 
 int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
-				  , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc)
+                  , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc)
 {
 	m_hMainWnd = _hWnd;
 
@@ -56,7 +61,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 	System_Create(&m_FMODSystem);
 	assert(m_FMODSystem);
 
-    // 32개 채널 생성
+	// 32개 채널 생성
 	m_FMODSystem->init(32, FMOD_INIT_NORMAL, nullptr);
 
 	// 3D 환경 설정(도플러 효과, 거리 단위, 롤오프 스케일)
@@ -64,6 +69,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 	// Manager 초기화
 	CPathMgr::GetInst()->Init();
+	FLogManager::GetInst()->Init();
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
 	CAssetMgr::GetInst()->Init();
@@ -77,7 +83,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 void CEngine::Progress()
 {
-    // FMOD Tick
+	// FMOD Tick
 	CSoundMgr::GetInst()->Tick();
 
 	// Engine Tick
@@ -95,21 +101,23 @@ void CEngine::Progress()
 	CTaskMgr::GetInst()->Tick();
 }
 
+void CEngine::Shutdown()
+{
+	LOG_INFO("Engine Shutdown Process");
+	FLogManager::GetInst()->Shutdown();
+}
 
-#include <psapi.h> 
-#include <iostream>
-
-void CEngine::PrintMemoryUsage(const string& _Text)
+void CEngine::PrintMemoryUsage(const string& PText)
 {
 	PROCESS_MEMORY_COUNTERS_EX pmc;
-	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	if (GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
 	{
-		std::cout << _Text << std::endl;
-		std::cout << "WorkingSet: " << pmc.WorkingSetSize / (1024.0 * 1024.0) << " MB\n";
-		std::cout << "PrivateUsage: " << pmc.PrivateUsage / (1024.0 * 1024.0) << " MB\n";
+		LOG_INFO(PText);
+		LOG_INFO_F("WorkingSet: %.2fMB", pmc.WorkingSetSize / (1024.0 * 1024.0));
+		LOG_INFO_F("PrivateUsage: %.2fMB", pmc.PrivateUsage / (1024.0 * 1024.0));
 	}
 	else
 	{
-		std::cerr << "Failed to get memory info\n";
+		LOG_ERROR("Failed To Get Memory Info");
 	}
 }

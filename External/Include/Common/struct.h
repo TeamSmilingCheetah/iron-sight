@@ -1,5 +1,8 @@
 #pragma once
 
+#include <thread>
+
+using std::thread;
 
 struct Vtx
 {
@@ -352,12 +355,25 @@ struct MeshCollisionInfo {
 struct CollisionResult {
 	Vec3 LeftNormal;
 	Vec3 RightNormal;
+	float PenetrationDepth;
 };
 
-// Facade 자료형
+// Facade Struct
 
 struct UnsignedIntegerSquare
 {
 	UINT X;
 	UINT Y;
+};
+
+// Log Struct
+
+struct LogMessage
+{
+	ELogLevel LogLevel;
+	string Message;
+	string TimeStamp;
+	thread::id ThreadID;
+
+	LogMessage(ELogLevel PLevel, const string& PMessage);
 };

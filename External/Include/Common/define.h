@@ -1,6 +1,5 @@
 #pragma once
 
-
 using Vec2 = SimpleMath::Vector2;
 using Vec3 = SimpleMath::Vector3;
 using Vec4 = SimpleMath::Vector4;
@@ -43,4 +42,21 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 #define SET_PARENT_SCRIPT(PARENT_ENUM) static constexpr SCRIPT_TYPE m_ParentType = PARENT_ENUM; \
 										virtual SCRIPT_TYPE GetParentScriptType() override { return m_ParentType; }
-									   
+
+/** Log Macros **/
+
+#define LOG_TRACE(PMessage) FLogManager::GetInst()->LogTrace(PMessage)
+#define LOG_DEBUG(PMessage) FLogManager::GetInst()->LogDebug(PMessage)
+#define LOG_INFO(PMessage) FLogManager::GetInst()->LogInfo(PMessage)
+#define LOG_WARNING(PMessage) FLogManager::GetInst()->LogWarning(PMessage)
+#define LOG_ERROR(PMessage) FLogManager::GetInst()->LogError(PMessage)
+#define LOG_CRITICAL(PMessage) FLogManager::GetInst()->LogCritical(PMessage)
+#define LOG_UNKNOWN(PMessage) FLogManager::GetInst()->LogUnknown(PMessage)
+
+#define LOG_TRACE_F(PFormat, ...) FLogManager::GetInst()->LogTracef(PFormat, ##__VA_ARGS__)
+#define LOG_DEBUG_F(PFormat, ...) FLogManager::GetInst()->LogDebugf(PFormat, ##__VA_ARGS__)
+#define LOG_INFO_F(PFormat, ...) FLogManager::GetInst()->LogInfof(PFormat, ##__VA_ARGS__)
+#define LOG_WARNING_F(PFormat, ...) FLogManager::GetInst()->LogWarningf(PFormat, ##__VA_ARGS__)
+#define LOG_ERROR_F(PFormat, ...) FLogManager::GetInst()->LogErrorf(PFormat, ##__VA_ARGS__)
+#define LOG_CRITICAL_F(PFormat, ...) FLogManager::GetInst()->LogCriticalf(PFormat, ##__VA_ARGS__)
+#define LOG_UNKNOWN_F(PFormat, ...) FLogManager::GetInst()->LogUnknownf(PFormat, ##__VA_ARGS__)

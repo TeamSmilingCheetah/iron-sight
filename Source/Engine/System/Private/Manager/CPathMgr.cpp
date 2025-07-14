@@ -18,6 +18,7 @@ void CPathMgr::Init()
 	m_SourcePath = bin_dir.parent_path().parent_path().wstring() + L"\\Source\\Engine\\";
 	m_EffectsFilePath = m_SourcePath + L"\\Shader\\";
 	m_ShaderBlobPath = m_ContentPath + L"\\Shader\\";
+	m_LogFilePath = m_BinPath + L"\\Log\\";
 }
 
 wstring CPathMgr::MakeFileName(const wstring& PName)

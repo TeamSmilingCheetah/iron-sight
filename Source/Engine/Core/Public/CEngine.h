@@ -18,8 +18,8 @@ public:
 	int Init(HWND _hWnd, UINT _Width, UINT _Height
 			 , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc);
 	void Progress();
+	void Shutdown();
 
 	// TEST: memory profiling
-public:
-	void PrintMemoryUsage(const string& _Text);
+	static void PrintMemoryUsage(const string& PText);
 };

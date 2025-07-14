@@ -90,11 +90,11 @@ void CLayer::AddObject(CGameObject* _Object, bool _MoveWithChild)
 		if (pObject == _Object)
 		{
 			m_vecParentObjects.push_back(pObject);
-			pObject->m_LayerIdx = m_LayerIdx;
+			pObject->MLayerIdx = m_LayerIdx;
 		}
-		else if (_MoveWithChild || -1 == pObject->m_LayerIdx)
+		else if (_MoveWithChild || -1 == pObject->MLayerIdx)
 		{
-			pObject->m_LayerIdx = m_LayerIdx;
+			pObject->MLayerIdx = m_LayerIdx;
 		}
 	}
 }
@@ -125,7 +125,7 @@ void CLayer::DisconnectObject(CGameObject* _Object)
 			if (*iter == _Object)
 			{
 				m_vecParentObjects.erase(iter);
-				_Object->m_LayerIdx = -1;
+				_Object->MLayerIdx = -1;
 				return;
 			}
 		}
@@ -133,5 +133,5 @@ void CLayer::DisconnectObject(CGameObject* _Object)
 		assert(nullptr);
 	}
 
-	_Object->m_LayerIdx = -1;
+	_Object->MLayerIdx = -1;
 }

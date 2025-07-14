@@ -153,10 +153,12 @@ struct Vtx {
  *
  * @param LeftNormal LeftMesh 삼각형 노멀
  * @param RightNormal RightMesh 삼각형 노멀
+ * @param PenetrationDepth 충돌 시 침투 깊이
  */
 struct CollisionResult {
     float3 LeftNormal;
     float3 RightNormal;
+    float PenetrationDepth;
 };
 
 #endif

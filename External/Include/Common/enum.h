@@ -394,3 +394,43 @@ enum class FACE_TYPE : UINT8
 
 	END,
 };
+
+/** Log Struct **/
+
+enum class ELogLevel
+{
+	TRACE,
+	DEBUG,
+	INFO,
+	WARNING,
+	ERR,
+	CRITICAL,
+	UNKNOWN,
+
+	END,
+};
+
+enum class ELogFlag : UINT8
+{
+	LogFlagNull = 0,
+	ConsoleOutput = 1 << 0,
+	FileOutput = 1 << 1,
+	StopLogging = 1 << 2,
+};
+
+// LogFlag 비트 연산을 위한 연산자 오버로딩 처리
+inline ELogFlag operator|(ELogFlag lhs, ELogFlag rhs)
+{
+	return static_cast<ELogFlag>(static_cast<UINT8>(lhs) | static_cast<UINT8>(rhs));
+}
+
+inline ELogFlag operator&(ELogFlag lhs, ELogFlag rhs)
+{
+	return static_cast<ELogFlag>(static_cast<UINT8>(lhs) & static_cast<UINT8>(rhs));
+}
+
+inline ELogFlag& operator|=(ELogFlag& lhs, ELogFlag rhs)
+{
+	lhs = lhs | rhs;
+	return lhs;
+}

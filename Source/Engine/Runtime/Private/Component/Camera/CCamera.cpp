@@ -636,49 +636,84 @@ void CCamera::LayerOff(int PLayerIdx)
 /**
  * @brief 오브젝트 1개에 대해서 frustum 내부에 있는지 판별하는 함수
  *
- * @param _Object
- * @return
+ * @param PObject frustum 판정이 필요한 오브젝트
+ * @return frustum 내부에 존재하거나 경계 근처에 있어서 렌더링 필요한지 여부
  */
-bool CCamera::IsObjectInFrustum(const CGameObject* _Object)
+bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 {
-	if (!_Object->Transform()->FrustumCheckRequired())
+	if (!PObject->Transform()->FrustumCheckRequired())
 	{
 		return true;
 	}
 
 	// UI 컴포넌트 보유 시 frustum 체크 안함
-	if (_Object->UI())
+	if (PObject->UI())
 	{
 		return true;
 	}
 
 	// 오브젝트의 바운딩 박스 가져오기
-	// TODO(KHJ): 현재 bounding box 계산하지 못했다면 무조건 rendering하지 않는데, 누락되는 케이스 없는지 확인 필요
+	// XXX(KHJ): 현재 bounding box 계산하지 못했다면 무조건 rendering하지 않는데, 누락되는 케이스 없는지 확인 필요
 	Vec3 vMin, vMax;
-	if (!_Object->GetWorldBoundingBox(vMin, vMax))
+	if (!PObject->GetWorldBoundingBox(vMin, vMax))
 	{
 		return false;
 	}
 
+	// Make More Margin
+	constexpr float FRUSTUM_MARGIN = 0.5f;
+	vMin -= Vec3(FRUSTUM_MARGIN, FRUSTUM_MARGIN, FRUSTUM_MARGIN);
+	vMax += Vec3(FRUSTUM_MARGIN, FRUSTUM_MARGIN, FRUSTUM_MARGIN);
+
 	// AABB의 8개 꼭지점
-	Vec3 vPoints[8] = {
-		Vec3(vMin.x, vMin.y, vMin.z), // 0: 좌하단
-		Vec3(vMax.x, vMin.y, vMin.z), // 1: 우하단
-		Vec3(vMax.x, vMax.y, vMin.z), // 2: 우상단
-		Vec3(vMin.x, vMax.y, vMin.z), // 3: 좌상단
-		Vec3(vMin.x, vMin.y, vMax.z), // 4: 좌하단(후면)
-		Vec3(vMax.x, vMin.y, vMax.z), // 5: 우하단(후면)
-		Vec3(vMax.x, vMax.y, vMax.z), // 6: 우상단(후면)
-		Vec3(vMin.x, vMax.y, vMax.z)  // 7: 좌상단(후면)
+	Vec3 Points[8] = {
+		Vec3(vMin.x, vMin.y, vMin.z),
+		Vec3(vMax.x, vMin.y, vMin.z),
+		Vec3(vMax.x, vMax.y, vMin.z),
+		Vec3(vMin.x, vMax.y, vMin.z),
+		Vec3(vMin.x, vMin.y, vMax.z),
+		Vec3(vMax.x, vMin.y, vMax.z),
+		Vec3(vMax.x, vMax.y, vMax.z),
+		Vec3(vMin.x, vMax.y, vMax.z),
 	};
 
+	// 경계 판정을 위한 추가 여유 공간
+	constexpr float BOUNDARY_MARGIN = 0.2f;
+	bool IsNearBoundary = false;
+
 	// AABB의 8개 꼭지점 중 하나라도 프러스텀 내부에 있으면 렌더링
-	for (int i = 0; i < 8; ++i)
+	for (auto Point : Points)
 	{
-		if (m_Frustum->IsInFrustum(vPoints[i]))
-			return true;
+		{
+			if (m_Frustum->IsInFrustum(Point))
+			{
+				PObject->SetInFrustumPrevious(true);
+				return true;
+			}
+
+			// Check Is Near Boundary
+			for (auto Face : m_Frustum->m_Face)
+			{
+				auto Normal = Vec3(Face.x, Face.y, Face.z);
+				float Distance = Normal.Dot(Point) + Face.w;
+
+				if (Distance > 0 && Distance < BOUNDARY_MARGIN)
+				{
+					IsNearBoundary = true;
+					break;
+				}
+			}
+		}
 	}
 
+	// 경계 근처에 있는 오브젝트는 이전 상태를 유지하도록 처리
+	// 여기까지 왔다는 건 Frustum 안에는 없었다는 뜻
+	if (IsNearBoundary)
+	{
+		return PObject->IsInFrustumPrevious();
+	}
+
+	PObject->SetInFrustumPrevious(false);
 	return false;
 }
 

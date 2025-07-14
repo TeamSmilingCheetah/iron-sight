@@ -49,7 +49,7 @@ void CTaskMgr::Tick()
 				{
 					int LayerIdx = pChild->GetLayerIdx();
 					pChild->DisconnectWithLayer();
-					pChild->m_LayerIdx = LayerIdx;
+					pChild->MLayerIdx = LayerIdx;
 				}
 
 				pParent->AddChild(pChild);
@@ -69,14 +69,14 @@ void CTaskMgr::Tick()
 			if (nullptr == pObject->GetParent())
 			{
 				pObject->DisconnectWithLayer();
-				pObject->m_LayerIdx = (int)LayerIdx;
+				pObject->MLayerIdx = (int)LayerIdx;
 				pObject->RegisterAsParent();
 			}
 
 			// 자식 오브젝트의 경우
 			else
 			{
-				pObject->m_LayerIdx = (int)LayerIdx;
+				pObject->MLayerIdx = (int)LayerIdx;
 			}
 
 			pObject->LayerMoveDone();
@@ -97,11 +97,11 @@ void CTaskMgr::Tick()
 			CGameObject* pObject = (CGameObject*)task.Param0;
 
 			// 비활성화 예정 상태가 아니라면 처리하지 않음. (한 프레임에 여러 번 세팅된 경우 대비)
-			if (!pObject->m_Deactivate)
+			if (!pObject->IsDeactivated())
 				break;
 
 			pObject->SetActive(false);
-			pObject->m_Deactivate = false;
+			pObject->SetDeactivated(false);
 
 			m_LevelChanged = true;
 		}
@@ -124,7 +124,7 @@ void CTaskMgr::Tick()
 			CGameObject* pObject = (CGameObject*)task.Param0;
 			if (!pObject->IsDead())
 			{
-				pObject->m_Dead = true;
+				pObject->SetDead(true);
 				m_vecDelayedTask.push_back(std::move(task));
 			}
 		}
@@ -162,19 +162,19 @@ void CTaskMgr::Tick()
 			// 활성화는 immediate
 			if (bActive)
 			{
-				pObject->m_Deactivate = false;
+				pObject->SetDeactivated(false);
 				pObject->SetActive(true);
 			}
 			// 비활성화는 delay
 			else
 			{
 				// 활성화 되어있고, 비활성화 예정도 아닌 경우에만 task 추가 (중복 제거)
-				if (pObject->m_Active && !pObject->m_Deactivate)
+				if (pObject->IsActive() && !pObject->IsDeactivated())
 				{
 					m_vecDelayedTask.push_back(std::move(task));
 				}
 
-				pObject->m_Deactivate = true;
+				pObject->SetDeactivated(true);
 			}
 		}
 			break;
@@ -197,7 +197,7 @@ void CTaskMgr::Tick()
 				}
 			}
 			break;
-		
+
 		case TASK_TYPE::CHANGE_LEVEL:
 			{
 				auto pNextLevel = (CLevel*)task.Param0;
