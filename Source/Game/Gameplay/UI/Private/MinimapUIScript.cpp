@@ -76,6 +76,50 @@ void MinimapUIScript::Begin()
 	}
 
 
+	//const vector<CGameObject*>& VecObject = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(7)->GetObjects();
+	//for (auto& EnemyObj : VecObject)
+	//{
+	//	EnemyController* EScript = static_cast<EnemyController*>(GetScriptWithType(EnemyObj, SCRIPT_TYPE::ENEMYCONTROLLER));
+	//
+	//	if (EScript == nullptr)
+	//		continue;
+	//	else
+	//	{
+	//		// 적 점 UI생성
+	//		CGameObject* EnemyDot = new CGameObject;
+	//		EnemyDot->SetName(L"EnemyDot");
+	//		EnemyDot->AddComponent(new CUI);
+	//		EnemyDot->AddComponent(new CUIRender);
+	//
+	//		// 적은 빨간색 점
+	//		EnemyDot->UI()->SetColor(Vec4(1.f, 0.f, 0.f, 1.f));
+	//		EnemyDot->UI()->SetRectSize(Vec2(6.f, 6.f));
+	//
+	//		// 미니맵 UI에 자식으로 추가
+	//		GetOwner()->AddChild(EnemyDot);
+	//
+	//		// 적 점 저장
+	//		m_EnemyDots.push_back({ EnemyObj, EnemyDot });
+	//	}
+	//}
+
+	// 플레이어 방향 삼각형 UI 생성
+	if (!m_PlayerArrow)
+	{
+		m_PlayerArrow = new CGameObject;
+		m_PlayerArrow->SetName(L"PlayerMinimapUIArrow");
+		m_PlayerArrow->AddComponent(new CUI);
+		m_PlayerArrow->AddComponent(new CUIRender);
+
+		m_PlayerArrow->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"TriangleMesh"));
+		m_PlayerArrow->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+
+		m_PlayerArrow->UI()->SetColor(Vec4(0.f, 1.f, 0.f, 0.2f));
+		m_PlayerArrow->UI()->SetRectSize(Vec2(40.f, 80.f));
+		m_PlayerArrow->UI()->SetRectPos(Vec2(0.f, 0.f));
+
+		GetOwner()->AddChild(m_PlayerArrow);
+	}
 }
 
 void MinimapUIScript::Tick()
@@ -84,7 +128,11 @@ void MinimapUIScript::Tick()
 	UpdatePlayerDot();
 
 	// 2. 적은 빨간점으로 추적...이지만fps게임에서 적의 위치를 표기하는게맞나?
-	UpdateEnemyDots();
+	//UpdateEnemyDots();
+
+	// 3. 죽은 적 위치 업데이트
+	CheckForNewDeadEnemies();
+	UpdateDeadEnemies();
 }
 
 void MinimapUIScript::UpdatePlayerDot()
@@ -95,6 +143,19 @@ void MinimapUIScript::UpdatePlayerDot()
 	// 플레이어는 항상 미니맵 중앙에 위치
 	m_PlayerDot->UI()->SetRectPos(Vec2(0.f, 0.f));
 
+	// 시야를 플레이어 방향으로 회전
+	Vec3 playerRotation = m_Player->Transform()->GetRelativeRotation();
+	float yRotation = playerRotation.y;
+	float radians = yRotation * (XM_PI / 180.f);
+	m_PlayerArrow->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, -yRotation));
+
+	// 플레이어에서 조금 떨어진 위치에 배치
+	float arrowDistance = 35.f;
+	Vec2 arrowPos;
+	arrowPos.x = -sin(radians) * arrowDistance;
+	arrowPos.y = -cos(radians) * arrowDistance;
+
+	m_PlayerArrow->UI()->SetRectPos(arrowPos);
 }
 
 void MinimapUIScript::UpdateEnemyDots()
@@ -148,6 +209,108 @@ void MinimapUIScript::UpdateEnemyDots()
 		else
 		{
 			SetObjectActive(EnemyObj.Dot, false);
+		}
+	}
+}
+
+void MinimapUIScript::CheckForNewDeadEnemies()
+{
+	// 적 레이어(7번) 검사
+	CLevel* currentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+
+	CLayer* enemyLayer = currentLevel->GetLayer(7);
+
+	const vector<CGameObject*>& Enemies = enemyLayer->GetParentObjects();
+
+	for (CGameObject* enemy : Enemies)
+	{
+		if (!enemy)
+		{
+			continue;
+		}
+		// 오브젝트 ID 가져오기
+		UINT enemyID = enemy->GetObjectID();
+
+		// EnemyController 컴포넌트 확인
+		EnemyController* enemyController = static_cast<EnemyController*>(GetScriptWithType(enemy, SCRIPT_TYPE::ENEMYCONTROLLER));
+
+		if (!enemyController)
+		{
+			continue;
+		}
+
+		// Death 상태이고 아직 처리되지 않은 적인지 ID로 확인
+		if (enemyController->GetState() == Enemy_State::Death && m_ProcessedDeadEnemyIDs.find(enemyID) == m_ProcessedDeadEnemyIDs.end())
+		{
+			// 새로 죽은 적 위치 저장
+			Vec3 deathPos = enemy->Transform()->GetRelativePos();
+
+			// 죽은 적 UI 생성
+			CGameObject* deadEnemyDot = new CGameObject;
+			deadEnemyDot->SetName(L"DeadEnemyDot");
+			deadEnemyDot->AddComponent(new CUI);
+			deadEnemyDot->AddComponent(new CUIRender);
+
+			// 죽은 적은 어두운 빨간색 표시
+			deadEnemyDot->UI()->SetColor(Vec4(0.5f, 0.5f, 0.5f, 0.6f));
+			deadEnemyDot->UI()->SetRectSize(Vec2(8.f, 8.f));
+
+			GetOwner()->AddChild(deadEnemyDot);
+
+			// 죽은 적 정보 추가
+			DeadEnemyInfo deadInfo;
+			deadInfo.WorldPos = deathPos;
+			deadInfo.Dot = deadEnemyDot;
+			deadInfo.EnemyID = enemyID;  // 원본 적 ID 저장
+
+			m_DeadEnemies.push_back(deadInfo);
+
+			// 처리 완료 표시 (중복 방지)
+			m_ProcessedDeadEnemyIDs.insert(enemyID);
+		}
+	}
+}
+
+void MinimapUIScript::UpdateDeadEnemies()
+{
+	if (!m_Player)
+	{
+		return;
+	}
+
+	CGameObject* minimapCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MinimapCamera");
+	if (!minimapCamera)
+	{
+		return;
+	}
+
+	Matrix viewMatrix = minimapCamera->Camera()->GetViewMat();
+	Matrix projMatrix = minimapCamera->Camera()->GetProjMat();
+	Matrix viewProjMatrix = viewMatrix * projMatrix;
+
+	// 죽은 적들 업데이트
+	for (int i = m_DeadEnemies.size() - 1; i >= 0; --i)
+	{
+		DeadEnemyInfo& deadEnemy = m_DeadEnemies[i];
+
+		// 위치 업데이트
+		Vec4 worldPos = Vec4(deadEnemy.WorldPos.x, deadEnemy.WorldPos.y, deadEnemy.WorldPos.z, 1.0f);
+		Vec4 screenPos = XMVector4Transform(worldPos, viewProjMatrix);
+
+		Vec2 minimapSize = Vec2(300.f, 300.f);
+		Vec2 uiPos;
+		uiPos.x = screenPos.x * (minimapSize.x / 2.f);
+		uiPos.y = screenPos.y * (minimapSize.y / 2.f);
+
+		// 미니맵 범위 내에 있는지 확인
+		if (abs(screenPos.x) <= 1.0f && abs(screenPos.y) <= 1.0f)
+		{
+			deadEnemy.Dot->UI()->SetRectPos(uiPos);
+			SetObjectActive(deadEnemy.Dot, true);
+		}
+		else
+		{
+			SetObjectActive(deadEnemy.Dot, false);
 		}
 	}
 }
