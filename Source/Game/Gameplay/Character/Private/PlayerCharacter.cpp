@@ -50,30 +50,28 @@ PlayerCharacter::PlayerCharacter()
 	, m_MaxBoost(100.f)
 	, m_CurBoost(0.f)
 	, m_HealType(ITEM_TYPE::END)
-	, m_RemainTime(0.f)
-	, m_TotalTime(0.f)
+	, m_HealRemainTime(0.f)
+	, m_HealTotalTime(0.f)
 	, m_HealAmount(0.f)
 	, m_BoostRemainTime(0.f)
 	, m_BoostTotalTime(8.f)
 	, m_BoostUnit(0.3f)
 	, m_BoostSpeed(1.f)
 	, m_KillCounts(0)
+	, m_MotionState(MOTION_STATE::STAND)
+	, m_ActionState(ACTION_STATE::NONE)
 	, m_InventoryCanvasUI(nullptr)
 	, m_InventoryOpened(false)
 	, m_CardinalImageUI(nullptr)
 	, m_HPUI(nullptr)
 	, m_ItemUseUI(nullptr)
+	, m_bMouseActive(false)
 {
-	AddScriptParam(tScriptParam{SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });				// 질량
+	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });	// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "MaxSpeed", &m_MaxSpeed });	// 최고속도
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "GravityAccel", &m_GravityAccel });	// 중력 가속도
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "GravityMaxSpeed", &m_GravityMaxSpeed });	// 중력 최대속도
-
-	//AddScriptParam(tScriptParam{SCRIPT_PARAM::TEXTURE, "Test Texture", &m_TargetTex});
-	//AddScriptParam(tScriptParam{SCRIPT_PARAM::PREFAB, "Missile", &m_Prefab});
-
-
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "CurHP", &m_CurHP });
 }
 
@@ -109,6 +107,7 @@ void PlayerCharacter::Begin()
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
 	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
 	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
+
 	// 마우스 끄기
 	CKeyMgr::GetInst()->SetCursorVisible(false);
 }
@@ -192,8 +191,7 @@ void PlayerCharacter::Tick()
 			PlayerView();
 		}
 
-		PlayerAttack();
-		PlayerReload();
+		PlayerControlWeapon();
 	}
 }
 
@@ -404,75 +402,76 @@ void PlayerCharacter::PlayerStance()
 	}
 
 }
-
-void PlayerCharacter::PlayerReload()
-{
-	if (KEY_TAP(KEY::R))
-	{
-		// 현재 무기 슬롯이 총이라면
-		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
-		{
-			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
-			pGunScript->SetCurKey(KEY::R);
-			pGunScript->SetCurKeyState(KEY_STATE::TAP);
-			SetObjectActive(m_ReloadUI, true);
-			m_bReloading = true;
-		}
-	}
-
-	if (!m_bReloading)
-	{
-		SetObjectActive(m_ReloadUI, false);
-	}
-	else
-	{
-		if (KEY_TAP(KEY::F))
-		{
-			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
-			pGunScript->SetCurKey(KEY::F);
-			pGunScript->SetCurKeyState(KEY_STATE::TAP);
-			m_bReloading = false;
-		}
-	}
-		
-}
-
-void PlayerCharacter::PlayerAttack()
+void PlayerCharacter::PlayerControlWeapon()
 {
 	bool bSearch = m_CamScript->GetFlag(SEARCH);
 
 	if (!bSearch && !m_InventoryOpened)
 	{
-		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
+		int curSlot = m_InventoryScript->GetCurSlotIdx();
 
-		if (KEY_TAP(KEY::RBTN))
-		{
-			// 현재 무기 슬롯이 총이라면
-			if (m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
-			{
-				pWeaponController->SetCurKey(KEY::RBTN);
-				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-			}
-		}
+		// 무기 슬롯이 아니라면 리턴
+		if (!(PRIMARY_FIRST <= curSlot && curSlot <= THROWABLE_SECOND))
+			return;
+
+		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
+		assert(pWeaponController != nullptr);
+
+		// ======
+		// 좌클릭
+		// ======
 
 		if (KEY_TAP(KEY::LBTN))
 		{
-			// 현재 무기 슬롯이 총이라면
-			if (m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
+			pWeaponController->SetCurKey(KEY::LBTN);
+			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+		}
+		else if (KEY_PRESSED(KEY::LBTN))
+		{
+			pWeaponController->SetCurKey(KEY::LBTN);
+			pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
+		}
+		else if (KEY_RELEASED(KEY::LBTN))
+		{
+			pWeaponController->SetCurKey(KEY::LBTN);
+			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
+
+			// 총기
+			if (m_bShoot)
 			{
-				pWeaponController->SetCurKey(KEY::LBTN);
-				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+				m_bShoot = false;
+			}
+
+			// 투척무기
+			if (m_bCanThrow)
+			{
+				if (m_InventoryScript->GetCurWeapon() != nullptr)
+				{
+					// 인벤토리에서 투척무기 하나 제거
+					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+					 
+					// 아이템이 남지 않았다면
+					if (!m_InventoryScript->UseItem(type, 1))
+					{
+						m_bCanThrow = false;
+					}
+				}
 			}
 		}
 
-		if (KEY_PRESSED(KEY::LBTN))
+		// ======
+		// 우클릭
+		// ======
+
+		if (KEY_TAP(KEY::RBTN))
 		{
-			// 총을 사용한다.
-			if (m_bShoot)
-			{
-				pWeaponController->SetCurKey(KEY::LBTN);
-				pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
-			}
+			pWeaponController->SetCurKey(KEY::RBTN);
+			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+		}
+		else if (KEY_PRESSED(KEY::RBTN))
+		{
+			pWeaponController->SetCurKey(KEY::RBTN);
+			pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
 
 			if (m_bCanThrow)
 			{
@@ -483,125 +482,68 @@ void PlayerCharacter::PlayerAttack()
 				}
 			}
 		}
-
-		if (KEY_RELEASED(KEY::LBTN))
+		else if (KEY_RELEASED(KEY::RBTN))
 		{
-			// 총기
-			if (m_bShoot)
-			{
-				m_bShoot = false;
-				pWeaponController->SetCurKey(KEY::LBTN);
-				pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
-			}
+			pWeaponController->SetCurKey(KEY::RBTN);
+			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
 
 			// 투척무기
 			if (m_bCanThrow)
 			{
 				if (m_InventoryScript->GetCurWeapon() != nullptr)
 				{
-					pWeaponController->SetCurKey(KEY::LBTN);
-					pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
-
 					// 인벤토리에서 투척무기 하나 제거
 					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
-					// 아이템이 남았다면
-					if (m_InventoryScript->UseItem(type, 1))
-					{
-						// TODO: object pooling으로 개선
-						Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(type).Prefab;
-						CGameObject* newItem = pPrefab->Instantiate();
-						CreateObject(newItem, 0, false);
-
-						// REUSE : 기존 슬롯에 prefab을 장착
-						m_InventoryScript->EquipSlot(newItem, type, m_InventoryScript->GetCurSlotIdx(), false);
-
-						// 손에 부착
-						m_InventoryScript->ActivateSlot(m_InventoryScript->GetCurSlotIdx());
-					}
-
 					// 아이템이 남지 않았다면
-					else
+					if (!m_InventoryScript->UseItem(type, 1))
 					{
-						m_InventoryScript->ClearSlot(m_InventoryScript->GetCurSlotIdx());
 						m_bCanThrow = false;
 					}
 				}
 			}
 		}
 
-		if (KEY_TAP(KEY::RBTN))
+		// ===
+		// R키
+		// ===
+		if (KEY_TAP(KEY::R))
 		{
-			// 투척무기이면
-			if (THROWABLE_FIRST <= m_InventoryScript->GetCurSlotIdx() && m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
+			if ((PRIMARY_FIRST <= curSlot && curSlot <= PRIMARY_SECOND)
+				|| (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND && m_bCanThrow))
 			{
-				WeaponController* pWeaponScript = m_InventoryScript->GetCurWeaponController();
-				pWeaponScript->SetCurKey(KEY::RBTN);
-				pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
+				pWeaponController->SetCurKey(KEY::R);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+				SetObjectActive(m_ReloadUI, true);
+				m_bReloading = true;
 			}
-		}
 
-		if (KEY_PRESSED(KEY::RBTN))
-		{
-			if (m_bCanThrow)
+			if (!m_bReloading)
 			{
-				if (KEY_TAP(KEY::R))
+				SetObjectActive(m_ReloadUI, false);
+			}
+			else
+			{
+				if (KEY_TAP(KEY::F))
 				{
-					WeaponController* pWeaponScript = m_InventoryScript->GetCurWeaponController();
-					pWeaponScript->SetCurKey(KEY::R);
-					pWeaponScript->SetCurKeyState(KEY_STATE::TAP);
+					WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+					pGunScript->SetCurKey(KEY::F);
+					pGunScript->SetCurKeyState(KEY_STATE::TAP);
+					m_bReloading = false;
 				}
 			}
 		}
 
-		if (KEY_RELEASED(KEY::RBTN))
-		{
-			// 투척무기
-			if (m_bCanThrow)
-			{
-				if (m_InventoryScript->GetCurWeapon() != nullptr)
-				{
-					WeaponController* pWeaponScript = m_InventoryScript->GetCurWeaponController();
-					pWeaponScript->SetCurKey(KEY::RBTN);
-					pWeaponScript->SetCurKeyState(KEY_STATE::RELEASED);
 
-					// 인벤토리에서 투척무기 하나 제거
-					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
-
-					// 아이템이 남았다면
-					if (m_InventoryScript->UseItem(type, 1))
-					{
-						// TODO: object pooling으로 개선
-						Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(type).Prefab;
-						CGameObject* newItem = pPrefab->Instantiate();
-						CreateObject(newItem, 0, false);
-
-						// REUSE : 기존 슬롯에 prefab을 장착
-						m_InventoryScript->EquipSlot(newItem, type, m_InventoryScript->GetCurSlotIdx());
-
-						// 손에 부착
-						m_InventoryScript->ActivateSlot(m_InventoryScript->GetCurSlotIdx());
-					}
-
-					// 아이템이 남지 않았다면
-					else
-					{
-						m_InventoryScript->ClearSlot(m_InventoryScript->GetCurSlotIdx());
-						m_bCanThrow = false;
-					}
-				}
-			}
-		}
-
+		// ===
+		// B키
+		// ===
 		if (KEY_TAP(KEY::B))
 		{
-			// 현재 무기 슬롯이 총이라면
-			if (m_InventoryScript->GetCurSlotIdx() <= THROWABLE_SECOND)
-			{
-				pWeaponController->SetCurKey(KEY::B);
-				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-			}
+			pWeaponController->SetCurKey(KEY::B);
+			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 		}
+		
 	}
 }
 
@@ -660,10 +602,10 @@ void PlayerCharacter::PlayerHeal()
 	// 회복 아이템 사용중이면
 	if (IS_HEAL(type) || IS_BOOST(type))
 	{
-		m_RemainTime -= DT;
+		m_HealRemainTime -= DT;
 
 		// 완료
-		if (m_RemainTime <= 0.f)
+		if (m_HealRemainTime <= 0.f)
 		{
 			m_InventoryScript->UseItem(m_HealType);
 
@@ -689,7 +631,7 @@ void PlayerCharacter::PlayerHeal()
 
 			// 값 초기화
 			m_HealType = ITEM_TYPE::END;
-			m_RemainTime = 0.f;
+			m_HealRemainTime = 0.f;
 			m_HealAmount = 0.f;
 
 			SetObjectActive(m_ItemUseUI, false);
@@ -699,11 +641,11 @@ void PlayerCharacter::PlayerHeal()
 		else
 		{
 			// ItemUseUI : 아이템 사용딜레이 ui
-			m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - m_RemainTime / m_TotalTime);
+			m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - m_HealRemainTime / m_HealTotalTime);
 
 			// 남은 시간 글씨 출력
 			wchar_t text[4]{};	// 3글자 출력
-			swprintf_s(text, L"%.1f", m_RemainTime);
+			swprintf_s(text, L"%.1f", m_HealRemainTime);
 			m_ItemUseUI->UI()->GetTextInfoRef()[0].Text = text;
 		}
 	}
@@ -759,16 +701,19 @@ void PlayerCharacter::PlayerHeal()
 	}
 }
 
-void PlayerCharacter::DemageCalcul(CGameObject* PAtkObj, CGameObject* PWeapon, float PDamage)
+void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage)
 {
-	m_CurHP -= PDamage;
+	m_CurHP -= _Damage;
 
 	// 사망
 	if (m_CurHP <= 0)
 	{
 		m_CurHP = 0;
-		m_KillinfoScript->SetKillInfo(PAtkObj->GetName(), GetOwner()->GetName(), PWeapon->GetName());
+		m_KillinfoScript->SetKillInfo(_AtkObj->GetName(), GetOwner()->GetName(), _Weapon->GetName());
 		m_KillinfoScript->OnEvent();
+
+		// 상태
+		SetActionState(ACTION_STATE::DEAD);
 	}
 
 }
@@ -791,7 +736,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 			CantHeal = true;
 			break;
 		}
-		m_TotalTime = m_RemainTime = 6.f;
+		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 75.f;
 		break;
 	case ITEM_TYPE::MED_KIT:
@@ -800,7 +745,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 			CantHeal = true;
 			break;
 		}
-		m_TotalTime = m_RemainTime = 8.f;
+		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
 		break;
 	case ITEM_TYPE::BANDAGE:
@@ -809,19 +754,19 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 			CantHeal = true;
 			break;
 		}
-		m_TotalTime = m_RemainTime = 4.f;
+		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 10.f;
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
-		m_TotalTime = m_RemainTime = 6.f;
+		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 100.f;
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
-		m_TotalTime = m_RemainTime = 6.f;
+		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 60.f;
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
-		m_TotalTime = m_RemainTime = 4.f;
+		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 40.f;
 		break;
 	default:

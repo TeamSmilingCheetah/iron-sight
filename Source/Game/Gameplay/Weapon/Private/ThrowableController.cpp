@@ -5,10 +5,13 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
+#include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Weapon/public/BombController.h"
 
@@ -22,11 +25,15 @@ ThrowableController::ThrowableController()
 	, m_GravityAccel(1000.f)
 	, m_CurClipAccTime(0.f)
 	, m_TriggeredTime(6.f)
+	, m_ThrowAngle(0.f)
 	, m_bGround(false)
 	, m_bCanThrow(false)
 	, m_bThrow(false)
 	, m_bTrigger(false)
 	, m_ThownOwner(nullptr)
+	, m_Player(nullptr)
+	, m_PlayerScript(nullptr)
+	, m_AfterThrowAccTime(0.f)
 
 {
 	m_Mass = 4.f;
@@ -79,41 +86,78 @@ void ThrowableController::Tick()
 	if(m_EquippedOwner)
 		AdjustFPSPos();
 
-	// 투척 준비
+	// 투척 준비 상태 진입
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bCanThrow = true;
 		pPlayerScript->SetThrow(true);
 		ClearKey();
+
+		// 상태
+		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE);
 	}
 
-
-	// 투척 한다.
-	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
+	// 투척 상태 진입 가능한 지 판정
+	if (m_EquippedOwner && m_bCanThrow)
 	{
-		// Player의 위치와 방향 정보
-		Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
+		int pauseFrame = 0;
+		int curFrame = m_EquippedOwner->Animator3D()->GetCurFrameIdx();
 
-		// 부모를 없는 독립 개체로 바꿔준다.
-		AddChild(nullptr, GetOwner());
-		// 본래 Layer로 변경해준다.
-		ChangeLayer(GetOwner(), 0);
+		bool readyToThrow = false;
+		switch (m_PlayerScript->GetMotionState())
+		{
+		case MOTION_STATE::STAND:
+			pauseFrame = 47;
+			readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetKey() == L"Animation\\Armature_toss grenade.anim"
+				&& pauseFrame <= curFrame;
+			break;
+		case MOTION_STATE::PRONE:
+			pauseFrame = 53;
+			readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetKey() == L"Animation\\Armature_prone toss grenade.anim"
+				&& pauseFrame <= curFrame;
+			break;
+		}
 
-		// 현재 Player 위치에 무기를 다시 생성시킨다.
-		Vec3 vSpanwPos = vPlayerPos;
-		vSpanwPos.y += 800.f;
-		GetOwner()->Transform()->SetRelativePos(vSpanwPos);
+		// 준비 자세가 된 경우
+		if (readyToThrow)
+		{
+			m_EquippedOwner->Animator3D()->SetCurClipFrame(pauseFrame);
+			m_EquippedOwner->Animator3D()->Pause();
 
-		// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
-		GetOwner()->Collider3D()->SetTrigger(false);
+			if (m_CurKey == KEY::LBTN
+				&& (m_CurKeyState == KEY_STATE::RELEASED || m_CurKeyState == KEY_STATE::NONE))
+			{
+				// Player의 위치와 방향 정보
+				Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
 
-		m_ThrowAngle = 0.2f;
-		m_Speed = 8000.f;
-		m_bThrow = true;
-		ClearKey();
+				// 부모를 없는 독립 개체로 바꿔준다.
+				AddChild(nullptr, GetOwner());
+				// TEST: 5번 (player object layer)로 변경
+				ChangeLayer(GetOwner(), 5);
+
+				// 현재 Player 위치에 무기를 다시 생성시킨다.
+				Vec3 vSpanwPos = vPlayerPos;
+				vSpanwPos.y += 800.f;
+				GetOwner()->Transform()->SetRelativePos(vSpanwPos);
+
+				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
+				GetOwner()->Collider3D()->SetTrigger(false);
+
+				// 애니메이션 다시 재생
+				m_EquippedOwner->Animator3D()->Play();
+
+				// 애니메이션 다 끝날 때까지 상태 유지
+				m_AfterThrowAccTime = 0.f;
+				m_bAfterThrow = true;
+
+				m_ThrowAngle = 0.2f;
+				m_Speed = 8000.f;
+				m_bThrow = true;
+				ClearKey();
+			}
+		}
 	}
-
-
+	
 	// 투척 준비
 	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
@@ -121,7 +165,6 @@ void ThrowableController::Tick()
 		pPlayerScript->SetThrow(true);
 		ClearKey();
 	}
-
 
 	// 투척 한다.
   	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::RELEASED)
@@ -132,7 +175,7 @@ void ThrowableController::Tick()
 		// 부모를 없는 독립 개체로 바꿔준다.
 		AddChild(nullptr, GetOwner());
 		// 본래 Layer로 변경해준다.
-		ChangeLayer(GetOwner(), 0);
+		ChangeLayer(GetOwner(), 2);
 
 		// 현재 Player 위치에 무기를 다시 생성시킨다.
 		Vec3 vSpanwPos = vPlayerPos;
@@ -153,7 +196,6 @@ void ThrowableController::Tick()
 	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bTrigger = true;
-
 	}
 
 
@@ -165,6 +207,19 @@ void ThrowableController::Tick()
 	if (m_bThrow)
 	{
 		Throw();
+	}
+
+	if (m_bAfterThrow)
+	{
+		if (m_AfterThrowAccTime < m_ActionEndTime)
+		{
+			m_AfterThrowAccTime += DT;
+		}
+		else
+		{
+			m_PlayerScript->SetActionState(ACTION_STATE::NONE);
+			m_bAfterThrow = false;
+		}
 	}
 }
 
@@ -206,6 +261,15 @@ void ThrowableController::Triggered()
 				Instantiate(GrenadeBombPrefab, vPos, 0);
 			}
 		}
+
+		// 플레이어 슬롯에 장착된 상태로 폭발하는 경우
+		if (m_Player && m_EquippedOwner && !GetOwner()->IsDead())
+		{
+			ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::ITEMSCRIPT));
+			static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT))->UseItem(pItem->GetItemType(), 1);
+			m_PlayerScript->SetThrow(false);
+		}
+
 		DestroyObject(GetOwner());
 	}
 }
@@ -227,7 +291,7 @@ void ThrowableController::Throw()
 	}
 
 	// 방향을 구한뒤 소유주를 삭제한다.
-	m_EquippedOwner = nullptr;
+	SetEquippedOwner(nullptr);
 
 	// 감속
 	float dragCoeff = 2.f;
@@ -254,7 +318,6 @@ void ThrowableController::Throw()
 		vRot.z += m_Speed / 10.f * m_Dir.x * DT;
 		vRot.x += m_Speed / 10.f * m_Dir.z * DT;
 	}
-
 
 	// 위치값을 갱신한다
 	vPos = vPos + m_Velocity * DT;

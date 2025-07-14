@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Client/UI/Public/Asset/AnimationUI.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Client/Core/Public/CEditorMgr.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-
 #include "Client/Script/Public/CEditorSpaceCamScript.h"
+
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 AnimationUI::AnimationUI()
 	: AssetUI("Animation", ANIMATION)
@@ -148,6 +149,15 @@ void AnimationUI::Render_Update()
 	ImGui::SetNextItemWidth(150.f);
 	ImGui::InputInt("##AnimationCropFrame2", &m_FrameRange[1]);
 
+	// Loop
+	ImGui::Text("Loop");
+	ImGui::SameLine();
+
+	bool isLoop = m_SkinnedModel->Animator3D()->GetCurClip()->IsLoop();
+	if (ImGui::Checkbox("##LoopAnimation", &isLoop))
+	{
+		m_SkinnedModel->Animator3D()->GetCurClip()->SetLoop(isLoop);
+	}
 
 	SaveButton();
 }

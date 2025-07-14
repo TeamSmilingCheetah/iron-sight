@@ -53,6 +53,7 @@ public:
 	void ClearKey();
 
 	WEAPON_TYPE GetWeaponType() { return m_WeaponType; }
+
 protected:
 	void AdjustFPSPos();
 	void TransitionPos(Vec3 _DesPos);

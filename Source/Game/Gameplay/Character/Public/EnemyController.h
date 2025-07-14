@@ -85,7 +85,7 @@ public:
 	void LoadComponent(FILE* _File) override;
 
 public:
-	virtual void DemageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage);		// 피격 처리
+	virtual void DamageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon, float _Damage);		// 피격 처리
 	virtual void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
 	virtual void DetachItem(CGameObject* _Item);
 
@@ -103,9 +103,9 @@ public:
 private:
 	void UpdatePosition();
 	void UpdateRotation();
-	void MoveCalcul();
-	void gravityCalcul();
-	void ColliderCalcul();
+	void UpdateMove();
+	void UpdateGravity();
+	void UpdateCollision();
 
 public:
 	EnemyController(SCRIPT_TYPE _Type);

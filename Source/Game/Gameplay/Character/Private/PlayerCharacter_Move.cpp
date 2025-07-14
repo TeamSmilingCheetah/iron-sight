@@ -6,6 +6,7 @@
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -14,28 +15,38 @@
 
 void PlayerCharacter::PlayerMove()
 {
-	// 힘을 0 으로 초기화
-	m_Force = Vec3(0.f, 0.f, 0.f);
-
-	Vec3 vPos = Transform()->GetRelativePos();
-
 	// 이동할 방향 연산
-	MoveCalcul();
+	UpdateMove();
 
 	// 중력 연산
-	gravityCalcul();
+	UpdateGravity();
 
 	// 충돌 연산
-	ColliderCalcul();
+	UpdateCollision();
 
+	// 위치 업데이트
+	Vec3 vPos = Transform()->GetRelativePos();
 	vPos += m_Velocity * 100 * DT;
+
 	Transform()->SetRelativePos(vPos);
+
+	// 애니메이션
+	AnimationControl();
+
+	// 초기화
+	InitMove();
+}
+
+void PlayerCharacter::InitMove()
+{
+	// 힘을 0 으로 초기화
+	m_Force = Vec3(0.f, 0.f, 0.f);
 
 	// 충돌벡터 초기화
 	m_vecCollisionNormal.clear();
 }
 
-void PlayerCharacter::MoveCalcul()
+void PlayerCharacter::UpdateMove()
 {
 	// 방향키입력 확인
 	Vec3 vRot = Transform()->GetRelativeRotation();
@@ -161,7 +172,7 @@ void PlayerCharacter::MoveCalcul()
 	}
 }
 
-void PlayerCharacter::gravityCalcul()
+void PlayerCharacter::UpdateGravity()
 {
 	// 땅 위에 있나 판단
 	m_IsGround = false;
@@ -190,6 +201,12 @@ void PlayerCharacter::gravityCalcul()
 		if (m_GravityVelocity.y < 0.f)
 		{
 			m_GravityVelocity = Vec3(0.f, 0.f, 0.f);
+
+			// 상태
+			if (m_ActionState == ACTION_STATE::JUMP)
+			{
+				SetActionState(ACTION_STATE::NONE);
+			}
 		}
 	}
 
@@ -197,12 +214,15 @@ void PlayerCharacter::gravityCalcul()
 	if (m_IsGround && KEY_TAP(KEY::SPACE))
 	{
 		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
+
+		// 상태
+		SetActionState(ACTION_STATE::JUMP);
 	}
 
 	m_Velocity += m_GravityVelocity;
 }
 
-void PlayerCharacter::ColliderCalcul()
+void PlayerCharacter::UpdateCollision()
 {
 	// 충돌 처리
 	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
@@ -215,6 +235,168 @@ void PlayerCharacter::ColliderCalcul()
 			// 충돌 방향으로의 속도 성분 제거
 			m_Velocity -= m_vecCollisionNormal[i] * dotProduct;
 		}
+	}
+}
+
+void PlayerCharacter::AnimationControl()
+{
+	float delay = 0.f;
+	wstring clipName = L"";
+
+	switch (m_ActionState)
+	{
+	case ACTION_STATE::JUMP:
+	{
+		delay = 0.02f;
+		clipName = L"Animation\\Armature_rifle jump.anim";
+	}
+		break;
+	case ACTION_STATE::GUN_FIRE:
+	{
+		delay = 0.02f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_firing rifle.anim";
+			break;
+		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+			clipName = L"Animation\\Armature_firing rifle.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone firing rifle.anim";
+			break;
+		}
+	}
+		break;
+	case ACTION_STATE::GUN_RELOAD:
+	{
+		delay = 0.4f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_reloading.anim";
+			break;
+		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+			clipName = L"Animation\\Armature_reloading.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone reloading.anim";
+			break;
+		}
+	}
+		break;
+	case ACTION_STATE::GRENADE:
+	{
+		delay = 1.f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_toss grenade.anim";
+			break;
+		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
+			clipName = L"Animation\\Armature_toss grenade.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone toss grenade.anim";
+			break;
+		}
+	}
+		break;
+	case ACTION_STATE::BANDAGE:
+		break;
+	case ACTION_STATE::MED_KIT:
+		break;
+	case ACTION_STATE::FIRST_AID_KIT:
+		break;
+	case ACTION_STATE::ENERGY_DRINK:
+		break;
+	case ACTION_STATE::PAIN_KILLER:
+		break;
+	case ACTION_STATE::ADRENALINE_SYRINGE:
+		break;
+	case ACTION_STATE::DEAD:
+	{
+		delay = 1.f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_death from the front.anim";
+			break;
+		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
+			clipName = L"Animation\\Armature_death from the front.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone death.anim";
+			break;
+		}
+	}
+		break;
+	case ACTION_STATE::NONE:
+	{
+		delay = 0.07f;
+
+		if (KEY_PRESSED(KEY::W))
+		{
+			if (m_MotionState == MOTION_STATE::CROUCH)
+				clipName = L"Animation\\Armature_walk crouching forward.anim";
+			else if (m_MotionState == MOTION_STATE::PRONE)
+				clipName = L"Animation\\Armature_prone forward.anim";
+			else if (KEY_PRESSED(KEY::LSHIFT))
+				clipName = L"Animation\\Armature_run forward.anim";
+			else
+				clipName = L"Animation\\Armature_walk forward.anim";
+		}
+		else if (KEY_PRESSED(KEY::A))
+		{
+			if (m_MotionState == MOTION_STATE::CROUCH)
+				clipName = L"Animation\\Armature_walk crouching left.anim";
+			else if (m_MotionState == MOTION_STATE::PRONE)
+				clipName = L"Animation\\Armature_prone left.anim";
+			else if (KEY_PRESSED(KEY::LSHIFT))
+				clipName = L"Animation\\Armature_run left.anim";
+			else
+				clipName = L"Animation\\Armature_walk left.anim";
+		}
+		else if (KEY_PRESSED(KEY::S))
+		{
+			if (m_MotionState == MOTION_STATE::CROUCH)
+				clipName = L"Animation\\Armature_walk crouching backward.anim";
+			else if (m_MotionState == MOTION_STATE::PRONE)
+				clipName = L"Animation\\Armature_prone backward.anim";
+			else if (KEY_PRESSED(KEY::LSHIFT))
+				clipName = L"Animation\\Armature_run backward.anim";
+			else
+				clipName = L"Animation\\Armature_walk backward.anim";
+		}
+		else if (KEY_PRESSED(KEY::D))
+		{
+			if (m_MotionState == MOTION_STATE::CROUCH)
+				clipName = L"Animation\\Armature_walk crouching right.anim";
+			else if (m_MotionState == MOTION_STATE::PRONE)
+				clipName = L"Animation\\Armature_prone right.anim";
+			else if (KEY_PRESSED(KEY::LSHIFT))
+				clipName = L"Animation\\Armature_run right.anim";
+			else
+				clipName = L"Animation\\Armature_walk right.anim";
+		}
+		else
+		{
+			if (m_MotionState == MOTION_STATE::CROUCH)
+				clipName = L"Animation\\Armature_idle crouching.anim";
+			else if (m_MotionState == MOTION_STATE::PRONE)
+				clipName = L"Animation\\Armature_prone idle.anim";
+			else
+				clipName = L"Animation\\Armature_idle.anim";
+		}
+	}
+		break;
+	}
+
+
+	if (Animator3D()->GetCurClip()->GetKey() != clipName
+		&& (Animator3D()->GetNextClip() == nullptr ||  Animator3D()->GetNextClip()->GetKey() != clipName))
+	{
+		Animator3D()->SetCurClipBlend(clipName, delay);
 	}
 }
 

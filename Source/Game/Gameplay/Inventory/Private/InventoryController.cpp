@@ -65,7 +65,6 @@ void InventoryController::Begin()
 		}
 	}
 
-
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera"), SCRIPT_TYPE::CAMERASCRIPT));
 }
 
@@ -257,10 +256,34 @@ bool InventoryController::UseItem(ITEM_TYPE _Type, int _Count)
 
 	m_InventoryChanged = true;
 
-	if (m_arrInventory[static_cast<UINT>(_Type)] == 0)
-		return false;
+	// 사용한 아이템이 현재 슬롯이었다면
+	if (m_CurSlotIdx != NONE_WEAPON
+		&& m_vecWeaponSlot[m_CurSlotIdx].Type == _Type)
+	{
+		// 아이템이 남아있다면
+		if (m_arrInventory[static_cast<UINT>(_Type)] > 0)
+		{
+			// TODO: object pooling으로 개선
+			Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(_Type).Prefab;
+			CGameObject* newItem = pPrefab->Instantiate();
+			CreateObject(newItem, 0, false);
 
-	return true;
+			// REUSE : 기존 슬롯에 prefab을 장착
+			EquipSlot(newItem, _Type, m_CurSlotIdx, false);
+
+			// 손에 부착
+			ActivateSlot(m_CurSlotIdx);
+		}
+
+		// 아이템이 남지 않았다면
+		else
+		{
+			ClearSlot(m_CurSlotIdx);
+		}
+	}
+
+	// 아이템이 남았는지 여부를 리턴
+	return m_arrInventory[static_cast<UINT>(_Type)] > 0;
 }
 
 void InventoryController::DropItem(ITEM_TYPE _Type, int _Count)

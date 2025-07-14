@@ -59,6 +59,7 @@ void GameFactory::LoadDefaultCollisionSetting()
 	// Toggle 대신 Default가 충돌 안함 상태, Setting 하면 충돌하는 것으로 변경되도록 한 함수가 하나의 기능만 맡도록 변경하기
 	Layer::SetLayerCollision(0, 0);
 	Layer::SetLayerCollision(0, 1);
+	Layer::SetLayerCollision(0, 5);
 	Layer::SetLayerCollision(0, 7);
 	Layer::SetLayerCollision(3, 0);
 	Layer::SetLayerCollision(3, 1);

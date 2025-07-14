@@ -18,33 +18,37 @@
 
 CameraController::CameraController()
 	: CScript(SCRIPT_TYPE::CAMERASCRIPT)
-	  , m_Player(nullptr)
-	  , m_PlayerScript(nullptr)
-	  , m_InventoryScript(nullptr)
-	  , m_CameraPos(Vec3(0.f, 0.f, 0.f))
-	  , m_CameraRot(Vec3(0.f, 0.f, 0.f))
-	  , m_PlayerPos(Vec3(0.f, 0.f, 0.f))
-	  , m_PlayerRot(Vec3(0.f, 0.f, 0.f))
-	  , m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
-	  , m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
-	  , m_OriginDistance(0.f)
-	  , m_RayDistance(0.f)
-	  , m_CameraSpeed(500.f)
-	  , m_CameraYOffset(0.f), m_CurClipAccTime(0.f)
-	  , m_RecoilTime(0.f)
-	  , m_ObstalceResetTime(0), m_RecoilAmount_vertical(0), m_RecoilAmount_horizontal(0.f)
-	  , m_TargetRecoilRotX(0)
-	  , m_TargetRecoilRotY(0)
-	  , m_LateralOffset(300.f)
-	  , m_ObjectiveLateralOff(0.f)
-	  , m_AdjustNormalDistance(0.f)
-	  , m_AdjustNormalHeight(0.f)
-	  , m_AdjustFinalDistance(0.f)
-	  , m_AdjustFinalHeight(0.f)
-	  , m_ObjectiveShoulderDistance(0.f)
-	  , m_ObjectiveShoulderHeight(0.f)
-	  , m_CameraFlag(0)
-	  , m_bObstacleHitFame(false)
+	, m_Player(nullptr)
+	, m_PlayerScript(nullptr)
+	, m_InventoryScript(nullptr)
+	, m_CameraPos(Vec3(0.f,0.f,0.f))
+	, m_CameraRot(Vec3(0.f,0.f,0.f))
+	, m_PlayerPos(Vec3(0.f,0.f,0.f))
+	, m_PlayerRot(Vec3(0.f,0.f,0.f))
+	, m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
+	, m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
+	, m_ObstacleScale(Vec3(0.f, 0.f, 0.f))
+	, m_OriginDistance(0.f)
+	, m_RayDistance(0.f)
+	, m_CameraSpeed(500.f)
+	, m_CameraYOffset(0.f)
+	, m_CurClipAccTime(0.f)
+	, m_RecoilTime(0.f)
+	, m_ObstacleResetTime(0.f)
+	, m_RecoilAmount_vertical(0.f)
+	, m_RecoilAmount_horizontal(0.f)
+	, m_TargetRecoilRotX(0.f)
+	, m_TargetRecoilRotY(0.f)
+	, m_LateralOffset(300.f)
+	, m_ObjectiveLateralOff(0.f)
+	, m_AdjustNormalDistance(0.f)
+	, m_AdjustNormalHeight(0.f)
+	, m_AdjustFinalDistance(0.f)
+	, m_AdjustFinalHeight(0.f)
+	, m_ObjectiveShoulderDistance(0.f)
+	, m_ObjectiveShoulderHeight(0.f)
+	, m_CameraFlag(0)
+	, m_bObstacleHitFame(false)
 {
 }
 
@@ -498,8 +502,8 @@ void CameraController::UpdateTPSCameraAdjustments()
 	// 충돌 콜백이 끊김 -> 클리어 검증
 	if (m_CameraFlag & OBSTACLE_CLEAR_PENDING)
 	{
-		m_ObstalceResetTime += DT;
-		if (2.f < m_ObstalceResetTime)
+		m_ObstacleResetTime += DT;
+		if (2.f < m_ObstacleResetTime)
 		{
 			// 이제 진짜 복구 단계로 전환
 			m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
@@ -521,7 +525,7 @@ void CameraController::UpdateTPSCameraAdjustments()
 			// 콜백으로도 다시 Overlap이 안 들어온 상태이므로
 			ColliderRay()->SetOffset(Vec3(0, 0, 0));
 			m_CameraFlag &= ~OBSTACLE_DETECT_END;
-			m_ObstalceResetTime = 0.f;
+			m_ObstacleResetTime = 0.f;
 		}
 	}
 
@@ -766,12 +770,14 @@ void CameraController::UpdateStance()
 		if (m_CameraFlag & SITTING)
 		{
 			DesPosY = 0.f;
-		}
+			m_PlayerScript->SetMotionState(MOTION_STATE::STAND);
+		}			
 		else
 		{
 			DesPosY = -600.f;
+			m_PlayerScript->SetMotionState(MOTION_STATE::CROUCH);
 		}
-
+			
 		m_CameraFlag ^= SITTING;
 	}
 
@@ -786,10 +792,12 @@ void CameraController::UpdateStance()
 		if (m_CameraFlag & LAYING)
 		{
 			DesPosY = 0.f;
+			m_PlayerScript->SetMotionState(MOTION_STATE::STAND);
 		}
 		else
 		{
 			DesPosY = -1200.f;
+			m_PlayerScript->SetMotionState(MOTION_STATE::PRONE);
 		}
 
 		m_CameraFlag ^= LAYING;
@@ -893,7 +901,7 @@ void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _Ot
 {
 	if (_OtherObject->GetName() == L"DeathBox")
 	{
-		m_ObstalceResetTime = 0.f;
+		m_ObstacleResetTime = 0.f;
 		m_CameraFlag |= OBSTACLE_DETECT;
 		m_ObstaclePos = _OtherObject->Transform()->GetRelativePos();
 		m_ObstacleScale = _OtherObject->Collider3D()->GetScale();
@@ -928,7 +936,7 @@ void CameraController::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherOb
 		m_CameraFlag |= OBSTACLE_DETECT;
 		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
 		m_CameraFlag &= ~OBSTACLE_DETECT_END;
-		m_ObstalceResetTime = 0.f;
+		m_ObstacleResetTime = 0.f;
 	}
 	if (_OtherObject->GetName() == L"Interaction Handler")
 	{
@@ -955,7 +963,7 @@ void CameraController::EndOverlap(CColliderRay* _RayCollider, CGameObject* _Othe
 	{
 		m_CameraFlag |= OBSTACLE_CLEAR_PENDING;
 		m_CameraFlag &= ~OBSTACLE_DETECT_END;
-		m_ObstalceResetTime = 0.f;
+		m_ObstacleResetTime = 0.f;
 	}
 	if (_OtherObject->GetName() == L"Interaction Handler")
 	{
