@@ -25,7 +25,6 @@ private:
 	vector<EnemyDot> m_EnemyDots;
 	CGameObject* m_PlayerArrow;    // 플레이어 방향 삼각형
 
-	vector<EnemyDot> m_EnemyDots;
 	vector<DeadEnemyInfo> m_DeadEnemies;  // 죽은 적들 정보
 	set<UINT> m_ProcessedDeadEnemyIDs;
 

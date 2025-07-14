@@ -257,7 +257,6 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 	// File Log
 	if (IsFlagSet(ELogFlag::FileOutput) && MLogFile.is_open())
 	{
-		lock_guard FileLock(MQueueMutex);
 		MLogFile << FormattedMessage << "\n";
 		MLogFile.flush();
 	}

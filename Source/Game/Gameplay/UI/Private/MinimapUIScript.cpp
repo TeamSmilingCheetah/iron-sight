@@ -289,7 +289,7 @@ void MinimapUIScript::UpdateDeadEnemies()
 	Matrix viewProjMatrix = viewMatrix * projMatrix;
 
 	// 죽은 적들 업데이트
-	for (int i = m_DeadEnemies.size() - 1; i >= 0; --i)
+	for (int i = static_cast<int>(m_DeadEnemies.size()) - 1; i >= 0; --i)
 	{
 		DeadEnemyInfo& deadEnemy = m_DeadEnemies[i];
 

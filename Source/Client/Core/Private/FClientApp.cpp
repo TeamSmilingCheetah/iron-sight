@@ -26,8 +26,11 @@ FClientApp::~FClientApp() = default;
  */
 int FClientApp::Run(HINSTANCE PInstanceHandle, int PCmdShow)
 {
+	// TODO(KHJ): 어느 정도 정리되면 메모리 체크는 Debug 모드에서만
+// #ifdef _DEBUG
 	// Memory Leak Detection & Report
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+// #endif
 
 	// Window Object Initialize
 	MWindow = new FWindow(this);
