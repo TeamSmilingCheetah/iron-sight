@@ -96,6 +96,7 @@ public:
 
 	virtual void KeyInputProcessing() {};		// 키 입력 처리(자식 클래스에서 사용)
 
+	Enemy_State GetState() { return m_State; };
 
 	KEY_STATE GetAIKeyState(KEY _Key) { return m_vecAIKey[static_cast<int>(_Key)].State; }
 

@@ -136,6 +136,27 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->SetClearColor(
 			0, Vec4(0.f, 0.f, 0.f, 0.f), false);
 	}
+
+	// ========
+	// Minimap
+	// ========
+	{
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)] = new CMRT;
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->SetName(L"Minimap");
+
+		Ptr<CTexture> pMinimapTex = CAssetMgr::GetInst()->CreateTexture(
+			L"MinimapTargetTex", 256, 256,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
+		Ptr<CTexture> pMinimapDepth = CAssetMgr::GetInst()->CreateTexture(
+			L"MinimapDepthTex", 256, 256,
+			DXGI_FORMAT_D24_UNORM_S8_UINT,
+			D3D11_BIND_DEPTH_STENCIL);
+
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->Create(&pMinimapTex, 1, pMinimapDepth);
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->SetClearColor(0, Vec4(0.f, 0.f, 0.f, 1.f));
+	}
 }
 
 void CRenderMgr::CreateDebugMtrl()

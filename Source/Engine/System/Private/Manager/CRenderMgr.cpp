@@ -84,6 +84,7 @@ void CRenderMgr::ClearMRT()
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->Clear();
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->ClearRenderTargets();
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->ClearRenderTargets();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->Clear();
 
 	// Deferred Texture들이 SRV로 바인딩되고 해제 안되있으면 경고 떠서 해제
 	CTexture::Clear(0);
@@ -287,7 +288,7 @@ void CRenderMgr::Render_Play()
 		g_Trans.matView = m_vecCam[i]->GetViewMat();
 		g_Trans.matProj = m_vecCam[i]->GetProjMat();
 
-		if (i != 1)
+		if (i == 0) // 메인 카메라
 		{
 
 			// Deferred
@@ -325,7 +326,29 @@ void CRenderMgr::Render_Play()
 			// 특정 타겟으로 SwapChain 을 덮어쓰기
 			MergeSpecifyTarget();		
 		}
-		else if (i == 1)
+		else if (i == 1) // 미니맵 카메라
+		{
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->ClearRenderTargets();
+
+			// Deferred
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+			m_vecCam[i]->render_deferred();
+			
+			// 미니맵 전용 MRT, UI사용시 랜더타겟에 그려진걸 끌고와서 사용할것
+			m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->OMSet();
+			MergeMinimapTarget();
+			
+			// SwapChain 랜더 테스트용
+			//m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+			//MergeMinimapTarget();
+			
+			// Forward
+			m_vecCam[i]->render_forward();
+			m_vecCam[i]->render_postprocess();
+			
+			m_vecCam[i]->render_clear();
+		}
+		else if (i == 2) // UI카메라
 		{
 			// SwapChain
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
@@ -426,6 +449,17 @@ void CRenderMgr::MergeSpecifyTarget()
 			CTexture::Clear(i);
 		}
 	}
+}
+
+void CRenderMgr::MergeMinimapTarget()
+{
+	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+
+	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	m_MergeMtrl->SetScalarParam(INT_0, 1);
+	m_MergeMtrl->Binding();
+
+	pRectMesh->Render(0);
 }
 
 void CRenderMgr::RegisterCamera(CCamera* _Cam, UINT _Priority)

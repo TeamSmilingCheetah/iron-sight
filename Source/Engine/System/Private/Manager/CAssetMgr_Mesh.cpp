@@ -5,6 +5,44 @@ void CAssetMgr::CreateEngineMesh()
 {
     Ptr<CMesh> pMesh = nullptr;
 
+
+	// ============
+	// Triangle Mesh
+	// ============
+	Vtx arrTriangle[3] = {};
+
+	// 위쪽 꼭짓점 (전방 방향)
+	arrTriangle[0].vPos = Vec3(0.f, 0.5f, 0.f);
+	arrTriangle[0].vUV = Vec2(0.5f, 0.f);
+	arrTriangle[0].vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+	arrTriangle[0].vNormal = Vec3(0.f, 0.f, -1.f);
+	arrTriangle[0].vTangent = Vec3(1.f, 0.f, 0.f);
+	arrTriangle[0].vBinormal = Vec3(0.f, -1.f, 0.f);
+
+	// 왼쪽 아래 꼭짓점
+	arrTriangle[1].vPos = Vec3(-0.5f, -0.5f, 0.f);
+	arrTriangle[1].vUV = Vec2(0.f, 1.f);
+	arrTriangle[1].vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+	arrTriangle[1].vNormal = Vec3(0.f, 0.f, -1.f);
+	arrTriangle[1].vTangent = Vec3(1.f, 0.f, 0.f);
+	arrTriangle[1].vBinormal = Vec3(0.f, -1.f, 0.f);
+
+	// 오른쪽 아래 꼭짓점
+	arrTriangle[2].vPos = Vec3(0.5f, -0.5f, 0.f);
+	arrTriangle[2].vUV = Vec2(1.f, 1.f);
+	arrTriangle[2].vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+	arrTriangle[2].vNormal = Vec3(0.f, 0.f, -1.f);
+	arrTriangle[2].vTangent = Vec3(1.f, 0.f, 0.f);
+	arrTriangle[2].vBinormal = Vec3(0.f, -1.f, 0.f);
+
+	// 인덱스
+	UINT TriangleIdx[3] = { 0, 2, 1 };
+
+	pMesh = new CMesh(true);
+	pMesh->Create(arrTriangle, 3, TriangleIdx, 3);
+	GetInst()->AddAsset(L"TriangleMesh", pMesh);
+
+
     // =========
     // PointMesh
     // =========

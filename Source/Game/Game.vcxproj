@@ -172,6 +172,8 @@
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\UI\Public\KillinfoUIScript.h" />
+    <ClInclude Include="Gameplay\UI\Public\MinimapCameraScript.h" />
+    <ClInclude Include="Gameplay\UI\Public\MinimapUIScript.h" />
     <ClInclude Include="Gameplay\UI\Public\RoundsUIScript.h" />
     <ClInclude Include="Gameplay\Weapon\Public\BombController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
@@ -202,6 +204,8 @@
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp" />
+    <ClCompile Include="Gameplay\UI\Private\MinimapCameraScript.cpp" />
+    <ClCompile Include="Gameplay\UI\Private\MinimapUIScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\RoundsUIScript.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\BombController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />

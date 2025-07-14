@@ -78,6 +78,7 @@ private:
 
 	void MergeDeferredTarget();
 	void MergeSpecifyTarget();
+	void MergeMinimapTarget();
 
 	void CreateMRT();
 	void CreateDebugMtrl();
