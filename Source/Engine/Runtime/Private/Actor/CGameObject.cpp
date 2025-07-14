@@ -91,7 +91,7 @@ void CGameObject::Begin() const
 
 void CGameObject::Tick() const
 {
-	if (IsActive())
+	if (IsActive() && !IsDead())
 	{
 		for (auto* Component : MComponentArray)
 		{
@@ -120,16 +120,14 @@ void CGameObject::FinalTick()
 		// Layer 등록
 		CLevelMgr::GetInst()->RegisterObject(this);
 
-		if (MParent && MParent->IsDead())
+		if (!IsDead())
 		{
-			SetDead(true);
-		}
-
-		for (auto* Component : MComponentArray)
-		{
-			if (Component)
+			for (auto* Component : MComponentArray)
 			{
-				Component->FinalTick();
+				if (Component)
+				{
+					Component->FinalTick();
+				}
 			}
 		}
 
