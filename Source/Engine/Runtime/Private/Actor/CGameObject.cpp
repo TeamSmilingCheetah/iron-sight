@@ -138,7 +138,7 @@ void CGameObject::FinalTick()
 
 			(*iter)->FinalTick();
 
-			if (ChildDead)
+			if (ChildDead && !IsDead())
 			{
 				iter = MChildVector.erase(iter);
 			}
