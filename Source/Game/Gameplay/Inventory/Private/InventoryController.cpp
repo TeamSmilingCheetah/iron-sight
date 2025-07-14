@@ -225,14 +225,6 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 	m_InventoryChanged = true;
 }
 
-void InventoryController::EquipItem(CGameObject* _Item)
-{
-	// WeaponScript가 있다는 가정
-	assert(GetScriptWithType(_Item, SCRIPT_TYPE::WEAPONSCRIPT));
-
-
-}
-
 void InventoryController::ConvertPS()
 {
 	// 착용중인 무기가 없으면 수행 X

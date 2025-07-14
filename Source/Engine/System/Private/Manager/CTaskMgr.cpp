@@ -129,7 +129,24 @@ void CTaskMgr::Tick()
 			CGameObject* pObject = (CGameObject*)task.Param0;
 			if (!pObject->IsDead())
 			{
-				pObject->SetDead(true);
+				queue<CGameObject*> Q;
+				Q.emplace(pObject);
+
+				// Dead 표시는 하위 hierarchy 전체에 해줌
+				while (!Q.empty())
+				{
+					CGameObject* curObj = Q.front();
+					Q.pop();
+
+					curObj->SetDead(true);
+
+					const vector<CGameObject*>& vecChild = curObj->GetChild();
+					for (auto* child : vecChild)
+					{
+						Q.emplace(child);
+					}
+				}
+
 				m_vecDelayedTask.push_back(std::move(task));
 				LOG_INFO_F("[Task] {} Will Be Deleted", WStringToString(pObject->GetName()));
 			}

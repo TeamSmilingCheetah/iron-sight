@@ -73,9 +73,6 @@ CAnimator3D::~CAnimator3D()
 
 	if (nullptr != m_BonePureMatBuffer)
 		delete m_BonePureMatBuffer;
-
-	// BoneObject를 삭제함.
-	DestroyObject(m_vecBoneObject[0]);
 }
 
 void CAnimator3D::Begin()

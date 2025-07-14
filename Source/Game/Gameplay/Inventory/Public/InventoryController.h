@@ -63,20 +63,19 @@ public:
 	void SetInventoryUI(CGameObject* _UI);
 
 	void AcquireItem(CGameObject* _Item);
-	void EquipItem(CGameObject* _Item);
+	void EquipWeapon(CGameObject* _Item);
 
 	void ConvertPS();
 
-	bool IsChange() {return m_bWeaponChange;}
+	bool IsChange() const { return m_bWeaponChange; }
 	void OffChange() { m_bWeaponChange = false; }
 
 	bool UseItem(ITEM_TYPE _Type, int _Count = 1);	// 아이템이 남으면 true 리턴
 	void DropItem(ITEM_TYPE _Type, int _Count);		// 아이템이 남으면 true 리턴
-	int GetItemCount(ITEM_TYPE _Type) { return m_arrInventory[(UINT)_Type]; }
+	int GetItemCount(ITEM_TYPE _Type) const { return m_arrInventory[(UINT)_Type]; }
 
 	void PlayerInteractWeapon();
 
-	void EquipWeapon(CGameObject* _Item);
 
 	// TODO: 데이터 구조 개선
 	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
