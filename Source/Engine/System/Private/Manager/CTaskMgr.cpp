@@ -86,7 +86,12 @@ void CTaskMgr::Tick()
 		case TASK_TYPE::DELETE_OBJECT:
 		{
 			CGameObject* pObject = (CGameObject*)task.Param0;
-
+			if (!pObject)
+			{
+				LOG_ERROR("[Task] No Object To Delete");
+				assert(!"No Object To Delete");
+			}
+			LOG_INFO_F("[Task] {} Now Deleted", WStringToString(pObject->GetName()));
 			delete pObject;
 			m_LevelChanged = true;
 		}
@@ -124,8 +129,26 @@ void CTaskMgr::Tick()
 			CGameObject* pObject = (CGameObject*)task.Param0;
 			if (!pObject->IsDead())
 			{
-				pObject->SetDead(true);
+				queue<CGameObject*> Q;
+				Q.emplace(pObject);
+
+				// Dead 표시는 하위 hierarchy 전체에 해줌
+				while (!Q.empty())
+				{
+					CGameObject* curObj = Q.front();
+					Q.pop();
+
+					curObj->SetDead(true);
+
+					const vector<CGameObject*>& vecChild = curObj->GetChild();
+					for (auto* child : vecChild)
+					{
+						Q.emplace(child);
+					}
+				}
+
 				m_vecDelayedTask.push_back(std::move(task));
+				LOG_INFO_F("[Task] {} Will Be Deleted", WStringToString(pObject->GetName()));
 			}
 		}
 			break;

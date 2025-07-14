@@ -50,6 +50,9 @@ void CreateObject(CGameObject* _NewObj, int LayerIdx, bool _bMoveChild)
 
 void DestroyObject(CGameObject* _TargetObj)
 {
+	if (_TargetObj->IsDead())
+		return;
+
 	tTask task = {};
 	task.Type = TASK_TYPE::DELETE_OBJECT;
 	task.Param0 = (DWORD_PTR)_TargetObj;

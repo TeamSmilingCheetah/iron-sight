@@ -6,6 +6,7 @@ class CFrustum;
 class CCamera :
 	public CComponent
 {
+private:
 	CFrustum* m_Frustum;
 
 	// 공통

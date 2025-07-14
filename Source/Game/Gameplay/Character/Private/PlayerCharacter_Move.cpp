@@ -28,7 +28,7 @@ void PlayerCharacter::PlayerMove()
 	// 충돌 연산
 	ColliderCalcul();
 
-	vPos += m_Velocity;
+	vPos += m_Velocity * 100 * DT;
 	Transform()->SetRelativePos(vPos);
 
 	// 충돌벡터 초기화

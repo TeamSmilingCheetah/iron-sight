@@ -3,7 +3,6 @@
 #include <thread>
 #include <chrono>
 #include <mutex>
-#include <sstream>
 #include <fstream>
 
 using std::thread;
@@ -13,6 +12,8 @@ using std::chrono::system_clock;
 using std::stringstream;
 using std::condition_variable;
 using std::ofstream;
+using std::format_string;
+using std::format;
 
 /**
  * @brief Log를 관리하는 매니저 클래스
@@ -46,7 +47,6 @@ private:
 	void LogWorker();
 	void ProcessLogMessage(const LogMessage& PMessage);
 	void MakeLog(ELogLevel PLevel, const string& PMessage);
-	void LogVf(ELogLevel PLevel, const char* PFormat, va_list PArgs);
 
 	static string GetLogLevelString(ELogLevel PLevel);
 
@@ -75,11 +75,45 @@ public:
 	void LogCritical(const string& PMessage);
 	void LogUnknown(const string& PMessage);
 
-	void LogTracef(const char* PFormat, ...);
-	void LogDebugf(const char* PFormat, ...);
-	void LogInfof(const char* PFormat, ...);
-	void LogWarningf(const char* PFormat, ...);
-	void LogErrorf(const char* PFormat, ...);
-	void LogCriticalf(const char* PFormat, ...);
-	void LogUnknownf(const char* PFormat, ...);
+	template <typename... Args>
+	void LogTracef(std::format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::TRACE, format(fmt, std::forward<Args>(args)...));
+	}
+
+	template <typename... Args>
+	void LogDebugf(format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::DEBUG, format(fmt, std::forward<Args>(args)...));
+	}
+
+	template <typename... Args>
+	void LogInfof(format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::INFO, format(fmt, std::forward<Args>(args)...));
+	}
+
+	template <typename... Args>
+	void LogWarningf(format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::WARNING, format(fmt, std::forward<Args>(args)...));
+	}
+
+	template <typename... Args>
+	void LogErrorf(format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::ERR, format(fmt, std::forward<Args>(args)...));
+	}
+
+	template <typename... Args>
+	void LogCriticalf(format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::CRITICAL, format(fmt, std::forward<Args>(args)...));
+	}
+
+	template <typename... Args>
+	void LogUnknownf(format_string<Args...> fmt, Args&&... args)
+	{
+		MakeLog(ELogLevel::UNKNOWN, format(fmt, std::forward<Args>(args)...));
+	}
 };
