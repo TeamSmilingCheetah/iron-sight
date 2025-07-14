@@ -86,7 +86,12 @@ void CTaskMgr::Tick()
 		case TASK_TYPE::DELETE_OBJECT:
 		{
 			CGameObject* pObject = (CGameObject*)task.Param0;
-
+			if (!pObject)
+			{
+				LOG_ERROR("[Task] No Object To Delete");
+				assert(!"No Object To Delete");
+			}
+			LOG_INFO_F("[Task] {} Now Deleted", WStringToString(pObject->GetName()));
 			delete pObject;
 			m_LevelChanged = true;
 		}
@@ -126,6 +131,7 @@ void CTaskMgr::Tick()
 			{
 				pObject->SetDead(true);
 				m_vecDelayedTask.push_back(std::move(task));
+				LOG_INFO_F("[Task] {} Will Be Deleted", WStringToString(pObject->GetName()));
 			}
 		}
 			break;

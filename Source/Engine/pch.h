@@ -13,5 +13,8 @@
 #include <stdlib.h>
 
 #include "Common/global.h"
+#include "Engine/System/Public/Manager/FLogManager.h"
+
+#include <format>
 
 #endif //PCH_H
