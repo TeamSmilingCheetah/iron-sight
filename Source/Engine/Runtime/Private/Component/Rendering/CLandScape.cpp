@@ -10,34 +10,29 @@ CLandScape::CLandScape()
 	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)
 	  , m_FaceX(1)
 	  , m_FaceZ(1)
+	  , m_RaycastOut()
 	  , m_Out{}
 	  , m_BrushScale(Vec2(0.25f, 0.25f))
 	  , m_BrushIdx(0)
-	  , m_Mode(NONE)
-	  , m_RaycastOut()
-	  , m_WeightHeight(0)
-	  , m_WeightIdx(0)
 	  , m_WeightMap()
 	  , m_WeightWidth()
+	  , m_WeightHeight(0)
+	  , m_WeightIdx(0)
+	  , m_RayCollisionOut(nullptr)
+      , m_Mode(NONE)
 {
 }
 
 CLandScape::~CLandScape()
 {
-	if (nullptr != m_RaycastOut)
-		delete m_RaycastOut;
-
-	if (nullptr != m_WeightMap)
-		delete m_WeightMap;
-
-	if (nullptr != m_RayCollisionOut)
-		delete m_RayCollisionOut;
+	delete m_RaycastOut;
+	delete m_WeightMap;
+	delete m_RayCollisionOut;
 }
 
-void CLandScape::ColisionRayStack(void* _RayObj, tRay _RayPosDir)
+void CLandScape::ColisionRayStack(void* PRayObject, const tRay& PRayPosDir)
 {
-	m_vecRayColInst.push_back(tRayCollision(_RayObj, _RayPosDir));
-
+	m_vecRayColInst.push_back(tRayCollision(PRayObject, PRayPosDir));
 }
 
 void CLandScape::FinalTick()
@@ -138,17 +133,85 @@ void CLandScape::Render()
 	m_WeightMap->Clear(20); // WeightMap 버퍼 바인딩 클리어
 }
 
-void CLandScape::SetFace(UINT _X, UINT _Z)
+void CLandScape::SetFace(UINT PX, UINT PZ)
 {
-	if (m_FaceX == _X && m_FaceZ == _Z)
+	if (m_FaceX == PX && m_FaceZ == PZ)
 		return;
 
-	m_FaceX = _X;
-	m_FaceZ = _Z;
+	m_FaceX = PX;
+	m_FaceZ = PZ;
 
 	CreateMesh();
+	SetAABB();
 }
 
+/**
+ * @brief Landscape의 AABB를 산출하는 함수
+ */
+void CLandScape::SetAABB()
+{
+	// Clear Previous AABB
+	m_AABB.clear();
+	m_AABB.resize(2);
+
+	// Landscape는 XZ 평면에 놓여있고, Y는 높이맵에 따라 결정됨
+	Vec3 LocalMin = Vec3(0.f, 0.f, 0.f);
+	Vec3 LocalMax = Vec3(static_cast<float>(m_FaceX), 0.f, static_cast<float>(m_FaceZ));
+
+	// 높이맵이 있다면 Y 범위도 계산
+	if (m_HeightMap != nullptr && !m_CachedHeightData.empty())
+	{
+		float MinHeight = FLT_MAX;
+		float MaxHeight = -FLT_MAX;
+
+		// 캐시된 높이 데이터에서 최소/최대 높이 찾기
+		for (float Height : m_CachedHeightData)
+		{
+			MinHeight = min(MinHeight, Height);
+			MaxHeight = max(MaxHeight, Height);
+		}
+
+		LocalMin.y = MinHeight;
+		LocalMax.y = MaxHeight;
+	}
+
+	Vec3 LocalCorners[8] = {
+		Vec3(LocalMin.x, LocalMin.y, LocalMin.z),
+		Vec3(LocalMax.x, LocalMin.y, LocalMin.z),
+		Vec3(LocalMax.x, LocalMin.y, LocalMax.z),
+		Vec3(LocalMin.x, LocalMin.y, LocalMax.z),
+		Vec3(LocalMin.x, LocalMax.y, LocalMin.z),
+		Vec3(LocalMax.x, LocalMax.y, LocalMin.z),
+		Vec3(LocalMax.x, LocalMax.y, LocalMax.z),
+		Vec3(LocalMin.x, LocalMax.y, LocalMax.z),
+	};
+
+	// Calculate World AABB
+	Vec3 WorldCorners[8];
+	const Matrix& WorldMatrix = Transform()->GetWorldMat();
+	for (int i = 0; i < 8; ++i)
+	{
+		WorldCorners[i] = XMVector3TransformCoord(LocalCorners[i], WorldMatrix);
+	}
+
+	Vec3 WorldMin = WorldCorners[0];
+	Vec3 WorldMax = WorldCorners[0];
+
+	for (int i = 1; i < 8; ++i)
+	{
+		WorldMin.x = min(WorldMin.x, WorldCorners[i].x);
+		WorldMin.y = min(WorldMin.y, WorldCorners[i].y);
+		WorldMin.z = min(WorldMin.z, WorldCorners[i].z);
+
+		WorldMax.x = max(WorldMax.x, WorldCorners[i].x);
+		WorldMax.y = max(WorldMax.y, WorldCorners[i].y);
+		WorldMax.z = max(WorldMax.z, WorldCorners[i].z);
+	}
+
+	// Save New AABB
+	m_AABB[0] = WorldMin;
+	m_AABB[1] = WorldMax;
+}
 
 int CLandScape::Raycasting()
 {
@@ -193,7 +256,7 @@ int CLandScape::Raycasting()
 	return m_Out.Success;
 }
 
-tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
+tRaycastOut CLandScape::ColliderRaycasting(tRay PRay) const
 {
 	// 구조화버퍼 클리어
 	tRaycastOut pRayInfo;
@@ -204,19 +267,19 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
 
 	// 원본 Ray 정보 저장
-	tRay WorldRay = _Ray;
+	tRay WorldRay = PRay;
 
 	// LandScape 의 WorldInv 행렬 가져옴
 	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
 	const Matrix& matWorld = Transform()->GetWorldMat();
 
 	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
-	_Ray.vStart = XMVector3TransformCoord(_Ray.vStart, matWorldInv);
-	_Ray.vDir = XMVector3TransformNormal(_Ray.vDir, matWorldInv);
-	_Ray.vDir.Normalize();
+	PRay.vStart = XMVector3TransformCoord(PRay.vStart, matWorldInv);
+	PRay.vDir = XMVector3TransformNormal(PRay.vDir, matWorldInv);
+	PRay.vDir.Normalize();
 
 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
-	m_RaycastCS->SetRayInfo(_Ray);
+	m_RaycastCS->SetRayInfo(PRay);
 	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
 	m_RaycastCS->SetOutBuffer(m_RaycastOut);
 	m_RaycastCS->SetHeightMap(m_HeightMap);
@@ -235,8 +298,8 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 	{
 		// 충돌 위치를 UV에서 로컬 좌표로 변환
 		Vec3 localHitPos;
-		localHitPos.x = pRayInfo.Location.x * m_FaceX;
-		localHitPos.z = (1.0f - pRayInfo.Location.y) * m_FaceZ;
+		localHitPos.x = pRayInfo.Location.x * static_cast<float>(m_FaceX);
+		localHitPos.z = (1.0f - pRayInfo.Location.y) * static_cast<float>(m_FaceZ);
 
 		// 높이맵에서 y값 가져오기
 		localHitPos.y = 0.0f;
@@ -251,8 +314,8 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay _Ray)
 			float v = pRayInfo.Location.y;
 
 			// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
-			UINT x = (UINT)(u * (float)(heightMapWidth - 1));
-			UINT y = (UINT)(v * (float)(heightMapHeight - 1));
+			UINT x = static_cast<UINT>(u * static_cast<float>(heightMapWidth - 1));
+			UINT y = static_cast<UINT>(v * static_cast<float>(heightMapHeight - 1));
 
 			// 높이값 추출
 			// 텍스처에서 높이 값 가져오기
@@ -279,7 +342,7 @@ vector<tRayCollision>& CLandScape::Collidercalcul()
 	size_t Count = m_vecRayColInst.size();
 
 	// 구조체 크기에 따라 구조체 버퍼 초기화
-	m_RayCollisionOut->Create(sizeof(tRayCollision), (UINT)Count, SRV_UAV, true);
+	m_RayCollisionOut->Create(sizeof(tRayCollision), static_cast<UINT>(Count), SRV_UAV, true);
 
 	// LandScape 의 WorldInv 행렬 가져옴
 	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
@@ -314,23 +377,23 @@ vector<tRayCollision>& CLandScape::Collidercalcul()
 	return m_vecRayColInst;
 }
 
-Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
+Vec3 CLandScape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
 {
 	// 랜드스케이프의 월드 행렬
 	const Matrix& matWorld = Transform()->GetWorldMat();
 
 	// 역행렬을 이용하여 월드 좌표를 랜드스케이프 로컬 좌표로 변환
 	Matrix matWorldInv = Transform()->GetWorldInvMat();
-	Vec3 localPos = XMVector3TransformCoord(_TargetWorldPos, matWorldInv);
+	Vec3 localPos = XMVector3TransformCoord(PTargetWorldPos, matWorldInv);
 
 	// 로컬 좌표를 랜드스케이프 텍스쳐 UV 좌표로 변환
 	// 랜드스케이프의 X, Z 크기에 따라 조정
-	float u = localPos.x / (float)m_FaceX;
-	float v = 1.f - (localPos.z / (float)m_FaceZ); // v 좌표는 상하가 반전되어 있으므로 1에서 빼줌
+	float u = localPos.x / static_cast<float>(m_FaceX);
+	float v = 1.f - (localPos.z / static_cast<float>(m_FaceZ)); // v 좌표는 상하가 반전되어 있으므로 1에서 빼줌
 
 	// 로컬 좌표가 랜드스케이프 범위 내에 있는지 확인
-	if (localPos.x < 0.f || localPos.x >(float)m_FaceX ||
-		localPos.z < 0.f || localPos.z >(float)m_FaceZ)
+	if (localPos.x < 0.f || localPos.x >static_cast<float>(m_FaceX) ||
+		localPos.z < 0.f || localPos.z >static_cast<float>(m_FaceZ))
 	{
 		// 범위를 벗어나면 큰 음수 값을 반환
 		Vec3 FailPos = Vec3(-10000.f, -10000.f, -10000.f);
@@ -346,8 +409,8 @@ Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
 		UINT heightMapHeight = m_HeightMap->GetHeight();
 
 		// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
-		UINT x = (UINT)(u * (float)(heightMapWidth - 1));
-		UINT y = (UINT)(v * (float)(heightMapHeight - 1));
+		UINT x = static_cast<UINT>(u * static_cast<float>(heightMapWidth - 1));
+		UINT y = static_cast<UINT>(v * static_cast<float>(heightMapHeight - 1));
 
 		// 높이값 추출
 		// 텍스처에서 높이 값 가져오기
@@ -363,23 +426,23 @@ Vec3 CLandScape::GetWorldPosByLandScape(Vec3 _TargetWorldPos)
 	return worldPos;
 }
 
-Vec3 CLandScape::GetWorldPosLandNormal(Vec3& _TargetWorldPos)
+Vec3 CLandScape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
 {
 	// 랜드스케이프의 월드 행렬
 	const Matrix& matWorld = Transform()->GetWorldMat();
 
 	// 역행렬을 이용하여 월드 좌표를 랜드스케이프 로컬 좌표로 변환
 	Matrix matWorldInv = Transform()->GetWorldInvMat();
-	Vec3 localPos = XMVector3TransformCoord(_TargetWorldPos, matWorldInv);
+	Vec3 localPos = XMVector3TransformCoord(PTargetWorldPos, matWorldInv);
 
 	// 로컬 좌표를 랜드스케이프 텍스쳐 UV 좌표로 변환
 	// 랜드스케이프의 X, Z 크기에 따라 조정
-	float u = localPos.x / (float)m_FaceX;
-	float v = 1.f - (localPos.z / (float)m_FaceZ); // v 좌표는 상하가 반전되어 있으므로 1에서 빼줌
+	float u = localPos.x / static_cast<float>(m_FaceX);
+	float v = 1.f - (localPos.z / static_cast<float>(m_FaceZ)); // v 좌표는 상하가 반전되어 있으므로 1에서 빼줌
 
 	// 로컬 좌표가 랜드스케이프 범위 내에 있는지 확인
-	if (localPos.x < 0.f || localPos.x >(float)m_FaceX ||
-		localPos.z < 0.f || localPos.z >(float)m_FaceZ)
+	if (localPos.x < 0.f || localPos.x >static_cast<float>(m_FaceX) ||
+		localPos.z < 0.f || localPos.z >static_cast<float>(m_FaceZ))
 	{
 		// 범위를 벗어나면 큰 음수 값을 반환
 		Vec3 FailPos = Vec3(-10000.f, -10000.f, -10000.f);
@@ -390,15 +453,15 @@ Vec3 CLandScape::GetWorldPosLandNormal(Vec3& _TargetWorldPos)
 	// 높이맵이 없으면 그냥 위로 올라가는 노말벡터 반환
 	if (m_HeightMap == nullptr)
 	{
-		return Vec3(0.f, 1.f, 0.f);
+		return {0.f, 1.f, 0.f};
 	}
 	// 높이맵 텍스처에서 해당 UV 위치의 높이 값을 가져옴
 	UINT heightMapWidth = m_HeightMap->GetWidth();
 	UINT heightMapHeight = m_HeightMap->GetHeight();
 
 	// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
-	UINT x = (UINT)(u * (float)(heightMapWidth - 1));
-	UINT y = (UINT)(v * (float)(heightMapHeight - 1));
+	UINT x = static_cast<UINT>(u * static_cast<float>(heightMapWidth - 1));
+	UINT y = static_cast<UINT>(v * static_cast<float>(heightMapHeight - 1));
 
 	// 인접한 4개의 점 위치 계산
 	UINT xRight = min(x + 1, heightMapWidth - 1);
@@ -419,13 +482,13 @@ Vec3 CLandScape::GetWorldPosLandNormal(Vec3& _TargetWorldPos)
 	float heightDown = m_CachedHeightData[yDown * heightMapWidth + x];
 
 	// x벡터, z벡터 생성
-	Vec3 vecX = Vec3((float)(xRight - xLeft) * m_FaceX / (float)(heightMapWidth - 1),
+	Vec3 vecX = Vec3(static_cast<float>(xRight - xLeft) * static_cast<float>(m_FaceX) / static_cast<float>(heightMapWidth - 1),
 					heightRight - heightLeft,
 					0.0f);
 
 	Vec3 vecZ = Vec3(0.0f,
 					heightUp - heightDown,
-					(float)(yUp - yDown) * m_FaceZ / (float)(heightMapHeight - 1));
+					static_cast<float>(yUp - yDown) * static_cast<float>(m_FaceZ) / static_cast<float>(heightMapHeight - 1));
 
 	// 두 벡터의 외적으로 노말 벡터 계산
 	Vec3 normal = vecZ.Cross(vecX);
@@ -436,31 +499,32 @@ Vec3 CLandScape::GetWorldPosLandNormal(Vec3& _TargetWorldPos)
 	normal.Normalize();
 
 	localPos.y = heightCenter;
-	_TargetWorldPos = XMVector3TransformCoord(localPos, matWorld);
+	PTargetWorldPos = XMVector3TransformCoord(localPos, matWorld);
 
 	return normal;
 }
 
-void CLandScape::SaveComponent(FILE* _File)
+void CLandScape::SaveComponent(FILE* PFile)
 {
-	fwrite(&m_FaceX, sizeof(UINT), 1, _File);
-	fwrite(&m_FaceZ, sizeof(UINT), 1, _File);
+	(void)fwrite(&m_FaceX, sizeof(UINT), 1, PFile);
+	(void)fwrite(&m_FaceZ, sizeof(UINT), 1, PFile);
 
-	SaveAssetRef(m_HeightMap, _File);
-	SaveAssetRef(m_ColorTex, _File);
-	SaveAssetRef(m_NormalTex, _File);
+	SaveAssetRef(m_HeightMap, PFile);
+	SaveAssetRef(m_ColorTex, PFile);
+	SaveAssetRef(m_NormalTex, PFile);
 }
 
-void CLandScape::LoadComponent(FILE* _File)
+void CLandScape::LoadComponent(FILE* PFile)
 {
-	fread(&m_FaceX, sizeof(UINT), 1, _File);
-	fread(&m_FaceZ, sizeof(UINT), 1, _File);
+	(void)fread(&m_FaceX, sizeof(UINT), 1, PFile);
+	(void)fread(&m_FaceZ, sizeof(UINT), 1, PFile);
 	CreateMesh();
 
 
-	LoadAssetRef(m_HeightMap, _File);
-	LoadAssetRef(m_ColorTex, _File);
-	LoadAssetRef(m_NormalTex, _File);
+	LoadAssetRef(m_HeightMap, PFile);
+	LoadAssetRef(m_ColorTex, PFile);
+	LoadAssetRef(m_NormalTex, PFile);
 
 	m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
+	SetAABB();
 }

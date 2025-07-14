@@ -14,29 +14,30 @@ private:
     int m_OverlapCount;
 
 public:
-    void SetOffset(Vec2 _Offset) { m_Offset = _Offset; }
-    void SetScale(Vec2 _Scale) { m_Scale = _Scale; }
+    void SetOffset(Vec2 POffset) { m_Offset = POffset; }
+    void SetScale(Vec2 PScale) { m_Scale = PScale; }
 
-    Vec2 GetOffset() { return m_Offset; }
-    Vec2 GetScale() { return m_Scale; }
+    Vec2 GetOffset() const { return m_Offset; }
+    Vec2 GetScale() const { return m_Scale; }
+	void GetAABB(Vec2& PMin, Vec2& PMax) const;
 
-    const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
+    const Matrix& GetColliderWorldMatrix() const { return m_matColliderWorld; }
 
-    void SetIndependentScale(bool _Scale) { m_IndependentScale = _Scale; }
-    bool IsIndependentScale() { return m_IndependentScale; }
+    void SetIndependentScale(bool PScale) { m_IndependentScale = PScale; }
+    bool IsIndependentScale() const { return m_IndependentScale; }
 
     void FinalTick() override;
 
-    void BeginOverlap(CCollider2D* _Other);
-    void Overlap(CCollider2D* _Other);
-    void EndOverlap(CCollider2D* _Other);
+    void BeginOverlap(CCollider2D* POther);
+    void Overlap(CCollider2D* POther);
+    void EndOverlap(CCollider2D* POther);
 
-    void SaveComponent(FILE* _File) override;
-    void LoadComponent(FILE* _File) override;
+    void SaveComponent(FILE* PFile) override;
+    void LoadComponent(FILE* PFile) override;
 
 public:
     CLONE(CCollider2D);
     CCollider2D();
-    CCollider2D(const CCollider2D& _Origin);
+    CCollider2D(const CCollider2D& POrigin);
     ~CCollider2D() override;
 };

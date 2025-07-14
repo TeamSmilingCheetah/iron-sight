@@ -44,6 +44,7 @@ public:
 
 	void SetTrigger(bool _true);
 	void SetIndependentRot(bool _true);
+	void GetAABB(Vec3& PMin, Vec3& PMax) const;
 
 	void BeginOverlap(CCollider3D* POther);
 	void Overlap(CCollider3D* POther);
