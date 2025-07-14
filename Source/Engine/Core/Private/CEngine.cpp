@@ -113,8 +113,8 @@ void CEngine::PrintMemoryUsage(const string& PText)
 	if (GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
 	{
 		LOG_INFO(PText);
-		LOG_INFO_F("WorkingSet: %.2fMB", pmc.WorkingSetSize / (1024.0 * 1024.0));
-		LOG_INFO_F("PrivateUsage: %.2fMB", pmc.PrivateUsage / (1024.0 * 1024.0));
+		LOG_INFO_F("WorkingSet: {:.2f}MB", pmc.WorkingSetSize / (1024.0 * 1024.0));
+		LOG_INFO_F("PrivateUsage: {:.2f}MB", pmc.PrivateUsage / (1024.0 * 1024.0));
 	}
 	else
 	{

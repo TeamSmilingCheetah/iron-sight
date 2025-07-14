@@ -177,9 +177,9 @@ void FLogManager::LogWorker()
 void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 {
 	stringstream ss;
-	ss << "[" << PMessage.TimeStamp << "] ";
+	ss << "[" << PMessage.TimeStamp << "]";
+	ss << "[" << PMessage.ThreadID << "]";
 	ss << "[" << GetLogLevelString(PMessage.LogLevel) << "] ";
-	ss << "[" << PMessage.ThreadID << "] ";
 	ss << PMessage.Message;
 
 	string FormattedMessage = ss.str();
@@ -337,77 +337,4 @@ void FLogManager::LogCritical(const string& PMessage)
 void FLogManager::LogUnknown(const string& PMessage)
 {
 	MakeLog(ELogLevel::UNKNOWN, PMessage);
-}
-
-void FLogManager::LogVf(ELogLevel PLevel, const char* PFormat, va_list PArgs)
-{
-	// Copy로 Size 측정
-	va_list args_copy;
-	va_copy(args_copy, PArgs);
-	int Size = vsnprintf(nullptr, 0, PFormat, args_copy);
-	va_end(args_copy);
-
-	// Buffer 생성 후 Log 추가
-	if (Size > 0)
-	{
-		string StringBuffer(Size, '\0');
-		(void)vsnprintf(StringBuffer.data(), Size + 1, PFormat, PArgs);
-		MakeLog(PLevel, StringBuffer);
-	}
-}
-
-void FLogManager::LogTracef(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::TRACE, PFormat, args);
-	va_end(args);
-}
-
-void FLogManager::LogDebugf(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::DEBUG, PFormat, args);
-	va_end(args);
-}
-
-void FLogManager::LogInfof(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::INFO, PFormat, args);
-	va_end(args);
-}
-
-void FLogManager::LogWarningf(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::WARNING, PFormat, args);
-	va_end(args);
-}
-
-void FLogManager::LogErrorf(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::ERR, PFormat, args);
-	va_end(args);
-}
-
-void FLogManager::LogCriticalf(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::CRITICAL, PFormat, args);
-	va_end(args);
-}
-
-void FLogManager::LogUnknownf(const char* PFormat, ...)
-{
-	va_list args;
-	va_start(args, PFormat);
-	LogVf(ELogLevel::UNKNOWN, PFormat, args);
-	va_end(args);
 }
