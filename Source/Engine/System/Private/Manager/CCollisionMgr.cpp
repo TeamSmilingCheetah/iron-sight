@@ -559,8 +559,8 @@ bool CCollisionMgr::IsCollision(CCollider2D* PLeft, CCollider2D* PRight)
 		Vec3(-0.5f, -0.5f, 0.f)
 	};
 
-	Matrix matColLeft = PLeft->GetColliderWorldMat();
-	Matrix matColRight = PRight->GetColliderWorldMat();
+	Matrix matColLeft = PLeft->GetColliderWorldMatrix();
+	Matrix matColRight = PRight->GetColliderWorldMatrix();
 
 	// 투영축 구하기, 투영축 == 투영을 시킬 대상
 	Vec3 arrProj[4] = {};
