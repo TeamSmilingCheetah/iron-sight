@@ -1,9 +1,14 @@
 ﻿#pragma once
+
+#include <array>
+
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Rendering/Shader/CHeightMapCS.h"
 #include "Engine/System/Public/Rendering/Shader/CWeightMapCS.h"
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+
+using std::array;
 
 struct tRaycastOut
 {
@@ -90,7 +95,7 @@ class CLandScape :
 	vector<tRayCollision> m_vecRayColInst;
 
 	// AABB
-	vector<Vec3> m_AABB;
+	array<Vec3, 2> m_AABB;
 
 	// LandScape 모드
 	LANDSCAPE_MODE m_Mode;
@@ -117,7 +122,7 @@ public:
 
 	// AABB
 	void SetAABB();
-	vector<Vec3>& GetAABB() { return m_AABB; }
+	array<Vec3, 2> GetAABB() const { return m_AABB; }
 
 	LANDSCAPE_MODE GetMode() const { return m_Mode; }
 
@@ -137,6 +142,13 @@ public:
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;
 
+	template <typename T>
+	static void BeginOverlap(T* POther);
+	template <typename T>
+	static void Overlap(T* POther);
+	template <typename T>
+	static void EndOverlap(T* POther);
+
 private:
 	void Init() override;
 	void CreateMesh();
@@ -150,3 +162,21 @@ public:
 	CLandScape();
 	~CLandScape() override;
 };
+
+template <typename T>
+void CLandScape::BeginOverlap(T* POther)
+{
+	// Do Nothing
+}
+
+template <typename T>
+void CLandScape::Overlap(T* POther)
+{
+	// Do Nothing
+}
+
+template <typename T>
+void CLandScape::EndOverlap(T* POther)
+{
+	// Do Nothing
+}

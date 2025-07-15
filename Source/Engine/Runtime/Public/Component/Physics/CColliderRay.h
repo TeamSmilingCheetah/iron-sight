@@ -72,10 +72,10 @@ public:
 	Vec3 GetRayPos() { return m_RayPosDir.vStart; }
 	Vec3 GetRayDir() { return m_RayPosDir.vDir; }
 	Vec3 GetOffset() { return m_Offset; }
-	float GetRayLength() { return m_RayLength; }
+	float GetRayLength() const { return m_RayLength; }
 
-	Vec3 GetRayFinalPos() { return m_RayFinalPos; }
-	Vec3 GetRayFinalDir() { return m_RayFinalDir; }
+	Vec3 GetRayFinalPos() const { return m_RayFinalPos; }
+	Vec3 GetRayFinalDir() const { return m_RayFinalDir; }
 	bool IsIndependentDir() { return m_IndependentDir; }
 
 	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }

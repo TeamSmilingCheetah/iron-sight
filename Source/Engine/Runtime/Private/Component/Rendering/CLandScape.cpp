@@ -150,13 +150,14 @@ void CLandScape::SetFace(UINT PX, UINT PZ)
  */
 void CLandScape::SetAABB()
 {
-	// Clear Previous AABB
-	m_AABB.clear();
-	m_AABB.resize(2);
-
 	// Landscape는 XZ 평면에 놓여있고, Y는 높이맵에 따라 결정됨
+	// 월드 스케일을 반영하여 실제 크기를 계산
+	Vec3 WorldScale = Transform()->GetWorldScale();
+	float FaceX = static_cast<float>(m_FaceX) * WorldScale.x;
+	float FaceZ = static_cast<float>(m_FaceZ) * WorldScale.z;
+
 	Vec3 LocalMin = Vec3(0.f, 0.f, 0.f);
-	Vec3 LocalMax = Vec3(static_cast<float>(m_FaceX), 0.f, static_cast<float>(m_FaceZ));
+	Vec3 LocalMax = Vec3(FaceX, 0.f, FaceZ);
 
 	// 높이맵이 있다면 Y 범위도 계산
 	if (m_HeightMap != nullptr && !m_CachedHeightData.empty())
@@ -171,8 +172,21 @@ void CLandScape::SetAABB()
 			MaxHeight = max(MaxHeight, Height);
 		}
 
-		LocalMin.y = MinHeight;
-		LocalMax.y = MaxHeight;
+		// Min Thickness
+		if (fabs(MaxHeight - MinHeight) < 1e-4f)
+		{
+			MinHeight -= 1.f;
+			MaxHeight += 1.f;
+		}
+
+		LocalMin.y = MinHeight * WorldScale.y;
+		LocalMax.y = MaxHeight * WorldScale.y;
+	}
+	// Make Min Thickness If No HeightMap
+	else
+	{
+		LocalMin.y = -1.f * WorldScale.y;
+		LocalMax.y = 1.f * WorldScale.y;
 	}
 
 	Vec3 LocalCorners[8] = {

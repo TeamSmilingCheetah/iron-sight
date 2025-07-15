@@ -28,8 +28,8 @@ private:
 	const COMPONENT_TYPE m_Type;
 
 public:
-	COMPONENT_TYPE GetType() { return m_Type; }
-	CGameObject* GetOwner() { return m_Owner; }
+	COMPONENT_TYPE GetType() const { return m_Type; }
+	CGameObject* GetOwner() const { return m_Owner; }
 
 	virtual void Init()
 	{

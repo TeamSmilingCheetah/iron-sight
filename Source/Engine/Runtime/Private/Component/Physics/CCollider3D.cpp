@@ -303,4 +303,25 @@ void CCollider3D::GetAABB(Vec3& PMin, Vec3& PMax) const
 		PMax.y = max(PMax.y, Vtxs[i].y);
 		PMax.z = max(PMax.z, Vtxs[i].z);
 	}
+
+	// Make Min Thickness
+	constexpr float MIN_THICKNESS = 1.0f;
+	if (fabs(PMax.x - PMin.x) < MIN_THICKNESS)
+	{
+		float Center = (PMax.x + PMin.x) * 0.5f;
+		PMin.x = Center - MIN_THICKNESS * 0.5f;
+		PMax.x = Center + MIN_THICKNESS * 0.5f;
+	}
+	if (fabs(PMax.y - PMin.y) < MIN_THICKNESS)
+	{
+		float Center = (PMax.y + PMin.y) * 0.5f;
+		PMin.y = Center - MIN_THICKNESS * 0.5f;
+		PMax.y = Center + MIN_THICKNESS * 0.5f;
+	}
+	if (fabs(PMax.z - PMin.z) < MIN_THICKNESS)
+	{
+		float Center = (PMax.z + PMin.z) * 0.5f;
+		PMin.z = Center - MIN_THICKNESS * 0.5f;
+		PMax.z = Center + MIN_THICKNESS * 0.5f;
+	}
 }
