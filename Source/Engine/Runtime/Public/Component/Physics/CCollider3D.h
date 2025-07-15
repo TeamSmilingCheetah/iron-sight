@@ -44,7 +44,7 @@ public:
 
 	void SetTrigger(bool _true);
 	void SetIndependentRot(bool _true);
-	void GetAABB(Vec3& PMin, Vec3& PMax) const;
+	array<Vec3, 2> GetAABB() const;
 
 	void BeginOverlap(CCollider3D* POther);
 	void Overlap(CCollider3D* POther);
@@ -87,7 +87,7 @@ public:
 	float GetRotY() const { return m_RotY; }
 	Vec3 GetHitNormal() const { return m_HitNormal; }
 	Vec3 GetHitPoint() const { return m_HitPoint; }
-	Vec3 GetClosestPoint() { return m_ClosestPoint; }
+	Vec3 GetClosestPoint() const { return m_ClosestPoint; }
 	float GetPenetrationDepth() const { return m_PenetrationDepth; }
 	COLLIDER_STATE GetState() const { return m_State; }
 

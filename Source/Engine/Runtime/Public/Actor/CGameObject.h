@@ -65,8 +65,8 @@ public:
 
 	CGameObject* GetChildByName(const wstring& PName);
 	UINT GetParentObjectID() const;
-	bool GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const;
 	bool IsAncestor(const CGameObject* POther) const;
+	array<Vec3, 2> GetAABB() const;
 
 	// Getter & Setter
 	UINT GetObjectID() const { return MObjectID; }

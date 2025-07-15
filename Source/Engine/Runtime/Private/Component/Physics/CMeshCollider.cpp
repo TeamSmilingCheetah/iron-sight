@@ -42,9 +42,9 @@ void CMeshCollider::FinalTick()
 	}
 
 	// 디버그 렌더링을 위한 매트릭스 처리
-	Vec3 BoxMin;
-	Vec3 BoxMax;
-	GetOwner()->GetWorldBoundingBox(BoxMin, BoxMax);
+	const auto& BoundingBox = GetOwner()->GetAABB();
+	Vec3 BoxMin = BoundingBox[0];
+	Vec3 BoxMax = BoundingBox[1];
 
 	Vec3 BoxSize = BoxMax - BoxMin;
 	Vec3 BoxCenter = (BoxMin + BoxMax) * 0.5f;

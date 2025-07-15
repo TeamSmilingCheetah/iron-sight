@@ -137,8 +137,19 @@ bool IsValid(CGameObject*& _Object)
 	return true;
 }
 
+/**
+ * @brief AABB 연산이 잘 완료되었는지 값으로 파악하는 함수
+ *
+ * @param AABB GetAABB 함수 호출로 받은 Vec3 Array
+ * @return AABB 연산이 잘 완료되었는지 여부
+ */
+bool IsNullAABB(const array<Vec3, 2>& AABB)
+{
+	return AABB[0] == Vec3(FLT_MAX, FLT_MAX, FLT_MAX) && AABB[1] == Vec3(FLT_MIN, FLT_MIN, FLT_MIN);
+}
+
 void DrawDebugRect(Vec4 _Color, Vec3 _Pos, Vec2 _Scale, Vec3 _Rotation, bool _DepthTest,
-				   float _Duration)
+                   float _Duration)
 {
 	tDebugShapeInfo info = {};
 	info.Shape = DEBUG_SHAPE::RECT;

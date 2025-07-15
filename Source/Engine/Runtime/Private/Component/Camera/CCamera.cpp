@@ -654,11 +654,13 @@ bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 
 	// 오브젝트의 바운딩 박스 가져오기
 	// XXX(KHJ): 현재 bounding box 계산하지 못했다면 무조건 rendering하지 않는데, 누락되는 케이스 없는지 확인 필요
-	Vec3 vMin, vMax;
-	if (!PObject->GetWorldBoundingBox(vMin, vMax))
+	const auto& BoundingBox = PObject->GetAABB();
+	if (IsNullAABB(BoundingBox))
 	{
 		return false;
 	}
+	Vec3 vMin = BoundingBox[0];
+	Vec3 vMax = BoundingBox[1];
 
 	// Make More Margin
 	constexpr float FRUSTUM_MARGIN = 0.5f;

@@ -307,8 +307,8 @@ bool FCollisionManager::IsCollision(CLandScape* PRightCollider, CColliderRay* PL
     RayInfo.RayDir = PLeftCollider->GetRayFinalDir();
     RayInfo.RayLength = PLeftCollider->GetRayLength();
     PRightCollider->AddRayCol(RayInfo);
-    MLandscapeObject.insert(const_cast<CLandScape*>(PRightCollider));
-    return false; // 실제 충돌 여부는 LandScape 내부에서 처리됨
+
+	return false; // 실제 충돌 여부는 LandScape 내부에서 처리됨
 }
 
 /**

@@ -25,8 +25,6 @@ class CMeshCollider;
  *
  * @param MLayerCollisionMatrix 각 레이어 간의 충돌 검사 여부를 저장해둔 Matrix
  * @param MColllisionInfoMap 충돌한 오브젝트들의 ID와 충돌 상태를 저장해둔 Map
- * @param RayCollsionInfo Raycast 충돌 검사를 위한 Ray Colliders
- * @param MLandscapeObject Landscape 충돌 처리를 위한 Landscape Objects
  * @param MMeshCollisionCS Mesh 충돌 판정 처리를 위한 Compute Shader
  * @param MCandidatePairVector Narrow 판정 처리를 위한 가능성 Pair를 모아두는 Vector
  */
@@ -38,8 +36,6 @@ class FCollisionManager :
 private:
 	UINT MLayerCollisionMatrix[MAX_LAYER];
 	map<ULONGLONG, bool> MColllisionInfoMap;
-	set<CColliderRay*> RayCollsionInfo;
-	set<CLandScape*> MLandscapeObject;
 	CMeshCollisionCS MMeshCollisionCS;
 	vector<pair<CGameObject*, CGameObject*>> MCandidatePairVector;
 
@@ -72,17 +68,17 @@ private:
 	static bool CheckAABB(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
 	static bool CheckAABB(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider);
 	static bool CheckAABB(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider);
-	static bool CheckAABB(const CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider);
-	static bool CheckAABB(const CCollider3D* P3DCollider, const CLandScape* PLandscapeCollider);
-	static bool CheckAABB(const CColliderRay* PRayCollider, const CCollider3D* P3DCollider);
-	static bool CheckAABB(const CColliderRay* PRayCollider, const CLandScape* PLandscapeCollider);
+	static bool CheckAABB(const CMeshCollider* PLeftCollider, const CCollider3D* PRightCollider);
+	static bool CheckAABB(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
+	static bool CheckAABB(const CColliderRay* PLeftCollider, const CCollider3D* PRightCollider);
+	static bool CheckAABB(const CColliderRay* PLeftCollider, const CLandScape* PRightCollider);
 
 	// Narrow Phase Check
 	static bool IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
 	static bool IsCollision(CCollider3D* PLeftCollider, CCollider3D* PRightCollider);
 	static bool IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
-	bool IsCollision(CCollider3D* PLeftCollider, CColliderRay* PRightCollider);
-	bool IsCollision(CLandScape* PLeftCollider, CColliderRay* PRightCollider);
+	static bool IsCollision(CCollider3D* PLeftCollider, CColliderRay* PRightCollider);
+	static bool IsCollision(CLandScape* PLeftCollider, CColliderRay* PRightCollider);
 	bool IsCollision(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider);
 	bool IsCollision(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider);
 	bool IsCollision(CCollider3D* P3DCollider, CMeshCollider* PMeshCollider);
@@ -94,7 +90,7 @@ private:
 public:
 	void Tick();
 	void ActiveLayerCollision(UINT PLeft, UINT PRight);
-	void CollisionCheckClear() { memset(MLayerCollisionMatrix, 0, sizeof(UINT) * MAX_LAYER); }
+	void CollisionCheckClear();
 };
 
 /**

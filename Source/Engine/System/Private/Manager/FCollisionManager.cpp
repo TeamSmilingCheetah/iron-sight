@@ -28,6 +28,14 @@ void FCollisionManager::ActiveLayerCollision(UINT PLeft, UINT PRight)
 	MLayerCollisionMatrix[Row] |= (1 << Col);
 }
 
+/**
+ * @brief 충돌 등록 Matrix를 초기화하는 함수
+ */
+void FCollisionManager::CollisionCheckClear()
+{
+	memset(MLayerCollisionMatrix, 0, sizeof(UINT) * MAX_LAYER);
+}
+
 /****************/
 /** Main Logic **/
 /****************/
@@ -62,7 +70,5 @@ void FCollisionManager::Tick()
 void FCollisionManager::CleanResource()
 {
 	// Reset Information
-	MLandscapeObject.clear();
-	RayCollsionInfo.clear();
 	MCandidatePairVector.clear();
 }

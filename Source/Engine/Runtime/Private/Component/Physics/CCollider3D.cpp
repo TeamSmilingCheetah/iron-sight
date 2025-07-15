@@ -279,10 +279,9 @@ void CCollider3D::LoadComponent(FILE* PFile)
 /**
  * @brief 3D Collider 기준 AABB를 산출하는 함수
  *
- * @param PMin AABB Min
- * @param PMax AABB Max
+ * @return { AABB Min, AABB Max }
  */
-void CCollider3D::GetAABB(Vec3& PMin, Vec3& PMax) const
+array<Vec3, 2> CCollider3D::GetAABB() const
 {
 	Matrix WorldMatrix = GetColliderWorldMat();
 	Vec3 Vtxs[8];
@@ -291,37 +290,39 @@ void CCollider3D::GetAABB(Vec3& PMin, Vec3& PMax) const
 		Vtxs[i] = XMVector3TransformCoord(CubeArr[i], WorldMatrix);
 	}
 
-	PMin = Vtxs[0];
-	PMax = Vtxs[0];
+	Vec3 BoxMin = Vtxs[0];
+	Vec3 BoxMax = Vtxs[0];
 
 	for (int i = 1; i < 8; ++i)
 	{
-		PMin.x = min(PMin.x, Vtxs[i].x);
-		PMin.y = min(PMin.y, Vtxs[i].y);
-		PMin.z = min(PMin.z, Vtxs[i].z);
-		PMax.x = max(PMax.x, Vtxs[i].x);
-		PMax.y = max(PMax.y, Vtxs[i].y);
-		PMax.z = max(PMax.z, Vtxs[i].z);
+		BoxMin.x = min(BoxMin.x, Vtxs[i].x);
+		BoxMin.y = min(BoxMin.y, Vtxs[i].y);
+		BoxMin.z = min(BoxMin.z, Vtxs[i].z);
+		BoxMax.x = max(BoxMax.x, Vtxs[i].x);
+		BoxMax.y = max(BoxMax.y, Vtxs[i].y);
+		BoxMax.z = max(BoxMax.z, Vtxs[i].z);
 	}
 
 	// Make Min Thickness
 	constexpr float MIN_THICKNESS = 1.0f;
-	if (fabs(PMax.x - PMin.x) < MIN_THICKNESS)
+	if (fabs(BoxMax.x - BoxMin.x) < MIN_THICKNESS)
 	{
-		float Center = (PMax.x + PMin.x) * 0.5f;
-		PMin.x = Center - MIN_THICKNESS * 0.5f;
-		PMax.x = Center + MIN_THICKNESS * 0.5f;
+		float Center = (BoxMax.x + BoxMin.x) * 0.5f;
+		BoxMin.x = Center - MIN_THICKNESS * 0.5f;
+		BoxMax.x = Center + MIN_THICKNESS * 0.5f;
 	}
-	if (fabs(PMax.y - PMin.y) < MIN_THICKNESS)
+	if (fabs(BoxMax.y - BoxMin.y) < MIN_THICKNESS)
 	{
-		float Center = (PMax.y + PMin.y) * 0.5f;
-		PMin.y = Center - MIN_THICKNESS * 0.5f;
-		PMax.y = Center + MIN_THICKNESS * 0.5f;
+		float Center = (BoxMax.y + BoxMin.y) * 0.5f;
+		BoxMin.y = Center - MIN_THICKNESS * 0.5f;
+		BoxMax.y = Center + MIN_THICKNESS * 0.5f;
 	}
-	if (fabs(PMax.z - PMin.z) < MIN_THICKNESS)
+	if (fabs(BoxMax.z - BoxMin.z) < MIN_THICKNESS)
 	{
-		float Center = (PMax.z + PMin.z) * 0.5f;
-		PMin.z = Center - MIN_THICKNESS * 0.5f;
-		PMax.z = Center + MIN_THICKNESS * 0.5f;
+		float Center = (BoxMax.z + BoxMin.z) * 0.5f;
+		BoxMin.z = Center - MIN_THICKNESS * 0.5f;
+		BoxMax.z = Center + MIN_THICKNESS * 0.5f;
 	}
+
+	return { BoxMin, BoxMax };
 }

@@ -268,9 +268,12 @@ bool FCollisionManager::CheckAABB(const CCollider2D* PLeftCollider, const CColli
 bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider)
 {
 	// Get 3D Collider AABB
-	Vec3 LeftMin, LeftMax, RightMin, RightMax;
-	PLeftCollider->GetAABB(LeftMin, LeftMax);
-	PRightCollider->GetAABB(RightMin, RightMax);
+	const auto& LeftBox = PLeftCollider->GetAABB();
+	const auto& RightBox = PRightCollider->GetAABB();
+	Vec3 LeftMin = LeftBox[0];
+	Vec3 LeftMax = LeftBox[1];
+	Vec3 RightMin = RightBox[0];
+	Vec3 RightMax = RightBox[1];
 
 	// AABB Collision Test
 	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
@@ -299,9 +302,12 @@ bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CColli
 bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider)
 {
 	// Get AABB
-	Vec3 LeftMin, LeftMax, RightMin, RightMax;
-	PLeftCollider->GetOwner()->GetWorldBoundingBox(LeftMin, LeftMax);
-	PRightCollider->GetOwner()->GetWorldBoundingBox(RightMin, RightMax);
+	const auto& LeftBox = PLeftCollider->GetOwner()->GetAABB();
+	const auto& RightBox = PRightCollider->GetOwner()->GetAABB();
+	Vec3 LeftMin = LeftBox[0];
+	Vec3 LeftMax = LeftBox[1];
+	Vec3 RightMin = RightBox[0];
+	Vec3 RightMax = RightBox[1];
 
 	// AABB Collision Test
 	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
@@ -323,16 +329,19 @@ bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CMes
 /**
  * @brief 메시 충돌체의 바운딩 박스와 충돌체가 충돌했는지 여부를 확인하는 함수
  *
- * @param PMeshCollider Mesh Collider
- * @param P3DCollider 3D Collider
+ * @param PLeftCollider Mesh Collider
+ * @param PRightCollider 3D Collider
  * @return 충돌 여부
  */
-bool FCollisionManager::CheckAABB(const CMeshCollider* PMeshCollider, const CCollider3D* P3DCollider)
+bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CCollider3D* PRightCollider)
 {
 	// Get AABB
-	Vec3 MeshMin, MeshMax, ColliderMin, ColliderMax;
-	PMeshCollider->GetOwner()->GetWorldBoundingBox(MeshMin, MeshMax);
-	P3DCollider->GetAABB(ColliderMin, ColliderMax);
+	const auto& MeshBox = PLeftCollider->GetOwner()->GetAABB();
+	const auto& ColliderBox = PRightCollider->GetAABB();
+	Vec3 MeshMin = MeshBox[0];
+	Vec3 MeshMax = MeshBox[1];
+	Vec3 ColliderMin = ColliderBox[0];
+	Vec3 ColliderMax = ColliderBox[1];
 
 	// AABB Collision Test
 	if (MeshMax.x < ColliderMin.x || MeshMin.x > ColliderMax.x)
@@ -354,28 +363,30 @@ bool FCollisionManager::CheckAABB(const CMeshCollider* PMeshCollider, const CCol
 /**
  * @brief 3D 충돌체 AABB와 Landscape가 충돌하는지 확인하는 함수
  *
- * @param P3DCollider 3D Collider
- * @param PLandscapeCollider Landscape Collider
+ * @param PLeftCollider 3D Collider
+ * @param PRightCollider Landscape Collider
  * @return 충돌 여부
  */
-bool FCollisionManager::CheckAABB(const CCollider3D* P3DCollider, const CLandScape* PLandscapeCollider)
+bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider)
 {
 	// Get AABB
-	Vec3 ColliderMin, ColliderMax;
-	P3DCollider->GetAABB(ColliderMin, ColliderMax);
-	Vec3 LandscapeMin = PLandscapeCollider->GetAABB()[0];
-	Vec3 LandscapeMax = PLandscapeCollider->GetAABB()[1];
+	const auto& LeftBox = PLeftCollider->GetAABB();
+	const auto& RightBox = PRightCollider->GetAABB();
+	Vec3 LeftMin = LeftBox[0];
+	Vec3 LeftMax = LeftBox[1];
+	Vec3 RightMin = RightBox[0];
+	Vec3 RightMax = RightBox[1];
 
 	// AABB Collision Test
-	if (ColliderMax.x < LandscapeMin.x || ColliderMin.x > LandscapeMax.x)
+	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
 	{
 		return false;
 	}
-	if (ColliderMax.y < LandscapeMin.y || ColliderMin.y > LandscapeMax.y)
+	if (LeftMax.y < RightMin.y || LeftMin.y > RightMax.y)
 	{
 		return false;
 	}
-	if (ColliderMax.z < LandscapeMin.z || ColliderMin.z > LandscapeMax.z)
+	if (LeftMax.z < RightMin.z || LeftMin.z > RightMax.z)
 	{
 		return false;
 	}
@@ -386,16 +397,16 @@ bool FCollisionManager::CheckAABB(const CCollider3D* P3DCollider, const CLandSca
 /**
  * @brief 3D 충돌체 AABB와 Ray가 충돌하는지 확인하는 함수
  *
- * @param PRayCollider Ray Collider
- * @param P3DCollider 3D Collider
+ * @param PLeftCollider Ray Collider
+ * @param PRightCollider 3D Collider
  * @return 충돌 여부
  */
-bool FCollisionManager::CheckAABB(const CColliderRay* PRayCollider, const CCollider3D* P3DCollider)
+bool FCollisionManager::CheckAABB(const CColliderRay* PLeftCollider, const CCollider3D* PRightCollider)
 {
 	// Get Ray Information
-	Vec3 RayStart = PRayCollider->GetRayFinalPos();
-	Vec3 RayDirection = PRayCollider->GetRayFinalDir();
-	float RayMaxDistance = PRayCollider->GetRayLength();
+	Vec3 RayStart = PLeftCollider->GetRayFinalPos();
+	Vec3 RayDirection = PLeftCollider->GetRayFinalDir();
+	float RayMaxDistance = PLeftCollider->GetRayLength();
 
 	// Early Return
 	if (RayDirection.Length() < 1e-6f)
@@ -404,8 +415,9 @@ bool FCollisionManager::CheckAABB(const CColliderRay* PRayCollider, const CColli
 	}
 
 	// Get Collider AABB
-	Vec3 BoxMin, BoxMax;
-	P3DCollider->GetOwner()->GetWorldBoundingBox(BoxMin, BoxMax);
+	const auto& ColliderBox = PRightCollider->GetAABB();
+	Vec3 BoxMin = ColliderBox[0];
+	Vec3 BoxMax = ColliderBox[1];
 
 	// DirectX Intersect
 	BoundingBox AABB;
@@ -427,16 +439,16 @@ bool FCollisionManager::CheckAABB(const CColliderRay* PRayCollider, const CColli
 /**
  * @brief Landscape AABB와 Ray가 충돌하는지 확인하는 함수
  *
- * @param PRayCollider Ray Collider
- * @param PLandscapeCollider Landscape Collider
+ * @param PLeftCollider Ray Collider
+ * @param PRightCollider Landscape Collider
  * @return 충돌 여부
  */
-bool FCollisionManager::CheckAABB(const CColliderRay* PRayCollider, const CLandScape* PLandscapeCollider)
+bool FCollisionManager::CheckAABB(const CColliderRay* PLeftCollider, const CLandScape* PRightCollider)
 {
 	// Get Ray Information
-	Vec3 RayStart = PRayCollider->GetRayFinalPos();
-	Vec3 RayDirection = PRayCollider->GetRayFinalDir();
-	float RayLength = PRayCollider->GetRayLength();
+	Vec3 RayStart = PLeftCollider->GetRayFinalPos();
+	Vec3 RayDirection = PLeftCollider->GetRayFinalDir();
+	float RayLength = PLeftCollider->GetRayLength();
 
 	// Find Ray End
 	Vec3 RayEnd = RayStart + RayDirection * RayLength;
@@ -454,8 +466,8 @@ bool FCollisionManager::CheckAABB(const CColliderRay* PRayCollider, const CLandS
 	);
 
 	// LandScape AABB
-	Vec3 LandscapeMin = PLandscapeCollider->GetAABB()[0];
-	Vec3 LandscapeMax = PLandscapeCollider->GetAABB()[1];
+	Vec3 LandscapeMin = PRightCollider->GetAABB()[0];
+	Vec3 LandscapeMax = PRightCollider->GetAABB()[1];
 
 	// AABB Collision Test
 	if (RayMax.x < LandscapeMin.x || RayMin.x > LandscapeMax.x)

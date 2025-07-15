@@ -357,9 +357,3 @@ void CMesh::CalculateLocalBound()
 		assert("If The Update Is Not Done Even After Traversing All Vertices, Enter This Point.");
 	}
 }
-
-void CMesh::GetLocalBound(Vec3& _Min, Vec3& _Max) const
-{
-	_Min = m_BoundMin;
-	_Max = m_BoundMax;
-}
