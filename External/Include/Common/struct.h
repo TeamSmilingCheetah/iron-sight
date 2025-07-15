@@ -400,11 +400,66 @@ struct AABB
 		Max = Vec3(FLT_MIN);
 	}
 
-	void Expand(const AABB& POther);
+	/**
+	 * @brief 해당 AABB의 중앙값을 반환하는 함수
+	 * @return Center Value
+	 */
+	Vec3 Center() const
+	{
+		return (Min + Max) * 0.5f;
+	}
 
-	Vec3 Center() const;
-	int LongestAxis() const;
-	bool Intersects(const AABB& POther) const;
+	// TODO(KHJ): 현재 해당 함수 쓰지 않는 부분들 교체할 것
+	/**
+	 * @brief AABB 간섭 판정
+	 * @param POther 간섭을 확인할 다른 AABB
+	 * @return 간섭 여부
+	 */
+	bool Intersects(const AABB& POther) const
+	{
+		return {
+			(Min.x <= POther.Max.x && Max.x >= POther.Min.x) &&
+			(Min.y <= POther.Max.y && Max.y >= POther.Min.y) &&
+			(Min.z <= POther.Max.z && Max.z >= POther.Min.z)
+		};
+	}
+
+	/**
+	 * @brief 다른 AABB의 좌표를 가져와 사이즈를 확장하는 함수
+	 */
+	void Expand(const AABB& POther)
+	{
+		Min.x = min(Min.x, POther.Min.x);
+		Min.y = min(Min.y, POther.Min.y);
+		Min.z = min(Min.z, POther.Min.z);
+
+		Max.x = max(Max.x, POther.Max.x);
+		Max.y = max(Max.y, POther.Max.y);
+		Max.z = max(Max.z, POther.Max.z);
+	}
+
+	/**
+	 * @brief AABB에서 가장 길이가 긴 축을 찾는 함수
+	 */
+	int LongestAxis() const
+	{
+		Vec3 Extent = Max - Min;
+
+		// X is Longest
+		if (Extent.x > Extent.y && Extent.x > Extent.z)
+		{
+			return 0;
+		}
+
+		// Y is Longest
+		if (Extent.y > Extent.z)
+		{
+			return 1;
+		}
+
+		// Z is Longest
+		return 2;
+	}
 };
 
 struct BVHNode
@@ -421,5 +476,12 @@ struct BVHNode
 		delete Right;
 	}
 
-	bool IsLeaf() const;
+	/**
+	 * @brief 해당 노드가 BVH의 리프 노드인지 확인하는 함수
+	 * @return 리프 여부
+	 */
+	bool IsLeaf() const
+	{
+		return (Left == nullptr) && (Right == nullptr);
+	}
 };

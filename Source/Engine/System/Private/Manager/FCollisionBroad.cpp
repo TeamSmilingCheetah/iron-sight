@@ -5,6 +5,7 @@
 #include "Runtime/Public/Component/Physics/CCollider2D.h"
 #include "Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 
 /*****************/
