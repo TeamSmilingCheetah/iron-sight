@@ -382,7 +382,7 @@ void CGameObject::RegisterAsParent()
  * 값에 문제가 있을 경우 Min값이 Max값보다 크게 반환하도록 설정함
  * @return 바운딩 박스의 최소, 최대 좌표 { Min, Max }
  */
-array<Vec3, 2> CGameObject::GetAABB() const
+AABB CGameObject::GetAABB() const
 {
 	// Landscape Getter 사용
 	if (LandScape())
@@ -399,7 +399,7 @@ array<Vec3, 2> CGameObject::GetAABB() const
 	if (!MeshRenderPtr && !ParticleSystemPtr && !DecalPtr)
 	{
 		LOG_ERROR_F("[GameObj] {}: Mesh Renderer가 존재하지 않음", WStringToString(GetName()));
-		return {Vec3(FLT_MAX, FLT_MAX, FLT_MAX), Vec3(FLT_MIN, FLT_MIN, FLT_MIN)};
+		return AABB();
 	}
 
 	// 2. 메시가 없는 경우 실패
@@ -487,5 +487,5 @@ array<Vec3, 2> CGameObject::GetAABB() const
 	}
 
 	// Return
-	return {WorldMin, WorldMax};
+	return { WorldMin, WorldMax };
 }

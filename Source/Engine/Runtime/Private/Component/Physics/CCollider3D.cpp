@@ -281,7 +281,7 @@ void CCollider3D::LoadComponent(FILE* PFile)
  *
  * @return { AABB Min, AABB Max }
  */
-array<Vec3, 2> CCollider3D::GetAABB() const
+AABB CCollider3D::GetColliderAABB() const
 {
 	Matrix WorldMatrix = GetColliderWorldMat();
 	Vec3 Vtxs[8];
@@ -324,5 +324,5 @@ array<Vec3, 2> CCollider3D::GetAABB() const
 		BoxMax.z = Center + MIN_THICKNESS * 0.5f;
 	}
 
-	return { BoxMin, BoxMax };
+	return AABB(BoxMin, BoxMax);
 }

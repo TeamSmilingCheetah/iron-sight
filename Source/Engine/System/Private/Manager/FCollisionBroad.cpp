@@ -268,12 +268,12 @@ bool FCollisionManager::CheckAABB(const CCollider2D* PLeftCollider, const CColli
 bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider)
 {
 	// Get 3D Collider AABB
-	const auto& LeftBox = PLeftCollider->GetAABB();
-	const auto& RightBox = PRightCollider->GetAABB();
-	Vec3 LeftMin = LeftBox[0];
-	Vec3 LeftMax = LeftBox[1];
-	Vec3 RightMin = RightBox[0];
-	Vec3 RightMax = RightBox[1];
+	const auto& LeftBox = PLeftCollider->GetColliderAABB();
+	const auto& RightBox = PRightCollider->GetColliderAABB();
+	Vec3 LeftMin = LeftBox.Min;
+	Vec3 LeftMax = LeftBox.Max;
+	Vec3 RightMin = RightBox.Min;
+	Vec3 RightMax = RightBox.Max;
 
 	// AABB Collision Test
 	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
@@ -304,10 +304,10 @@ bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CMes
 	// Get AABB
 	const auto& LeftBox = PLeftCollider->GetOwner()->GetAABB();
 	const auto& RightBox = PRightCollider->GetOwner()->GetAABB();
-	Vec3 LeftMin = LeftBox[0];
-	Vec3 LeftMax = LeftBox[1];
-	Vec3 RightMin = RightBox[0];
-	Vec3 RightMax = RightBox[1];
+	Vec3 LeftMin = LeftBox.Min;
+	Vec3 LeftMax = LeftBox.Max;
+	Vec3 RightMin = RightBox.Min;
+	Vec3 RightMax = RightBox.Max;
 
 	// AABB Collision Test
 	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
@@ -337,11 +337,11 @@ bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CCol
 {
 	// Get AABB
 	const auto& MeshBox = PLeftCollider->GetOwner()->GetAABB();
-	const auto& ColliderBox = PRightCollider->GetAABB();
-	Vec3 MeshMin = MeshBox[0];
-	Vec3 MeshMax = MeshBox[1];
-	Vec3 ColliderMin = ColliderBox[0];
-	Vec3 ColliderMax = ColliderBox[1];
+	const auto& ColliderBox = PRightCollider->GetColliderAABB();
+	Vec3 MeshMin = MeshBox.Min;
+	Vec3 MeshMax = MeshBox.Max;
+	Vec3 ColliderMin = ColliderBox.Min;
+	Vec3 ColliderMax = ColliderBox.Max;
 
 	// AABB Collision Test
 	if (MeshMax.x < ColliderMin.x || MeshMin.x > ColliderMax.x)
@@ -370,12 +370,12 @@ bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CCol
 bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider)
 {
 	// Get AABB
-	const auto& LeftBox = PLeftCollider->GetAABB();
+	const auto& LeftBox = PLeftCollider->GetColliderAABB();
 	const auto& RightBox = PRightCollider->GetAABB();
-	Vec3 LeftMin = LeftBox[0];
-	Vec3 LeftMax = LeftBox[1];
-	Vec3 RightMin = RightBox[0];
-	Vec3 RightMax = RightBox[1];
+	Vec3 LeftMin = LeftBox.Min;
+	Vec3 LeftMax = LeftBox.Max;
+	Vec3 RightMin = RightBox.Min;
+	Vec3 RightMax = RightBox.Max;
 
 	// AABB Collision Test
 	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
@@ -415,9 +415,9 @@ bool FCollisionManager::CheckAABB(const CColliderRay* PLeftCollider, const CColl
 	}
 
 	// Get Collider AABB
-	const auto& ColliderBox = PRightCollider->GetAABB();
-	Vec3 BoxMin = ColliderBox[0];
-	Vec3 BoxMax = ColliderBox[1];
+	const auto& ColliderBox = PRightCollider->GetColliderAABB();
+	Vec3 BoxMin = ColliderBox.Min;
+	Vec3 BoxMax = ColliderBox.Max;
 
 	// DirectX Intersect
 	BoundingBox AABB;
@@ -466,8 +466,9 @@ bool FCollisionManager::CheckAABB(const CColliderRay* PLeftCollider, const CLand
 	);
 
 	// LandScape AABB
-	Vec3 LandscapeMin = PRightCollider->GetAABB()[0];
-	Vec3 LandscapeMax = PRightCollider->GetAABB()[1];
+	const auto& LandscapeAABB = PRightCollider->GetAABB();
+	Vec3 LandscapeMin = LandscapeAABB.Min;
+	Vec3 LandscapeMax = PRightCollider->GetAABB().Max;
 
 	// AABB Collision Test
 	if (RayMax.x < LandscapeMin.x || RayMin.x > LandscapeMax.x)

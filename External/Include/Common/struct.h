@@ -31,14 +31,14 @@ struct tDebugShapeInfo
 	Matrix matWorld;
 
 	Vec4 Color;
-	float Duration;		// DebugShape 유지 시간
-	float Time;			// 현재 진행 시간
+	float Duration; // DebugShape 유지 시간
+	float Time; // 현재 진행 시간
 
-	bool DepthTest;		// 깊이검사를 수행
+	bool DepthTest; // 깊이검사를 수행
 
 	// general
-	DWORD_PTR  Data1;
-	DWORD_PTR  Data2;
+	DWORD_PTR Data1;
+	DWORD_PTR Data2;
 };
 
 struct tTask
@@ -177,31 +177,31 @@ struct tRay
 // UI
 struct PayLoad
 {
-	wstring		Type;
-	DWORD_PTR	Data;
+	wstring Type;
+	DWORD_PTR Data;
 };
 
 // Font
 struct FontRenderInfo
 {
 	// 폰트 정보
-	wstring		Font;
-	UINT		FontSize;
+	wstring Font;
+	UINT FontSize;
 
 	// 출력 정보
-	wstring		Text;
-	UINT		Color;
-	Vec2		Pos;
-	Vec2		Layout;		// width, height (텍스트가 끊길 위치)
-	Vec4		Clip;		// left, top, right, bottom
+	wstring Text;
+	UINT Color;
+	Vec2 Pos;
+	Vec2 Layout; // width, height (텍스트가 끊길 위치)
+	Vec4 Clip; // left, top, right, bottom
 };
 
 // Bullet
 struct BULLETINFO
 {
-	CGameObject* m_Owner;	// 총알 주인
-	CGameObject* m_ShotWeapon;	// 해당 총알을 발사한 무기
-	float				m_Dmg;	// 총알 데미지
+	CGameObject* m_Owner; // 총알 주인
+	CGameObject* m_ShotWeapon; // 해당 총알을 발사한 무기
+	float m_Dmg; // 총알 데미지
 };
 
 // ============
@@ -238,19 +238,22 @@ struct tMTBone
 // ===========
 union uInstID
 {
-	struct {
+	struct
+	{
 		UINT iMesh;
 		WORD iMtrl;
 		WORD iMtrlIdx;
 	};
+
 	ULONG64 llID;
 };
 
 class CGameObject;
+
 struct tInstObj
 {
 	CGameObject* pObj;
-	UINT		 iMtrlIdx;
+	UINT iMtrlIdx;
 };
 
 struct tInstancingData
@@ -258,10 +261,10 @@ struct tInstancingData
 	Matrix matWorld;
 	Matrix matWV;
 	Matrix matWVP;
-	int    iRowIdx;
-	int    parentID;
-	int    objectID;
-	int    reserved[2]; // 패딩
+	int iRowIdx;
+	int parentID;
+	int objectID;
+	int reserved[2]; // 패딩
 };
 
 
@@ -346,13 +349,15 @@ extern GlobalData g_Data;
 
 // Mesh Collision
 
-struct MeshCollisionInfo {
+struct MeshCollisionInfo
+{
 	UINT LeftTriCount;
 	UINT RightTriCount;
 	UINT Padding[2];
 };
 
-struct CollisionResult {
+struct CollisionResult
+{
 	Vec3 LeftNormal;
 	Vec3 RightNormal;
 	float PenetrationDepth;
@@ -376,4 +381,45 @@ struct LogMessage
 	thread::id ThreadID;
 
 	LogMessage(ELogLevel PLevel, const string& PMessage);
+};
+
+struct AABB
+{
+	Vec3 Min;
+	Vec3 Max;
+
+	AABB(Vec3 PMin, Vec3 PMax)
+	{
+		Min = PMin;
+		Max = PMax;
+	}
+
+	AABB()
+	{
+		Min = Vec3(FLT_MAX);
+		Max = Vec3(FLT_MIN);
+	}
+
+	void Expand(const AABB& POther);
+
+	Vec3 Center() const;
+	int LongestAxis() const;
+	bool Intersects(const AABB& POther) const;
+};
+
+struct BVHNode
+{
+	AABB Bounds;
+	vector<CGameObject*> Objects;
+	BVHNode* Left = nullptr;
+	BVHNode* Right = nullptr;
+
+	~BVHNode()
+	{
+		// Cascade Delete
+		delete Left;
+		delete Right;
+	}
+
+	bool IsLeaf() const;
 };

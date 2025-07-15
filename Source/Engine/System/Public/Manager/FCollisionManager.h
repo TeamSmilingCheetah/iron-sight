@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "CKeyMgr.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 
 union COLLISION_ID
@@ -38,6 +36,7 @@ private:
 	map<ULONGLONG, bool> MColllisionInfoMap;
 	CMeshCollisionCS MMeshCollisionCS;
 	vector<pair<CGameObject*, CGameObject*>> MCandidatePairVector;
+    BVHNode* MBVHRootNode = nullptr;
 
 public:
 	struct SimpleVtx
@@ -77,8 +76,8 @@ private:
 	static bool IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
 	static bool IsCollision(CCollider3D* PLeftCollider, CCollider3D* PRightCollider);
 	static bool IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
-	static bool IsCollision(CCollider3D* PLeftCollider, CColliderRay* PRightCollider);
-	static bool IsCollision(CLandScape* PLeftCollider, CColliderRay* PRightCollider);
+	bool IsCollision(CCollider3D* PLeftCollider, CColliderRay* PRightCollider);
+	bool IsCollision(CLandScape* PLeftCollider, CColliderRay* PRightCollider);
 	bool IsCollision(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider);
 	bool IsCollision(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider);
 	bool IsCollision(CCollider3D* P3DCollider, CMeshCollider* PMeshCollider);
@@ -86,6 +85,12 @@ private:
 	// Collision Apply
 	template <typename T1, typename T2>
 	void ProcessCollision(T1* PLeftCollider, T2* PRightCollider);
+
+	// Bounding Volume Hirachy
+	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth = 0);
+	void BuildBVH(const vector<CGameObject*>& PObjects);
+	void DestroyBVH();
+	static void QueryBVH(const BVHNode* PNode, const AABB& PQueryBound, vector<CGameObject*>& POutCandidates);
 
 public:
 	void Tick();
