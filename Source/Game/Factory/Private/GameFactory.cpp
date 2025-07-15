@@ -162,6 +162,7 @@ void GameFactory::LoadDefaultLandscape(CLevel* PLevel)
 	Common::AddComponentToObject<CLandScape>(RawLandscapePtr);
 	Transform::SetPosition(RawLandscapePtr, {0.f, -500.f, 0.f});
 	Transform::SetScale(RawLandscapePtr, {5000.f, 5000.f, 5000.f});
+	Transform::SetFrustumCheck(RawLandscapePtr, false);
 
 	auto ColorTexture = IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Color.dds");
 	auto NormalTexture = IO::LoadAsset<CTexture>(L"Texture\\LandScapeTexture\\LS_Normal.dds");

@@ -17,7 +17,9 @@
 #include <typeinfo>
 #include <random>
 #include <algorithm>
+#include <array>
 
+using std::array;
 using std::vector;
 using std::list;
 using std::queue;

@@ -1,9 +1,16 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
 
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Script/CScript.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+
+// Constant Stucture
+constexpr static Vec3 RectArr[4] =
+{
+	Vec3(-0.5f, 0.5f, 0.f), Vec3(0.5f, 0.5f, 0.f),
+	Vec3(0.5f, -0.5f, 0.f), Vec3(-0.5f, -0.5f, 0.f)
+};
 
 CCollider2D::CCollider2D()
 	: CComponent(COMPONENT_TYPE::COLLIDER2D)
@@ -12,19 +19,17 @@ CCollider2D::CCollider2D()
 {
 }
 
-CCollider2D::CCollider2D(const CCollider2D& _Origin)
-	: CComponent(_Origin)
-	  , m_Offset(_Origin.m_Offset)
-	  , m_Scale(_Origin.m_Scale)
-	  , m_FinalPos(_Origin.m_FinalPos)
-	  , m_IndependentScale(_Origin.m_IndependentScale)
+CCollider2D::CCollider2D(const CCollider2D& POrigin)
+	: CComponent(POrigin)
+	  , m_Offset(POrigin.m_Offset)
+	  , m_Scale(POrigin.m_Scale)
+	  , m_FinalPos(POrigin.m_FinalPos)
+	  , m_IndependentScale(POrigin.m_IndependentScale)
 	  , m_OverlapCount(0)
 {
 }
 
-CCollider2D::~CCollider2D()
-{
-}
+CCollider2D::~CCollider2D() = default;
 
 void CCollider2D::FinalTick()
 {
@@ -56,49 +61,79 @@ void CCollider2D::FinalTick()
 	}
 }
 
-void CCollider2D::BeginOverlap(CCollider2D* _Other)
+void CCollider2D::BeginOverlap(CCollider2D* POther)
 {
 	++m_OverlapCount;
 
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider2D::Overlap(CCollider2D* _Other)
+void CCollider2D::Overlap(CCollider2D* POther)
 {
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->Overlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider2D::EndOverlap(CCollider2D* _Other)
+void CCollider2D::EndOverlap(CCollider2D* POther)
 {
 	--m_OverlapCount;
 
 	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
 	for (size_t i = 0; i < vecScript.size(); ++i)
 	{
-		vecScript[i]->EndOverlap(this, _Other->GetOwner(), _Other);
+		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
-void CCollider2D::SaveComponent(FILE* _File)
+void CCollider2D::SaveComponent(FILE* PFile)
 {
-	fwrite(&m_Offset, sizeof(Vec2), 1, _File);
-	fwrite(&m_Scale, sizeof(Vec2), 1, _File);
-	fwrite(&m_FinalPos, sizeof(Vec2), 1, _File);
-	fwrite(&m_IndependentScale, sizeof(bool), 1, _File);
+	(void)fwrite(&m_Offset, sizeof(Vec2), 1, PFile);
+	(void)fwrite(&m_Scale, sizeof(Vec2), 1, PFile);
+	(void)fwrite(&m_FinalPos, sizeof(Vec2), 1, PFile);
+	(void)fwrite(&m_IndependentScale, sizeof(bool), 1, PFile);
 }
 
-void CCollider2D::LoadComponent(FILE* _File)
+void CCollider2D::LoadComponent(FILE* PFile)
 {
-	fread(&m_Offset, sizeof(Vec2), 1, _File);
-	fread(&m_Scale, sizeof(Vec2), 1, _File);
-	fread(&m_FinalPos, sizeof(Vec2), 1, _File);
-	fread(&m_IndependentScale, sizeof(bool), 1, _File);
+	(void)fread(&m_Offset, sizeof(Vec2), 1, PFile);
+	(void)fread(&m_Scale, sizeof(Vec2), 1, PFile);
+	(void)fread(&m_FinalPos, sizeof(Vec2), 1, PFile);
+	(void)fread(&m_IndependentScale, sizeof(bool), 1, PFile);
+}
+
+/**
+ * @brief 2D Collider 기준 AABB를 산출하는 함수
+ *
+ * @param PMin AABB Min
+ * @param PMax AABB Max
+ */
+void CCollider2D::GetAABB(Vec2& PMin, Vec2& PMax) const
+{
+	// Get 2D Collider Vertexs
+	Matrix LeftMatrix = GetColliderWorldMatrix();
+	Vec3 Vtxs[4];
+
+	for (int i = 0; i < 4; ++i)
+	{
+		Vtxs[i] = XMVector3TransformCoord(RectArr[i], LeftMatrix);
+	}
+
+	// Get 2D AABB
+	PMin = Vtxs->XY();
+	PMax = Vtxs->XY();
+
+	for (int i = 1; i < 4; ++i)
+	{
+		PMin.x = min(PMin.x, Vtxs[i].x);
+		PMin.y = min(PMin.y, Vtxs[i].y);
+		PMax.x = max(PMax.x, Vtxs[i].x);
+		PMax.y = max(PMax.y, Vtxs[i].y);
+	}
 }

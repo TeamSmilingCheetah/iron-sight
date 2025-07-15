@@ -10,16 +10,17 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Game/System/Public/GameplayManager.h"
+#include "Runtime/Public/Component/Rendering/CLandscape.h"
 
 UINT CGameObject::GUID = 0;
 
 CGameObject::CGameObject()
 	: MObjectID(GUID++)
-	, MComponentArray{}
-	, MRenderComponent(nullptr)
-	, MParent(nullptr)
-	, MLayerIdx(-1) // 레벨 및 레이어에 속하지 않음
-	, MNextLayerIdx(-1)
+	  , MComponentArray{}
+	  , MRenderComponent(nullptr)
+	  , MParent(nullptr)
+	  , MLayerIdx(-1) // 레벨 및 레이어에 속하지 않음
+	  , MNextLayerIdx(-1)
 {
 	// Status Boolean Setting
 	SetActive(true);
@@ -33,11 +34,11 @@ CGameObject::CGameObject()
 
 CGameObject::CGameObject(const CGameObject& POrigin)
 	: CEntity(POrigin)
-	, MObjectID(GUID++)
-	, MComponentArray{}
-	, MRenderComponent(nullptr)
-	, MParent(nullptr)
-	, MLayerIdx(-1)
+	  , MObjectID(GUID++)
+	  , MComponentArray{}
+	  , MRenderComponent(nullptr)
+	  , MParent(nullptr)
+	  , MLayerIdx(-1)
 {
 	SetActive(POrigin.IsActive());
 	SetDead(false);
@@ -168,12 +169,14 @@ void CGameObject::AddComponent(CComponent* PComponent)
 		MScriptsVector.push_back(static_cast<CScript*>(PComponent));
 
 		// script가 몇 번 위치에 존재하는지 기록
-		MScriptShortcut[static_cast<CScript*>(PComponent)->GetScriptType()] = static_cast<UINT>(MScriptsVector.size()) - 1;
+		MScriptShortcut[static_cast<CScript*>(PComponent)->GetScriptType()]
+			= static_cast<UINT>(MScriptsVector.size()) - 1;
 
 		// 부모 스크립트 정보로 들고 있는 경우, 해당 정보도 Shortcut에 등록해야 조회 시 문제가 없음
 		if (static_cast<CScript*>(PComponent)->GetParentScriptType() != SCRIPT_TYPE::NONE)
 		{
-			MScriptShortcut[static_cast<CScript*>(PComponent)->GetParentScriptType()] = static_cast<UINT>(MScriptsVector.size()) - 1;
+			MScriptShortcut[static_cast<CScript*>(PComponent)->GetParentScriptType()]
+				= static_cast<UINT>(MScriptsVector.size()) - 1;
 		}
 	}
 	else
@@ -214,7 +217,8 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE PType)
 		assert(MComponentArray[static_cast<UINT>(PType)]);
 
 		// 입력된 컴포넌트가 CRenderComponent 의 자식클래스 타입인지 확인
-		if (PType == COMPONENT_TYPE::TILEMAP || PType == COMPONENT_TYPE::MESHRENDER || PType == COMPONENT_TYPE::PARTICLE_SYSTEM)
+		if (PType == COMPONENT_TYPE::TILEMAP || PType == COMPONENT_TYPE::MESHRENDER || PType ==
+			COMPONENT_TYPE::PARTICLE_SYSTEM)
 		{
 			assert(MRenderComponent);
 			MRenderComponent = nullptr;
@@ -250,6 +254,7 @@ void CGameObject::DeleteScript(const wstring& PScriptName)
 		}
 	}
 }
+
 UINT CGameObject::GetParentObjectID() const
 {
 	UINT ParentID;
@@ -374,22 +379,27 @@ void CGameObject::RegisterAsParent()
 
 /**
  * @brief 게임 오브젝트의 world 기준 바운딩 박스를 계산하는 함수
- *
- * @param PMin 바운딩 박스의 최소 좌표를 저장할 벡터
- * @param PMax 바운딩 박스의 최대 좌표를 저장할 벡터
- *
- * @return 로직 정상 처리 여부
+ * 값에 문제가 있을 경우 Min값이 Max값보다 크게 반환하도록 설정함
+ * @return 바운딩 박스의 최소, 최대 좌표 { Min, Max }
  */
-bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
+array<Vec3, 2> CGameObject::GetAABB() const
 {
+	// Landscape Getter 사용
+	if (LandScape())
+	{
+		return LandScape()->GetAABB();
+	}
+
 	// 바운딩 박스가 존재하기 위한 최소 조건 확인
 	// 1. 메시 렌더러가 없는 경우 실패
 	CMeshRender* MeshRenderPtr = MeshRender();
 	CParticleSystem* ParticleSystemPtr = ParticleSystem();
-	CDecal* pDecal = Decal();
-	if (!MeshRenderPtr && !ParticleSystemPtr && !pDecal)
+	CDecal* DecalPtr = Decal();
+
+	if (!MeshRenderPtr && !ParticleSystemPtr && !DecalPtr)
 	{
-		return false;
+		LOG_ERROR_F("[GameObj] {}: Mesh Renderer가 존재하지 않음", WStringToString(GetName()));
+		return {Vec3(FLT_MAX, FLT_MAX, FLT_MAX), Vec3(FLT_MIN, FLT_MIN, FLT_MIN)};
 	}
 
 	// 2. 메시가 없는 경우 실패
@@ -402,21 +412,23 @@ bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 	{
 		MeshPtr = ParticleSystemPtr->GetMesh();
 	}
-	if (pDecal)
+	if (DecalPtr)
 	{
-		MeshPtr = pDecal->GetMesh();
+		MeshPtr = DecalPtr->GetMesh();
 	}
 
 	if (MeshPtr == nullptr)
 	{
-		return false;
+		LOG_ERROR("[GameObj] MeshPtr이 존재하지 않음");
+		return {Vec3(FLT_MAX, FLT_MAX, FLT_MAX), Vec3(FLT_MIN, FLT_MIN, FLT_MIN)};;
 	}
 
 	// TODO(KHJ): Animation 기반 Bounding Box Checking
 
 	// Get Local Bound
-	Vec3 LocalMin, LocalMax;
-	MeshPtr->GetLocalBound(LocalMin, LocalMax);
+	const auto& LocalBound = MeshPtr->GetLocalBound();
+	Vec3 LocalMin = LocalBound[0];
+	Vec3 LocalMax = LocalBound[1];
 
 	// Set Min Thickness
 	constexpr float MIN_THICKNESS = 1.0f;
@@ -425,23 +437,23 @@ bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 
 	if (size.x < MIN_THICKNESS)
 	{
-		float center = (LocalMin.x + LocalMax.x) * 0.5f;
-		LocalMin.x = center - MIN_THICKNESS * 0.5f;
-		LocalMax.x = center + MIN_THICKNESS * 0.5f;
+		float Center = (LocalMin.x + LocalMax.x) * 0.5f;
+		LocalMin.x = Center - MIN_THICKNESS * 0.5f;
+		LocalMax.x = Center + MIN_THICKNESS * 0.5f;
 	}
 
 	if (size.y < MIN_THICKNESS)
 	{
-		float center = (LocalMin.y + LocalMax.y) * 0.5f;
-		LocalMin.y = center - MIN_THICKNESS * 0.5f;
-		LocalMax.y = center + MIN_THICKNESS * 0.5f;
+		float Center = (LocalMin.y + LocalMax.y) * 0.5f;
+		LocalMin.y = Center - MIN_THICKNESS * 0.5f;
+		LocalMax.y = Center + MIN_THICKNESS * 0.5f;
 	}
 
 	if (size.z < MIN_THICKNESS)
 	{
-		float center = (LocalMin.z + LocalMax.z) * 0.5f;
-		LocalMin.z = center - MIN_THICKNESS * 0.5f;
-		LocalMax.z = center + MIN_THICKNESS * 0.5f;
+		float Center = (LocalMin.z + LocalMax.z) * 0.5f;
+		LocalMin.z = Center - MIN_THICKNESS * 0.5f;
+		LocalMax.z = Center + MIN_THICKNESS * 0.5f;
 	}
 
 	Vec3 Vertices[8] = {
@@ -475,8 +487,5 @@ bool CGameObject::GetWorldBoundingBox(Vec3& PMin, Vec3& PMax) const
 	}
 
 	// Return
-	PMin = WorldMin;
-	PMax = WorldMax;
-
-	return true;
+	return {WorldMin, WorldMax};
 }

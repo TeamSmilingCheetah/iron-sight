@@ -8,6 +8,14 @@
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
+// Constant Structure
+constexpr static Vec3 CubeArr[8] = {
+	Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f),
+	Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
+	Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f),
+	Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
+};
+
 CCollider3D::CCollider3D()
 	: CComponent(COMPONENT_TYPE::COLLIDER3D)
 	  , m_Offset(Vec3(0.f))
@@ -266,4 +274,55 @@ void CCollider3D::LoadComponent(FILE* PFile)
 
 	// 추가 필요 로드 데이터
 	(void)fread(&m_Status, sizeof(int), 1, PFile);
+}
+
+/**
+ * @brief 3D Collider 기준 AABB를 산출하는 함수
+ *
+ * @return { AABB Min, AABB Max }
+ */
+array<Vec3, 2> CCollider3D::GetAABB() const
+{
+	Matrix WorldMatrix = GetColliderWorldMat();
+	Vec3 Vtxs[8];
+	for (int i = 0; i < 8; ++i)
+	{
+		Vtxs[i] = XMVector3TransformCoord(CubeArr[i], WorldMatrix);
+	}
+
+	Vec3 BoxMin = Vtxs[0];
+	Vec3 BoxMax = Vtxs[0];
+
+	for (int i = 1; i < 8; ++i)
+	{
+		BoxMin.x = min(BoxMin.x, Vtxs[i].x);
+		BoxMin.y = min(BoxMin.y, Vtxs[i].y);
+		BoxMin.z = min(BoxMin.z, Vtxs[i].z);
+		BoxMax.x = max(BoxMax.x, Vtxs[i].x);
+		BoxMax.y = max(BoxMax.y, Vtxs[i].y);
+		BoxMax.z = max(BoxMax.z, Vtxs[i].z);
+	}
+
+	// Make Min Thickness
+	constexpr float MIN_THICKNESS = 1.0f;
+	if (fabs(BoxMax.x - BoxMin.x) < MIN_THICKNESS)
+	{
+		float Center = (BoxMax.x + BoxMin.x) * 0.5f;
+		BoxMin.x = Center - MIN_THICKNESS * 0.5f;
+		BoxMax.x = Center + MIN_THICKNESS * 0.5f;
+	}
+	if (fabs(BoxMax.y - BoxMin.y) < MIN_THICKNESS)
+	{
+		float Center = (BoxMax.y + BoxMin.y) * 0.5f;
+		BoxMin.y = Center - MIN_THICKNESS * 0.5f;
+		BoxMax.y = Center + MIN_THICKNESS * 0.5f;
+	}
+	if (fabs(BoxMax.z - BoxMin.z) < MIN_THICKNESS)
+	{
+		float Center = (BoxMax.z + BoxMin.z) * 0.5f;
+		BoxMin.z = Center - MIN_THICKNESS * 0.5f;
+		BoxMax.z = Center + MIN_THICKNESS * 0.5f;
+	}
+
+	return { BoxMin, BoxMax };
 }

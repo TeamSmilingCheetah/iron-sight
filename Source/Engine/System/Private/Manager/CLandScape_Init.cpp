@@ -27,6 +27,9 @@ void CLandScape::Init()
 
 	// 충돌 연산을 주고받는 용도의 구조화 버퍼
 	m_RayCollisionOut = new CStructuredBuffer;
+
+	// 초기 AABB 설정
+	SetAABB();
 }
 
 void CLandScape::CreateMesh()
@@ -41,7 +44,7 @@ void CLandScape::CreateMesh()
         for (UINT Col = 0; Col < m_FaceX + 1; ++Col)
         {
             v.vPos = Vec3(static_cast<float>(Col), 0.f, static_cast<float>(Row));
-            v.vUV = Vec2(static_cast<float>(Col), static_cast<float>(m_FaceZ) - Row);
+            v.vUV = Vec2(static_cast<float>(Col), static_cast<float>(m_FaceZ - Row));
 
             v.vTangent = Vec3(1.f, 0.f, 0.f);
             v.vNormal = Vec3(0.f, 1.f, 0.f);
@@ -135,7 +138,7 @@ void CLandScape::CreateComputeShader()
 }
 
 
-void CLandScape::CreateHeightMap(UINT _Width, UINT _Height)
+void CLandScape::CreateHeightMap(UINT PWidth, UINT PHeight)
 {
     if (nullptr != m_HeightMap)
     {
@@ -143,24 +146,25 @@ void CLandScape::CreateHeightMap(UINT _Width, UINT _Height)
     }
 
     m_HeightMap = CAssetMgr::GetInst()->CreateTexture(L"HeightMap"
-                                                      , _Width, _Height, DXGI_FORMAT_R32_FLOAT
+                                                      , PWidth, PHeight, DXGI_FORMAT_R32_FLOAT
                                                       , D3D11_BIND_SHADER_RESOURCE |
                                                       D3D11_BIND_UNORDERED_ACCESS);
 
 	m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
+	SetAABB();
 }
 
-void CLandScape::SetColorTexture(Ptr<CTexture> _ArrTex)
+void CLandScape::SetColorTexture(Ptr<CTexture> PArrTex)
 {
-    m_ColorTex = _ArrTex;
+    m_ColorTex = PArrTex;
 
     if (m_ColorTex->GetMetaData().mipLevels <= 1)
         m_ColorTex->GenerateMip(5);
 }
 
-void CLandScape::SetNormalTexture(Ptr<CTexture> _ArrTex)
+void CLandScape::SetNormalTexture(Ptr<CTexture> PArrTex)
 {
-    m_NormalTex = _ArrTex;
+    m_NormalTex = PArrTex;
 
     if (m_NormalTex->GetMetaData().mipLevels <= 1)
         m_NormalTex->GenerateMip(5);

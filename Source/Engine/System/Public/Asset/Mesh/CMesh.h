@@ -53,7 +53,7 @@ public:
 	void* GetVtxSysMem() const { return m_VtxSysMem; }
 
 	// Local Bound
-	void GetLocalBound(Vec3& _Min, Vec3& _Max) const;
+	array<Vec3, 2> GetLocalBound() const { return { m_BoundMin, m_BoundMax }; }
 	void CalculateLocalBound();
 
 	// Binding

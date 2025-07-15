@@ -222,7 +222,7 @@
     <ClInclude Include="System\Public\Asset\Texture\CSprite.h" />
     <ClInclude Include="System\Public\Asset\Texture\CTexture.h" />
     <ClInclude Include="System\Public\Manager\CAssetMgr.h" />
-    <ClInclude Include="System\Public\Manager\CCollisionMgr.h" />
+    <ClInclude Include="System\Public\Manager\FCollisionManager.h" />
     <ClInclude Include="System\Public\Manager\CFontMgr.h" />
     <ClInclude Include="System\Public\Manager\CKeyMgr.h" />
     <ClInclude Include="System\Public\Manager\CLevelMgr.h" />
@@ -295,7 +295,9 @@
     <ClCompile Include="System\Private\Asset\Texture\CSprite.cpp" />
     <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp" />
     <ClCompile Include="System\Private\Manager\CAssetMgr.cpp" />
-    <ClCompile Include="System\Private\Manager\CCollisionMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\FCollisionManager.cpp" />
+    <ClCompile Include="System\Private\Manager\FCollisionBroad.cpp" />
+    <ClCompile Include="System\Private\Manager\FCollisionNarrow.cpp" />
     <ClCompile Include="System\Private\Manager\CFontMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CKeyMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CLevelMgr.cpp" />

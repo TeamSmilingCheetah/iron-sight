@@ -13,7 +13,7 @@
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CRenderMgr.h"
-#include "Engine/System/Public/Manager/CCollisionMgr.h"
+#include "Engine/System/Public/Manager/FCollisionManager.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
@@ -91,7 +91,7 @@ void CEngine::Progress()
 	CTimeMgr::GetInst()->Tick();
 	CLevelMgr::GetInst()->Progress();
 	CUIMgr::GetInst()->Tick();
-	CCollisionMgr::GetInst()->Tick();
+	FCollisionManager::GetInst()->Tick();
 
 	// Engine Render
 	CRenderMgr::GetInst()->Render();
