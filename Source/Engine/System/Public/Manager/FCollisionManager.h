@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 
 union COLLISION_ID
@@ -10,6 +11,12 @@ union COLLISION_ID
 	};
 
 	ULONGLONG ID;
+
+	COLLISION_ID(UINT PLeft, UINT PRight)
+	{
+		Left = PLeft;
+		Right = PRight;
+	}
 };
 
 class CCollider2D;
@@ -55,10 +62,11 @@ private:
 	void CleanResource();
 
 	// Broad Main
-	void CollisionsInLayer(UINT PLayerIndex);
-	void CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex);
-	void CheckPairWide(CGameObject* PLeftObject, CGameObject* PRightObject);
+	static void QueryBVH(const BVHNode* PNode, const CGameObject* PObject, vector<CGameObject*>& PCandidates);
 	void AddCandidate(CGameObject* PLeftObject, CGameObject* PRightObject);
+	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth = 0);
+	void BuildBVH(const vector<CGameObject*>& PObjects);
+	void DestroyBVH();
 
 	// Narrow Main
 	void CheckPairNarrow(CGameObject* PRightObject, CGameObject* PLeftObject);
@@ -86,12 +94,6 @@ private:
 	template <typename T1, typename T2>
 	void ProcessCollision(T1* PLeftCollider, T2* PRightCollider);
 
-	// Bounding Volume Hirachy
-	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth = 0);
-	void BuildBVH(const vector<CGameObject*>& PObjects);
-	void DestroyBVH();
-	static void QueryBVH(const BVHNode* PNode, const AABB& PQueryBound, vector<CGameObject*>& POutCandidates);
-
 public:
 	void Tick();
 	void ActiveLayerCollision(UINT PLeft, UINT PRight);
@@ -110,9 +112,7 @@ template <typename T1, typename T2>
 void FCollisionManager::ProcessCollision(T1* PLeftCollider, T2* PRightCollider)
 {
 	// Set Collision ID
-	COLLISION_ID CollisionID;
-	CollisionID.Left = PLeftCollider->GetID();
-	CollisionID.Right = PRightCollider->GetID();
+	COLLISION_ID CollisionID(PLeftCollider->GetID(), PRightCollider->GetID());
 
 	// 기존 충돌 정보와 대조 후 Map에 없으면 추가
 	auto CollisionPair = MColllisionInfoMap.find(CollisionID.ID);

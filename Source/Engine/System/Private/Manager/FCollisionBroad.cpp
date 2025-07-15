@@ -2,82 +2,60 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Runtime/Public/Component/Physics/CCollider2D.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Runtime/Public/Component/Physics/CMeshCollider.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+
+using std::ranges::sort;
 
 /*****************/
 /** Broad Check **/
 /*****************/
 
-/**
- * @brief Layer 간의 충돌에 대해서 처리하는 함수
- */
 void FCollisionManager::CheckBroadPhase()
 {
-	// Layer Matching
-	for (UINT Row = 0; Row < MAX_LAYER; ++Row)
+	// Level Load Check
+	auto* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	if (!CurrentLevel)
 	{
-		for (UINT Col = Row; Col < MAX_LAYER; ++Col)
+		LOG_INFO("[Collision][Broad] No Level Found");
+		return;
+	}
+
+	// Object Vector에 Object 전체 추가
+	vector<CGameObject*> AllObjects;
+	CurrentLevel->GetAllActiveObjectsInLevel(AllObjects);
+
+	// 중복 배제를 위한 Set 추가
+	unordered_set<ULONGLONG> CandidateSet;
+
+	for (CGameObject* Object : AllObjects)
+	{
+		// 충돌 후보 선별
+		vector<CGameObject*> Candidates;
+		QueryBVH(MBVHRootNode, Object, Candidates);
+
+		UINT ID_A = Object->GetID();
+
+		for (CGameObject* Candidate : Candidates)
 		{
-			if (MLayerCollisionMatrix[Row] & (1 << Col))
+			// Layer 조건 우선 배제
+			if (MLayerCollisionMatrix[Object->GetLayerIdx()] & (1 << Candidate->GetLayerIdx()))
 			{
-				// 1. 단일 레이어 내의 Broad 충돌 판정
-				if (Row == Col)
+				UINT ID_B = Candidate->GetID();
+
+				// 고유 충돌 ID 생성
+				if (ID_A > ID_B)
 				{
-					CollisionsInLayer(Row);
+					std::swap(ID_A, ID_B);
 				}
-				// 2. Matching된 Layer 간의 발생하는 Broad 충돌 판정
-				else
+
+				// 중복되지 않은 경우에만 세부 충돌 판정
+				if (CandidateSet.insert(COLLISION_ID(ID_A, ID_B).ID).second)
 				{
-					CollisionBtwLayer(Row, Col);
+					AddCandidate(Object, Candidate);
 				}
 			}
-		}
-	}
-}
-
-/**
- * @brief 단일 레이어 내의 오브젝트 간의 Broad 충돌 판정 함수
- *
- * @param PLayerIndex 레벨 내의 Broad 충돌 판정할 Object 정보들이 들어 있는 Layer Index
- */
-void FCollisionManager::CollisionsInLayer(UINT PLayerIndex)
-{
-	const vector<CGameObject*>& ObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
-	                                                               ->GetLayer(PLayerIndex)->GetObjects();
-
-	// 동일 레이어 내에서는 중복을 고려하여 절반의 횟수만 처리하면 된다
-	for (size_t i = 0; i < ObjectVector.size(); ++i)
-	{
-		for (size_t j = i + 1; j < ObjectVector.size(); ++j)
-		{
-			CheckPairWide(ObjectVector[i], ObjectVector[j]);
-		}
-	}
-}
-
-/**
- * @brief 두 레이어 간의 Broad 충돌 판정 함수
- *
- * @param PLeftIndex 레벨 내의 Broad 충돌 판정할 Object 정보들이 들어 있는 Layer Index 1
- * @param PRightIndex 레벨 내의 Broad 충돌 판정할 Object 정보들이 들어 있는 Layer Index 2
- */
-void FCollisionManager::CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex)
-{
-	const vector<CGameObject*>& LeftObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
-	                                                                   ->GetLayer(PLeftIndex)->GetObjects();
-	const vector<CGameObject*>& RightObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
-	                                                                    ->GetLayer(PRightIndex)->GetObjects();
-
-	// 서로 다른 레이어의 경우 모든 충돌 검사를 위해서는 sizeL * sizeR 전부 확인해야 한다
-	for (size_t i = 0; i < LeftObjectVector.size(); ++i)
-	{
-		for (size_t j = 0; j < RightObjectVector.size(); ++j)
-		{
-			CheckPairWide(LeftObjectVector[i], RightObjectVector[j]);
 		}
 	}
 }
@@ -85,137 +63,6 @@ void FCollisionManager::CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex)
 /******************************/
 /** Redirect & Add Candidate **/
 /******************************/
-
-/**
- * @brief 해당 오브젝트의 충돌 컴포넌트 타입에 맞춰 적절하게 Broad 충돌 판정을 진행하는 함수
- *
- * @param PLeftObject Object 1
- * @param PRightObject Object 2
- */
-void FCollisionManager::CheckPairWide(CGameObject* PLeftObject, CGameObject* PRightObject)
-{
-	// 1. 2D 충돌체 검사
-	if (PLeftObject->Collider2D())
-	{
-		if (PRightObject->Collider2D())
-		{
-			if (CheckAABB(PLeftObject->Collider2D(), PRightObject->Collider2D()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-	}
-
-	// 2. 3D 충돌체 검사
-	if (PLeftObject->Collider3D())
-	{
-		if (PRightObject->Collider3D())
-		{
-			if (CheckAABB(PLeftObject->Collider3D(), PRightObject->Collider3D()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-
-		if (PRightObject->LandScape())
-		{
-			if (CheckAABB(PLeftObject->Collider3D(), PRightObject->LandScape()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-
-		if (PRightObject->ColliderRay())
-		{
-			if (CheckAABB(PRightObject->ColliderRay(), PLeftObject->Collider3D()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-
-		if (PRightObject->MeshCollider())
-		{
-			if (CheckAABB(PRightObject->MeshCollider(), PLeftObject->Collider3D()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-	}
-
-	// 3. LandScape 검사
-	if (PLeftObject->LandScape())
-	{
-		// 3D간 충돌의 경우
-		if (PRightObject->Collider3D())
-		{
-			if (CheckAABB(PRightObject->Collider3D(), PLeftObject->LandScape()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-
-		// Ray와 충돌의 경우
-		if (PRightObject->ColliderRay())
-		{
-			if (CheckAABB(PRightObject->ColliderRay(), PLeftObject->LandScape()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-	}
-
-	// 4. RayCast 검사
-	if (PLeftObject->ColliderRay())
-	{
-		if (PRightObject->Collider3D())
-		{
-			if (CheckAABB(PLeftObject->ColliderRay(), PRightObject->Collider3D()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-
-		// LandScape와 충돌의 경우
-		if (PRightObject->LandScape())
-		{
-			if (CheckAABB(PLeftObject->ColliderRay(), PRightObject->LandScape()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-	}
-
-	// 5. Mesh Collider
-	if (PLeftObject->MeshCollider())
-	{
-		if (PRightObject->MeshCollider())
-		{
-			if (CheckAABB(PLeftObject->MeshCollider(), PRightObject->MeshCollider()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-
-		if (PRightObject->Collider3D())
-		{
-			if (CheckAABB(PLeftObject->MeshCollider(), PRightObject->Collider3D()))
-			{
-				AddCandidate(PLeftObject, PRightObject);
-			}
-			return;
-		}
-	}
-}
 
 /**
  * @brief 충돌 가능성이 보이는 오브젝트 쌍을 후보군 벡터에 올리는 함수
@@ -228,262 +75,195 @@ void FCollisionManager::AddCandidate(CGameObject* PLeftObject, CGameObject* PRig
 	MCandidatePairVector.emplace_back(PLeftObject, PRightObject);
 }
 
-/*********************************/
-/** Broad Collision Check Logic **/
-/*********************************/
+/*****************************/
+/** Bounding Volume Hirachy **/
+/*****************************/
 
 /**
- * @brief 2D 충돌체끼리 Broad Collision 체크를 진행하는 함수
+ * @brief BVH 트리 구조를 구축하는 함수
  *
- * @param PLeftCollider 3D Collider 1
- * @param PRightCollider 3D Collider 2
- * @return 충돌 여부
+ * @param PObjects 전체 Game Object가 담긴 Vector
+ * @param PDepth 재귀 Depth
+ * @return 생성된 트리의 Root Node
  */
-bool FCollisionManager::CheckAABB(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider)
+BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth)
 {
-	// Get 2D AABB
-	Vec2 LeftMin, LeftMax, RightMin, RightMax;
-	PLeftCollider->GetAABB(LeftMin, LeftMax);
-	PRightCollider->GetAABB(RightMin, RightMax);
-
-	// AABB Collision Test
-	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
+	if (PObjects.empty())
 	{
-		return false;
-	}
-	if (LeftMax.y < RightMin.y || LeftMin.y > RightMax.y)
-	{
-		return false;
+		LOG_ERROR("[Collision] BVH Tree를 작성할 Object가 존재하지 않음");
+		return nullptr;
 	}
 
-	return true;
+	if (!PDepth)
+	{
+		LOG_INFO("[Collision][Broad] Bounding Volume Hirachy 구축 시작");
+	}
+	BVHNode* Node = new BVHNode();
+
+	// 일단 오브젝트를 돌면서 현재 Node의 Bound를 늘림
+	for (auto* Object : PObjects)
+	{
+		Node->Bounds.Expand(Object->GetAABB());
+	}
+
+	// Leaf에 도달한 상태라면 Node를 반환
+	if (PObjects.size() <= 2)
+	{
+		Node->Objects = PObjects;
+		return Node;
+	}
+
+	// Sorting By Longest Axis (By Heuristic)
+	int Axis = Node->Bounds.LongestAxis();
+	vector<CGameObject*> sorted = PObjects;
+	sort(sorted,
+	     [Axis](const CGameObject* PObjectA, const CGameObject* PObjectB)
+	     {
+		     // Collider를 고려한 Sorting
+		     if (PObjectA->Collider3D() && PObjectB->Collider3D())
+		     {
+			     return PObjectA->Collider3D()->GetColliderAABB().Center()[Axis]
+				     < PObjectB->Collider3D()->GetColliderAABB().Center()[Axis];
+		     }
+		     if (PObjectA->Collider3D())
+		     {
+			     return PObjectA->Collider3D()->GetColliderAABB().Center()[Axis] < PObjectB->GetAABB().Center()[Axis];
+		     }
+		     if (PObjectB->Collider3D())
+		     {
+			     return PObjectA->GetAABB().Center()[Axis] < PObjectB->Collider3D()->GetColliderAABB().Center()[Axis];
+		     }
+		     return PObjectA->GetAABB().Center()[Axis] < PObjectB->GetAABB().Center()[Axis];
+	     }
+	);
+
+	// Prepare Left, Right Node
+	size_t Mid = sorted.size() / 2;
+	vector<CGameObject*> LeftRangeVector(sorted.begin(), sorted.begin() + Mid);
+	vector<CGameObject*> RightRangeVector(sorted.begin() + Mid, sorted.end());
+
+	// 재귀적 함수 호출로 본인 Node 형성 후 Left, Right 노드에 등록
+	Node->Left = BuildBVHRecursive(LeftRangeVector, PDepth + 1);
+	Node->Right = BuildBVHRecursive(RightRangeVector, PDepth + 1);
+
+	if (!PDepth)
+	{
+		LOG_INFO("[Collision][Broad] Bounding Volume Hirachy 구축 완료");
+	}
+
+	// Node 반환
+	return Node;
 }
 
 /**
- * @brief 3D 충돌체끼리 Broad Collision 체크를 진행하는 함수
+ * @brief 기존 BVH를 제거하고 BVH를 재구축하는 함수
  *
- * @param PLeftCollider 3D Collider 1
- * @param PRightCollider 3D Collider 2
- * @return 충돌 여부
+ * @param PObjects 전체 오브젝트가 담긴 Vector
  */
-bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider)
+void FCollisionManager::BuildBVH(const vector<CGameObject*>& PObjects)
 {
-	// Get 3D Collider AABB
-	const auto& LeftBox = PLeftCollider->GetColliderAABB();
-	const auto& RightBox = PRightCollider->GetColliderAABB();
-	Vec3 LeftMin = LeftBox.Min;
-	Vec3 LeftMax = LeftBox.Max;
-	Vec3 RightMin = RightBox.Min;
-	Vec3 RightMax = RightBox.Max;
-
-	// AABB Collision Test
-	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
-	{
-		return false;
-	}
-	if (LeftMax.y < RightMin.y || LeftMin.y > RightMax.y)
-	{
-		return false;
-	}
-	if (LeftMax.z < RightMin.z || LeftMin.z > RightMax.z)
-	{
-		return false;
-	}
-
-	return true;
+	DestroyBVH();
+	MBVHRootNode = BuildBVHRecursive(PObjects, 0);
 }
 
 /**
- * @brief 각 메시 충돌체의 바운딩 박스끼리 충돌했는지 여부를 확인하는 함수
- *
- * @param PLeftCollider Mesh Collider 1
- * @param PRightCollider Mesh Collider 2
- * @return 충돌 여부
+ * @brief 기존에 BVH가 존재했다면 BVH를 제거하는 함수
  */
-bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider)
+void FCollisionManager::DestroyBVH()
 {
-	// Get AABB
-	const auto& LeftBox = PLeftCollider->GetOwner()->GetAABB();
-	const auto& RightBox = PRightCollider->GetOwner()->GetAABB();
-	Vec3 LeftMin = LeftBox.Min;
-	Vec3 LeftMax = LeftBox.Max;
-	Vec3 RightMin = RightBox.Min;
-	Vec3 RightMax = RightBox.Max;
-
-	// AABB Collision Test
-	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
-	{
-		return false;
-	}
-	if (LeftMax.y < RightMin.y || LeftMin.y > RightMax.y)
-	{
-		return false;
-	}
-	if (LeftMax.z < RightMin.z || LeftMin.z > RightMax.z)
-	{
-		return false;
-	}
-
-	return true;
+	delete MBVHRootNode;
+	MBVHRootNode = nullptr;
+	LOG_INFO("[Collision][Broad] Bounding Volume Hirachy 제거 완료");
 }
 
 /**
- * @brief 메시 충돌체의 바운딩 박스와 충돌체가 충돌했는지 여부를 확인하는 함수
- *
- * @param PLeftCollider Mesh Collider
- * @param PRightCollider 3D Collider
- * @return 충돌 여부
+ * @brief Root부터 재귀적으로 충돌에 대해 탐색 처리를 진행하고, 결과를 제공한 Vector에 적재하는 함수
+ * @param PNode [IN] 현재 Intersect 체크가 필요한 Node
+ * @param PObject [IN] Intersect 판정이 필요한 AABB를 가진 오브젝트
+ * @param PCandidates [OUT] AABB 충돌이 확정된 잠재적 충돌 의심군
  */
-bool FCollisionManager::CheckAABB(const CMeshCollider* PLeftCollider, const CCollider3D* PRightCollider)
+void FCollisionManager::QueryBVH(const BVHNode* PNode, const CGameObject* PObject, vector<CGameObject*>& PCandidates)
 {
-	// Get AABB
-	const auto& MeshBox = PLeftCollider->GetOwner()->GetAABB();
-	const auto& ColliderBox = PRightCollider->GetColliderAABB();
-	Vec3 MeshMin = MeshBox.Min;
-	Vec3 MeshMax = MeshBox.Max;
-	Vec3 ColliderMin = ColliderBox.Min;
-	Vec3 ColliderMax = ColliderBox.Max;
-
-	// AABB Collision Test
-	if (MeshMax.x < ColliderMin.x || MeshMin.x > ColliderMax.x)
+	if (!PNode)
 	{
-		return false;
-	}
-	if (MeshMax.y < ColliderMin.y || MeshMin.y > ColliderMax.y)
-	{
-		return false;
-	}
-	if (MeshMax.z < ColliderMin.z || MeshMin.z > ColliderMax.z)
-	{
-		return false;
+		LOG_ERROR("[Collision][Broad] Query 처리 중 BVHNode가 존재하지 않음");
+		return;
 	}
 
-	return true;
-}
-
-/**
- * @brief 3D 충돌체 AABB와 Landscape가 충돌하는지 확인하는 함수
- *
- * @param PLeftCollider 3D Collider
- * @param PRightCollider Landscape Collider
- * @return 충돌 여부
- */
-bool FCollisionManager::CheckAABB(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider)
-{
-	// Get AABB
-	const auto& LeftBox = PLeftCollider->GetColliderAABB();
-	const auto& RightBox = PRightCollider->GetAABB();
-	Vec3 LeftMin = LeftBox.Min;
-	Vec3 LeftMax = LeftBox.Max;
-	Vec3 RightMin = RightBox.Min;
-	Vec3 RightMax = RightBox.Max;
-
-	// AABB Collision Test
-	if (LeftMax.x < RightMin.x || LeftMin.x > RightMax.x)
+	// 3D Collider가 존재하는 경우 3D 충돌체 우선
+	if (PObject->Collider3D())
 	{
-		return false;
-	}
-	if (LeftMax.y < RightMin.y || LeftMin.y > RightMax.y)
-	{
-		return false;
-	}
-	if (LeftMax.z < RightMin.z || LeftMin.z > RightMax.z)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-/**
- * @brief 3D 충돌체 AABB와 Ray가 충돌하는지 확인하는 함수
- *
- * @param PLeftCollider Ray Collider
- * @param PRightCollider 3D Collider
- * @return 충돌 여부
- */
-bool FCollisionManager::CheckAABB(const CColliderRay* PLeftCollider, const CCollider3D* PRightCollider)
-{
-	// Get Ray Information
-	Vec3 RayStart = PLeftCollider->GetRayFinalPos();
-	Vec3 RayDirection = PLeftCollider->GetRayFinalDir();
-	float RayMaxDistance = PLeftCollider->GetRayLength();
-
-	// Early Return
-	if (RayDirection.Length() < 1e-6f)
-	{
-		return false;
-	}
-
-	// Get Collider AABB
-	const auto& ColliderBox = PRightCollider->GetColliderAABB();
-	Vec3 BoxMin = ColliderBox.Min;
-	Vec3 BoxMax = ColliderBox.Max;
-
-	// DirectX Intersect
-	BoundingBox AABB;
-	AABB.Center = (BoxMax + BoxMin) / 2.f;
-	AABB.Extents = (BoxMax - BoxMin) / 2.f;
-	float IntersectionDistance;
-
-	if (AABB.Intersects(RayStart, RayDirection, IntersectionDistance))
-	{
-		if (IntersectionDistance <= RayMaxDistance)
+		// AABB가 겹치지 않는다면 탐색할 이유가 없으므로 그대로 반환
+		if (!PNode->Bounds.Intersects(PObject->Collider3D()->GetColliderAABB()))
 		{
-			return true;
+			return;
+		}
+
+		// 만약 Leaf라면 해당 범위에 남은 오브젝트가 한정되어 있음
+		if (PNode->IsLeaf())
+		{
+			for (auto* OtherObject : PNode->Objects)
+			{
+				// 다른 오브젝트도 3D Collider인 경우
+				if (OtherObject->Collider3D())
+				{
+					if (PObject->Collider3D()->GetColliderAABB().Intersects(OtherObject->Collider3D()->GetColliderAABB()))
+					{
+						PCandidates.push_back(OtherObject);
+					}
+				}
+				else
+				{
+					if (PObject->Collider3D()->GetColliderAABB().Intersects(OtherObject->GetAABB()))
+					{
+						PCandidates.push_back(OtherObject);
+					}
+				}
+			}
+		}
+		// Leaf가 아니라면 Devide & Conquer로 재귀적 쿼리 처리
+		else
+		{
+			QueryBVH(PNode->Left, PObject, PCandidates);
+			QueryBVH(PNode->Right, PObject, PCandidates);
 		}
 	}
-
-	return false;
-}
-
-/**
- * @brief Landscape AABB와 Ray가 충돌하는지 확인하는 함수
- *
- * @param PLeftCollider Ray Collider
- * @param PRightCollider Landscape Collider
- * @return 충돌 여부
- */
-bool FCollisionManager::CheckAABB(const CColliderRay* PLeftCollider, const CLandScape* PRightCollider)
-{
-	// Get Ray Information
-	Vec3 RayStart = PLeftCollider->GetRayFinalPos();
-	Vec3 RayDirection = PLeftCollider->GetRayFinalDir();
-	float RayLength = PLeftCollider->GetRayLength();
-
-	// Find Ray End
-	Vec3 RayEnd = RayStart + RayDirection * RayLength;
-
-	// Ray AABB
-	Vec3 RayMin = Vec3(
-		std::min(RayStart.x, RayEnd.x),
-		std::min(RayStart.y, RayEnd.y),
-		std::min(RayStart.z, RayEnd.z)
-	);
-	Vec3 RayMax = Vec3(
-		std::max(RayStart.x, RayEnd.x),
-		std::max(RayStart.y, RayEnd.y),
-		std::max(RayStart.z, RayEnd.z)
-	);
-
-	// LandScape AABB
-	const auto& LandscapeAABB = PRightCollider->GetAABB();
-	Vec3 LandscapeMin = LandscapeAABB.Min;
-	Vec3 LandscapeMax = PRightCollider->GetAABB().Max;
-
-	// AABB Collision Test
-	if (RayMax.x < LandscapeMin.x || RayMin.x > LandscapeMax.x)
+	// 3D Collider가 없는 일반 충돌 케이스
+	else
 	{
-		return false;
-	}
-	if (RayMax.y < LandscapeMin.y || RayMin.y > LandscapeMax.y)
-	{
-		return false;
-	}
-	if (RayMax.z < LandscapeMin.z || RayMin.z > LandscapeMax.z)
-	{
-		return false;
-	}
+		// AABB가 겹치지 않는다면 탐색할 이유가 없으므로 그대로 반환
+		if (!PNode->Bounds.Intersects(PObject->GetAABB()))
+		{
+			return;
+		}
 
-	return true;
+		// 만약 Leaf라면 해당 범위에 남은 오브젝트가 한정되어 있음
+		if (PNode->IsLeaf())
+		{
+			for (auto* OtherObject : PNode->Objects)
+			{
+				// 다른 오브젝트가 3D Collider인 경우
+				if (OtherObject->Collider3D())
+				{
+					if (PObject->GetAABB().Intersects(OtherObject->Collider3D()->GetColliderAABB()))
+					{
+						PCandidates.push_back(OtherObject);
+					}
+				}
+				else
+				{
+					if (OtherObject->GetAABB().Intersects(PObject->GetAABB()))
+					{
+						PCandidates.push_back(OtherObject);
+					}
+				}
+			}
+		}
+		// Leaf가 아니라면 Devide & Conquer로 재귀적 쿼리 처리
+		else
+		{
+			QueryBVH(PNode->Left, PObject, PCandidates);
+			QueryBVH(PNode->Right, PObject, PCandidates);
+		}
+	}
 }

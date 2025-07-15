@@ -14,6 +14,7 @@ public:
 	CGameObject* FindObjectByName(const wstring& _Name);
 	CGameObject* FindObjectByObjectID(UINT _ObjectID);
 	LEVEL_STATE GetState() const { return m_State; }
+	void GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects);
 
 	void RegisterClear()
 	{
