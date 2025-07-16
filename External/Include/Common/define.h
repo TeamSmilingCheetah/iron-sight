@@ -45,7 +45,8 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 										virtual SCRIPT_TYPE GetParentScriptType() override { return m_ParentType; }
 
 /** Log Macros **/
-
+#ifdef _DEBUG
+// TODO(KHJ): Debug Mode와 Release Mode Log 분리 작업
 #define LOG_TRACE(PMessage) FLogManager::GetInst()->LogTrace(PMessage)
 #define LOG_DEBUG(PMessage) FLogManager::GetInst()->LogDebug(PMessage)
 #define LOG_INFO(PMessage) FLogManager::GetInst()->LogInfo(PMessage)
@@ -61,3 +62,20 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define LOG_ERROR_F(PFormat, ...) FLogManager::GetInst()->LogErrorf(PFormat, ##__VA_ARGS__)
 #define LOG_CRITICAL_F(PFormat, ...) FLogManager::GetInst()->LogCriticalf(PFormat, ##__VA_ARGS__)
 #define LOG_UNKNOWN_F(PFormat, ...) FLogManager::GetInst()->LogUnknownf(PFormat, ##__VA_ARGS__)
+#else
+#define LOG_TRACE(PMessage)
+#define LOG_DEBUG(PMessage)
+#define LOG_INFO(PMessage)
+#define LOG_WARNING(PMessage)
+#define LOG_ERROR(PMessage)
+#define LOG_CRITICAL(PMessage)
+#define LOG_UNKNOWN(PMessage)
+
+#define LOG_TRACE_F(PFormat, ...)
+#define LOG_DEBUG_F(PFormat, ...)
+#define LOG_INFO_F(PFormat, ...)
+#define LOG_WARNING_F(PFormat, ...)
+#define LOG_ERROR_F(PFormat, ...)
+#define LOG_CRITICAL_F(PFormat, ...)
+#define LOG_UNKNOWN_F(PFormat, ...)
+#endif
