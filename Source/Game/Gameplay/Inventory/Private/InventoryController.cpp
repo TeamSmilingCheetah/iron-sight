@@ -8,6 +8,7 @@
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -20,6 +21,8 @@
 
 InventoryController::InventoryController()
 	: CScript(SCRIPT_TYPE::INVENTORYSCRIPT)
+	, m_EquipSoundIdx(-1)
+	, m_AcquireSoundIdx(-1)
 	, m_Player(nullptr)
 	, m_PlayerScript(nullptr)
 	, m_VicinityUI(nullptr)
@@ -66,6 +69,10 @@ void InventoryController::Begin()
 	}
 
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera"), SCRIPT_TYPE::CAMERASCRIPT));
+
+	// Sound
+	m_EquipSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_equip.mp3");
+	m_AcquireSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\item_acquire.mp3");
 }
 
 void InventoryController::Tick()
@@ -220,7 +227,7 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 
 	// Inventory에 추가 (count)
 	m_arrInventory[type] += pItem->GetCount();
-
+	m_AcquireSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AcquireSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 	m_InventoryChanged = true;
 }
 
@@ -542,13 +549,12 @@ CGameObject* InventoryController::ReleaseSlot(ITEM_TYPE _Type)
 
 void InventoryController::ChangeSlot(int _SlotIdx)
 {
-	DeactivateSlot();
-
-	ActivateSlot(_SlotIdx);
-
 	if (_SlotIdx == m_CurSlotIdx)
 		return;
 
+	DeactivateSlot();
+
+	ActivateSlot(_SlotIdx);
 	// TODO : Animation Trigger 등
 
 }
@@ -569,6 +575,10 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 	// weaponController 장착 전달
 	pWeaponScript->SetEquip(true);
 
+
+	// 무기바꾸는 사운드
+	m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+	
 	// 현재 슬롯으로 변경
 	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
 	m_CurWeaponController = pWeaponScript;
@@ -585,6 +595,12 @@ void InventoryController::ActivateSlot(int _SlotIdx)
 	pWeaponScript->SetEquip(true);
 
 	// 현재 슬롯으로 변경
+
+
+	// 무기바꾸는 사운드
+	m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+	
+	
 	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
 	m_CurWeaponController = pWeaponScript;
 	m_CurSlotIdx = _SlotIdx;
@@ -733,7 +749,7 @@ void InventoryController::PlayerInteractWeapon()
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
 			// 장전중이라면 취소시킨다.
-			if (m_PlayerScript->IsPlayerReloading())
+			if (m_PlayerScript->IsPlayerReloading() && m_CurSlotIdx != i)
 			{
 				m_PlayerScript->SetReloading(false);
 				m_PlayerScript->SetReloadingEnd(true);
@@ -770,6 +786,12 @@ void InventoryController::PlayerInteractWeapon()
 	// 모든 무기 내리기 (무기 미착용 상태로)
 	if (KEY_TAP(KEY::X))
 	{
+		if (m_CurSlotIdx != NONE_WEAPON)
+		{
+			// 무기바꾸는 사운드
+			m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+		}
+
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));
 
 		// 장전중이라면 취소시킨다.
@@ -778,7 +800,7 @@ void InventoryController::PlayerInteractWeapon()
 			m_PlayerScript->SetReloading(false);
 			m_PlayerScript->SetReloadingEnd(true);
 		}
-
+		
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;
 		m_CurWeaponController = nullptr;

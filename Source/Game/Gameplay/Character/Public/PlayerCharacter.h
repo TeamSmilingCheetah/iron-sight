@@ -41,6 +41,15 @@ class PlayerCharacter :
 	public CScript
 {
 private:
+	Ptr<CSound>		m_HitSound;
+	Ptr<CSound>		m_FootstepSound;
+	Ptr<CSound>		m_RunFootstepSound;
+
+	int				m_HitSoundIdx;
+	int				m_FootstepSoundIdx;
+	int				m_RunFootstepSoundIdx;
+
+
 	CGameObject*	m_MainCamera;
 
 	// 질량 시스템
@@ -66,6 +75,11 @@ private:
 	bool m_bReloadingEnd;
 	bool m_bCanThrow;
 	bool m_bThrowBoom;
+	bool m_bHitSoundPlayed;
+	bool m_bFirstFootStep;
+
+	float m_HitSoundAccTime;
+	float m_FootStepSoundAccTime;
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
@@ -143,6 +157,8 @@ public:
 	void EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
 
 private:
+	void LoadPlayerSounds();
+
 	void PlayerMove();
 	void PlayerView();
 	void PlayerStance();

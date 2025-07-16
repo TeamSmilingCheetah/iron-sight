@@ -8,6 +8,7 @@
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
@@ -22,6 +23,9 @@
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
+	, m_HitSoundIdx(-1)
+	, m_FootstepSoundIdx(-1)
+	, m_RunFootstepSoundIdx(-1)
 	, m_MainCamera(nullptr)
 	, m_Force(0.f)
 	, m_Velocity(0.f)
@@ -39,9 +43,13 @@ PlayerCharacter::PlayerCharacter()
 	, m_bCanThrow(false)
 	, m_bThrowBoom(false)
 	, m_bReloading(false)
+	, m_bHitSoundPlayed(false)
+	, m_bFirstFootStep(true)
 	, m_CollObject(nullptr)
 	, m_HeadColl(nullptr)
 	, m_CamScript(nullptr)
+	, m_HitSoundAccTime(0.f)
+	, m_FootStepSoundAccTime(0.f)
 	, m_InventoryScript(nullptr)
 	, m_KillinfoScript(nullptr)
 	, m_MaxHP(100.f)
@@ -110,6 +118,9 @@ void PlayerCharacter::Begin()
 
 	// 마우스 끄기
 	CKeyMgr::GetInst()->SetCursorVisible(false);
+
+	// Sound Load
+	LoadPlayerSounds();
 }
 
 void PlayerCharacter::Tick()
@@ -192,6 +203,17 @@ void PlayerCharacter::Tick()
 		}
 
 		PlayerControlWeapon();
+	}
+
+	if (m_bHitSoundPlayed)
+	{
+		m_HitSoundAccTime += DT;
+
+		if (2.f < m_HitSoundAccTime)
+		{
+			m_bHitSoundPlayed = false;
+			m_HitSoundAccTime = 0.f;
+		}
 	}
 }
 
@@ -408,7 +430,24 @@ void PlayerCharacter::PlayerControlWeapon()
 
 	if (!bSearch && !m_InventoryOpened)
 	{
+		// 장전 상태가 아니라면 UI초기화
+		if (!m_bReloading)
+		{
+			SetObjectActive(m_ReloadUI, false);
+		}
+		else
+		{
+			if (KEY_TAP(KEY::F))
+			{
+				WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+				pGunScript->SetCurKey(KEY::F);
+				pGunScript->SetCurKeyState(KEY_STATE::TAP);
+				m_bReloading = false;
+			}
+		}
+
 		int curSlot = m_InventoryScript->GetCurSlotIdx();
+
 
 		// 무기 슬롯이 아니라면 리턴
 		if (!(PRIMARY_FIRST <= curSlot && curSlot <= THROWABLE_SECOND))
@@ -514,26 +553,8 @@ void PlayerCharacter::PlayerControlWeapon()
 			{
 				pWeaponController->SetCurKey(KEY::R);
 				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-				SetObjectActive(m_ReloadUI, true);
-				m_bReloading = true;
-			}
-
-			if (!m_bReloading)
-			{
-				SetObjectActive(m_ReloadUI, false);
-			}
-			else
-			{
-				if (KEY_TAP(KEY::F))
-				{
-					WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
-					pGunScript->SetCurKey(KEY::F);
-					pGunScript->SetCurKeyState(KEY_STATE::TAP);
-					m_bReloading = false;
-				}
-			}
-		}
-
+			}			
+		}		
 
 		// ===
 		// B키
@@ -704,6 +725,12 @@ void PlayerCharacter::PlayerHeal()
 void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage)
 {
 	m_CurHP -= _Damage;
+	// Hit Sound 출력
+	if(!m_bHitSoundPlayed)
+	{
+		m_HitSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_HitSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_HitSoundIdx);
+		m_bHitSoundPlayed = true;
+	}
 
 	// 사망
 	if (m_CurHP <= 0)
@@ -785,6 +812,12 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 	m_HealType = PHealType;
 }
 
+void PlayerCharacter::LoadPlayerSounds()
+{
+	m_HitSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_hit.mp3");
+	m_FootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep.mp3");
+	m_RunFootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
+}
 
 void PlayerCharacter::SaveComponent(FILE* PFile)
 {

@@ -10,7 +10,16 @@ class GunController :
 {
 private:
 	Ptr<CSound> m_AkSound;
+	Ptr<CSound> m_AkdrySound;
+	Ptr<CSound> m_EmptyReloadSound;
+	Ptr<CSound> m_ReloadSound;
+	Ptr<CSound> m_ClipSound;
+	
 	int			m_AkSoundIdx;
+	int			m_AkdrySoundIdx;
+	int			m_EmptyReloadSoundIdx;
+	int			m_ReloadSoundIdx;
+	int			m_ClipSoundIdx;
 
 	float m_HorizontalRecoilPower;
 	float m_VerticalRecoilPower;
@@ -25,6 +34,7 @@ private:
 
 	int m_CurRounds;
 	int m_MaxRounds;
+	int m_leftRounds;
 
 	bool m_bFire;
 	bool m_bReload;
@@ -52,6 +62,7 @@ public:
 	bool IsReload() const { return m_bReload; }
 	bool IsFire() const { return m_bFire; }
 	bool IsAuto() const { return m_bAuto; }
+	
 
 	ITEM_TYPE GetRoundType() const { return m_WeaponRoundType; }
 
@@ -59,6 +70,8 @@ private:
 	void Firing();
 	void Reload();
 	void StopFiring();
+
+	bool CanReload();
 
 public:
 	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT);

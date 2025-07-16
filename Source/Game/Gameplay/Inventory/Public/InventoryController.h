@@ -22,6 +22,12 @@ class InventoryController :
 	public CScript
 {
 private:
+	Ptr<CSound> m_EquipSound;
+	Ptr<CSound> m_AcquireSound;
+
+	int			m_EquipSoundIdx;
+	int			m_AcquireSoundIdx;
+
 	CGameObject*			m_Player;
 	PlayerCharacter*		m_PlayerScript;
 	class CameraController* m_CamScript;

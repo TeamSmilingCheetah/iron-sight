@@ -33,6 +33,8 @@ void WeaponController::Begin()
 {
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
+
+	Transform()->SetIndependentScale(true);
 }
 
 Vec3 WeaponController::GetFireDir()

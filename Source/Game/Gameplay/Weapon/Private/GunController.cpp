@@ -23,6 +23,10 @@
 GunController::GunController()
 	: WeaponController(SCRIPT_TYPE::GUNSCRIPT)
 	, m_AkSoundIdx(-1)
+	, m_AkdrySoundIdx(-1)
+	, m_EmptyReloadSoundIdx(-1)
+	, m_ReloadSoundIdx(-1)
+	, m_ClipSoundIdx(-1)
 	, m_HorizontalRecoilPower(0.f)
 	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
@@ -48,7 +52,7 @@ GunController::GunController()
 	m_FireDelay = 0.1f;
 	m_MaxRounds = 30;
 
-	m_ReloadingTime = 3.f;
+	m_ReloadingTime = 2.8f;
 
 	// 무기의 총알 타입 정의
 	m_WeaponRoundType = ITEM_TYPE::AMMO_5;
@@ -62,10 +66,20 @@ GunController::~GunController()
 void GunController::Begin()
 {
 	WeaponController::Begin();
-	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav");
 
+	// Sound
+	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\akm_reverb.mp3");
+	m_AkdrySound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_dry_reverb.mp3");
+	m_ReloadSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_reload.mp3");
+	m_EmptyReloadSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_empty_reload.mp3");
+	m_ClipSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_clip.mp3");
+
+
+	// Script
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
-	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
+
+	// UI
+	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");	
 }
 
 void GunController::Tick()
@@ -76,6 +90,9 @@ void GunController::Tick()
 		// 진행중이던 상태 모두 초기화
 		m_bFire = false;
 		m_bReload = false;
+		m_AccTime_Reload = 0.f;
+		CSoundMgr::GetInst()->Stop3DSound(m_ReloadSoundIdx);
+		CSoundMgr::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
 		return;
 	}
 
@@ -95,28 +112,42 @@ void GunController::Tick()
 		{
 			if (0 < m_CurRounds && !m_bReload)
 			{
-				if (0 < m_CurRounds && !m_bReload)
-				{
-					m_PlayerScript->SetShot(true);
-					m_bFire = true;
-					ClearKey();
+				m_PlayerScript->SetShot(true);
+				m_bFire = true;
+				ClearKey();
 
-					// 상태
-					m_PlayerScript->SetActionState(ACTION_STATE::GUN_FIRE);
-					
-				}
+				// 상태
+				m_PlayerScript->SetActionState(ACTION_STATE::GUN_FIRE);								
+			}
+			else if (m_CurRounds == 0 && !m_bReload)
+			{
+				// 빈 탄창 발사 사운드
+				m_AkdrySoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkdrySound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+				ClearKey();
 			}
 		}
 
-		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP && m_CurRounds != m_MaxRounds)
-		{
-			if (!m_bReload && m_CurRounds != m_MaxRounds)
+		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
+		{		
+			if (CanReload())
 			{
 				m_PlayerScript->SetShot(false);
 				m_bReload = true;
-				ClearKey();
-			}
+				SetObjectActive(m_ReloadUI, true);
+				m_PlayerScript->SetReloading(true);
 
+				// 현재 남은 탄창수에 따라 시간 설정
+				if (m_CurRounds == 0)
+				{
+					m_ReloadingTime = 2.8f;
+				}
+				else
+				{
+					m_ReloadingTime = 1.5f;
+				}					
+			}			
+
+			ClearKey();
 			// 상태
 			m_PlayerScript->SetActionState(ACTION_STATE::GUN_RELOAD);
 
@@ -133,6 +164,8 @@ void GunController::Tick()
 				m_PlayerScript->SetShot(false);
 				m_bFire = false;
 				m_bAuto = !m_bAuto;
+				// 조정간 조정 사운드
+				m_ClipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ClipSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 				ClearKey();
 			}
 		}
@@ -148,6 +181,9 @@ void GunController::Tick()
 		{			
 			m_bReload = false;
 			m_AccTime_Reload = 0.f;
+			// 재장전 사운드를 멈춰준다.
+			CSoundMgr::GetInst()->Stop3DSound(m_ReloadSoundIdx);
+			CSoundMgr::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
 			ClearKey();			
 		}
 		AdjustFPSPos();
@@ -192,6 +228,13 @@ void GunController::Tick()
 	}
 }
 
+bool GunController::CanReload()
+{
+	return !m_bReload &&
+		m_CurRounds != m_MaxRounds &&
+		m_InventoryScript->GetItemCount(m_WeaponRoundType) > 0;
+}
+
 void GunController::Firing()
 {
 	// 총알의 시작 위치를 정해준다.
@@ -227,6 +270,9 @@ void GunController::Firing()
 
 			pPlayerScript->SetShot(false);
 			m_bFire = false;
+			
+			// 빈 탄창 발사 사운드
+			m_AkdrySoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkdrySound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 			return;
 		}
 
@@ -344,6 +390,17 @@ void GunController::Reload()
 
 	// 사격중에 장전으로 넘어온 경우 사격을 비활성화 해준다.
 	m_bFire = false;
+	bool bEmptyReload = false;
+
+	if (m_CurRounds == 0)
+	{
+		bEmptyReload = true;
+	}
+	else
+	{
+		bEmptyReload = false;
+	}
+
 
 	int iFilledRounds = 0;
 
@@ -351,6 +408,17 @@ void GunController::Reload()
 	{
 		// ReloadUI : Reload Delay UI
 		m_ReloadUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - (m_ReloadingTime - m_AccTime_Reload) / m_ReloadingTime);
+
+		// 재장전 사운드 재생
+		if (bEmptyReload)
+		{
+			m_EmptyReloadSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EmptyReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_EmptyReloadSoundIdx);
+		}
+		else
+		{
+			m_ReloadSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
+		}
+		
 
 		// 남은 시간 글씨 출력
 		wchar_t text[4]{};	// 3글자 출력

@@ -8,6 +8,20 @@ class ThrowableController :
 	public WeaponController
 {
 private:
+	Ptr<CSound> m_BombSound;
+	Ptr<CSound> m_SmokeSound;
+	Ptr<CSound> m_PinSound;
+	Ptr<CSound> m_ThrowSound;
+	Ptr<CSound> m_BounceSound_1;
+	Ptr<CSound> m_BounceSound_2;
+
+	int			m_BombSoundIdx;
+	int			m_SmokeSoundIdx;
+	int			m_PinSoundIdx;
+	int			m_ThrowSoundIdx;
+	int			m_BounceSoundIdx_1;
+	int			m_BounceSoundIdx_2;
+
 	Vec3 m_Velocity;
 	Vec3 m_Dir;
 
@@ -23,6 +37,7 @@ private:
 	bool m_bThrow;
 	bool m_bAfterThrow;
 	bool m_bTrigger;
+	bool m_bUseFirstBounceSound;
 
 	CGameObject* m_ThownOwner;
 	CGameObject* m_Player;
