@@ -127,44 +127,23 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 
     float4 vColor = float4(1.f, 0.f, 1.f, 1.f);
     float3 vNormal = _in.vViewNormal;
-
-    // 거리 기반 LOD
-	const float maxLOD = 6.f;
-	const float threshold = 1200.f;
-    float dist = clamp(length(_in.vViewPos), 0.f, threshold) / threshold;
-	//float dist = saturate(length(_in.vViewPos) / threshold);
-
-	float2 Resolution = (float2) 0.f;
+    
+	float2 dx = ddx(_in.vUV);
+	float2 dy = ddy(_in.vUV);
 
     if (g_btex_0)
     {
-        // 기울기 기반 LOD
-		g_tex_0.GetDimensions(Resolution.x, Resolution.y);
-    
-		float2 dx = ddx(_in.vUV * Resolution);
-		float2 dy = ddy(_in.vUV * Resolution);
-
-		float level = max(dist * maxLOD, log2(max(length(dx), length(dy))));
-        
-		vColor = g_tex_0.SampleLevel(g_sam_0, _in.vUV, level);
+		vColor = g_tex_0.SampleGrad(g_sam_0, _in.vUV, dx, dy);
 	}
 
     if (g_btex_1)
     {
-        // 기울기 기반 LOD
-		g_tex_1.GetDimensions(Resolution.x, Resolution.y);
-    
-		float2 dx = ddx(_in.vUV * Resolution);
-		float2 dy = ddy(_in.vUV * Resolution);
-
-		float level = max(dist * maxLOD, log2(max(length(dx), length(dy))));
-        
-		vNormal = g_tex_1.SampleLevel(g_sam_0, _in.vUV, level).xyz;
+		vNormal = g_tex_1.SampleGrad(g_sam_0, _in.vUV, dx, dy).xyz;
 
         // 추출한 색상값(0~1 범위) 을 방향벡터 값의 범위(-1 ~ 1) 로 변경한다.
         vNormal = (vNormal * 2.f) - 1.f;
 
-        // 탄젠트 공간(표면공간) 에 있는 각 축이,
+        // tangent space(텍스쳐 공간) 에 있는 각 축이,
         // 적용시킬 표면의 각 방향이 될 수 있도록 하는 회전행렬
         float3x3 matRot =
         {
@@ -175,19 +154,6 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 
         vNormal = normalize(mul(vNormal, matRot));
     }
-
-    if(g_btex_2)
-    {
-        // 기울기 기반 LOD
-		g_tex_2.GetDimensions(Resolution.x, Resolution.y);
-    
-		float2 dx = ddx(_in.vUV * Resolution);
-		float2 dy = ddy(_in.vUV * Resolution);
-
-		float level = max(dist * maxLOD, log2(max(length(dx), length(dy))));
-        
-		float4 vSpefCoeffic = g_tex_2.SampleLevel(g_sam_0, _in.vUV, level);
-	}
 
 	output.Color = vColor;
     output.Normal = float4(vNormal, 1.f);

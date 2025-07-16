@@ -55,17 +55,20 @@ VS_OUT VS_Std3D(VS_IN _in)
 
 float4 PS_Std3D(VS_OUT _in) : SV_Target
 {
-    float3 vColor = float3(0.7f, 0.7f, 0.7f);
+	float3 vColor = float3(0.7f, 0.7f, 0.7f);
     float3 vNormal = _in.vViewNormal;
+
+	float2 dx = ddx(_in.vUV);
+	float2 dy = ddy(_in.vUV);
 
     if (g_btex_0)
     {
-        vColor = g_tex_0.Sample(g_sam_0, _in.vUV).xyz;
+        vColor = g_tex_0.SampleGrad(g_sam_0, _in.vUV, dx, dy).xyz;
     }
 
     if (g_btex_1)
     {
-        vNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;
+        vNormal = g_tex_1.SampleGrad(g_sam_0, _in.vUV, dx, dy).xyz;
 
         // 추출한 색상값(0~1 범위) 을 방향벡터 값의 범위(-1 ~ 1) 로 변경한다.
         vNormal = (vNormal * 2.f) - 1.f;
