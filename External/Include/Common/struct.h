@@ -2,6 +2,7 @@
 
 #include <thread>
 
+class CColliderRay;
 using std::thread;
 
 struct Vtx
@@ -483,5 +484,41 @@ struct BVHNode
 	bool IsLeaf() const
 	{
 		return (Left == nullptr) && (Right == nullptr);
+	}
+};
+
+struct tScriptParam
+{
+	SCRIPT_PARAM Param;
+	string Desc;
+	void* pData;
+};
+
+struct RayColliderInfo
+{
+	CColliderRay* RayObject;
+	CGameObject* HitObject;
+	CGameObject* PrevObject;
+	float Length;
+
+	bool operator<(const RayColliderInfo& other) const
+	{
+		return Length < other.Length;
+	}
+
+	RayColliderInfo()
+		: RayObject(nullptr)
+		  , HitObject(nullptr)
+		  , PrevObject(nullptr)
+		  , Length(1000000.f)
+	{
+	}
+
+	RayColliderInfo(CColliderRay* PRay, CGameObject* PRight, float PLength)
+		: RayObject(PRay)
+		  , HitObject(PRight)
+		  , PrevObject(nullptr)
+		  , Length(PLength)
+	{
 	}
 };

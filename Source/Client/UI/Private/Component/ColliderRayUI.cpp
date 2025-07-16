@@ -50,9 +50,9 @@ void ColliderRayUI::Render_Update()
 	if (ImGui::Checkbox("##IsActiveRay", &bActive))
 	{
 		if (bActive)
-			pColliderRay->Activate();
+			pColliderRay->SetActivate();
 		else
-			pColliderRay->Deactivate();
+			pColliderRay->SetDeactivate();
 	}
 
 
