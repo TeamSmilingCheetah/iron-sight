@@ -7,11 +7,14 @@
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
+
+
 
 void PlayerCharacter::PlayerMove()
 {
@@ -170,6 +173,54 @@ void PlayerCharacter::UpdateMove()
 			m_Velocity += vFriction;
 		}
 	}
+
+	// 소리 컨트롤
+	Vec2 v2DVelocity = Vec2(m_Velocity.x, m_Velocity.z);
+
+	// 달리기
+	if (15.f < v2DVelocity.Length())
+	{
+		// 걷는 소리 사운드 중지
+		CSoundMgr::GetInst()->Stop3DSound(m_FootstepSoundIdx);
+
+		// 일정 속도 이상이 되면 소리를 재생시킨다.
+		m_RunFootstepSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_RunFootstepSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 0.5f, false, false, m_RunFootstepSoundIdx);
+
+		m_FootStepSoundAccTime += DT;
+		// 일정시간이 지나면 소리 위치 업데이트
+		if (0.1f <= m_FootStepSoundAccTime)
+		{
+			CSoundMgr::GetInst()->Update3DSoundPosition(m_RunFootstepSoundIdx, Transform()->GetRelativePos());
+			m_FootStepSoundAccTime = 0.f;
+		}
+	}
+	// 걷기
+	else if (10.f < v2DVelocity.Length())
+	{
+		// 일정 속도 이상이 되면 소리를 재생시킨다.
+		m_FootstepSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_FootstepSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 0.5f, false, false, m_FootstepSoundIdx);
+
+
+		m_FootStepSoundAccTime += DT;
+		// 일정시간이 지나면 소리 위치 업데이트
+		if (0.1f <= m_FootStepSoundAccTime)
+		{
+			CSoundMgr::GetInst()->Update3DSoundPosition(m_FootstepSoundIdx, Transform()->GetRelativePos());
+			m_FootStepSoundAccTime = 0.f;
+		}
+	}
+	// 소리 중지
+	else if (v2DVelocity.Length() < 5.f)
+	{
+		m_FootStepSoundAccTime = 0.f;
+		CSoundMgr::GetInst()->Stop3DSound(m_FootstepSoundIdx);
+	}
+	else if (v2DVelocity.Length() <= 10.f)
+	{
+		CSoundMgr::GetInst()->Stop3DSound(m_RunFootstepSoundIdx);
+	}
+
+
 }
 
 void PlayerCharacter::UpdateGravity()

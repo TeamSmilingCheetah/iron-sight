@@ -321,7 +321,7 @@ CGameObject* CGameObject::GetChildByName(const wstring& PName)
 
 CAnimator3D* CGameObject::Animator3D() const
 {
-	CAnimator3D* AnimatorPtr = reinterpret_cast<CAnimator3D*>(GetComponent(COMPONENT_TYPE::ANIMATOR3D));
+  	CAnimator3D* AnimatorPtr = reinterpret_cast<CAnimator3D*>(GetComponent(COMPONENT_TYPE::ANIMATOR3D));
 
 	if (!AnimatorPtr && MeshRender() && MeshRender()->IsSkinRender())
 	{

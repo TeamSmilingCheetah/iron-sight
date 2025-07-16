@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/Public/Manager/CSoundMgr.h"
 #include "System/Public/Asset/Audio/CSound.h"
 #include "Core/Public/CEngine.h"
