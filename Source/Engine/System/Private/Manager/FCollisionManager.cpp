@@ -7,9 +7,9 @@ FCollisionManager::FCollisionManager() = default;
 
 FCollisionManager::~FCollisionManager() = default;
 
-/*******************/
-/** Level Setting **/
-/*******************/
+/*****************************/
+/** Layer Collision Setting **/
+/*****************************/
 
 /**
  * @brief 레이어 간의 충돌 설정을 추가하는 함수
@@ -31,7 +31,7 @@ void FCollisionManager::ActiveLayerCollision(UINT PLeft, UINT PRight)
 /**
  * @brief 충돌 등록 Matrix를 초기화하는 함수
  */
-void FCollisionManager::CollisionCheckClear()
+void FCollisionManager::ClearCollisionBtwLayerSetting()
 {
 	memset(MLayerCollisionMatrix, 0, sizeof(UINT) * MAX_LAYER);
 }
@@ -42,42 +42,43 @@ void FCollisionManager::CollisionCheckClear()
 
 /**
  * @brief 전체 충돌 처리 로직의 처리 함수
- * Broad Check -> Narrow Check -> Clean Resource
+ * Create VBH -> Raycast Process -> Broad Phase -> Narrow Phase -> Clean Resource
  */
 void FCollisionManager::Tick()
 {
 	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
-	// Early Return
+	// Early Return (이후로 Current Level 없는 상황은 발생하지 않음)
 	if (!CLevelMgr::GetInst()->GetCurrentLevel())
 	{
-		LOG_DEBUG("[Collision] Current Level 없음");
+		LOG_INFO("[Collision][Main] No Current Level");
 		return;
 	}
 
+	// TODO(KHJ): 이 Log 너무 자주 호출됨. 빈번한 로그는 적당히 걸러내는 기능이 필요함
 	if (CurrentLevel->GetState() == LEVEL_STATE::STOP)
 	{
-		LOG_DEBUG("[Collision] Current Level Not Started");
+		LOG_INFO("[Collision][Main] Current Level Not Started");
 		return;
 	}
 
-	// TODO(KHJ): RayCast 처리
+	// Create BVH Structure
+	LOG_INFO("[Collision][Main] Create Bounding Volume Hirachy Start");
+	CreateBVHTree();
 
-	// Build BVH Tree
-	vector<CGameObject*> PObjects;
-	CurrentLevel->GetAllActiveObjectsInLevel(PObjects);
-	LOG_INFO_F("[Collision][Entry] Total Active Objects: {}", PObjects.size());
-	BuildBVH(PObjects);
+	// Raycast Process
+	LOG_INFO("[Collision][Main] Raycast Process Start");
+	RaycastProcess();
 
 	// Check Collision
-	LOG_DEBUG("[Collision] Broad Check Start");
-	CheckBroadPhase();
-	LOG_DEBUG("[Collision] Narrow Check Start");
-	CheckNarrowPhase();
+	LOG_INFO("[Collision][Main] Broad Phase Start");
+	BroadPhase();
+	LOG_INFO("[Collision][Main] Narrow Phase Start");
+	NarrowPhase();
 
 	// Reset Information
 	CleanResource();
-	LOG_DEBUG("[Collision] Collision Check Done");
+	LOG_INFO("[Collision][Main] Collision Process Done");
 }
 
 /**

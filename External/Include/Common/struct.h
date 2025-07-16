@@ -461,6 +461,111 @@ struct AABB
 		// Z is Longest
 		return 2;
 	}
+
+	/**
+	 * @brief Ray가 AABB와 교차하는지 확인하는 함수
+	 * @param PRay 검사를 수행할 Ray
+	 * @param PDistance 교차 지점까지의 거리(tMin)를 저장할 포인터 (선택)
+	 * @return 교차 여부
+	 */
+	bool Intersects(const tRay& PRay, float* PDistance = nullptr) const
+	{
+		float TimeMin = -FLT_MAX;
+		float TimeMax = FLT_MAX;
+
+		// Slab Test In Axis X
+		if (abs(PRay.vDir.x) < 1e-6)
+		{
+			if (PRay.vStart.x < Min.x || PRay.vStart.x > Max.x)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float t1 = (Min.x - PRay.vStart.x) / PRay.vDir.x;
+			float t2 = (Max.x - PRay.vStart.x) / PRay.vDir.x;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			TimeMin = max(TimeMin, t1);
+			TimeMax = min(TimeMax, t2);
+		}
+
+		// Not Intersect In Axis X
+		if (TimeMin > TimeMax)
+		{
+			return false;
+		}
+
+		// Slab Test In Axis Y
+		if (abs(PRay.vDir.y) < 1e-6)
+		{
+			if (PRay.vStart.y < Min.y || PRay.vStart.y > Max.y)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float t1 = (Min.y - PRay.vStart.y) / PRay.vDir.y;
+			float t2 = (Max.y - PRay.vStart.y) / PRay.vDir.y;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			TimeMin = max(TimeMin, t1);
+			TimeMax = min(TimeMax, t2);
+		}
+
+		// Not Intersect In Axis Y
+		if (TimeMin > TimeMax)
+		{
+			return false;
+		}
+
+		// Slab Test In Axis Z
+		if (abs(PRay.vDir.z) < 1e-6)
+		{
+			if (PRay.vStart.z < Min.z || PRay.vStart.z > Max.z)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float t1 = (Min.z - PRay.vStart.z) / PRay.vDir.z;
+			float t2 = (Max.z - PRay.vStart.z) / PRay.vDir.z;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			TimeMin = max(TimeMin, t1);
+			TimeMax = min(TimeMax, t2);
+		}
+
+		// Not Intersect In Axis Z
+		if (TimeMin > TimeMax)
+		{
+			return false;
+		}
+
+		// 파라미터를 세팅해서 호출한 경우 거리값 반영
+		if (PDistance)
+		{
+			*PDistance = TimeMin;
+		}
+
+		// Passed Slab Test
+		return true;
+	}
 };
 
 struct BVHNode
@@ -501,9 +606,9 @@ struct RayColliderInfo
 	CGameObject* PrevObject;
 	float Length;
 
-	bool operator<(const RayColliderInfo& other) const
+	bool operator<(const RayColliderInfo& POther) const
 	{
-		return Length < other.Length;
+		return Length < POther.Length;
 	}
 
 	RayColliderInfo()
@@ -514,9 +619,9 @@ struct RayColliderInfo
 	{
 	}
 
-	RayColliderInfo(CColliderRay* PRay, CGameObject* PRight, float PLength)
+	RayColliderInfo(CColliderRay* PRay, CGameObject* PObject, float PLength)
 		: RayObject(PRay)
-		  , HitObject(PRight)
+		  , HitObject(PObject)
 		  , PrevObject(nullptr)
 		  , Length(PLength)
 	{

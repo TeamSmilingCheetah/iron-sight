@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
+#include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
 
 union COLLISION_ID
 {
@@ -42,14 +43,16 @@ private:
 	UINT MLayerCollisionMatrix[MAX_LAYER];
 	map<ULONGLONG, bool> MColllisionInfoMap;
 	CMeshCollisionCS MMeshCollisionCS;
-	vector<pair<CGameObject*, CGameObject*>> MCandidatePairVector;
-    BVHNode* MBVHRootNode = nullptr;
+	CRaycastCS MRaycastCS;
+	vector<pair<const CGameObject*, const CGameObject*>> MCandidatePairVector;
+	BVHNode* MBVHRootNode = nullptr;
 
 public:
 	struct SimpleVtx
 	{
 		Vec3 pos;
 	};
+
 	struct SimpleIdx
 	{
 		uint32_t x, y, z;
@@ -57,38 +60,33 @@ public:
 
 private:
 	// Main Flow
-	void CheckBroadPhase();
-	void CheckNarrowPhase();
+	void CreateBVHTree();
+	void RaycastProcess();
+	void BroadPhase();
+	void NarrowPhase();
 	void CleanResource();
 
-	// Broad Main
-	static void QueryBVH(const BVHNode* PNode, const CGameObject* PObject, vector<CGameObject*>& PCandidates);
-	void AddCandidate(CGameObject* PLeftObject, CGameObject* PRightObject);
-	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth = 0);
+	// BVH Function
 	void BuildBVH(const vector<CGameObject*>& PObjects);
 	void DestroyBVH();
+	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth = 0);
 
-	// Narrow Main
-	void CheckPairNarrow(CGameObject* PRightObject, CGameObject* PLeftObject);
+	// Raycast Function
+	static void QueryBVH(const BVHNode* PNode, const CColliderRay* PRay, vector<RayColliderInfo>& PIntersectVector);
+	static bool IsIntersect(const CColliderRay* PLeftCollider, const CMeshCollider* PRightCollider);
 
-	// Broad Phase Check
-	static bool CheckAABB(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
-	static bool CheckAABB(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider);
-	static bool CheckAABB(const CMeshCollider* PLeftCollider, const CMeshCollider* PRightCollider);
-	static bool CheckAABB(const CMeshCollider* PLeftCollider, const CCollider3D* PRightCollider);
-	static bool CheckAABB(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
-	static bool CheckAABB(const CColliderRay* PLeftCollider, const CCollider3D* PRightCollider);
-	static bool CheckAABB(const CColliderRay* PLeftCollider, const CLandScape* PRightCollider);
+	// Broad Phase Function
+	static void QueryBVH(const BVHNode* PNode, const CGameObject* PObject, vector<CGameObject*>& PCandidates);
+	void AddCandidate(const CGameObject* PLeftObject, const CGameObject* PRightObject);
 
-	// Narrow Phase Check
+	// Narrow Phase Function
+	void CheckPair(const CGameObject* PRightObject, const CGameObject* PLeftObject);
 	static bool IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
-	static bool IsCollision(CCollider3D* PLeftCollider, CCollider3D* PRightCollider);
+	static bool IsCollision(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider);
 	static bool IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
-	bool IsCollision(CCollider3D* PLeftCollider, CColliderRay* PRightCollider);
-	bool IsCollision(CLandScape* PLeftCollider, CColliderRay* PRightCollider);
 	bool IsCollision(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider);
-	bool IsCollision(CMeshCollider* PMeshCollider, CCollider3D* P3DCollider);
-	bool IsCollision(CCollider3D* P3DCollider, CMeshCollider* PMeshCollider);
+	bool IsCollision(CMeshCollider* PLeftCollider, CCollider3D* PRightCollider);
+	bool IsCollision(CCollider3D* PLeftCollider, CMeshCollider* PRightCollider);
 
 	// Collision Apply
 	template <typename T1, typename T2>
@@ -97,7 +95,7 @@ private:
 public:
 	void Tick();
 	void ActiveLayerCollision(UINT PLeft, UINT PRight);
-	void CollisionCheckClear();
+	void ClearCollisionBtwLayerSetting();
 };
 
 /**

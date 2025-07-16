@@ -19,9 +19,6 @@
  * @param MIndependentDirection 독립적인 방향
  * @param MRayTargetAll 레이가 발견 가능한 타겟 판정
  * @param MTriggerTarget 트리거용 충돌체를 감지할지 판정
- * @param
- * @param
- * @param
  */
 class CColliderRay :
 	public CComponent
