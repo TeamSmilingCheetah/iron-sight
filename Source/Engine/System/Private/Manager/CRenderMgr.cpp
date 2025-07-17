@@ -7,6 +7,7 @@
 #include "Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/CFontMgr.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
 #include "System/Public/Manager/CUIMgr.h"
@@ -55,6 +56,8 @@ void CRenderMgr::Render()
 	// 렌더링 시작
 	RenderStart();
 
+	// Render Editor & Debug In Debug Mode
+	#ifdef _DEBUG
 	if (m_IsEditor)
 	{
 		Render_Editor();
@@ -64,8 +67,12 @@ void CRenderMgr::Render()
 		Render_Play();
 	}
 
-	// DebugRender
 	Render_Debug();
+
+	// Render Play Only In Release Mode
+	#else
+	Render_Play();
+	#endif
 
 	// 리소스 클리어
 	Render_Clear();
@@ -150,7 +157,6 @@ void CRenderMgr::Binding()
 	}
 	vecLight3DInfo.clear();
 }
-
 
 void CRenderMgr::Render_Debug()
 {
@@ -270,10 +276,32 @@ void CRenderMgr::Render_Debug()
 		else
 			++iter;
 	}
+
+	// Render FPS
+	const auto& FPSInfo = CTimeMgr::GetInst()->GetFPSInfo();
+
+	// FPS에 따른 색상 변경
+	// 60fps 이상: 녹색, 30fps 이상: 노란색, 30fps 미만: 빨간색)
+	UINT color = FONT_RGBA(255, 20, 20, 255);
+	if (FPSInfo.first >= 60.f)
+	{
+		color = FONT_RGBA(20, 255, 20, 255);
+	}
+	else if (FPSInfo.first >= 30.f)
+	{
+		color = FONT_RGBA(255, 255, 20, 255);
+	}
+
+	CFontMgr::GetInst()->DrawFont(FPSInfo.second, 10, 20, 16, color);
 }
 
 void CRenderMgr::Render_Play()
 {
+	if (m_vecCam.empty()) {
+		LOG_TRACE("[Render][Play] No Camera Registered!");
+		return;
+	}
+
 	// 레벨 내에 카메라로 레벨 렌더링
 	for (size_t i = 0; i < m_vecCam.size(); ++i)
 	{
@@ -324,7 +352,7 @@ void CRenderMgr::Render_Play()
 
 
 			// 특정 타겟으로 SwapChain 을 덮어쓰기
-			MergeSpecifyTarget();		
+			MergeSpecifyTarget();
 		}
 		else if (i == 1) // 미니맵 카메라
 		{
@@ -333,19 +361,19 @@ void CRenderMgr::Render_Play()
 			// Deferred
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
 			m_vecCam[i]->render_deferred();
-			
+
 			// 미니맵 전용 MRT, UI사용시 랜더타겟에 그려진걸 끌고와서 사용할것
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->OMSet();
 			MergeMinimapTarget();
-			
+
 			// SwapChain 랜더 테스트용
 			//m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 			//MergeMinimapTarget();
-			
+
 			// Forward
 			m_vecCam[i]->render_forward();
 			m_vecCam[i]->render_postprocess();
-			
+
 			m_vecCam[i]->render_clear();
 		}
 		else if (i == 2) // UI카메라
@@ -357,7 +385,7 @@ void CRenderMgr::Render_Play()
 			m_vecCam[i]->render_clear();
 		}
 	}
-	
+
 }
 
 void CRenderMgr::Render_Editor()
@@ -394,7 +422,7 @@ void CRenderMgr::Render_Editor()
 	m_EditorCam->render_forward();
 	m_EditorCam->render_particle();
 	m_EditorCam->render_effect();
-	m_EditorCam->render_transparent();	
+	m_EditorCam->render_transparent();
 	m_EditorCam->render_postprocess();
 	m_EditorCam->render_ui();
 
@@ -425,7 +453,6 @@ void CRenderMgr::MergeDeferredTarget()
 	m_MergeMtrl->Binding();
 
 	pRectMesh->Render(0);
-	
 
 	for (int i = 0; i < 8; ++i)
 	{

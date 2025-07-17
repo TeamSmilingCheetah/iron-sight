@@ -79,12 +79,26 @@ int FClientApp::InitializeSystem() const
 		return E_FAIL;
 	}
 
-	// Initialize ImGui & Editor
-	CImGuiMgr::GetInst()->Init();
-	CEditorMgr::GetInst()->Init();
-
-	// Test Level
+#ifdef _DEBUG
+	// Debug Mode
+	// Load Test Level As Default
 	TestLevel::CreateTestLevel();
+
+#else
+	// Release Mode
+	// Try To Load Starting Level
+	CLevel* StartingLevel = CLevelMgr::LoadLevel(L"Level/StartingLevel.lv");
+
+	// Play Loaded Level If Success
+	if (StartingLevel) {
+		ChangeLevel(StartingLevel, LEVEL_STATE::PLAY);
+
+	// Load Test Level If Failed
+	} else {
+		TestLevel::CreateTestLevel();
+		ChangeLevelState(LEVEL_STATE::PLAY);
+	}
+#endif
 
 	return S_OK;
 }
@@ -96,8 +110,12 @@ void FClientApp::UpdateSystem() const
 {
 	// System Progress
 	CEngine::GetInst()->Progress();
+
+#ifdef _DEBUG
+	// Editor & Imgui On Debug Mode
 	CEditorMgr::GetInst()->Progress();
 	CImGuiMgr::GetInst()->Progress();
+#endif
 
 	// Screen Output Processing
 	CDevice::GetInst()->Present();

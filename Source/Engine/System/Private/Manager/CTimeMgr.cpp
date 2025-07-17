@@ -83,21 +83,6 @@ void CTimeMgr::Tick()
 	g_Data.Time = m_Time;
 	g_Data.DT_Engine = m_fEngineDT;
 	g_Data.Time_Engine = m_fEngineTime;
-
-	// FPS에 따른 색상 변경
-	// 60fps 이상: 녹색, 30fps 이상: 노란색, 30fps 미만: 빨간색)
-	UINT color = FONT_RGBA(255, 20, 20, 255);
-	if (AverageFPS >= 60.f)
-	{
-		color = FONT_RGBA(20, 255, 20, 255);
-	}
-	else if (AverageFPS >= 30.f)
-	{
-		color = FONT_RGBA(255, 255, 20, 255);
-	}
-
-	// Tick마다 렌더링은 매번 진행
-	CFontMgr::GetInst()->DrawFont(m_TimeInfo, 10, 20, 16, color);
 }
 
 void CTimeMgr::SetStopMode(bool PIsStop)
@@ -105,4 +90,9 @@ void CTimeMgr::SetStopMode(bool PIsStop)
 	m_IsStop = PIsStop;
 	if (m_IsStop)
 		m_fDT = 0.f;
+}
+
+pair<unsigned, wchar_t*> CTimeMgr::GetFPSInfo()
+{
+	return make_pair(m_FPS, m_TimeInfo);
 }

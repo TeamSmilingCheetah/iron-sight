@@ -234,6 +234,12 @@ CLevel* CLevelMgr::LoadLevel(const wstring& _FilePath)
 	_wfopen_s(&pFile, _FilePath.c_str(), L"rb");
 	assert(pFile);
 
+	if (!pFile)
+	{
+		LOG_TRACE("[Level][Load] Failed To Load Lv File");
+		return nullptr;
+	}
+
 	// Level 이름 불러오기
 	pNewLevel->LoadFromLevel(pFile);
 
@@ -306,7 +312,7 @@ CLevel* CLevelMgr::LoadLevel(const wstring& _FilePath)
 				vecScripts[k]->LoadComponentReference();
 			}
 		}
-		
+
 	}
 
 	return pNewLevel;
