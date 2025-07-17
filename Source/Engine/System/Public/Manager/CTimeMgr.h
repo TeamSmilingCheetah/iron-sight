@@ -46,4 +46,5 @@ public:
 	void SetStopMode(bool PIsStop);
 	float GetDeltaTime() const { return m_fDT; }
 	float GetEngineDeltaTime() const { return m_fEngineDT; }
+	pair<unsigned, wchar_t*> GetFPSInfo();
 };
