@@ -66,7 +66,7 @@ public:
 	CGameObject* GetChildByName(const wstring& PName);
 	UINT GetParentObjectID() const;
 	bool IsAncestor(const CGameObject* POther) const;
-	array<Vec3, 2> GetAABB() const;
+	AABB GetAABB() const;
 
 	// Getter & Setter
 	UINT GetObjectID() const { return MObjectID; }

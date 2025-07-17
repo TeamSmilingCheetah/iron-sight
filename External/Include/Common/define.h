@@ -41,13 +41,14 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define TRIGGER					0x01		// 트리거용 충돌체
 #define INDEPENDENT_ROT			0x02
 
-#define SET_PARENT_SCRIPT(PARENT_ENUM) static constexpr SCRIPT_TYPE m_ParentType = PARENT_ENUM; \
-										virtual SCRIPT_TYPE GetParentScriptType() override { return m_ParentType; }
+#define SET_PARENT_SCRIPT(PARENT_ENUM) static constexpr SCRIPT_TYPE MParentType = PARENT_ENUM; \
+									   virtual SCRIPT_TYPE GetParentScriptType() const override { return MParentType; }
 
 /** Log Macros **/
+#define LOG_TRACE(PMessage) FLogManager::GetInst()->LogTrace(PMessage)
+#define LOG_TRACE_F(PFormat, ...) FLogManager::GetInst()->LogTracef(PFormat, ##__VA_ARGS__)
 #ifdef _DEBUG
 // TODO(KHJ): Debug Mode와 Release Mode Log 분리 작업
-#define LOG_TRACE(PMessage) FLogManager::GetInst()->LogTrace(PMessage)
 #define LOG_DEBUG(PMessage) FLogManager::GetInst()->LogDebug(PMessage)
 #define LOG_INFO(PMessage) FLogManager::GetInst()->LogInfo(PMessage)
 #define LOG_WARNING(PMessage) FLogManager::GetInst()->LogWarning(PMessage)
@@ -55,7 +56,6 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define LOG_CRITICAL(PMessage) FLogManager::GetInst()->LogCritical(PMessage)
 #define LOG_UNKNOWN(PMessage) FLogManager::GetInst()->LogUnknown(PMessage)
 
-#define LOG_TRACE_F(PFormat, ...) FLogManager::GetInst()->LogTracef(PFormat, ##__VA_ARGS__)
 #define LOG_DEBUG_F(PFormat, ...) FLogManager::GetInst()->LogDebugf(PFormat, ##__VA_ARGS__)
 #define LOG_INFO_F(PFormat, ...) FLogManager::GetInst()->LogInfof(PFormat, ##__VA_ARGS__)
 #define LOG_WARNING_F(PFormat, ...) FLogManager::GetInst()->LogWarningf(PFormat, ##__VA_ARGS__)
@@ -63,7 +63,6 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define LOG_CRITICAL_F(PFormat, ...) FLogManager::GetInst()->LogCriticalf(PFormat, ##__VA_ARGS__)
 #define LOG_UNKNOWN_F(PFormat, ...) FLogManager::GetInst()->LogUnknownf(PFormat, ##__VA_ARGS__)
 #else
-#define LOG_TRACE(PMessage)
 #define LOG_DEBUG(PMessage)
 #define LOG_INFO(PMessage)
 #define LOG_WARNING(PMessage)
@@ -71,7 +70,6 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define LOG_CRITICAL(PMessage)
 #define LOG_UNKNOWN(PMessage)
 
-#define LOG_TRACE_F(PFormat, ...)
 #define LOG_DEBUG_F(PFormat, ...)
 #define LOG_INFO_F(PFormat, ...)
 #define LOG_WARNING_F(PFormat, ...)

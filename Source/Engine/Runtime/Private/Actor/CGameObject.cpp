@@ -10,6 +10,7 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Game/System/Public/GameplayManager.h"
+#include "Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandscape.h"
 
 UINT CGameObject::GUID = 0;
@@ -382,12 +383,18 @@ void CGameObject::RegisterAsParent()
  * 값에 문제가 있을 경우 Min값이 Max값보다 크게 반환하도록 설정함
  * @return 바운딩 박스의 최소, 최대 좌표 { Min, Max }
  */
-array<Vec3, 2> CGameObject::GetAABB() const
+AABB CGameObject::GetAABB() const
 {
 	// Landscape Getter 사용
 	if (LandScape())
 	{
 		return LandScape()->GetAABB();
+	}
+
+	// 3D Collider Getter 사용
+	if (Collider3D())
+	{
+		return Collider3D()->GetColliderAABB();
 	}
 
 	// 바운딩 박스가 존재하기 위한 최소 조건 확인
@@ -399,7 +406,7 @@ array<Vec3, 2> CGameObject::GetAABB() const
 	if (!MeshRenderPtr && !ParticleSystemPtr && !DecalPtr)
 	{
 		LOG_ERROR_F("[GameObj] {}: Mesh Renderer가 존재하지 않음", WStringToString(GetName()));
-		return {Vec3(FLT_MAX, FLT_MAX, FLT_MAX), Vec3(FLT_MIN, FLT_MIN, FLT_MIN)};
+		return AABB();
 	}
 
 	// 2. 메시가 없는 경우 실패
@@ -487,5 +494,5 @@ array<Vec3, 2> CGameObject::GetAABB() const
 	}
 
 	// Return
-	return {WorldMin, WorldMax};
+	return { WorldMin, WorldMax };
 }

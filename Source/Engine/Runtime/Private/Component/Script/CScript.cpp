@@ -5,24 +5,23 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 
-CScript::CScript(SCRIPT_TYPE _ScriptType)
+CScript::CScript(SCRIPT_TYPE PScriptType)
 	: CComponent(COMPONENT_TYPE::SCRIPT)
-	, m_ScriptType(_ScriptType)
+	, MScriptType(PScriptType)
 {
 }
 
-CScript::~CScript()
-{
-}
+CScript::~CScript() = default;
 
-void CScript::Instantiate(Ptr<CPrefab> _Pref, Vec3 _WorldPos, int _Layer)
+void CScript::Instantiate(Ptr<CPrefab> PPrefab, const Vec3& PWorldPosition, int PLayer)
 {
-	if (nullptr == _Pref)
+	if (PPrefab == nullptr)
+	{
 		return;
+	}
 
-	CGameObject* pNewObject = _Pref->Instantiate();
+	CGameObject* NewObject = PPrefab->Instantiate();
 
-	pNewObject->Transform()->SetRelativePos(_WorldPos);
-
-	CreateObject(pNewObject, _Layer, false);
+	NewObject->Transform()->SetRelativePos(PWorldPosition);
+	CreateObject(NewObject, PLayer, false);
 }

@@ -659,8 +659,8 @@ bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 	{
 		return false;
 	}
-	Vec3 vMin = BoundingBox[0];
-	Vec3 vMax = BoundingBox[1];
+	Vec3 vMin = BoundingBox.Min;
+	Vec3 vMax = BoundingBox.Max;
 
 	// Make More Margin
 	constexpr float FRUSTUM_MARGIN = 0.5f;

@@ -95,7 +95,7 @@ class CLandScape :
 	vector<tRayCollision> m_vecRayColInst;
 
 	// AABB
-	array<Vec3, 2> m_AABB;
+	AABB m_AABB;
 
 	// LandScape 모드
 	LANDSCAPE_MODE m_Mode;
@@ -122,7 +122,7 @@ public:
 
 	// AABB
 	void SetAABB();
-	array<Vec3, 2> GetAABB() const { return m_AABB; }
+	AABB GetAABB() const { return m_AABB; }
 
 	LANDSCAPE_MODE GetMode() const { return m_Mode; }
 

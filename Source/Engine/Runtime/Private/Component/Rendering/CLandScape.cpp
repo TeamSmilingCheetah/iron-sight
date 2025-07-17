@@ -223,8 +223,7 @@ void CLandScape::SetAABB()
 	}
 
 	// Save New AABB
-	m_AABB[0] = WorldMin;
-	m_AABB[1] = WorldMax;
+	m_AABB = AABB(WorldMin, WorldMax);
 }
 
 int CLandScape::Raycasting()

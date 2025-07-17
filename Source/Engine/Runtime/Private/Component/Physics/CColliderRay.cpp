@@ -6,51 +6,50 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Runtime/Public/Component/Physics/CMeshCollider.h"
 
 CColliderRay::CColliderRay()
 	: CComponent(COMPONENT_TYPE::COLLIDERRAY)
-	, m_Offset(Vec3(0.f))
-	, m_RayLength(1000.f)
-	, m_OverlapCount(0)
-	, m_RayTargetAll(false)
-	, m_IndependentDir(false)
-	, m_TriggerTarget(true)
-	, m_RayTargetLength(100000.f)
-	, m_State(ACTIVE)
+	, MOffset(Vec3(0.f))
+	, MLength(1000.f)
+	, MTargetLength(100000.f)
+	, MOverlapCount(0)
+	, MColliderState(ACTIVE)
+	, MIndependentDirection(false)
+	, MRayTargetAll(false)
+	, MTriggerTarget(true)
 {
-	m_RayPosDir.vStart = Vec3(0.f, 0.f, 0.f);
-	m_RayPosDir.vDir = Vec3(1.f, 0.f, 0.f);
-	m_RayColInfo.RayObject = this;
+	MRayPosDir.vStart = Vec3(0.f, 0.f, 0.f);
+	MRayPosDir.vDir = Vec3(1.f, 0.f, 0.f);
+	MRayColliderInfo.RayObject = this;
 }
 
-CColliderRay::CColliderRay(const CColliderRay& _Origin)
-	: CComponent(_Origin)
-	, m_Offset(_Origin.m_Offset)
-	, m_RayLength(_Origin.m_RayLength)
-	, m_OverlapCount(0)
-	, m_RayTargetAll(_Origin.m_RayTargetAll)
-	, m_IndependentDir(_Origin.m_IndependentDir)
-	, m_TriggerTarget(_Origin.m_TriggerTarget)
-	, m_RayTargetLength(_Origin.m_RayTargetLength)
-	, m_State(_Origin.m_State)
+CColliderRay::CColliderRay(const CColliderRay& POrigin)
+	: CComponent(POrigin)
+	, MOffset(POrigin.MOffset)
+	, MLength(POrigin.MLength)
+	, MTargetLength(POrigin.MTargetLength)
+	, MOverlapCount(0)
+	, MColliderState(POrigin.MColliderState)
+	, MIndependentDirection(POrigin.MIndependentDirection)
+	, MRayTargetAll(POrigin.MRayTargetAll)
+	, MTriggerTarget(POrigin.MTriggerTarget)
 {
-	m_RayPosDir.vStart = _Origin.m_RayPosDir.vStart;
-	m_RayPosDir.vDir = _Origin.m_RayPosDir.vDir;
-	m_RayColInfo.RayObject = this;
+	MRayPosDir.vStart = POrigin.MRayPosDir.vStart;
+	MRayPosDir.vDir = POrigin.MRayPosDir.vDir;
+	MRayColliderInfo.RayObject = this;
 }
 
-CColliderRay::~CColliderRay()
-{
-}
+CColliderRay::~CColliderRay() = default;
 
-bool CColliderRay::UpdateRayColInfo(CGameObject* _HitObject, float _Distance)
+bool CColliderRay::UpdateRayColInfo(CGameObject* PHitObject, float PDistance)
 {
 	// 기존 거리보다 가까운 거리에 있는 물체만 저장
-	if (_Distance < m_RayColInfo.Length)
+	if (PDistance < MRayColliderInfo.Length)
 	{
-		m_RayColInfo.HitObject = _HitObject;
-		m_RayColInfo.Length = _Distance;
-		m_RayTargetLength = m_RayColInfo.Length;
+		MRayColliderInfo.HitObject = PHitObject;
+		MRayColliderInfo.Length = PDistance;
+		MTargetLength = MRayColliderInfo.Length;
 		return true;
 	}
 
@@ -59,174 +58,95 @@ bool CColliderRay::UpdateRayColInfo(CGameObject* _HitObject, float _Distance)
 
 void CColliderRay::ClearRayColInfo()
 {
-	m_RayColInfo.PrevObject = m_RayColInfo.HitObject;
-	m_RayColInfo.HitObject = nullptr;
-	m_RayColInfo.Length = 100000.f;
-}
-
-void CColliderRay::Activate()
-{
-	m_State = ACTIVE;
-}
-
-void CColliderRay::Deactivate()
-{
-	if (m_State != SEMIDEACTIVE)
-		m_State = SEMIDEACTIVE;
+	MRayColliderInfo.PrevObject = MRayColliderInfo.HitObject;
+	MRayColliderInfo.HitObject = nullptr;
+	MRayColliderInfo.Length = 100000.f;
 }
 
 void CColliderRay::FinalTick()
 {
-	if (DEACTIVE == m_State)
+	if (MColliderState == DEACTIVE)
+	{
 		return;
-	else if (SEMIDEACTIVE == m_State)
-		m_State = DEACTIVE;
+	}
+
+	if (MColliderState == SEMIDEACTIVE)
+	{
+		MColliderState = DEACTIVE;
+	}
 
 	// 크기, 이동 행렬
-	Matrix matTrans = XMMatrixTranslation(m_Offset.x, m_Offset.y, m_Offset.z);
+	Matrix matTrans = XMMatrixTranslation(MOffset.x, MOffset.y, MOffset.z);
 
 	Vec3 vObjectScale = GetOwner()->Transform()->GetWorldScale();
 	Matrix matScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjectScale.x, vObjectScale.y, vObjectScale.z));
 
-	m_matColliderWorld = matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
-
+	MWorldMatrix = matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
 
 	// 기본 레이 방향
-	Vec3 rayDir = m_RayPosDir.vDir;
+	Vec3 rayDir = MRayPosDir.vDir;
 	rayDir.Normalize();
 
 	// 레이 시작점 계산
-	m_RayFinalPos = m_matColliderWorld.Translation();
+	MFinalPosition = MWorldMatrix.Translation();
 
 	// 독립적인지 아닌지에 따라 계산 구분
-	if (m_IndependentDir)
+	if (MIndependentDirection)
 	{
-		m_RayFinalDir = rayDir;
+		MFinalDirection = rayDir;
 	}
 	else
 	{
-		m_RayFinalDir = XMVector3TransformNormal(Vec4(rayDir.x, rayDir.y, rayDir.z, 0.f), m_matColliderWorld);
+		MFinalDirection = XMVector3TransformNormal(Vec4(rayDir.x, rayDir.y, rayDir.z, 0.f), MWorldMatrix);
 	}
-	m_RayFinalDir.Normalize();
+	MFinalDirection.Normalize();
 
 	// 레이 끝점 계산
-	Vec3 vEndPos = m_RayFinalPos + (m_RayFinalDir * m_RayLength);
+	Vec3 vEndPos = MFinalPosition + (MFinalDirection * MLength);
 
 	// 디버깅용 길이 끝점
-	Vec3 vEndEdbugPos = m_RayFinalPos + (m_RayFinalDir * m_RayTargetLength);
+	Vec3 vEndEdbugPos = MFinalPosition + (MFinalDirection * MTargetLength);
 
 	// 히트된 오브젝트가 없을 때만 초기화
-	if (!m_RayColInfo.HitObject)
-		m_RayTargetLength = 100000.f;
+	if (!MRayColliderInfo.HitObject)
+		MTargetLength = 100000.f;
 
 	// 디버그 랜더링
-	if (m_OverlapCount)
+	if (MOverlapCount)
 	{
-		DrawDebugLine(Vec4(1.0f, 0.0f, 1.0f, 1.0f), m_RayFinalPos, vEndEdbugPos, false, 0.f);
+		DrawDebugLine(Vec4(1.0f, 0.0f, 1.0f, 1.0f), MFinalPosition, vEndEdbugPos, false, 0.f);
 	}
 	else
 	{
-		DrawDebugLine(Vec4(0.0f, 0.0f, 1.0f, 1.0f), m_RayFinalPos, vEndPos, false, 0.f);
+		DrawDebugLine(Vec4(0.0f, 0.0f, 1.0f, 1.0f), MFinalPosition, vEndPos, false, 0.f);
 	}
 
 	// 충돌 기록 초기화
 	ClearRayColInfo();
 }
 
-void CColliderRay::BeginOverlap(CCollider3D* _Other)
+void CColliderRay::SaveComponent(FILE* PFile)
 {
-	++m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
-	}
-}
-
-void CColliderRay::Overlap(CCollider3D* _Other)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(this, _Other->GetOwner(), _Other);
-	}
-}
-
-void CColliderRay::EndOverlap(CCollider3D* _Other)
-{
-	--m_OverlapCount;
-	CGameObject* OtherObj = _Other->GetOwner();
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(this, OtherObj, _Other);
-	}
-
-	// 충돌된 오브젝트가 이제 삭제 처리될 오브젝트일 시 prev에 들어가지 않게 비운다.
-	if (OtherObj == m_RayColInfo.HitObject && OtherObj->IsDead())
-	{
-		m_RayColInfo.HitObject = nullptr;
-	}
-}
-
-void CColliderRay::BeginOverlap(CLandScape* _Other)
-{
-	++m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(this, _Other->GetOwner(), _Other);
-	}
-}
-
-void CColliderRay::Overlap(CLandScape* _Other)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(this, _Other->GetOwner(), _Other);
-	}
-}
-
-void CColliderRay::EndOverlap(CLandScape* _Other)
-{
-	--m_OverlapCount;
-	CGameObject* OtherObj = _Other->GetOwner();
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(this, OtherObj, _Other);
-	}
-
-	// 충돌된 오브젝트가 이제 삭제 처리될 오브젝트일 시 prev에 들어가지 않게 비운다.
-	if (OtherObj == m_RayColInfo.HitObject && OtherObj->IsDead())
-	{
-		m_RayColInfo.HitObject = nullptr;
-	}
-}
-
-void CColliderRay::SaveComponent(FILE* _File)
-{
-	fwrite(&m_Offset, sizeof(Vec3), 1, _File);
-	fwrite(&m_RayPosDir, sizeof(tRay), 1, _File);
-	fwrite(&m_RayLength, sizeof(float), 1, _File);
-	fwrite(&m_RayTargetAll, sizeof(bool), 1, _File);
+	(void)fwrite(&MOffset, sizeof(Vec3), 1, PFile);
+	(void)fwrite(&MRayPosDir, sizeof(tRay), 1, PFile);
+	(void)fwrite(&MLength, sizeof(float), 1, PFile);
+	(void)fwrite(&MRayTargetAll, sizeof(bool), 1, PFile);
 
 	// 추가 필요 저장 데이터
-	fwrite(&m_IndependentDir, sizeof(bool), 1, _File);
-	fwrite(&m_RayTargetAll, sizeof(bool), 1, _File);
-	fwrite(&m_TriggerTarget, sizeof(bool), 1, _File);
+	(void)fwrite(&MIndependentDirection, sizeof(bool), 1, PFile);
+	(void)fwrite(&MRayTargetAll, sizeof(bool), 1, PFile);
+	(void)fwrite(&MTriggerTarget, sizeof(bool), 1, PFile);
 }
 
-void CColliderRay::LoadComponent(FILE* _File)
+void CColliderRay::LoadComponent(FILE* PFile)
 {
-	fread(&m_Offset, sizeof(Vec3), 1, _File);
-	fread(&m_RayPosDir, sizeof(tRay), 1, _File);
-	fread(&m_RayLength, sizeof(float), 1, _File);
-	fread(&m_RayTargetAll, sizeof(bool), 1, _File);
+	(void)fread(&MOffset, sizeof(Vec3), 1, PFile);
+	(void)fread(&MRayPosDir, sizeof(tRay), 1, PFile);
+	(void)fread(&MLength, sizeof(float), 1, PFile);
+	(void)fread(&MRayTargetAll, sizeof(bool), 1, PFile);
 
 	// 추가 필요 로드 데이터
-	fread(&m_IndependentDir, sizeof(bool), 1, _File);
-	fread(&m_RayTargetAll, sizeof(bool), 1, _File);
-	fread(&m_TriggerTarget, sizeof(bool), 1, _File);
+	(void)fread(&MIndependentDirection, sizeof(bool), 1, PFile);
+	(void)fread(&MRayTargetAll, sizeof(bool), 1, PFile);
+	(void)fread(&MTriggerTarget, sizeof(bool), 1, PFile);
 }

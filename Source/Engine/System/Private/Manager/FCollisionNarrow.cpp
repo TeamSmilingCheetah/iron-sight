@@ -2,24 +2,26 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
-/******************/
-/** Narrow Check **/
-/******************/
+// TODO(KHJ): Narrow Code 이후에 전반적으로 Refactor 필요성 존재
+
+/***************************/
+/** Narrow Phase Function **/
+/***************************/
 
 /**
  * @brief 충돌 가능성이 있는 오브젝트 쌍에 대해 충돌 판정을 처리하는 함수
  */
-void FCollisionManager::CheckNarrowPhase()
+void FCollisionManager::NarrowPhase()
 {
 	for (auto& Pair : MCandidatePairVector)
 	{
-		CheckPairNarrow(Pair.first, Pair.second);
+		CheckPair(Pair.first, Pair.second);
 	}
 }
 
@@ -29,9 +31,9 @@ void FCollisionManager::CheckNarrowPhase()
  * @param PLeftObject Object 1
  * @param PRightObject Object 2
  */
-void FCollisionManager::CheckPairNarrow(CGameObject* PRightObject, CGameObject* PLeftObject)
+void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameObject* PLeftObject)
 {
-	// 1. 2D 충돌체 검사
+	// 2D 충돌체 검사
 	if (PLeftObject->Collider2D())
 	{
 		if (PRightObject->Collider2D())
@@ -44,7 +46,7 @@ void FCollisionManager::CheckPairNarrow(CGameObject* PRightObject, CGameObject* 
 		}
 	}
 
-	// 2. 3D 충돌체 검사
+	// 3D 충돌체 검사
 	if (PLeftObject->Collider3D())
 	{
 		if (PRightObject->Collider3D())
@@ -65,15 +67,6 @@ void FCollisionManager::CheckPairNarrow(CGameObject* PRightObject, CGameObject* 
 			return;
 		}
 
-		if (PRightObject->ColliderRay())
-		{
-			if (IsCollision(PLeftObject->Collider3D(), PRightObject->ColliderRay()))
-			{
-				ProcessCollision(PRightObject->ColliderRay(), PLeftObject->Collider3D());
-			}
-			return;
-		}
-
 		if (PRightObject->MeshCollider())
 		{
 			if (IsCollision(PLeftObject->Collider3D(), PRightObject->MeshCollider()))
@@ -84,7 +77,7 @@ void FCollisionManager::CheckPairNarrow(CGameObject* PRightObject, CGameObject* 
 		}
 	}
 
-	// 3. LandScape 검사
+	// LandScape 검사
 	if (PLeftObject->LandScape())
 	{
 		// 3D간 충돌의 경우
@@ -96,42 +89,9 @@ void FCollisionManager::CheckPairNarrow(CGameObject* PRightObject, CGameObject* 
 			}
 			return;
 		}
-
-		// Ray와 충돌의 경우
-		if (PRightObject->ColliderRay())
-		{
-			if (IsCollision(PLeftObject->LandScape(), PRightObject->ColliderRay()))
-			{
-				ProcessCollision(PLeftObject->LandScape(), PRightObject->ColliderRay());
-			}
-			return;
-		}
 	}
 
-	// 4. RayCast 검사
-	if (PLeftObject->ColliderRay())
-	{
-		if (PRightObject->Collider3D())
-		{
-			if (IsCollision(PRightObject->Collider3D(), PLeftObject->ColliderRay()))
-			{
-				ProcessCollision(PLeftObject->ColliderRay(), PRightObject->Collider3D());
-			}
-			return;
-		}
-
-		// LandScape와 충돌의 경우
-		if (PRightObject->LandScape())
-		{
-			if (IsCollision(PRightObject->LandScape(), PLeftObject->ColliderRay()))
-			{
-				ProcessCollision(PLeftObject->ColliderRay(), PRightObject->LandScape());
-			}
-			return;
-		}
-	}
-
-	// 5. Mesh Collider
+	// Mesh Collider 검사
 	if (PLeftObject->MeshCollider())
 	{
 		if (PRightObject->MeshCollider())
@@ -152,6 +112,9 @@ void FCollisionManager::CheckPairNarrow(CGameObject* PRightObject, CGameObject* 
 			return;
 		}
 	}
+
+	LOG_INFO_F("[Collision][Narrow] Object {} & {}, Failed To Match Type Pairing",
+		WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
 }
 
 /**********************************/
@@ -187,7 +150,7 @@ bool FCollisionManager::IsCollision(const CCollider2D* left, const CCollider2D* 
     return true;
 }
 
-bool FCollisionManager::IsCollision(CCollider3D* PLeftCollider, CCollider3D* PRightCollider)
+bool FCollisionManager::IsCollision(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider)
 {
     constexpr float EPSILON = 0.0001f;
     static Vec3 arrCube[8] = {
@@ -255,60 +218,6 @@ bool FCollisionManager::IsCollision(const CCollider3D* box, const CLandScape* la
     if (LandScapePos == Vec3(-10000.f, -10000.f, -10000.f) || ObjectPos.y > LandScapePos.y)
         return false;
     return true;
-}
-
-bool FCollisionManager::IsCollision(CCollider3D* PLeftCollider, CColliderRay* PRightCollider)
-{
-    static Vec3 arrCube[8] = {
-        Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f), Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
-        Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f), Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
-    };
-    Matrix matWorld = PLeftCollider->GetColliderWorldMat();
-    Vec3 worldVerts[8];
-    for (int i = 0; i < 8; ++i)
-        worldVerts[i] = XMVector3TransformCoord(arrCube[i], matWorld);
-    static int triangles[12][3] = {
-        {0, 2, 1}, {0, 3, 2}, {1, 5, 6}, {1, 6, 2},
-        {4, 5, 6}, {4, 6, 7}, {0, 4, 7}, {0, 7, 3},
-        {4, 5, 1}, {4, 1, 0}, {3, 2, 6}, {3, 6, 7}
-    };
-    Vec3 rayPos = PRightCollider->GetRayFinalPos();
-    Vec3 rayDir = PRightCollider->GetRayFinalDir();
-    float rayMaxDist = PRightCollider->GetRayLength();
-    float closestDist = FLT_MAX;
-    bool hasCollision = false;
-    for (int i = 0; i < 12; ++i) {
-        Vec3* triVerts[3] = {
-            &worldVerts[triangles[i][0]],
-            &worldVerts[triangles[i][1]],
-            &worldVerts[triangles[i][2]]
-        };
-        Vec3 crossPos = Vec3(0.f);
-        float dist = 0;
-        Vec3 edge1 = *triVerts[1] - *triVerts[0];
-        Vec3 edge2 = *triVerts[2] - *triVerts[0];
-        Vec3 triangleNormal = edge1.Cross(edge2);
-        triangleNormal.Normalize();
-        if (IntersectsRay(triVerts, rayPos, rayDir, crossPos, dist)) {
-            if (dist >= 0.f && dist <= rayMaxDist && dist < closestDist) {
-                closestDist = dist;
-                hasCollision = true;
-            }
-        }
-    }
-    return hasCollision;
-}
-
-bool FCollisionManager::IsCollision(CLandScape* PRightCollider, CColliderRay* PLeftCollider)
-{
-    tRayCollision RayInfo;
-    RayInfo.RayObj = reinterpret_cast<void*>(PLeftCollider);
-    RayInfo.RayWorldPos = PLeftCollider->GetRayFinalPos();
-    RayInfo.RayDir = PLeftCollider->GetRayFinalDir();
-    RayInfo.RayLength = PLeftCollider->GetRayLength();
-    PRightCollider->AddRayCol(RayInfo);
-
-	return false; // 실제 충돌 여부는 LandScape 내부에서 처리됨
 }
 
 /**

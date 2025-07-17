@@ -44,7 +44,7 @@ public:
 
 	void SetTrigger(bool _true);
 	void SetIndependentRot(bool _true);
-	array<Vec3, 2> GetAABB() const;
+	AABB GetColliderAABB() const;
 
 	void BeginOverlap(CCollider3D* POther);
 	void Overlap(CCollider3D* POther);

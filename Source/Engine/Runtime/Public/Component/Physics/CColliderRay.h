@@ -1,125 +1,147 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 
-class CCollider3D;
-class CLandScape;
-
-struct RAYCOLLIDERDATA
-{
-	CColliderRay* RayObject;
-	CGameObject* HitObject;
-	CGameObject* PrevObject;
-	float           Length;
-
-	bool operator<(const RAYCOLLIDERDATA& other) const
-	{
-		return Length < other.Length;
-	}
-	RAYCOLLIDERDATA()
-		: RayObject(nullptr)
-		, HitObject(nullptr)
-		, PrevObject(nullptr)
-		, Length(1000000.f)
-	{
-
-	}
-
-	RAYCOLLIDERDATA(CColliderRay* _Ray, CGameObject* _Right, float _Length)
-		: RayObject(_Ray)
-		, HitObject(_Right)
-		, PrevObject(nullptr)
-		, Length(_Length)
-	{
-
-	}
-};
-
+/**
+ * @brief
+ *
+ * @param MOffset
+ * @param MRayPosDir
+ * @param MWorldMatrix 크기, 회전, 이동
+ * @param MFinalPosition 최종 레이의 위치
+ * @param MFinalDirection 최종 레이의 방향
+ * @param MLength Ray 길이
+ * @param MTargetLength 디버그용 임시 길이
+ * @param MOverlapCount
+ * @param MColliderState 충돌체 상태
+ * @param MRayColliderInfo 단일 타겟 용 검사 구조체
+ * @param MIndependentDirection 독립적인 방향
+ * @param MRayTargetAll 레이가 발견 가능한 타겟 판정
+ * @param MTriggerTarget 트리거용 충돌체를 감지할지 판정
+ */
 class CColliderRay :
 	public CComponent
 {
+	friend class FCollisionManager;
+
 private:
-	Vec3        m_Offset;
-	tRay        m_RayPosDir;
-	Matrix      m_matColliderWorld;		// 크기, 회전, 이동
+	Vec3 MOffset;
+	tRay MRayPosDir;
+	Matrix MWorldMatrix;
 
-	Vec3        m_RayFinalPos;			// 최종 레이의 위치
-	Vec3        m_RayFinalDir;			// 최종 레이의 방향
+	Vec3 MFinalPosition;
+	Vec3 MFinalDirection;
 
-	float       m_RayLength;			// Ray길이
-	float       m_RayTargetLength;		// 디버그용 임시 길이
+	float MLength;
+	float MTargetLength;
 
-	int         m_OverlapCount;
+	int MOverlapCount;
 
-	COLLIDER_STATE  m_State;					// 충돌체 상태
-	RAYCOLLIDERDATA         m_RayColInfo;		// 단일 타겟 용 검사 구조체
+	COLLIDER_STATE MColliderState;
+	RayColliderInfo MRayColliderInfo;
 
-	bool		m_IndependentDir;		// 독립적인 방향
-	bool        m_RayTargetAll;         // 레이가 발견 가능한 타겟 판정
-	bool		m_TriggerTarget;		// 트리거용 충돌체를 감지할지 판정
-
+	bool MIndependentDirection;
+	bool MRayTargetAll;
+	bool MTriggerTarget;
 
 public:
-	void SetOffset(Vec3 _Offset) { m_Offset = _Offset; }
-	void SetRayPos(Vec3 _Pos) { m_RayPosDir.vStart = _Pos; }
-	void SetRayDir(Vec3 _Dir) { m_RayPosDir.vDir = _Dir; m_RayPosDir.vDir.Normalize(); }
-	void SetRayLength(float _Length) { m_RayLength = _Length; }
-	void RayTargetMode(bool _bool) { m_RayTargetAll = _bool; }
-	void SetRayTargetLength(float _TargetLength) { m_RayTargetLength = _TargetLength; }
-	void SetIndependentDir(bool _true) { m_IndependentDir = _true; }
-	void SetTriggerTarget(bool _true) { m_TriggerTarget = _true; }
+	void FinalTick() override;
+	void SaveComponent(FILE* PFile) override;
+	void LoadComponent(FILE* PFile) override;
 
-	tRay GetRay() { return m_RayPosDir; }
-	Vec3 GetRayPos() { return m_RayPosDir.vStart; }
-	Vec3 GetRayDir() { return m_RayPosDir.vDir; }
-	Vec3 GetOffset() { return m_Offset; }
-	float GetRayLength() const { return m_RayLength; }
-
-	Vec3 GetRayFinalPos() const { return m_RayFinalPos; }
-	Vec3 GetRayFinalDir() const { return m_RayFinalDir; }
-	bool IsIndependentDir() { return m_IndependentDir; }
-
-	const Matrix& GetColliderWorldMat() { return m_matColliderWorld; }
-
-	RAYCOLLIDERDATA& GetTargetInfoRef() { return m_RayColInfo; }
-
-	bool IsTargetAllMode() { return m_RayTargetAll; }
-	bool IsTriggerTarget() { return m_TriggerTarget; }
-
-	COLLIDER_STATE GetState() { return m_State; }
-	bool IsActive() { return m_State == ACTIVE; }
-
-	bool UpdateRayColInfo(CGameObject* _HitObject, float _Distance);
+	bool UpdateRayColInfo(CGameObject* PHitObject, float PDistance);
 	void ClearRayColInfo();
 
-	// 충돌체 화성화
-	void Activate();
+	template <typename T>
+	void BeginOverlap(T* POther);
+	template <typename T>
+	void Overlap(T* POther);
+	template <typename T>
+	void EndOverlap(T* POther);
 
-	// 충돌체 비활성화
-	void Deactivate();
+	// Getter & Setter
+	void SetActivate() { MColliderState = ACTIVE; }
+	void SetDeactivate() { MColliderState = SEMIDEACTIVE; }
 
-public:
-	virtual void FinalTick() override;
+	tRay GetRay() const { return MRayPosDir; }
+	Vec3 GetRayPos() const { return MRayPosDir.vStart; }
+	Vec3 GetRayDir() const { return MRayPosDir.vDir; }
+	Vec3 GetOffset() const { return MOffset; }
+	float GetRayLength() const { return MLength; }
+	const Matrix& GetColliderWorldMat() const { return MWorldMatrix; }
 
-	virtual void SaveComponent(FILE* _File) override;
-	virtual void LoadComponent(FILE* _File) override;
+	Vec3 GetRayFinalPos() const { return MFinalPosition; }
+	Vec3 GetRayFinalDir() const { return MFinalDirection; }
+	bool IsIndependentDir() const { return MIndependentDirection; }
 
-public:
-	void BeginOverlap(CCollider3D* _Other);
-	void Overlap(CCollider3D* _Other);
-	void EndOverlap(CCollider3D* _Other);
+	RayColliderInfo& GetTargetInfoRef() { return MRayColliderInfo; }
 
-	void BeginOverlap(CLandScape* _Other);
-	void Overlap(CLandScape* _Other);
-	void EndOverlap(CLandScape* _Other);
+	bool IsTargetAllMode() const { return MRayTargetAll; }
+	bool IsTriggerTarget() const { return MTriggerTarget; }
 
-public:
+	COLLIDER_STATE GetState() const { return MColliderState; }
+	bool IsActive() const { return MColliderState == ACTIVE; }
+
+	void SetRayLength(float PLength) { MLength = PLength; }
+	void SetRayTargetMode(bool PTargetAll) { MRayTargetAll = PTargetAll; }
+	void SetRayTargetLength(float PTargetLength) { MTargetLength = PTargetLength; }
+	void SetIndependentDir(bool PVal) { MIndependentDirection = PVal; }
+	void SetTriggerTarget(bool PVal) { MTriggerTarget = PVal; }
+
+	void SetOffset(Vec3 POffset) { MOffset = POffset; }
+	void SetRayPos(Vec3 PPos) { MRayPosDir.vStart = PPos; }
+
+	void SetRayDir(Vec3 PDir)
+	{
+		MRayPosDir.vDir = PDir;
+		MRayPosDir.vDir.Normalize();
+	}
+
+	// Special Member Function
 	CLONE(CColliderRay);
 	CColliderRay();
-	CColliderRay(const CColliderRay& _Origin);
-	~CColliderRay();
-
-
-	friend class CColliderMgr;
-
+	CColliderRay(const CColliderRay& POrigin);
+	~CColliderRay() override;
 };
 
+template <typename T>
+void CColliderRay::BeginOverlap(T* POther)
+{
+	++MOverlapCount;
+
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (size_t i = 0; i < ScriptVector.size(); ++i)
+	{
+		ScriptVector[i]->BeginOverlap(this, POther->GetOwner(), POther);
+	}
+}
+
+template <typename T>
+void CColliderRay::Overlap(T* POther)
+{
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (size_t i = 0; i < ScriptVector.size(); ++i)
+	{
+		ScriptVector[i]->Overlap(this, POther->GetOwner(), POther);
+	}
+}
+
+template <typename T>
+void CColliderRay::EndOverlap(T* POther)
+{
+	--MOverlapCount;
+
+	CGameObject* OtherObj = POther->GetOwner();
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (size_t i = 0; i < ScriptVector.size(); ++i)
+	{
+		ScriptVector[i]->EndOverlap(this, OtherObj, POther);
+	}
+
+	// 충돌된 오브젝트가 이제 삭제 처리될 오브젝트일 시 prev에 들어가지 않게 비운다.
+	if (OtherObj == MRayColliderInfo.HitObject && OtherObj->IsDead())
+	{
+		MRayColliderInfo.HitObject = nullptr;
+	}
+}

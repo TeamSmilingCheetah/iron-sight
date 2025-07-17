@@ -2,6 +2,7 @@
 
 #include <thread>
 
+class CColliderRay;
 using std::thread;
 
 struct Vtx
@@ -31,14 +32,14 @@ struct tDebugShapeInfo
 	Matrix matWorld;
 
 	Vec4 Color;
-	float Duration;		// DebugShape 유지 시간
-	float Time;			// 현재 진행 시간
+	float Duration; // DebugShape 유지 시간
+	float Time; // 현재 진행 시간
 
-	bool DepthTest;		// 깊이검사를 수행
+	bool DepthTest; // 깊이검사를 수행
 
 	// general
-	DWORD_PTR  Data1;
-	DWORD_PTR  Data2;
+	DWORD_PTR Data1;
+	DWORD_PTR Data2;
 };
 
 struct tTask
@@ -177,31 +178,31 @@ struct tRay
 // UI
 struct PayLoad
 {
-	wstring		Type;
-	DWORD_PTR	Data;
+	wstring Type;
+	DWORD_PTR Data;
 };
 
 // Font
 struct FontRenderInfo
 {
 	// 폰트 정보
-	wstring		Font;
-	UINT		FontSize;
+	wstring Font;
+	UINT FontSize;
 
 	// 출력 정보
-	wstring		Text;
-	UINT		Color;
-	Vec2		Pos;
-	Vec2		Layout;		// width, height (텍스트가 끊길 위치)
-	Vec4		Clip;		// left, top, right, bottom
+	wstring Text;
+	UINT Color;
+	Vec2 Pos;
+	Vec2 Layout; // width, height (텍스트가 끊길 위치)
+	Vec4 Clip; // left, top, right, bottom
 };
 
 // Bullet
 struct BULLETINFO
 {
-	CGameObject* m_Owner;	// 총알 주인
-	CGameObject* m_ShotWeapon;	// 해당 총알을 발사한 무기
-	float				m_Dmg;	// 총알 데미지
+	CGameObject* m_Owner; // 총알 주인
+	CGameObject* m_ShotWeapon; // 해당 총알을 발사한 무기
+	float m_Dmg; // 총알 데미지
 };
 
 // ============
@@ -238,19 +239,22 @@ struct tMTBone
 // ===========
 union uInstID
 {
-	struct {
+	struct
+	{
 		UINT iMesh;
 		WORD iMtrl;
 		WORD iMtrlIdx;
 	};
+
 	ULONG64 llID;
 };
 
 class CGameObject;
+
 struct tInstObj
 {
 	CGameObject* pObj;
-	UINT		 iMtrlIdx;
+	UINT iMtrlIdx;
 };
 
 struct tInstancingData
@@ -258,10 +262,10 @@ struct tInstancingData
 	Matrix matWorld;
 	Matrix matWV;
 	Matrix matWVP;
-	int    iRowIdx;
-	int    parentID;
-	int    objectID;
-	int    reserved[2]; // 패딩
+	int iRowIdx;
+	int parentID;
+	int objectID;
+	int reserved[2]; // 패딩
 };
 
 
@@ -346,13 +350,15 @@ extern GlobalData g_Data;
 
 // Mesh Collision
 
-struct MeshCollisionInfo {
+struct MeshCollisionInfo
+{
 	UINT LeftTriCount;
 	UINT RightTriCount;
 	UINT Padding[2];
 };
 
-struct CollisionResult {
+struct CollisionResult
+{
 	Vec3 LeftNormal;
 	Vec3 RightNormal;
 	float PenetrationDepth;
@@ -376,4 +382,248 @@ struct LogMessage
 	thread::id ThreadID;
 
 	LogMessage(ELogLevel PLevel, const string& PMessage);
+};
+
+struct AABB
+{
+	Vec3 Min;
+	Vec3 Max;
+
+	AABB(Vec3 PMin, Vec3 PMax)
+	{
+		Min = PMin;
+		Max = PMax;
+	}
+
+	AABB()
+	{
+		Min = Vec3(FLT_MAX);
+		Max = Vec3(FLT_MIN);
+	}
+
+	/**
+	 * @brief 해당 AABB의 중앙값을 반환하는 함수
+	 * @return Center Value
+	 */
+	Vec3 Center() const
+	{
+		return (Min + Max) * 0.5f;
+	}
+
+	// TODO(KHJ): 현재 해당 함수 쓰지 않는 부분들 교체할 것
+	/**
+	 * @brief AABB 간섭 판정
+	 * @param POther 간섭을 확인할 다른 AABB
+	 * @return 간섭 여부
+	 */
+	bool Intersects(const AABB& POther) const
+	{
+		return {
+			(Min.x <= POther.Max.x && Max.x >= POther.Min.x) &&
+			(Min.y <= POther.Max.y && Max.y >= POther.Min.y) &&
+			(Min.z <= POther.Max.z && Max.z >= POther.Min.z)
+		};
+	}
+
+	/**
+	 * @brief 다른 AABB의 좌표를 가져와 사이즈를 확장하는 함수
+	 */
+	void Expand(const AABB& POther)
+	{
+		Min.x = min(Min.x, POther.Min.x);
+		Min.y = min(Min.y, POther.Min.y);
+		Min.z = min(Min.z, POther.Min.z);
+
+		Max.x = max(Max.x, POther.Max.x);
+		Max.y = max(Max.y, POther.Max.y);
+		Max.z = max(Max.z, POther.Max.z);
+	}
+
+	/**
+	 * @brief AABB에서 가장 길이가 긴 축을 찾는 함수
+	 */
+	int LongestAxis() const
+	{
+		Vec3 Extent = Max - Min;
+
+		// X is Longest
+		if (Extent.x > Extent.y && Extent.x > Extent.z)
+		{
+			return 0;
+		}
+
+		// Y is Longest
+		if (Extent.y > Extent.z)
+		{
+			return 1;
+		}
+
+		// Z is Longest
+		return 2;
+	}
+
+	/**
+	 * @brief Ray가 AABB와 교차하는지 확인하는 함수
+	 * @param PRay 검사를 수행할 Ray
+	 * @param PDistance 교차 지점까지의 거리(tMin)를 저장할 포인터 (선택)
+	 * @return 교차 여부
+	 */
+	bool Intersects(const tRay& PRay, float* PDistance = nullptr) const
+	{
+		float TimeMin = -FLT_MAX;
+		float TimeMax = FLT_MAX;
+
+		// Slab Test In Axis X
+		if (abs(PRay.vDir.x) < 1e-6)
+		{
+			if (PRay.vStart.x < Min.x || PRay.vStart.x > Max.x)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float t1 = (Min.x - PRay.vStart.x) / PRay.vDir.x;
+			float t2 = (Max.x - PRay.vStart.x) / PRay.vDir.x;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			TimeMin = max(TimeMin, t1);
+			TimeMax = min(TimeMax, t2);
+		}
+
+		// Not Intersect In Axis X
+		if (TimeMin > TimeMax)
+		{
+			return false;
+		}
+
+		// Slab Test In Axis Y
+		if (abs(PRay.vDir.y) < 1e-6)
+		{
+			if (PRay.vStart.y < Min.y || PRay.vStart.y > Max.y)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float t1 = (Min.y - PRay.vStart.y) / PRay.vDir.y;
+			float t2 = (Max.y - PRay.vStart.y) / PRay.vDir.y;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			TimeMin = max(TimeMin, t1);
+			TimeMax = min(TimeMax, t2);
+		}
+
+		// Not Intersect In Axis Y
+		if (TimeMin > TimeMax)
+		{
+			return false;
+		}
+
+		// Slab Test In Axis Z
+		if (abs(PRay.vDir.z) < 1e-6)
+		{
+			if (PRay.vStart.z < Min.z || PRay.vStart.z > Max.z)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float t1 = (Min.z - PRay.vStart.z) / PRay.vDir.z;
+			float t2 = (Max.z - PRay.vStart.z) / PRay.vDir.z;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			TimeMin = max(TimeMin, t1);
+			TimeMax = min(TimeMax, t2);
+		}
+
+		// Not Intersect In Axis Z
+		if (TimeMin > TimeMax)
+		{
+			return false;
+		}
+
+		// 파라미터를 세팅해서 호출한 경우 거리값 반영
+		if (PDistance)
+		{
+			*PDistance = TimeMin;
+		}
+
+		// Passed Slab Test
+		return true;
+	}
+};
+
+struct BVHNode
+{
+	AABB Bounds;
+	vector<CGameObject*> Objects;
+	BVHNode* Left = nullptr;
+	BVHNode* Right = nullptr;
+
+	~BVHNode()
+	{
+		// Cascade Delete
+		delete Left;
+		delete Right;
+	}
+
+	/**
+	 * @brief 해당 노드가 BVH의 리프 노드인지 확인하는 함수
+	 * @return 리프 여부
+	 */
+	bool IsLeaf() const
+	{
+		return (Left == nullptr) && (Right == nullptr);
+	}
+};
+
+struct tScriptParam
+{
+	SCRIPT_PARAM Param;
+	string Desc;
+	void* pData;
+};
+
+struct RayColliderInfo
+{
+	CColliderRay* RayObject;
+	CGameObject* HitObject;
+	CGameObject* PrevObject;
+	float Length;
+
+	bool operator<(const RayColliderInfo& POther) const
+	{
+		return Length < POther.Length;
+	}
+
+	RayColliderInfo()
+		: RayObject(nullptr)
+		  , HitObject(nullptr)
+		  , PrevObject(nullptr)
+		  , Length(1000000.f)
+	{
+	}
+
+	RayColliderInfo(CColliderRay* PRay, CGameObject* PObject, float PLength)
+		: RayObject(PRay)
+		  , HitObject(PObject)
+		  , PrevObject(nullptr)
+		  , Length(PLength)
+	{
+	}
 };

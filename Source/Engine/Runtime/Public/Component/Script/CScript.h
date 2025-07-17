@@ -1,34 +1,20 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
-class CPrefab;
-class CCollider2D;
-class CCollider3D;
-class CColliderRay;
-class CMeshCollider;
-
-struct tScriptParam
-{
-	SCRIPT_PARAM Param;
-	string Desc;
-	void* pData;
-};
+struct tScriptParam;
 
 class CScript :
 	public CComponent
 {
 private:
-	const SCRIPT_TYPE m_ScriptType;
-	vector<tScriptParam> m_vecScriptParam;
-
-	static constexpr SCRIPT_TYPE m_ParentType = SCRIPT_TYPE::NONE;
+	const SCRIPT_TYPE MScriptType;
+	vector<tScriptParam> MScriptParamVector;
+	static constexpr SCRIPT_TYPE MParentType = SCRIPT_TYPE::NONE;
 
 public:
-	SCRIPT_TYPE GetScriptType() const { return m_ScriptType; }
-	virtual SCRIPT_TYPE GetParentScriptType() { return m_ParentType; }
-	void AddScriptParam(tScriptParam PParam) { m_vecScriptParam.push_back(PParam); }
-	const vector<tScriptParam>& GetScriptParam() { return m_vecScriptParam; }
-	void Instantiate(Ptr<CPrefab> PPref, Vec3 PWorldPos, int PLayer);
+	static void Instantiate(Ptr<CPrefab> PPrefab, const Vec3& PWorldPosition, int PLayer);
+	SCRIPT_TYPE GetScriptType() const { return MScriptType; }
+	void AddScriptParam(const tScriptParam& PParam) { MScriptParamVector.push_back(PParam); }
 
 	void Tick() override = 0;
 
@@ -36,11 +22,11 @@ public:
 	{
 	}
 
-	// ==============
-	// Collider Event
-	// ==============
+	/********************/
+	/** Collider Event **/
+	/********************/
 
-	// XXX(KHJ): 컴포지션 패턴 적용 시도
+	// XXX(KHJ): 컴포지션 패턴 적용 고려할 수 있는지
 	// Col2D - Col2D
 	virtual void BeginOverlap(CCollider2D* PCollider, CGameObject* POtherObject, CCollider2D* POtherCollider)
 	{
@@ -67,19 +53,6 @@ public:
 	{
 	}
 
-	// Ray - Col3D
-	virtual void BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
-	{
-	}
-
-	virtual void Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
-	{
-	}
-
-	virtual void EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
-	{
-	}
-
 	// Col3D - LandScape
 	virtual void BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 	{
@@ -93,6 +66,32 @@ public:
 	{
 	}
 
+	// Col3D - MeshCollider
+	virtual void BeginOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void Overlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	// Ray - Col3D
+	virtual void BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
+	{
+	}
+
+	virtual void Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
+	{
+	}
+
+	virtual void EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* _3DCollider)
+	{
+	}
+
 	// Ray - LandScape
 	virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 	{
@@ -103,6 +102,19 @@ public:
 	}
 
 	virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+	{
+	}
+
+	// Ray - MeshCollider
+	virtual void BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	{
+	}
+
+	virtual void EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
 	{
 	}
 
@@ -132,22 +144,23 @@ public:
 	{
 	}
 
-	// Col3D - MeshCollider
-	virtual void BeginOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	// MeshCollider - Ray
+	virtual void BeginOverlap(CMeshCollider* PMeshCollider, CGameObject* POtherObject, CColliderRay* PRayCollider)
 	{
 	}
 
-	virtual void Overlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	virtual void Overlap(CMeshCollider* PMeshCollider, CGameObject* POtherObject, CColliderRay* PRayCollider)
 	{
 	}
 
-	virtual void EndOverlap(CCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider)
+	virtual void EndOverlap(CMeshCollider* PMeshCollider, CGameObject* POtherObject, CColliderRay* PRayCollider)
 	{
 	}
 
-	// ========
-	// UI Event
-	// ========
+	/**************/
+	/** UI Event **/
+	/**************/
+
 	virtual void OnMouseClick()
 	{
 	}
@@ -166,7 +179,11 @@ public:
 	{
 	}
 
+	// Getter & Setter
+	virtual SCRIPT_TYPE GetParentScriptType() const { return MParentType; }
+	const vector<tScriptParam>& GetScriptParam() const { return MScriptParamVector; }
 
+	// Special Member Function
 	CScript(SCRIPT_TYPE PScriptType);
 	~CScript() override;
 };

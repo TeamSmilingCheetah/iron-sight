@@ -19,7 +19,7 @@ void ChangeLayer(CGameObject* _TargetObj, LONGLONG _LayerIdx);
 void SetObjectActive(CGameObject* _TargetObj, bool _Active);
 
 bool IsValid(CGameObject*& _Object);
-bool IsNullAABB(const array<Vec3, 2>& AABB);
+bool IsNullAABB(const AABB& PBox);
 
 void DrawDebugRect(Vec4 _Color, Vec3 _Pos, Vec2 _Scale, Vec3 _Rotation, bool _DepthTest,
 				   float _Duration);

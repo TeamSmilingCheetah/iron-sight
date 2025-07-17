@@ -298,6 +298,8 @@
     <ClCompile Include="System\Private\Manager\FCollisionManager.cpp" />
     <ClCompile Include="System\Private\Manager\FCollisionBroad.cpp" />
     <ClCompile Include="System\Private\Manager\FCollisionNarrow.cpp" />
+    <ClCompile Include="System\Private\Manager\FCollisionRaycast.cpp" />
+    <ClCompile Include="System\Private\Manager\FCollisionBVH.cpp" />
     <ClCompile Include="System\Private\Manager\CFontMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CKeyMgr.cpp" />
     <ClCompile Include="System\Private\Manager\CLevelMgr.cpp" />

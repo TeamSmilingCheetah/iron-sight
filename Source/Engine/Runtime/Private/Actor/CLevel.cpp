@@ -121,8 +121,45 @@ CGameObject* CLevel::FindObjectByObjectID(UINT _ObjectID)
 	return nullptr;
 }
 
-
 void CLevel::ChangeState(LEVEL_STATE _NextState)
 {
 	m_State = _NextState;
+}
+
+/**
+ * @brief Level에 존재하는 오브젝트들을 탐색해서 제공하는 함수
+ * @param PObjects [OUT] 오브젝트를 Layer 단위로 분류해서 넣을 Vector
+ */
+void CLevel::GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects)
+{
+	queue<CGameObject*> GameObjectQueue;
+
+	for (int i = 0; i < MAX_LAYER; ++i)
+	{
+		for (auto* Parent : m_arrLayer[i].GetParentObjects())
+		{
+			GameObjectQueue.push(Parent);
+
+			// BFS
+			while (!GameObjectQueue.empty())
+			{
+				CGameObject* Object = GameObjectQueue.front();
+				GameObjectQueue.pop();
+
+				// Active가 아니고 Dead 상태인 Object의 자식을 Recursive Add할 필요도 없음
+				if (!Object->IsActive() || Object->IsDead())
+				{
+					continue;
+				}
+
+				PObjects.push_back(Object);
+
+				// Add Child
+				for (auto* Child : Object->GetChild())
+				{
+					GameObjectQueue.push(Child);
+				}
+			}
+		}
+	}
 }
