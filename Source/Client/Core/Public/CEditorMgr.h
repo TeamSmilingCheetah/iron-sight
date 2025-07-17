@@ -27,6 +27,12 @@ public:
 	void Init();
 	void Progress();
 
+	void Render_Init();
+	void Render_Deferred();
+	void Render_Light();
+	void Render_Merge();
+	void Render_Clear();
+
 	void CreateEditorObj(CGameObjectEx* _EditorObj);
 	void CreateEditorSpaceObj(CGameObjectEx* _EditorSpaceObj);
 
