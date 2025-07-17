@@ -111,6 +111,11 @@ void CCamera::FinalTick()
 
 	// Frustum 생성
 	m_Frustum->FinalTick();
+
+	// LOG_DEBUG_F("[Camera][FinalTick] 카메라 위치: {}, {}, {}", vWorldPos.x, vWorldPos.y, vWorldPos.z);
+	// LOG_DEBUG_F("[Camera][FinalTick] RIGHT: {}, {}, {}", vR.x, vR.y, vR.z);
+	// LOG_DEBUG_F("[Camera][FinalTick] UP: {}, {}, {}", vU.x, vU.y, vU.z);
+	// LOG_DEBUG_F("[Camera][FinalTick] FRONT: {}, {}, {}", vF.x, vF.y, vF.z);
 }
 
 

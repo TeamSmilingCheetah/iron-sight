@@ -20,7 +20,6 @@
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 
-
 PlayerCharacter::PlayerCharacter()
 	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_HitSoundIdx(-1)
@@ -230,6 +229,10 @@ void PlayerCharacter::PlayerView()
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 	Vec3 vPlayerRot = Transform()->GetRelativeRotation();
 	Vec3 vCameraRot = m_MainCamera->Transform()->GetRelativeRotation();
+
+	// LOG_DEBUG_F("[Player] 마우스: {}, {}", vMousePos.x, vMousePos.y);
+	// LOG_DEBUG_F("[Player] 플레이어 회전: {}, {}, {}", vPlayerRot.x, vPlayerRot.y, vPlayerRot.z);
+	// LOG_DEBUG_F("[Player] 카메라 회전: {}, {}, {}", vCameraRot.x, vCameraRot.y, vCameraRot.z);
 
 	// 화면의 중앙을 구한다.
 	static Vec2 vResoulution = CDevice::GetInst()->GetRenderResolution();
@@ -488,7 +491,7 @@ void PlayerCharacter::PlayerControlWeapon()
 				{
 					// 인벤토리에서 투척무기 하나 제거
 					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
-					 
+
 					// 아이템이 남지 않았다면
 					if (!m_InventoryScript->UseItem(type, 1))
 					{
@@ -553,8 +556,8 @@ void PlayerCharacter::PlayerControlWeapon()
 			{
 				pWeaponController->SetCurKey(KEY::R);
 				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-			}			
-		}		
+			}
+		}
 
 		// ===
 		// B키
@@ -564,7 +567,7 @@ void PlayerCharacter::PlayerControlWeapon()
 			pWeaponController->SetCurKey(KEY::B);
 			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 		}
-		
+
 	}
 }
 
