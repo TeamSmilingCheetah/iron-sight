@@ -332,7 +332,15 @@ void CAnimator3D::AddAnimClip(Ptr<CAnimation> _pAnim)
 	}
 }
 
-void CAnimator3D::SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim)
+void CAnimator3D::AddAnimClips(const vector<Ptr<CAnimation>>& _vecAnim)
+{
+	for (auto clip : _vecAnim)
+	{
+		AddAnimClip(clip);
+	}
+}
+
+void CAnimator3D::SetAnimClips(const vector<Ptr<CAnimation>>& _vecAnim)
 {
 	m_mapClip.clear();
 

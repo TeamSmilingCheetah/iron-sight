@@ -31,13 +31,14 @@ CEditorMgr::~CEditorMgr()
 	DeleteVec(m_vecEditorSpaceObj);
 
 	delete m_EditorSpaceRT;
-	delete m_Light;
-	delete m_EditorSpaceCam;
-	delete m_Origin;
 }
 
 void CEditorMgr::Init()
 {
+	// =============
+	// Editor Camera
+	// =============
+
 	CGameObjectEx* pObject = new CGameObjectEx;
 	pObject->SetName(L"EditorCamera");
 	pObject->AddComponent(new CCamera);
@@ -75,6 +76,8 @@ void CEditorMgr::Init()
 	m_Light->Light3D()->SetSpecularCoefficient(0.3f);
 	m_Light->Light3D()->SetRadius(300.f);
 
+	m_vecEditorSpaceObj.push_back(m_Light);
+
 	// Camera
 	m_EditorSpaceCam = new CGameObjectEx;
 	m_EditorSpaceCam->SetName(L"EditorSpaceCamera");
@@ -87,6 +90,8 @@ void CEditorMgr::Init()
 	m_EditorSpaceCam->Camera()->SetProjType(PERSPECTIVE);
 	m_EditorSpaceCam->Camera()->SetFar(100000.f);
 
+	m_vecEditorSpaceObj.push_back(m_EditorSpaceCam);
+
 
 	// Origin (원점에 구 하나 표시)
 	m_Origin = new CGameObjectEx;
@@ -97,6 +102,8 @@ void CEditorMgr::Init()
 
 	m_Origin->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	m_Origin->Transform()->SetRelativeScale(10.f, 10.f, 10.f);
+
+	m_vecEditorSpaceObj.push_back(m_Origin);
 }
 
 void CEditorMgr::Progress()
@@ -131,19 +138,12 @@ void CEditorMgr::Progress()
 		pDeferredMRT->OMSet();
 
 		// Tick
-		m_EditorSpaceCam->Tick();
-		m_Origin->Tick();
 		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
 		{
 			m_vecEditorSpaceObj[i]->Tick();
 		}
 
 		// Final Tick
-		m_EditorSpaceCam->FinalTick_Editor();
-
-		// TODO: RenderMgr에 등록하지 않도록 해야 함
-		m_Light->FinalTick_Editor();
-		m_Origin->FinalTick_Editor();
 		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
 		{
 			m_vecEditorSpaceObj[i]->FinalTick_Editor();
@@ -153,7 +153,6 @@ void CEditorMgr::Progress()
 		g_Trans.matView = m_EditorSpaceCam->Camera()->GetViewMat();
 		g_Trans.matProj = m_EditorSpaceCam->Camera()->GetProjMat();
 
-		m_Origin->Render_Editor();
 		for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
 		{
 			m_vecEditorSpaceObj[i]->Render_Editor();

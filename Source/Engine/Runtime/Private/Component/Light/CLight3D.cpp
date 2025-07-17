@@ -37,11 +37,18 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 	}
 }
 
+void CLight3D::CalculateTransform()
+{
+	m_LightInfo.WorldPos = Transform()->GetWorldPos();
+	m_LightInfo.Dir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
+
+	m_LightIdx = 0;
+}
+
 void CLight3D::FinalTick()
 {
 	// 위치정보 갱신
-	m_LightInfo.WorldPos = Transform()->GetWorldPos();
-	m_LightInfo.Dir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
+	CalculateTransform();
 
 	// RenderMgr 에 Light3D 등록
 	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);

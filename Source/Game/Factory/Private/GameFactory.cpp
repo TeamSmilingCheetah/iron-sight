@@ -187,7 +187,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Common::AddComponentToObject<CColliderRay>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 1500.f, 0.f}, 5000.f, true);
 
-	Animation::SetAnimationClip(Player, AnimationSet);
+	Animation::SetAnimationClips(Player, AnimationSet);
 
 	Common::AddComponentToObject<CCollider3D>(Player);
 	Collider::SetColliderProperties(Player, {550.f, 1600.f, 385.f}, {35.f, 760.f, 0.f}, true);

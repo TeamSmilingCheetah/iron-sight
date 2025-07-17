@@ -54,7 +54,8 @@ private:
 
 public:
 	void AddAnimClip(Ptr<CAnimation> _pAnim);
-	void SetAnimClip(const vector<Ptr<CAnimation>>& _vecAnim);
+	void AddAnimClips(const vector<Ptr<CAnimation>>& _vecAnim);
+	void SetAnimClips(const vector<Ptr<CAnimation>>& _vecAnim);
 	Ptr<CAnimation> GetAnimClip(const wstring _AnimName);
 
 	void ClearAnimClip() { m_mapClip.clear(); }

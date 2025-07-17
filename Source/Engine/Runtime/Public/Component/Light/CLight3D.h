@@ -6,11 +6,12 @@
 class CLight3D :
     public CComponent
 {
-    tLight3DInfo m_LightInfo;
-    int m_LightIdx;
+private:
+    tLight3DInfo		m_LightInfo;
+    int					m_LightIdx;
 
-    Ptr<CMesh> m_VolumeMesh;
-    Ptr<CMaterial> m_LightMtrl;
+    Ptr<CMesh>			m_VolumeMesh;
+    Ptr<CMaterial>		m_LightMtrl;
 
 public:
     void SetLightType(LIGHT_TYPE _Type);
@@ -23,6 +24,8 @@ public:
     void SetAngle(float _Angle) { m_LightInfo.Angle = _Angle; }
 
     const tLight3DInfo& GetLight3DInfo() { return m_LightInfo; }
+
+	void CalculateTransform();
 
     void FinalTick() override;
     void SaveComponent(FILE* _File) override;

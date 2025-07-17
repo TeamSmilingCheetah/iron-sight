@@ -147,7 +147,12 @@ Ptr<CMeshData> Engine::IO::LoadFBX(const wstring& PRelativeFilePath)
 	return CAssetMgr::GetInst()->LoadFBX(PRelativeFilePath.c_str());
 }
 
-void Engine::Animation::SetAnimationClip(CGameObject* PObject, Ptr<CMeshData> PAnimationSet)
+void Engine::Animation::SetAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet)
 {
-	PObject->Animator3D()->SetAnimClip(PAnimationSet->GetAnimations());
+	PObject->Animator3D()->SetAnimClips(PAnimationSet->GetAnimations());
+}
+
+void Engine::Animation::AddAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet)
+{
+	PObject->Animator3D()->AddAnimClips(PAnimationSet->GetAnimations());
 }
