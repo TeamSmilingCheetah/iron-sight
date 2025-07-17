@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common/global.h"
+#include "Engine/System/Public/Manager/FLogManager.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, R"(Engine/Engine_d)")

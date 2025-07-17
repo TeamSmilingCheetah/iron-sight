@@ -169,6 +169,11 @@ void CameraController::CameraPerspectiveMove()
 	m_PlayerPos = m_Player->Transform()->GetRelativePos();
 	m_PlayerRot = m_Player->Transform()->GetRelativeRotation();
 
+	// LOG_DEBUG_F("[Camera][Player] 플레이어 위치: {}, {}, {}", m_PlayerPos.x, m_PlayerPos.y, m_PlayerPos.z);
+	// LOG_DEBUG_F("[Camera][Player] 플레이어 회전: {}, {}, {}", m_PlayerRot.x, m_PlayerRot.y, m_PlayerRot.z);
+	// LOG_DEBUG_F("[Camera][Player] 카메라 위치: {}, {}, {}", m_CameraPos.x, m_CameraPos.y, m_CameraPos.z);
+	// LOG_DEBUG_F("[Camera][Player] 카메라 회전: {}, {}, {}", m_CameraRot.x, m_CameraRot.y, m_CameraRot.z);
+
 
 	Vec3 vDirtoPlayer = m_PlayerPos - m_CameraPos;
 	vDirtoPlayer.Normalize();
@@ -425,8 +430,8 @@ void CameraController::ApplyRecoil()
 
 void CameraController::UpdateRecoil()
 {
-	m_CameraRot.x = FloatLerp(m_CameraRot.x, m_TargetRecoilRotX, 10.f);
-	m_PlayerRot.y = FloatLerp(m_PlayerRot.y, m_TargetRecoilRotY, 10.f);
+	m_CameraRot.x = FloatLerp(m_CameraRot.x, m_TargetRecoilRotX, 10.f * DT);
+	m_PlayerRot.y = FloatLerp(m_PlayerRot.y, m_TargetRecoilRotY, 10.f * DT);
 
 	m_CameraRot.x = max(m_CameraRot.x, -90.f);
 
@@ -529,8 +534,8 @@ void CameraController::UpdateTPSCameraAdjustments()
 		}
 	}
 
-	m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, 20.f);
-	m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, targetHeight, 20.f);
+	m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, 20.f * DT);
+	m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, targetHeight, 20.f * DT);
 }
 
 
@@ -608,7 +613,7 @@ void CameraController::UpdateShoulderMode()
 	// 좌우 포커스 변경
 	if (m_CameraFlag & CHANGE_FOCUS)
 	{
-		m_LateralOffset = FloatLerp(m_LateralOffset, m_ObjectiveLateralOff, 50.f);
+		m_LateralOffset = FloatLerp(m_LateralOffset, m_ObjectiveLateralOff, 50.f * DT);
 		if (abs(m_LateralOffset - m_ObjectiveLateralOff) < 5.f)
 		{
 			m_CameraFlag &= ~CHANGE_FOCUS;
@@ -656,8 +661,8 @@ void CameraController::UpdateSearchMode()
 		{
 			float RecoverSpeed = 10.f;
 
-			m_CameraRot.y = FloatLerp(m_CameraRot.y, OriginRotY, RecoverSpeed);
-			m_CameraRot.x = FloatLerp(m_CameraRot.x, OriginRotX, RecoverSpeed);
+			m_CameraRot.y = FloatLerp(m_CameraRot.y, OriginRotY, RecoverSpeed * DT);
+			m_CameraRot.x = FloatLerp(m_CameraRot.x, OriginRotX, RecoverSpeed * DT);
 
 			// 특정 구간에 도달하면 회복을 종료시킨다.
 			if (fabs(m_CameraRot.y - OriginRotY) < 1.f && fabs(m_CameraRot.x - OriginRotX) < 1.f)
@@ -673,11 +678,11 @@ void CameraController::UpdateShoulderRecover()
 	// 기존 카메라 위치로 회복시켜준다.
 	if (m_AdjustFinalDistance < m_AdjustNormalDistance)
 	{
-		m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, m_AdjustNormalDistance, 50.f);
+		m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, m_AdjustNormalDistance, 50.f * DT);
 	}
 	if (m_AdjustFinalHeight < m_AdjustNormalHeight)
 	{
-		m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, m_AdjustNormalHeight, 50.f);
+		m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, m_AdjustNormalHeight, 50.f * DT);
 	}
 	if (abs(m_AdjustFinalHeight - m_AdjustNormalHeight) < 5.f
 		&& abs(m_AdjustFinalDistance - m_AdjustNormalDistance) < 5.f)
@@ -694,17 +699,17 @@ void CameraController::UpdateTPSLean()
 		// 왼쪽 Lean
 		if (KEY_PRESSED(KEY::Q))
 		{
-			m_LateralOffset = FloatLerp(m_LateralOffset, -600.f, 10.f);
+			m_LateralOffset = FloatLerp(m_LateralOffset, -600.f, 10.f * DT);
 		}
 		// 오른쪽 Lean
 		else if (KEY_PRESSED(KEY::E))
 		{
-			m_LateralOffset = FloatLerp(m_LateralOffset, 1000.f, 10.f);
+			m_LateralOffset = FloatLerp(m_LateralOffset, 1000.f, 10.f * DT);
 		}
 		// 회복 (Q,E키가 안 눌린 상태면)
 		else
 		{
-			m_LateralOffset = FloatLerp(m_LateralOffset, 300.f, 10.f);
+			m_LateralOffset = FloatLerp(m_LateralOffset, 300.f, 10.f * DT);
 		}
 	}
 	else
@@ -723,21 +728,21 @@ void CameraController::UpdateFPSLean()
 		// 왼쪽 Lean
 		if (KEY_PRESSED(KEY::Q))
 		{
-			leanAngle = FloatLerp(leanAngle, 10.f, 10.f);
-			leanOffset = FloatLerp(leanOffset, 30.f, 10.f);
+			leanAngle = FloatLerp(leanAngle, 10.f, 10.f * DT);
+			leanOffset = FloatLerp(leanOffset, 30.f, 10.f * DT);
 		}
 		// 오른쪽 Lean
 		else if (KEY_PRESSED(KEY::E))
 		{
-			leanAngle = FloatLerp(leanAngle, -10.f, 10.f);
-			leanOffset = FloatLerp(leanOffset, -30.f, 10.f);
+			leanAngle = FloatLerp(leanAngle, -10.f, 10.f * DT);
+			leanOffset = FloatLerp(leanOffset, -30.f, 10.f * DT);
 		}
 
 		// 회복 (Q,E키가 안 눌린 상태면)
 		else
 		{
-			leanAngle = FloatLerp(leanAngle, 0.f, 10.f);
-			leanOffset = FloatLerp(leanOffset, 0.f, 10.f);
+			leanAngle = FloatLerp(leanAngle, 0.f, 10.f * DT);
+			leanOffset = FloatLerp(leanOffset, 0.f, 10.f * DT);
 		}
 	}
 	else
@@ -771,13 +776,13 @@ void CameraController::UpdateStance()
 		{
 			DesPosY = 0.f;
 			m_PlayerScript->SetMotionState(MOTION_STATE::STAND);
-		}			
+		}
 		else
 		{
 			DesPosY = -600.f;
 			m_PlayerScript->SetMotionState(MOTION_STATE::CROUCH);
 		}
-			
+
 		m_CameraFlag ^= SITTING;
 	}
 
@@ -805,7 +810,7 @@ void CameraController::UpdateStance()
 
 	if (m_CameraFlag & CHANGE_STANCE)
 	{
-		m_CameraYOffset = FloatLerp(m_CameraYOffset, DesPosY, 10.f);
+		m_CameraYOffset = FloatLerp(m_CameraYOffset, DesPosY, 10.f * DT);
 
 		if (abs(m_CameraYOffset - DesPosY) < 2.f)
 		{

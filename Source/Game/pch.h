@@ -17,6 +17,7 @@
 #pragma comment(lib, R"(Engine/Engine)")
 #endif
 
+#include "Engine/System/Public/Manager/FLogManager.h"
 #include "Game/System/Public/GameplayManager.h"
 
 using namespace std;
