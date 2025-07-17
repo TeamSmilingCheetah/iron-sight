@@ -92,7 +92,8 @@ namespace Engine
 
 	namespace Animation
 	{
-		void SetAnimationClip(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
+		void SetAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
+		void AddAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
 	}
 }
 

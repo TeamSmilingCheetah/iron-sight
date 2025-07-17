@@ -57,7 +57,7 @@ CGameObject* CMeshData::Instantiate()
 			pNewObj->AddComponent(pAnimator);
 
 			// 애니메이션을 설정하면서 bone object를 생성해서 자식에 넣음
-			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetAnimClips(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
 
@@ -122,7 +122,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 			_Obj->MeshRender()->SetSkinRender(true);
 
 			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
-			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetAnimClips(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
 	}
@@ -137,7 +137,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 			_Obj->AddComponent(pAnimator);
 
 			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
-			pAnimator->SetAnimClip(m_vecAnimSet);
+			pAnimator->SetAnimClips(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
 
