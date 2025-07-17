@@ -50,15 +50,7 @@ BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjec
 	// 일단 오브젝트를 돌면서 현재 Node의 Bound를 늘림
 	for (auto* Object : PObjects)
 	{
-		// 3D Collider 우선
-		if (Object->Collider3D())
-		{
-			Node->Bounds.Expand(Object->Collider3D()->GetColliderAABB());
-		}
-		else
-		{
-			Node->Bounds.Expand(Object->GetAABB());
-		}
+		Node->Bounds.Expand(Object->GetAABB());
 	}
 
 	// Leaf에 도달한 상태라면 Node를 반환
@@ -74,20 +66,6 @@ BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjec
 	sort(sorted,
 	     [Axis](const CGameObject* PObjectA, const CGameObject* PObjectB)
 	     {
-		     // 3D Collider를 고려한 Sorting
-		     if (PObjectA->Collider3D() && PObjectB->Collider3D())
-		     {
-			     return PObjectA->Collider3D()->GetColliderAABB().Center()[Axis]
-				     < PObjectB->Collider3D()->GetColliderAABB().Center()[Axis];
-		     }
-		     if (PObjectA->Collider3D())
-		     {
-			     return PObjectA->Collider3D()->GetColliderAABB().Center()[Axis] < PObjectB->GetAABB().Center()[Axis];
-		     }
-		     if (PObjectB->Collider3D())
-		     {
-			     return PObjectA->GetAABB().Center()[Axis] < PObjectB->Collider3D()->GetColliderAABB().Center()[Axis];
-		     }
 		     return PObjectA->GetAABB().Center()[Axis] < PObjectB->GetAABB().Center()[Axis];
 	     }
 	);
@@ -145,20 +123,8 @@ void FCollisionManager::QueryBVH(const BVHNode* PNode, const CGameObject* PObjec
 		return;
 	}
 
-	// Choose Collider
-	// TODO(KHJ): Object를 인자로 받는 AABB Return 함수 받아서 교체?
-	AABB ObjectAABB;
-	if (PObject->Collider3D())
-	{
-		ObjectAABB = PObject->Collider3D()->GetColliderAABB();
-	}
-	else
-	{
-		ObjectAABB = PObject->GetAABB();
-	}
-
 	// AABB가 겹치지 않는다면 탐색할 이유가 없으므로 그대로 반환
-	if (!PNode->Bounds.Intersects(ObjectAABB))
+	if (!PNode->Bounds.Intersects(PObject->GetAABB()))
 	{
 		return;
 	}
@@ -168,18 +134,7 @@ void FCollisionManager::QueryBVH(const BVHNode* PNode, const CGameObject* PObjec
 	{
 		for (auto* OtherObject : PNode->Objects)
 		{
-			// Choose Collider
-			AABB OtherObjectAABB;
-			if (OtherObject->Collider3D())
-			{
-				OtherObjectAABB = OtherObject->Collider3D()->GetColliderAABB();
-			}
-			else
-			{
-				OtherObjectAABB = OtherObject->GetAABB();
-			}
-
-			if (ObjectAABB.Intersects(OtherObjectAABB))
+			if (PObject->GetAABB().Intersects(OtherObject->GetAABB()))
 			{
 				PCandidates.push_back(OtherObject);
 			}
@@ -230,20 +185,9 @@ void FCollisionManager::QueryBVH(const BVHNode* PNode, const CColliderRay* PRay,
 				continue;
 			}
 
-			// 3D 충돌체를 고려한 AABB 설정
-			AABB ObjectAABB;
-			if (Object->Collider3D())
-			{
-				ObjectAABB = Object->Collider3D()->GetColliderAABB();
-			}
-			else
-			{
-				ObjectAABB = Object->GetAABB();
-			}
-
 			// 충돌한 경우, 충돌 정보 담아서 기록
 			float TimeMin = 0.f;
-			if (ObjectAABB.Intersects(RayInfo, &TimeMin))
+			if (Object->GetAABB().Intersects(RayInfo, &TimeMin))
 			{
 				RayColliderInfo ColliderInfo;
 				ColliderInfo.RayObject = const_cast<CColliderRay*>(PRay);

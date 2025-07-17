@@ -10,6 +10,7 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Game/System/Public/GameplayManager.h"
+#include "Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandscape.h"
 
 UINT CGameObject::GUID = 0;
@@ -388,6 +389,12 @@ AABB CGameObject::GetAABB() const
 	if (LandScape())
 	{
 		return LandScape()->GetAABB();
+	}
+
+	// 3D Collider Getter 사용
+	if (Collider3D())
+	{
+		return Collider3D()->GetColliderAABB();
 	}
 
 	// 바운딩 박스가 존재하기 위한 최소 조건 확인
