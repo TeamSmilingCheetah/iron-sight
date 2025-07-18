@@ -81,6 +81,10 @@ int FClientApp::InitializeSystem() const
 
 #ifdef _DEBUG
 	// Debug Mode
+	// Initialize ImGui & Editor
+	CImGuiMgr::GetInst()->Init();
+	CEditorMgr::GetInst()->Init();
+
 	// Load Test Level As Default
 	TestLevel::CreateTestLevel();
 

@@ -405,7 +405,7 @@ AABB CGameObject::GetAABB() const
 
 	if (!MeshRenderPtr && !ParticleSystemPtr && !DecalPtr)
 	{
-		LOG_ERROR_F("[GameObj] {}: Mesh Renderer가 존재하지 않음", WStringToString(GetName()));
+		// LOG_ERROR_F("[GameObj] {}: Mesh Renderer가 존재하지 않음", WStringToString(GetName()));
 		return AABB();
 	}
 
