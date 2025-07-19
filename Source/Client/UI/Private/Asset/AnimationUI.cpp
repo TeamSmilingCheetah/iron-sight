@@ -4,9 +4,10 @@
 #include "Client/Core/Public/CEditorMgr.h"
 #include "Client/Script/Public/CEditorSpaceCamScript.h"
 
-#include "Engine/System/Public/Manager/CAssetMgr.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/System/Public/Asset/Mesh/CMeshData.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
 
 AnimationUI::AnimationUI()
 	: AssetUI("Animation", ANIMATION)

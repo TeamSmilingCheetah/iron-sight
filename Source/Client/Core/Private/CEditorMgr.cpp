@@ -1,19 +1,15 @@
-#include "pch.h"
+#include "Core/Public/CEditorMgr.h"
 
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
-#include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Client/Core/Public/CEditorMgr.h"
-#include "Client/Script/Public/CEditorCamScript.h"
-#include "Client/Script/Public/CEditorSpaceCamScript.h"
-#include "Client/Script/Public/CGameObjectEx.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
-
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
 #include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Script/Public/CEditorCamScript.h"
+#include "Script/Public/CEditorSpaceCamScript.h"
+#include "Script/Public/CGameObjectEx.h"
+#include "pch.h"
 
 CEditorMgr::CEditorMgr()
 	: m_RenderEditorSpace(false)

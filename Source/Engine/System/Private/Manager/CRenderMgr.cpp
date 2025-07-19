@@ -13,7 +13,6 @@
 #include "System/Public/Manager/CUIMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/RenderTarget/CMRT.h"
 
 class CConstBuffer;

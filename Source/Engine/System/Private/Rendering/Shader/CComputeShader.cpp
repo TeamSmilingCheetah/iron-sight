@@ -2,7 +2,6 @@
 #include "System/Public/Rendering/Shader/CComputeShader.h"
 #include "System/Public/Manager/CPathMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 CComputeShader::CComputeShader(const wstring& PBlobPath, const wstring& PRelativeFilePath, const wstring& PFunctionName,
                                int PGroupPerX, int PGroupPerY, int PGroupPerZ)
@@ -16,7 +15,7 @@ CComputeShader::CComputeShader(const wstring& PBlobPath, const wstring& PRelativ
 {
 	if (FAILED(CreateComputeShader(PBlobPath, PRelativeFilePath, PFunctionName)))
 	{
-		assert(nullptr);
+		assert(!"");
 	}
 }
 

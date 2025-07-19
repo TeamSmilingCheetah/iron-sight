@@ -1,7 +1,8 @@
 #include "pch.h"
 
-#include "System/Public/Manager/CObjectPoolMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
+#include "System/Public/Asset/Prefab/CPrefab.h"
+#include "System/Public/Manager/CObjectPoolMgr.h"
 
 CObjectPoolMgr::CObjectPoolMgr()
 {

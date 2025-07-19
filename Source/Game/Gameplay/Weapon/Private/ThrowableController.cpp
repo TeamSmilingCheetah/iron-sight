@@ -8,7 +8,6 @@
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"

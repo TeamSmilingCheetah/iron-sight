@@ -3,9 +3,9 @@
 
 #include "Client/UI/Public/Editor/TreeUI.h"
 
-#include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 #include "Client/UI/Public/Editor/ContentUI.h"
-
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 
 DecalUI::DecalUI()
 	: ComponentUI("DecalUI", COMPONENT_TYPE::DECAL)

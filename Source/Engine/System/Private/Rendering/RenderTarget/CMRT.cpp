@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "System/Public/Rendering/RenderTarget/CMRT.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 CMRT::CMRT()
 	: m_Target{}

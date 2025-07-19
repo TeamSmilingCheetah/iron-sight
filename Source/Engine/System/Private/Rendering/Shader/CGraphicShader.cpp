@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "System/Public/Rendering/Shader/CGraphicShader.h"
 #include "System/Public/Manager/CPathMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 CGraphicShader::CGraphicShader()
 	: CShader(GRAPHIC_SHADER)
@@ -52,7 +51,7 @@ int CGraphicShader::CreateVertexShader(const wstring& PBlobFilePath,
 
 	if (FAILED(CreateInputLayout()))
 	{
-		assert(nullptr);
+		assert(!"");
 		return E_FAIL;
 	}
 

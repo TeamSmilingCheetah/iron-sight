@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/FCollisionManager.h"
-
-#include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "System/Public/Manager/CLevelMgr.h"
 
 /*******************/
 /** Raycast Check **/

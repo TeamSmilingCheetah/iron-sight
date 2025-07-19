@@ -6,10 +6,12 @@
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 
-#include "Engine/System/Public/Manager/CPathMgr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
+#include "Engine/System/Public/Asset/Mesh/CMeshData.h"
+#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/CPathMgr.h"
 
 #include "Game/System/Public/GameplayManager.h"
 

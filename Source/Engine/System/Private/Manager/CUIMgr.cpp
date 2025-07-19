@@ -6,7 +6,6 @@
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 CUIMgr::CUIMgr()

@@ -1,8 +1,9 @@
-﻿#include "pch.h"
-#include "Client/UI/Public/Component/CameraUI.h"
+﻿#include "Client/UI/Public/Component/CameraUI.h"
+#include "pch.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 
 class CCamera;
 

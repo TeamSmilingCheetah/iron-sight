@@ -2,6 +2,7 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Asset/Audio/CSound.h"
 
 class CGameObject;
 class CLandScape;

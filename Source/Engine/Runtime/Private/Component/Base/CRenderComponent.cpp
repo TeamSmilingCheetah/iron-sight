@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
 
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _Type)

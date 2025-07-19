@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "imgui/imgui.h"
 
 enum ImGuiMouseButton_;
 

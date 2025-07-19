@@ -2,7 +2,6 @@
 #include "System/Public/Asset/Texture/CSprite.h"
 #include "System/Public/Manager/CPathMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 class CConstBuffer;
 

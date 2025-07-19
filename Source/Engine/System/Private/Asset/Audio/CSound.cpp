@@ -25,7 +25,7 @@ int CSound::Play(int _iRoopCount, float _fVolume, bool _bOverlap)
 {
     if (_iRoopCount <= -1)
     {
-        assert(nullptr);
+        assert(!"");
     }
 
     // 재생되고 있는 채널이 있는데, 중복재생을 허용하지 않았다 -> 재생 안함
@@ -106,7 +106,7 @@ int CSound::Load(const wstring& _FilePath)
     if (FMOD_OK != CEngine::GetInst()->GetFMODSystem()->createSound(
         path.c_str(), FMOD_DEFAULT, nullptr, &m_Sound))
     {
-        assert(nullptr);
+        assert(!"");
     }
 
     return S_OK;

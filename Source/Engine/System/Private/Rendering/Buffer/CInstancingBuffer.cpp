@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/Shader/CCopyBoneCS.h"
 
 CInstancingBuffer::CInstancingBuffer()

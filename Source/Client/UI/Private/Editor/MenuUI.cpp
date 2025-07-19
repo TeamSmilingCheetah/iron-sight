@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Client/UI/Public/Editor/MenuUI.h"
 #include "Client/UI/Public/Editor/Inspector.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"

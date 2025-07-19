@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "System/Public/Asset/Texture/CTexture.h"
 #include "System/Public/Manager/CPathMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 CTexture::CTexture()
 	: CAsset(TEXTURE, false)

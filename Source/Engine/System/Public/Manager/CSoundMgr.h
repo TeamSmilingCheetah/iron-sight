@@ -1,7 +1,5 @@
 ﻿#pragma once
-
-class CSound;
-
+#include "Engine/System/Public/Asset/Audio/CSound.h"
 
 struct Sound3DIdx
 {

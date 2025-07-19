@@ -1,5 +1,7 @@
-#include "pch.h"
 #include "Client/UI/Public/Component/TransformUI.h"
+#include "pch.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 class CTransform;

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLayer.h"
-#include "Runtime/Public/Actor/CLevel.h"
 #include "Runtime/Public/Component/Base/CRenderComponent.h"
 #include "Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Runtime/Public/Component/Rendering/CParticleSystem.h"
@@ -363,7 +362,7 @@ void CGameObject::DisconnecntWithParent()
 		}
 	}
 
-	assert(nullptr);
+	assert(!"");
 }
 
 void CGameObject::RegisterAsParent()

@@ -1,5 +1,12 @@
 #pragma once
-#include "Common/global.h"
+#include "fbxsdk/core/base/fbxarray.h"
+#include "fbxsdk/core/base/fbxtime.h"
+#include "fbxsdk/core/fbxmanager.h"
+#include "fbxsdk/core/math/fbxaffinematrix.h"
+#include "fbxsdk/fileio/fbximporter.h"
+#include "fbxsdk/scene/geometry/fbxcluster.h"
+#include "fbxsdk/scene/geometry/fbxmesh.h"
+#include "fbxsdk/scene/shading/fbxsurfacematerial.h"
 
 //===============
 // Struct of FBX
@@ -99,7 +106,7 @@ private:
 
 	// Animation
 	vector<tBone*> m_vecBone;
-	FbxArray<FbxString*> m_arrAnimName;
+	FbxArray<FbxString *> m_arrAnimName;
 	vector<tAnimClip*> m_vecAnimClip;
 
 public:

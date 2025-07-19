@@ -1,6 +1,7 @@
-#include "pch.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
+#include "Gameplay/Inventory/Public/ItemMgr.h"
+#include "pch.h"
 
 VicinityUI::VicinityUI()
 	: CScript(SCRIPT_TYPE::VICINITYUI)

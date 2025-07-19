@@ -1,7 +1,5 @@
-#include "pch.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
+#include "pch.h"
 
 CDevice::CDevice()
 	: m_hWnd(nullptr)

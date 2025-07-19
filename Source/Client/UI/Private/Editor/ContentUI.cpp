@@ -5,8 +5,14 @@
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
-
-#include "Engine/Core/Public/CEngine.h"
+#include "Engine/System/Public/Asset/Mesh/CMeshData.h"
+#include "Engine/System/Public/Rendering/Material/CMaterial.h"
+#include "Engine/System/Public/Asset/Audio/CSound.h"
+#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Asset/Texture/CFlipbook.h"
+#include "Engine/System/Public/Asset/Animation/CAnimation.h"
+#include "Engine/System/Public/Asset/Texture/CSprite.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 tFSNode* ContentUI::m_rootAssetFileSystem = new tFSNode(L"Content");
 

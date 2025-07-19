@@ -627,3 +627,11 @@ struct RayColliderInfo
 	{
 	}
 };
+
+struct tIndexInfo
+{
+	ComPtr<ID3D11Buffer> IB;
+	D3D11_BUFFER_DESC IBDesc;
+	UINT IdxCount;
+	void* IdxSysMem;
+};

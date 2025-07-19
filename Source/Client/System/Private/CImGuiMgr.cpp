@@ -19,7 +19,6 @@
 
 #include "Engine/Core/Public/CEngine.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
-#include "Engine/System/Public/Rendering/Device/CDevice.h"
 
 class ContentUI;
 

@@ -1,7 +1,10 @@
 ﻿#pragma once
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
-#include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
+#include "Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Runtime/Public/Component/Rendering/CLandScape.h"
+#include "System/Public/Rendering/Shader/CMeshCollisionCS.h"
+#include "System/Public/Rendering/Shader/CRaycastCS.h"
 
 union COLLISION_ID
 {
@@ -20,12 +23,6 @@ union COLLISION_ID
 	}
 };
 
-class CCollider2D;
-class CCollider3D;
-class CColliderRay;
-class CLandScape;
-class CMeshCollider;
-
 /**
  * @brief 충돌을 관리하는 매니저 클래스
  *
@@ -43,7 +40,7 @@ private:
 	UINT MLayerCollisionMatrix[MAX_LAYER];
 	map<ULONGLONG, bool> MColllisionInfoMap;
 	CMeshCollisionCS MMeshCollisionCS;
-	CRaycastCS MRaycastCS;
+        CRaycastCS MRaycastCS;
 	vector<pair<const CGameObject*, const CGameObject*>> MCandidatePairVector;
 	BVHNode* MBVHRootNode = nullptr;
 

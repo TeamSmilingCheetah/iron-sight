@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 CConstBuffer::CConstBuffer(CB_TYPE _Type)
     : m_Desc{}

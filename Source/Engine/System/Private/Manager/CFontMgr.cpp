@@ -1,7 +1,6 @@
 #include "pch.h"
 
 #include "System/Public/Manager/CFontMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 CFontMgr::CFontMgr()
 	: m_FW1Factory(nullptr)
@@ -34,12 +33,12 @@ void CFontMgr::Init()
 {
 	if (FAILED(FW1CreateFactory(FW1_VERSION, &m_FW1Factory)))
 	{
-		assert(nullptr);
+		assert(!"");
 	}
 
 	if (FAILED(m_FW1Factory->CreateFontWrapper(DEVICE, L"Segoe UI", &m_FontWrapper)))
 	{
-		assert(nullptr);
+		assert(!"");
 	}
 
 	DWriteCreateFactory(
@@ -116,7 +115,7 @@ void CFontMgr::DrawFontClipDirectly(const wstring& _pStr, float _fPosX, float _f
 		);
 
 		if (FAILED(hr))
-			assert(nullptr);
+			assert(!"");
 
 		// Map에 새로 만든 폰트를 삽입
 		m_mapFormat.emplace(fontKey, format);
@@ -232,7 +231,7 @@ void CFontMgr::Render()
 			);
 
 			if (FAILED(hr))
-				assert(nullptr);
+				assert(!"");
 
 			// Map에 새로 만든 폰트를 삽입
 			m_mapFormat.emplace(fontKey, format);

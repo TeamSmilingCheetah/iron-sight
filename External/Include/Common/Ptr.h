@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/System/Public/Asset/Base/CAsset.h"
 
 template <typename T>
 class Ptr

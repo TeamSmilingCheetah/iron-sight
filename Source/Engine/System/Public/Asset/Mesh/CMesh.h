@@ -1,15 +1,8 @@
 ﻿#pragma once
 #include "Engine/System/Public/Asset/Base/CAsset.h"
 
-class CStructuredBuffer;
-
-struct tIndexInfo
-{
-	ComPtr<ID3D11Buffer> IB;
-	D3D11_BUFFER_DESC IBDesc;
-	UINT IdxCount;
-	void* IdxSysMem;
-};
+class CFBXLoader;
+struct tIndexInfo;
 
 /**
  * @brief 메시(3D Mesh) 데이터를 관리하는 클래스

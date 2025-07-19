@@ -1,7 +1,20 @@
 #pragma once
 #include "Common/singleton.h"
-#include "Engine/System/Public/Asset/Base/assets.h"
+#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Mesh/CMesh.h"
+#include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
+#include "Engine/System/Public/Rendering/Shader/CComputeShader.h"
+#include "Engine/System/Public/Rendering/Shader/CGraphicShader.h"
+
+class CSkeleton;
+class CAnimation;
+class CSprite;
+class CFlipbook;
+class CSound;
+class CPrefab;
+class CMaterial;
+class CMeshData;
 
 class CAssetMgr :
 	public singleton<CAssetMgr>
@@ -43,12 +56,6 @@ public:
 	template <typename T>
 	Ptr<T> Load(const wstring& _RelativePath);
 
-	template <>
-	Ptr<CComputeShader> Load(const wstring& _Key, const wstring& _RelativePath)
-	{
-		return FindAsset<CComputeShader>(_Key).Get();
-	}
-
 	bool ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey);
 
 	Ptr<CTexture> CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
@@ -69,6 +76,12 @@ public:
 
 	Ptr<CAsset> CopyAsset(Ptr<CAsset> _Source);
 };
+
+template <>
+inline Ptr<CComputeShader> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
+{
+	return FindAsset<CComputeShader>(_Key).Get();
+}
 
 template <typename T>
 ASSET_TYPE GetAssetType()

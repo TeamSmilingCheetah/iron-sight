@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine\Runtime\Public\Component\Script\CScript.h"
-#include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/System/Public/Asset/Audio/CSound.h"
 
 class PlayerCharacter;
 class ItemScript;

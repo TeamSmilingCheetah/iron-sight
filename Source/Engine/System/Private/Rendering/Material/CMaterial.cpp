@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "System/Public/Rendering/Material/CMaterial.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 class CConstBuffer;
 
@@ -114,7 +113,7 @@ void* CMaterial::GetScalarParam(SCALAR_PARAM _Type)
 		return m_Const.matArr + (_Type - MAT_0);
 	}
 
-	assert(nullptr);
+	assert(!"");
 	return nullptr;
 }
 

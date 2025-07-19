@@ -1,17 +1,12 @@
-#include "pch.h"
 #include "Engine/API/Public/EngineFacade.h"
-
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Light/CLight3D.h"
 #include "Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
-#include "Runtime/Public/Component/Rendering/CSkyBox.h"
+#include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "System/Public/Asset/Mesh/CMeshData.h"
+#include "System/Public/Manager/FCollisionManager.h"
 
 unique_ptr<CGameObject> Engine::Common::CreateNewObject()
 {

@@ -2,22 +2,21 @@
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
+#include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Inventory/Public/ItemMgr.h"
+#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Inventory/Public/UI_Item.h"
 #include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
-#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
-#include "Game/Gameplay/Character/Public/CameraController.h"
 
 InventoryController::InventoryController()
 	: CScript(SCRIPT_TYPE::INVENTORYSCRIPT)

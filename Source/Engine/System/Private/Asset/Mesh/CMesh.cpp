@@ -1,9 +1,7 @@
 #include "pch.h"
-#include "System/Public/Asset/Mesh/CMesh.h"
 #include "System/Public/Manager/CPathMgr.h"
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 CMesh::CMesh(bool _bEngineRes)
@@ -162,7 +160,7 @@ int CMesh::Create(Vtx* _Vtx, UINT _VtxCount, UINT* _pIdx, UINT _IdxCount)
 
 	if (FAILED(DEVICE->CreateBuffer(&IndexInfo.IBDesc, &tSub, IndexInfo.IB.GetAddressOf())))
 	{
-		assert(nullptr);
+		assert(!"");
 	}
 
 	// 시스템 메모리에 저장
@@ -188,7 +186,7 @@ void CMesh::Binding(UINT _iSubset)
 void CMesh::Binding_Inst(UINT _iSubset)
 {
 	if (_iSubset >= m_vecIdxInfo.size())
-		assert(nullptr);
+		assert(!"");
 
 	ID3D11Buffer* arrBuffer[2] = {m_VB.Get(), CInstancingBuffer::GetInst()->GetBuffer().Get()};
 	UINT iStride[2] = {sizeof(Vtx), sizeof(tInstancingData)};
@@ -294,7 +292,7 @@ int CMesh::Load(const wstring& _strFilePath)
 
 	if (FAILED(DEVICE->CreateBuffer(&tDesc, &tSubData, m_VB.GetAddressOf())))
 	{
-		assert(nullptr);
+		assert(!"");
 	}
 
 	// 인덱스 정보
@@ -316,7 +314,7 @@ int CMesh::Load(const wstring& _strFilePath)
 
 		if (FAILED(DEVICE->CreateBuffer(&info.IBDesc, &tSubData, info.IB.GetAddressOf())))
 		{
-			assert(nullptr);
+			assert(!"");
 		}
 
 		m_vecIdxInfo.push_back(info);

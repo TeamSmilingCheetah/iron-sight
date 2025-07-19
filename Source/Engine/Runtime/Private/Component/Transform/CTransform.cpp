@@ -3,7 +3,6 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "Engine/System/Public/Rendering/Device/CDevice.h"
 
 CTransform::CTransform()
 	: CComponent(COMPONENT_TYPE::TRANSFORM)

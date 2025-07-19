@@ -69,7 +69,7 @@ void CTileMap::SetTileColRow(UINT _Col, UINT _Row)
 
 	if (FAILED(m_Buffer->Create(sizeof(tTileInfo), m_Col * m_Row, SB_TYPE::SRV_ONLY, true)))
 	{
-		assert(nullptr);
+		assert(!"");
 	}
 
 	// 임시 코드

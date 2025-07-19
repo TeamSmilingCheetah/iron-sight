@@ -2,7 +2,6 @@
 #include "System/Public/Asset/Base/assets.h"
 #include "System/Public/Manager/CAssetMgr.h"
 #include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/RenderTarget/CMRT.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Component/Rendering/CMeshRender.h"

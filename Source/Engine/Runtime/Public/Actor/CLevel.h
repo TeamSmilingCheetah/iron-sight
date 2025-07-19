@@ -1,6 +1,5 @@
 ﻿#pragma once
-#include "Engine/Core/Public/CEntity.h"
-#include "Engine/Runtime/Public/Actor/CLayer.h"
+#include "CLayer.h"
 
 class CLevel
 	: public CEntity

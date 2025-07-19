@@ -3,13 +3,13 @@
 #include <FontEngine/FW1FontWrapper.h>
 #include <FontEngine/FW1CompileSettings.h>
 
-#pragma comment(lib, "Dwrite.lib")
-
-#ifdef _DEBUG
-#pragma comment(lib, "FontEngine/FW1FontWrapper_debug.lib")
-#else
-#pragma comment(lib, "FontEngine/FW1FontWrapper.lib")
-#endif
+// #pragma comment(lib, "Dwrite.lib")
+//
+// #ifdef _DEBUG
+// #pragma comment(lib, "FontEngine/FW1FontWrapper_debug.lib")
+// #else
+// #pragma comment(lib, "FontEngine/FW1FontWrapper.lib")
+// #endif
 
 
 class CFontMgr :

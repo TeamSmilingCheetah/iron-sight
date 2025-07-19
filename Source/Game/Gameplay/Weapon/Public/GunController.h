@@ -1,9 +1,6 @@
 #pragma once
-#include "Game/Gameplay/Weapon/Public/WeaponController.h"
-#include "Game/Gameplay/Character/Public/CameraController.h"
-
-class PlayerCharacter;
-class InventoryController;
+#include "Gameplay/Character/Public/PlayerCharacter.h"
+#include "WeaponController.h"
 
 class GunController :
 	public WeaponController

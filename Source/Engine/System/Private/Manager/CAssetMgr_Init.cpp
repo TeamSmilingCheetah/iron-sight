@@ -1,7 +1,7 @@
-#include "pch.h"
 #include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
+#include "System/Public/Rendering/Material/CMaterial.h"
 #include "System/Public/Rendering/Shader/CParticleTickCS.h"
+#include "pch.h"
 
 void CAssetMgr::Init()
 {

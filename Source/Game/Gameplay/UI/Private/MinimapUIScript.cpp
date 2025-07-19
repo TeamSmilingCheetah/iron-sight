@@ -7,7 +7,6 @@
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "Core/Public/CEngine.h"
-#include "System/Public/Rendering/Device/CDevice.h"
 
 int g_arrKeyValue[static_cast<int>(KEY::END)] =
 {

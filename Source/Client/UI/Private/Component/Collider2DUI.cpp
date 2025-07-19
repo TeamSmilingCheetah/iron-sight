@@ -1,5 +1,7 @@
-#include "pch.h"
 #include "Client/UI/Public/Component/Collider2DUI.h"
+#include "pch.h"
+
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
 
 class CCollider2D;

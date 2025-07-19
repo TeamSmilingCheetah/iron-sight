@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
-
 CMeshCollider::CMeshCollider()
 	: CComponent(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MMeshPtr(nullptr)

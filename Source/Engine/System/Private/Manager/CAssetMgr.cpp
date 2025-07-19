@@ -1,6 +1,7 @@
-#include "pch.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
+#include "System/Public/Asset/Mesh/CMeshData.h"
+#include "pch.h"
 
 CAssetMgr::CAssetMgr()
 	: m_bAssetChanged(false)
@@ -22,7 +23,7 @@ Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _H
 	pTex = new CTexture;
 	if (FAILED(pTex->Create(_Width, _Height, _PixelFormat, _BindFlag, _Usage)))
 	{
-		assert(nullptr);
+		assert(!"");
 		return nullptr;
 	}
 
@@ -42,7 +43,7 @@ Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, ComPtr<ID3D11Texture
 	pTex = new CTexture;
 	if (FAILED(pTex->Create(_Tex2D)))
 	{
-		assert(nullptr);
+		assert(!"");
 		return nullptr;
 	}
 

@@ -17,4 +17,11 @@
 
 #include <format>
 
+// #ifndef __in
+// #define __in
+// #endif
+// #ifndef __out
+// #define __out
+// #endif
+
 #endif //PCH_H

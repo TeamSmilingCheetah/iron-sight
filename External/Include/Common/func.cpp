@@ -1,12 +1,13 @@
-#include "pch.h"
 #include "func.h"
+#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
+#include "Runtime/Public/Actor/CGameObject.h"
+#include "Runtime/Public/Component/Base/components.h"
+#include "System/Public/Asset/Prefab/CPrefab.h"
+#include "System/Public/Manager/CLevelMgr.h"
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Manager/CTaskMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "System/Public/Manager/CLevelMgr.h"
-#include "Runtime/Public/Component/Base/components.h"
-#include "Engine/System/Public/Manager/CObjectPoolMgr.h"
+#include "pch.h"
 
 void SaveObjectRef(CGameObject* _Object, FILE* _File)
 {

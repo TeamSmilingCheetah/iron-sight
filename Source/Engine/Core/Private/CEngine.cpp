@@ -16,7 +16,6 @@
 #include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/FLogManager.h"
-#include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
 CEngine::CEngine()

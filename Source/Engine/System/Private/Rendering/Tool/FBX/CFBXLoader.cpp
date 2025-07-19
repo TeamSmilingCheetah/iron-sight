@@ -1,7 +1,8 @@
-#include "pch.h"
 #include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
+#include "System/Public/Rendering/Material/CMaterial.h"
+#include "pch.h"
 
 CFBXLoader::CFBXLoader()
 	: m_pManager(nullptr)
@@ -57,7 +58,7 @@ void CFBXLoader::LoadFbx(const wstring& _strPath)
 	string strPath = WStringToString(_strPath);
 
 	if (!m_pImporter->Initialize(strPath.c_str(), -1, m_pManager->GetIOSettings()))
-		assert(nullptr);
+		assert(!"");
 
 	m_pImporter->Import(m_pScene);
 

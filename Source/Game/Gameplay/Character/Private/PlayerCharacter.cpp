@@ -9,8 +9,6 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
-#include "Engine/System/Public/Rendering/Device/CDevice.h"
-#include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 

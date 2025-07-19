@@ -11,6 +11,7 @@
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Engine/System/Public/Asset/Mesh/CMeshData.h"
 
 using namespace Engine;
 

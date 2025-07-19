@@ -19,6 +19,10 @@
 #include <random>
 #include <algorithm>
 #include <array>
+#include <memory>
+#include <atomic>
+#include <condition_variable>
+#include <format>
 
 using std::array;
 using std::vector;
@@ -53,9 +57,9 @@ using namespace std::filesystem;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
-#pragma comment(lib, "dxguid")
+// #pragma comment(lib, "d3d11")
+// #pragma comment(lib, "d3dcompiler")
+// #pragma comment(lib, "dxguid")
 
 // ComPtr
 #include <wrl.h>
@@ -64,30 +68,30 @@ using namespace Microsoft::WRL;
 // DirectxTex
 #include <DirectxTex/DirectXTex.h>
 
-#ifdef _DEBUG
-#pragma comment(lib, "DirectxTex/DirectXTex_debug")
-#else
-#pragma comment(lib, "DirectxTex/DirectXTex")
-#endif
+// #ifdef _DEBUG
+// #pragma comment(lib, "DirectXTex/DirectXTex_debug")
+// #else
+// #pragma comment(lib, "DirectXTex/DirectXTex")
+// #endif
 
 // Fbx Loader
 #include <FBXLoader/fbxsdk.h>
-#ifdef _DEBUG
-#pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
-#else
-#pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
-#endif
+// #ifdef _DEBUG
+// #pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
+// #else
+// #pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
+// #endif
 
 // FMOD
 #include <FMOD/fmod.h>
 #include <FMOD/fmod.hpp>
 #include <FMOD/fmod_codec.h>
 
-#ifdef _DEBUG
-#pragma comment(lib, "FMOD/fmodL64_vc.lib")
-#else
-#pragma comment(lib, "FMOD/fmod64_vc.lib")
-#endif
+// #ifdef _DEBUG
+// #pragma comment(lib, "FMOD/fmodL64_vc.lib")
+// #else
+// #pragma comment(lib, "FMOD/fmod64_vc.lib")
+// #endif
 
 #include "SimpleMath.h"
 

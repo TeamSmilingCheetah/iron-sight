@@ -11,11 +11,11 @@
 #include "framework.h"
 #include "Common/global.h"
 
-#ifdef _DEBUG
-#pragma comment(lib, R"(Engine/Engine_d)")
-#else
-#pragma comment(lib, R"(Engine/Engine)")
-#endif
+// #ifdef _DEBUG
+// #pragma comment(lib, R"(Engine/Engine_d)")
+// #else
+// #pragma comment(lib, R"(Engine/Engine)")
+// #endif
 
 #include "Engine/System/Public/Manager/FLogManager.h"
 #include "Game/System/Public/GameplayManager.h"

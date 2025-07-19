@@ -130,7 +130,7 @@ void CLayer::DisconnectObject(CGameObject* _Object)
 			}
 		}
 
-		assert(nullptr);
+		assert(!"");
 	}
 
 	_Object->MLayerIdx = -1;
