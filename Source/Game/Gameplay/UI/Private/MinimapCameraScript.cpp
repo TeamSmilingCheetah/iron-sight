@@ -1,16 +1,12 @@
 #include "pch.h"
 #include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
 
+#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
-#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
-
-#include "Game/Gameplay/Character/Public/PlayerCharacter.h"
-#include "Game/Gameplay/Character/Public/EnemyController.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 
 MinimapCameraScript::MinimapCameraScript()
 	: CScript(SCRIPT_TYPE::MINIMAPCAMERA)
