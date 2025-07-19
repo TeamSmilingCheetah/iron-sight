@@ -58,27 +58,29 @@ void FCollisionManager::Tick()
 	// TODO(KHJ): 이 Log 너무 자주 호출됨. 빈번한 로그는 적당히 걸러내는 기능이 필요함
 	if (CurrentLevel->GetState() == LEVEL_STATE::STOP)
 	{
-		LOG_INFO("[Collision][Main] Current Level Not Started");
+		// LOG_INFO("[Collision][Main] Current Level Not Started");
 		return;
 	}
 
+	// LOG_INFO("[Collision][Main] Collision Process Start");
+
 	// Create BVH Structure
-	LOG_INFO("[Collision][Main] Create Bounding Volume Hirachy Start");
+	// LOG_INFO("[Collision][Main] Create Bounding Volume Hirachy Start");
 	CreateBVHTree();
 
 	// Raycast Process
-	LOG_INFO("[Collision][Main] Raycast Process Start");
+	// LOG_INFO("[Collision][Main] Raycast Process Start");
 	RaycastProcess();
 
 	// Check Collision
-	LOG_INFO("[Collision][Main] Broad Phase Start");
+	// LOG_INFO("[Collision][Main] Broad Phase Start");
 	BroadPhase();
-	LOG_INFO("[Collision][Main] Narrow Phase Start");
+	// LOG_INFO("[Collision][Main] Narrow Phase Start");
 	NarrowPhase();
 
 	// Reset Information
 	CleanResource();
-	LOG_INFO("[Collision][Main] Collision Process Done");
+	// LOG_INFO("[Collision][Main] Collision Process Done");
 }
 
 /**

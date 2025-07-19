@@ -350,15 +350,28 @@ extern GlobalData g_Data;
 
 // Mesh Collision
 
-struct MeshCollisionInfo
+/**
+ * @brief CS 처리를 위한 단일 충돌 Task를 정의하는 구조체
+ * 전역 정점, 인덱스 기반의 구조로부터 Offset을 통해 가져와서 사용하는 구조로 작성됨
+ */
+struct tCollisionTask
 {
+	UINT LeftVertexOffset;
+	UINT LeftIndexOffset;
 	UINT LeftTriCount;
+
+	UINT RightVertexOffset;
+	UINT RightIndexOffset;
 	UINT RightTriCount;
-	UINT Padding[2];
+
+	// Padding
+	UINT Padding1;
+	UINT Padding2;
 };
 
 struct CollisionResult
 {
+	UINT Collided;
 	Vec3 LeftNormal;
 	Vec3 RightNormal;
 	float PenetrationDepth;

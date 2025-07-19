@@ -76,7 +76,7 @@ public:
 	void SetScale(Vec3 PScale) { m_Scale = PScale; }
 	void SetScaleMultiplier(float PSize) { m_Scale *= PSize; }
 	void SetRotY(float PRot) { m_RotY = PRot; }
-	void SetHitNormal(Vec3 PNor) { m_HitNormal = PNor; }
+	void SetCollisionNormal(Vec3 PNor) { m_HitNormal = PNor; }
 	void SetHitPoint(Vec3 PhitPoint) { m_HitPoint = PhitPoint; }
 	void SetIndependentScale(bool PScale) { m_IndependentScale = PScale; }
 	void SetClosestPoint(Vec3 PclosestPoint) { m_ClosestPoint = PclosestPoint; }

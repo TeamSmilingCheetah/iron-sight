@@ -1,68 +1,67 @@
 #include "pch.h"
 #include "System/Public/Rendering/Shader/CMeshCollisionCS.h"
-
-#include "System/Public/Rendering/Buffer/CConstBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CMeshCollisionCS::CMeshCollisionCS()
-	: CComputeShader(L"mesh_collision_cs.cso", L"mesh_collision.fx", L"CS_MeshCollision", 32, 32, 1)
-	  , MLeftVertices(nullptr)
-	  , MLeftIndices(nullptr)
-	  , MRightVertices(nullptr)
-	  , MRightIndices(nullptr)
-	  , MCollisionCount(nullptr)
-	  , MResults(nullptr)
-	  , MLeftTriCount(0)
-	  , MRightTriCount(0)
+    : CComputeShader(L"mesh_collision_cs.cso", L"mesh_collision.fx", L"CS_MeshCollisionBatch", 64, 1, 1)
+    , MAllVertices(nullptr)
+    , MAllIndices(nullptr)
+    , MCollisionTasks(nullptr)
+    , MResults(nullptr)
+    , MTaskCount(0)
 {
 }
 
 CMeshCollisionCS::~CMeshCollisionCS() = default;
 
+/**
+ * @brief 필요한 모든 리소스를 바인딩하는 단계
+ * @return 성공 여부
+ */
 int CMeshCollisionCS::Binding()
 {
-	if (!MLeftVertices || !MLeftIndices || !MRightVertices || !MRightIndices || !MCollisionCount || !MResults)
-	{
-		return E_FAIL;
-	}
+    // Fail Condition
+    if (!MAllVertices || !MAllIndices || !MCollisionTasks || !MResults)
+    {
+       return E_FAIL;
+    }
 
-	static CConstBuffer* ConstBuffer = CDevice::GetInst()->GetCB(CB_TYPE::MESH_COLLISION);
+	// Shader Resource View & Unordered Access View Binding
+    MAllVertices->Binding_CS_SRV(22);
+    MAllIndices->Binding_CS_SRV(23);
+    MCollisionTasks->Binding_CS_SRV(24);
+    MResults->Binding_CS_UAV(0);
 
-	MeshCollisionInfo cb = {};
-	cb.LeftTriCount = MLeftTriCount;
-	cb.RightTriCount = MRightTriCount;
-	ConstBuffer->SetData(&cb);
-	ConstBuffer->Binding_CS();
-
-	MLeftVertices->Binding_CS_SRV(22); // t22
-	MLeftIndices->Binding_CS_SRV(23); // t23
-	MRightVertices->Binding_CS_SRV(24); // t24
-	MRightIndices->Binding_CS_SRV(25); // t25
-	MCollisionCount->Binding_CS_UAV(0); // u0
-	MResults->Binding_CS_UAV(1); // u1
-
-	return S_OK;
+    return S_OK;
 }
 
+/**
+ * @brief Calculate Dispatch Thread Group Number
+ * 전체 작업에 필요한 Group의 최소 갯수로 여유 있게 세팅됨
+ */
 void CMeshCollisionCS::CalculateGroupCount()
 {
-	m_GroupX = MLeftTriCount / m_GroupPerThreadX + (MLeftTriCount % m_GroupPerThreadX ? 1 : 0);
-	m_GroupY = MRightTriCount / m_GroupPerThreadY + (MRightTriCount % m_GroupPerThreadY ? 1 : 0);
-	m_GroupZ = 1;
+    m_GroupX = (MTaskCount + m_GroupPerThreadX - 1) / m_GroupPerThreadX;
+    m_GroupY = 1;
+    m_GroupZ = 1;
 }
 
+/**
+ * @brief 파이프라인에 바인딩된 모든 리소스를 해제하고 내부 상태를 초기화합니다.
+ * @details 디스패치가 완료된 후에 호출되어야 합니다.
+ */
 void CMeshCollisionCS::Clear()
 {
-	CStructuredBuffer::Clear_CS_SRV(22);
-	CStructuredBuffer::Clear_CS_SRV(23);
-	CStructuredBuffer::Clear_CS_SRV(24);
-	CStructuredBuffer::Clear_CS_SRV(25);
-	CStructuredBuffer::Clear_CS_UAV(0);
-	CStructuredBuffer::Clear_CS_UAV(1);
-	MLeftVertices = nullptr;
-	MLeftIndices = nullptr;
-	MRightVertices = nullptr;
-	MRightIndices = nullptr;
-	MCollisionCount = nullptr;
-	MResults = nullptr;
+    // 해당 슬롯에 nullptr을 바인딩하여 파이프라인에서 리소스를 해제합니다.
+    CStructuredBuffer::Clear_CS_SRV(22);
+    CStructuredBuffer::Clear_CS_SRV(23);
+    CStructuredBuffer::Clear_CS_SRV(24);
+    CStructuredBuffer::Clear_CS_UAV(0);
+
+    // 유효하지 않은 참조(댕글링 포인터)를 방지하기 위해 내부 포인터를 null로 만듭니다.
+    MAllVertices = nullptr;
+    MAllIndices = nullptr;
+    MCollisionTasks = nullptr;
+    MResults = nullptr;
+    MTaskCount = 0;
 }

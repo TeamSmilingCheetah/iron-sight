@@ -3,7 +3,6 @@
 
 #include "struct.fx"
 #include "value.fx"
-#define MAX_COLLISION_COUNT 4096
 
 /**
  * @brief 특정 축에 삼각형을 투영하여 최대, 최소값을 반환
@@ -38,10 +37,11 @@ bool Separated(float3 axis, float3 A0, float3 A1, float3 A2, float3 B0, float3 B
  * Separating Axis Theorem을 활용한 판정 처리
  * @param A0, A1, A2 [IN] 삼각형 A의 꼭지점 좌표
  * @param B0, B1, B2 [IN] 삼각형 B의 꼭지점 좌표
- * @param penetrationDepth [OUT] 침투 깊이
+ * @param LeftNormal, RightNormal, Depth [OUT] 삼각형 평면들의 Normal값과 침투 깊이
  * @return 충돌 여부
  */
-bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, float3 B2, out float penetrationDepth)
+bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, float3 B2,
+    out float3 LeftNormal, out float3 RightNormal, out float Depth)
 {
     float3 AEdge[3] = { A1 - A0, A2 - A1, A0 - A2 };
     float3 BEdge[3] = { B1 - B0, B2 - B1, B0 - B2 };
@@ -51,16 +51,13 @@ bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, f
     // Axis Check
     if (Separated(ANormal, A0, A1, A2, B0, B1, B2))
     {
-        penetrationDepth = 0.0f;
         return false;
     }
     if (Separated(BNormal, A0, A1, A2, B0, B1, B2))
     {
-        penetrationDepth = 0.0f;
         return false;
     }
 
-    // Edge Check
     [unroll]
     for (int i = 0; i < 3; ++i) {
         [unroll]
@@ -68,59 +65,86 @@ bool TrianglesIntersect(float3 A0, float3 A1, float3 A2, float3 B0, float3 B1, f
             float3 axis = cross(AEdge[i], BEdge[j]);
             if (Separated(axis, A0, A1, A2, B0, B1, B2))
             {
-                penetrationDepth = 0.0f;
                 return false;
             }
         }
     }
 
-    // Calculate Depth
-    // 두 삼각형의 중심점 사이의 거리를 기반으로 계산
+    // 통과했다면 충돌
+    LeftNormal = ANormal;
+    RightNormal = BNormal;
+
+    // Center 간의 거리로 깊이 측정값 처리
     float3 ACenter = (A0 + A1 + A2) / 3.0f;
     float3 BCenter = (B0 + B1 + B2) / 3.0f;
     float3 CenterToCenter = BCenter - ACenter;
-
-    // Calculate Normal Direction Distance
-    // 범위 제한 적용
-    float3 AvgNormal = normalize(ANormal + BNormal);
-    float RawPenetration = abs(dot(CenterToCenter, AvgNormal));
-    penetrationDepth = min(RawPenetration * 0.05f, 10.0f);
+    float3 AverageNormal = normalize(ANormal + BNormal);
+    Depth = abs(dot(CenterToCenter, AverageNormal));
 
     return true;
 }
 
-/**
- * @brief Shader Entrypoint, Mesh 2개의 충돌을 연산하고, 충돌 결과를 반환한다
- * @param DTid
- */
-[numthreads(32, 32, 1)]
-void CS_MeshCollision(uint3 DTid : SV_DispatchThreadID)
+[numthreads(64, 1, 1)]
+void CS_MeshCollisionBatch(uint3 DispatchThreadID : SV_DispatchThreadID)
 {
-    if (DTid.x >= LeftTriCount || DTid.y >= RightTriCount)
-        return;
+    uint TaskIndex = DispatchThreadID.x;
 
-    uint3 LeftIdx = LeftIndices[DTid.x];
-    float3 L0 = LeftVertices[LeftIdx.x].Pos;
-    float3 L1 = LeftVertices[LeftIdx.y].Pos;
-    float3 L2 = LeftVertices[LeftIdx.z].Pos;
+    // Limit Bound
+    uint TaskNumber, Stride;
+    CollisionTasks.GetDimensions(TaskNumber, Stride);
 
-    uint3 RightIdx = RightIndices[DTid.y];
-    float3 R0 = RightVertices[RightIdx.x].Pos;
-    float3 R1 = RightVertices[RightIdx.y].Pos;
-    float3 R2 = RightVertices[RightIdx.z].Pos;
-
-    float PenetrationDepth;
-    if (TrianglesIntersect(L0, L1, L2, R0, R1, R2, PenetrationDepth))
+    if (TaskIndex >= TaskNumber)
     {
-        uint Idx;
-        InterlockedAdd(CollisionCount[0], 1, Idx);
-        if (Idx < MAX_COLLISION_COUNT)
+        return;
+    }
+
+    CollisionResult LocalResult;
+    LocalResult.Collided = 0;
+    LocalResult.PenetrationDepth = 0.f;
+    LocalResult.LeftNormal = float3(0, 0, 0);
+    LocalResult.RightNormal = float3(0, 0, 0);
+
+    CollisionTask Task = CollisionTasks[TaskIndex];
+
+    // 모든 삼각형 쌍에 대한 충돌 검사 진행
+    for (uint i = 0; i < Task.LeftTriCount; ++i)
+    {
+        uint LeftIndex0 = AllIndices[Task.LeftIndexOffset + i * 3 + 0];
+        uint LeftIndex1 = AllIndices[Task.LeftIndexOffset + i * 3 + 1];
+        uint LeftIndex2 = AllIndices[Task.LeftIndexOffset + i * 3 + 2];
+
+        float3 LeftVertex0 = AllVertices[Task.LeftVertexOffset + LeftIndex0];
+        float3 LeftVertex1 = AllVertices[Task.LeftVertexOffset + LeftIndex1];
+        float3 LeftVertex2 = AllVertices[Task.LeftVertexOffset + LeftIndex2];
+
+        for (uint j = 0; j < Task.RightTriCount; ++j)
         {
-            Results[Idx].LeftNormal = normalize(cross(L1 - L0, L2 - L0));
-            Results[Idx].RightNormal = normalize(cross(R1 - R0, R2 - R0));
-            Results[Idx].PenetrationDepth = PenetrationDepth;
+            uint RightIndex0 = AllIndices[Task.RightIndexOffset + j * 3 + 0];
+            uint RightIndex1 = AllIndices[Task.RightIndexOffset + j * 3 + 1];
+            uint RightIndex2 = AllIndices[Task.RightIndexOffset + j * 3 + 2];
+
+            float3 RightVertex0 = AllVertices[Task.RightVertexOffset + RightIndex0];
+            float3 RightVertex1 = AllVertices[Task.RightVertexOffset + RightIndex1];
+            float3 RightVertex2 = AllVertices[Task.RightVertexOffset + RightIndex2];
+
+            // Check Collision
+            float3 LeftNormal, RightNormal;
+            float Depth;
+            if (TrianglesIntersect(LeftVertex0, LeftVertex1, LeftVertex2, RightVertex0, RightVertex1, RightVertex2, LeftNormal, RightNormal, Depth))
+            {
+                // 제일 깊은 Depth를 가진 결과로 갱신
+                if (Depth > LocalResult.PenetrationDepth)
+                {
+                    LocalResult.Collided = 1;
+                    LocalResult.LeftNormal = LeftNormal;
+                    LocalResult.RightNormal = RightNormal;
+                    LocalResult.PenetrationDepth = Depth;
+                }
+            }
         }
     }
+
+    Results[TaskIndex] = LocalResult;
 }
 
 #endif // SOURCE_ENGINE_SHADER_MESH_COLLISION_

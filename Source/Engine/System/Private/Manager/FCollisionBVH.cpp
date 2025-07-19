@@ -22,7 +22,7 @@ void FCollisionManager::CreateBVHTree()
 	CurrentLevel->GetAllActiveObjectsInLevel(PObjects);
 	BuildBVH(PObjects);
 
-	LOG_INFO_F("[Collision][VBH] Total Active Objects: {}", PObjects.size());
+	// LOG_INFO_F("[Collision][VBH] Total Active Objects: {}", PObjects.size());
 }
 
 /**
@@ -42,7 +42,7 @@ BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjec
 
 	if (!PDepth)
 	{
-		LOG_INFO("[Collision][VBH] Bounding Volume Hirachy 구축 시작");
+		// LOG_INFO("[Collision][VBH] Bounding Volume Hirachy Build Start");
 	}
 
 	BVHNode* Node = new BVHNode();
@@ -81,7 +81,7 @@ BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjec
 
 	if (!PDepth)
 	{
-		LOG_INFO("[Collision][VBH] Bounding Volume Hirachy Creation Complete");
+		// LOG_INFO("[Collision][VBH] Bounding Volume Hirachy Creation Complete");
 	}
 
 	// Node 반환
@@ -106,7 +106,7 @@ void FCollisionManager::DestroyBVH()
 {
 	delete MBVHRootNode;
 	MBVHRootNode = nullptr;
-	LOG_INFO("[Collision][VBH] Bounding Volume Hirachy Destroy Complete");
+	// LOG_INFO("[Collision][VBH] Bounding Volume Hirachy Destroy Complete");
 }
 
 /**

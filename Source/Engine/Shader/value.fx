@@ -88,12 +88,6 @@ cbuffer GLOBAL : register(b3)
     int     g_Light3DCount;       // 3D 광원 개수
 }
 
-cbuffer MeshCollisionInfo : register(b4)
-{
-    uint LeftTriCount;
-    uint RightTriCount;
-}
-
 Texture2D       g_tex_0 : register(t0);
 Texture2D       g_tex_1 : register(t1);
 Texture2D       g_tex_2 : register(t2);
@@ -119,12 +113,10 @@ StructuredBuffer<Matrix>        g_arrBoneMat     : register(t17);
 StructuredBuffer<Matrix>        g_arrPureBoneMat : register(t18);
 
 // Mesh Collision
-StructuredBuffer<Vtx> LeftVertices : register(t22);
-StructuredBuffer<uint3> LeftIndices : register(t23);
-StructuredBuffer<Vtx> RightVertices : register(t24);
-StructuredBuffer<uint3> RightIndices : register(t25);
-RWStructuredBuffer<uint> CollisionCount : register(u0);
-RWStructuredBuffer<CollisionResult> Results : register(u1);
+StructuredBuffer<float3> AllVertices : register(t22);
+StructuredBuffer<uint>   AllIndices  : register(t23);
+StructuredBuffer<CollisionTask> CollisionTasks : register(t24);
+RWStructuredBuffer<CollisionResult> Results : register(u0);
 
 SamplerState    g_sam_0 : register(s1); // 이방성 필터링
 SamplerState    g_sam_1 : register(s2); // MIN_MAG_POINT 필터링
