@@ -419,6 +419,9 @@
     <HLSL Include="Shader\targetpost.fx">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </HLSL>
+    <HLSL Include="Shader\mesh_collision.fx">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </HLSL>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl" />

@@ -164,9 +164,6 @@ int CDevice::CreateConstBuffer()
 	m_arrCB[static_cast<UINT>(CB_TYPE::GLOBAL)] = new CConstBuffer(CB_TYPE::GLOBAL);
 	m_arrCB[static_cast<UINT>(CB_TYPE::GLOBAL)]->Create(sizeof(GlobalData));
 
-	m_arrCB[static_cast<UINT>(CB_TYPE::MESH_COLLISION)] = new CConstBuffer(CB_TYPE::MESH_COLLISION);
-	m_arrCB[static_cast<UINT>(CB_TYPE::MESH_COLLISION)]->Create(sizeof(MeshCollisionInfo));
-
 	return S_OK;
 }
 

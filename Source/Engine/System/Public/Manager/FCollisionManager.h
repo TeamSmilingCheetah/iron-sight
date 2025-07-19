@@ -1,7 +1,12 @@
 ﻿#pragma once
+
+#include <variant>
+
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
+
+using std::variant;
 
 union COLLISION_ID
 {
@@ -33,6 +38,11 @@ class CMeshCollider;
  * @param MColllisionInfoMap 충돌한 오브젝트들의 ID와 충돌 상태를 저장해둔 Map
  * @param MMeshCollisionCS Mesh 충돌 판정 처리를 위한 Compute Shader
  * @param MCandidatePairVector Narrow 판정 처리를 위한 가능성 Pair를 모아두는 Vector
+ * @param MFrameTasks 한 프레임 동안 GPU에서 처리할 모든 충돌 검사 작업 목록
+ * @param MFrameTaskColliders FrameTasks의 각 충돌 작업에 해당하는 객체 포인터 쌍을 저장
+ * @param MFrameAllVertices CS 처리 대상 충돌체들의 World Vertex 데이터를 하나로 합친 Buffer
+ * @param MFrameAllIndices CS 처리 대상 충돌체들의 World Index 데이터를 하나로 합친 Buffer
+ * @param MFrameDataCache 동일한 충돌체의 데이터가 중복으로 추가되는 것을 방지하기 위한 Cache
  */
 class FCollisionManager :
 	public singleton<FCollisionManager>
@@ -40,12 +50,31 @@ class FCollisionManager :
 	SINGLE(FCollisionManager);
 
 private:
+	struct MeshBatchData
+	{
+		UINT VertexOffset;
+		UINT IndexOffset;
+		UINT TriCount;
+	};
+
 	UINT MLayerCollisionMatrix[MAX_LAYER];
 	map<ULONGLONG, bool> MColllisionInfoMap;
 	CMeshCollisionCS MMeshCollisionCS;
 	CRaycastCS MRaycastCS;
 	vector<pair<const CGameObject*, const CGameObject*>> MCandidatePairVector;
 	BVHNode* MBVHRootNode = nullptr;
+
+	using ColliderPairVariant = variant<
+		pair<CMeshCollider*, CMeshCollider*>,
+		pair<CMeshCollider*, CCollider3D*>,
+		pair<CCollider3D*, CMeshCollider*>
+	>;
+
+	vector<tCollisionTask> MFrameTasks;
+	vector<ColliderPairVariant> MFrameTaskColliders;
+	vector<Vec3> MFrameAllVertices;
+	vector<UINT> MFrameAllIndices;
+	map<const void*, MeshBatchData> MFrameDataCache;
 
 public:
 	struct SimpleVtx
@@ -81,12 +110,18 @@ private:
 
 	// Narrow Phase Function
 	void CheckPair(const CGameObject* PRightObject, const CGameObject* PLeftObject);
+
+	// Narrow CPU Task
 	static bool IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
 	static bool IsCollision(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider);
 	static bool IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
-	bool IsCollision(CMeshCollider* PLeftCollider, CMeshCollider* PRightCollider);
-	bool IsCollision(CMeshCollider* PLeftCollider, CCollider3D* PRightCollider);
-	bool IsCollision(CCollider3D* PLeftCollider, CMeshCollider* PRightCollider);
+
+	// Narrow GPU Task
+	static bool NeedComputeShader(const CGameObject* PLeftObject, const CGameObject* PRightObject);
+	MeshBatchData GetOrAddBatchData(const CCollider3D* PCollider);
+	MeshBatchData GetOrAddBatchData(const CMeshCollider* PCollider);
+	void AddShaderTask(const CGameObject* PLeftObject, const CGameObject* PRightObject);
+	void ExecuteAndProcessCS();
 
 	// Collision Apply
 	template <typename T1, typename T2>

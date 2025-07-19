@@ -149,16 +149,34 @@ struct Vtx {
 };
 
 /**
- * 충돌 결과를 반환하는 struct
+ * @brief 충돌 결과를 반환하는 struct
  *
+ * @param Collided 충돌 여부
  * @param LeftNormal LeftMesh 삼각형 노멀
  * @param RightNormal RightMesh 삼각형 노멀
  * @param PenetrationDepth 충돌 시 침투 깊이
  */
 struct CollisionResult {
+    uint   Collided;
     float3 LeftNormal;
     float3 RightNormal;
-    float PenetrationDepth;
+    float  PenetrationDepth;
+};
+
+/**
+ * @brief 하나의 충돌 Task를 정의하는 구조
+ */
+struct CollisionTask
+{
+    uint LeftVertexOffset;
+    uint LeftIndexOffset;
+    uint LeftTriCount;
+
+    uint RightVertexOffset;
+    uint RightIndexOffset;
+    uint RightTriCount;
+
+    uint2 Padding;
 };
 
 #endif

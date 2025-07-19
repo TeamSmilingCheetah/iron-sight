@@ -25,9 +25,9 @@ private:
 protected:
 	MtrlConst m_Const;
 
-	const int m_GroupPerThreadX;
-	const int m_GroupPerThreadY;
-	const int m_GroupPerThreadZ;
+	const UINT m_GroupPerThreadX;
+	const UINT m_GroupPerThreadY;
+	const UINT m_GroupPerThreadZ;
 
 	int m_GroupX;
 	int m_GroupY;
