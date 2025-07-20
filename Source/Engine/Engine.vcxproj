@@ -143,7 +143,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -Command "Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path 'C:\Projects\iron-sight\Source\Engine\' -Filter 'unity_*.cpp' -File; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,7 +172,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -Command "Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path 'C:\Projects\iron-sight\Source\Engine\' -Filter 'unity_*.cpp' -File; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
