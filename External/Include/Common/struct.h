@@ -377,6 +377,28 @@ struct CollisionResult
 	float PenetrationDepth;
 };
 
+// Raycast
+
+struct tRaycastTask
+{
+	Vec3 RayOrigin;
+	float Padding0;
+	Vec3 RayDirection;
+	float Padding1;
+
+	UINT VertexOffset;
+	UINT IndexOffset;
+	UINT TriCount;
+	UINT Padding2;
+};
+
+struct RaycastResult
+{
+	UINT   IsHit;
+	float  Distance;
+	Vec3   HitNormal;
+};
+
 // Facade Struct
 
 struct UnsignedIntegerSquare

@@ -144,7 +144,7 @@ void CS_MeshCollisionBatch(uint3 DispatchThreadID : SV_DispatchThreadID)
         }
     }
 
-    Results[TaskIndex] = LocalResult;
+    CollisionResults[TaskIndex] = LocalResult;
 }
 
 #endif // SOURCE_ENGINE_SHADER_MESH_COLLISION_
