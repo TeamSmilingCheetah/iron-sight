@@ -469,15 +469,17 @@ void GunController::Reload()
 			
 		m_AccTime_Reload = 0.f;
 		m_bReload = false;
-		SetObjectActive(m_ReloadUI, false);
-		m_PlayerScript->SetReloading(false);
-		m_PlayerScript->SetReloadingEnd(true);
 
 		if (!m_bEnemy)
 		{
+			SetObjectActive(m_ReloadUI, false);
+			m_PlayerScript->SetReloading(false);
+			m_PlayerScript->SetReloadingEnd(true);
+
 			// 상태
 			m_PlayerScript->SetActionState(ACTION_STATE::NONE);
 		}
+
 	}
 
 }

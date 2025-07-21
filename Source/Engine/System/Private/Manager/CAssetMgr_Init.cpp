@@ -264,6 +264,21 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	AddAsset(L"VortexShader", pShader);
 
+	// ===========
+	// CameraPostProcess
+	// ===========
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"CameraPostProcess_vs.cso", L"CameraPostProcess.fx", L"VS_CameraPostProcess");
+	pShader->CreatePixelShader(L"CameraPostProcess_ps.cso", L"CameraPostProcess.fx", L"PS_CameraPostProcess");
+
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	AddAsset(L"CameraPostShader", pShader);
+
 	// ==============
 	// ParticleShader
 	// ==============
@@ -437,6 +452,11 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl->SetTexParam(TEX_0, FindAsset<CTexture>(L"PostProcessTex"));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
+	// CameraPostProcessMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"CameraPostMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"CameraPostShader"));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// ParticleMtrl
 	pMtrl = new CMaterial(true);

@@ -19,6 +19,7 @@
 #include "Game/Gameplay/Door/Public/DoorScript.h"
 #include "Game/Gameplay/UI/Public/MinimapUIScript.h"
 #include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
+#include "Game/Gameplay/Character/Public/CameraEffect.h"
 
 // TODO(KHJ): 이하 헤더 배제 시도
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -390,6 +391,7 @@ void TestLevel::CreateTestLevel()
 	//
 	// pLevel->AddObject(1, testPlayer, false);
 
+
 	// GameFactory::MakeFBXObject(
 	// 	LevelRawPtr,
 	// 	L"FBX\\Downtown_Alley_Scene.fbx",
@@ -457,7 +459,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pMinimapUI->UI()->SetImage(pMinimapTex);
 	pMinimapUI->UI()->SetRectPos(Vec2(0.f, 0.f));
 	pMinimapUI->UI()->SetRectSize(Vec2(300.f, 300.f));
-	pMinimapUI->UI()->SetColor(Vec4(1.f, 1.f, 1.f, 1.f));
+	pMinimapUI->UI()->SetColor(Vec4(1.f, 1.f, 1.f, 0.f));
 
 	pMinimapUI->AddComponent(new CUIRender);
 	pMinimapUI->AddComponent(new MinimapUIScript);
@@ -770,6 +772,20 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddChild(childUI);
 
+
+	// PostProcess
+	CGameObject* pCameraPost = new CGameObject;
+	pCameraPost->SetName(L"CameraPost");
+	pCameraPost->AddComponent(new CUI);
+	pCameraPost->UI()->SetRectPos(Vec2(0.f, 0.f));
+	pCameraPost->UI()->SetRectSize(Vec2(1280.f, 768.f));
+	pCameraPost->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	pCameraPost->AddComponent(new CUIRender);
+	pCameraPost->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	pCameraPost->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"CameraPostMtrl"), 0);
+	pCameraPost->AddComponent(new CameraEffect);
+
+	CanvasUI->AddChild(pCameraPost);
 
 	return { Vicinity, Inventory, interactionUI };
 }
