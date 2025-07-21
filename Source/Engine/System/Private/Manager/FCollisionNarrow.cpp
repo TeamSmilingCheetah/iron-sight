@@ -330,6 +330,11 @@ void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameOb
 	//            WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
 }
 
+void FCollisionManager::AddFrameCollisionInfo(CGameObject* PObject1, CGameObject* PObject2)
+{
+	MFrameCollisionSet.insert(COLLISION_ID(PObject1->GetID(), PObject2->GetID()).ID);
+}
+
 /**********************************/
 /** Narrow Collision Check Logic **/
 /**********************************/

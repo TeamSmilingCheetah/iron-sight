@@ -78,9 +78,43 @@ void FCollisionManager::Tick()
 	// LOG_INFO("[Collision][Main] Narrow Phase Start");
 	NarrowPhase();
 
+	// LOG_INFO("[Collision][Main] PostProcess Phase Start");
+	CollisionPostProcess();
+
 	// Reset Information
 	CleanResource();
 	// LOG_INFO("[Collision][Main] Collision Process Done");
+}
+
+void FCollisionManager::CollisionPostProcess()
+{
+	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+
+	for (auto& Pair : MColllisionInfoMap)
+	{
+		if (Pair.second)
+		{
+			if (!MFrameCollisionSet.contains(Pair.first))
+			{
+				COLLISION_ID ID = COLLISION_ID(Pair.first);
+				CGameObject* LeftObject = CurrentLevel->FindObjectByObjectID(ID.Left);
+				CGameObject* RightObject = CurrentLevel->FindObjectByObjectID(ID.Right);
+
+				if (LeftObject && RightObject)
+				{
+					visit([&](auto* PLeftCollider, auto* PRightCollider)
+					{
+						if (PLeftCollider && PRightCollider)
+						{
+							ProcessEndOverlap(PLeftCollider, PRightCollider);
+						}
+					}, LeftObject->GetCollider(), RightObject->GetCollider());
+				}
+
+				Pair.second = false;
+			}
+		}
+	}
 }
 
 /**
@@ -90,4 +124,5 @@ void FCollisionManager::CleanResource()
 {
 	// Reset Information
 	MCandidatePairVector.clear();
+	MFrameCollisionSet.clear();
 }

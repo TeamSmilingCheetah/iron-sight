@@ -13,6 +13,8 @@
 #include "Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandscape.h"
 
+using ColliderVariant = variant<CMeshCollider*, CCollider3D*>;
+
 UINT CGameObject::GUID = 0;
 
 CGameObject::CGameObject()
@@ -495,4 +497,17 @@ AABB CGameObject::GetAABB() const
 
 	// Return
 	return { WorldMin, WorldMax };
+}
+
+ColliderVariant CGameObject::GetCollider() const
+{
+	if (Collider3D())
+	{
+		return Collider3D();
+	}
+	if (!MeshCollider())
+	{
+		assert(!"이 선택지들 중에서 해결되지 않았다면 문제 발생");
+	}
+	return MeshCollider();
 }

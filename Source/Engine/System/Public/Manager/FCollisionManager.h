@@ -1,12 +1,13 @@
 ﻿#pragma once
-
-#include <variant>
-
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
 
-using std::variant;
+using ColliderPairVariant = variant<
+	pair<CMeshCollider*, CMeshCollider*>,
+	pair<CMeshCollider*, CCollider3D*>,
+	pair<CCollider3D*, CMeshCollider*>
+>;
 
 union COLLISION_ID
 {
@@ -22,6 +23,11 @@ union COLLISION_ID
 	{
 		Left = PLeft;
 		Right = PRight;
+	}
+
+	COLLISION_ID(ULONGLONG PCollisionID)
+	{
+		ID = PCollisionID;
 	}
 };
 
@@ -59,16 +65,11 @@ private:
 
 	UINT MLayerCollisionMatrix[MAX_LAYER];
 	map<ULONGLONG, bool> MColllisionInfoMap;
+	set<ULONGLONG> MFrameCollisionSet;
 	CMeshCollisionCS MMeshCollisionCS;
 	CRaycastCS MRaycastCS;
 	vector<pair<const CGameObject*, const CGameObject*>> MCandidatePairVector;
 	BVHNode* MBVHRootNode = nullptr;
-
-	using ColliderPairVariant = variant<
-		pair<CMeshCollider*, CMeshCollider*>,
-		pair<CMeshCollider*, CCollider3D*>,
-		pair<CCollider3D*, CMeshCollider*>
-	>;
 
 	vector<Vec3> MFrameAllVertices;
 	vector<UINT> MFrameAllIndices;
@@ -98,6 +99,7 @@ private:
 	void RaycastProcess();
 	void BroadPhase();
 	void NarrowPhase();
+	void CollisionPostProcess();
 	void CleanResource();
 
 	// BVH Function
@@ -117,6 +119,7 @@ private:
 
 	// Narrow Phase Function
 	void CheckPair(const CGameObject* PRightObject, const CGameObject* PLeftObject);
+	void AddFrameCollisionInfo(CGameObject* PObject1, CGameObject* PObject2);
 
 	// Narrow CPU Task
 	static bool IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
@@ -133,6 +136,8 @@ private:
 	// Collision Apply
 	template <typename T1, typename T2>
 	void ProcessCollision(T1* PLeftCollider, T2* PRightCollider);
+	template <typename T1, typename T2>
+	static void ProcessEndOverlap(T1* PLeftCollider, T2* PRightCollider);
 
 public:
 	void Tick();
@@ -195,4 +200,19 @@ void FCollisionManager::ProcessCollision(T1* PLeftCollider, T2* PRightCollider)
 			CollisionPair->second = true;
 		}
 	}
+}
+
+/**
+ * @brief 두 충돌체의 EndOverlap을 처리하는 함수
+ * 충돌 과정 전반이 종료된 뒤 충돌이 종료됨이 감지되지 않은 쌍에 대해 충돌 종료 호출
+ * @tparam T1 Collider Type 1
+ * @tparam T2 Collider Type 2
+ * @param PLeftCollider Collider 1
+ * @param PRightCollider Collider 2
+ */
+template <typename T1, typename T2>
+void FCollisionManager::ProcessEndOverlap(T1* PLeftCollider, T2* PRightCollider)
+{
+	PLeftCollider->EndOverlap(PRightCollider);
+	PRightCollider->EndOverlap(PLeftCollider);
 }

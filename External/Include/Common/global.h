@@ -19,6 +19,7 @@
 #include <random>
 #include <algorithm>
 #include <array>
+#include <variant>
 
 using std::array;
 using std::vector;
@@ -37,6 +38,7 @@ using std::max;
 using std::pair;
 using std::make_unique;
 using std::unique_ptr;
+using std::variant;
 
 #include <filesystem>
 using namespace std::filesystem;
