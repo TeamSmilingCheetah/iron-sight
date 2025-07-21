@@ -138,7 +138,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader') { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader\*' -Recurse -Force; Write-Host 'Done!' }; Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path 'C:\Projects\iron-sight\Source\Client\' -Filter 'unity_*.cpp' -File; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
+      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path '$(SolutionDir)OutputFile\Content\Shader') { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path '$(SolutionDir)OutputFile\Content\Shader\*' -Recurse -Force; Write-Host 'Done!' }; Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path '$(SolutionDir)Source\' -Filter 'unity_*.cpp' -File -Recurse; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -167,7 +167,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader') { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path 'C:\Projects\iron-sight\OutputFile\Content\Shader\*' -Recurse -Force; Write-Host 'Done!' }; Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path 'C:\Projects\iron-sight\Source\Client\' -Filter 'unity_*.cpp' -File; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
+      <Command>powershell -ExecutionPolicy Bypass -Command "if (Test-Path -Path '$(SolutionDir)OutputFile\Content\Shader') { Write-Host 'Deleting Post Shader Blobs...'; Remove-Item -Path '$(SolutionDir)OutputFile\Content\Shader\*' -Recurse -Force; Write-Host 'Done!' }; Write-Host 'Searching For Jumbo Build Temporary Files'; $CppFiles = Get-ChildItem -Path '$(SolutionDir)Source\' -Filter 'unity_*.cpp' -File -Recurse; if ($CppFiles) { Write-Host 'Deleting Temporary Files...'; $cppFiles | Remove-Item -Force; Write-Host 'Done!' } else { Write-Host 'No Temporary Files Found To Delete.' }"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

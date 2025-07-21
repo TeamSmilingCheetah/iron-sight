@@ -70,11 +70,16 @@ private:
 		pair<CCollider3D*, CMeshCollider*>
 	>;
 
-	vector<tCollisionTask> MFrameTasks;
-	vector<ColliderPairVariant> MFrameTaskColliders;
 	vector<Vec3> MFrameAllVertices;
 	vector<UINT> MFrameAllIndices;
-	map<const void*, MeshBatchData> MFrameDataCache;
+
+	vector<tCollisionTask> MTasks;
+	vector<ColliderPairVariant> MTaskColliders;
+	map<const void*, MeshBatchData> MDataCache;
+
+	vector<tRaycastTask> MRaycastTasks;
+	vector<pair<CColliderRay*, CMeshCollider*>> MRaycastColliders;
+	map<const void*, MeshBatchData> MRaycastDataCache;
 
 public:
 	struct SimpleVtx
@@ -102,7 +107,9 @@ private:
 
 	// Raycast Function
 	static void QueryBVH(const BVHNode* PNode, const CColliderRay* PRay, vector<RayColliderInfo>& PIntersectVector);
-	static bool IsIntersect(const CColliderRay* PLeftCollider, const CMeshCollider* PRightCollider);
+	MeshBatchData GetOrAddRaycastBatchData(CMeshCollider* pCollider);
+	void AddRayShaderTask(CColliderRay* PRay, const CGameObject* PObject);
+	void ExecuteAndProcessRaycastCS();
 
 	// Broad Phase Function
 	static void QueryBVH(const BVHNode* PNode, const CGameObject* PObject, vector<CGameObject*>& PCandidates);

@@ -252,13 +252,13 @@ int CLandScape::Raycasting()
 	ray.vDir.Normalize();
 
 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
-	m_RaycastCS->SetRayInfo(ray);
-	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
-	m_RaycastCS->SetOutBuffer(m_RaycastOut);
-	m_RaycastCS->SetHeightMap(m_HeightMap);
-
-	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
-	m_RaycastCS->SetRayInOutCount(0);
+	// m_RaycastCS->SetRayInfo(ray);
+	// m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
+	// m_RaycastCS->SetOutBuffer(m_RaycastOut);
+	// m_RaycastCS->SetHeightMap(m_HeightMap);
+	//
+	// m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+	// m_RaycastCS->SetRayInOutCount(0);
 
 	// 컴퓨트쉐이더 실행
 	m_RaycastCS->Execute();
@@ -292,13 +292,13 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay PRay) const
 	PRay.vDir.Normalize();
 
 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
-	m_RaycastCS->SetRayInfo(PRay);
-	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
-	m_RaycastCS->SetOutBuffer(m_RaycastOut);
-	m_RaycastCS->SetHeightMap(m_HeightMap);
-
-	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
-	m_RaycastCS->SetRayInOutCount(0);
+	// m_RaycastCS->SetRayInfo(PRay);
+	// m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
+	// m_RaycastCS->SetOutBuffer(m_RaycastOut);
+	// m_RaycastCS->SetHeightMap(m_HeightMap);
+	//
+	// m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+	// m_RaycastCS->SetRayInOutCount(0);
 
 	// 컴퓨트쉐이더 실행
 	m_RaycastCS->Execute();
@@ -373,13 +373,13 @@ vector<tRayCollision>& CLandScape::Collidercalcul()
 	m_RayCollisionOut->SetData(m_vecRayColInst.data());
 
 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
-	m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
-	m_RaycastCS->SetOutBuffer(m_RaycastOut);
-	m_RaycastCS->SetHeightMap(m_HeightMap);
-
-	m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
-	m_RaycastCS->SetRayInOutCount(static_cast<UINT>(Count));
-	m_RaycastCS->SetLandWorldMat(matWorld);
+	// m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
+	// m_RaycastCS->SetOutBuffer(m_RaycastOut);
+	// m_RaycastCS->SetHeightMap(m_HeightMap);
+	//
+	// m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+	// m_RaycastCS->SetRayInOutCount(static_cast<UINT>(Count));
+	// m_RaycastCS->SetLandWorldMat(matWorld);
 
 	// 컴퓨트쉐이더 실행
 	m_RaycastCS->Execute();

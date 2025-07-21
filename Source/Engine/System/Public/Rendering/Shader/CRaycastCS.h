@@ -1,36 +1,43 @@
 #pragma once
 #include "Engine/System/Public/Rendering/Shader/CComputeShader.h"
-#include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CStructuredBuffer;
 
-class CRaycastCS :
-    public CComputeShader
+/**
+ * @brief Mesh와의 Ray 충돌 여부를 확인하기 위한 Compute Shader
+ * Single Dispatch를 통해 Batch Process로 충돌 감지 처리를 진행한 뒤 Result 다수를 반환
+ *
+ * @param MAllVertices 모든 Mesh의 모든 정점을 담고 있는 단일 버퍼
+ * @param MAllIndices 모든 Mesh의 모든 인덱스를 담고 있는 단일 버퍼
+ * @param MRaycastTasks 처리 작업을 정의하는 tRaycastTask를 담고 있는 버퍼
+ * @param MResults 각 Task의 처리 결과를 저장하는 버퍼
+ * @param MTaskCount 전체 Task의 수
+ */
+class CRaycastCS : public CComputeShader
 {
-    UINT	m_FaceX;
-    UINT	m_FaceZ;
-    tRay	m_Ray;
-	Matrix	m_LandWorldMat;
-
-    Ptr<CTexture> m_HeightMap;
-    CStructuredBuffer* m_OutBuffer;
-
-	CStructuredBuffer* m_RayInOutBuffer;
-	UINT				m_RayInoutCount;
+private:
+	CStructuredBuffer* MAllVertices;
+	CStructuredBuffer* MAllIndices;
+	CStructuredBuffer* MRaycastTasks;
+	CStructuredBuffer* MResults;
+	UINT MTaskCount;
 
 public:
-    void SetHeightMap(Ptr<CTexture> _HeightMap) { m_HeightMap = _HeightMap; }
-    void SetRayInfo(const tRay& _ray) { m_Ray = _ray; }
-    void SetFace(UINT _FaceX, UINT _FaceZ) { m_FaceX = _FaceX, m_FaceZ = _FaceZ; }
-    void SetOutBuffer(CStructuredBuffer* _Buffer) { m_OutBuffer = _Buffer; }
-	void SetRayInOutBuffer(CStructuredBuffer* _Buffer) { m_RayInOutBuffer = _Buffer; }
-	void SetRayInOutCount(UINT _idx) { m_RayInoutCount = _idx; }
-	void SetLandWorldMat(const Matrix& _Mat) { m_LandWorldMat = _Mat; }
+	int Binding() override;
+	void CalculateGroupCount() override;
+	void Clear() override;
 
-    int Binding() override;
-    void CalculateGroupCount() override;
-    void Clear() override;
+	// Setter
+	void SetTaskBuffer(CStructuredBuffer* PTasks) { MRaycastTasks = PTasks; }
+	void SetResultBuffer(CStructuredBuffer* PResults) { MResults = PResults; }
+	void SetTaskCount(UINT PCount) { MTaskCount = PCount; }
+	void SetVertexAndIndexBuffers(CStructuredBuffer* PVertices, CStructuredBuffer* PIndices)
+	{
+		MAllVertices = PVertices;
+		MAllIndices = PIndices;
+	}
 
-    CRaycastCS();
-    ~CRaycastCS() override;
+	// Special Member Function
+	CRaycastCS();
+	~CRaycastCS() override;
 };

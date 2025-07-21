@@ -112,17 +112,22 @@ StructuredBuffer<tLight3DInfo>   g_Light3DInfo : register(t14); // 3D 광원 정
 StructuredBuffer<Matrix>        g_arrBoneMat     : register(t17);
 StructuredBuffer<Matrix>        g_arrPureBoneMat : register(t18);
 
-// Mesh Collision
+// Batch Collision Struct
 StructuredBuffer<float3> AllVertices : register(t22);
 StructuredBuffer<uint>   AllIndices  : register(t23);
+
+// Collision Task & Result
 StructuredBuffer<CollisionTask> CollisionTasks : register(t24);
-RWStructuredBuffer<CollisionResult> Results : register(u0);
+RWStructuredBuffer<CollisionResult> CollisionResults : register(u0);
+
+// Raycast Task & Result
+StructuredBuffer<RaycastTask> RaycastTasks : register(t25);
+RWStructuredBuffer<RaycastResult> RaycastResults : register(u0);
 
 SamplerState    g_sam_0 : register(s1); // 이방성 필터링
 SamplerState    g_sam_1 : register(s2); // MIN_MAG_POINT 필터링
 
 #define PI  3.1415926535f
-
 
 // 1. VertexBuffer
 // 2. IndexBuffer

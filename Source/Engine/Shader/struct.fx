@@ -149,7 +149,39 @@ struct Vtx {
 };
 
 /**
- * @brief 충돌 결과를 반환하는 struct
+ * @brief 하나의 충돌 Task를 정의하는 구조
+ */
+struct CollisionTask
+{
+    uint LeftVertexOffset;
+    uint LeftIndexOffset;
+    uint LeftTriCount;
+
+    uint RightVertexOffset;
+    uint RightIndexOffset;
+    uint RightTriCount;
+
+    uint2 Padding;
+};
+
+/**
+ * @brief 하나의 Raycast Task를 정의하는 구조
+ */
+struct RaycastTask
+{
+    float3 RayOrigin;
+    float  Padding0;
+    float3 RayDirection;
+    float  Padding1;
+
+    uint VertexOffset;
+    uint IndexOffset;
+    uint TriCount;
+    uint Padding2;
+};
+
+/**
+ * @brief Collision 충돌 결과를 반환하는 struct
  *
  * @param Collided 충돌 여부
  * @param LeftNormal LeftMesh 삼각형 노멀
@@ -164,19 +196,17 @@ struct CollisionResult {
 };
 
 /**
- * @brief 하나의 충돌 Task를 정의하는 구조
+ * @brief Raycast 충돌 결과를 반환하는 struct
+ *
+ * @param Collided 충돌 여부
+ * @param Distance 레이 시작점으로부터의 충돌 거리
+ * @param HitNormal 충돌한 삼각형의 법선 벡터
  */
-struct CollisionTask
+struct RaycastResult
 {
-    uint LeftVertexOffset;
-    uint LeftIndexOffset;
-    uint LeftTriCount;
-
-    uint RightVertexOffset;
-    uint RightIndexOffset;
-    uint RightTriCount;
-
-    uint2 Padding;
+    uint   IsHit;
+    float  Distance;
+    float3 HitNormal;
 };
 
 #endif

@@ -37,11 +37,11 @@ constexpr Vec3 UnitCube[8] = {
 void FCollisionManager::NarrowPhase()
 {
 	// Reset Task Data
-	MFrameTasks.clear();
-	MFrameTaskColliders.clear();
+	MTasks.clear();
+	MTaskColliders.clear();
 	MFrameAllVertices.clear();
 	MFrameAllIndices.clear();
-	MFrameDataCache.clear();
+	MDataCache.clear();
 
 	// CPU와 GPU 처리 대상을 분리
 	for (auto& Pair : MCandidatePairVector)
@@ -59,9 +59,9 @@ void FCollisionManager::NarrowPhase()
 	}
 
 	// CS Task Batch Process
-	if (!MFrameTasks.empty())
+	if (!MTasks.empty())
 	{
-		LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MFrameTasks.size());
+		LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MTasks.size());
 		ExecuteAndProcessCS();
 	}
 }
@@ -92,9 +92,9 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CMes
 {
 	// 중복 생성 방지
 	const void* ColliderKey = PCollider;
-	if (MFrameDataCache.contains(ColliderKey))
+	if (MDataCache.contains(ColliderKey))
 	{
-		return MFrameDataCache.at(ColliderKey);
+		return MDataCache.at(ColliderKey);
 	}
 
 	MeshBatchData NewData = {};
@@ -131,7 +131,7 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CMes
 	}
 
 	// Cache에 등록
-	MFrameDataCache[ColliderKey] = NewData;
+	MDataCache[ColliderKey] = NewData;
 
 	return NewData;
 }
@@ -143,9 +143,9 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CCol
 {
 	// 중복 생성 방지
 	const void* ColliderKey = PCollider;
-	if (MFrameDataCache.contains(ColliderKey))
+	if (MDataCache.contains(ColliderKey))
 	{
-		return MFrameDataCache.at(ColliderKey);
+		return MDataCache.at(ColliderKey);
 	}
 
 	MeshBatchData NewData;
@@ -171,7 +171,7 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CCol
 	NewData.TriCount = 12;
 
 	// Cache에 등록
-	MFrameDataCache[ColliderKey] = NewData;
+	MDataCache[ColliderKey] = NewData;
 
 	return NewData;
 }
@@ -187,20 +187,20 @@ void FCollisionManager::ExecuteAndProcessCS()
 	                    SB_TYPE::SRV_ONLY, false, MFrameAllVertices.data());
 	AllIdxBuffer.Create(sizeof(UINT), static_cast<UINT>(MFrameAllIndices.size()),
 	                    SB_TYPE::SRV_ONLY, false, MFrameAllIndices.data());
-	TasksBuffer.Create(sizeof(tCollisionTask), static_cast<UINT>(MFrameTasks.size()),
-	                   SB_TYPE::SRV_ONLY, false, MFrameTasks.data());
-	ResultsBuffer.Create(sizeof(CollisionResult), static_cast<UINT>(MFrameTasks.size()),
+	TasksBuffer.Create(sizeof(tCollisionTask), static_cast<UINT>(MTasks.size()),
+	                   SB_TYPE::SRV_ONLY, false, MTasks.data());
+	ResultsBuffer.Create(sizeof(CollisionResult), static_cast<UINT>(MTasks.size()),
 	                     SB_TYPE::SRV_UAV, true);
 
 	// Setting CS & Execution (Clear Included)
 	MMeshCollisionCS.SetVertexAndIndexBuffers(&AllVtxBuffer, &AllIdxBuffer);
 	MMeshCollisionCS.SetTaskBuffer(&TasksBuffer);
 	MMeshCollisionCS.SetResultBuffer(&ResultsBuffer);
-	MMeshCollisionCS.SetTaskCount(static_cast<int>(MFrameTasks.size()));
+	MMeshCollisionCS.SetTaskCount(static_cast<int>(MTasks.size()));
 	MMeshCollisionCS.Execute();
 
 	// Get Results
-	vector<CollisionResult> Results(MFrameTasks.size());
+	vector<CollisionResult> Results(MTasks.size());
 	ResultsBuffer.GetData(Results.data());
 
 	// Process If Collided
@@ -216,7 +216,7 @@ void FCollisionManager::ExecuteAndProcessCS()
 				Pair.second->SetPenetrationDepth(Results[i].PenetrationDepth);
 
 				ProcessCollision(Pair.first, Pair.second);
-			}, MFrameTaskColliders[i]);
+			}, MTaskColliders[i]);
 		}
 	}
 }
@@ -239,19 +239,19 @@ void FCollisionManager::AddShaderTask(const CGameObject* PLeftObject, const CGam
 	{
 		LeftData = GetOrAddBatchData(LeftMesh);
 		RightData = GetOrAddBatchData(RightMesh);
-		MFrameTaskColliders.emplace_back(make_pair(LeftMesh, RightMesh));
+		MTaskColliders.emplace_back(make_pair(LeftMesh, RightMesh));
 	}
 	else if (LeftMesh && Right3D)
 	{
 		LeftData = GetOrAddBatchData(LeftMesh);
 		RightData = GetOrAddBatchData(Right3D);
-		MFrameTaskColliders.emplace_back(make_pair(LeftMesh, Right3D));
+		MTaskColliders.emplace_back(make_pair(LeftMesh, Right3D));
 	}
 	else if (Left3D && RightMesh)
 	{
 		LeftData = GetOrAddBatchData(Left3D);
 		RightData = GetOrAddBatchData(RightMesh);
-		MFrameTaskColliders.emplace_back(make_pair(Left3D, RightMesh));
+		MTaskColliders.emplace_back(make_pair(Left3D, RightMesh));
 	}
 	else
 	{
@@ -267,7 +267,7 @@ void FCollisionManager::AddShaderTask(const CGameObject* PLeftObject, const CGam
 	Task.RightIndexOffset = RightData.IndexOffset;
 	Task.RightTriCount = RightData.TriCount;
 
-	MFrameTasks.push_back(Task);
+	MTasks.push_back(Task);
 }
 
 /**
