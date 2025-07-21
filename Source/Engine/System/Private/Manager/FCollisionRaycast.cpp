@@ -118,8 +118,8 @@ void FCollisionManager::AddRayShaderTask(CColliderRay* PRay, const CGameObject* 
 	MRaycastColliders.push_back(make_pair(PRay, PObject->MeshCollider()));
 
 	tRaycastTask Task = {};
-	Task.RayOrigin = PRay->GetWorldPosition();
-	Task.RayDirection = PRay->GetWorldDirection();
+	Task.RayOrigin = PRay->GetRayFinalPos();
+	Task.RayDirection = PRay->GetRayFinalDir();
 	Task.VertexOffset = MeshData.VertexOffset;
 	Task.IndexOffset = MeshData.IndexOffset;
 	Task.TriCount = MeshData.TriCount;
@@ -166,8 +166,8 @@ void FCollisionManager::ExecuteAndProcessRaycastCS()
 			CMeshCollider* Mesh = Colliders.second;
 
 			// 충돌 정보를 레이 콜라이더에 설정
-			Ray->SetHitDistance(results[i].Distance);
-			Ray->SetHitNormal(results[i].HitNormal);
+			// Ray->SetHitDistance(results[i].Distance);
+			// Ray->SetHitNormal(results[i].HitNormal);
 
 			// 최종 충돌 처리 로직 호출
 			ProcessCollision(Ray, Mesh);
