@@ -48,6 +48,7 @@ void GameFactory::LoadDefaultLayer(CLevel* PLevel)
 	Layer::SetLayerName(PLevel, 8, L"UI");
 	Layer::SetLayerName(PLevel, 9, L"ObjectPool");
 	Layer::SetLayerName(PLevel, 10, L"BulletLayer");
+	Layer::SetLayerName(PLevel, 20, L"PostProcessLayer");
 }
 
 /**

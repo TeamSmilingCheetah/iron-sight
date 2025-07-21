@@ -8,6 +8,7 @@ class CLandScape;
 class KillinfoUIScript;
 class InventoryController;
 class CameraController;
+class CameraEffect;
 
 enum class MOTION_STATE : uint8_t
 {
@@ -95,6 +96,7 @@ private:
 	CameraController*		m_CamScript;
 	InventoryController*	m_InventoryScript;
 	KillinfoUIScript*		m_KillinfoScript;
+	CameraEffect*			m_CameraEffect;
 
 	// ======
 	// Status

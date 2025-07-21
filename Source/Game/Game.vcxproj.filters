@@ -87,6 +87,9 @@
     <ClCompile Include="Gameplay\UI\Private\MinimapUIScript.cpp">
       <Filter>02. Gameplay\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\CameraEffect.cpp">
+      <Filter>02. Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="Gameplay\UI\Public\MinimapUIScript.h">
       <Filter>02. Gameplay\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Character\Public\CameraEffect.h">
+      <Filter>02. Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

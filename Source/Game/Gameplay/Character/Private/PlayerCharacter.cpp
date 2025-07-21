@@ -19,6 +19,7 @@
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
+#include "Game/Gameplay/Character/Public/CameraEffect.h"
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
@@ -114,6 +115,8 @@ void PlayerCharacter::Begin()
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
 	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
 	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
+	CGameObject* CameraPost = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"CameraPost");
+	m_CameraEffect = static_cast<CameraEffect*>(GetScriptWithType(CameraPost, SCRIPT_TYPE::CAMERAEFFECT));
 
 	// 마우스 끄기
 	CKeyMgr::GetInst()->SetCursorVisible(false);
@@ -617,6 +620,16 @@ void PlayerCharacter::PlayerControlUI()
 		m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.f);
 	}
 
+
+	// HP상태에 따른 화면 효과
+	if (m_CurHP / m_MaxHP <= 0.4f)
+	{
+		m_CameraEffect->HPLow();
+	}
+	else
+	{
+		m_CameraEffect->HPFine();
+	}
 }
 
 void PlayerCharacter::PlayerHeal()
@@ -746,6 +759,8 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 		SetActionState(ACTION_STATE::DEAD);
 	}
 
+	// 피격 화면 효과
+	m_CameraEffect->HitEffect();
 }
 
 void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)

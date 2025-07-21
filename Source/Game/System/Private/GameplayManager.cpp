@@ -20,6 +20,7 @@
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
 #include "Game/Gameplay/UI/Public/MinimapUIScript.h"
+#include "Game/Gameplay/Character/Public/CameraEffect.h"
 
 void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -44,6 +45,7 @@ void GameplayManager::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"KillinfoUIScript");
 	_vec.push_back(L"MinimapCameraScript");
 	_vec.push_back(L"MinimapUIScript");
+	_vec.push_back(L"CameraEffect");
 }
 
 CScript* GameplayManager::GetScript(const wstring& _strScriptName)
@@ -90,6 +92,8 @@ CScript* GameplayManager::GetScript(const wstring& _strScriptName)
 		return new MinimapCameraScript;
 	if (L"MinimapUIScript" == _strScriptName)
 		return new MinimapUIScript;
+	if (L"CameraEffect" == _strScriptName)
+		return new CameraEffect;
 
 	return nullptr;
 }
@@ -160,6 +164,9 @@ CScript* GameplayManager::GetScript(UINT _iScriptType)
 		break;
 	case static_cast<UINT>(SCRIPT_TYPE::MINIMAPUI):
 		return new MinimapUIScript;
+		break;
+	case static_cast<UINT>(SCRIPT_TYPE::CAMERAEFFECT):
+		return new CameraEffect;
 		break;
 	}
 	return nullptr;
@@ -250,6 +257,10 @@ const wchar_t* GameplayManager::GetScriptName(CScript* _pScript)
 
 	case SCRIPT_TYPE::MINIMAPUI:
 		return L"MinimapUIScript";
+		break;
+
+	case SCRIPT_TYPE::CAMERAEFFECT:
+		return L"CameraEffect";
 		break;
 	}
 	return nullptr;
