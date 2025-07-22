@@ -100,6 +100,25 @@ float4 PS_UI(VS_OUT _in) : SV_Target
 	return output;
 }
 
+float4 PS_UI_Minimap(VS_OUT _in) : SV_Target
+{
+    float4 output = (float4) 0.f;
+	
+	// 이미지가 있다면 샘플링
+    if (UseImage)
+    {
+        output = Image.Sample(g_sam_1, _in.vUV);
+    }
+
+	// 이미지가 없거나 a 값이 0인 부분은 배경색으로 채움
+    if (output.a == 0.f)
+    {
+        output = Color;
+    }
+
+    return output;
+}
+
 float4 PS_UI_HP(VS_OUT _in) : SV_Target
 {
 	// g_vec_0 : aspect, semiHP

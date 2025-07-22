@@ -190,6 +190,21 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"UICrosshair", pShader);
 
 
+	// =============================
+	// UIMinimapShader : UI 미니맵 전용 셰이더
+	// =============================
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"ui_minimap_vs.cso", L"ui.fx", L"VS_UI");
+	pShader->CreatePixelShader(L"ui_minimap_ps.cso", L"ui.fx", L"PS_UI_Minimap");
+
+	pShader->SetRSState(RS_TYPE::CULL_NONE);
+	pShader->SetBSState(BS_TYPE::ALPHABLEND);
+	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+
+	AddAsset(L"UIMinimapShader", pShader);
+
+
 	// ==================================
 	// TileMapShader : 타일맵 전용 쉐이더
 	// ==================================
@@ -416,6 +431,12 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"UICrosshairMtrl");
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UICrosshair"));
+	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+
+	// UIMinimapMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetName(L"UIMinimapMtrl");
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"UIMinimapShader"));
 	AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// TileMapMaterial

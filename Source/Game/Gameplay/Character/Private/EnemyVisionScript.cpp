@@ -62,16 +62,16 @@ void EnemyVisionScript::Tick()
 	if (m_RayTarget)
 	{
 		// 사거리 내에 있는지 확인
-		//float Length = pRay->GetTargetInfoRef().Length;
-		//if (Length <= m_AtkRange)
-		//{
-		//	m_RayAtkRg = true;
-		//}
-		//// 사거리 내에 있던 상태이며 일정거리가 벌어지게되면
-		//if (m_RayAtkRg && Length >= m_AtkRgmax)
-		//{
-		//	m_RayAtkRg = false;
-		//}
+		float Length = pRay->GetTargetInfoRef().Length;
+		if (Length <= m_AtkRange)
+		{
+			m_RayAtkRg = true;
+		}
+		// 사거리 내에 있던 상태이며 일정거리가 벌어지게되면
+		if (m_RayAtkRg && Length >= m_AtkRgmax)
+		{
+			m_RayAtkRg = false;
+		}
 		m_RayAtkRg = true;
 	}
 
@@ -134,7 +134,7 @@ void EnemyVisionScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 
 void EnemyVisionScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
 {
-
+	int a = 0;
 }
 
 void EnemyVisionScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)

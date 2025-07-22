@@ -48,34 +48,6 @@ void MinimapUIScript::Begin()
 	}
 
 	// 적 점 등록(적 레이어는 7번)
-	const vector<CGameObject*>& VecObject = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(7)->GetObjects();
-	for (auto& EnemyObj : VecObject)
-	{
-		EnemyController* EScript = static_cast<EnemyController*>(GetScriptWithType(EnemyObj, SCRIPT_TYPE::ENEMYCONTROLLER));
-
-		if (EScript == nullptr)
-			continue;
-		else
-		{
-			// 적 점 UI생성
-			CGameObject* EnemyDot = new CGameObject;
-			EnemyDot->SetName(L"EnemyDot");
-			EnemyDot->AddComponent(new CUI);
-			EnemyDot->AddComponent(new CUIRender);
-
-			// 적은 빨간색 점
-			EnemyDot->UI()->SetColor(Vec4(1.f, 0.f, 0.f, 1.f));
-			EnemyDot->UI()->SetRectSize(Vec2(6.f, 6.f));
-
-			// 미니맵 UI에 자식으로 추가
-			GetOwner()->AddChild(EnemyDot);
-
-			// 적 점 저장
-			m_EnemyDots.push_back({ EnemyObj, EnemyDot });
-		}
-	}
-
-
 	//const vector<CGameObject*>& VecObject = CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(7)->GetObjects();
 	//for (auto& EnemyObj : VecObject)
 	//{

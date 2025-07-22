@@ -525,6 +525,7 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 
 void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
 {
+	int a = 0;
 }
 
 
