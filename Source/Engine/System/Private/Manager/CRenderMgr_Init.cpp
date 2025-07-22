@@ -155,7 +155,7 @@ void CRenderMgr::CreateMRT()
 			D3D11_BIND_DEPTH_STENCIL);
 
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->Create(&pMinimapTex, 1, pMinimapDepth);
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->SetClearColor(0, Vec4(0.f, 0.f, 0.f, 1.f));
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->SetClearColor(0, Vec4(0.f, 0.f, 0.f, 0.f));
 	}
 }
 

@@ -416,56 +416,6 @@ void TestLevel::CreateTestLevel()
 // UI Preset
 vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 {
-	// ==========
-	// MiniMapCamera
-	// ==========
-	CGameObject* MinimapCamera = new CGameObject;
-	MinimapCamera->SetName(L"MinimapCamera");
-	MinimapCamera->AddComponent(new CCamera);
-	MinimapCamera->Camera()->SetProjType(ORTHOGRAPHIC);
-	MinimapCamera->Camera()->SetPriority(1);
-	MinimapCamera->Camera()->SetScale(13.0);
-
-	MinimapCamera->Camera()->LayerCheckClear();
-	//MinimapCamera->Camera()->LayerOn(0); // Background
-	MinimapCamera->Camera()->LayerOn(1); // Structure
-
-	MinimapCamera->AddComponent(new MinimapCameraScript);
-
-	// 임시 배치
-	MinimapCamera->Transform()->SetRelativePos(Vec3(0, 7000, 0));
-	MinimapCamera->Transform()->SetRelativeRotation(Vec3(90, 0, 0));
-
-	PLevel->AddObject(0, MinimapCamera, false);
-
-	//Minimap CanvasUI
-	CGameObject* MapCanvasUI = new CGameObject;
-	MapCanvasUI->SetName(L"MiniMap_CanvasUI");
-	MapCanvasUI->AddComponent(new CUI(UI_CANVAS));
-
-	MapCanvasUI->AddComponent(new CUIRender);
-	MapCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
-	MapCanvasUI->UI()->SetPriority(0);
-	MapCanvasUI->UI()->SetRectPos(485.f, -230.f);
-	MapCanvasUI->UI()->SetRectSize(300.f, 300.f);
-
-	PLevel->AddObject(8, MapCanvasUI, false);
-
-	// MinimapUI
-	CGameObject* pMinimapUI = new CGameObject;
-	pMinimapUI->SetName(L"MinimapUI");
-	pMinimapUI->AddComponent(new CUI);
-	Ptr<CTexture> pMinimapTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"MinimapTargetTex");
-	pMinimapUI->UI()->SetImage(pMinimapTex);
-	pMinimapUI->UI()->SetRectPos(Vec2(0.f, 0.f));
-	pMinimapUI->UI()->SetRectSize(Vec2(300.f, 300.f));
-	pMinimapUI->UI()->SetColor(Vec4(1.f, 1.f, 1.f, 0.f));
-
-	pMinimapUI->AddComponent(new CUIRender);
-	pMinimapUI->AddComponent(new MinimapUIScript);
-
-	MapCanvasUI->AddChild(pMinimapUI);
-
 	// UI Camera
 	CGameObject* UICamera = new CGameObject;
 	UICamera->SetName(L"UICamera");
@@ -786,6 +736,59 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pCameraPost->AddComponent(new CameraEffect);
 
 	CanvasUI->AddChild(pCameraPost);
+
+
+	// ==========
+	// MiniMapCamera
+	// ==========
+	CGameObject* MinimapCamera = new CGameObject;
+	MinimapCamera->SetName(L"MinimapCamera");
+	MinimapCamera->AddComponent(new CCamera);
+	MinimapCamera->Camera()->SetProjType(ORTHOGRAPHIC);
+	MinimapCamera->Camera()->SetPriority(1);
+	MinimapCamera->Camera()->SetScale(13.0);
+
+	MinimapCamera->Camera()->LayerCheckClear();
+	//MinimapCamera->Camera()->LayerOn(0); // Background
+	MinimapCamera->Camera()->LayerOn(1); // Structure
+
+	MinimapCamera->AddComponent(new MinimapCameraScript);
+
+	// 임시 배치
+	MinimapCamera->Transform()->SetRelativePos(Vec3(0, 7000, 0));
+	MinimapCamera->Transform()->SetRelativeRotation(Vec3(90, 0, 0));
+
+	PLevel->AddObject(0, MinimapCamera, false);
+
+	//Minimap CanvasUI
+	CGameObject* MapCanvasUI = new CGameObject;
+	MapCanvasUI->SetName(L"MiniMap_CanvasUI");
+	MapCanvasUI->AddComponent(new CUI(UI_CANVAS));
+
+	MapCanvasUI->AddComponent(new CUIRender);
+	MapCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	MapCanvasUI->UI()->SetPriority(0);
+	MapCanvasUI->UI()->SetRectPos(485.f, -230.f);
+	MapCanvasUI->UI()->SetRectSize(300.f, 300.f);
+
+	PLevel->AddObject(8, MapCanvasUI, false);
+
+	// MinimapUI
+	CGameObject* pMinimapUI = new CGameObject;
+	pMinimapUI->SetName(L"MinimapUI");
+	pMinimapUI->AddComponent(new CUI);
+	pMinimapUI->AddComponent(new CUIRender);
+	pMinimapUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMinimapMtrl"), 0);
+
+	Ptr<CTexture> pMinimapTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"MinimapTargetTex");
+	pMinimapUI->UI()->SetImage(pMinimapTex);
+	pMinimapUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	pMinimapUI->UI()->SetRectSize(Vec2(300.f, 300.f));
+	pMinimapUI->UI()->SetColor(Vec4(0.2f, 0.2f, 0.2f, 0.7f));
+
+	pMinimapUI->AddComponent(new MinimapUIScript);
+
+	MapCanvasUI->AddChild(pMinimapUI);
 
 	return { Vicinity, Inventory, interactionUI };
 }
