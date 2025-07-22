@@ -3,6 +3,7 @@
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
 
 /**************************/
 /** Broad Phase Function **/
@@ -18,40 +19,43 @@ void FCollisionManager::BroadPhase()
 		return;
 	}
 
-	// Object Vector에 Object 전체 추가
-	vector<CGameObject*> AllObjects;
-	CurrentLevel->GetAllActiveObjectsInLevel(AllObjects);
-
 	// 중복 배제를 위한 Set 추가
 	unordered_set<ULONGLONG> CandidateSet;
 
-	for (CGameObject* Object : AllObjects)
+	for (CGameObject* Object : MLevelActiveObjects)
 	{
 		// 충돌 후보 선별
 		vector<CGameObject*> Candidates;
 		QueryBVH(MBVHRootNode, Object, Candidates);
 
-		UINT ID_A = Object->GetID();
-
-		for (CGameObject* Candidate : Candidates)
+		for (auto LeftCollider : Object->GetColliders())
 		{
-			// Layer 조건 우선 배제
-			if (MLayerCollisionMatrix[Object->GetLayerIdx()] & (1 << Candidate->GetLayerIdx()))
-			{
-				UINT ID_B = Candidate->GetID();
+			visit([&](auto* Left)
+			      {
+				      UINT ID_A = Left->GetID();
 
-				// 고유 충돌 ID 생성
-				if (ID_A > ID_B)
-				{
-					std::swap(ID_A, ID_B);
-				}
+				      for (CGameObject* Candidate : Candidates)
+				      {
+					      // Layer 조건 우선 배제
+					      if (MLayerCollisionMatrix[Object->GetLayerIdx()] & (1 << Candidate->GetLayerIdx()))
+					      {
+						      for (auto RightCollider : Candidate->GetColliders())
+						      {
+							      visit([&](auto* Right)
+							      {
+								      UINT ID_B = Right->GetID();
 
-				// 중복되지 않은 경우에만 세부 충돌 판정
-				if (CandidateSet.insert(COLLISION_ID(ID_A, ID_B).ID).second)
-				{
-					AddCandidate(Object, Candidate);
-				}
-			}
+								      // 중복되지 않은 경우에만 세부 충돌 판정
+								      if (CandidateSet.insert(COLLISION_ID(ID_A, ID_B).ID).second)
+								      {
+									      AddCandidate(Object, Candidate);
+								      }
+							      }, RightCollider);
+						      }
+					      }
+				      }
+			      }
+			      , LeftCollider);
 		}
 	}
 }

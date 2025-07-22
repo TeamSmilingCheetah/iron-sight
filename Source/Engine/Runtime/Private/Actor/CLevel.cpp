@@ -132,34 +132,11 @@ void CLevel::ChangeState(LEVEL_STATE _NextState)
  */
 void CLevel::GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects)
 {
-	queue<CGameObject*> GameObjectQueue;
-
 	for (int i = 0; i < MAX_LAYER; ++i)
 	{
-		for (auto* Parent : m_arrLayer[i].GetParentObjects())
+		for (auto* Object : m_arrLayer[i].GetObjects())
 		{
-			GameObjectQueue.push(Parent);
-
-			// BFS
-			while (!GameObjectQueue.empty())
-			{
-				CGameObject* Object = GameObjectQueue.front();
-				GameObjectQueue.pop();
-
-				// Active가 아니고 Dead 상태인 Object의 자식을 Recursive Add할 필요도 없음
-				if (!Object->IsActive() || Object->IsDead())
-				{
-					continue;
-				}
-
-				PObjects.push_back(Object);
-
-				// Add Child
-				for (auto* Child : Object->GetChild())
-				{
-					GameObjectQueue.push(Child);
-				}
-			}
+			PObjects.push_back(Object);
 		}
 	}
 }

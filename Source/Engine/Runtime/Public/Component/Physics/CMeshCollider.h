@@ -21,6 +21,7 @@ private:
 	int MOverlapCount;
 	Vec3 MCollisionNormal;
 	float MPenetrationDepth;
+	COLLIDER_STATE MState = ACTIVE;
 
 public:
 	void FinalTick() override;
@@ -33,6 +34,7 @@ public:
 	Ptr<CMesh> GetMesh() const { return MMeshPtr; }
 	Vec3& GetCollisionNormal() { return MCollisionNormal; }
 	float GetPenetrationDepth() const { return MPenetrationDepth; }
+	COLLIDER_STATE GetState() const { return MState; }
 
 	void SetMesh(CMesh* PMesh) { MMeshPtr = PMesh; }
 	void SetCollisionNormal(Vec3 PCollisionNormal) { MCollisionNormal = PCollisionNormal; }
@@ -41,10 +43,8 @@ public:
 	// Templated Overlap Function
 	template <typename T>
 	void BeginOverlap(T* POther);
-
 	template <typename T>
 	void Overlap(T* POther);
-
 	template <typename T>
 	void EndOverlap(T* POther);
 
@@ -61,7 +61,7 @@ template <typename T>
 void CMeshCollider::BeginOverlap(T* POther)
 {
 	++MOverlapCount;
-
+	// LOG_TRACE_F("[MeshCollider][BeginOverlap] {}: {}", WStringToString(GetOwner()->GetName()), MOverlapCount);
 	for (auto EachScript : GetOwner()->GetScripts())
 	{
 		EachScript->BeginOverlap(this, POther->GetOwner(), POther);
@@ -71,6 +71,7 @@ void CMeshCollider::BeginOverlap(T* POther)
 template <typename T>
 void CMeshCollider::Overlap(T* POther)
 {
+	// LOG_TRACE_F("[MeshCollider][OverLap] {}: {}", WStringToString(GetOwner()->GetName()), MOverlapCount);
 	for (auto EachScript : GetOwner()->GetScripts())
 	{
 		EachScript->Overlap(this, POther->GetOwner(), POther);
@@ -81,7 +82,7 @@ template <typename T>
 void CMeshCollider::EndOverlap(T* POther)
 {
 	--MOverlapCount;
-
+	// LOG_TRACE_F("[MeshCollider][EndOverlap] {}: {}", WStringToString(GetOwner()->GetName()), MOverlapCount);
 	for (auto EachScript : GetOwner()->GetScripts())
 	{
 		EachScript->EndOverlap(this, POther->GetOwner(), POther);

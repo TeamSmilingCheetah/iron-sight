@@ -1,12 +1,11 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
-#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 /*******************/
 /** Raycast Check **/
@@ -17,13 +16,9 @@
  */
 void FCollisionManager::RaycastProcess()
 {
-	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-	vector<CGameObject*> AllObjects;
-	CurrentLevel->GetAllActiveObjectsInLevel(AllObjects);
-
 	// 모든 Ray Collider 수집
 	vector<CColliderRay*> RayColliders;
-	for (const auto* Object : AllObjects)
+	for (const auto* Object : MLevelActiveObjects)
 	{
 		if (Object->ColliderRay())
 		{
@@ -47,12 +42,12 @@ void FCollisionManager::RaycastProcess()
 			// AABB가 충돌 기준이므로 바로 Process
 			if (Object->Collider3D())
 			{
-				ProcessCollision(Ray, Object->Collider3D());
+				AddFrameCollision(Ray, Object->Collider3D());
 				continue;
 			}
 			if (Object->LandScape())
 			{
-				ProcessCollision(Ray, Object->LandScape());
+				AddFrameCollision(Ray, Object->LandScape());
 				continue;
 			}
 
@@ -170,7 +165,7 @@ void FCollisionManager::ExecuteAndProcessRaycastCS()
 			// Ray->SetHitNormal(results[i].HitNormal);
 
 			// 최종 충돌 처리 로직 호출
-			ProcessCollision(Ray, Mesh);
+			AddFrameCollision(Ray, Mesh);
 		}
 	}
 }

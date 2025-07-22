@@ -8,8 +8,6 @@
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
-// TODO(KHJ): Narrow Code 이후에 전반적으로 Refactor 필요성 존재
-
 /*************************/
 /** Constant Structures **/
 /*************************/
@@ -208,14 +206,14 @@ void FCollisionManager::ExecuteAndProcessCS()
 	{
 		if (Results[i].Collided)
 		{
-			visit([&](auto&& Pair)
+			visit([&](auto Pair)
 			{
 				Pair.first->SetCollisionNormal(Results[i].LeftNormal);
 				Pair.first->SetPenetrationDepth(Results[i].PenetrationDepth);
 				Pair.second->SetCollisionNormal(Results[i].RightNormal);
 				Pair.second->SetPenetrationDepth(Results[i].PenetrationDepth);
 
-				ProcessCollision(Pair.first, Pair.second);
+				AddFrameCollision(Pair.first, Pair.second);
 			}, MTaskColliders[i]);
 		}
 	}
@@ -285,9 +283,8 @@ void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameOb
 		{
 			if (IsCollision(PLeftObject->Collider2D(), PRightObject->Collider2D()))
 			{
-				ProcessCollision(PLeftObject->Collider2D(), PRightObject->Collider2D());
+				AddFrameCollision(PLeftObject->Collider2D(), PRightObject->Collider2D());
 			}
-			return;
 		}
 	}
 
@@ -298,18 +295,16 @@ void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameOb
 		{
 			if (IsCollision(PLeftObject->Collider3D(), PRightObject->Collider3D()))
 			{
-				ProcessCollision(PLeftObject->Collider3D(), PRightObject->Collider3D());
+				AddFrameCollision(PLeftObject->Collider3D(), PRightObject->Collider3D());
 			}
-			return;
 		}
 
 		if (PRightObject->LandScape())
 		{
 			if (IsCollision(PLeftObject->Collider3D(), PRightObject->LandScape()))
 			{
-				ProcessCollision(PLeftObject->Collider3D(), PRightObject->LandScape());
+				AddFrameCollision(PLeftObject->Collider3D(), PRightObject->LandScape());
 			}
-			return;
 		}
 	}
 
@@ -320,9 +315,8 @@ void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameOb
 		{
 			if (IsCollision(PRightObject->Collider3D(), PLeftObject->LandScape()))
 			{
-				ProcessCollision(PLeftObject->LandScape(), PRightObject->Collider3D());
+				AddFrameCollision(PLeftObject->LandScape(), PRightObject->Collider3D());
 			}
-			return;
 		}
 	}
 
@@ -330,105 +324,124 @@ void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameOb
 	//            WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
 }
 
+void FCollisionManager::AddFrameCollision(ColliderVariant PLeftCollider, ColliderVariant PRightCollider)
+{
+	visit([&](auto* LeftCollider, auto* RightCollider)
+	{
+		MFrameCollisionSet.insert(COLLISION_ID(LeftCollider->GetID(), RightCollider->GetID()).ID);
+	}, PLeftCollider, PRightCollider);
+}
+
 /**********************************/
 /** Narrow Collision Check Logic **/
 /**********************************/
 
+// TODO(KHJ): 이하의 코드 재검토 필요
+
 bool FCollisionManager::IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider)
 {
-    // SAT(Separating Axis Theorem) 기반 2D 충돌 판정
-    static Vec3 arrRect[4] = {
-        Vec3(-0.5f, 0.5f, 0.f), Vec3(0.5f, 0.5f, 0.f), Vec3(0.5f, -0.5f, 0.f), Vec3(-0.5f, -0.5f, 0.f)
-    };
-    Matrix matColLeft = PLeftCollider->GetColliderWorldMatrix();
-    Matrix matColRight = PRightCollider->GetColliderWorldMatrix();
-    Vec3 arrProj[4] = {};
-    arrProj[0] = XMVector3TransformCoord(arrRect[1], matColLeft) - XMVector3TransformCoord(arrRect[0], matColLeft);
-    arrProj[1] = XMVector3TransformCoord(arrRect[3], matColLeft) - XMVector3TransformCoord(arrRect[0], matColLeft);
-    arrProj[2] = XMVector3TransformCoord(arrRect[1], matColRight) - XMVector3TransformCoord(arrRect[0], matColRight);
-    arrProj[3] = XMVector3TransformCoord(arrRect[3], matColRight) - XMVector3TransformCoord(arrRect[0], matColRight);
-    Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft) - XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
-    for (int i = 0; i < 4; ++i)
-    {
-        Vec3 vProj = arrProj[i];
-        vProj.Normalize();
-        float fCenter = fabs(vCenter.Dot(vProj));
-        float fDist = 0.f;
-        for (int j = 0; j < 4; ++j)
-            fDist += fabs(vProj.Dot(arrProj[j]));
-        fDist /= 2.f;
-        if (fDist < fCenter)
-            return false;
-    }
-    return true;
+	// SAT(Separating Axis Theorem) 기반 2D 충돌 판정
+	static Vec3 arrRect[4] = {
+		Vec3(-0.5f, 0.5f, 0.f), Vec3(0.5f, 0.5f, 0.f), Vec3(0.5f, -0.5f, 0.f), Vec3(-0.5f, -0.5f, 0.f)
+	};
+	Matrix matColLeft = PLeftCollider->GetColliderWorldMatrix();
+	Matrix matColRight = PRightCollider->GetColliderWorldMatrix();
+	Vec3 arrProj[4] = {};
+	arrProj[0] = XMVector3TransformCoord(arrRect[1], matColLeft) - XMVector3TransformCoord(arrRect[0], matColLeft);
+	arrProj[1] = XMVector3TransformCoord(arrRect[3], matColLeft) - XMVector3TransformCoord(arrRect[0], matColLeft);
+	arrProj[2] = XMVector3TransformCoord(arrRect[1], matColRight) - XMVector3TransformCoord(arrRect[0], matColRight);
+	arrProj[3] = XMVector3TransformCoord(arrRect[3], matColRight) - XMVector3TransformCoord(arrRect[0], matColRight);
+	Vec3 vCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft) - XMVector3TransformCoord(
+		Vec3(0.f, 0.f, 0.f), matColRight);
+	for (int i = 0; i < 4; ++i)
+	{
+		Vec3 vProj = arrProj[i];
+		vProj.Normalize();
+		float fCenter = fabs(vCenter.Dot(vProj));
+		float fDist = 0.f;
+		for (int j = 0; j < 4; ++j)
+			fDist += fabs(vProj.Dot(arrProj[j]));
+		fDist /= 2.f;
+		if (fDist < fCenter)
+			return false;
+	}
+	return true;
 }
 
 bool FCollisionManager::IsCollision(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider)
 {
-    constexpr float EPSILON = 0.0001f;
-    static Vec3 arrCube[8] = {
-        Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f), Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
-        Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f), Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
-    };
-    Matrix matColLeft = PLeftCollider->GetColliderWorldMat();
-    Matrix matColRight = PRightCollider->GetColliderWorldMat();
-    Vec3 leftCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft);
-    Vec3 rightCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
-    Vec3 leftVertices[8], rightVertices[8];
-    for (int i = 0; i < 8; i++) {
-        leftVertices[i] = XMVector3TransformCoord(arrCube[i], matColLeft);
-        rightVertices[i] = XMVector3TransformCoord(arrCube[i], matColRight);
-    }
-    Vec3 axes[15];
-    int axisCount = 0;
-    Vec3 leftAxis[3] = {
-        XMVector3TransformNormal(Vec3(1.0f, 0.0f, 0.0f), matColLeft),
-        XMVector3TransformNormal(Vec3(0.0f, 1.0f, 0.0f), matColLeft),
-        XMVector3TransformNormal(Vec3(0.0f, 0.0f, 1.0f), matColLeft)
-    };
-    Vec3 rightAxis[3] = {
-        XMVector3TransformNormal(Vec3(1.0f, 0.0f, 0.0f), matColRight),
-        XMVector3TransformNormal(Vec3(0.0f, 1.0f, 0.0f), matColRight),
-        XMVector3TransformNormal(Vec3(0.0f, 0.0f, 1.0f), matColRight)
-    };
-    for (int i = 0; i < 3; i++) {
-        leftAxis[i].Normalize();
-        rightAxis[i].Normalize();
-        axes[axisCount++] = leftAxis[i];
-        axes[axisCount++] = rightAxis[i];
-    }
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            Vec3 crossAxis = leftAxis[i].Cross(rightAxis[j]);
-            if (crossAxis.Length() > EPSILON) {
-                crossAxis.Normalize();
-                axes[axisCount++] = crossAxis;
-            }
-        }
-    }
-    for (int a = 0; a < axisCount; ++a) {
-        float leftMin = FLT_MAX, leftMax = -FLT_MAX, rightMin = FLT_MAX, rightMax = -FLT_MAX;
-        for (int i = 0; i < 8; i++) {
-            float dot = leftVertices[i].Dot(axes[a]);
-            leftMin = min(leftMin, dot);
-            leftMax = max(leftMax, dot);
-        }
-        for (int i = 0; i < 8; i++) {
-            float dot = rightVertices[i].Dot(axes[a]);
-            rightMin = min(rightMin, dot);
-            rightMax = max(rightMax, dot);
-        }
-        if (leftMin > rightMax + EPSILON || rightMin > leftMax + EPSILON)
-            return false;
-    }
-    return true;
+	constexpr float EPSILON = 0.0001f;
+	static Vec3 arrCube[8] = {
+		Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f), Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
+		Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f), Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
+	};
+	Matrix matColLeft = PLeftCollider->GetColliderWorldMat();
+	Matrix matColRight = PRightCollider->GetColliderWorldMat();
+	Vec3 leftCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft);
+	Vec3 rightCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
+	Vec3 leftVertices[8], rightVertices[8];
+	for (int i = 0; i < 8; i++)
+	{
+		leftVertices[i] = XMVector3TransformCoord(arrCube[i], matColLeft);
+		rightVertices[i] = XMVector3TransformCoord(arrCube[i], matColRight);
+	}
+	Vec3 axes[15];
+	int axisCount = 0;
+	Vec3 leftAxis[3] = {
+		XMVector3TransformNormal(Vec3(1.0f, 0.0f, 0.0f), matColLeft),
+		XMVector3TransformNormal(Vec3(0.0f, 1.0f, 0.0f), matColLeft),
+		XMVector3TransformNormal(Vec3(0.0f, 0.0f, 1.0f), matColLeft)
+	};
+	Vec3 rightAxis[3] = {
+		XMVector3TransformNormal(Vec3(1.0f, 0.0f, 0.0f), matColRight),
+		XMVector3TransformNormal(Vec3(0.0f, 1.0f, 0.0f), matColRight),
+		XMVector3TransformNormal(Vec3(0.0f, 0.0f, 1.0f), matColRight)
+	};
+	for (int i = 0; i < 3; i++)
+	{
+		leftAxis[i].Normalize();
+		rightAxis[i].Normalize();
+		axes[axisCount++] = leftAxis[i];
+		axes[axisCount++] = rightAxis[i];
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			Vec3 crossAxis = leftAxis[i].Cross(rightAxis[j]);
+			if (crossAxis.Length() > EPSILON)
+			{
+				crossAxis.Normalize();
+				axes[axisCount++] = crossAxis;
+			}
+		}
+	}
+	for (int a = 0; a < axisCount; ++a)
+	{
+		float leftMin = FLT_MAX, leftMax = -FLT_MAX, rightMin = FLT_MAX, rightMax = -FLT_MAX;
+		for (int i = 0; i < 8; i++)
+		{
+			float dot = leftVertices[i].Dot(axes[a]);
+			leftMin = min(leftMin, dot);
+			leftMax = max(leftMax, dot);
+		}
+		for (int i = 0; i < 8; i++)
+		{
+			float dot = rightVertices[i].Dot(axes[a]);
+			rightMin = min(rightMin, dot);
+			rightMax = max(rightMax, dot);
+		}
+		if (leftMin > rightMax + EPSILON || rightMin > leftMax + EPSILON)
+			return false;
+	}
+	return true;
 }
 
 bool FCollisionManager::IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider)
 {
-    Vec3 ObjectPos = PLeftCollider->Transform()->GetWorldPos();
-    Vec3 LandScapePos = PRightCollider->GetWorldPosByLandScape(ObjectPos);
-    if (LandScapePos == Vec3(-10000.f, -10000.f, -10000.f) || ObjectPos.y > LandScapePos.y)
-        return false;
-    return true;
+	Vec3 ObjectPos = PLeftCollider->Transform()->GetWorldPos();
+	Vec3 LandScapePos = PRightCollider->GetWorldPosByLandScape(ObjectPos);
+	if (LandScapePos == Vec3(-10000.f, -10000.f, -10000.f) || ObjectPos.y > LandScapePos.y)
+		return false;
+	return true;
 }

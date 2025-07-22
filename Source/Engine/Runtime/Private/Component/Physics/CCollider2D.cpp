@@ -61,37 +61,6 @@ void CCollider2D::FinalTick()
 	}
 }
 
-void CCollider2D::BeginOverlap(CCollider2D* POther)
-{
-	++m_OverlapCount;
-
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider2D::Overlap(CCollider2D* POther)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider2D::EndOverlap(CCollider2D* POther)
-{
-	--m_OverlapCount;
-
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
 void CCollider2D::SaveComponent(FILE* PFile)
 {
 	(void)fwrite(&m_Offset, sizeof(Vec2), 1, PFile);

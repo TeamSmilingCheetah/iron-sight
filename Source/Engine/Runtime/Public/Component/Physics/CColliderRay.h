@@ -111,9 +111,9 @@ void CColliderRay::BeginOverlap(T* POther)
 	++MOverlapCount;
 
 	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
-	for (size_t i = 0; i < ScriptVector.size(); ++i)
+	for (auto* Script : ScriptVector)
 	{
-		ScriptVector[i]->BeginOverlap(this, POther->GetOwner(), POther);
+		Script->BeginOverlap(this, POther->GetOwner(), POther);
 	}
 }
 
@@ -121,9 +121,9 @@ template <typename T>
 void CColliderRay::Overlap(T* POther)
 {
 	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
-	for (size_t i = 0; i < ScriptVector.size(); ++i)
+	for (auto* Script : ScriptVector)
 	{
-		ScriptVector[i]->Overlap(this, POther->GetOwner(), POther);
+		Script->Overlap(this, POther->GetOwner(), POther);
 	}
 }
 
@@ -132,13 +132,13 @@ void CColliderRay::EndOverlap(T* POther)
 {
 	--MOverlapCount;
 
-	CGameObject* OtherObj = POther->GetOwner();
 	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
-	for (size_t i = 0; i < ScriptVector.size(); ++i)
+	for (auto* Script : ScriptVector)
 	{
-		ScriptVector[i]->EndOverlap(this, OtherObj, POther);
+		Script->EndOverlap(this, POther->GetOwner(), POther);
 	}
 
+	CGameObject* OtherObj = POther->GetOwner();
 	// 충돌된 오브젝트가 이제 삭제 처리될 오브젝트일 시 prev에 들어가지 않게 비운다.
 	if (OtherObj == MRayColliderInfo.HitObject && OtherObj->IsDead())
 	{

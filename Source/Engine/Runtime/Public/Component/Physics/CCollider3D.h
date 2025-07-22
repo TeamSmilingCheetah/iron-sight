@@ -1,5 +1,7 @@
 #pragma once
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 
 /**
  * @brief 오브젝트에 충돌체 속성을 추가하는 컴포넌트 클래스
@@ -20,22 +22,22 @@ class CCollider3D :
 	public CComponent
 {
 private:
-	Vec3        m_Offset;
-	Vec3        m_Scale;
-	float		m_RotY;
-	Vec3        m_FinalPos;
-	Vec3		m_HitNormal;
-	Vec3		m_HitPoint;
-	Vec3		m_ClosestPoint;
-	Matrix      m_matColliderWorld; // 크기, 회전, 이동
+	Vec3 m_Offset;
+	Vec3 m_Scale;
+	float m_RotY;
+	Vec3 m_FinalPos;
+	Vec3 m_HitNormal;
+	Vec3 m_HitPoint;
+	Vec3 m_ClosestPoint;
+	Matrix m_matColliderWorld;
 
-	int         m_OverlapCount;
-	int			m_Status;
-	float		m_PenetrationDepth;
+	int m_OverlapCount;
+	int m_Status;
+	float m_PenetrationDepth;
 
-	COLLIDER_STATE  m_State;
+	COLLIDER_STATE m_State;
 
-	bool        m_IndependentScale;
+	bool m_IndependentScale;
 
 public:
 	void FinalTick() override;
@@ -46,24 +48,16 @@ public:
 	void SetIndependentRot(bool _true);
 	AABB GetColliderAABB() const;
 
-	void BeginOverlap(CCollider3D* POther);
-	void Overlap(CCollider3D* POther);
-	void EndOverlap(CCollider3D* POther);
-
-	void BeginOverlap(CColliderRay* POther);
-	void Overlap(CColliderRay* POther);
-	void EndOverlap(CColliderRay* POther);
-
-	void BeginOverlap(CLandScape* POther);
-	void Overlap(CLandScape* POther);
-	void EndOverlap(CLandScape* POther);
-
-	void BeginOverlap(CMeshCollider* POther);
-	void Overlap(CMeshCollider* POther);
-	void EndOverlap(CMeshCollider* POther);
-
 	void Activate();
 	void Deactivate();
+
+	// Templated Overlap Function
+	template <typename T>
+	void BeginOverlap(T* POther);
+	template <typename T>
+	void Overlap(T* POther);
+	template <typename T>
+	void EndOverlap(T* POther);
 
 	// Special Member Function
 	CLONE(CCollider3D);
@@ -99,3 +93,37 @@ public:
 	bool IsIndependentScale() const { return m_IndependentScale; }
 	bool IsActive() const { return m_State == ACTIVE; }
 };
+
+template <typename T>
+void CCollider3D::BeginOverlap(T* POther)
+{
+	++m_OverlapCount;
+
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (auto* Script : ScriptVector)
+	{
+		Script->BeginOverlap(this, POther->GetOwner(), POther);
+	}
+}
+
+template <typename T>
+void CCollider3D::Overlap(T* POther)
+{
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (auto* Script : ScriptVector)
+	{
+		Script->Overlap(this, POther->GetOwner(), POther);
+	}
+}
+
+template <typename T>
+void CCollider3D::EndOverlap(T* POther)
+{
+	--m_OverlapCount;
+
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (auto* Script : ScriptVector)
+	{
+		Script->EndOverlap(this, POther->GetOwner(), POther);
+	}
+}
