@@ -29,7 +29,7 @@ class CameraController :
 	float m_RecoilAmount_horizontal;
 	float m_TargetRecoilRotX;
 	float m_TargetRecoilRotY;
-	
+
 	float m_LateralOffset;
 	float m_ObjectiveLateralOff;
 
@@ -40,6 +40,10 @@ class CameraController :
 
 	float m_ObjectiveShoulderDistance;
 	float m_ObjectiveShoulderHeight;
+
+	float m_LastVerticalVelocity;
+	float m_VerticalSmoothTime;
+	float m_CurrentVerticalVelocity;
 
 	UINT m_CameraFlag;
 	bool m_bObstacleHitFame;
@@ -68,7 +72,7 @@ private:
 	void UpdateTPSCameraAdjustments();
 
 	void ApplyZoom(bool _IsADS);
-	
+
 	void UpdateRecoil();
 
 	void HandleRightClickInput();
