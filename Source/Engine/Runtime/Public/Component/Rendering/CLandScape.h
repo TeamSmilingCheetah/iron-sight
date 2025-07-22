@@ -100,6 +100,8 @@ class CLandScape :
 	// LandScape 모드
 	LANDSCAPE_MODE m_Mode;
 
+	COLLIDER_STATE  m_State = ACTIVE;
+
 public:
 	void SetFace(UINT PX, UINT PZ);
 	void SetMode(LANDSCAPE_MODE PMode) { m_Mode = PMode; }
@@ -125,6 +127,7 @@ public:
 	AABB GetAABB() const { return m_AABB; }
 
 	LANDSCAPE_MODE GetMode() const { return m_Mode; }
+	COLLIDER_STATE GetState() const { return m_State; }
 
 	Vec3 GetWorldPosByLandScape(Vec3 PTargetWorldPos) const;
 

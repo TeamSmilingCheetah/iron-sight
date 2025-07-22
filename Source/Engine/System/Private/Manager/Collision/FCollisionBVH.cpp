@@ -18,9 +18,8 @@ void FCollisionManager::CreateBVHTree()
 {
 	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
-	vector<CGameObject*> PObjects;
-	CurrentLevel->GetAllActiveObjectsInLevel(PObjects);
-	BuildBVH(PObjects);
+	CurrentLevel->GetAllActiveObjectsInLevel(MLevelActiveObjects);
+	BuildBVH(MLevelActiveObjects);
 
 	// LOG_INFO_F("[Collision][VBH] Total Active Objects: {}", PObjects.size());
 }

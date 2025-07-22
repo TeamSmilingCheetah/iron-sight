@@ -42,7 +42,12 @@ void FCollisionManager::ClearCollisionBtwLayerSetting()
 
 /**
  * @brief 전체 충돌 처리 로직의 처리 함수
- * Create VBH -> Raycast Process -> Broad Phase -> Narrow Phase -> Clean Resource
+ * Create BVH : Bounding Volume Hirachy 구축, 이 과정에서 Level의 Active Object를 전부 가져와서 기록해둔다
+ * -> Raycast Process : Raycast는 Collision 중 처리 방식이 상이하여 우선 처리한다, 개별 Broad - Narrow 처리를 통해 충돌쌍을 기록한다
+ * -> Broad Phase : Main Collision의 Broad Phase, 여기서 AABB 판정을 통해 Candidates를 한정 짓는다
+ * -> Narrow Phase : Candidates에 대해서 Compute Shader 처리를 통해 정밀하게 판정을 진행하며 이 과정에서 충돌쌍을 기록한다
+ * -> PostProcess Phase : 확정된 충돌쌍에 대한 상호작용을 모든 오브젝트를 순회하면서 일괄 처리한다
+ * -> Clean Resource : 사용된 자원들을 정리한다
  */
 void FCollisionManager::Tick()
 {
@@ -70,7 +75,7 @@ void FCollisionManager::Tick()
 
 	// Raycast Process
 	// LOG_INFO("[Collision][Main] Raycast Process Start");
-	RaycastProcess();
+	// RaycastProcess();
 
 	// Check Collision
 	// LOG_INFO("[Collision][Main] Broad Phase Start");
@@ -86,36 +91,7 @@ void FCollisionManager::Tick()
 	// LOG_INFO("[Collision][Main] Collision Process Done");
 }
 
-void FCollisionManager::CollisionPostProcess()
-{
-	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
-	for (auto& Pair : MColllisionInfoMap)
-	{
-		if (Pair.second)
-		{
-			if (!MFrameCollisionSet.contains(Pair.first))
-			{
-				COLLISION_ID ID = COLLISION_ID(Pair.first);
-				CGameObject* LeftObject = CurrentLevel->FindObjectByObjectID(ID.Left);
-				CGameObject* RightObject = CurrentLevel->FindObjectByObjectID(ID.Right);
-
-				if (LeftObject && RightObject)
-				{
-					visit([&](auto* PLeftCollider, auto* PRightCollider)
-					{
-						if (PLeftCollider && PRightCollider)
-						{
-							ProcessEndOverlap(PLeftCollider, PRightCollider);
-						}
-					}, LeftObject->GetCollider(), RightObject->GetCollider());
-				}
-
-				Pair.second = false;
-			}
-		}
-	}
-}
 
 /**
  * @brief 모든 충돌 판정이 완료된 후 사용한 자원을 정리하는 함수
@@ -124,5 +100,6 @@ void FCollisionManager::CleanResource()
 {
 	// Reset Information
 	MCandidatePairVector.clear();
+	MLevelActiveObjects.clear();
 	MFrameCollisionSet.clear();
 }

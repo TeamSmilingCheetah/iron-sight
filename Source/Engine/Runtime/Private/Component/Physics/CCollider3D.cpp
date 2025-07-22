@@ -1,11 +1,7 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
 
-#include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 // Constant Structure
@@ -110,123 +106,6 @@ void CCollider3D::FinalTick()
 	else
 	{
 		DrawDebugCube(Vec4(0.f, 1.f, 0.f, 1.f), m_matColliderWorld, false, 0.f);
-	}
-}
-
-
-void CCollider3D::BeginOverlap(CCollider3D* POther)
-{
-	++m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::Overlap(CCollider3D* POther)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::EndOverlap(CCollider3D* POther)
-{
-	--m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::BeginOverlap(CColliderRay* POther)
-{
-	++m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(POther, POther->GetOwner(), this);
-	}
-}
-
-void CCollider3D::Overlap(CColliderRay* POther)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(POther, POther->GetOwner(), this);
-	}
-}
-
-void CCollider3D::EndOverlap(CColliderRay* POther)
-{
-	--m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(POther, POther->GetOwner(), this);
-	}
-}
-
-void CCollider3D::BeginOverlap(CLandScape* POther)
-{
-	++m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::Overlap(CLandScape* POther)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::EndOverlap(CLandScape* POther)
-{
-	--m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::BeginOverlap(CMeshCollider* POther)
-{
-	++m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->BeginOverlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::Overlap(CMeshCollider* POther)
-{
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->Overlap(this, POther->GetOwner(), POther);
-	}
-}
-
-void CCollider3D::EndOverlap(CMeshCollider* POther)
-{
-	--m_OverlapCount;
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
-	{
-		vecScript[i]->EndOverlap(this, POther->GetOwner(), POther);
 	}
 }
 

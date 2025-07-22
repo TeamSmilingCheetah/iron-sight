@@ -13,8 +13,6 @@
 #include "Runtime/Public/Component/Physics/CCollider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandscape.h"
 
-using ColliderVariant = variant<CMeshCollider*, CCollider3D*>;
-
 UINT CGameObject::GUID = 0;
 
 CGameObject::CGameObject()
@@ -499,15 +497,29 @@ AABB CGameObject::GetAABB() const
 	return { WorldMin, WorldMax };
 }
 
-ColliderVariant CGameObject::GetCollider() const
+/**
+ * @brief variant를 활용한 해당 오브젝트가 가진 Collider Component를 전부 반환하도록 하는 함수
+ * @return Collider 혹은 nullptr
+ */
+vector<ColliderVariant> CGameObject::GetColliders() const
 {
+	vector<ColliderVariant> VariantVector;
+	if (Collider2D())
+	{
+		VariantVector.push_back(ColliderVariant(Collider2D()));
+	}
+	if (LandScape())
+	{
+		VariantVector.push_back(ColliderVariant(LandScape()));
+	}
 	if (Collider3D())
 	{
-		return Collider3D();
+		VariantVector.push_back(ColliderVariant(Collider3D()));
 	}
-	if (!MeshCollider())
+	if (MeshCollider())
 	{
-		assert(!"이 선택지들 중에서 해결되지 않았다면 문제 발생");
+		VariantVector.push_back(ColliderVariant(MeshCollider()));
 	}
-	return MeshCollider();
+
+	return VariantVector;
 }

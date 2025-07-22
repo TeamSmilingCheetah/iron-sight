@@ -2,7 +2,7 @@
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
-using ColliderVariant = variant<CMeshCollider*, CCollider3D*>;
+using ColliderVariant = variant<CCollider2D*, CCollider3D*, CMeshCollider*, CLandScape*, CColliderRay*>;
 
 /**
  * @brief 게임 월드를 구성하는 모든 오브젝트의 기본 단위
@@ -69,7 +69,7 @@ public:
 	UINT GetParentObjectID() const;
 	bool IsAncestor(const CGameObject* POther) const;
 	AABB GetAABB() const;
-	ColliderVariant GetCollider() const;
+	vector<ColliderVariant> GetColliders() const;
 
 	// Getter & Setter
 	UINT GetObjectID() const { return MObjectID; }

@@ -1,5 +1,7 @@
 #pragma once
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 
 class CCollider2D :
     public CComponent
@@ -12,6 +14,7 @@ private:
     bool m_IndependentScale;
 
     int m_OverlapCount;
+	COLLIDER_STATE m_State = ACTIVE;
 
 public:
     void SetOffset(Vec2 POffset) { m_Offset = POffset; }
@@ -20,6 +23,7 @@ public:
     Vec2 GetOffset() const { return m_Offset; }
     Vec2 GetScale() const { return m_Scale; }
 	void GetAABB(Vec2& PMin, Vec2& PMax) const;
+	COLLIDER_STATE GetState() const { return m_State; }
 
     const Matrix& GetColliderWorldMatrix() const { return m_matColliderWorld; }
 
@@ -28,9 +32,13 @@ public:
 
     void FinalTick() override;
 
-    void BeginOverlap(CCollider2D* POther);
-    void Overlap(CCollider2D* POther);
-    void EndOverlap(CCollider2D* POther);
+	// Templated Overlap Function
+	template <typename T>
+	void BeginOverlap(T* POther);
+	template <typename T>
+	void Overlap(T* POther);
+	template <typename T>
+	void EndOverlap(T* POther);
 
     void SaveComponent(FILE* PFile) override;
     void LoadComponent(FILE* PFile) override;
@@ -41,3 +49,37 @@ public:
     CCollider2D(const CCollider2D& POrigin);
     ~CCollider2D() override;
 };
+
+template <typename T>
+void CCollider2D::BeginOverlap(T* POther)
+{
+	++m_OverlapCount;
+
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (auto* Script : ScriptVector)
+	{
+		Script->BeginOverlap(this, POther->GetOwner(), POther);
+	}
+}
+
+template <typename T>
+void CCollider2D::Overlap(T* POther)
+{
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (auto* Script : ScriptVector)
+	{
+		Script->Overlap(this, POther->GetOwner(), POther);
+	}
+}
+
+template <typename T>
+void CCollider2D::EndOverlap(T* POther)
+{
+	--m_OverlapCount;
+
+	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
+	for (auto* Script : ScriptVector)
+	{
+		Script->EndOverlap(this, POther->GetOwner(), POther);
+	}
+}
