@@ -110,38 +110,31 @@ void ThrowableController::Tick()
 		ClearKey();
 
 		// 상태
-		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE);
+		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_PREPARE);
+	}
+
+	
+	// 투척 준비
+	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
+	{
+		m_bCanThrow = true;
+		pPlayerScript->SetThrow(true);
+		ClearKey();
+
+		// 상태
+		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_PREPARE);
 	}
 
 	// 투척 상태 진입 가능한 지 판정
 	if (m_EquippedOwner && m_bCanThrow)
 	{
-		int pauseFrame = 0;
-		int curFrame = m_EquippedOwner->Animator3D()->GetCurFrameIdx();
+		bool readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetFrameLength() - 1 == m_EquippedOwner->Animator3D()->GetCurFrameIdx();
 
-		bool readyToThrow = false;
-		switch (m_PlayerScript->GetMotionState())
-		{
-		case MOTION_STATE::STAND:
-			pauseFrame = 47;	
-			readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetKey() == L"Animation\\Armature_toss grenade.anim"
-				&& pauseFrame <= curFrame;
-			break;
-		case MOTION_STATE::PRONE:
-			pauseFrame = 53;
-			readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetKey() == L"Animation\\Armature_prone toss grenade.anim"
-				&& pauseFrame <= curFrame;
-			break;
-		}
-		
 		// 준비 자세가 된 경우
 		if (readyToThrow)
 		{
-			m_EquippedOwner->Animator3D()->SetCurClipFrame(pauseFrame);
-			m_EquippedOwner->Animator3D()->Pause();
-
-			if (m_CurKey == KEY::LBTN
-				&& (m_CurKeyState == KEY_STATE::RELEASED || m_CurKeyState == KEY_STATE::NONE))
+			if (m_CurKey == KEY::LBTN &&
+				(m_CurKeyState == KEY_STATE::RELEASED || m_CurKeyState == KEY_STATE::NONE))
 			{
 				// Player의 위치와 방향 정보
 				Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
@@ -159,8 +152,8 @@ void ThrowableController::Tick()
 				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
 				GetOwner()->Collider3D()->SetTrigger(false);
 
-				// 애니메이션 다시 재생
-				m_EquippedOwner->Animator3D()->Play();
+				// 상태
+				m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_THROW_HIGH);
 
 				// 애니메이션 다 끝날 때까지 상태 유지
 				m_AfterThrowAccTime = 0.f;
@@ -174,44 +167,47 @@ void ThrowableController::Tick()
 				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
 			}
+
+			// 투척 한다.
+			else if (m_CurKey == KEY::RBTN &&
+				(m_CurKeyState == KEY_STATE::RELEASED || m_CurKeyState == KEY_STATE::NONE))
+			{
+				// Player의 위치와 방향 정보
+				Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
+
+				// 부모를 없는 독립 개체로 바꿔준다.
+				AddChild(nullptr, GetOwner());
+				/// TEST: 5번 (player object layer)로 변경
+				ChangeLayer(GetOwner(), 5);
+
+				// 현재 Player 위치에 무기를 다시 생성시킨다.
+				Vec3 vSpanwPos = vPlayerPos;
+				vSpanwPos.y += 800.f;
+				GetOwner()->Transform()->SetRelativePos(vSpanwPos);
+
+				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
+				GetOwner()->Collider3D()->SetTrigger(false);
+
+				// 상태
+				m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_THROW_LOW);
+
+				// 애니메이션 다 끝날 때까지 상태 유지
+				m_AfterThrowAccTime = 0.f;
+				m_bAfterThrow = true;
+
+				m_ThrowAngle = 1.f;
+				m_Speed = 4000.f;
+				m_bThrow = true;
+
+				// 던지는 사운드 재생 (중복 x)
+				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
+				ClearKey();
+			}
 		}
 	}
+
+
 	
-	// 투척 준비
-	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
-	{
-		m_bCanThrow = true;
-		pPlayerScript->SetThrow(true);
-		ClearKey();
-	}
-
-	// 투척 한다.
-  	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::RELEASED)
-	{
-		// Player의 위치와 방향 정보
-		Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
-
-		// 부모를 없는 독립 개체로 바꿔준다.
-		AddChild(nullptr, GetOwner());
-		// 본래 Layer로 변경해준다.
-		ChangeLayer(GetOwner(), 2);
-
-		// 현재 Player 위치에 무기를 다시 생성시킨다.
-		Vec3 vSpanwPos = vPlayerPos;
-		vSpanwPos.y += 800.f;
-		GetOwner()->Transform()->SetRelativePos(vSpanwPos);
-
-		// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
-		GetOwner()->Collider3D()->SetTrigger(false);
-
-		m_ThrowAngle = 1.f;
-		m_Speed = 4000.f;
-		m_bThrow = true;
-
-		// 던지는 사운드 재생 (중복 x)
-		m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
-		ClearKey();
-	}
 
 
 	//

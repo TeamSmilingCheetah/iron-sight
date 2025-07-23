@@ -23,9 +23,7 @@ CAnimator3D::CAnimator3D()
 	, m_CurClip(nullptr)
 	, m_NextClip(nullptr)
 	, m_CurClipCurFrameIdx(0)
-	, m_CurClipNextFrameIdx(0)
 	, m_NextClipCurFrameIdx(0)
-	, m_NextClipNextFrameIdx(0)
 	, m_BoneFinalMatBuffer(nullptr)
 	, m_BonePureMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
@@ -51,9 +49,7 @@ CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	, m_CurClip(_origin.m_CurClip)
 	, m_NextClip(nullptr)
 	, m_CurClipCurFrameIdx(0)
-	, m_CurClipNextFrameIdx(0)
 	, m_NextClipCurFrameIdx(0)
-	, m_NextClipNextFrameIdx(0)
 	, m_BoneFinalMatBuffer(nullptr)
 	, m_BonePureMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
@@ -112,12 +108,10 @@ void CAnimator3D::FinalTick()
 		// 다음 클립의 다음 프레임 계산
 		if (m_NextClipCurFrameIdx + 1 == m_NextClip->GetFrameLength())
 		{
-			m_NextClipNextFrameIdx = m_NextClipCurFrameIdx;
 			m_NextClipRatio = 0.f;
 		}
 		else
 		{
-			m_NextClipNextFrameIdx = m_NextClipCurFrameIdx + 1;
 			m_NextClipRatio = m_NextClipAccTime / m_FrameDuration;
 		}
 
@@ -130,12 +124,10 @@ void CAnimator3D::FinalTick()
 			m_CurClipAccTime = m_NextClipAccTime;
 			m_CurClipRatio = m_NextClipRatio;
 			m_CurClipCurFrameIdx = m_NextClipCurFrameIdx;
-			m_CurClipNextFrameIdx = m_NextClipNextFrameIdx;
 
 			// 초기화
 			m_NextClip = nullptr;
 			m_NextClipCurFrameIdx = 0;
-			m_NextClipNextFrameIdx = 0;
 			m_BlendRatio = 0.f;
 			m_BlendAccTime = 0.f;
 			m_BlendDuration = 0.f;
@@ -147,6 +139,7 @@ void CAnimator3D::FinalTick()
 			// 현재 클립과 다음 클립의 보간 비율 계산
 			m_BlendRatio = m_BlendAccTime / m_BlendDuration;
 		}
+
 	}
 
 	if (!curClipUpdated)
@@ -184,12 +177,10 @@ void CAnimator3D::FinalTick()
 		// 현재 클립의 다음 프레임 계산
 		if (m_CurClipCurFrameIdx + 1 == m_CurClip->GetFrameLength())
 		{
-			m_CurClipNextFrameIdx = m_CurClipCurFrameIdx;
 			m_CurClipRatio = 0.f;
 		}
 		else
 		{
-			m_CurClipNextFrameIdx = m_CurClipCurFrameIdx + 1;
 			m_CurClipRatio = m_CurClipAccTime / m_FrameDuration;
 		}
 
@@ -408,7 +399,6 @@ void CAnimator3D::CreateBoneObject()
 	m_CurClip = pClip;
 
 	m_CurClipCurFrameIdx = 0;
-	m_CurClipNextFrameIdx = 1;
 	m_CurClipAccTime = 0.f;
 	m_CurClipRatio = 0.f;
 
@@ -422,7 +412,6 @@ void CAnimator3D::CreateBoneObject()
 		 return;
 
 	 m_CurClipCurFrameIdx = _FrameIdx;
-	 m_CurClipNextFrameIdx = min(_FrameIdx + 1, m_CurClip->GetFrameLength() - 1);
 	 m_CurClipAccTime = 0.f;
 	 m_CurClipRatio = 0.f;
 
@@ -441,11 +430,12 @@ void CAnimator3D::CreateBoneObject()
 	 if (pNextClip == nullptr)
 		 return;
 
+	 LOG_INFO_F("[Animator][SetCurClipBlend] Cur:{} to Next:{}", WStringToString(m_CurClip->GetKey()), WStringToString(_AnimName));
+
 	 Play();
 
 	 m_NextClip = pNextClip;
 	 m_NextClipCurFrameIdx = 0;
-	 m_NextClipNextFrameIdx = 0;
 	 m_NextClipAccTime = 0.f;
 	 m_NextClipRatio = 0.f;
 
@@ -537,6 +527,8 @@ void CAnimator3D::LoadComponent(FILE* _File)
 
 void CAnimator3D::LinkBoneObject()
 {
+	assert(!m_mapClip.empty());
+
 	const vector<tMTBone>* vecBones = m_mapClip[0]->GetBones();
 
 	UINT BoneCount = static_cast<UINT>(vecBones->size());

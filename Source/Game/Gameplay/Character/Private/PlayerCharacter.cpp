@@ -177,7 +177,6 @@ void PlayerCharacter::Tick()
 
 	else
 	{
-
 		if (!m_bMouseActive)
 		{
 			PlayerView();
@@ -653,6 +652,9 @@ void PlayerCharacter::PlayerHeal()
 			m_HealAmount = 0.f;
 
 			SetObjectActive(m_ItemUseUI, false);
+
+			// 상태
+			SetActionState(ACTION_STATE::NONE);
 		}
 
 		// 진행 중
@@ -780,6 +782,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 75.f;
+		SetActionState(ACTION_STATE::FIRST_AID_KIT);
 		break;
 	case ITEM_TYPE::MED_KIT:
 		if (m_CurHP >= m_MaxHP)
@@ -789,6 +792,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
+		SetActionState(ACTION_STATE::MED_KIT);
 		break;
 	case ITEM_TYPE::BANDAGE:
 		if (m_CurHP >= m_SemiMaxHP)
@@ -798,18 +802,22 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 10.f;
+		SetActionState(ACTION_STATE::BANDAGE);
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 100.f;
+		SetActionState(ACTION_STATE::ADRENALINE_SYRINGE);
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 60.f;
+		SetActionState(ACTION_STATE::PAIN_KILLER);
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 40.f;
+		SetActionState(ACTION_STATE::ENERGY_DRINK);
 		break;
 	default:
 		break;

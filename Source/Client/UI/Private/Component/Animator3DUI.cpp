@@ -35,7 +35,7 @@ void Animator3DUI::Render_Update()
 		if (pCurClip == nullptr)
 			curClipName = "None";
 		else
-			curClipName = WStringToString(pCurClip->GetName());
+			curClipName = WStringToString(pCurClip->GetKey());
 
 		// CurClip Info
 		ImGui::Text("Cur Clip");
@@ -45,7 +45,7 @@ void Animator3DUI::Render_Update()
 		{
 			for (auto iter = mapClip.begin(); iter != mapClip.end(); ++iter)
 			{
-				string name = WStringToString(iter->second->GetName());
+				string name = WStringToString(iter->second->GetKey());
 				bool is_selected = (curClipName == name);
 				if (ImGui::Selectable(name.c_str(), is_selected))
 				{
@@ -75,7 +75,7 @@ void Animator3DUI::Render_Update()
 		if (pNextClip == nullptr)
 			nextClipName = "None";
 		else
-			nextClipName = WStringToString(pNextClip->GetName());
+			nextClipName = WStringToString(pNextClip->GetKey());
 
 		ImGui::Text("Next Clip");
 		ImGui::SameLine(100);
@@ -84,7 +84,7 @@ void Animator3DUI::Render_Update()
 		{
 			for (auto iter = mapClip.begin(); iter != mapClip.end(); ++iter)
 			{
-				string name = WStringToString(iter->second->GetName());
+				string name = WStringToString(iter->second->GetKey());
 				bool is_selected = (nextClipName == name);
 				if (ImGui::Selectable(name.c_str(), is_selected))
 				{

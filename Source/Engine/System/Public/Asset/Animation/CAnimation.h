@@ -23,7 +23,7 @@ private:
 
 	FbxTime::EMode		m_TimeMode;
 
-	bool		m_Loop;	// 반복
+	bool		m_Loop;		// 반복
 
 	// KeyFrame 정보
 	vector<tFrameTrans>		m_vecKeyFrames;

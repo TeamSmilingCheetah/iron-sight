@@ -156,3 +156,8 @@ void Engine::Animation::AddAnimationClips(CGameObject* PObject, Ptr<CMeshData> P
 {
 	PObject->Animator3D()->AddAnimClips(PAnimationSet->GetAnimations());
 }
+
+void Engine::Animation::AddAnimationClip(CGameObject* PObject, Ptr<CAnimation> PAnimation)
+{
+	PObject->Animator3D()->AddAnimClip(PAnimation);
+}

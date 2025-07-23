@@ -44,7 +44,7 @@ private:
 	PlayerCharacter* m_PlayerScript;
 
 	float m_AfterThrowAccTime;
-	const float m_ActionEndTime = 1.f;
+	const float m_ActionEndTime = 1.7f;
 
 private:
 	void Triggered();
