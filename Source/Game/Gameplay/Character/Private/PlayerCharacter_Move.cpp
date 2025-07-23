@@ -299,7 +299,7 @@ void PlayerCharacter::AnimationControl()
 	case ACTION_STATE::JUMP:
 	{
 		delay = 0.02f;
-		clipName = L"Animation\\Armature_rifle jump.anim";
+		clipName = L"Animation\\Armature_rifle_jump.anim";
 	}
 		break;
 	case ACTION_STATE::GUN_FIRE:
@@ -308,13 +308,13 @@ void PlayerCharacter::AnimationControl()
 		switch (m_MotionState)
 		{
 		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_firing rifle.anim";
+			clipName = L"Animation\\Armature_firing_rifle.anim";
 			break;
 		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_firing rifle.anim";
+			clipName = L"Animation\\Armature_firing_rifle.anim";
 			break;
 		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone firing rifle.anim";
+			clipName = L"Animation\\Armature_prone_firing_rifle.anim";
 			break;
 		}
 	}
@@ -331,24 +331,58 @@ void PlayerCharacter::AnimationControl()
 			clipName = L"Animation\\Armature_reloading.anim";
 			break;
 		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone reloading.anim";
+			clipName = L"Animation\\Armature_prone_reloading.anim";
 			break;
 		}
 	}
 		break;
-	case ACTION_STATE::GRENADE:
+	case ACTION_STATE::GRENADE_PREPARE:
 	{
 		delay = 1.f;
 		switch (m_MotionState)
 		{
 		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_toss grenade.anim";
+			clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
 			break;
 		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
-			clipName = L"Animation\\Armature_toss grenade.anim";
+			clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
 			break;
 		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone toss grenade.anim";
+			clipName = L"Animation\\Armature_prone_grenade_prepare.anim";
+			break;
+		}
+	}
+	break;
+	case ACTION_STATE::GRENADE_THROW_HIGH:
+	{
+		delay = 0.07f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_toss_grenade_test.anim";
+			break;
+		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
+			clipName = L"Animation\\Armature_toss_grenade_test.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
+			break;
+		}
+	}
+	break;
+	case ACTION_STATE::GRENADE_THROW_LOW:
+	{
+		delay = 0.3f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_toss_grenade_low.anim";
+			break;
+		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
+			clipName = L"Animation\\Armature_toss_grenade_low.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
 			break;
 		}
 	}
@@ -358,12 +392,72 @@ void PlayerCharacter::AnimationControl()
 	case ACTION_STATE::MED_KIT:
 		break;
 	case ACTION_STATE::FIRST_AID_KIT:
+	{
+		delay = 0.4f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
+			break;
+		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+			clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone_first_aid_kit.anim";
+			break;
+		}
+	}
 		break;
 	case ACTION_STATE::ENERGY_DRINK:
+	{
+		delay = 0.4f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_stand_energy_drink.anim";
+			break;
+		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+			clipName = L"Animation\\Armature_stand_energy_drink.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone_energy_drink.anim";
+			break;
+		}
+	}
 		break;
 	case ACTION_STATE::PAIN_KILLER:
+	{
+		delay = 0.4f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_stand_pain_killer.anim";
+			break;
+		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+			clipName = L"Animation\\Armature_stand_pain_killer.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone_pain_killer.anim";
+			break;
+		}
+	}
 		break;
 	case ACTION_STATE::ADRENALINE_SYRINGE:
+	{
+		delay = 0.4f;
+		switch (m_MotionState)
+		{
+		case MOTION_STATE::STAND:
+			clipName = L"Animation\\Armature_reloading.anim";
+			break;
+		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+			clipName = L"Animation\\Armature_reloading.anim";
+			break;
+		case MOTION_STATE::PRONE:
+			clipName = L"Animation\\Armature_prone_reloading.anim";
+			break;
+		}
+	}
 		break;
 	case ACTION_STATE::DEAD:
 	{
@@ -371,13 +465,13 @@ void PlayerCharacter::AnimationControl()
 		switch (m_MotionState)
 		{
 		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_death from the front.anim";
+			clipName = L"Animation\\Armature_death_from_the_front.anim";
 			break;
 		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
-			clipName = L"Animation\\Armature_death from the front.anim";
+			clipName = L"Animation\\Armature_death_from_the_front.anim";
 			break;
 		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone death.anim";
+			clipName = L"Animation\\Armature_prone_death.anim";
 			break;
 		}
 	}
@@ -389,53 +483,53 @@ void PlayerCharacter::AnimationControl()
 		if (KEY_PRESSED(KEY::W))
 		{
 			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk crouching forward.anim";
+				clipName = L"Animation\\Armature_walk_crouching_forward.anim";
 			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone forward.anim";
+				clipName = L"Animation\\Armature_prone_forward.anim";
 			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run forward.anim";
+				clipName = L"Animation\\Armature_run_forward.anim";
 			else
-				clipName = L"Animation\\Armature_walk forward.anim";
+				clipName = L"Animation\\Armature_walk_forward.anim";
 		}
 		else if (KEY_PRESSED(KEY::A))
 		{
 			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk crouching left.anim";
+				clipName = L"Animation\\Armature_walk_crouching_left.anim";
 			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone left.anim";
+				clipName = L"Animation\\Armature_prone_left.anim";
 			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run left.anim";
+				clipName = L"Animation\\Armature_run_left.anim";
 			else
-				clipName = L"Animation\\Armature_walk left.anim";
+				clipName = L"Animation\\Armature_walk_left.anim";
 		}
 		else if (KEY_PRESSED(KEY::S))
 		{
 			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk crouching backward.anim";
+				clipName = L"Animation\\Armature_walk_crouching_backward.anim";
 			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone backward.anim";
+				clipName = L"Animation\\Armature_prone_backward.anim";
 			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run backward.anim";
+				clipName = L"Animation\\Armature_run_backward.anim";
 			else
-				clipName = L"Animation\\Armature_walk backward.anim";
+				clipName = L"Animation\\Armature_walk_backward.anim";
 		}
 		else if (KEY_PRESSED(KEY::D))
 		{
 			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk crouching right.anim";
+				clipName = L"Animation\\Armature_walk_crouching_right.anim";
 			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone right.anim";
+				clipName = L"Animation\\Armature_prone_right.anim";
 			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run right.anim";
+				clipName = L"Animation\\Armature_run_right.anim";
 			else
-				clipName = L"Animation\\Armature_walk right.anim";
+				clipName = L"Animation\\Armature_walk_right.anim";
 		}
 		else
 		{
 			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_idle crouching.anim";
+				clipName = L"Animation\\Armature_idle_crouching.anim";
 			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone idle.anim";
+				clipName = L"Animation\\Armature_prone_idle.anim";
 			else
 				clipName = L"Animation\\Armature_idle.anim";
 		}

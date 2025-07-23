@@ -74,8 +74,8 @@ private:
 	bool CanReload();
 
 public:
-	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT);
-	CLONE(GunController);
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT)
+	CLONE(GunController)
 	GunController();
 	~GunController() override;
 };

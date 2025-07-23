@@ -1,4 +1,5 @@
-﻿#pragma once
+#pragma once
+
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
@@ -59,7 +60,7 @@ class CMeshCollider;
 class FCollisionManager :
 	public singleton<FCollisionManager>
 {
-	SINGLE(FCollisionManager);
+	SINGLE(FCollisionManager)
 
 private:
 	struct MeshBatchData

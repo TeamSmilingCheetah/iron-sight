@@ -23,7 +23,10 @@ enum class ACTION_STATE : uint8_t
 
 	GUN_FIRE,
 	GUN_RELOAD,
-	GRENADE,
+
+	GRENADE_PREPARE,
+	GRENADE_THROW_LOW,
+	GRENADE_THROW_HIGH,
 
 	BANDAGE,
 	MED_KIT,
@@ -187,6 +190,8 @@ public:
 	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
 	void SetReloadingEnd(bool PReloadingEnd) { m_bReloadingEnd = PReloadingEnd; }
 
+	void SetMouseActive(bool _b);
+
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
@@ -211,7 +216,7 @@ public:
 	void LoadComponentReference() override;
 
 public:
-	CLONE(PlayerCharacter);
+	CLONE(PlayerCharacter)
 	PlayerCharacter();
 	~PlayerCharacter() override;
 };

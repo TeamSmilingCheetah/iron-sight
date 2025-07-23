@@ -44,7 +44,7 @@ struct tItemIndividualInfo
 class ItemMgr
 	: public singleton<ItemMgr>
 {
-	SINGLE(ItemMgr);
+	SINGLE(ItemMgr)
 
 private:
 	tItemCommonInfo	m_ItemInfo[static_cast<UINT>(ITEM_TYPE::END)];

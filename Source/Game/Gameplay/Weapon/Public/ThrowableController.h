@@ -44,7 +44,7 @@ private:
 	PlayerCharacter* m_PlayerScript;
 
 	float m_AfterThrowAccTime;
-	const float m_ActionEndTime = 1.f;
+	const float m_ActionEndTime = 1.7f;
 
 private:
 	void Triggered();
@@ -66,8 +66,8 @@ public:
 
 
 public:
-	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT);
-	CLONE(ThrowableController);
+	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT)
+	CLONE(ThrowableController)
 	ThrowableController();
 	~ThrowableController() override;
 };

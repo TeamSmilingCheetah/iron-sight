@@ -30,8 +30,9 @@ CAnimation::CAnimation(const CAnimation& _Src)
 	, m_EndTime(_Src.m_EndTime)
 	, m_TimeLength(_Src.m_TimeLength)
 	, m_TimeMode(_Src.m_TimeMode)
-	, m_BoneFrameData(nullptr)
+	, m_Loop(_Src.m_Loop)
 	, m_vecKeyFrames(_Src.m_vecKeyFrames)	// FIXME : cpu 데이터는 날려야 함. 나중에 gpu copyresource로 변경하기
+	, m_BoneFrameData(nullptr)
 {
 	CreateBoneFrameSB();
 }
@@ -118,11 +119,6 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 
 		// structuredbuffer 만들어두기
 		pAnim->CreateBoneFrameSB();
-		//pAnim->m_BoneFrameData = new CStructuredBuffer;
-		//pAnim->m_BoneFrameData->Create(sizeof(tFrameTrans)
-		//    , static_cast<UINT>(vecBones.size()) * pAnim->m_FrameLength
-		//    , SRV_ONLY, false, pAnim->m_vecKeyFrames.data());
-
 
 		wstring strFilePath = L"Animation\\" + pAnim->GetName();
 

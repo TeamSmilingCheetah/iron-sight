@@ -177,7 +177,6 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 {
 	// Load Animation & MeshData From FBX
 	Ptr<CMeshData> PlayerMeshData = IO::LoadFBX(L"FBX\\Character\\James.fbx");
-	Ptr<CMeshData> AnimationSet = IO::LoadFBX(L"FBX\\Character\\James_Anim.fbx");
 
 	CGameObject* Player = Common::InstantiateNewObject(PlayerMeshData);
 	Common::SetObjectName(Player, L"Player");
@@ -188,7 +187,47 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Common::AddComponentToObject<CColliderRay>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 1500.f, 0.f}, 5000.f, true);
 
-	Animation::SetAnimationClips(Player, AnimationSet);
+	// Animation
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_rifle_jump.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_firing_rifle.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_firing_rifle.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_reloading.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_reloading.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_death_from_the_front.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_death.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_crouching_forward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_forward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_run_forward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_forward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_crouching_left.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_left.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_run_left.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_left.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_crouching_backward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_backward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_run_backward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_backward.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_crouching_right.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_right.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_run_right.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_right.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_idle_crouching.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_idle.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_idle.anim"));
+
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_first_aid_kit.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_energy_drink.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_adrenaline.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_pain_killer.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_first_aid_kit.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_energy_drink.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_adrenaline.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_pain_killer.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_low.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_grenade_prepare.anim"));		// TEST: PUBG_ANIMSET에서 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_test.anim"));			// TEST: toss_grenade 뒷부분 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_grenade_prepare.anim"));		// TEST: prone_toss_grenade 앞부분 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));	// TEST: prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<CCollider3D>(Player);
 	Collider::SetColliderProperties(Player, {550.f, 1600.f, 385.f}, {35.f, 760.f, 0.f}, true);

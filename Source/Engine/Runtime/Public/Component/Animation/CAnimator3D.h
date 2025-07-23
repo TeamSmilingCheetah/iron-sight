@@ -33,9 +33,7 @@ private:
 
 	// 프레임 인덱스
 	int				m_CurClipCurFrameIdx;	// 현재 클립의 현재 프레임
-	int				m_CurClipNextFrameIdx;	// 현재 클립의 다음 프레임
 	int				m_NextClipCurFrameIdx;	// 다음 클립의 현재 프레임
-	int				m_NextClipNextFrameIdx; // 다음 클립의 다음 프레임
 
 	// Render
 	CStructuredBuffer*	m_BoneFinalMatBuffer;	// 특정 프레임(보간)의 최종 행렬 (origin bone mat inverse * cur frame bone world mat)
@@ -102,7 +100,7 @@ public:
 	virtual void SetOwner(CGameObject* _Owner) override;
 
 public:
-	CLONE(CAnimator3D);
+	CLONE(CAnimator3D)
 	CAnimator3D();
 	CAnimator3D(const CAnimator3D& _Other);
 	~CAnimator3D() override;
