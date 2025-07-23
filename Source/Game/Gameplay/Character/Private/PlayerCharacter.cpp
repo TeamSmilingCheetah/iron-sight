@@ -38,7 +38,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_JumpPower(5.f)
 	, m_IsGround(true)
 	, m_bLean(false)
-	, m_MouseSensitivity(10.f)
+	, m_MouseSensitivity(0.1f)
 	, m_bShoot(false)
 	, m_bCanThrow(false)
 	, m_bThrowBoom(false)
@@ -74,6 +74,9 @@ PlayerCharacter::PlayerCharacter()
 	, m_HPUI(nullptr)
 	, m_ItemUseUI(nullptr)
 	, m_bMouseActive(false)
+	, m_bReloadingEnd(true)
+	, m_ReloadUI(nullptr)
+	, m_CameraEffect(nullptr)
 {
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });	// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -86,7 +89,6 @@ PlayerCharacter::PlayerCharacter()
 PlayerCharacter::~PlayerCharacter()
 {
 }
-
 
 void PlayerCharacter::Begin()
 {
@@ -133,16 +135,8 @@ void PlayerCharacter::Tick()
 	// 항상 작동하는 로직
 	// =================
 
-	// 마우스가 켜진 상태에서 키입력 방지,
-	if (!m_bMouseActive && !m_CamScript->GetFlag(FREE_PS))
-	{
-		// 이동 로직
-		PlayerMove();
-
-		// 행동 로직
-		PlayerStance();
-	}
-
+	// 이동 로직
+	PlayerMove();
 
 	// UI 관리
 	PlayerControlUI();
@@ -155,38 +149,23 @@ void PlayerCharacter::Tick()
 	// 조건부 로직
 	// ==========
 
+	// 마우스가 켜진 상태에서 키입력 방지,
+	if (!m_bMouseActive && !m_CamScript->GetFlag(FREE_PS))
+	{
+		// 행동 로직
+		PlayerStance();
+	}
+
 	if (KEY_TAP(KEY::F1))
 	{
-		m_bMouseActive = !m_bMouseActive;
-
-		// 마우스 가둠
-		if (!m_bMouseActive)
-		{
-			CKeyMgr::GetInst()->SetCursorVisible(false);
-			CKeyMgr::GetInst()->SetMousePosAsCenter();
-		}
-		else
-		{
-			CKeyMgr::GetInst()->SetCursorVisible(true);
-		}
+		SetMouseActive(!m_bMouseActive);
 	}
 
 	if (!m_CamScript->GetFlag(FREE_PS))
 	{
 		if (KEY_TAP(KEY::ESC) || KEY_TAP(KEY::TAB))
 		{
-			m_bMouseActive = !m_bMouseActive;
-
-			// 마우스 가둠
-			if (!m_bMouseActive)
-			{
-				CKeyMgr::GetInst()->SetCursorVisible(false);
-				CKeyMgr::GetInst()->SetMousePosAsCenter();
-			}
-			else
-			{
-				CKeyMgr::GetInst()->SetCursorVisible(true);
-			}
+			SetMouseActive(!m_bMouseActive);
 		}
 	}
 
@@ -239,23 +218,23 @@ void PlayerCharacter::PlayerView()
 
 	// 화면의 중앙을 구한다.
 	static Vec2 vResoulution = CDevice::GetInst()->GetRenderResolution();
-	static int centerX = static_cast<int>(vResoulution.x / 2);
-	static int centerY = static_cast<int>(vResoulution.y / 2);
+	static float centerX = vResoulution.x / 2;
+	static float centerY = vResoulution.y / 2;
 
 	// 현재 마우스위치와 화면 정중앙의 변화값을 구한다.
-	int deltaX = static_cast<int>(vMousePos.x - centerX);
-	int deltaY = static_cast<int>(vMousePos.y - centerY);
+	float deltaX = vMousePos.x - centerX;
+	float deltaY = vMousePos.y - centerY;
 
 	// 미세한 움직임으로 인한 회전을 방지하기 위해 Deadzone을 추가한다.
-	int deadzone = 5;
-	if (abs(deltaX) < deadzone)
-	{
-		deltaX = 0;
-	}
-	else
-	{
-		deltaX = (deltaX > 0) ? (deltaX - deadzone) : (deltaX + deadzone);
-	}
+	//int deadzone = 1;
+	//if (abs(deltaX) < deadzone)
+	//{
+	//	deltaX = 0;
+	//}
+	//else
+	//{
+	//	deltaX = (deltaX > 0) ? (deltaX - deadzone) : (deltaX + deadzone);
+	//}
 
 	static float OriginRotY = 0.f;
 
@@ -273,7 +252,7 @@ void PlayerCharacter::PlayerView()
 			// 줌 하는 동안 둘러보기 키가 눌린경우를 방지한다.
 			if (bSearch)
 			{
-				vCameraRot.y += deltaX * m_MouseSensitivity * DT;
+				vCameraRot.y += deltaX * m_MouseSensitivity;
 				if (120.f < vCameraRot.y - OriginRotY)
 				{
 					vCameraRot.y = OriginRotY + 120.f;
@@ -289,7 +268,7 @@ void PlayerCharacter::PlayerView()
 		{
 			if (!bRecover)
 			{
-				vPlayerRot.y += deltaX * m_MouseSensitivity * DT;
+				vPlayerRot.y += deltaX * m_MouseSensitivity;
 			}
 		}
 	}
@@ -300,14 +279,14 @@ void PlayerCharacter::PlayerView()
 		// 해당 변화값으로 Player 회전 적용
 		if (!bRecover)
 		{
-			vPlayerRot.y += deltaX * m_MouseSensitivity * DT;
+			vPlayerRot.y += deltaX * m_MouseSensitivity;
 		}
 	}
 
 	// 위아래 회전
 	if (!bRecover)
 	{
-		vCameraRot.x += deltaY * m_MouseSensitivity * DT;
+		vCameraRot.x += deltaY * m_MouseSensitivity;
 		if (vCameraRot.x < -90.f)
 		{
 			vCameraRot.x = -90.f;
@@ -581,8 +560,10 @@ void PlayerCharacter::PlayerControlUI()
 	// 인벤토리 UI Toggle
 	if (KEY_TAP(KEY::TAB))
 	{
+		m_InventoryOpened = !m_InventoryOpened;
+
 		// 인벤토리가 열릴때, 상태를 초기화해준다.
-		if (!m_InventoryOpened)
+		if (m_InventoryOpened)
 		{
 			if (m_CamScript->GetFlag(WAS_TPS))
 			{
@@ -596,8 +577,8 @@ void PlayerCharacter::PlayerControlUI()
 			}
 			m_CamScript->SetFlag(SHOULDER, false);
 		}
-
-		m_InventoryOpened = !m_InventoryOpened;
+		
+		SetMouseActive(!m_InventoryOpened);
 		SetObjectActive(m_InventoryCanvasUI, m_InventoryOpened);
 	}
 
@@ -761,6 +742,22 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 
 	// 피격 화면 효과
 	m_CameraEffect->HitEffect();
+}
+
+void PlayerCharacter::SetMouseActive(bool _b)
+{
+	m_bMouseActive = _b;
+
+	// 마우스 가둠
+	if (!m_bMouseActive)
+	{
+		CKeyMgr::GetInst()->SetCursorVisible(false);
+		CKeyMgr::GetInst()->SetMousePosAsCenter();
+	}
+	else
+	{
+		CKeyMgr::GetInst()->SetCursorVisible(true);
+	}
 }
 
 void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)

@@ -206,4 +206,6 @@ void CKeyMgr::SetMousePosAsCenter()
 	ClientToScreen(CEngine::GetInst()->GetMainWnd(), &centerPt);
 
 	SetCursorPos(static_cast<int>(centerPt.x), static_cast<int>(centerPt.y));
+
+	m_MousePos = Vec2(static_cast<float>(centerX), static_cast<float>(centerY));
 }

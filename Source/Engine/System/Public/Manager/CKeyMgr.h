@@ -100,7 +100,7 @@ struct tKeyInfo
 class CKeyMgr
 	: public singleton<CKeyMgr>
 {
-	SINGLE(CKeyMgr);
+	SINGLE(CKeyMgr)
 
 	vector<tKeyInfo> m_vecKey;
 

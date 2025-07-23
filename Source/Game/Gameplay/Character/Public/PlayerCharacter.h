@@ -187,6 +187,8 @@ public:
 	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
 	void SetReloadingEnd(bool PReloadingEnd) { m_bReloadingEnd = PReloadingEnd; }
 
+	void SetMouseActive(bool _b);
+
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
@@ -211,7 +213,7 @@ public:
 	void LoadComponentReference() override;
 
 public:
-	CLONE(PlayerCharacter);
+	CLONE(PlayerCharacter)
 	PlayerCharacter();
 	~PlayerCharacter() override;
 };
