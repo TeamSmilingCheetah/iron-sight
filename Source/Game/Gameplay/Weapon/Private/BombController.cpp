@@ -5,12 +5,14 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/EnemyController.h"
 
 BombController::BombController()
 	: CScript(SCRIPT_TYPE::BOMBSCRIPT)
+	, m_TinnitusSoundIdx(-1)
 	, m_DMG(100.f)
 	, m_AccTime(0.f)
 	, m_MaxLength(0.f)
@@ -28,6 +30,9 @@ void BombController::Begin()
 	float y = Collider3D()->GetScale().y / 2.f;
 
 	m_MaxLength = sqrt(x * x + y * y);
+
+	// 소리
+	m_TinnitusSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_tinnitus.mp3");
 }
 
 void BombController::Tick()
@@ -84,6 +89,11 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 		PlayerCharacter* PlayerScript = (PlayerCharacter*)pScript;
 		PlayerScript->DamageCalcul(m_WeaponOwner, GetOwner(), finalDMG);
 
+		// 플레이어의 소리를 먹먹하게 한다
+		CSoundMgr::GetInst()->ApplyMuffle(200.f, 10.f);
+
+		// 이명소리 출력
+		m_TinnitusSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_TinnitusSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_TinnitusSoundIdx);
 
 		// 강제 종료
 		return;
@@ -100,6 +110,7 @@ void BombController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObj
 		// 강제 종료
 		return;
 	}
+
 }
 
 void BombController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)

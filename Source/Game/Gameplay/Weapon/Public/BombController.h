@@ -5,6 +5,10 @@ class BombController :
 	public CScript
 {
 private:
+	Ptr<CSound> m_TinnitusSound;
+
+	int			m_TinnitusSoundIdx;
+
 	CGameObject* m_WeaponOwner;
 
 	float m_DMG;

@@ -10,6 +10,7 @@ FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL* channelcontrol,
 CSound::CSound(bool _EngineRes)
     : CAsset(SOUND, _EngineRes)
 {
+
 }
 
 CSound::~CSound()
@@ -69,6 +70,7 @@ void CSound::Stop()
         (*iter)->stop();
     }
 }
+
 
 void CSound::SetVolume(float _f, int _iChannelIdx)
 {
