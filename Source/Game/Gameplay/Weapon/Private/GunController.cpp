@@ -328,7 +328,6 @@ void GunController::Firing()
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
 		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 
-
 		// 단발이라면 한발을 소모하고 사격을 비활성화 한다.
 		m_CamScript->ApplyRecoil();
 		StopFiring();

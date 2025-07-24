@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 class CSound;
 
@@ -20,10 +20,17 @@ class CSoundMgr :
 
 private:
 	Ptr<CSound> m_GameBGM;
+	FMOD::DSP* m_globalLowPassDSP;
 
 	Vec3 m_PlayerPosition;
 	Vec3 m_PlayerForward;
 	Vec3 m_PlayerUp;
+
+	bool   m_bMuffling;
+	float  m_fMuffleDuration;
+	float  m_fMuffleElapsed;
+	float  m_fStartCutoff;    // 효과 시작 시 컷오프
+	float  m_fTargetCutoff;    // 회복 완료 시 컷오프
 
 	map<int, Sound3DIdx> m_3DSounds; // ID로 3D 사운드 소스 관리
 	int m_next3DSoundID;
@@ -41,7 +48,7 @@ public:
 	void UpdateListener(const Vec3& position, const Vec3& forward, const Vec3& up);
 	void Stop3DSound(int soundID);
 	void StopAll3DSounds();
-
+	void ApplyMuffle(float _fCutoff, float _fDuration);
 
 	void Tick();
 

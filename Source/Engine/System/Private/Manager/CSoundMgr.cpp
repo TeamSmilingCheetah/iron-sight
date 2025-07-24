@@ -1,16 +1,29 @@
 #include "pch.h"
 #include "System/Public/Manager/CSoundMgr.h"
+#include "System/Public/Manager/CTimeMgr.h"
 #include "System/Public/Asset/Audio/CSound.h"
 #include "Core/Public/CEngine.h"
 
 CSoundMgr::CSoundMgr()
 {
-
+	// FMOD 시스템에 저역통과 DSP를 생성 요청
+	FMOD::System* sys = CEngine::GetInst()->GetFMODSystem();
+	FMOD_RESULT result = sys->createDSPByType(FMOD_DSP_TYPE_LOWPASS, &m_globalLowPassDSP);
+	if (result != FMOD_OK || !m_globalLowPassDSP)
+	{
+		assert(false && "Low-pass DSP 생성 실패");
+	}
+	// 초기에는 효과가 없도록 컷오프 주파수를 최대로 설정
+	m_globalLowPassDSP->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, 22050.0f);
 }
 
 CSoundMgr::~CSoundMgr()
 {
-
+	if (m_globalLowPassDSP)
+	{
+		FMOD_RESULT result = m_globalLowPassDSP->release();
+		m_globalLowPassDSP = nullptr;
+	}
 }
 
 int CSoundMgr::Play3DSound(Ptr<CSound> sound, const Vec3& pos, float minDist, float maxDist, int _iRoopCount, float volume, bool overlap, bool inputoverlap, int _inputSoundID)
@@ -140,6 +153,24 @@ void CSoundMgr::StopAll3DSounds()
 	m_3DSounds.clear();
 }
 
+void CSoundMgr::ApplyMuffle(float _fCutoff, float _fDuration)
+{
+	// 1) DSP 걸기
+	FMOD::ChannelGroup* masterGroup = nullptr;
+	CEngine::GetInst()->GetFMODSystem()->getMasterChannelGroup(&masterGroup);
+	masterGroup->addDSP(0, m_globalLowPassDSP);
+
+	// 2) 상태 초기화
+	m_bMuffling = true;
+	m_fMuffleDuration = _fDuration;
+	m_fMuffleElapsed = 0.0f;
+	m_fStartCutoff = _fCutoff;             // 먹먹함 시작 컷오프 (작은 값)
+	m_fTargetCutoff = 22050.0f;            // 회복될 때 컷오프 (기본값)
+
+	// 3) 즉시 시작 컷오프로 세팅
+	m_globalLowPassDSP->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, m_fStartCutoff);
+}
+
 void CSoundMgr::Tick()
 {
 	// 이미 재생이 끝난 3D 사운드 채널 제거
@@ -160,6 +191,29 @@ void CSoundMgr::Tick()
 
 	// FMOD 업데이트, 3D 사운드 거리 감쇠 계산을 위해 필요
 	CEngine::GetInst()->GetFMODSystem()->update();
+
+
+	if (!m_bMuffling)
+		return;
+
+	// 경과 시간 누적
+	m_fMuffleElapsed += DT;
+	float t = m_fMuffleElapsed / m_fMuffleDuration;
+	if (t > 1.0f) t = 1.0f;
+
+	// 보간 계산: 컷오프 값
+	float currentCutoff = m_fStartCutoff + (m_fTargetCutoff - m_fStartCutoff) * t;
+	m_globalLowPassDSP->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, currentCutoff);
+
+	// 완료된 경우 DSP 제거
+	if (t >= 1.0f)
+	{
+		FMOD::ChannelGroup* masterGroup = nullptr;
+		CEngine::GetInst()->GetFMODSystem()->getMasterChannelGroup(&masterGroup);
+		masterGroup->removeDSP(m_globalLowPassDSP);
+
+		m_bMuffling = false;
+	}
 }
 
 void CSoundMgr::PlayGameBGM(int _Roop, float _fVolume, bool _Overlap)
