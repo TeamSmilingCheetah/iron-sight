@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Runtime/Public/Component/Light/CLight2D.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 
 CLight2D::CLight2D()
     : CComponent(COMPONENT_TYPE::LIGHT2D)
@@ -21,7 +21,7 @@ void CLight2D::FinalTick()
     m_LightInfo.vDir = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 
     // RenderMgr 에 Light2D 등록
-    CRenderMgr::GetInst()->RegisterLight2D(this);
+    FRenderManager::GetInst()->RegisterLight2D(this);
 }
 
 void CLight2D::SaveComponent(FILE* _File)

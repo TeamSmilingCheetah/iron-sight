@@ -2,7 +2,7 @@
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
 #include "Runtime/Public/Actor/CLevel.h"
-#include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 #include "System/Public/Manager/CTimeMgr.h"
 
 
@@ -72,17 +72,17 @@ void CLevelMgr::ChangeLevelState(LEVEL_STATE _NextState)
 	if (_NextState == LEVEL_STATE::PAUSE || _NextState == LEVEL_STATE::STOP)
 	{
 		CTimeMgr::GetInst()->SetStopMode(true);
-		CRenderMgr::GetInst()->SetEditorMode(true);
+		FRenderManager::GetInst()->SetEditorMode(true);
 
 		if (LEVEL_STATE::STOP == _NextState)
-			CRenderMgr::GetInst()->DeregisterCamera();
+			FRenderManager::GetInst()->DeregisterCamera();
 	}
 
 	// Pause, Stop -> Play
 	else if (_NextState == LEVEL_STATE::PLAY)
 	{
 		CTimeMgr::GetInst()->SetStopMode(false);
-		CRenderMgr::GetInst()->SetEditorMode(false);
+		FRenderManager::GetInst()->SetEditorMode(false);
 
 		// 레벨이 Play될 때 오브젝트 풀 Preload 실행
 		ExcutePreload();

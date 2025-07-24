@@ -30,7 +30,7 @@ public:
 		m_AnimInstCount = 0;
 	}
 
-	void AddInstancingData(tInstancingData& _tData) { m_vecData.push_back(_tData); }
+	void AddInstancingData(const tInstancingData& _tData) { m_vecData.push_back(_tData); }
 
 	UINT GetInstanceCount() { return (UINT)m_vecData.size(); }
 	ComPtr<ID3D11Buffer> GetBuffer() { return m_InstancingBuffer; }

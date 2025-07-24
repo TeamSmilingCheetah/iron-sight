@@ -5,7 +5,7 @@
 class CMeshRender :
 	public CRenderComponent
 {
-	friend class CRenderMgr;
+	friend class FRenderManager;
 
 private:
 	bool	m_SkinRender;	// 애니메이션을 적용해서 bone에 의한 변형을 사용할 건지 여부

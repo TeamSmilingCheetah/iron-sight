@@ -5,7 +5,7 @@
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/RenderManager.h"
 #include "Client/System/Public/CImGuiMgr.h"
 
 class Inspector;
@@ -238,11 +238,11 @@ void MenuUI::SelectRenderTarget(const string& _ItemName, const wstring& _TargetK
 		if (*(pTarget + _Idx))
 		{
 			Ptr<CTexture> pTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(_TargetKey);
-			CRenderMgr::GetInst()->SetSpecifyTarget(pTarget);
+			FRenderManager::GetInst()->SetSpecifyTarget(pTarget);
 		}
 		else
 		{
-			CRenderMgr::GetInst()->SetSpecifyTarget(nullptr);
+			FRenderManager::GetInst()->SetSpecifyTarget(nullptr);
 		}
 
 		for (int i = 0; i < TARGET_COUNT; ++i)

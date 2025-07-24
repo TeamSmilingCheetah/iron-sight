@@ -3,7 +3,7 @@
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CLandScape::CLandScape()
@@ -229,7 +229,7 @@ void CLandScape::SetAABB()
 int CLandScape::Raycasting()
 {
 	// 현재 시점 카메라 가져오기
-	CCamera* pCam = CRenderMgr::GetInst()->GetMainCamera();
+	CCamera* pCam = FRenderManager::GetInst()->GetMainCamera();
 	if (nullptr == pCam)
 		return false;
 

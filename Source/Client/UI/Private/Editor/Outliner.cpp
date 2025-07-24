@@ -6,7 +6,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/RenderManager.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
@@ -404,9 +404,9 @@ void Outliner::MoveToObject(DWORD_PTR _TreeNode)
 		m_TargetObject = (CGameObject*)pNode->GetData();
 
 		// 오브젝트 위치로 이동 (Editor Mode)
-		if (CRenderMgr::GetInst()->IsEditorMode()) // Editor
+		if (FRenderManager::GetInst()->IsEditorMode()) // Editor
 		{
-			CCamera* pCam = CRenderMgr::GetInst()->GetMainCamera();
+			CCamera* pCam = FRenderManager::GetInst()->GetMainCamera();
 			pCam->Transform()->SetRelativePos(m_TargetObject->Transform()->GetWorldPos());
 		}
 	}

@@ -232,7 +232,7 @@
     <ClInclude Include="System\Public\Manager\CLevelMgr.h"/>
     <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h"/>
     <ClInclude Include="System\Public\Manager\CPathMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CRenderMgr.h"/>
+    <ClInclude Include="System\Public\Manager\RenderManager.h"/>
     <ClInclude Include="System\Public\Manager\CSoundMgr.h"/>
     <ClInclude Include="System\Public\Manager\CTaskMgr.h"/>
     <ClInclude Include="System\Public\Manager\CTimeMgr.h"/>
@@ -243,7 +243,11 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h"/>
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h"/>
     <ClInclude Include="System\Public\Rendering\Material\CMaterial.h"/>
-    <ClInclude Include="System\Public\Rendering\RenderTarget\CMRT.h"/>
+    <ClInclude Include="System\Public\Rendering\RenderPass\RenderPass.h"/>
+    <ClInclude Include="System\Public\Rendering\RenderPass\GeometryRenderPass.h"/>
+    <ClInclude Include="System\Public\Rendering\RenderPass\LightRenderPass.h"/>
+    <ClInclude Include="System\Public\Rendering\RenderPass\MergeRenderPass.h"/>
+    <ClInclude Include="System\Public\Rendering\RenderTarget\MultiRenderTarget.h"/>
     <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h"/>
     <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h"/>
     <ClInclude Include="System\Public\Rendering\Shader\CComputeShader.h"/>
@@ -259,6 +263,12 @@
     <ClInclude Include="API\Public\EngineFacade.h"/>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp"/>
     <ClCompile Include="$(SolutionDir)External\Include\Common\extern.cpp"/>
     <ClCompile Include="Core\Private\CEngine.cpp"/>
@@ -307,10 +317,11 @@
     <ClCompile Include="System\Private\Manager\CKeyMgr.cpp"/>
     <ClCompile Include="System\Private\Manager\CLevelMgr.cpp"/>
     <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionPostProcess.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionPostProcess.cpp"/>
     <ClCompile Include="System\Private\Manager\Collision\FCollisionRaycast.cpp"/>
     <ClCompile Include="System\Private\Manager\CPathMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CRenderMgr.cpp"/>
+    <ClCompile Include="System\Private\Manager\Render\RenderManager_Init.cpp"/>
+    <ClCompile Include="System\Private\Manager\Render\RenderManager_Main.cpp"/>
     <ClCompile Include="System\Private\Manager\CSoundMgr.cpp"/>
     <ClCompile Include="System\Private\Manager\CTaskMgr.cpp"/>
     <ClCompile Include="System\Private\Manager\CTimeMgr.cpp"/>
@@ -321,7 +332,10 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp"/>
     <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp"/>
     <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp"/>
-    <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp"/>
+    <ClCompile Include="System\Private\Rendering\RenderPass\GeometryRenderPass.cpp"/>
+    <ClCompile Include="System\Private\Rendering\RenderPass\LightRenderPass.cpp"/>
+    <ClCompile Include="System\Private\Rendering\RenderPass\MergeRenderPass.cpp"/>
+    <ClCompile Include="System\Private\Rendering\RenderTarget\MultiRenderTarget.cpp"/>
     <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp"/>
     <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp"/>
     <ClCompile Include="System\Private\Rendering\Shader\CClearColorCS.cpp"/>
@@ -337,14 +351,7 @@
     <ClCompile Include="System\Private\Manager\CAssetMgr_Init.cpp"/>
     <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp"/>
     <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp"/>
-    <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp"/>
     <ClCompile Include="API\Private\EngineFacade.cpp"/>
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <HLSL Include="Shader\func.fx">

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "func.h"
-#include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 #include "System/Public/Manager/CTaskMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
@@ -162,7 +162,7 @@ void DrawDebugRect(Vec4 _Color, Vec3 _Pos, Vec2 _Scale, Vec3 _Rotation, bool _De
 
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugRect(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float _Duration)
@@ -175,7 +175,7 @@ void DrawDebugRect(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float 
 
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugCircle(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, float _Duration)
@@ -187,7 +187,7 @@ void DrawDebugCircle(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, flo
 	info.Scale = Vec3(_Radius * 2.f, _Radius * 2.f, 1.f);
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugCube(Vec4 _Color, Vec3 _Pos, Vec3 _Scale, Vec3 _Rotation, bool _DepthTest,
@@ -204,7 +204,7 @@ void DrawDebugCube(Vec4 _Color, Vec3 _Pos, Vec3 _Scale, Vec3 _Rotation, bool _De
 
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugCube(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float _Duration)
@@ -217,7 +217,7 @@ void DrawDebugCube(Vec4 _Color, const Matrix& _matWorld, bool _DepthTest, float 
 
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, float _Duration)
@@ -229,7 +229,7 @@ void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, flo
 	info.Scale = Vec3(_Radius * 2.f, _Radius * 2.f, _Radius * 2.f);
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float _Duration)
@@ -241,7 +241,7 @@ void DrawDebugLine(Vec4 _Color, Vec3 _Start, Vec3 _vEnd, bool _DepthTest, float 
 	info.Scale = _vEnd;
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 void DrawDebugSkeleton(Vec4 _Color, const Matrix& _matWorld, CStructuredBuffer* _PureBoneMat, CStructuredBuffer* _ParentIdx, bool _DepthTest, float _Duration)
@@ -254,7 +254,7 @@ void DrawDebugSkeleton(Vec4 _Color, const Matrix& _matWorld, CStructuredBuffer* 
 	info.matWorld = _matWorld;
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
-	CRenderMgr::GetInst()->AddDebugShape(info);
+	FRenderManager::GetInst()->AddDebugShape(info);
 }
 
 Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat)

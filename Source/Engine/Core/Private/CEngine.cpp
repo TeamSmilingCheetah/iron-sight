@@ -9,7 +9,7 @@
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/RenderManager.h"
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
@@ -72,7 +72,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
 	CAssetMgr::GetInst()->Init();
-	CRenderMgr::GetInst()->Init();
+	FRenderManager::GetInst()->Init();
 	CLevelMgr::GetInst()->Init();
 	CFontMgr::GetInst()->Init();
 	CInstancingBuffer::GetInst()->Init();
@@ -93,7 +93,7 @@ void CEngine::Progress()
 	FCollisionManager::GetInst()->Tick();
 
 	// Engine Render
-	CRenderMgr::GetInst()->Render();
+	FRenderManager::GetInst()->Render();
 	CFontMgr::GetInst()->Render();
 
 	// Task

@@ -3,7 +3,7 @@
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
@@ -51,7 +51,7 @@ void CLight3D::FinalTick()
 	CalculateTransform();
 
 	// RenderMgr 에 Light3D 등록
-	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
+	m_LightIdx = FRenderManager::GetInst()->RegisterLight3D(this);
 
 	// DebugRender
 	if (LIGHT_TYPE::POINT == m_LightInfo.Type)
@@ -66,7 +66,7 @@ void CLight3D::Render()
 	if (m_LightInfo.Type != LIGHT_TYPE::DIRECTIONAL)
 	{
 		// 볼륨메쉬 안에 물체가 존재하는지 체크할때 사용할 역행렬
-		CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCamera();
+		CCamera* pMainCam = FRenderManager::GetInst()->GetMainCamera();
 		Matrix matInv = pMainCam->GetViewInvMat() * Transform()->GetWorldInvMat();
 		m_LightMtrl->SetScalarParam(MAT_0, matInv);
 
@@ -95,7 +95,7 @@ void CLight3D::SaveComponent(FILE* _File)
 	fwrite(&m_LightInfo, sizeof(tLight3DInfo), 1, _File);
 
 	SaveAssetRef(m_VolumeMesh, _File);
-	SaveAssetRef(m_LightMtrl, _File);	
+	SaveAssetRef(m_LightMtrl, _File);
 }
 
 void CLight3D::LoadComponent(FILE* _File)

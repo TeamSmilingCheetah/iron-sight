@@ -2,7 +2,7 @@
 
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/RenderManager.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Client/Core/Public/CEditorMgr.h"
@@ -52,7 +52,7 @@ void CEditorMgr::Init()
 	m_vecEditorObj.push_back(pObject);
 
 	// Editor 용 카메라 등록
-	CRenderMgr::GetInst()->RegisterEditorCamera(pObject->Camera());
+	FRenderManager::GetInst()->RegisterEditorCamera(pObject->Camera());
 
 	// ===================
 	// Editor Render Space
@@ -163,7 +163,7 @@ void CEditorMgr::Render_Init()
 
 void CEditorMgr::Render_Deferred()
 {
-	CMRT* pDeferredMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::DEFERRED);
+	CMRT* pDeferredMRT = FRenderManager::GetInst()->GetMRT(MRT_TYPE::DEFERRED);
 	pDeferredMRT->Clear();
 	pDeferredMRT->OMSet();
 
@@ -175,7 +175,7 @@ void CEditorMgr::Render_Deferred()
 
 void CEditorMgr::Render_Light()
 {
-	CMRT* pLightMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::LIGHT);
+	CMRT* pLightMRT = FRenderManager::GetInst()->GetMRT(MRT_TYPE::LIGHT);
 	pLightMRT->Clear();
 	pLightMRT->OMSet();
 
@@ -207,7 +207,7 @@ void CEditorMgr::Render_Clear()
 		CTexture::Clear(i);
 	}
 
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->OMSet();
+	FRenderManager::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->OMSet();
 }
 
 void CEditorMgr::CreateEditorObj(CGameObjectEx* _EditorObj)

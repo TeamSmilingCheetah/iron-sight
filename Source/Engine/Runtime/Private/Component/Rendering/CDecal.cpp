@@ -3,7 +3,7 @@
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 #include "System/Public/Manager/CTimeMgr.h"
 
 CDecal::CDecal()
@@ -57,7 +57,7 @@ void CDecal::Render()
 	Transform()->Binding();
 
 	// 재질 바인딩
-	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCamera();
+	CCamera* pMainCam = FRenderManager::GetInst()->GetMainCamera();
 	Matrix matInv = pMainCam->GetViewInvMat() * Transform()->GetWorldInvMat();
 	GetMaterial(0)->SetScalarParam(MAT_0, matInv);
 	GetMaterial(0)->SetScalarParam(FLOAT_0, m_GlobalAlpha);

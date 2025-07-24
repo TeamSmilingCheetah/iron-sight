@@ -12,7 +12,7 @@
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/RenderManager.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
@@ -64,7 +64,7 @@ CCamera::~CCamera()
 void CCamera::Begin()
 {
 	// RenderMgr 에 등록
-	CRenderMgr::GetInst()->RegisterCamera(this, m_Priority);
+	FRenderManager::GetInst()->RegisterCamera(this, m_Priority);
 }
 
 void CCamera::FinalTick()
@@ -233,115 +233,103 @@ void CCamera::SortObject()
 
 void CCamera::render_deferred()
 {
-	for (auto& pair : m_mapSingleObj)
-	{
-		pair.second.clear();
-	}
+    for (auto& pair : m_mapSingleObj)
+    {
+        pair.second.clear();
+    }
 
-	// Deferred object render
-	tInstancingData tInstData = {};
+    // Deferred object render
+    tInstancingData tInstData = {};
 
-	for (auto& pair : m_mapInstGroup_D)
-	{
-		// 그룹 오브젝트가 없거나, 쉐이더가 없는 경우
-		if (pair.second.empty())
-			continue;
+    // 인스턴싱 그룹 처리
+    for (auto& pair : m_mapInstGroup_D)
+    {
+        // 그룹 오브젝트가 없거나, 쉐이더가 없는 경우
+        if (pair.second.empty())
+            continue;
 
-		// Single Rendering 조건체크
-		// 1. instancing 개수 조건 미만이거나
-		// 2. FlipbookPlayer 오브젝트거나(스프라이트 애니메이션 오브젝트)
-		// 3. GraphicShader 가 Instancing 을 지원하지 않는경우
-		if (pair.second.size() <= 1
-			|| pair.second[0].pObj->FlipbookPlayer()
-			|| pair.second[0].pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx)->GetShader()->GetVSInst() == nullptr)
-		{
-			// 해당 물체들은 단일 랜더링으로 전환
-			for (UINT i = 0; i < pair.second.size(); ++i)
-			{
-				map<INT_PTR, vector<tInstObj>>::iterator iter
-					= m_mapSingleObj.find((INT_PTR)pair.second[i].pObj);
+        // Single Rendering 조건체크
+        if (pair.second.size() <= 1
+            || pair.second[0].pObj->FlipbookPlayer()
+            || pair.second[0].pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx)->GetShader()->GetVSInst() == nullptr)
+        {
+            // 해당 물체들은 단일 랜더링으로 전환
+            for (UINT i = 0; i < pair.second.size(); ++i)
+            {
+                map<INT_PTR, vector<tInstObj>>::iterator iter
+                    = m_mapSingleObj.find((INT_PTR)pair.second[i].pObj);
 
-				if (iter != m_mapSingleObj.end())
-					iter->second.push_back(pair.second[i]);
-				else
-				{
-					m_mapSingleObj.insert(make_pair((INT_PTR)pair.second[i].pObj, vector<tInstObj>{pair.second[i]}));
-				}
-			}
-			continue;
-		}
+                if (iter != m_mapSingleObj.end())
+                    iter->second.push_back(pair.second[i]);
+                else
+                {
+                    m_mapSingleObj.insert(make_pair((INT_PTR)pair.second[i].pObj, vector<tInstObj>{pair.second[i]}));
+                }
+            }
+            continue;
+        }
 
-		CGameObject* pObj = pair.second[0].pObj;
-		Ptr<CMesh> pMesh = pObj->GetRenderComponent()->GetMesh();
-		Ptr<CMaterial> pMtrl = pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx);
+        // 배치 키 생성
+        BatchKey key;
+        key.Mesh = pair.second[0].pObj->GetRenderComponent()->GetMesh();
+        key.Material = pair.second[0].pObj->GetRenderComponent()->GetMaterial(pair.second[0].iMtrlIdx);
+        key.SubsetIndex = pair.second[0].iMtrlIdx;
 
-		// Instancing 버퍼 클리어
-		CInstancingBuffer::GetInst()->Clear();
+        bool bHasAnim3D = false;
 
-		int iRowIdx = 0;
-		bool bHasAnim3D = false;
-		for (UINT i = 0; i < pair.second.size(); ++i)
-		{
-			tInstData.matWorld = pair.second[i].pObj->Transform()->GetWorldMat();
-			tInstData.matWV = tInstData.matWorld * m_matView;
-			tInstData.matWVP = tInstData.matWV * m_matProj;
+        // 인스턴싱 데이터 준비
+        for (UINT i = 0; i < pair.second.size(); ++i)
+        {
+            tInstData.matWorld = pair.second[i].pObj->Transform()->GetWorldMat();
+            tInstData.matWV = tInstData.matWorld * m_matView;
+            tInstData.matWVP = tInstData.matWV * m_matProj;
 
-			// ID 정보 추가 (이 부분이 빠져있었음!)
-			tInstData.parentID = (int)pair.second[i].pObj->GetParentObjectID();
-			tInstData.objectID = (int)pair.second[i].pObj->GetObjectID();
+            tInstData.parentID = (int)pair.second[i].pObj->GetParentObjectID();
+            tInstData.objectID = (int)pair.second[i].pObj->GetObjectID();
 
-			if (pair.second[i].pObj->MeshRender()->IsSkinRender() && pair.second[i].pObj->Animator3D())
-			{
-				pair.second[i].pObj->Animator3D()->Binding(pair.second[i].pObj->MeshRender());
-				tInstData.iRowIdx = iRowIdx++;
-				CInstancingBuffer::GetInst()->AddInstancingBoneMat(pair.second[i].pObj->Animator3D()->GetFinalBoneMat());
-				bHasAnim3D = true;
-				pObj = pair.second[i].pObj;
-			}
-			else
-				tInstData.iRowIdx = -1;
+            if (pair.second[i].pObj->MeshRender()->IsSkinRender() && pair.second[i].pObj->Animator3D())
+            {
+                pair.second[i].pObj->Animator3D()->Binding(pair.second[i].pObj->MeshRender());
+                bHasAnim3D = true;
+            }
 
-			CInstancingBuffer::GetInst()->AddInstancingData(tInstData);
-		}
+            // 배치에 인스턴스 추가
+            FRenderManager::GetInst()->AddDeferredBatch(key, tInstData, bHasAnim3D);
+        }
+    }
 
-		// 인스턴싱에 필요한 데이터를 세팅(SysMem -> GPU Mem)
-		CInstancingBuffer::GetInst()->SetData();
+    // 개별 렌더링 오브젝트 처리
+    for (auto& pair : m_mapSingleObj)
+    {
+        if (pair.second.empty())
+            continue;
 
-		if (bHasAnim3D)
-		{
-			pMtrl->SetAnim3D(true); // Animation Mesh 알리기
-			pMtrl->SetBoneCount(pObj->Animator3D()->GetBoneCount());
-		}
+        for (auto& instObj : pair.second)
+        {
+            // 배치 키 생성
+            BatchKey key;
+            key.Mesh = instObj.pObj->GetRenderComponent()->GetMesh();
+            key.Material = instObj.pObj->GetRenderComponent()->GetMaterial(instObj.iMtrlIdx);
+            key.SubsetIndex = instObj.iMtrlIdx;
 
-		pMtrl->Binding_Inst();
-		pMesh->Render_Object_Instancing(pair.second[0].iMtrlIdx);
+            // 인스턴스 데이터 준비
+            tInstData.matWorld = instObj.pObj->Transform()->GetWorldMat();
+            tInstData.matWV = tInstData.matWorld * m_matView;
+            tInstData.matWVP = tInstData.matWV * m_matProj;
 
-		// 정리
-		if (bHasAnim3D)
-		{
-			pMtrl->SetAnim3D(false); // Animation Mesh 알리기
-			pMtrl->SetBoneCount(0);
-		}
-	}
+            tInstData.parentID = (int)instObj.pObj->GetParentObjectID();
+            tInstData.objectID = (int)instObj.pObj->GetObjectID();
 
-	// 개별 랜더링
-	for (auto& pair : m_mapSingleObj)
-	{
-		if (pair.second.empty())
-			continue;
+            bool bHasAnim3D = instObj.pObj->MeshRender()->IsSkinRender() && instObj.pObj->Animator3D();
+            if (bHasAnim3D)
+            {
+                instObj.pObj->Animator3D()->Binding(instObj.pObj->MeshRender());
+            }
 
-		pair.second[0].pObj->Transform()->Binding();
-
-		for (auto& instObj : pair.second)
-		{
-			instObj.pObj->GetRenderComponent()->Render(instObj.iMtrlIdx);
-		}
-
-		if (pair.second[0].pObj->Animator3D())
-		{
-			pair.second[0].pObj->Animator3D()->ClearData();
-		}
-	}
+            // 배치에 인스턴스 추가
+            FRenderManager::GetInst()->AddDeferredBatch(key, tInstData, bHasAnim3D);
+        }
+    }
 }
 
 void CCamera::render_decal()
@@ -554,7 +542,7 @@ void CCamera::render_postprocess()
 {
 	for (size_t i = 0; i < m_vecPostprocess.size(); ++i)
 	{
-		CRenderMgr::GetInst()->CopyRenderTarget();
+		FRenderManager::GetInst()->CopyRenderTarget();
 		m_vecPostprocess[i]->Render();
 	}
 }
@@ -727,7 +715,7 @@ bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 void CCamera::CalcRay()
 {
 	// ViewPort 정보
-	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	CMRT* pSwapChainMRT = FRenderManager::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	if (nullptr == pSwapChainMRT)
 		return;
 

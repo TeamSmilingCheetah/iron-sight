@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Public/Asset/Mesh/CMesh.h"
 #include "System/Public/Manager/CPathMgr.h"
+#include "System/Public/Manager/RenderManager.h"
 #include "System/Public/Rendering/Buffer/CInstancingBuffer.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "System/Public/Rendering/Device/CDevice.h"
@@ -200,22 +201,53 @@ void CMesh::Binding_Inst(UINT _iSubset)
 
 void CMesh::Render(UINT _Subset)
 {
-	Binding(_Subset);
+	BatchKey key;
+	key.Mesh = this;
+	key.SubsetIndex = _Subset;
 
-	CONTEXT->DrawIndexed(m_vecIdxInfo[_Subset].IdxCount, 0, 0);
+	// Material은 호출하는 쪽에서 설정해야 함
+	tInstancingData instData = {};
+	instData.matWorld = g_Trans.matWorld;
+	instData.matWV = g_Trans.matWV;
+	instData.matWVP = g_Trans.matWVP;
+
+	// CRenderMgr에서 현재 렌더링 상태를 가져옵니다.
+	RENDER_STATE renderState = FRenderManager::GetInst()->GetCurrentRenderState();
+
+	if (renderState == RENDER_STATE::DEFERRED)
+	{
+		FRenderManager::GetInst()->AddDeferredBatch(key, instData);
+	}
+	else if (renderState == RENDER_STATE::FORWARD)
+	{
+		FRenderManager::GetInst()->AddForwardBatch(key, instData);
+	}
+	else if (renderState == RENDER_STATE::RENDER_TRANSPARENT)
+	{
+		FRenderManager::GetInst()->AddTransparentBatch(key, instData);
+	}
 }
 
 void CMesh::Render_Cluster_Instancing(UINT _Count)
 {
+	// [여기 확인] 클러스터 렌더링을 위한 바인딩을 수행합니다.
+	// 일반적으로 클러스터 렌더링은 단일 서브셋(0번)의 메쉬를 사용합니다.
 	Binding(0);
 
+	// [여기 확인] GPU 인스턴싱을 사용하여 동일한 메쉬를 여러 번 효율적으로 렌더링합니다.
+	// _Count 만큼의 인스턴스를 생성하며, 각 인스턴스는 고유한 월드 행렬 등을 가질 수 있습니다.
+	// 이는 드로우콜 횟수를 크게 줄여 성능을 향상시킵니다.
 	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[0].IdxCount, _Count, 0, 0, 0);
 }
 
 void CMesh::Render_Object_Instancing(UINT _Subset)
 {
+	// [여기 확인] 오브젝트별 인스턴싱을 위해 정점 버퍼와 인스턴스 버퍼를 함께 바인딩합니다.
+	// 인스턴스 버퍼에는 각 인스턴스의 위치, 회전, 크기 등의 정보가 담겨있습니다.
 	Binding_Inst(_Subset);
 
+	// [여기 확인] 특정 서브셋의 메쉬를 인스턴싱하여 렌더링합니다.
+	// CInstancingBuffer에서 현재 프레임에 렌더링할 인스턴스의 개수를 가져와 사용합니다.
 	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[_Subset].IdxCount
 		, CInstancingBuffer::GetInst()->GetInstanceCount(), 0, 0, 0);
 }
