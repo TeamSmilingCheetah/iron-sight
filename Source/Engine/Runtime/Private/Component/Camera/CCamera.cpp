@@ -646,7 +646,7 @@ void CCamera::LayerOff(int PLayerIdx)
  */
 bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 {
-	if (!PObject->Transform()->FrustumCheckRequired())
+	if (!PObject->Transform()->IsFrustumCheckRequired())
 	{
 		return true;
 	}
@@ -658,8 +658,7 @@ bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 	}
 
 	// 오브젝트의 바운딩 박스 가져오기
-	// XXX(KHJ): 현재 bounding box 계산하지 못했다면 무조건 rendering하지 않는데, 누락되는 케이스 없는지 확인 필요
-	const auto& BoundingBox = PObject->GetAABB();
+	const AABB BoundingBox = PObject->GetAABB();
 	if (IsNullAABB(BoundingBox))
 	{
 		return false;
@@ -720,6 +719,7 @@ bool CCamera::IsObjectInFrustum(CGameObject* PObject) const
 		return PObject->IsInFrustumPrevious();
 	}
 
+	// LOG_TRACE_F("[Camera][Frustum] {}: Not In Frustum", WStringToString(PObject->GetName()));
 	PObject->SetInFrustumPrevious(false);
 	return false;
 }

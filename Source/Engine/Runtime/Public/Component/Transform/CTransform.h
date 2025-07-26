@@ -53,7 +53,7 @@ public:
 	void Binding();
 
 	void SetFrustumCheck(bool _Check) { m_FrustumCheckRequired = _Check; }
-	bool FrustumCheckRequired() const { return m_FrustumCheckRequired; }
+	bool IsFrustumCheckRequired() const { return m_FrustumCheckRequired; }
 
 	bool IsIndependentScale() const { return m_IndependentScale; }
 

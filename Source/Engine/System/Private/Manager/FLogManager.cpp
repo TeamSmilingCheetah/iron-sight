@@ -340,7 +340,7 @@ void LogManager::ManageLogFiles(const path& InDirectoryPath)
 				     return last_write_time(FileA) < last_write_time(FileB);
 			     });
 
-			int DeleteCount = Files.size() - MAX_LOG_FILES + 1;
+			int DeleteCount = static_cast<int>(Files.size()) - MAX_LOG_FILES + 1;
 
 			LogInfo("[Engine][Log] Log File Limit Exceeded. Deleting Oldest Log Files...");
 

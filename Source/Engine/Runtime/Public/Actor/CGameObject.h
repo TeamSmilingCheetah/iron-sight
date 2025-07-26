@@ -69,6 +69,7 @@ public:
 	UINT GetParentObjectID() const;
 	bool IsAncestor(const CGameObject* POther) const;
 	AABB GetAABB() const;
+	AABB GetCollisionAABB() const;
 	vector<ColliderVariant> GetColliders() const;
 
 	// Getter & Setter
