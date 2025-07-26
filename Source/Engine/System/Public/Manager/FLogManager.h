@@ -28,52 +28,53 @@ using std::format;
  * @var MConsoleMutex Console에 메시지 출력을 진행하기 위해 잡아야 하는 Mutex
  * @var MCondition LogThread Wake를 위한 조건 변수
  */
-class FLogManager : public singleton<FLogManager>
+class LogManager : public singleton<LogManager>
 {
-	SINGLE(FLogManager)
+	SINGLE(LogManager)
 
 private:
-	ELogFlag MLogStatus;
-	queue<LogMessage> MLogQueue;
-	ofstream MLogFile;
+	ELogFlag LogStatus;
+	queue<LogMessage> LogQueue;
+	ofstream LogFile;
 
-	thread MLogThread;
-	atomic<bool> MStopFlag;
-	mutex MQueueMutex;
-	mutex MConsoleMutex;
-	condition_variable MCondition;
+	thread LogThread;
+	atomic<bool> StopFlag;
+	mutex QueueMutex;
+	mutex ConsoleMutex;
+	condition_variable Condition;
 
 private:
 	void LogWorker();
-	void ProcessLogMessage(const LogMessage& PMessage);
-	void MakeLog(ELogLevel PLevel, const string& PMessage);
+	void ProcessLogMessage(const LogMessage& InMessage);
+	void MakeLog(ELogLevel InLevel, const string& InMessage);
 
-	static string GetLogLevelString(ELogLevel PLevel);
+	void ManageLogFiles(const path& InDirectoryPath);
+	static string GetLogLevelString(ELogLevel InLevel);
 
 	// Getter & Setter
 	[[nodiscard]]
-	bool IsFlagSet(ELogFlag PFlag) const
+	bool IsFlagSet(ELogFlag InFlag) const
 	{
-		return static_cast<UINT8>(MLogStatus & PFlag) != 0;
+		return static_cast<UINT8>(LogStatus & InFlag) != 0;
 	}
 
-	void SetLogFlag(ELogFlag PLogFlag)
+	void SetLogFlag(ELogFlag InLogFlag)
 	{
-		MLogStatus |= PLogFlag;
+		LogStatus |= InLogFlag;
 	}
 
 public:
-	void Init(bool PConsoleOutput = true, bool PFileOutput = true);
+	void Init(bool InHasConsoleOutput = true, bool InHasFileOutput = true);
 	void Shutdown();
 
 	// Log Make Function
-	void LogTrace(const string& PMessage);
-	void LogDebug(const string& PMessage);
-	void LogInfo(const string& PMessage);
-	void LogWarning(const string& PMessage);
-	void LogError(const string& PMessage);
-	void LogCritical(const string& PMessage);
-	void LogUnknown(const string& PMessage);
+	void LogTrace(const string& InMessage);
+	void LogDebug(const string& InMessage);
+	void LogInfo(const string& InMessage);
+	void LogWarning(const string& InMessage);
+	void LogError(const string& InMessage);
+	void LogCritical(const string& InMessage);
+	void LogUnknown(const string& InMessage);
 
 	template <typename... Args>
 	void LogTracef(std::format_string<Args...> fmt, Args&&... args)

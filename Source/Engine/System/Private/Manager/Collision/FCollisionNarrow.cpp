@@ -59,7 +59,7 @@ void FCollisionManager::NarrowPhase()
 	// CS Task Batch Process
 	if (!MTasks.empty())
 	{
-		LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MTasks.size());
+		// LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MTasks.size());
 		ExecuteAndProcessCS();
 	}
 }

@@ -19,14 +19,16 @@ using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 using std::put_time;
 
+using std::ranges::sort;
+
 constexpr array<const char*, static_cast<size_t>(ELogLevel::END)>
 LogLevelArr = {
 	"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "UNKNOWN",
 };
 
-FLogManager::FLogManager() = default;
+LogManager::LogManager() = default;
 
-FLogManager::~FLogManager() = default;
+LogManager::~LogManager() = default;
 
 /**
  * Log Message 구조체의 생성자
@@ -59,25 +61,23 @@ LogMessage::LogMessage(ELogLevel PLevel, const string& PMessage)
  * @brief Log Manager 초기화 함수
  * 여기서 Worker Thread가 생성된다
  */
-void FLogManager::Init(bool PConsoleOutput, bool PFileOutput)
+void LogManager::Init(bool InHasConsoleOutput, bool InHasFileOutput)
 {
-	if (PConsoleOutput)
+	if (InHasConsoleOutput)
 	{
 		SetLogFlag(ELogFlag::ConsoleOutput);
 	}
-	if (PFileOutput)
+	if (InHasFileOutput)
 	{
 		SetLogFlag(ELogFlag::FileOutput);
 	}
 
 	if (IsFlagSet(ELogFlag::FileOutput))
 	{
-		// Log 파일을 담을 폴더가 존재하지 않는다면 생성
 		path LogFilePath = CPathMgr::GetInst()->GetLogFilePath();
-		if (!exists(LogFilePath))
-		{
-			create_directories(LogFilePath);
-		}
+
+		// Log 파일 경로 및 갯수 관리
+		ManageLogFiles(LogFilePath);
 
 		// 적당한 Log 파일명 작성
 		auto now = system_clock::now();
@@ -94,10 +94,10 @@ void FLogManager::Init(bool PConsoleOutput, bool PFileOutput)
 		LogFilePath /= FileName;
 
 		// Path를 활용하여 파일 생성
-		MLogFile.open(LogFilePath, ios::out | ios::app);
+		LogFile.open(LogFilePath, ios::out | ios::app);
 	}
 
-	MLogThread = thread(&FLogManager::LogWorker, this);
+	LogThread = thread(&LogManager::LogWorker, this);
 
 	LogInfo("Log Manager Initialized Successfully");
 }
@@ -105,28 +105,28 @@ void FLogManager::Init(bool PConsoleOutput, bool PFileOutput)
 /**
  * Log Manager 종료 함수
  */
-void FLogManager::Shutdown()
+void LogManager::Shutdown()
 {
 	// 다중 스레드의 중복 호출 방지
-	if (MStopFlag.load())
+	if (StopFlag.load())
 	{
 		return;
 	}
 
 	// Sleep된 스레드들 전부 기상
-	MStopFlag = true;
-	MCondition.notify_all();
+	StopFlag = true;
+	Condition.notify_all();
 
 	// 작업 중인 스레드 작업 종료 대기
-	if (MLogThread.joinable())
+	if (LogThread.joinable())
 	{
-		MLogThread.join();
+		LogThread.join();
 	}
 
 	// File Stream 종료
-	if (MLogFile.is_open())
+	if (LogFile.is_open())
 	{
-		MLogFile.close();
+		LogFile.close();
 	}
 
 	LogInfo("Log Manager Shutdown Completed");
@@ -135,23 +135,23 @@ void FLogManager::Shutdown()
 /**
  * @brief Log를 처리하는 Worker Thread의 로직
  */
-void FLogManager::LogWorker()
+void LogManager::LogWorker()
 {
-	while (!MStopFlag.load())
+	while (!StopFlag.load())
 	{
 		// LogQueue와 Flag가 조건을 만족하지 않는다면 계속 Sleep
-		unique_lock QueueLock(MQueueMutex);
-		MCondition.wait(QueueLock,
-		                [this]
-		                {
-			                return !MLogQueue.empty() || MStopFlag.load();
-		                });
+		unique_lock QueueLock(QueueMutex);
+		Condition.wait(QueueLock,
+		               [this]
+		               {
+			               return !LogQueue.empty() || StopFlag.load();
+		               });
 
 		// 1개의 메시지마다 락을 잡았다 풀면서 순차적 처리
-		while (!MLogQueue.empty())
+		while (!LogQueue.empty())
 		{
-			LogMessage message = MLogQueue.front();
-			MLogQueue.pop();
+			LogMessage message = LogQueue.front();
+			LogQueue.pop();
 
 			// Critical Section
 			QueueLock.unlock();
@@ -161,33 +161,33 @@ void FLogManager::LogWorker()
 	}
 
 	// Flag 변경으로 Loop가 종료되는 동안 발생했을 수도 있는 Message 처리
-	lock_guard QueueLock(MQueueMutex);
-	while (!MLogQueue.empty())
+	lock_guard QueueLock(QueueMutex);
+	while (!LogQueue.empty())
 	{
-		LogMessage Message = MLogQueue.front();
-		MLogQueue.pop();
+		LogMessage Message = LogQueue.front();
+		LogQueue.pop();
 		ProcessLogMessage(Message);
 	}
 }
 
 /**
  * Log Message를 받아, 미리 설정해 둔 로깅 옵션에 맞게 출력 및 저장하는 함수
- * @param PMessage 메시지 객체
+ * @param InMessage 메시지 객체
  */
-void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
+void LogManager::ProcessLogMessage(const LogMessage& InMessage)
 {
 	stringstream ss;
-	ss << "[" << PMessage.TimeStamp << "]";
-	ss << "[" << PMessage.ThreadID << "]";
-	ss << "[" << GetLogLevelString(PMessage.LogLevel) << "] ";
-	ss << PMessage.Message;
+	ss << "[" << InMessage.TimeStamp << "]";
+	ss << "[" << InMessage.ThreadID << "]";
+	ss << "[" << GetLogLevelString(InMessage.LogLevel) << "] ";
+	ss << InMessage.Message;
 
 	string FormattedMessage = ss.str();
 
 	// Console Log
 	if (IsFlagSet(ELogFlag::ConsoleOutput))
 	{
-		lock_guard ConsoleLock(MConsoleMutex);
+		lock_guard ConsoleLock(ConsoleMutex);
 
 		// Change Color By Log Level
 		HANDLE ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -198,7 +198,7 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 			OriginalColor = CSBI.wAttributes;
 		}
 
-		switch (PMessage.LogLevel)
+		switch (InMessage.LogLevel)
 		{
 		case ELogLevel::TRACE:
 			{
@@ -255,10 +255,10 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 	}
 
 	// File Log
-	if (IsFlagSet(ELogFlag::FileOutput) && MLogFile.is_open())
+	if (IsFlagSet(ELogFlag::FileOutput) && LogFile.is_open())
 	{
-		MLogFile << FormattedMessage << "\n";
-		MLogFile.flush();
+		LogFile << FormattedMessage << "\n";
+		LogFile.flush();
 	}
 	else
 	{
@@ -268,12 +268,12 @@ void FLogManager::ProcessLogMessage(const LogMessage& PMessage)
 
 /**
  * 로그 레벨에 해당하는 텍스트 변환 함수
- * @param PLevel Log Level Enum
+ * @param InLevel Log Level Enum
  * @return
  */
-string FLogManager::GetLogLevelString(ELogLevel PLevel)
+string LogManager::GetLogLevelString(ELogLevel InLevel)
 {
-	auto LevelIndex = static_cast<size_t>(PLevel);
+	auto LevelIndex = static_cast<size_t>(InLevel);
 
 	if (LevelIndex < LogLevelArr.size())
 	{
@@ -289,51 +289,106 @@ string FLogManager::GetLogLevelString(ELogLevel PLevel)
 /**
  * @brief Log 생성 기본 함수
  */
-void FLogManager::MakeLog(ELogLevel PLevel, const string& PMessage)
+void LogManager::MakeLog(ELogLevel InLevel, const string& InMessage)
 {
-	LogMessage LogMessage(PLevel, PMessage);
+	LogMessage LogMessage(InLevel, InMessage);
 
 	// Lock은 최소한으로 (구조체 생성에 Lock 잡지 않음)
 	{
-		lock_guard Lock(MQueueMutex);
-		MLogQueue.push(LogMessage);
+		lock_guard Lock(QueueMutex);
+		LogQueue.push(LogMessage);
 	}
 
 	// Queue에 메시지가 들어갔음을 전달하여 Worker 스레드를 깨움
-	MCondition.notify_one();
+	Condition.notify_one();
 }
 
-void FLogManager::LogTrace(const string& PMessage)
+/**
+ * @brief Log File을 저장할 경로를 생성하고, 이후 파일 갯수를 관리하는 함수
+ * @param InDirectoryPath Log File 경로
+ */
+void LogManager::ManageLogFiles(const path& InDirectoryPath)
 {
-	MakeLog(ELogLevel::TRACE, PMessage);
+	constexpr int MAX_LOG_FILES = 20;
+
+	// Log 파일을 담을 폴더가 존재하지 않는다면 생성
+	if (!exists(InDirectoryPath))
+	{
+		create_directories(InDirectoryPath);
+		return;
+	}
+
+	try
+	{
+		// Get File Information
+		vector<path> Files;
+		for (const auto& entry : directory_iterator(InDirectoryPath))
+		{
+			if (entry.is_regular_file() && entry.path().extension() == ".log")
+			{
+				Files.push_back(entry.path());
+			}
+		}
+
+		// 로그 파일이 20개를 초과하는 경우에만 정리 시작
+		if (Files.size() > MAX_LOG_FILES)
+		{
+			// 최종 시간 순으로 정렬
+			sort(Files,
+			     [](const path& FileA, const path& FileB)
+			     {
+				     return last_write_time(FileA) < last_write_time(FileB);
+			     });
+
+			int DeleteCount = Files.size() - MAX_LOG_FILES + 1;
+
+			LogInfo("[Engine][Log] Log File Limit Exceeded. Deleting Oldest Log Files...");
+
+			// 가장 오래된 파일부터 순서대로 삭제
+			for (int i = 0; i < DeleteCount; ++i)
+			{
+				remove(Files[i]);
+			}
+		}
+	}
+	catch (const filesystem_error& e)
+	{
+		// File System Error
+		std::cerr << "Error managing log files: " << e.what() << "\n";
+	}
 }
 
-void FLogManager::LogDebug(const string& PMessage)
+void LogManager::LogTrace(const string& InMessage)
 {
-	MakeLog(ELogLevel::DEBUG, PMessage);
+	MakeLog(ELogLevel::TRACE, InMessage);
 }
 
-void FLogManager::LogInfo(const string& PMessage)
+void LogManager::LogDebug(const string& InMessage)
 {
-	MakeLog(ELogLevel::INFO, PMessage);
+	MakeLog(ELogLevel::DEBUG, InMessage);
 }
 
-void FLogManager::LogWarning(const string& PMessage)
+void LogManager::LogInfo(const string& InMessage)
 {
-	MakeLog(ELogLevel::WARNING, PMessage);
+	MakeLog(ELogLevel::INFO, InMessage);
 }
 
-void FLogManager::LogError(const string& PMessage)
+void LogManager::LogWarning(const string& InMessage)
 {
-	MakeLog(ELogLevel::ERR, PMessage);
+	MakeLog(ELogLevel::WARNING, InMessage);
 }
 
-void FLogManager::LogCritical(const string& PMessage)
+void LogManager::LogError(const string& InMessage)
 {
-	MakeLog(ELogLevel::CRITICAL, PMessage);
+	MakeLog(ELogLevel::ERR, InMessage);
 }
 
-void FLogManager::LogUnknown(const string& PMessage)
+void LogManager::LogCritical(const string& InMessage)
 {
-	MakeLog(ELogLevel::UNKNOWN, PMessage);
+	MakeLog(ELogLevel::CRITICAL, InMessage);
+}
+
+void LogManager::LogUnknown(const string& InMessage)
+{
+	MakeLog(ELogLevel::UNKNOWN, InMessage);
 }

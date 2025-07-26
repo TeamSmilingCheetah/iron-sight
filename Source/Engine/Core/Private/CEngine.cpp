@@ -68,7 +68,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 
 	// Manager 초기화
 	CPathMgr::GetInst()->Init();
-	FLogManager::GetInst()->Init();
+	LogManager::GetInst()->Init();
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
 	CAssetMgr::GetInst()->Init();
@@ -103,7 +103,7 @@ void CEngine::Progress()
 void CEngine::Shutdown()
 {
 	LOG_INFO("Engine Shutdown Process");
-	FLogManager::GetInst()->Shutdown();
+	LogManager::GetInst()->Shutdown();
 }
 
 void CEngine::PrintMemoryUsage(const string& PText)

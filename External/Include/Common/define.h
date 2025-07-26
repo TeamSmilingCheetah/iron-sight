@@ -45,23 +45,23 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 									   virtual SCRIPT_TYPE GetParentScriptType() const override { return MParentType; }
 
 /** Log Macros **/
-#define LOG_TRACE(PMessage) FLogManager::GetInst()->LogTrace(PMessage)
-#define LOG_TRACE_F(PFormat, ...) FLogManager::GetInst()->LogTracef(PFormat, ##__VA_ARGS__)
+#define LOG_TRACE(PMessage) LogManager::GetInst()->LogTrace(PMessage)
+#define LOG_TRACE_F(PFormat, ...) LogManager::GetInst()->LogTracef(PFormat, ##__VA_ARGS__)
 #ifdef _DEBUG
 // TODO(KHJ): Debug Mode와 Release Mode Log 분리 작업
-#define LOG_DEBUG(PMessage) FLogManager::GetInst()->LogDebug(PMessage)
-#define LOG_INFO(PMessage) FLogManager::GetInst()->LogInfo(PMessage)
-#define LOG_WARNING(PMessage) FLogManager::GetInst()->LogWarning(PMessage)
-#define LOG_ERROR(PMessage) FLogManager::GetInst()->LogError(PMessage)
-#define LOG_CRITICAL(PMessage) FLogManager::GetInst()->LogCritical(PMessage)
-#define LOG_UNKNOWN(PMessage) FLogManager::GetInst()->LogUnknown(PMessage)
+#define LOG_DEBUG(PMessage) LogManager::GetInst()->LogDebug(PMessage)
+#define LOG_INFO(PMessage) LogManager::GetInst()->LogInfo(PMessage)
+#define LOG_WARNING(PMessage) LogManager::GetInst()->LogWarning(PMessage)
+#define LOG_ERROR(PMessage) LogManager::GetInst()->LogError(PMessage)
+#define LOG_CRITICAL(PMessage) LogManager::GetInst()->LogCritical(PMessage)
+#define LOG_UNKNOWN(PMessage) LogManager::GetInst()->LogUnknown(PMessage)
 
-#define LOG_DEBUG_F(PFormat, ...) FLogManager::GetInst()->LogDebugf(PFormat, ##__VA_ARGS__)
-#define LOG_INFO_F(PFormat, ...) FLogManager::GetInst()->LogInfof(PFormat, ##__VA_ARGS__)
-#define LOG_WARNING_F(PFormat, ...) FLogManager::GetInst()->LogWarningf(PFormat, ##__VA_ARGS__)
-#define LOG_ERROR_F(PFormat, ...) FLogManager::GetInst()->LogErrorf(PFormat, ##__VA_ARGS__)
-#define LOG_CRITICAL_F(PFormat, ...) FLogManager::GetInst()->LogCriticalf(PFormat, ##__VA_ARGS__)
-#define LOG_UNKNOWN_F(PFormat, ...) FLogManager::GetInst()->LogUnknownf(PFormat, ##__VA_ARGS__)
+#define LOG_DEBUG_F(PFormat, ...) LogManager::GetInst()->LogDebugf(PFormat, ##__VA_ARGS__)
+#define LOG_INFO_F(PFormat, ...) LogManager::GetInst()->LogInfof(PFormat, ##__VA_ARGS__)
+#define LOG_WARNING_F(PFormat, ...) LogManager::GetInst()->LogWarningf(PFormat, ##__VA_ARGS__)
+#define LOG_ERROR_F(PFormat, ...) LogManager::GetInst()->LogErrorf(PFormat, ##__VA_ARGS__)
+#define LOG_CRITICAL_F(PFormat, ...) LogManager::GetInst()->LogCriticalf(PFormat, ##__VA_ARGS__)
+#define LOG_UNKNOWN_F(PFormat, ...) LogManager::GetInst()->LogUnknownf(PFormat, ##__VA_ARGS__)
 #else
 #define LOG_DEBUG(PMessage)
 #define LOG_INFO(PMessage)
