@@ -520,6 +520,10 @@ vector<ColliderVariant> CGameObject::GetColliders() const
 	{
 		VariantVector.push_back(ColliderVariant(MeshCollider()));
 	}
+	if (ColliderRay())
+	{
+		VariantVector.push_back(ColliderVariant(ColliderRay()));
+	}
 
 	return VariantVector;
 }
