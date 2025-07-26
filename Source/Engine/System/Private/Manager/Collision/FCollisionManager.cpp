@@ -75,7 +75,7 @@ void FCollisionManager::Tick()
 
 	// Raycast Process
 	// LOG_INFO("[Collision][Main] Raycast Process Start");
-	// RaycastProcess();
+	RaycastProcess();
 
 	// Check Collision
 	// LOG_INFO("[Collision][Main] Broad Phase Start");
