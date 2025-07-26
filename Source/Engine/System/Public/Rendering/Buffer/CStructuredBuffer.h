@@ -31,6 +31,8 @@ public:
     UINT GetElementCount() { return m_ElementCount; }
     UINT GetBufferSize() { return m_ElementSize * m_ElementCount; }
 
+	ComPtr<ID3D11Buffer> GetBuffer() const { return m_SB_Main; }
+
     void SetData(void* _SystemMem, UINT _ElementCount = 0);
     void GetData(void* _SysDest);
 

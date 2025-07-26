@@ -64,6 +64,8 @@ public:
 	void Render_Cluster_Instancing(UINT _Count);
 	void Render_Object_Instancing(UINT _iSubset);
 
+	void RenderInstanced(CStructuredBuffer* InInstancingBuffer, UINT InInstanceCount, UINT InSubsetIdx = 0);
+
 public:
 	CLONE_DISABLE(CMesh);
 	CMesh(bool _bEngineRes = false);

@@ -164,6 +164,12 @@ int CDevice::CreateConstBuffer()
 	m_arrCB[static_cast<UINT>(CB_TYPE::GLOBAL)] = new CConstBuffer(CB_TYPE::GLOBAL);
 	m_arrCB[static_cast<UINT>(CB_TYPE::GLOBAL)]->Create(sizeof(GlobalData));
 
+	m_arrCB[static_cast<UINT>(CB_TYPE::DRAWCALL)] = new CConstBuffer(CB_TYPE::DRAWCALL);
+	m_arrCB[static_cast<UINT>(CB_TYPE::DRAWCALL)]->Create(sizeof(FDrawCallInfo));
+
+	m_arrCB[static_cast<UINT>(CB_TYPE::LIGHT)] = new CConstBuffer(CB_TYPE::LIGHT);
+	m_arrCB[static_cast<UINT>(CB_TYPE::LIGHT)]->Create(sizeof(FLightConstants));
+
 	return S_OK;
 }
 

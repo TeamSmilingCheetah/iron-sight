@@ -2,12 +2,17 @@
 #include "RenderPass.h"
 
 class FLightRenderPass
-	: public FRenderPass
+	: public IRenderPass
 {
+private:
+	CStructuredBuffer* LightInstancingBuffer;
+
 public:
 	CLONE(FLightRenderPass);
-	FLightRenderPass() = default;
-	~FLightRenderPass() override = default;
+	FLightRenderPass();
+	~FLightRenderPass() override;
 
-	void Execute() override;
+	void Execute(FRenderPassParameters& PParams) override;
+	void RenderDirectionalLights(const FRenderPassParameters& InParams);
+	void RenderPointLights(const FRenderPassParameters& InParams);
 };

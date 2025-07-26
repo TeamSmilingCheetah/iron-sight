@@ -67,7 +67,7 @@ void FRenderManager::CreateResources()
 		                                    DXGI_FORMAT_R8G8B8A8_UNORM, BindFlag);
 	MinimapDepthStencilTexture =
 		CAssetMgr::GetInst()->CreateTexture(L"MinimapDepthTexture", 256, 256,
-		                                    DXGI_FORMAT_D24_UNORM_S8_UINT, BindFlag);
+		                                    DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
 
 	// PostProcess Texture
 	PostProcessTexture = CAssetMgr::GetInst()->FindAsset<CTexture>(L"PostProcessTex");
@@ -295,14 +295,20 @@ void FRenderManager::CreateRenderPasses()
 	GeometryPass->SetName(L"GeometryPass");
 	GeometryPass->SetTargetMRT(MultiRenderTargetArray[static_cast<UINT>(MRT_TYPE::DEFERRED)]);
 
+	Ptr<CMesh> RectMeshPtr = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+	Ptr<CMesh> SphereMeshPtr = CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh");
+
 	LightPass = new FLightRenderPass;
 	LightPass->SetName(L"LightPass");
 	LightPass->SetTargetMRT(MultiRenderTargetArray[static_cast<UINT>(MRT_TYPE::LIGHT)]);
 	LightPass->AddMaterial(DirectionalLightMaterial);
 	LightPass->AddMaterial(PointLightMaterial);
+	LightPass->AddMesh(RectMeshPtr);
+	LightPass->AddMesh(SphereMeshPtr);
 
 	MergePass = new FMergeRenderPass;
 	MergePass->SetName(L"MergePass");
 	MergePass->SetTargetMRT(MultiRenderTargetArray[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]);
 	MergePass->AddMaterial(MergeMaterial);
+	MergePass->AddMesh(RectMeshPtr);
 }

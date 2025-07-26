@@ -1,13 +1,15 @@
 #pragma once
 #include "RenderPass.h"
 
+struct FRenderCommand;
+
 class FGeometryRenderPass
-	: public FRenderPass
+	: public IRenderPass
 {
 public:
-	CLONE(FGeometryRenderPass);
+	void Execute(FRenderPassParameters& InParams) override;
+
 	FGeometryRenderPass() = default;
 	~FGeometryRenderPass() override = default;
-
-	void Execute() override;
+	CLONE(FGeometryRenderPass);
 };

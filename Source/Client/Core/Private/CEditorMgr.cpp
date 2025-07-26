@@ -13,7 +13,7 @@
 
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 
-#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/System/Public/Rendering/RenderTarget/MultiRenderTarget.h"
 
 CEditorMgr::CEditorMgr()
 	: m_RenderEditorSpace(false)
@@ -52,16 +52,16 @@ void CEditorMgr::Init()
 	m_vecEditorObj.push_back(pObject);
 
 	// Editor 용 카메라 등록
-	FRenderManager::GetInst()->RegisterEditorCamera(pObject->Camera());
+	FRenderManager::GetInst()->SetEditorCamera(pObject->Camera());
 
 	// ===================
 	// Editor Render Space
 	// ===================
 
 	// Render Target
-	m_EditorSpaceRT = new CMRT;
+	m_EditorSpaceRT = new FMultiRenderTarget;
 	Ptr<CTexture> pRT = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
-	m_EditorSpaceRT->Create(&pRT, 1, nullptr);
+	m_EditorSpaceRT->Init({pRT}, nullptr);
 	m_EditorSpaceRT->SetClearColor(0, Vec4(0.343f, 0.343f, 0.343f, 1.f));
 
 	// Light
@@ -163,9 +163,9 @@ void CEditorMgr::Render_Init()
 
 void CEditorMgr::Render_Deferred()
 {
-	CMRT* pDeferredMRT = FRenderManager::GetInst()->GetMRT(MRT_TYPE::DEFERRED);
-	pDeferredMRT->Clear();
-	pDeferredMRT->OMSet();
+	FMultiRenderTarget* pDeferredMRT = FRenderManager::GetInst()->GetRenderTarget(MRT_TYPE::DEFERRED);
+	pDeferredMRT->ClearAll();
+	pDeferredMRT->BindTargets();
 
 	for (size_t i = 0; i < m_vecEditorSpaceObj.size(); ++i)
 	{
@@ -175,17 +175,17 @@ void CEditorMgr::Render_Deferred()
 
 void CEditorMgr::Render_Light()
 {
-	CMRT* pLightMRT = FRenderManager::GetInst()->GetMRT(MRT_TYPE::LIGHT);
-	pLightMRT->Clear();
-	pLightMRT->OMSet();
+	FMultiRenderTarget* pLightMRT = FRenderManager::GetInst()->GetRenderTarget(MRT_TYPE::LIGHT);
+	pLightMRT->ClearAll();
+	pLightMRT->BindTargets();
 
 	m_Light->Light3D()->Render();
 }
 
 void CEditorMgr::Render_Merge()
 {
-	m_EditorSpaceRT->Clear();
-	m_EditorSpaceRT->OMSet();
+	m_EditorSpaceRT->ClearAll();
+	m_EditorSpaceRT->BindTargets();
 
 	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 	Ptr<CMaterial> pMergeMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"MergeMtrl");
@@ -207,7 +207,7 @@ void CEditorMgr::Render_Clear()
 		CTexture::Clear(i);
 	}
 
-	FRenderManager::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->OMSet();
+	FRenderManager::GetInst()->GetRenderTarget(MRT_TYPE::SWAPCHAIN)->BindTargets();
 }
 
 void CEditorMgr::CreateEditorObj(CGameObjectEx* _EditorObj)

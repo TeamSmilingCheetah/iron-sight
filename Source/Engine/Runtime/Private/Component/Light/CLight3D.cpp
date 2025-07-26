@@ -51,7 +51,8 @@ void CLight3D::FinalTick()
 	CalculateTransform();
 
 	// RenderMgr 에 Light3D 등록
-	m_LightIdx = FRenderManager::GetInst()->RegisterLight3D(this);
+	FRenderManager::GetInst()->RegisterLight3D(this);
+	m_LightIdx = FRenderManager::GetInst()->GetLight3DLastIndex();
 
 	// DebugRender
 	if (LIGHT_TYPE::POINT == m_LightInfo.Type)

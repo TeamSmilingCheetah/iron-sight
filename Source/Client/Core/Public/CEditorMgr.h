@@ -2,7 +2,7 @@
 #include <Common/singleton.h>
 
 class CGameObjectEx;
-class CMRT;
+class FMultiRenderTarget;
 class CEditorSpaceCamScript;
 
 class CEditorMgr :
@@ -11,17 +11,17 @@ class CEditorMgr :
 	SINGLE(CEditorMgr);
 
 private:
-	vector<CGameObjectEx*>	m_vecEditorObj;
+	vector<CGameObjectEx*> m_vecEditorObj;
 
 	// 에디터에서 애니메이션을 확인하기 위한 렌더링 공간
-	bool					m_RenderEditorSpace;
-	vector<CGameObjectEx*>	m_vecEditorSpaceObj;
-	CGameObjectEx*			m_EditorSpaceCam;
-	CGameObjectEx*			m_Light;
-	CGameObjectEx*			m_Origin;
-	CMRT*					m_EditorSpaceRT;
+	bool m_RenderEditorSpace;
+	vector<CGameObjectEx*> m_vecEditorSpaceObj;
+	CGameObjectEx* m_EditorSpaceCam;
+	CGameObjectEx* m_Light;
+	CGameObjectEx* m_Origin;
+	FMultiRenderTarget* m_EditorSpaceRT;
 
-	CEditorSpaceCamScript*	m_EditorSpaceCamScript;
+	CEditorSpaceCamScript* m_EditorSpaceCamScript;
 
 public:
 	void Init();

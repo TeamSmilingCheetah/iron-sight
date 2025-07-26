@@ -75,7 +75,7 @@ void CLevelMgr::ChangeLevelState(LEVEL_STATE _NextState)
 		FRenderManager::GetInst()->SetEditorMode(true);
 
 		if (LEVEL_STATE::STOP == _NextState)
-			FRenderManager::GetInst()->DeregisterCamera();
+			FRenderManager::GetInst()->UnregisterCameraAll();
 	}
 
 	// Pause, Stop -> Play

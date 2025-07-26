@@ -2,12 +2,14 @@
 #include "RenderPass.h"
 
 class FMergeRenderPass
-	: public FRenderPass
+	: public IRenderPass
 {
 public:
-	CLONE(FMergeRenderPass);
+	void Execute(FRenderPassParameters& InParams) override;
+	void ExecuteMinimap() const;
+
+	// Special Member Function
 	FMergeRenderPass() = default;
 	~FMergeRenderPass() override = default;
-
-	void Execute() override;
+	CLONE(FMergeRenderPass);
 };

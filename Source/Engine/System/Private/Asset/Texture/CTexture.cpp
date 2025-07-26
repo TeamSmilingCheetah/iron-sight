@@ -380,6 +380,19 @@ void CTexture::Clear(int PRegisterNum)
 	CONTEXT->PSSetShaderResources(PRegisterNum, 1, &pSRV);
 }
 
+void CTexture::Clear(int InStartSlot, int InEndSlot)
+{
+	for (int i = InStartSlot; i < InEndSlot; ++i)
+	{
+		ID3D11ShaderResourceView* pSRV = nullptr;
+		CONTEXT->VSSetShaderResources(i, 1, &pSRV);
+		CONTEXT->HSSetShaderResources(i, 1, &pSRV);
+		CONTEXT->DSSetShaderResources(i, 1, &pSRV);
+		CONTEXT->GSSetShaderResources(i, 1, &pSRV);
+		CONTEXT->PSSetShaderResources(i, 1, &pSRV);
+	}
+}
+
 void CTexture::Binding_SRV_CS(int PRegisterNum)
 {
 	m_RecentSRVNum = PRegisterNum;

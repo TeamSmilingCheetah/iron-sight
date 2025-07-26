@@ -2,6 +2,13 @@
 
 #include <thread>
 
+#include "Ptr.h"
+
+class CTexture;
+class CMesh;
+class CMaterial;
+struct FRenderCommand;
+class CCamera;
 class CColliderRay;
 using std::thread;
 
@@ -394,9 +401,9 @@ struct tRaycastTask
 
 struct RaycastResult
 {
-	UINT   IsHit;
-	float  Distance;
-	Vec3   HitNormal;
+	UINT IsHit;
+	float Distance;
+	Vec3 HitNormal;
 };
 
 // Facade Struct
@@ -662,3 +669,59 @@ struct RayColliderInfo
 	{
 	}
 };
+
+/**
+ * @brief Draw Call 단위의 Rendering 처리를 위한 Struct
+ */
+struct FRenderCommand
+{
+	CMaterial* Material;
+	CMesh* Mesh;
+	UINT SectionIndex;
+	Matrix WorldMatrix;
+};
+
+/**
+ * @brief RenderPass에서 필요한 자료들을 모아놓은 Struct
+ * 해당 구조체를 받는 순수 가상 함수를 override 하는 것으로 RenderPass가 필요한 값을 전부 받아올 수 있도록 처리함
+ */
+struct FRenderPassParameters
+{
+	const vector<FRenderCommand>* RenderCommands;
+	const vector<tLight2DInfo>* Light2DInfos;
+	const vector<tLight3DInfo>* Light3DInfos;
+};
+
+/**
+ * @brief Constant Buffer에 World 정보 제공을 위한 Struct
+ */
+struct FDrawCallInfo
+{
+	Matrix WorldMatrix;
+};
+
+/**
+ * @brief Constant Buffer에 Camera의 View와 Projection 정보 제공을 위한 Struct
+ */
+struct FViewProjectionInfo
+{
+	Matrix View;
+	Matrix Projection;
+};
+
+/**
+ * Light Render Pass에서 처리하기 위해 만든 구조체
+ */
+struct FLightConstants
+{
+	Vec4 LightColor;
+	Vec4 AmbientColor;
+	Vec4 LightPosition;
+	Vec4 LightDirection;
+	float Radius;
+	float Angle;
+	int Type;
+	float Padding0;
+};
+
+constexpr Matrix IdentityMatrix = Matrix(1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 1.f);

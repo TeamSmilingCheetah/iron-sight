@@ -21,7 +21,7 @@ class CTexture :
 	public CAsset
 {
 	friend class CAssetMgr;
-	
+
 private:
 	ScratchImage m_Image; // 이미지 파일 로딩 및 저장 기능
 	ComPtr<ID3D11Texture2D> m_Tex2D; // (ScratchImage)SysMem -> GPUMem
@@ -51,6 +51,7 @@ public:
 
 	void Binding(int PRegisterNum);
 	static void Clear(int PRegisterNum);
+	static void Clear(int InStartSlot, int InEndSlot);
 	void Binding_SRV_CS(int PRegisterNum);
 	void Binding_UAV_CS(int PRegisterNum);
 	void Clear_SRV_CS();

@@ -3,6 +3,8 @@
 
 #include "Engine/System/Public/Rendering/RenderTarget/MultiRenderTarget.h"
 
+class CLight3D;
+class CLight2D;
 class CCamera;
 class FGeometryRenderPass;
 class FLightRenderPass;
@@ -60,15 +62,32 @@ private:
 	// Status
 	bool bIsEditorMode;
 	bool bIsDebugRender;
+	bool bShowFPS;
 
 	// Camera
 	CCamera* EditorCamera;
 	vector<CCamera*> CameraVector;
 
 	// Light Info
+	vector<CLight2D*> Light2DVector;
+	vector<CLight3D*> Light3DVector;
 	vector<tLight2DInfo> Light2DInfo;
 	vector<tLight3DInfo> Light3DInfo;
-	constexpr UINT MAX_LIGHT_COUNT = 256;
+
+	CStructuredBuffer* Light2DBuffer;
+	CStructuredBuffer* Light3DBuffer;
+	CStructuredBuffer* LightInstancingBuffer;
+
+	// Debug Render Task
+	vector<tDebugShapeInfo> DebugInfoList;
+
+	// Parameter Struct
+	FRenderPassParameters PassParams;
+
+	// Draw Call Unit Rendering
+	vector<FRenderCommand> RenderCommands;
+
+	Ptr<CTexture> SpecifyTarget;
 
 private:
 	// Init
@@ -78,14 +97,46 @@ private:
 	void CreateRenderPasses();
 
 	// Main
-	void RenderStart();
+	void RenderStart() const;
 	void RenderEditor();
 	void RenderPlay();
 	void RenderDebug();
-	void RenderClear();
+	static void RenderFPS();
+	static void RenderClear();
+
+	// RenderStart
+	void ClassifyRenderObjects(CCamera* InCamera);
+	void ExecuteRenderPipeline(CCamera* InCamera);
+	static void UpdateViewProjection(CCamera* InCamera);
+	void ClearMRT() const;
 
 public:
 	void Init();
 	void Render();
+	void CopyRenderTarget() const;
+	void SetupFrameResources();
+	void AddDebugShape(const tDebugShapeInfo& InDebugShapeInfo);
+
+	void RegisterCamera(CCamera* InCamera, UINT InIdx);
+	void UnregisterCamera(CCamera* InCamera);
+	void SetEditorCamera(CCamera* InEditorCamera) { EditorCamera = InEditorCamera; }
+	void UnregisterCameraAll() { CameraVector.clear(); }
+
+	// Getter & Setter
 	CCamera* GetMainCamera() const;
+	int GetLight3DLastIndex() const { return static_cast<int>(Light3DVector.size()) - 1; }
+	FMultiRenderTarget* GetRenderTarget(MRT_TYPE InType) const
+	{
+		return MultiRenderTargetArray[static_cast<UINT>(InType)];
+	}
+
+	void RegisterLight2D(CLight2D* InLight2D) { Light2DVector.push_back(InLight2D); }
+	void RegisterLight3D(CLight3D* InLight3D) { Light3DVector.push_back(InLight3D); }
+
+	bool IsEditorMode() const { return bIsEditorMode; }
+	bool IsDebugRender() const { return bIsDebugRender; }
+
+	void SetEditorMode(bool InIsEditorMode) { bIsEditorMode = InIsEditorMode; }
+	bool SetDebugRender(bool InIsDebugRender) { return bIsDebugRender = InIsDebugRender; }
+	void SetSpecifyTarget(Ptr<CTexture> InTarget) { SpecifyTarget = InTarget; }
 };

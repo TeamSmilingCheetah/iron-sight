@@ -7,7 +7,8 @@ enum class CB_TYPE
 	MATERIAL,
 	SPRITE,
 	GLOBAL,
-	MESH_COLLISION,
+	DRAWCALL,
+	LIGHT,
 	END,
 };
 
