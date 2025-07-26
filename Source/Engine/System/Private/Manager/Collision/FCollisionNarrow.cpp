@@ -32,17 +32,17 @@ constexpr Vec3 UnitCube[8] = {
 /**
  * @brief 충돌 가능성이 있는 오브젝트 쌍에 대해 충돌 판정을 처리하는 함수
  */
-void FCollisionManager::NarrowPhase()
+void CollisionManager::NarrowPhase()
 {
 	// Reset Task Data
-	MTasks.clear();
-	MTaskColliders.clear();
-	MFrameAllVertices.clear();
-	MFrameAllIndices.clear();
-	MDataCache.clear();
+	Tasks.clear();
+	TaskColliders.clear();
+	FrameAllVertices.clear();
+	FrameAllIndices.clear();
+	DataCache.clear();
 
 	// CPU와 GPU 처리 대상을 분리
-	for (auto& Pair : MCandidatePairVector)
+	for (auto& Pair : CandidatePairVector)
 	{
 		// CS 처리가 필요한 경우 CS Task에만 달고 나감
 		if (NeedComputeShader(Pair.first, Pair.second))
@@ -57,7 +57,7 @@ void FCollisionManager::NarrowPhase()
 	}
 
 	// CS Task Batch Process
-	if (!MTasks.empty())
+	if (!Tasks.empty())
 	{
 		// LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MTasks.size());
 		ExecuteAndProcessCS();
@@ -68,7 +68,7 @@ void FCollisionManager::NarrowPhase()
  * @brief 세부 충돌 검사에 Compute Shader 처리가 필요한지 판별하는 함수
  * @return CS 처리가 필요하다면 True
  */
-bool FCollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGameObject* ObjectB)
+bool CollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGameObject* ObjectB)
 {
 	const bool IsMeshA = (ObjectA->MeshCollider() != nullptr);
 	const bool IsMeshB = (ObjectB->MeshCollider() != nullptr);
@@ -86,29 +86,29 @@ bool FCollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGam
 /**
  * @brief MeshCollider 정보를 Buffer에 추가하는 함수
  */
-FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CMeshCollider* PCollider)
+CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const CMeshCollider* InCollider)
 {
 	// 중복 생성 방지
-	const void* ColliderKey = PCollider;
-	if (MDataCache.contains(ColliderKey))
+	const void* ColliderKey = InCollider;
+	if (DataCache.contains(ColliderKey))
 	{
-		return MDataCache.at(ColliderKey);
+		return DataCache.at(ColliderKey);
 	}
 
 	MeshBatchData NewData = {};
-	NewData.VertexOffset = static_cast<UINT>(MFrameAllVertices.size());
-	NewData.IndexOffset = static_cast<UINT>(MFrameAllIndices.size());
+	NewData.VertexOffset = static_cast<UINT>(FrameAllVertices.size());
+	NewData.IndexOffset = static_cast<UINT>(FrameAllIndices.size());
 
-	Ptr<CMesh> Mesh = PCollider->GetMesh();
+	Ptr<CMesh> Mesh = InCollider->GetMesh();
 	if (Mesh.Get())
 	{
-		Matrix WorldMatrix = PCollider->GetOwner()->Transform()->GetWorldMat();
+		Matrix WorldMatrix = InCollider->GetOwner()->Transform()->GetWorldMat();
 		Vtx* Vertices = static_cast<Vtx*>(Mesh->GetVtxSysMem());
 		UINT VertexCount = Mesh->GetVertexCount();
 
 		for (UINT i = 0; i < VertexCount; ++i)
 		{
-			MFrameAllVertices.push_back(XMVector3TransformCoord(Vertices[i].vPos, WorldMatrix));
+			FrameAllVertices.push_back(XMVector3TransformCoord(Vertices[i].vPos, WorldMatrix));
 		}
 
 		UINT TotalTriangleCount = 0;
@@ -119,7 +119,7 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CMes
 
 			for (UINT j = 0; j < Subset.IdxCount; ++j)
 			{
-				MFrameAllIndices.push_back(Indices[j]);
+				FrameAllIndices.push_back(Indices[j]);
 			}
 
 			TotalTriangleCount += Subset.IdxCount / 3;
@@ -129,7 +129,7 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CMes
 	}
 
 	// Cache에 등록
-	MDataCache[ColliderKey] = NewData;
+	DataCache[ColliderKey] = NewData;
 
 	return NewData;
 }
@@ -137,20 +137,20 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CMes
 /**
  * @brief Collider3D 정보를 Buffer에 추가하는 함수
  */
-FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CCollider3D* PCollider)
+CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const CCollider3D* InCollider)
 {
 	// 중복 생성 방지
-	const void* ColliderKey = PCollider;
-	if (MDataCache.contains(ColliderKey))
+	const void* ColliderKey = InCollider;
+	if (DataCache.contains(ColliderKey))
 	{
-		return MDataCache.at(ColliderKey);
+		return DataCache.at(ColliderKey);
 	}
 
 	MeshBatchData NewData;
-	NewData.VertexOffset = static_cast<UINT>(MFrameAllVertices.size());
-	NewData.IndexOffset = static_cast<UINT>(MFrameAllIndices.size());
+	NewData.VertexOffset = static_cast<UINT>(FrameAllVertices.size());
+	NewData.IndexOffset = static_cast<UINT>(FrameAllIndices.size());
 
-	Matrix WorldMatrix = PCollider->GetColliderWorldMat();
+	Matrix WorldMatrix = InCollider->GetColliderWorldMat();
 	Vec3 Vertices[8];
 	for (int i = 0; i < 8; ++i)
 	{
@@ -160,16 +160,16 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CCol
 	// Add Data
 	for (int i = 0; i < 8; ++i)
 	{
-		MFrameAllVertices.push_back(Vertices[i]);
+		FrameAllVertices.push_back(Vertices[i]);
 	}
 	for (int i = 0; i < 36; ++i)
 	{
-		MFrameAllIndices.push_back(Indices[i]);
+		FrameAllIndices.push_back(Indices[i]);
 	}
 	NewData.TriCount = 12;
 
 	// Cache에 등록
-	MDataCache[ColliderKey] = NewData;
+	DataCache[ColliderKey] = NewData;
 
 	return NewData;
 }
@@ -177,28 +177,28 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const CCol
 /**
  * @brief 배치 처리를 실행하고 결과를 처리하는 함수
  */
-void FCollisionManager::ExecuteAndProcessCS()
+void CollisionManager::ExecuteAndProcessCS()
 {
 	// Create Structured Buffer
 	CStructuredBuffer AllVtxBuffer, AllIdxBuffer, TasksBuffer, ResultsBuffer;
-	AllVtxBuffer.Create(sizeof(Vec3), static_cast<UINT>(MFrameAllVertices.size()),
-	                    SB_TYPE::SRV_ONLY, false, MFrameAllVertices.data());
-	AllIdxBuffer.Create(sizeof(UINT), static_cast<UINT>(MFrameAllIndices.size()),
-	                    SB_TYPE::SRV_ONLY, false, MFrameAllIndices.data());
-	TasksBuffer.Create(sizeof(tCollisionTask), static_cast<UINT>(MTasks.size()),
-	                   SB_TYPE::SRV_ONLY, false, MTasks.data());
-	ResultsBuffer.Create(sizeof(CollisionResult), static_cast<UINT>(MTasks.size()),
+	AllVtxBuffer.Create(sizeof(Vec3), static_cast<UINT>(FrameAllVertices.size()),
+	                    SB_TYPE::SRV_ONLY, false, FrameAllVertices.data());
+	AllIdxBuffer.Create(sizeof(UINT), static_cast<UINT>(FrameAllIndices.size()),
+	                    SB_TYPE::SRV_ONLY, false, FrameAllIndices.data());
+	TasksBuffer.Create(sizeof(tCollisionTask), static_cast<UINT>(Tasks.size()),
+	                   SB_TYPE::SRV_ONLY, false, Tasks.data());
+	ResultsBuffer.Create(sizeof(CollisionResult), static_cast<UINT>(Tasks.size()),
 	                     SB_TYPE::SRV_UAV, true);
 
 	// Setting CS & Execution (Clear Included)
-	MMeshCollisionCS.SetVertexAndIndexBuffers(&AllVtxBuffer, &AllIdxBuffer);
-	MMeshCollisionCS.SetTaskBuffer(&TasksBuffer);
-	MMeshCollisionCS.SetResultBuffer(&ResultsBuffer);
-	MMeshCollisionCS.SetTaskCount(static_cast<int>(MTasks.size()));
-	MMeshCollisionCS.Execute();
+	MeshCollisionCS.SetVertexAndIndexBuffers(&AllVtxBuffer, &AllIdxBuffer);
+	MeshCollisionCS.SetTaskBuffer(&TasksBuffer);
+	MeshCollisionCS.SetResultBuffer(&ResultsBuffer);
+	MeshCollisionCS.SetTaskCount(static_cast<int>(Tasks.size()));
+	MeshCollisionCS.Execute();
 
 	// Get Results
-	vector<CollisionResult> Results(MTasks.size());
+	vector<CollisionResult> Results(Tasks.size());
 	ResultsBuffer.GetData(Results.data());
 
 	// Process If Collided
@@ -214,22 +214,22 @@ void FCollisionManager::ExecuteAndProcessCS()
 				Pair.second->SetPenetrationDepth(Results[i].PenetrationDepth);
 
 				AddFrameCollision(Pair.first, Pair.second);
-			}, MTaskColliders[i]);
+			}, TaskColliders[i]);
 		}
 	}
 }
 
 /**
  * @brief Task 추가 진행하면서 Object의 충돌체 관련 정보도 동시에 저장하는 함수
- * @param PLeftObject Collision Object 1
- * @param PRightObject Collision Object 2
+ * @param InLeftObject Collision Object 1
+ * @param InRightObject Collision Object 2
  */
-void FCollisionManager::AddShaderTask(const CGameObject* PLeftObject, const CGameObject* PRightObject)
+void CollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject)
 {
-	CMeshCollider* LeftMesh = PLeftObject->MeshCollider();
-	CMeshCollider* RightMesh = PRightObject->MeshCollider();
-	CCollider3D* Left3D = PLeftObject->Collider3D();
-	CCollider3D* Right3D = PRightObject->Collider3D();
+	CMeshCollider* LeftMesh = InLeftObject->MeshCollider();
+	CMeshCollider* RightMesh = InRightObject->MeshCollider();
+	CCollider3D* Left3D = InLeftObject->Collider3D();
+	CCollider3D* Right3D = InRightObject->Collider3D();
 
 	MeshBatchData LeftData, RightData;
 
@@ -237,19 +237,19 @@ void FCollisionManager::AddShaderTask(const CGameObject* PLeftObject, const CGam
 	{
 		LeftData = GetOrAddBatchData(LeftMesh);
 		RightData = GetOrAddBatchData(RightMesh);
-		MTaskColliders.emplace_back(make_pair(LeftMesh, RightMesh));
+		TaskColliders.emplace_back(make_pair(LeftMesh, RightMesh));
 	}
 	else if (LeftMesh && Right3D)
 	{
 		LeftData = GetOrAddBatchData(LeftMesh);
 		RightData = GetOrAddBatchData(Right3D);
-		MTaskColliders.emplace_back(make_pair(LeftMesh, Right3D));
+		TaskColliders.emplace_back(make_pair(LeftMesh, Right3D));
 	}
 	else if (Left3D && RightMesh)
 	{
 		LeftData = GetOrAddBatchData(Left3D);
 		RightData = GetOrAddBatchData(RightMesh);
-		MTaskColliders.emplace_back(make_pair(Left3D, RightMesh));
+		TaskColliders.emplace_back(make_pair(Left3D, RightMesh));
 	}
 	else
 	{
@@ -265,57 +265,57 @@ void FCollisionManager::AddShaderTask(const CGameObject* PLeftObject, const CGam
 	Task.RightIndexOffset = RightData.IndexOffset;
 	Task.RightTriCount = RightData.TriCount;
 
-	MTasks.push_back(Task);
+	Tasks.push_back(Task);
 }
 
 /**
  * @brief Narrow 충돌 판정 중 CPU 기반의 판정을 진행하고, 충돌했다면 적절한 처리 로직을 호출하는 함수
  *
- * @param PLeftObject Object 1
- * @param PRightObject Object 2
+ * @param InLeftObject Object 1
+ * @param InRightObject Object 2
  */
-void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameObject* PLeftObject)
+void CollisionManager::CheckPair(const CGameObject* InRightObject, const CGameObject* InLeftObject)
 {
 	// 2D 충돌체 검사
-	if (PLeftObject->Collider2D())
+	if (InLeftObject->Collider2D())
 	{
-		if (PRightObject->Collider2D())
+		if (InRightObject->Collider2D())
 		{
-			if (IsCollision(PLeftObject->Collider2D(), PRightObject->Collider2D()))
+			if (IsCollision(InLeftObject->Collider2D(), InRightObject->Collider2D()))
 			{
-				AddFrameCollision(PLeftObject->Collider2D(), PRightObject->Collider2D());
+				AddFrameCollision(InLeftObject->Collider2D(), InRightObject->Collider2D());
 			}
 		}
 	}
 
 	// 3D 충돌체 검사
-	if (PLeftObject->Collider3D())
+	if (InLeftObject->Collider3D())
 	{
-		if (PRightObject->Collider3D())
+		if (InRightObject->Collider3D())
 		{
-			if (IsCollision(PLeftObject->Collider3D(), PRightObject->Collider3D()))
+			if (IsCollision(InLeftObject->Collider3D(), InRightObject->Collider3D()))
 			{
-				AddFrameCollision(PLeftObject->Collider3D(), PRightObject->Collider3D());
+				AddFrameCollision(InLeftObject->Collider3D(), InRightObject->Collider3D());
 			}
 		}
 
-		if (PRightObject->LandScape())
+		if (InRightObject->LandScape())
 		{
-			if (IsCollision(PLeftObject->Collider3D(), PRightObject->LandScape()))
+			if (IsCollision(InLeftObject->Collider3D(), InRightObject->LandScape()))
 			{
-				AddFrameCollision(PLeftObject->Collider3D(), PRightObject->LandScape());
+				AddFrameCollision(InLeftObject->Collider3D(), InRightObject->LandScape());
 			}
 		}
 	}
 
 	// LandScape 검사
-	if (PLeftObject->LandScape())
+	if (InLeftObject->LandScape())
 	{
-		if (PRightObject->Collider3D())
+		if (InRightObject->Collider3D())
 		{
-			if (IsCollision(PRightObject->Collider3D(), PLeftObject->LandScape()))
+			if (IsCollision(InRightObject->Collider3D(), InLeftObject->LandScape()))
 			{
-				AddFrameCollision(PLeftObject->LandScape(), PRightObject->Collider3D());
+				AddFrameCollision(InLeftObject->LandScape(), InRightObject->Collider3D());
 			}
 		}
 	}
@@ -324,12 +324,12 @@ void FCollisionManager::CheckPair(const CGameObject* PRightObject, const CGameOb
 	//            WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
 }
 
-void FCollisionManager::AddFrameCollision(ColliderVariant PLeftCollider, ColliderVariant PRightCollider)
+void CollisionManager::AddFrameCollision(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
 {
 	visit([&](auto* LeftCollider, auto* RightCollider)
 	{
-		MFrameCollisionSet.insert(COLLISION_ID(LeftCollider->GetID(), RightCollider->GetID()).ID);
-	}, PLeftCollider, PRightCollider);
+		FrameCollisionSet.insert(COLLISION_ID(LeftCollider->GetID(), RightCollider->GetID()).ID);
+	}, InLeftCollider, InRightCollider);
 }
 
 /**********************************/
@@ -338,14 +338,14 @@ void FCollisionManager::AddFrameCollision(ColliderVariant PLeftCollider, Collide
 
 // TODO(KHJ): 이하의 코드 재검토 필요
 
-bool FCollisionManager::IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider)
+bool CollisionManager::IsCollision(const CCollider2D* InLeftCollider, const CCollider2D* InRightCollider)
 {
 	// SAT(Separating Axis Theorem) 기반 2D 충돌 판정
 	static Vec3 arrRect[4] = {
 		Vec3(-0.5f, 0.5f, 0.f), Vec3(0.5f, 0.5f, 0.f), Vec3(0.5f, -0.5f, 0.f), Vec3(-0.5f, -0.5f, 0.f)
 	};
-	Matrix matColLeft = PLeftCollider->GetColliderWorldMatrix();
-	Matrix matColRight = PRightCollider->GetColliderWorldMatrix();
+	Matrix matColLeft = InLeftCollider->GetColliderWorldMatrix();
+	Matrix matColRight = InRightCollider->GetColliderWorldMatrix();
 	Vec3 arrProj[4] = {};
 	arrProj[0] = XMVector3TransformCoord(arrRect[1], matColLeft) - XMVector3TransformCoord(arrRect[0], matColLeft);
 	arrProj[1] = XMVector3TransformCoord(arrRect[3], matColLeft) - XMVector3TransformCoord(arrRect[0], matColLeft);
@@ -368,15 +368,15 @@ bool FCollisionManager::IsCollision(const CCollider2D* PLeftCollider, const CCol
 	return true;
 }
 
-bool FCollisionManager::IsCollision(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider)
+bool CollisionManager::IsCollision(const CCollider3D* InLeftCollider, const CCollider3D* InRightCollider)
 {
 	constexpr float EPSILON = 0.0001f;
 	static Vec3 arrCube[8] = {
 		Vec3(-0.5f, 0.5f, 0.5f), Vec3(0.5f, 0.5f, 0.5f), Vec3(0.5f, -0.5f, 0.5f), Vec3(-0.5f, -0.5f, 0.5f),
 		Vec3(-0.5f, 0.5f, -0.5f), Vec3(0.5f, 0.5f, -0.5f), Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
 	};
-	Matrix matColLeft = PLeftCollider->GetColliderWorldMat();
-	Matrix matColRight = PRightCollider->GetColliderWorldMat();
+	Matrix matColLeft = InLeftCollider->GetColliderWorldMat();
+	Matrix matColRight = InRightCollider->GetColliderWorldMat();
 	Vec3 leftCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColLeft);
 	Vec3 rightCenter = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), matColRight);
 	Vec3 leftVertices[8], rightVertices[8];
@@ -437,10 +437,10 @@ bool FCollisionManager::IsCollision(const CCollider3D* PLeftCollider, const CCol
 	return true;
 }
 
-bool FCollisionManager::IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider)
+bool CollisionManager::IsCollision(const CCollider3D* InLeftCollider, const CLandScape* InRightCollider)
 {
-	Vec3 ObjectPos = PLeftCollider->Transform()->GetWorldPos();
-	Vec3 LandScapePos = PRightCollider->GetWorldPosByLandScape(ObjectPos);
+	Vec3 ObjectPos = InLeftCollider->Transform()->GetWorldPos();
+	Vec3 LandScapePos = InRightCollider->GetWorldPosByLandScape(ObjectPos);
 	if (LandScapePos == Vec3(-10000.f, -10000.f, -10000.f) || ObjectPos.y > LandScapePos.y)
 		return false;
 	return true;

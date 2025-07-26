@@ -45,7 +45,7 @@ void Engine::Layer::SetLayerName(CLevel* PLevel, int PLayerNumber, const ::wstri
 
 void Engine::Layer::SetLayerCollision(int PLayer, int POtherLayer)
 {
-	FCollisionManager::GetInst()->ActiveLayerCollision(PLayer, POtherLayer);
+	CollisionManager::GetInst()->ActiveLayerCollision(PLayer, POtherLayer);
 }
 
 unique_ptr<CLevel> Engine::Level::CreateNewLevel()

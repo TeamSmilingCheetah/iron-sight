@@ -3,14 +3,14 @@
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
-void FCollisionManager::CollisionPostProcess()
+void CollisionManager::CollisionPostProcess()
 {
 	// Layer Matching
 	for (UINT Row = 0; Row < MAX_LAYER; ++Row)
 	{
 		for (UINT Column = Row; Column < MAX_LAYER; ++Column)
 		{
-			if (MLayerCollisionMatrix[Row] & (1 << Column))
+			if (LayerCollisionMatrix[Row] & (1 << Column))
 			{
 				// 1. 단일 레이어 내의 충돌 처리
 				if (Row == Column)
@@ -30,12 +30,12 @@ void FCollisionManager::CollisionPostProcess()
 /**
  * @brief 단일 레이어 내의 오브젝트 간의 충돌에 대해 처리하는 함수
  *
- * @param PLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index
+ * @param InLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index
  */
-void FCollisionManager::CollisionsInLayer(UINT PLayerIndex)
+void CollisionManager::CollisionsInLayer(UINT InLayerIndex)
 {
 	const vector<CGameObject*>& ObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
-	                                                               ->GetLayer(PLayerIndex)->GetObjects();
+	                                                               ->GetLayer(InLayerIndex)->GetObjects();
 
 	// 동일 레이어 내에서는 중복을 고려하여 절반의 횟수만 처리하면 된다
 	for (size_t i = 0; i < ObjectVector.size(); ++i)
@@ -56,15 +56,15 @@ void FCollisionManager::CollisionsInLayer(UINT PLayerIndex)
 /**
  * @brief 두 레이어 간의 충돌 처리 함수
  *
- * @param PLeftIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 1
- * @param PRightIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 2
+ * @param InLeftLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 1
+ * @param InRightLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 2
  */
-void FCollisionManager::CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex)
+void CollisionManager::CollisionBtwLayer(UINT InLeftLayerIndex, UINT InRightLayerIndex)
 {
 	const vector<CGameObject*>& LeftObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
-	                                                                   ->GetLayer(PLeftIndex)->GetObjects();
+	                                                                   ->GetLayer(InLeftLayerIndex)->GetObjects();
 	const vector<CGameObject*>& RightObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
-	                                                                    ->GetLayer(PRightIndex)->GetObjects();
+	                                                                    ->GetLayer(InRightLayerIndex)->GetObjects();
 
 	// 서로 다른 레이어의 경우 모든 충돌 검사를 위해서는 sizeL * sizeR 전부 확인해야 한다
 	for (size_t i = 0; i < LeftObjectVector.size(); ++i)
@@ -85,20 +85,20 @@ void FCollisionManager::CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex)
 /**
  * @brief 모든 충돌 로직이 완료된 상황에 Object 간의 Overlap에 대한 처리를 일괄적으로 진행하는 함수
  *
- * @param PLeftCollider Collider 1
- * @param PRightCollider Collider 2
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
  */
-void FCollisionManager::ExecuteOverlap(ColliderVariant PLeftCollider, ColliderVariant PRightCollider)
+void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
 {
 	visit([&](auto* LeftCollider, auto* RightCollider)
 	{
 		COLLISION_ID CollisionID(LeftCollider->GetID(), RightCollider->GetID());
 
-		auto iter = MColllisionMap.find(CollisionID.ID);
-		if (iter == MColllisionMap.end())
+		auto iter = ColllisionMap.find(CollisionID.ID);
+		if (iter == ColllisionMap.end())
 		{
-			MColllisionMap.insert({CollisionID.ID, false});
-			iter = MColllisionMap.find(CollisionID.ID);
+			ColllisionMap.insert({CollisionID.ID, false});
+			iter = ColllisionMap.find(CollisionID.ID);
 		}
 
 		CGameObject* LeftObject = LeftCollider->GetOwner();
@@ -109,7 +109,7 @@ void FCollisionManager::ExecuteOverlap(ColliderVariant PLeftCollider, ColliderVa
 		bool IsDeactive = LeftObject->IsDeactivated() || RightObject->IsDeactivated()
 			|| LeftCollider->GetState() == DEACTIVE || RightCollider->GetState() == DEACTIVE;
 
-		if (MFrameCollisionSet.contains(CollisionID.ID))
+		if (FrameCollisionSet.contains(CollisionID.ID))
 		{
 			if (iter->second)
 			{
@@ -148,5 +148,5 @@ void FCollisionManager::ExecuteOverlap(ColliderVariant PLeftCollider, ColliderVa
 				iter->second = false;
 			}
 		}
-	}, PLeftCollider, PRightCollider);
+	}, InLeftCollider, InRightCollider);
 }

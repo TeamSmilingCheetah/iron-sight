@@ -23,7 +23,7 @@
 class CColliderRay :
 	public CComponent
 {
-	friend class FCollisionManager;
+	friend class CollisionManager;
 
 private:
 	Vec3 MOffset;

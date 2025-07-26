@@ -9,7 +9,7 @@
 /** Broad Phase Function **/
 /**************************/
 
-void FCollisionManager::BroadPhase()
+void CollisionManager::BroadPhase()
 {
 	// Level Load Check
 	auto* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
@@ -22,11 +22,11 @@ void FCollisionManager::BroadPhase()
 	// 중복 배제를 위한 Set 추가
 	unordered_set<ULONGLONG> CandidateSet;
 
-	for (CGameObject* Object : MLevelActiveObjects)
+	for (CGameObject* Object : LevelActiveObjects)
 	{
 		// 충돌 후보 선별
 		vector<CGameObject*> Candidates;
-		QueryBVH(MBVHRootNode, Object, Candidates);
+		QueryBVH(BVHRootNode, Object, Candidates);
 
 		for (auto LeftCollider : Object->GetColliders())
 		{
@@ -37,7 +37,7 @@ void FCollisionManager::BroadPhase()
 				      for (CGameObject* Candidate : Candidates)
 				      {
 					      // Layer 조건 우선 배제
-					      if (MLayerCollisionMatrix[Object->GetLayerIdx()] & (1 << Candidate->GetLayerIdx()))
+					      if (LayerCollisionMatrix[Object->GetLayerIdx()] & (1 << Candidate->GetLayerIdx()))
 					      {
 						      for (auto RightCollider : Candidate->GetColliders())
 						      {
@@ -63,10 +63,10 @@ void FCollisionManager::BroadPhase()
 /**
  * @brief 충돌 가능성이 보이는 오브젝트 쌍을 후보군 벡터에 올리는 함수
  *
- * @param PLeftObject Object 1
- * @param PRightObject Object 2
+ * @param InLeftObject Object 1
+ * @param InRightObject Object 2
  */
-void FCollisionManager::AddCandidate(const CGameObject* PLeftObject, const CGameObject* PRightObject)
+void CollisionManager::AddCandidate(const CGameObject* InLeftObject, const CGameObject* InRightObject)
 {
-	MCandidatePairVector.push_back({PLeftObject, PRightObject});
+	CandidatePairVector.push_back({InLeftObject, InRightObject});
 }
