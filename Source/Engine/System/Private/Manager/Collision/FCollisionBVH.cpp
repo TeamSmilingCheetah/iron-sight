@@ -49,7 +49,7 @@ BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjec
 	// 일단 오브젝트를 돌면서 현재 Node의 Bound를 늘림
 	for (auto* Object : PObjects)
 	{
-		Node->Bounds.Expand(Object->GetAABB());
+		Node->Bounds.Expand(Object->GetCollisionAABB());
 	}
 
 	// Leaf에 도달한 상태라면 Node를 반환
@@ -65,7 +65,7 @@ BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& PObjec
 	sort(sorted,
 	     [Axis](const CGameObject* PObjectA, const CGameObject* PObjectB)
 	     {
-		     return PObjectA->GetAABB().Center()[Axis] < PObjectB->GetAABB().Center()[Axis];
+		     return PObjectA->GetCollisionAABB().Center()[Axis] < PObjectB->GetCollisionAABB().Center()[Axis];
 	     }
 	);
 
@@ -123,7 +123,7 @@ void FCollisionManager::QueryBVH(const BVHNode* PNode, const CGameObject* PObjec
 	}
 
 	// AABB가 겹치지 않는다면 탐색할 이유가 없으므로 그대로 반환
-	if (!PNode->Bounds.Intersects(PObject->GetAABB()))
+	if (!PNode->Bounds.Intersects(PObject->GetCollisionAABB()))
 	{
 		return;
 	}
@@ -133,7 +133,7 @@ void FCollisionManager::QueryBVH(const BVHNode* PNode, const CGameObject* PObjec
 	{
 		for (auto* OtherObject : PNode->Objects)
 		{
-			if (PObject->GetAABB().Intersects(OtherObject->GetAABB()))
+			if (PObject->GetCollisionAABB().Intersects(OtherObject->GetCollisionAABB()))
 			{
 				PCandidates.push_back(OtherObject);
 			}
@@ -186,7 +186,7 @@ void FCollisionManager::QueryBVH(const BVHNode* PNode, const CColliderRay* PRay,
 
 			// 충돌한 경우, 충돌 정보 담아서 기록
 			float TimeMin = 0.f;
-			if (Object->GetAABB().Intersects(RayInfo, &TimeMin))
+			if (Object->GetCollisionAABB().Intersects(RayInfo, &TimeMin))
 			{
 				RayColliderInfo ColliderInfo;
 				ColliderInfo.RayObject = const_cast<CColliderRay*>(PRay);

@@ -46,7 +46,7 @@ public:
 
 	void SetTrigger(bool _true);
 	void SetIndependentRot(bool _true);
-	AABB GetColliderAABB() const;
+	AABB GetAABB() const;
 
 	void Activate();
 	void Deactivate();

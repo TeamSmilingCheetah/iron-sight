@@ -160,7 +160,7 @@ void CCollider3D::LoadComponent(FILE* PFile)
  *
  * @return { AABB Min, AABB Max }
  */
-AABB CCollider3D::GetColliderAABB() const
+AABB CCollider3D::GetAABB() const
 {
 	Matrix WorldMatrix = GetColliderWorldMat();
 	Vec3 Vtxs[8];
