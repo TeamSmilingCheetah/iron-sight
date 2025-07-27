@@ -2,7 +2,7 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"

@@ -66,15 +66,15 @@ void DoorScript::LoadComponent(FILE* _File)
 {
 }
 
-void DoorScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void DoorScript::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
-void DoorScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void DoorScript::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
-void DoorScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void DoorScript::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 

@@ -2,7 +2,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -546,7 +546,7 @@ void PlayerCharacter::AnimationControl()
 }
 
 
-void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider)
 {
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (POtherCollider->IsTrigger())
@@ -555,7 +555,7 @@ void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherOb
 	}
 	else
 	{
-		Vec3 hitNormal = PCollider->GetHitNormal();
+		Vec3 hitNormal = PCollider->GetCollisionNormal();
 		hitNormal.Normalize();
 
 		//Vec3 hitPoint = _Collider->GetHitPoint();
@@ -580,7 +580,7 @@ void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherOb
 	}
 }
 
-void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider)
 {
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (POtherCollider->IsTrigger())
@@ -588,7 +588,7 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 	}
 	else
 	{
-		Vec3 hitNormal = PCollider->GetHitNormal();
+		Vec3 hitNormal = PCollider->GetCollisionNormal();
 		// 노말이 유효하면 사용
 		if (hitNormal.Length() > 0.001f)
 		{
@@ -617,28 +617,28 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider)
 {
 	int a = 0;
 }
 
 
-void PlayerCharacter::BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
+void PlayerCharacter::BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
 {
 	m_CollObject = POtherObject;
 }
 
-void PlayerCharacter::Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
+void PlayerCharacter::Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
 {
 }
 
-void PlayerCharacter::EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
+void PlayerCharacter::EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
 {
 	if (m_CollObject == POtherObject)
 		m_CollObject = nullptr;
 }
 
-void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -667,7 +667,7 @@ void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherOb
 	}
 }
 
-void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -694,7 +694,7 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
 {
 }
 
@@ -705,7 +705,7 @@ void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObje
  * @param POtherObject
  * @param POtherCollider
  */
-void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
 	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
@@ -740,7 +740,7 @@ void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherOb
  * @param POtherObject
  * @param POtherCollider
  */
-void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
 	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
@@ -770,6 +770,6 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
 {
 }

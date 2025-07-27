@@ -13,7 +13,9 @@ class IColliderBase : public CComponent
 {
 private:
 	int OverlapCount;
-	COLLIDER_STATE State;
+	COLLIDER_STATE ColliderState;
+	Vec3 CollisionNormal;
+	float PenetrationDepth;
 
 protected:
 	// Only Derived Class Can Use Constructor Function
@@ -26,12 +28,19 @@ public:
 	virtual const AABB GetAABB() const = 0;
 
 	// Getter & Setter
-	COLLIDER_STATE GetState() const { return State; }
-	bool IsActive() const { return State == ACTIVE; }
+	COLLIDER_STATE GetColliderState() const { return ColliderState; }
+	bool IsActive() const { return ColliderState == ACTIVE; }
+	bool IsDeactive() const { return ColliderState == DEACTIVE; }
+	bool IsSemiDeactive() const { return ColliderState == SEMIDEACTIVE; }
 	bool IsOverlapped() const { return OverlapCount != 0; }
+	Vec3 GetCollisionNormal() const { return CollisionNormal; }
+	float GetPenetrationDepth() const { return PenetrationDepth; }
 
-	void SetActivate() { State = ACTIVE; }
-	void SetDeactivate() { State = SEMIDEACTIVE; }
+	void SetActivate() { ColliderState = ACTIVE; }
+	void SetSemiDeactivate() { ColliderState = SEMIDEACTIVE; }
+	void SetDeactive() { ColliderState = DEACTIVE; }
+	void SetCollisionNormal(Vec3 InNormal) { CollisionNormal = InNormal; }
+	void SetPenetrationDepth(float InDepth) { PenetrationDepth = InDepth; }
 
 	// Templated Overlap Functions
 	template <typename T>
@@ -47,14 +56,15 @@ public:
 };
 
 inline IColliderBase::IColliderBase(COMPONENT_TYPE InType)
-	: CComponent(InType), OverlapCount(0), State(ACTIVE)
+	: CComponent(InType), OverlapCount(0), ColliderState(ACTIVE), PenetrationDepth(0)
 {
 }
 
 inline IColliderBase::IColliderBase(const IColliderBase& POrigin)
 	: CComponent(POrigin)
 	  , OverlapCount(0)
-	  , State(POrigin.State)
+	  , ColliderState(POrigin.ColliderState)
+	  , PenetrationDepth(0)
 {
 }
 

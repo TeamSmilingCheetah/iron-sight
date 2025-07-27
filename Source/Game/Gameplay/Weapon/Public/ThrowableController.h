@@ -56,13 +56,13 @@ public:
 	void Begin() override;
 	void Tick() override;
 
-	virtual void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
+	virtual void Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
+	virtual void EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
 
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 
 
 public:

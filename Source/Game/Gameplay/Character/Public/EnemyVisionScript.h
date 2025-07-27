@@ -20,13 +20,13 @@ public:
 	void Begin() override;
 	void Tick() override final;
 
-	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
-	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
-	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider) override;
+	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
+	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
+	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
 
-	virtual void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider) override;
+	virtual void BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
+	virtual void Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
+	virtual void EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

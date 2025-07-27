@@ -28,16 +28,16 @@ public:
 
 	void SetBulletInfo(CGameObject* _Object, CGameObject* _Weapon, float _Dmg) { m_BulletDmg.m_Owner = _Object, m_BulletDmg.m_ShotWeapon = _Weapon, m_BulletDmg.m_Dmg = _Dmg; }
 
-	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
+	void BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject,
+		FCollider3D* _OtherCollider) override;
+	void Overlap(FCollider3D* _Collider, CGameObject* _OtherObject,
+		FCollider3D* _OtherCollider) override;
+	void EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject,
+		FCollider3D* _OtherCollider) override;
 
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
 
 	void Begin() override;
 	void Tick() override;

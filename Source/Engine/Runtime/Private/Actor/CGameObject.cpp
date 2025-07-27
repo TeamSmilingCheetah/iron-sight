@@ -10,7 +10,7 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Game/System/Public/GameplayManager.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Runtime/Public/Component/Physics/Collider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandscape.h"
 
 UINT CGameObject::GUID = 0;

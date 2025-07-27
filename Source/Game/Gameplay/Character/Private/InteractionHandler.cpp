@@ -88,7 +88,7 @@ void InteractionHandler::LoadComponentReference()
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
-void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void InteractionHandler::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// Interactable Script
 	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
@@ -99,7 +99,7 @@ void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _Othe
 	pInteractable->EnterDetection(this);
 }
 
-void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void InteractionHandler::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// 플레이어가 바라보고 있는 오브젝트
 	CGameObject* pTarget = m_PlayerScript->GetRayTarget();
@@ -142,7 +142,7 @@ void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObje
 	}
 }
 
-void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void InteractionHandler::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// Interactable Script
 	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));

@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
@@ -132,7 +132,7 @@ void TestCharacter::DeathEntry()
 	DetachItem(m_CurWeapon);
 
 	// 충돌체 비활성화
-	Collider3D()->Deactivate();
+	Collider3D()->SetSemiDeactivate();
 }
 
 void TestCharacter::None()

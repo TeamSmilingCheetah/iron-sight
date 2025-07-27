@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -382,7 +382,7 @@ void ThrowableController::MakeBounce(Vec3 _Normal, float _elastic, float _fricti
 
 
 
-void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	if (_Collider->IsTrigger())
 	{
@@ -390,17 +390,17 @@ void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _Oth
 	}
 	else
 	{
-		Vec3 vHitNormal = _Collider->GetHitNormal();
+		Vec3 vHitNormal = _Collider->GetCollisionNormal();
 
 		MakeBounce(vHitNormal, 1.f, 0.7f);
 	}
 }
 
-void ThrowableController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ThrowableController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
-void ThrowableController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
@@ -408,7 +408,7 @@ void ThrowableController::EndOverlap(CCollider3D* _Collider, CGameObject* _Other
 
 
 
-void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 	if (_Collider->IsTrigger())
 	{
@@ -444,11 +444,11 @@ void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _Oth
 	}
 }
 
-void ThrowableController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 }
 
-void ThrowableController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 	if (_Collider->IsTrigger())
 	{

@@ -2,7 +2,7 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Runtime/Public/Component/Physics/CColliderRay.h"
 
 using std::ranges::sort;

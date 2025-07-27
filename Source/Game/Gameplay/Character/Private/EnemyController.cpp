@@ -5,7 +5,7 @@
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -337,7 +337,7 @@ void EnemyController::KeyTick()
 }
 
 
-void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
@@ -349,7 +349,7 @@ void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 	{
 		Vec3 pPos = Transform()->GetRelativePos();
 
-		Vec3 hitNormal = _Collider->GetHitNormal();
+		Vec3 hitNormal = _Collider->GetCollisionNormal();
 		hitNormal.Normalize();
 
 		//Vec3 hitPoint = _Collider->GetHitPoint();
@@ -374,7 +374,7 @@ void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 	}
 }
 
-void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// 트리거용 충돌체면 해당 코드 사용 x
 	if (_OtherCollider->IsTrigger())
@@ -383,7 +383,7 @@ void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 	else
 	{
-		Vec3 hitNormal = _Collider->GetHitNormal();
+		Vec3 hitNormal = _Collider->GetCollisionNormal();
 		// 노말이 유효하면 사용
 		if (hitNormal.Length() > 0.001f)
 		{
@@ -416,11 +416,11 @@ void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 }
 
-void EnemyController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
-void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -437,7 +437,7 @@ void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherOb
 	}
 }
 
-void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -452,7 +452,7 @@ void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 }
 
-void EnemyController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 }
 

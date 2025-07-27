@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/System/Public/Manager/CObjectPoolMgr.h"
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -100,7 +100,7 @@ void MissileProjectile::LoadComponent(FILE* _File)
 }
 
 
-void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void MissileProjectile::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// 트리거는 충돌대상 x
 	if (_OtherCollider->IsTrigger())
@@ -212,26 +212,26 @@ void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 
 }
 
-void MissileProjectile::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void MissileProjectile::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
-void MissileProjectile::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void MissileProjectile::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 }
 
 
 
 
-void MissileProjectile::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void MissileProjectile::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 
 }
 
-void MissileProjectile::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void MissileProjectile::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 }
 
-void MissileProjectile::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void MissileProjectile::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
 {
 }

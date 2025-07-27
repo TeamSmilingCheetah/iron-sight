@@ -9,7 +9,7 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Runtime/Public/Component/Light/CLight3D.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Runtime/Public/Component/Physics/Collider3D.h"
 #include "Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Runtime/Public/Component/Rendering/CSkyBox.h"
 

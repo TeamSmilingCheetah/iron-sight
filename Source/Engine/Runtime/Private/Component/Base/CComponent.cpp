@@ -32,7 +32,7 @@ CTransform* CComponent::Transform() const { return m_Owner ? m_Owner->Transform(
 CMeshRender* CComponent::MeshRender() const { return m_Owner ? m_Owner->MeshRender() : nullptr; }
 CCamera* CComponent::Camera() const { return m_Owner ? m_Owner->Camera() : nullptr; }
 FCollider2D* CComponent::Collider2D() const { return m_Owner ? m_Owner->Collider2D() : nullptr; }
-CCollider3D* CComponent::Collider3D() const { return m_Owner ? m_Owner->Collider3D() : nullptr; }
+FCollider3D* CComponent::Collider3D() const { return m_Owner ? m_Owner->Collider3D() : nullptr; }
 CColliderRay* CComponent::ColliderRay() const { return m_Owner ? m_Owner->ColliderRay() : nullptr; }
 CFlipbookPlayer* CComponent::FlipbookPlayer() const { return m_Owner ? m_Owner->FlipbookPlayer() : nullptr; }
 CTileMap* CComponent::TileMap() const { return m_Owner ? m_Owner->TileMap() : nullptr; }

@@ -62,7 +62,7 @@ public:
 
 	// Getter & Setter
 	void SetActivate() { MColliderState = ACTIVE; }
-	void SetDeactivate() { MColliderState = SEMIDEACTIVE; }
+	void SetSemiDeactivate() { MColliderState = SEMIDEACTIVE; }
 
 	tRay GetRay() const { return MRayPosDir; }
 	Vec3 GetRayPos() const { return MRayPosDir.vStart; }

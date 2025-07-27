@@ -6,8 +6,8 @@
 
 using ColliderPairVariant = variant<
 	pair<CMeshCollider*, CMeshCollider*>,
-	pair<CMeshCollider*, CCollider3D*>,
-	pair<CCollider3D*, CMeshCollider*>
+	pair<CMeshCollider*, FCollider3D*>,
+	pair<FCollider3D*, CMeshCollider*>
 >;
 
 union COLLISION_ID
@@ -38,7 +38,7 @@ union COLLISION_ID
 };
 
 class FCollider2D;
-class CCollider3D;
+class FCollider3D;
 class CColliderRay;
 class CLandScape;
 class CMeshCollider;
@@ -131,12 +131,12 @@ private:
 
 	// Narrow CPU Task
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
-	static bool IsCollision(const CCollider3D* InLeftCollider, const CCollider3D* InRightCollider);
-	static bool IsCollision(const CCollider3D* InLeftCollider, const CLandScape* InRightCollider);
+	static bool IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider);
+	static bool IsCollision(const FCollider3D* InLeftCollider, const CLandScape* InRightCollider);
 
 	// Narrow GPU Task
 	static bool NeedComputeShader(const CGameObject* InLeftObject, const CGameObject* InRightObject);
-	MeshBatchData GetOrAddBatchData(const CCollider3D* InCollider);
+	MeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
 	MeshBatchData GetOrAddBatchData(const CMeshCollider* InCollider);
 	void AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject);
 	void ExecuteAndProcessCS();

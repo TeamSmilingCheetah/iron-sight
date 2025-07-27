@@ -52,7 +52,7 @@ void ColliderRayUI::Render_Update()
 		if (bActive)
 			pColliderRay->SetActivate();
 		else
-			pColliderRay->SetDeactivate();
+			pColliderRay->SetSemiDeactivate();
 	}
 
 

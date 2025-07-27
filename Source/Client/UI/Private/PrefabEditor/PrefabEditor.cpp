@@ -244,7 +244,7 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 	if (*pStr == "Collider3D")
 	{
-		m_ProtoObject->AddComponent(new CCollider3D);
+		m_ProtoObject->AddComponent(new FCollider3D);
 		return;
 	}
 	if (*pStr == "ColliderRay")

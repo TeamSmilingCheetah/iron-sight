@@ -29,7 +29,7 @@ void EnemyVisionScript::Tick()
 {
 	// Collider가 존재해야한다(없으면 종료)
 	CColliderRay* pRay = GetOwner()->ColliderRay();
-	CCollider3D* p3DCol = GetOwner()->Collider3D();
+	FCollider3D* p3DCol = GetOwner()->Collider3D();
 	if (pRay == nullptr || p3DCol == nullptr)
 	{
 		return;
@@ -83,7 +83,7 @@ void EnemyVisionScript::Tick()
 
 }
 
-void EnemyVisionScript::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void EnemyVisionScript::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
 	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
@@ -98,13 +98,13 @@ void EnemyVisionScript::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _O
 
 }
 
-void EnemyVisionScript::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void EnemyVisionScript::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
 {
 	// 혹시 모를 사태에 대비 무조건 true로
 	m_RayTarget = true;
 }
 
-void EnemyVisionScript::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void EnemyVisionScript::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
 	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
@@ -118,7 +118,7 @@ void EnemyVisionScript::EndOverlap(CColliderRay* _RayCollider, CGameObject* _Oth
 	m_RayTarget = false;
 }
 
-void EnemyVisionScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyVisionScript::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
 	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
@@ -132,12 +132,12 @@ void EnemyVisionScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _Other
 	m_SetScript.insert(targetScript);
 }
 
-void EnemyVisionScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyVisionScript::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	int a = 0;
 }
 
-void EnemyVisionScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyVisionScript::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
 {
 	// 타겟으로 지정된 스크립트가 들어있나 확인
 	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);

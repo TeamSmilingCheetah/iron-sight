@@ -2,7 +2,7 @@
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
-using ColliderVariant = variant<FCollider2D*, CCollider3D*, CMeshCollider*, CLandScape*, CColliderRay*>;
+using ColliderVariant = variant<FCollider2D*, FCollider3D*, CMeshCollider*, CLandScape*, CColliderRay*>;
 
 /**
  * @brief 게임 월드를 구성하는 모든 오브젝트의 기본 단위
@@ -165,7 +165,7 @@ public:
 	CMeshRender* MeshRender() const { return reinterpret_cast<CMeshRender*>(GetComponent(COMPONENT_TYPE::MESHRENDER)); }
 	CCamera* Camera() const { return reinterpret_cast<CCamera*>(GetComponent(COMPONENT_TYPE::CAMERA)); }
 	FCollider2D* Collider2D() const { return reinterpret_cast<FCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
-	CCollider3D* Collider3D() const { return reinterpret_cast<CCollider3D*>(GetComponent(COMPONENT_TYPE::COLLIDER3D)); }
+	FCollider3D* Collider3D() const { return reinterpret_cast<FCollider3D*>(GetComponent(COMPONENT_TYPE::COLLIDER3D)); }
 	CColliderRay* ColliderRay() const{ return reinterpret_cast<CColliderRay*>(GetComponent(COMPONENT_TYPE::COLLIDERRAY)); }
 	CFlipbookPlayer* FlipbookPlayer() const { return reinterpret_cast<CFlipbookPlayer*>(GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)); }
 	CTileMap* TileMap() const { return reinterpret_cast<CTileMap*>(GetComponent(COMPONENT_TYPE::TILEMAP)); }

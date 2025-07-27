@@ -262,7 +262,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CParticleSystem);
 		break;
 	case COMPONENT_TYPE::COLLIDER3D:
-		m_TargetObject->AddComponent(new CCollider3D);
+		m_TargetObject->AddComponent(new FCollider3D);
 		break;
 	case COMPONENT_TYPE::COLLIDERRAY:
 		m_TargetObject->AddComponent(new CColliderRay);

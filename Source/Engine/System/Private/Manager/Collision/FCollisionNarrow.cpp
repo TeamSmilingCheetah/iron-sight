@@ -3,7 +3,7 @@
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -137,7 +137,7 @@ CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const CMeshC
 /**
  * @brief Collider3D 정보를 Buffer에 추가하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const CCollider3D* InCollider)
+CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
@@ -228,8 +228,8 @@ void CollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGam
 {
 	CMeshCollider* LeftMesh = InLeftObject->MeshCollider();
 	CMeshCollider* RightMesh = InRightObject->MeshCollider();
-	CCollider3D* Left3D = InLeftObject->Collider3D();
-	CCollider3D* Right3D = InRightObject->Collider3D();
+	FCollider3D* Left3D = InLeftObject->Collider3D();
+	FCollider3D* Right3D = InRightObject->Collider3D();
 
 	MeshBatchData LeftData, RightData;
 
@@ -368,7 +368,7 @@ bool CollisionManager::IsCollision(const FCollider2D* InLeftCollider, const FCol
 	return true;
 }
 
-bool CollisionManager::IsCollision(const CCollider3D* InLeftCollider, const CCollider3D* InRightCollider)
+bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider)
 {
 	constexpr float EPSILON = 0.0001f;
 	static Vec3 arrCube[8] = {
@@ -437,7 +437,7 @@ bool CollisionManager::IsCollision(const CCollider3D* InLeftCollider, const CCol
 	return true;
 }
 
-bool CollisionManager::IsCollision(const CCollider3D* InLeftCollider, const CLandScape* InRightCollider)
+bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const CLandScape* InRightCollider)
 {
 	Vec3 ObjectPos = InLeftCollider->Transform()->GetWorldPos();
 	Vec3 LandScapePos = InRightCollider->GetWorldPosByLandScape(ObjectPos);
