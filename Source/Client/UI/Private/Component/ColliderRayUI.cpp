@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Client/UI/Public/Component/ColliderRayUI.h"
 
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 
 ColliderRayUI::ColliderRayUI()
@@ -17,7 +17,7 @@ void ColliderRayUI::Render_Update()
 {
 	ComponentTitle("ColliderRay");
 
-	CColliderRay* pColliderRay = GetTargetObject()->ColliderRay();
+	FColliderRay* pColliderRay = GetTargetObject()->ColliderRay();
 
 	Vec3 vDir = pColliderRay->GetRayDir();
 	Vec3 vOffset = pColliderRay->GetOffset();

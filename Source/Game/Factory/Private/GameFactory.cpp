@@ -8,7 +8,7 @@
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
@@ -93,7 +93,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 	Common::AddComponentToObject<CCamera>(RawCameraPtr);
 	Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
 
-	Common::AddComponentToObject<CColliderRay>(RawCameraPtr);
+	Common::AddComponentToObject<FColliderRay>(RawCameraPtr);
 	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
 
 	Level::AddObjectToLayer(PLevel, RawCameraPtr, 0, false);
@@ -184,7 +184,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Transform::SetPositionAndRotation(Player, PPosition, {0.f, 90.f, 0.f});
 	Transform::SetScale(Player, {6.f, 6.f, 6.f});
 
-	Common::AddComponentToObject<CColliderRay>(Player);
+	Common::AddComponentToObject<FColliderRay>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 1500.f, 0.f}, 5000.f, true);
 
 	// Animation

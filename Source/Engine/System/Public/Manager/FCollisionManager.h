@@ -39,7 +39,7 @@ union COLLISION_ID
 
 class FCollider2D;
 class FCollider3D;
-class CColliderRay;
+class FColliderRay;
 class CLandScape;
 class FMeshCollider;
 
@@ -83,7 +83,7 @@ private:
 	vector<UINT> FrameAllIndices;
 
 	vector<tRaycastTask> RaycastTasks;
-	vector<pair<CColliderRay*, FMeshCollider*>> RaycastColliders;
+	vector<pair<FColliderRay*, FMeshCollider*>> RaycastColliders;
 	map<const void*, MeshBatchData> RaycastDataCache;
 
 	vector<tCollisionTask> Tasks;
@@ -116,9 +116,9 @@ private:
 	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& InObjects, int InDepth = 0);
 
 	// Raycast Function
-	static void QueryBVH(const BVHNode* InNode, const CColliderRay* InRay, vector<RayColliderInfo>& OutIntersectVector);
+	static void QueryBVH(const BVHNode* InNode, const FColliderRay* InRay, vector<FRayColliderInfo>& OutIntersectVector);
 	MeshBatchData GetOrAddRaycastBatchData(const FMeshCollider* InCollider);
-	void AddRayShaderTask(CColliderRay* InRay, const CGameObject* InObject);
+	void AddRayShaderTask(FColliderRay* InRay, const CGameObject* InObject);
 	void ExecuteAndProcessRaycastCS();
 
 	// Broad Phase Function

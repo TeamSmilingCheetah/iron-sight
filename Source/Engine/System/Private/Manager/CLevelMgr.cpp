@@ -396,7 +396,7 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::COLLIDER3D:
 		return new FCollider3D;
 	case COMPONENT_TYPE::COLLIDERRAY:
-		return new CColliderRay;
+		return new FColliderRay;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		return new CFlipbookPlayer;
 	case COMPONENT_TYPE::ANIMATOR3D:

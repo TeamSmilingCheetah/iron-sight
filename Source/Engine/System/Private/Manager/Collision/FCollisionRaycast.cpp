@@ -3,7 +3,7 @@
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
@@ -17,7 +17,7 @@
 void CollisionManager::RaycastProcess()
 {
 	// 모든 Ray Collider 수집
-	vector<CColliderRay*> RayColliders;
+	vector<FColliderRay*> RayColliders;
 	for (const auto* Object : LevelActiveObjects)
 	{
 		if (Object->ColliderRay())
@@ -32,10 +32,10 @@ void CollisionManager::RaycastProcess()
 	for (auto* Ray : RayColliders)
 	{
 		// Find All Candidates
-		vector<RayColliderInfo> Candidates;
+		vector<FRayColliderInfo> Candidates;
 		QueryBVH(BVHRootNode, Ray, Candidates);
 
-		for (const RayColliderInfo& Info : Candidates)
+		for (const FRayColliderInfo& Info : Candidates)
 		{
 			auto* Object = Info.HitObject;
 
@@ -107,7 +107,7 @@ CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const
 	return NewData;
 }
 
-void CollisionManager::AddRayShaderTask(CColliderRay* InRay, const CGameObject* InObject)
+void CollisionManager::AddRayShaderTask(FColliderRay* InRay, const CGameObject* InObject)
 {
 	MeshBatchData MeshData = GetOrAddRaycastBatchData(InObject->MeshCollider());
 	RaycastColliders.push_back(make_pair(InRay, InObject->MeshCollider()));
@@ -157,7 +157,7 @@ void CollisionManager::ExecuteAndProcessRaycastCS()
 		if (results[i].IsHit)
 		{
 			auto& Colliders = RaycastColliders[i];
-			CColliderRay* Ray = Colliders.first;
+			FColliderRay* Ray = Colliders.first;
 			FMeshCollider* Mesh = Colliders.second;
 
 			// 충돌 정보를 레이 콜라이더에 설정

@@ -265,7 +265,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new FCollider3D);
 		break;
 	case COMPONENT_TYPE::COLLIDERRAY:
-		m_TargetObject->AddComponent(new CColliderRay);
+		m_TargetObject->AddComponent(new FColliderRay);
 		break;
 	case COMPONENT_TYPE::ANIMATOR3D:
 		m_TargetObject->AddComponent(new CAnimator3D);

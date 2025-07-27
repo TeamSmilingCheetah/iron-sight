@@ -2,7 +2,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -921,7 +921,7 @@ void CameraController::CameraDebugMove()
 }
 
 
-void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
+void CameraController::BeginOverlap(FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
 {
 	if (_OtherObject->GetName() == L"DeathBox")
 	{
@@ -953,7 +953,7 @@ void CameraController::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _Ot
 	}
 }
 
-void CameraController::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
+void CameraController::Overlap(FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
 {
 	if (_OtherObject->GetName() == L"DeathBox")
 	{
@@ -981,7 +981,7 @@ void CameraController::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherOb
 }
 
 
-void CameraController::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
+void CameraController::EndOverlap(FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
 {
 	if (_OtherObject->GetName() == L"DeathBox")
 	{

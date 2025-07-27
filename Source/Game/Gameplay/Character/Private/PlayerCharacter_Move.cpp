@@ -623,16 +623,16 @@ void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObje
 }
 
 
-void PlayerCharacter::BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
+void PlayerCharacter::BeginOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
 {
 	m_CollObject = POtherObject;
 }
 
-void PlayerCharacter::Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
+void PlayerCharacter::Overlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
 {
 }
 
-void PlayerCharacter::EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
+void PlayerCharacter::EndOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider)
 {
 	if (m_CollObject == POtherObject)
 		m_CollObject = nullptr;

@@ -25,7 +25,7 @@
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -70,7 +70,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CColliderRay>(obj);
+				Engine::Common::AddComponentToObject<FColliderRay>(obj);
 				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 			},
 			[](CGameObject* obj)
@@ -338,7 +338,7 @@ void TestLevel::CreateTestLevel()
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
 	pVision->AddComponent(new FCollider3D);
-	pVision->AddComponent(new CColliderRay);
+	pVision->AddComponent(new FColliderRay);
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 

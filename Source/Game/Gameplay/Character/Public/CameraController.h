@@ -54,9 +54,9 @@ public:
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
-	virtual void BeginOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
-	virtual void Overlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
-	virtual void EndOverlap(class CColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
+	virtual void BeginOverlap(class FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
+	virtual void Overlap(class FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
+	virtual void EndOverlap(class FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider) override;
 
 	void SetFlag(CAM_FLAG _flag, bool _value);
 	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }

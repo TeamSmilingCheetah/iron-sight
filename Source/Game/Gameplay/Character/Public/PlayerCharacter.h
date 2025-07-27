@@ -149,9 +149,9 @@ public:
 	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) override;
 	void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) override;
 
-	void BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
-	void Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
-	void EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
+	void BeginOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
+	void Overlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
+	void EndOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
 
 	void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
 	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;

@@ -3,7 +3,7 @@
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Runtime/Public/Component/Physics/ColliderRay.h"
 
 using std::ranges::sort;
 
@@ -154,8 +154,8 @@ void CollisionManager::QueryBVH(const BVHNode* InNode, const CGameObject* InObje
  * @param InRay [IN] Node와 충돌 검사를 진행하는 Main 객체
  * @param OutIntersectVector [OUT] 충돌이 확정된 오브젝트들의 정보가 담길 Vector
  */
-void CollisionManager::QueryBVH(const BVHNode* InNode, const CColliderRay* InRay,
-                                 vector<RayColliderInfo>& OutIntersectVector)
+void CollisionManager::QueryBVH(const BVHNode* InNode, const FColliderRay* InRay,
+                                 vector<FRayColliderInfo>& OutIntersectVector)
 {
 	if (!InNode || !InRay)
 	{
@@ -188,8 +188,8 @@ void CollisionManager::QueryBVH(const BVHNode* InNode, const CColliderRay* InRay
 			float TimeMin = 0.f;
 			if (Object->GetCollisionAABB().Intersects(RayInfo, &TimeMin))
 			{
-				RayColliderInfo ColliderInfo;
-				ColliderInfo.RayObject = const_cast<CColliderRay*>(InRay);
+				FRayColliderInfo ColliderInfo;
+				ColliderInfo.RayObject = const_cast<FColliderRay*>(InRay);
 				ColliderInfo.HitObject = Object;
 				ColliderInfo.Length = TimeMin;
 				OutIntersectVector.push_back(ColliderInfo);
