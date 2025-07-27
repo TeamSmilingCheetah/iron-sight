@@ -1,7 +1,7 @@
 #pragma once
 #include "ColliderBase.h"
 
-class Collider2D :
+class FCollider2D :
     public IColliderBase
 {
 private:
@@ -28,8 +28,8 @@ public:
     void SetIndependentScale(bool InScale) { bIndependentScale = InScale; }
 
 	// Special Member Function
-    Collider2D();
-    Collider2D(const Collider2D& POrigin);
-    ~Collider2D() override;
-    CLONE(Collider2D);
+    FCollider2D();
+    FCollider2D(const FCollider2D& POrigin);
+    ~FCollider2D() override;
+    CLONE(FCollider2D);
 };

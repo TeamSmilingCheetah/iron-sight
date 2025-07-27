@@ -200,7 +200,7 @@
     <ClInclude Include="Runtime\Public\Component\Camera\CFrustum.h"/>
     <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h"/>
     <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h"/>
-    <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h"/>
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h"/>
     <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h"/>
     <ClInclude Include="Runtime\Public\Component\Physics\CMeshCollider.h"/>
@@ -275,7 +275,7 @@
     <ClCompile Include="Runtime\Private\Component\Camera\CFrustum.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp"/>
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Physics\CColliderRay.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Physics\CMeshCollider.cpp"/>

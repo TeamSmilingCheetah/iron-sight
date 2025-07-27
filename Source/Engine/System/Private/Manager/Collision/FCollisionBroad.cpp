@@ -3,7 +3,7 @@
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 
 /**************************/
 /** Broad Phase Function **/

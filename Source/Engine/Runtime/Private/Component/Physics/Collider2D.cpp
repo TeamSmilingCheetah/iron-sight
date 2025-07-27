@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -11,13 +11,13 @@ constexpr static Vec3 RectArr[4] =
 	Vec3(0.5f, -0.5f, 0.f), Vec3(-0.5f, -0.5f, 0.f)
 };
 
-Collider2D::Collider2D()
+FCollider2D::FCollider2D()
 	: IColliderBase(COMPONENT_TYPE::COLLIDER2D)
 	  , bIndependentScale(false)
 {
 }
 
-Collider2D::Collider2D(const Collider2D& POrigin)
+FCollider2D::FCollider2D(const FCollider2D& POrigin)
 	: IColliderBase(POrigin)
 	  , Offset(POrigin.Offset)
 	  , Scale(POrigin.Scale)
@@ -26,9 +26,9 @@ Collider2D::Collider2D(const Collider2D& POrigin)
 {
 }
 
-Collider2D::~Collider2D() = default;
+FCollider2D::~FCollider2D() = default;
 
-void Collider2D::FinalTick()
+void FCollider2D::FinalTick()
 {
 	// 크기 * 회전 * 이동
 	Matrix matScale = XMMatrixScaling(Scale.x, Scale.y, 1.f);
@@ -58,7 +58,7 @@ void Collider2D::FinalTick()
 	}
 }
 
-void Collider2D::SaveComponent(FILE* InFile)
+void FCollider2D::SaveComponent(FILE* InFile)
 {
 	(void)fwrite(&Offset, sizeof(Vec2), 1, InFile);
 	(void)fwrite(&Scale, sizeof(Vec2), 1, InFile);
@@ -66,7 +66,7 @@ void Collider2D::SaveComponent(FILE* InFile)
 	(void)fwrite(&bIndependentScale, sizeof(bool), 1, InFile);
 }
 
-void Collider2D::LoadComponent(FILE* InFile)
+void FCollider2D::LoadComponent(FILE* InFile)
 {
 	(void)fread(&Offset, sizeof(Vec2), 1, InFile);
 	(void)fread(&Scale, sizeof(Vec2), 1, InFile);
@@ -79,7 +79,7 @@ void Collider2D::LoadComponent(FILE* InFile)
  *
  * @return 2차원 충돌체의 AABB 값
  */
-const AABB Collider2D::GetAABB() const
+const AABB FCollider2D::GetAABB() const
 {
 	// Get 2D Collider Vertexs
 	Matrix LeftMatrix = GetColliderWorldMatrix();

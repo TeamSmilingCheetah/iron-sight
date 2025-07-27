@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Client/UI/Public/Component/Collider2DUI.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 
-class Collider2D;
+class FCollider2D;
 
 Collider2DUI::Collider2DUI()
 	: ComponentUI("Collider2DUI", COMPONENT_TYPE::COLLIDER2D)
@@ -17,7 +17,7 @@ void Collider2DUI::Render_Update()
 {
 	ComponentTitle("Collider2D");
 
-	Collider2D* pCollider2D = GetTargetObject()->GetCollider2D();
+	FCollider2D* pCollider2D = GetTargetObject()->Collider2D();
 
 	Vec2 vOffset = pCollider2D->GetOffset();
 	Vec2 vScale = pCollider2D->GetScale();

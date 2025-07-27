@@ -239,7 +239,7 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 	if (*pStr == "Collider2D")
 	{
-		m_ProtoObject->AddComponent(new Collider2D);
+		m_ProtoObject->AddComponent(new FCollider2D);
 		return;
 	}
 	if (*pStr == "Collider3D")

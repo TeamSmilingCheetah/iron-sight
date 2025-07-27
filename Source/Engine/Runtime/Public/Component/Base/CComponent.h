@@ -14,7 +14,7 @@ class CFlipbookPlayer;
 class CCollider3D;
 class CTileMap;
 class CColliderRay;
-class Collider2D;
+class FCollider2D;
 class CCamera;
 class CMeshRender;
 class CTransform;
@@ -58,7 +58,7 @@ public:
 	CTransform* Transform() const;
 	CMeshRender* MeshRender() const;
 	CCamera* Camera() const;
-	Collider2D* Collider2D() const;
+	FCollider2D* Collider2D() const;
 	CCollider3D* Collider3D() const;
 	CColliderRay* ColliderRay() const;
 	CFlipbookPlayer* FlipbookPlayer() const;

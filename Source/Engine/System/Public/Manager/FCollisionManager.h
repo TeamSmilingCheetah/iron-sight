@@ -37,7 +37,7 @@ union COLLISION_ID
 	}
 };
 
-class Collider2D;
+class FCollider2D;
 class CCollider3D;
 class CColliderRay;
 class CLandScape;
@@ -130,7 +130,7 @@ private:
 	void AddFrameCollision(ColliderVariant InLeftCollider, ColliderVariant InRightCollider);
 
 	// Narrow CPU Task
-	static bool IsCollision(const Collider2D* InLeftCollider, const Collider2D* InRightCollider);
+	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
 	static bool IsCollision(const CCollider3D* InLeftCollider, const CCollider3D* InRightCollider);
 	static bool IsCollision(const CCollider3D* InLeftCollider, const CLandScape* InRightCollider);
 
