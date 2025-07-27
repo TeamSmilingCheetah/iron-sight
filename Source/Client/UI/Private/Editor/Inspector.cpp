@@ -283,7 +283,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CDecal);
 		break;
 	case COMPONENT_TYPE::LANDSCAPE:
-		m_TargetObject->AddComponent(new FLandScape);
+		m_TargetObject->AddComponent(new FLandscape);
 		break;
 	case COMPONENT_TYPE::UI:
 		m_TargetObject->AddComponent(new CUI);

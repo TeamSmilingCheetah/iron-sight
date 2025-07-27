@@ -51,7 +51,7 @@ void TestLevel::CreateTestLevel()
 	GameFactory::LoadMainCamera(LevelRawPtr);
 	GameFactory::LoadDefaultLight(LevelRawPtr);
 	GameFactory::LoadDefaultSkyBox(LevelRawPtr);
-	GameFactory::LoadDefaultLandscape(LevelRawPtr);
+	// GameFactory::LoadDefaultLandscape(LevelRawPtr);
 
 	// Initialize Item Parts
 	auto UIInfo = SetUpUI(LevelRawPtr);
@@ -303,6 +303,28 @@ void TestLevel::CreateTestLevel()
 			{
 				obj->AddComponentRecursive<FMeshCollider>();
 				obj->Transform()->SetRelativeScaleMultiply(0.3f);
+			}
+		},
+		1,
+		true
+	);
+
+	// Temp Ground
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Death Box\\box.fbx",
+		L"TempGround",
+		Vec3(250000, -700, 250000),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(500000, 30.f, 500000),
+		{
+			[](CGameObject* obj)
+			{
+				obj->AddComponentRecursive<FMeshCollider>();
+			},
+			[](CGameObject* obj)
+			{
+				obj->Transform()->SetFrustumCheck(false);
 			}
 		},
 		1,

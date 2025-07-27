@@ -1,7 +1,16 @@
 #pragma once
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
-#include "Engine/Runtime/Public/Component/Script/CScript.h"
+
+enum class EColliderType : UINT8
+{
+	Null,
+	Collider2D,
+	Collider3D,
+	MeshCollider,
+	ColliderRay,
+
+	End,
+};
 
 /**
  * @brief 모든 Collider의 기본 클래스
@@ -26,6 +35,7 @@ public:
 	void SaveComponent(FILE* InFile) override = 0;
 	void LoadComponent(FILE* InFile) override = 0;
 	virtual const AABB GetAABB() const = 0;
+	virtual EColliderType GetColliderType() const = 0;
 
 	// Getter & Setter
 	COLLIDER_STATE GetColliderState() const { return ColliderState; }
@@ -41,14 +51,8 @@ public:
 	void SetDeactive() { ColliderState = DEACTIVE; }
 	void SetCollisionNormal(Vec3 InNormal) { CollisionNormal = InNormal; }
 	void SetPenetrationDepth(float InDepth) { PenetrationDepth = InDepth; }
-
-	// Templated Overlap Functions
-	template <typename T>
-	void BeginOverlap(T* InOther);
-	template <typename T>
-	void Overlap(T* InOther);
-	template <typename T>
-	void EndOverlap(T* InOther);
+	void IncreaseOverlapCount() { ++OverlapCount; }
+	void DecreaseOverlapCount() { --OverlapCount; }
 
 	// Special Member Function
 	~IColliderBase() override;
@@ -69,37 +73,3 @@ inline IColliderBase::IColliderBase(const IColliderBase& POrigin)
 }
 
 inline IColliderBase::~IColliderBase() = default;
-
-template <typename T>
-void IColliderBase::BeginOverlap(T* InOther)
-{
-	++OverlapCount;
-
-	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
-	for (auto* Script : ScriptVector)
-	{
-		Script->BeginOverlap(this, InOther->GetOwner(), InOther);
-	}
-}
-
-template <typename T>
-void IColliderBase::Overlap(T* InOther)
-{
-	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
-	for (auto* Script : ScriptVector)
-	{
-		Script->Overlap(this, InOther->GetOwner(), InOther);
-	}
-}
-
-template <typename T>
-void IColliderBase::EndOverlap(T* InOther)
-{
-	--OverlapCount;
-
-	const vector<CScript*>& ScriptVector = GetOwner()->GetScripts();
-	for (auto* Script : ScriptVector)
-	{
-		Script->EndOverlap(this, InOther->GetOwner(), InOther);
-	}
-}

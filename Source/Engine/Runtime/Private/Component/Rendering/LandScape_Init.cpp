@@ -3,7 +3,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Runtime/Public/Component/Rendering/LandScape.h"
 
-void FLandScape::Init()
+void FLandscape::Init()
 {
 	CreateMesh();
 	CreateMaterial();
@@ -30,7 +30,7 @@ void FLandScape::Init()
 	m_RayCollisionOut = new CStructuredBuffer;
 }
 
-void FLandScape::CreateMesh()
+void FLandscape::CreateMesh()
 {
 	Ptr<CMesh> pMesh = new CMesh;
 
@@ -81,7 +81,7 @@ void FLandScape::CreateMesh()
 	CreateMaterial();
 }
 
-void FLandScape::CreateMaterial()
+void FLandscape::CreateMaterial()
 {
 	if (GetMaterial(0).Get())
 		return;
@@ -119,7 +119,7 @@ void FLandScape::CreateMaterial()
 	SetMaterial(pMtrl, 0);
 }
 
-void FLandScape::CreateComputeShader()
+void FLandscape::CreateComputeShader()
 {
 	m_HeightMapCS = new CHeightMapCS;
 
@@ -136,7 +136,7 @@ void FLandScape::CreateComputeShader()
 }
 
 
-void FLandScape::CreateHeightMap(UINT InWidth, UINT InHeight)
+void FLandscape::CreateHeightMap(UINT InWidth, UINT InHeight)
 {
 	if (nullptr != m_HeightMap)
 	{
@@ -151,7 +151,7 @@ void FLandScape::CreateHeightMap(UINT InWidth, UINT InHeight)
 	m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
 }
 
-void FLandScape::SetColorTexture(Ptr<CTexture> InArrTex)
+void FLandscape::SetColorTexture(Ptr<CTexture> InArrTex)
 {
 	m_ColorTex = InArrTex;
 
@@ -159,7 +159,7 @@ void FLandScape::SetColorTexture(Ptr<CTexture> InArrTex)
 		m_ColorTex->GenerateMip(5);
 }
 
-void FLandScape::SetNormalTexture(Ptr<CTexture> InArrTex)
+void FLandscape::SetNormalTexture(Ptr<CTexture> InArrTex)
 {
 	m_NormalTex = InArrTex;
 

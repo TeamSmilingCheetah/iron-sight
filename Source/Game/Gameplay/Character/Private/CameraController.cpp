@@ -18,40 +18,40 @@
 
 CameraController::CameraController()
 	: CScript(SCRIPT_TYPE::CAMERASCRIPT)
-	, m_Player(nullptr)
-	, m_PlayerScript(nullptr)
-	, m_InventoryScript(nullptr)
-	, m_CameraPos(Vec3(0.f,0.f,0.f))
-	, m_CameraRot(Vec3(0.f,0.f,0.f))
-	, m_PlayerPos(Vec3(0.f,0.f,0.f))
-	, m_PlayerRot(Vec3(0.f,0.f,0.f))
-	, m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
-	, m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
-	, m_ObstacleScale(Vec3(0.f, 0.f, 0.f))
-	, m_OriginDistance(0.f)
-	, m_RayDistance(0.f)
-	, m_CameraSpeed(500.f)
-	, m_CameraYOffset(0.f)
-	, m_CurClipAccTime(0.f)
-	, m_RecoilTime(0.f)
-	, m_ObstacleResetTime(0.f)
-	, m_RecoilAmount_vertical(0.f)
-	, m_RecoilAmount_horizontal(0.f)
-	, m_TargetRecoilRotX(0.f)
-	, m_TargetRecoilRotY(0.f)
-	, m_LateralOffset(300.f)
-	, m_ObjectiveLateralOff(0.f)
-	, m_AdjustNormalDistance(0.f)
-	, m_AdjustNormalHeight(0.f)
-	, m_AdjustFinalDistance(0.f)
-	, m_AdjustFinalHeight(0.f)
-	, m_ObjectiveShoulderDistance(0.f)
-	, m_ObjectiveShoulderHeight(0.f)
-	, m_LastVerticalVelocity(0.f)
-	, m_VerticalSmoothTime(0.15f)  // 150ms의 스무딩 시간
-	, m_CurrentVerticalVelocity(0.f)
-	, m_CameraFlag(0)
-	, m_bObstacleHitFame(false)
+	  , m_Player(nullptr)
+	  , m_PlayerScript(nullptr)
+	  , m_InventoryScript(nullptr)
+	  , m_CameraPos(Vec3(0.f, 0.f, 0.f))
+	  , m_CameraRot(Vec3(0.f, 0.f, 0.f))
+	  , m_PlayerPos(Vec3(0.f, 0.f, 0.f))
+	  , m_PlayerRot(Vec3(0.f, 0.f, 0.f))
+	  , m_ObstacleAdjustPos(Vec3(0.f, 0.f, 0.f))
+	  , m_ObstaclePos(Vec3(0.f, 0.f, 0.f))
+	  , m_ObstacleScale(Vec3(0.f, 0.f, 0.f))
+	  , m_OriginDistance(0.f)
+	  , m_RayDistance(0.f)
+	  , m_CameraSpeed(500.f)
+	  , m_CameraYOffset(0.f)
+	  , m_CurClipAccTime(0.f)
+	  , m_RecoilTime(0.f)
+	  , m_ObstacleResetTime(0.f)
+	  , m_RecoilAmount_vertical(0.f)
+	  , m_RecoilAmount_horizontal(0.f)
+	  , m_TargetRecoilRotX(0.f)
+	  , m_TargetRecoilRotY(0.f)
+	  , m_LateralOffset(300.f)
+	  , m_ObjectiveLateralOff(0.f)
+	  , m_AdjustNormalDistance(0.f)
+	  , m_AdjustNormalHeight(0.f)
+	  , m_AdjustFinalDistance(0.f)
+	  , m_AdjustFinalHeight(0.f)
+	  , m_ObjectiveShoulderDistance(0.f)
+	  , m_ObjectiveShoulderHeight(0.f)
+	  , m_LastVerticalVelocity(0.f)
+	  , m_VerticalSmoothTime(0.15f) // 150ms의 스무딩 시간
+	  , m_CurrentVerticalVelocity(0.f)
+	  , m_CameraFlag(0)
+	  , m_bObstacleHitFame(false)
 {
 }
 
@@ -520,8 +520,8 @@ void CameraController::UpdateTPSCameraAdjustments()
 	// Add Clamping
 	const float maxHeightChange = 50.0f * DT;
 	m_AdjustFinalHeight = std::clamp(m_AdjustFinalHeight,
-		targetHeight - maxHeightChange,
-		targetHeight + maxHeightChange);
+	                                 targetHeight - maxHeightChange,
+	                                 targetHeight + maxHeightChange);
 
 	// // 충돌 콜백이 끊김 -> 클리어 검증
 	// if (m_CameraFlag & OBSTACLE_CLEAR_PENDING)
@@ -921,88 +921,109 @@ void CameraController::CameraDebugMove()
 }
 
 
-void CameraController::BeginOverlap(FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
+void CameraController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (_OtherObject->GetName() == L"DeathBox")
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		m_ObstacleResetTime = 0.f;
-		m_CameraFlag |= OBSTACLE_DETECT;
-		m_ObstaclePos = _OtherObject->Transform()->GetRelativePos();
-		m_ObstacleScale = _OtherObject->Collider3D()->GetScale();
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
 
-		m_ObstacleAdjustPos = m_ObstaclePos;
-		m_ObstacleAdjustPos.y = m_PlayerPos.y;
-		m_CameraFlag &= ~OBSTACLE_DETECT_END;
-		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
-	}
-	if (_OtherObject->GetName() == L"Interaction Handler")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"Cam Ray")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"Player")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"MainCamera")
-	{
-		return;
+		if (OtherObject->GetName() == L"DeathBox")
+		{
+			m_ObstacleResetTime = 0.f;
+			m_CameraFlag |= OBSTACLE_DETECT;
+			m_ObstaclePos = OtherObject->Transform()->GetRelativePos();
+			m_ObstacleScale = OtherObject->Collider3D()->GetScale();
+
+			m_ObstacleAdjustPos = m_ObstaclePos;
+			m_ObstacleAdjustPos.y = m_PlayerPos.y;
+			m_CameraFlag &= ~OBSTACLE_DETECT_END;
+			m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
+		}
+		if (OtherObject->GetName() == L"Interaction Handler")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"Cam Ray")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"Player")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"MainCamera")
+		{
+			return;
+		}
 	}
 }
 
-void CameraController::Overlap(FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
+void CameraController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (_OtherObject->GetName() == L"DeathBox")
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		m_CameraFlag |= OBSTACLE_DETECT;
-		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
-		m_CameraFlag &= ~OBSTACLE_DETECT_END;
-		m_ObstacleResetTime = 0.f;
-	}
-	if (_OtherObject->GetName() == L"Interaction Handler")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"Cam Ray")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"Player")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"MainCamera")
-	{
-		return;
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		if (OtherObject->GetName() == L"DeathBox")
+		{
+			m_CameraFlag |= OBSTACLE_DETECT;
+			m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
+			m_CameraFlag &= ~OBSTACLE_DETECT_END;
+			m_ObstacleResetTime = 0.f;
+		}
+		if (OtherObject->GetName() == L"Interaction Handler")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"Cam Ray")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"Player")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"MainCamera")
+		{
+			return;
+		}
 	}
 }
 
 
-void CameraController::EndOverlap(FColliderRay* _RayCollider, CGameObject* _OtherObject, FCollider3D* _3DCollider)
+void CameraController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (_OtherObject->GetName() == L"DeathBox")
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		m_CameraFlag |= OBSTACLE_CLEAR_PENDING;
-		m_CameraFlag &= ~OBSTACLE_DETECT_END;
-		m_ObstacleResetTime = 0.f;
-	}
-	if (_OtherObject->GetName() == L"Interaction Handler")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"Cam Ray")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"Player")
-	{
-		return;
-	}
-	if (_OtherObject->GetName() == L"MainCamera")
-	{
-		return;
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		if (OtherObject->GetName() == L"DeathBox")
+		{
+			m_CameraFlag |= OBSTACLE_CLEAR_PENDING;
+			m_CameraFlag &= ~OBSTACLE_DETECT_END;
+			m_ObstacleResetTime = 0.f;
+		}
+		if (OtherObject->GetName() == L"Interaction Handler")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"Cam Ray")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"Player")
+		{
+			return;
+		}
+		if (OtherObject->GetName() == L"MainCamera")
+		{
+			return;
+		}
 	}
 }

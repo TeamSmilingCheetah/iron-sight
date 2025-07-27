@@ -351,15 +351,15 @@ bool ItemComp(CGameObject* _lhs, CGameObject* _rhs)
 	return lItem->GetCount() < rItem->GetCount();
 }
 
-void InventoryController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
+void InventoryController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
 }
 
-void InventoryController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
+void InventoryController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
 }
 
-void InventoryController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider)
+void InventoryController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
 }
 
@@ -578,7 +578,7 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 
 	// 무기바꾸는 사운드
 	m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
-	
+
 	// 현재 슬롯으로 변경
 	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
 	m_CurWeaponController = pWeaponScript;
@@ -599,8 +599,8 @@ void InventoryController::ActivateSlot(int _SlotIdx)
 
 	// 무기바꾸는 사운드
 	m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
-	
-	
+
+
 	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
 	m_CurWeaponController = pWeaponScript;
 	m_CurSlotIdx = _SlotIdx;
@@ -800,7 +800,7 @@ void InventoryController::PlayerInteractWeapon()
 			m_PlayerScript->SetReloading(false);
 			m_PlayerScript->SetReloadingEnd(true);
 		}
-		
+
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;
 		m_CurWeaponController = nullptr;

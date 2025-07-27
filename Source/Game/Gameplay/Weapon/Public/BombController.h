@@ -20,12 +20,9 @@ public:
 	void SetWeaponOwner(CGameObject* _Object) { m_WeaponOwner = _Object; }
 
 public:
-	void BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject,
-		FCollider3D* _OtherCollider) override;
-	void Overlap(FCollider3D* _Collider, CGameObject* _OtherObject,
-		FCollider3D* _OtherCollider) override;
-	void EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject,
-		FCollider3D* _OtherCollider) override;
+	void BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 
 
 	void Begin() override;

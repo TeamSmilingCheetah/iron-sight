@@ -5,7 +5,6 @@
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 /*************************/
@@ -298,26 +297,6 @@ void CollisionManager::CheckPair(const CGameObject* InRightObject, const CGameOb
 				AddFrameCollision(InLeftObject->Collider3D(), InRightObject->Collider3D());
 			}
 		}
-
-		if (InRightObject->LandScape())
-		{
-			if (IsCollision(InLeftObject->Collider3D(), InRightObject->LandScape()))
-			{
-				AddFrameCollision(InLeftObject->Collider3D(), InRightObject->LandScape());
-			}
-		}
-	}
-
-	// LandScape 검사
-	if (InLeftObject->LandScape())
-	{
-		if (InRightObject->Collider3D())
-		{
-			if (IsCollision(InRightObject->Collider3D(), InLeftObject->LandScape()))
-			{
-				AddFrameCollision(InLeftObject->LandScape(), InRightObject->Collider3D());
-			}
-		}
 	}
 
 	// LOG_INFO_F("[Collision][Narrow] Object {} & {}, Failed To Match Type Pairing",
@@ -437,11 +416,11 @@ bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FCol
 	return true;
 }
 
-bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FLandScape* InRightCollider)
-{
-	Vec3 ObjectPos = InLeftCollider->Transform()->GetWorldPos();
-	Vec3 LandScapePos = InRightCollider->GetWorldPosByLandScape(ObjectPos);
-	if (LandScapePos == Vec3(-10000.f, -10000.f, -10000.f) || ObjectPos.y > LandScapePos.y)
-		return false;
-	return true;
-}
+// bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FLandScape* InRightCollider)
+// {
+// 	Vec3 ObjectPos = InLeftCollider->Transform()->GetWorldPos();
+// 	Vec3 LandScapePos = InRightCollider->GetWorldPosByLandScape(ObjectPos);
+// 	if (LandScapePos == Vec3(-10000.f, -10000.f, -10000.f) || ObjectPos.y > LandScapePos.y)
+// 		return false;
+// 	return true;
+// }

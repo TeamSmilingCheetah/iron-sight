@@ -40,6 +40,7 @@ public:
 	void LoadComponent(FILE* PFile) override;
 
 	// Getter & Setter
+	EColliderType GetColliderType() const override { return EColliderType::Collider3D; }
 	Vec3 GetOffset() const { return Offset; }
 	Vec3 GetScale() const { return Scale; }
 	float GetRotY() const { return RotY; }

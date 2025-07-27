@@ -40,7 +40,7 @@ union COLLISION_ID
 class FCollider2D;
 class FCollider3D;
 class FColliderRay;
-class FLandScape;
+class FLandscape;
 class FMeshCollider;
 
 /**
@@ -132,7 +132,6 @@ private:
 	// Narrow CPU Task
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
 	static bool IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider);
-	static bool IsCollision(const FCollider3D* InLeftCollider, const FLandScape* InRightCollider);
 
 	// Narrow GPU Task
 	static bool NeedComputeShader(const CGameObject* InLeftObject, const CGameObject* InRightObject);

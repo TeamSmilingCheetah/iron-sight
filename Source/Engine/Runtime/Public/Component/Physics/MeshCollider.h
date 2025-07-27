@@ -24,6 +24,7 @@ public:
 	void LoadComponent(FILE* InFile) override;
 
 	// Getter & Setter
+	EColliderType GetColliderType() const override { return EColliderType::MeshCollider; }
 	Ptr<CMesh> GetMesh() const { return MMeshPtr; }
 
 	void SetMesh(CMesh* PMesh) { MMeshPtr = PMesh; }

@@ -120,9 +120,9 @@ public:
 	virtual void LoadComponent(FILE* _File) override;
 	virtual void LoadComponentReference() override;
 
-	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
+	void BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 
 
 public:

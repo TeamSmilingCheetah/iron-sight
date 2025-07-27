@@ -2,7 +2,7 @@
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
-class FLandScape;
+class FLandscape;
 
 class ThrowableController :
 	public WeaponController
@@ -56,13 +56,9 @@ public:
 	void Begin() override;
 	void Tick() override;
 
-	virtual void BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-	virtual void Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-
-	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider) override;
-	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider) override;
-	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider) override;
+	void BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 
 
 public:

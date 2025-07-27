@@ -2,6 +2,7 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
 
 void CollisionManager::CollisionPostProcess()
 {
@@ -116,15 +117,30 @@ void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVa
 				// EndOverlap
 				if (IsDead || IsLayerChanged || IsDeactive)
 				{
-					LeftCollider->EndOverlap(RightCollider);
-					RightCollider->EndOverlap(LeftCollider);
+					LeftCollider->DecreaseOverlapCount();
+					RightCollider->DecreaseOverlapCount();
+
+					for (auto Script : LeftObject->GetScripts())
+					{
+						Script->EndOverlap(LeftCollider, RightCollider);
+					}
+					for (auto Script : RightObject->GetScripts())
+					{
+						Script->EndOverlap(RightCollider, LeftCollider);
+					}
 					iter->second = false;
 				}
 				// Overlap
 				else
 				{
-					LeftCollider->Overlap(RightCollider);
-					RightCollider->Overlap(LeftCollider);
+					for (auto Script : LeftObject->GetScripts())
+					{
+						Script->Overlap(LeftCollider, RightCollider);
+					}
+					for (auto Script : RightObject->GetScripts())
+					{
+						Script->Overlap(RightCollider, LeftCollider);
+					}
 				}
 			}
 			else
@@ -132,8 +148,17 @@ void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVa
 				// BeginOverlap
 				if (!IsDead && !IsDeactive)
 				{
-					LeftCollider->BeginOverlap(RightCollider);
-					RightCollider->BeginOverlap(LeftCollider);
+					LeftCollider->IncreaseOverlapCount();
+					RightCollider->IncreaseOverlapCount();
+
+					for (auto Script : LeftObject->GetScripts())
+					{
+						Script->BeginOverlap(LeftCollider, RightCollider);
+					}
+					for (auto Script : RightObject->GetScripts())
+					{
+						Script->BeginOverlap(RightCollider, LeftCollider);
+					}
 					iter->second = true;
 				}
 			}
@@ -143,8 +168,17 @@ void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVa
 			// EndOverlap
 			if (iter->second)
 			{
-				LeftCollider->EndOverlap(RightCollider);
-				RightCollider->EndOverlap(LeftCollider);
+				LeftCollider->DecreaseOverlapCount();
+				RightCollider->DecreaseOverlapCount();
+
+				for (auto Script : LeftObject->GetScripts())
+				{
+					Script->EndOverlap(LeftCollider, RightCollider);
+				}
+				for (auto Script : RightObject->GetScripts())
+				{
+					Script->EndOverlap(RightCollider, LeftCollider);
+				}
 				iter->second = false;
 			}
 		}

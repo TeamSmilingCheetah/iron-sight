@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 
-#include "Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 // Constant Structure
 constexpr static Vec3 CubeArr[8] = {

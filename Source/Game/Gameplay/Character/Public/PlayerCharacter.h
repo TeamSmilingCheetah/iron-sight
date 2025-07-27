@@ -4,7 +4,7 @@
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 
 class CGameObject;
-class FLandScape;
+class FLandscape;
 class KillinfoUIScript;
 class InventoryController;
 class CameraController;
@@ -145,21 +145,9 @@ public:
 	void Begin() override;
 	void Tick() override;
 
-	void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) override;
-	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) override;
-	void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) override;
-
-	void BeginOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
-	void Overlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
-	void EndOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
-
-	void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider) override;
-	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider) override;
-	void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider) override;
-
-	void BeginOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
-	void Overlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
-	void EndOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
+	void BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 
 private:
 	void LoadPlayerSounds();
@@ -167,7 +155,7 @@ private:
 	void PlayerMove();
 	void PlayerView();
 	void PlayerStance();
-	
+
 	void PlayerControlWeapon();
 
 	void PlayerControlUI();
@@ -178,8 +166,6 @@ private:
 	void UpdateGravity();
 	void UpdateCollision();
 	void AnimationControl();
-	
-	
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }

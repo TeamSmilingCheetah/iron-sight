@@ -2,8 +2,10 @@
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 /**************************/
 /** Broad Phase Function **/

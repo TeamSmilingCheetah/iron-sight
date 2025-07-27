@@ -51,6 +51,7 @@ public:
 	void ClearRayColInfo();
 
 	// Getter & Setter
+	EColliderType GetColliderType() const override { return EColliderType::ColliderRay; }
 	tRay GetRay() const { return RayPosDir; }
 	Vec3 GetRayPos() const { return RayPosDir.vStart; }
 	Vec3 GetRayDir() const { return RayPosDir.vDir; }

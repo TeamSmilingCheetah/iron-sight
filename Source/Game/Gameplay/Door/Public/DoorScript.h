@@ -21,10 +21,6 @@ public:
 	virtual void SaveComponent(FILE* _File) override;
 	virtual void LoadComponent(FILE* _File) override;
 
-	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FCollider3D* _OtherCollider) override;
-
 	virtual void EnterDetection(InteractionHandler* _Handler) override {}
 	virtual void Interact(InteractionHandler* _Handler) override;
 	virtual void ExitDetection(InteractionHandler* _Handler) override {}

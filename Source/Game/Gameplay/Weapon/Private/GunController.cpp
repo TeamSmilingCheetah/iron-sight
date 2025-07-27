@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -79,7 +79,7 @@ void GunController::Begin()
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	// UI
-	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");	
+	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
 }
 
 void GunController::Tick()
@@ -117,7 +117,7 @@ void GunController::Tick()
 				ClearKey();
 
 				// 상태
-				m_PlayerScript->SetActionState(ACTION_STATE::GUN_FIRE);								
+				m_PlayerScript->SetActionState(ACTION_STATE::GUN_FIRE);
 			}
 			else if (m_CurRounds == 0 && !m_bReload)
 			{
@@ -128,7 +128,7 @@ void GunController::Tick()
 		}
 
 		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
-		{		
+		{
 			if (CanReload())
 			{
 				m_PlayerScript->SetShot(false);
@@ -144,8 +144,8 @@ void GunController::Tick()
 				else
 				{
 					m_ReloadingTime = 1.5f;
-				}					
-			}			
+				}
+			}
 
 			ClearKey();
 			// 상태
@@ -178,13 +178,13 @@ void GunController::Tick()
 		}
 
 		if (m_CurKey == KEY::F && m_CurKeyState == KEY_STATE::TAP && m_bReload)
-		{			
+		{
 			m_bReload = false;
 			m_AccTime_Reload = 0.f;
 			// 재장전 사운드를 멈춰준다.
 			CSoundMgr::GetInst()->Stop3DSound(m_ReloadSoundIdx);
 			CSoundMgr::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
-			ClearKey();			
+			ClearKey();
 		}
 		AdjustFPSPos();
 	}
@@ -270,7 +270,7 @@ void GunController::Firing()
 
 			pPlayerScript->SetShot(false);
 			m_bFire = false;
-			
+
 			// 빈 탄창 발사 사운드
 			m_AkdrySoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkdrySound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 			return;
@@ -417,14 +417,14 @@ void GunController::Reload()
 		{
 			m_ReloadSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
 		}
-		
+
 
 		// 남은 시간 글씨 출력
 		wchar_t text[4]{};	// 3글자 출력
 		if (m_ReloadingTime - m_AccTime_Reload > 0.f)
 		{
 			swprintf_s(text, L"%.1f", m_ReloadingTime - m_AccTime_Reload);
-		}			
+		}
 		m_ReloadUI->UI()->GetTextInfoRef()[0].Text = text;
 	}
 
@@ -460,12 +460,12 @@ void GunController::Reload()
 		if (m_bEnemy)
 		{
 			iLeftRounds -= iFilledRounds;
-		}			
+		}
 		else
 		{
 			m_InventoryScript->UseItem(m_WeaponRoundType, iFilledRounds);
 		}
-			
+
 		m_AccTime_Reload = 0.f;
 		m_bReload = false;
 

@@ -45,11 +45,6 @@ void CollisionManager::RaycastProcess()
 				AddFrameCollision(Ray, Object->Collider3D());
 				continue;
 			}
-			if (Object->LandScape())
-			{
-				AddFrameCollision(Ray, Object->LandScape());
-				continue;
-			}
 
 			// RaycastCS 처리를 위한 Add Task
 			if (Object->MeshCollider())

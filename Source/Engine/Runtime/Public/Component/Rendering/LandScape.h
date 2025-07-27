@@ -61,7 +61,7 @@ struct tWeight8
 	float arrWeight[8];
 };
 
-class FLandScape :
+class FLandscape :
 	public CRenderComponent
 {
 	UINT m_FaceX; // 지형 가로 면 개수
@@ -142,7 +142,7 @@ public:
 	Vec3 GetWorldPosLandNormal(Vec3& PTargetWorldPos) const;
 
 	// Special Member Function
-	FLandScape();
-	~FLandScape() override;
-	CLONE(FLandScape);
+	FLandscape();
+	~FLandscape() override;
+	CLONE(FLandscape);
 };

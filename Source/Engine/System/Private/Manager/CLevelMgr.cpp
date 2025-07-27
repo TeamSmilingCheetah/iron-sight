@@ -418,7 +418,7 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::DECAL:
 		return new CDecal;
 	case COMPONENT_TYPE::LANDSCAPE:
-		return new FLandScape;
+		return new FLandscape;
 	case COMPONENT_TYPE::UI:
 		return new CUI;
 	case COMPONENT_TYPE::UIRENDER:

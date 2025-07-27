@@ -7,7 +7,7 @@
 #include "Engine/System/Public/Manager/CRenderMgr.h"
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
-FLandScape::FLandScape()
+FLandscape::FLandscape()
 	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)
 	  , m_FaceX(1)
 	  , m_FaceZ(1)
@@ -24,19 +24,19 @@ FLandScape::FLandScape()
 {
 }
 
-FLandScape::~FLandScape()
+FLandscape::~FLandscape()
 {
 	delete m_RaycastOut;
 	delete m_WeightMap;
 	delete m_RayCollisionOut;
 }
 
-void FLandScape::ColisionRayStack(void* InRayObject, const tRay& InRayPosDir)
+void FLandscape::ColisionRayStack(void* InRayObject, const tRay& InRayPosDir)
 {
 	m_vecRayColInst.push_back(tRayCollision(InRayObject, InRayPosDir));
 }
 
-void FLandScape::FinalTick()
+void FLandscape::FinalTick()
 {
 	m_vecRayColInst.clear();
 
@@ -103,7 +103,7 @@ void FLandScape::FinalTick()
 	}
 }
 
-void FLandScape::Render()
+void FLandscape::Render()
 {
 	Transform()->Binding();
 
@@ -134,7 +134,7 @@ void FLandScape::Render()
 	m_WeightMap->Clear(20); // WeightMap 버퍼 바인딩 클리어
 }
 
-void FLandScape::SetFace(UINT InX, UINT InZ)
+void FLandscape::SetFace(UINT InX, UINT InZ)
 {
 	if (m_FaceX == InX && m_FaceZ == InZ)
 		return;
@@ -145,7 +145,7 @@ void FLandScape::SetFace(UINT InX, UINT InZ)
 	CreateMesh();
 }
 
-int FLandScape::Raycasting()
+int FLandscape::Raycasting()
 {
 	// 현재 시점 카메라 가져오기
 	CCamera* pCam = CRenderMgr::GetInst()->GetMainCamera();
@@ -188,7 +188,7 @@ int FLandScape::Raycasting()
 	return m_Out.Success;
 }
 
-tRaycastOut FLandScape::ColliderRaycasting(tRay InRay) const
+tRaycastOut FLandscape::ColliderRaycasting(tRay InRay) const
 {
 	// 구조화버퍼 클리어
 	tRaycastOut pRayInfo;
@@ -265,7 +265,7 @@ tRaycastOut FLandScape::ColliderRaycasting(tRay InRay) const
 	return pRayInfo;
 }
 
-vector<tRayCollision>& FLandScape::Collidercalcul()
+vector<tRayCollision>& FLandscape::Collidercalcul()
 {
 	// 검사할 데이터가 0개 이면 즉시 종료
 	if (0 == m_vecRayColInst.size())
@@ -309,7 +309,7 @@ vector<tRayCollision>& FLandScape::Collidercalcul()
 	return m_vecRayColInst;
 }
 
-Vec3 FLandScape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
+Vec3 FLandscape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
 {
 	// 랜드스케이프의 월드 행렬
 	const Matrix& matWorld = Transform()->GetWorldMat();
@@ -358,7 +358,7 @@ Vec3 FLandScape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
 	return worldPos;
 }
 
-Vec3 FLandScape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
+Vec3 FLandscape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
 {
 	// 랜드스케이프의 월드 행렬
 	const Matrix& matWorld = Transform()->GetWorldMat();
@@ -436,7 +436,7 @@ Vec3 FLandScape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
 	return normal;
 }
 
-void FLandScape::SaveComponent(FILE* InFile)
+void FLandscape::SaveComponent(FILE* InFile)
 {
 	(void)fwrite(&m_FaceX, sizeof(UINT), 1, InFile);
 	(void)fwrite(&m_FaceZ, sizeof(UINT), 1, InFile);
@@ -446,7 +446,7 @@ void FLandScape::SaveComponent(FILE* InFile)
 	SaveAssetRef(m_NormalTex, InFile);
 }
 
-void FLandScape::LoadComponent(FILE* InFile)
+void FLandscape::LoadComponent(FILE* InFile)
 {
 	(void)fread(&m_FaceX, sizeof(UINT), 1, InFile);
 	(void)fread(&m_FaceZ, sizeof(UINT), 1, InFile);

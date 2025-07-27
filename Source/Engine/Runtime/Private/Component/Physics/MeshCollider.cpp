@@ -31,7 +31,7 @@ void FMeshCollider::FinalTick()
 	if (!MMeshPtr.Get())
 	{
 		LOG_CRITICAL_F("[Collision][MeshCollider] {}: Don't Have Mesh But Enter MeshCollider FinalTick",
-		               GetOwner()->GetName());
+		               WStringToString(GetOwner()->GetName()));
 		assert(!"Mesh가 없는데 Mesh Collider FinalTick 처리 분기로 들어옴");
 		return;
 	}

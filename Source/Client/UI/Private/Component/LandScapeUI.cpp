@@ -16,7 +16,7 @@ LandScapeUI::~LandScapeUI()
 void LandScapeUI::Render_Update()
 {
 	ComponentTitle("LandScape");
-	FLandScape* pLandScape = GetTargetObject()->LandScape();
+	FLandscape* pLandScape = GetTargetObject()->LandScape();
 
 	// 지형 면 개수
 	Vec2 Face = pLandScape->GetFace();
