@@ -157,9 +157,9 @@ public:
 	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
 	void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
 
-	void BeginOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
-	void Overlap(FCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
-	void EndOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, CMeshCollider* PMeshCollider) override;
+	void BeginOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
+	void Overlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
+	void EndOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
 
 private:
 	void LoadPlayerSounds();

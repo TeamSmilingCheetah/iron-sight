@@ -4,7 +4,7 @@
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 /*******************/
@@ -63,7 +63,7 @@ void CollisionManager::RaycastProcess()
 /**
  * @brief CS 처리를 위해 MeshCollider의 지오메트리 데이터를 전역 버퍼에 추가하고 정보를 반환하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const CMeshCollider* InCollider)
+CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 방지
 	if (RaycastDataCache.contains(InCollider))
@@ -158,7 +158,7 @@ void CollisionManager::ExecuteAndProcessRaycastCS()
 		{
 			auto& Colliders = RaycastColliders[i];
 			CColliderRay* Ray = Colliders.first;
-			CMeshCollider* Mesh = Colliders.second;
+			FMeshCollider* Mesh = Colliders.second;
 
 			// 충돌 정보를 레이 콜라이더에 설정
 			// Ray->SetHitDistance(results[i].Distance);

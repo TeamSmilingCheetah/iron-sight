@@ -34,12 +34,10 @@ private:
 
 public:
 	void FinalTick() override;
-	void SaveComponent(FILE* PFile) override;
-	void LoadComponent(FILE* PFile) override;
 	const AABB GetAABB() const override;
 
-	void SetTrigger(bool InTriggerStatus);
-	void SetIndependentRot(bool InIsIndependentRotation);
+	void SaveComponent(FILE* PFile) override;
+	void LoadComponent(FILE* PFile) override;
 
 	// Getter & Setter
 	Vec3 GetOffset() const { return Offset; }
@@ -59,6 +57,8 @@ public:
 	void SetHitPoint(Vec3 InHitPoint) { HitPoint = InHitPoint; }
 	void SetIndependentScale(bool InScale) { bIndependentScale = InScale; }
 	void SetClosestPoint(Vec3 InClosestPoint) { ClosestPoint = InClosestPoint; }
+	void SetTrigger(bool InTriggerStatus);
+	void SetIndependentRot(bool InIsIndependentRotation);
 
 	// Special Member Function
 	CLONE(FCollider3D);

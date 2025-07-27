@@ -5,9 +5,9 @@
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
 
 using ColliderPairVariant = variant<
-	pair<CMeshCollider*, CMeshCollider*>,
-	pair<CMeshCollider*, FCollider3D*>,
-	pair<FCollider3D*, CMeshCollider*>
+	pair<FMeshCollider*, FMeshCollider*>,
+	pair<FMeshCollider*, FCollider3D*>,
+	pair<FCollider3D*, FMeshCollider*>
 >;
 
 union COLLISION_ID
@@ -41,7 +41,7 @@ class FCollider2D;
 class FCollider3D;
 class CColliderRay;
 class CLandScape;
-class CMeshCollider;
+class FMeshCollider;
 
 /**
  * @brief 충돌을 관리하는 매니저 클래스
@@ -83,7 +83,7 @@ private:
 	vector<UINT> FrameAllIndices;
 
 	vector<tRaycastTask> RaycastTasks;
-	vector<pair<CColliderRay*, CMeshCollider*>> RaycastColliders;
+	vector<pair<CColliderRay*, FMeshCollider*>> RaycastColliders;
 	map<const void*, MeshBatchData> RaycastDataCache;
 
 	vector<tCollisionTask> Tasks;
@@ -117,7 +117,7 @@ private:
 
 	// Raycast Function
 	static void QueryBVH(const BVHNode* InNode, const CColliderRay* InRay, vector<RayColliderInfo>& OutIntersectVector);
-	MeshBatchData GetOrAddRaycastBatchData(const CMeshCollider* InCollider);
+	MeshBatchData GetOrAddRaycastBatchData(const FMeshCollider* InCollider);
 	void AddRayShaderTask(CColliderRay* InRay, const CGameObject* InObject);
 	void ExecuteAndProcessRaycastCS();
 
@@ -137,7 +137,7 @@ private:
 	// Narrow GPU Task
 	static bool NeedComputeShader(const CGameObject* InLeftObject, const CGameObject* InRightObject);
 	MeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
-	MeshBatchData GetOrAddBatchData(const CMeshCollider* InCollider);
+	MeshBatchData GetOrAddBatchData(const FMeshCollider* InCollider);
 	void AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject);
 	void ExecuteAndProcessCS();
 

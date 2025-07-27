@@ -29,35 +29,35 @@ public:
     // 2D
     virtual void BeginOverlap(FCollider2D* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void BeginOverlap(FCollider2D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void BeginOverlap(FCollider2D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void BeginOverlap(FCollider2D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void BeginOverlap(FCollider2D* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
     virtual void BeginOverlap(FCollider2D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // 3D
     virtual void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
     virtual void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // Mesh
-    virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
-    virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
-    virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
-    virtual void BeginOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
+    virtual void BeginOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
+    virtual void BeginOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
+    virtual void BeginOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
+    virtual void BeginOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
+    virtual void BeginOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // Ray
     virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 	virtual void BeginOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
 
     // LandScape
     virtual void BeginOverlap(CLandScape* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void BeginOverlap(CLandScape* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void BeginOverlap(CLandScape* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void BeginOverlap(CLandScape* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void BeginOverlap(CLandScape* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
 
     // =================================================================
@@ -67,35 +67,35 @@ public:
     // 2D
     virtual void Overlap(FCollider2D* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void Overlap(FCollider2D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void Overlap(FCollider2D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void Overlap(FCollider2D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void Overlap(FCollider2D* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
     virtual void Overlap(FCollider2D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // 3D
     virtual void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
     virtual void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // Mesh
-    virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
-    virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
-    virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
-    virtual void Overlap(CMeshCollider* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
+    virtual void Overlap(FMeshCollider* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
+    virtual void Overlap(FMeshCollider* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
+    virtual void Overlap(FMeshCollider* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
+    virtual void Overlap(FMeshCollider* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
+    virtual void Overlap(FMeshCollider* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // Ray
     virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 	virtual void Overlap(CColliderRay* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
 
     // LandScape
     virtual void Overlap(CLandScape* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void Overlap(CLandScape* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void Overlap(CLandScape* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void Overlap(CLandScape* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void Overlap(CLandScape* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
 
     // =================================================================
@@ -105,35 +105,35 @@ public:
     // 2D
     virtual void EndOverlap(FCollider2D* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void EndOverlap(FCollider2D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void EndOverlap(FCollider2D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void EndOverlap(FCollider2D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void EndOverlap(FCollider2D* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
     virtual void EndOverlap(FCollider2D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // 3D
     virtual void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
     virtual void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // Mesh
-    virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
-    virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
-    virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
-    virtual void EndOverlap(CMeshCollider* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
+    virtual void EndOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
+    virtual void EndOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
+    virtual void EndOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
+    virtual void EndOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
+    virtual void EndOverlap(FMeshCollider* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 
     // Ray
     virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) {}
 	virtual void EndOverlap(CColliderRay* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
 
     // LandScape
     virtual void EndOverlap(CLandScape* PCollider, CGameObject* POtherObject, FCollider2D* POtherCollider) {}
     virtual void EndOverlap(CLandScape* PCollider, CGameObject* POtherObject, FCollider3D* POtherCollider) {}
-    virtual void EndOverlap(CLandScape* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider) {}
+    virtual void EndOverlap(CLandScape* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider) {}
     virtual void EndOverlap(CLandScape* PCollider, CGameObject* POtherObject, CColliderRay* POtherCollider) {}
 
 	/**************/

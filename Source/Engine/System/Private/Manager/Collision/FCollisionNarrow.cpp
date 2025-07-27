@@ -4,7 +4,7 @@
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
@@ -86,7 +86,7 @@ bool CollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGame
 /**
  * @brief MeshCollider 정보를 Buffer에 추가하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const CMeshCollider* InCollider)
+CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
@@ -226,8 +226,8 @@ void CollisionManager::ExecuteAndProcessCS()
  */
 void CollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject)
 {
-	CMeshCollider* LeftMesh = InLeftObject->MeshCollider();
-	CMeshCollider* RightMesh = InRightObject->MeshCollider();
+	FMeshCollider* LeftMesh = InLeftObject->MeshCollider();
+	FMeshCollider* RightMesh = InRightObject->MeshCollider();
 	FCollider3D* Left3D = InLeftObject->Collider3D();
 	FCollider3D* Right3D = InRightObject->Collider3D();
 

@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -705,7 +705,7 @@ void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObje
  * @param POtherObject
  * @param POtherCollider
  */
-void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider)
 {
 	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
 	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
@@ -740,7 +740,7 @@ void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherOb
  * @param POtherObject
  * @param POtherCollider
  */
-void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider)
 {
 	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
 	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
@@ -770,6 +770,6 @@ void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FMeshCollider* POtherCollider)
 {
 }

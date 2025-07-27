@@ -1,6 +1,6 @@
 #pragma once
 
-class CMeshCollider;
+class FMeshCollider;
 class CUIRender;
 class CUI;
 class CLandScape;
@@ -72,7 +72,7 @@ public:
 	CLandScape* LandScape() const;
 	CUI* UI() const;
 	CUIRender* UIRender() const;
-	CMeshCollider* MeshCollider() const;
+	FMeshCollider* MeshCollider() const;
 
 	CComponent(COMPONENT_TYPE _TYPE);
 	~CComponent() override;

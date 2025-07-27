@@ -107,7 +107,7 @@ void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVa
 		bool IsDead = LeftObject->IsDead() || RightObject->IsDead();
 		bool IsLayerChanged = LeftObject->IsLayerMove() || RightObject->IsLayerMove();
 		bool IsDeactive = LeftObject->IsDeactivated() || RightObject->IsDeactivated()
-			|| LeftCollider->GetState() == DEACTIVE || RightCollider->GetState() == DEACTIVE;
+			|| LeftCollider->IsDeactive() || RightCollider->IsDeactive();
 
 		if (FrameCollisionSet.contains(CollisionID.ID))
 		{
