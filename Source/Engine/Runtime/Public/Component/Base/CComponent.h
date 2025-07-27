@@ -1,9 +1,9 @@
 #pragma once
 
-class CMeshCollider;
+class FMeshCollider;
 class CUIRender;
 class CUI;
-class CLandScape;
+class FLandscape;
 class CDecal;
 class CSkyBox;
 class CParticleSystem;
@@ -11,10 +11,10 @@ class CAnimator3D;
 class CLight3D;
 class CLight2D;
 class CFlipbookPlayer;
-class CCollider3D;
+class FCollider3D;
 class CTileMap;
-class CColliderRay;
-class CCollider2D;
+class FColliderRay;
+class FCollider2D;
 class CCamera;
 class CMeshRender;
 class CTransform;
@@ -58,9 +58,9 @@ public:
 	CTransform* Transform() const;
 	CMeshRender* MeshRender() const;
 	CCamera* Camera() const;
-	CCollider2D* Collider2D() const;
-	CCollider3D* Collider3D() const;
-	CColliderRay* ColliderRay() const;
+	FCollider2D* Collider2D() const;
+	FCollider3D* Collider3D() const;
+	FColliderRay* ColliderRay() const;
 	CFlipbookPlayer* FlipbookPlayer() const;
 	CTileMap* TileMap() const;
 	CLight2D* Light2D() const;
@@ -69,10 +69,10 @@ public:
 	CParticleSystem* ParticleSystem() const;
 	CSkyBox* SkyBox() const;
 	CDecal* Decal() const;
-	CLandScape* LandScape() const;
+	FLandscape* LandScape() const;
 	CUI* UI() const;
 	CUIRender* UIRender() const;
-	CMeshCollider* MeshCollider() const;
+	FMeshCollider* MeshCollider() const;
 
 	CComponent(COMPONENT_TYPE _TYPE);
 	~CComponent() override;

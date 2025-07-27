@@ -5,7 +5,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandscape.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 
 /**
  * @brief Game Contents Develop에 필요한 Engine API를 간접호출할 수 있도록 만든 namespace

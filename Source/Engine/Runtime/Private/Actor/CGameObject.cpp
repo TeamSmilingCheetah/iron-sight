@@ -1,19 +1,20 @@
 #include "pch.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Actor/CLayer.h"
-#include "Runtime/Public/Actor/CLevel.h"
-#include "Runtime/Public/Component/Base/CRenderComponent.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Runtime/Public/Component/Rendering/CParticleSystem.h"
-#include "Runtime/Public/Component/Rendering/CDecal.h"
-#include "Runtime/Public/Component/Script/CScript.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
+#include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
+#include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Game/System/Public/GameplayManager.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Runtime/Public/Component/Rendering/CLandscape.h"
+#include "System/Public/Manager/FCollisionManager.h"
 
 UINT CGameObject::GUID = 0;
+
 const AABB NullAABB = {Vec3(FLT_MAX), Vec3(FLT_MIN)};
 
 CGameObject::CGameObject()
@@ -386,12 +387,6 @@ void CGameObject::RegisterAsParent()
  */
 AABB CGameObject::GetCollisionAABB() const
 {
-	// Landscape Getter 사용
-	if (LandScape())
-	{
-		return LandScape()->GetAABB();
-	}
-
 	// TODO(KHJ): 충돌체 하나가 아닌 다수를 보유하는 경우를 위해 vector로 반환해야 하는 거 아닌가하는 고민이 있음
 	// 3D Collider Getter 사용
 	if (Collider3D())
@@ -606,34 +601,30 @@ AABB CGameObject::GetAABB() const
 	return {WorldMin, WorldMax};
 }
 
-
 /**
- * @brief variant를 활용한 해당 오브젝트가 가진 Collider Component를 전부 반환하도록 하는 함수
- * @return Collider 혹은 nullptr
+ * @brief 해당 오브젝트가 가진 Collider Component를 전부 반환하도록 하는 함수
+ * @return Collider가 담긴 Vector
  */
 vector<ColliderVariant> CGameObject::GetColliders() const
 {
-	vector<ColliderVariant> VariantVector;
+	vector<ColliderVariant> ColliderVector;
+
 	if (Collider2D())
 	{
-		VariantVector.push_back(ColliderVariant(Collider2D()));
-	}
-	if (LandScape())
-	{
-		VariantVector.push_back(ColliderVariant(LandScape()));
+		ColliderVector.push_back(Collider2D());
 	}
 	if (Collider3D())
 	{
-		VariantVector.push_back(ColliderVariant(Collider3D()));
+		ColliderVector.push_back(Collider3D());
 	}
 	if (MeshCollider())
 	{
-		VariantVector.push_back(ColliderVariant(MeshCollider()));
+		ColliderVector.push_back(MeshCollider());
 	}
 	if (ColliderRay())
 	{
-		VariantVector.push_back(ColliderVariant(ColliderRay()));
+		ColliderVector.push_back(ColliderRay());
 	}
 
-	return VariantVector;
+	return ColliderVector;
 }

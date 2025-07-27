@@ -24,9 +24,9 @@
 // TODO(KHJ): 이하 헤더 배제 시도
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
@@ -51,7 +51,7 @@ void TestLevel::CreateTestLevel()
 	GameFactory::LoadMainCamera(LevelRawPtr);
 	GameFactory::LoadDefaultLight(LevelRawPtr);
 	GameFactory::LoadDefaultSkyBox(LevelRawPtr);
-	GameFactory::LoadDefaultLandscape(LevelRawPtr);
+	// GameFactory::LoadDefaultLandscape(LevelRawPtr);
 
 	// Initialize Item Parts
 	auto UIInfo = SetUpUI(LevelRawPtr);
@@ -70,8 +70,8 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CColliderRay>(obj);
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FColliderRay>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 			},
 			[](CGameObject* obj)
 			{
@@ -101,7 +101,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetName(L"Weapon");
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
@@ -138,7 +138,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetName(L"Weapon");
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
@@ -173,7 +173,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetName(L"Weapon");
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
@@ -208,7 +208,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetName(L"Weapon");
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
@@ -243,7 +243,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetName(L"Weapon");
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
@@ -271,7 +271,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetName(L"Weapon");
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
@@ -301,8 +301,30 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				obj->AddComponentRecursive<CMeshCollider>();
+				obj->AddComponentRecursive<FMeshCollider>();
 				obj->Transform()->SetRelativeScaleMultiply(0.3f);
+			}
+		},
+		1,
+		true
+	);
+
+	// Temp Ground
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Props\\Death Box\\box.fbx",
+		L"TempGround",
+		Vec3(250000, -700, 250000),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(500000, 30.f, 500000),
+		{
+			[](CGameObject* obj)
+			{
+				obj->AddComponentRecursive<FMeshCollider>();
+			},
+			[](CGameObject* obj)
+			{
+				obj->Transform()->SetFrustumCheck(false);
 			}
 		},
 		1,
@@ -320,7 +342,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<CCollider3D>(obj);
+				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
 			},
@@ -337,8 +359,8 @@ void TestLevel::CreateTestLevel()
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
-	pVision->AddComponent(new CCollider3D);
-	pVision->AddComponent(new CColliderRay);
+	pVision->AddComponent(new FCollider3D);
+	pVision->AddComponent(new FColliderRay);
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
@@ -364,7 +386,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				obj->AddComponent(new CCollider3D);
+				obj->AddComponent(new FCollider3D);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
 				obj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
@@ -811,7 +833,7 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 	// Interaction Object
 	CGameObject* pInteractionHandler = new CGameObject;
 	pInteractionHandler->SetName(L"Interaction Handler");
-	pInteractionHandler->AddComponent(new CCollider3D);
+	pInteractionHandler->AddComponent(new FCollider3D);
 
 	pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
 	pInteractionHandler->Collider3D()->SetIndependentScale(true);

@@ -2,9 +2,9 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
@@ -13,7 +13,6 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
-
 
 
 void PlayerCharacter::PlayerMove()
@@ -184,7 +183,9 @@ void PlayerCharacter::UpdateMove()
 		CSoundMgr::GetInst()->Stop3DSound(m_FootstepSoundIdx);
 
 		// 일정 속도 이상이 되면 소리를 재생시킨다.
-		m_RunFootstepSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_RunFootstepSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 0.5f, false, false, m_RunFootstepSoundIdx);
+		m_RunFootstepSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_RunFootstepSound, Transform()->GetRelativePos(),
+		                                                          1.f, 10000.f, 1, 0.5f, false, false,
+		                                                          m_RunFootstepSoundIdx);
 
 		m_FootStepSoundAccTime += DT;
 		// 일정시간이 지나면 소리 위치 업데이트
@@ -198,7 +199,8 @@ void PlayerCharacter::UpdateMove()
 	else if (10.f < v2DVelocity.Length())
 	{
 		// 일정 속도 이상이 되면 소리를 재생시킨다.
-		m_FootstepSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_FootstepSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 0.5f, false, false, m_FootstepSoundIdx);
+		m_FootstepSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_FootstepSound, Transform()->GetRelativePos(), 1.f,
+		                                                       10000.f, 1, 0.5f, false, false, m_FootstepSoundIdx);
 
 
 		m_FootStepSoundAccTime += DT;
@@ -219,8 +221,6 @@ void PlayerCharacter::UpdateMove()
 	{
 		CSoundMgr::GetInst()->Stop3DSound(m_RunFootstepSoundIdx);
 	}
-
-
 }
 
 void PlayerCharacter::UpdateGravity()
@@ -297,306 +297,276 @@ void PlayerCharacter::AnimationControl()
 	switch (m_ActionState)
 	{
 	case ACTION_STATE::JUMP:
-	{
-		delay = 0.02f;
-		clipName = L"Animation\\Armature_rifle_jump.anim";
-	}
+		{
+			delay = 0.02f;
+			clipName = L"Animation\\Armature_rifle_jump.anim";
+		}
 		break;
 	case ACTION_STATE::GUN_FIRE:
-	{
-		delay = 0.02f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_firing_rifle.anim";
-			break;
-		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_firing_rifle.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_firing_rifle.anim";
-			break;
+			delay = 0.02f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_firing_rifle.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_firing_rifle.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_firing_rifle.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::GUN_RELOAD:
-	{
-		delay = 0.4f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_reloading.anim";
-			break;
-		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_reloading.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_reloading.anim";
-			break;
+			delay = 0.4f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_reloading.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_reloading.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_reloading.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::GRENADE_PREPARE:
-	{
-		delay = 1.f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
-			break;
-		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
-			clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_grenade_prepare.anim";
-			break;
+			delay = 1.f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_grenade_prepare.anim";
+				break;
+			}
 		}
-	}
-	break;
+		break;
 	case ACTION_STATE::GRENADE_THROW_HIGH:
-	{
-		delay = 0.07f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_toss_grenade_test.anim";
-			break;
-		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
-			clipName = L"Animation\\Armature_toss_grenade_test.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
-			break;
+			delay = 0.07f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_toss_grenade_test.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_toss_grenade_test.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
+				break;
+			}
 		}
-	}
-	break;
+		break;
 	case ACTION_STATE::GRENADE_THROW_LOW:
-	{
-		delay = 0.3f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_toss_grenade_low.anim";
-			break;
-		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
-			clipName = L"Animation\\Armature_toss_grenade_low.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
-			break;
+			delay = 0.3f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_toss_grenade_low.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_toss_grenade_low.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::BANDAGE:
 		break;
 	case ACTION_STATE::MED_KIT:
 		break;
 	case ACTION_STATE::FIRST_AID_KIT:
-	{
-		delay = 0.4f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
-			break;
-		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_first_aid_kit.anim";
-			break;
+			delay = 0.4f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_first_aid_kit.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::ENERGY_DRINK:
-	{
-		delay = 0.4f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_stand_energy_drink.anim";
-			break;
-		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_stand_energy_drink.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_energy_drink.anim";
-			break;
+			delay = 0.4f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_stand_energy_drink.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_stand_energy_drink.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_energy_drink.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::PAIN_KILLER:
-	{
-		delay = 0.4f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_stand_pain_killer.anim";
-			break;
-		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_stand_pain_killer.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_pain_killer.anim";
-			break;
+			delay = 0.4f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_stand_pain_killer.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_stand_pain_killer.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_pain_killer.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::ADRENALINE_SYRINGE:
-	{
-		delay = 0.4f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_reloading.anim";
-			break;
-		case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-			clipName = L"Animation\\Armature_reloading.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_reloading.anim";
-			break;
+			delay = 0.4f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_reloading.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_reloading.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_reloading.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::DEAD:
-	{
-		delay = 1.f;
-		switch (m_MotionState)
 		{
-		case MOTION_STATE::STAND:
-			clipName = L"Animation\\Armature_death_from_the_front.anim";
-			break;
-		case MOTION_STATE::CROUCH:	// TODO: Crouch Animation
-			clipName = L"Animation\\Armature_death_from_the_front.anim";
-			break;
-		case MOTION_STATE::PRONE:
-			clipName = L"Animation\\Armature_prone_death.anim";
-			break;
+			delay = 1.f;
+			switch (m_MotionState)
+			{
+			case MOTION_STATE::STAND:
+				clipName = L"Animation\\Armature_death_from_the_front.anim";
+				break;
+			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+				clipName = L"Animation\\Armature_death_from_the_front.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				clipName = L"Animation\\Armature_prone_death.anim";
+				break;
+			}
 		}
-	}
 		break;
 	case ACTION_STATE::NONE:
-	{
-		delay = 0.07f;
+		{
+			delay = 0.07f;
 
-		if (KEY_PRESSED(KEY::W))
-		{
-			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk_crouching_forward.anim";
-			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone_forward.anim";
-			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run_forward.anim";
+			if (KEY_PRESSED(KEY::W))
+			{
+				if (m_MotionState == MOTION_STATE::CROUCH)
+					clipName = L"Animation\\Armature_walk_crouching_forward.anim";
+				else if (m_MotionState == MOTION_STATE::PRONE)
+					clipName = L"Animation\\Armature_prone_forward.anim";
+				else if (KEY_PRESSED(KEY::LSHIFT))
+					clipName = L"Animation\\Armature_run_forward.anim";
+				else
+					clipName = L"Animation\\Armature_walk_forward.anim";
+			}
+			else if (KEY_PRESSED(KEY::A))
+			{
+				if (m_MotionState == MOTION_STATE::CROUCH)
+					clipName = L"Animation\\Armature_walk_crouching_left.anim";
+				else if (m_MotionState == MOTION_STATE::PRONE)
+					clipName = L"Animation\\Armature_prone_left.anim";
+				else if (KEY_PRESSED(KEY::LSHIFT))
+					clipName = L"Animation\\Armature_run_left.anim";
+				else
+					clipName = L"Animation\\Armature_walk_left.anim";
+			}
+			else if (KEY_PRESSED(KEY::S))
+			{
+				if (m_MotionState == MOTION_STATE::CROUCH)
+					clipName = L"Animation\\Armature_walk_crouching_backward.anim";
+				else if (m_MotionState == MOTION_STATE::PRONE)
+					clipName = L"Animation\\Armature_prone_backward.anim";
+				else if (KEY_PRESSED(KEY::LSHIFT))
+					clipName = L"Animation\\Armature_run_backward.anim";
+				else
+					clipName = L"Animation\\Armature_walk_backward.anim";
+			}
+			else if (KEY_PRESSED(KEY::D))
+			{
+				if (m_MotionState == MOTION_STATE::CROUCH)
+					clipName = L"Animation\\Armature_walk_crouching_right.anim";
+				else if (m_MotionState == MOTION_STATE::PRONE)
+					clipName = L"Animation\\Armature_prone_right.anim";
+				else if (KEY_PRESSED(KEY::LSHIFT))
+					clipName = L"Animation\\Armature_run_right.anim";
+				else
+					clipName = L"Animation\\Armature_walk_right.anim";
+			}
 			else
-				clipName = L"Animation\\Armature_walk_forward.anim";
+			{
+				if (m_MotionState == MOTION_STATE::CROUCH)
+					clipName = L"Animation\\Armature_idle_crouching.anim";
+				else if (m_MotionState == MOTION_STATE::PRONE)
+					clipName = L"Animation\\Armature_prone_idle.anim";
+				else
+					clipName = L"Animation\\Armature_idle.anim";
+			}
 		}
-		else if (KEY_PRESSED(KEY::A))
-		{
-			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk_crouching_left.anim";
-			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone_left.anim";
-			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run_left.anim";
-			else
-				clipName = L"Animation\\Armature_walk_left.anim";
-		}
-		else if (KEY_PRESSED(KEY::S))
-		{
-			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk_crouching_backward.anim";
-			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone_backward.anim";
-			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run_backward.anim";
-			else
-				clipName = L"Animation\\Armature_walk_backward.anim";
-		}
-		else if (KEY_PRESSED(KEY::D))
-		{
-			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_walk_crouching_right.anim";
-			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone_right.anim";
-			else if (KEY_PRESSED(KEY::LSHIFT))
-				clipName = L"Animation\\Armature_run_right.anim";
-			else
-				clipName = L"Animation\\Armature_walk_right.anim";
-		}
-		else
-		{
-			if (m_MotionState == MOTION_STATE::CROUCH)
-				clipName = L"Animation\\Armature_idle_crouching.anim";
-			else if (m_MotionState == MOTION_STATE::PRONE)
-				clipName = L"Animation\\Armature_prone_idle.anim";
-			else
-				clipName = L"Animation\\Armature_idle.anim";
-		}
-	}
 		break;
 	}
 
 
 	if (Animator3D()->GetCurClip()->GetKey() != clipName
-		&& (Animator3D()->GetNextClip() == nullptr ||  Animator3D()->GetNextClip()->GetKey() != clipName))
+		&& (Animator3D()->GetNextClip() == nullptr || Animator3D()->GetNextClip()->GetKey() != clipName))
 	{
 		Animator3D()->SetCurClipBlend(clipName, delay);
 	}
 }
 
-
-void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
+void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	// 트리거용 충돌체면 해당 코드 사용 x
-	if (POtherCollider->IsTrigger())
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		return;
-	}
-	else
-	{
-		Vec3 hitNormal = PCollider->GetHitNormal();
-		hitNormal.Normalize();
+		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
 
-		//Vec3 hitPoint = _Collider->GetHitPoint();
-		//Transform()->SetRelativePos(hitPoint);
-
-		// 노말이 유효하면 사용
-		if (hitNormal.Length() > 0.001f)
+		// 트리거용 충돌체면 해당 코드 사용 x
+		if (OtherCollider->IsTrigger())
 		{
-			// 충돌 노말 추가
-			m_vecCollisionNormal.push_back(hitNormal);
+			return;
 		}
 		else
 		{
-			Vec3 myPos = Transform()->GetRelativePos();
-			Vec3 otherPos = POtherObject->Transform()->GetRelativePos();
-			Vec3 normal = myPos - otherPos;
-			normal.Normalize();
+			Vec3 hitNormal = Collider->GetCollisionNormal();
+			hitNormal.Normalize();
 
-			// 충돌 벡터 추가
-			m_vecCollisionNormal.push_back(normal);
-		}
-	}
-}
+			//Vec3 hitPoint = _Collider->GetHitPoint();
+			//Transform()->SetRelativePos(hitPoint);
 
-void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
-{
-	// 트리거용 충돌체면 해당 코드 사용 x
-	if (POtherCollider->IsTrigger())
-	{
-	}
-	else
-	{
-		Vec3 hitNormal = PCollider->GetHitNormal();
-		// 노말이 유효하면 사용
-		if (hitNormal.Length() > 0.001f)
-		{
-			// 충돌 노말 추가
-			m_vecCollisionNormal.push_back(hitNormal);
-		}
-		else
-		{
 			// 노말이 유효하면 사용
 			if (hitNormal.Length() > 0.001f)
 			{
@@ -606,7 +576,7 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 			else
 			{
 				Vec3 myPos = Transform()->GetRelativePos();
-				Vec3 otherPos = POtherObject->Transform()->GetRelativePos();
+				Vec3 otherPos = OtherObject->Transform()->GetRelativePos();
 				Vec3 normal = myPos - otherPos;
 				normal.Normalize();
 
@@ -615,161 +585,193 @@ void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject,
 			}
 		}
 	}
-}
 
-void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CCollider3D* POtherCollider)
-{
-	int a = 0;
-}
-
-
-void PlayerCharacter::BeginOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
-{
-	m_CollObject = POtherObject;
-}
-
-void PlayerCharacter::Overlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
-{
-}
-
-void PlayerCharacter::EndOverlap(CColliderRay* PRayCollider, CGameObject* POtherObject, CCollider3D* P3DCollider)
-{
-	if (m_CollObject == POtherObject)
-		m_CollObject = nullptr;
-}
-
-void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
-{
-	Vec3 pPos = Transform()->GetRelativePos();
-
-	//// 충돌 전 위치로 약간 되돌림
-	//Vec3 prevPos = pPos - m_Velocity * DT;
-
-	// 지형의 노말 벡터를 얻음
-	Vec3 LandNormal = POtherCollider->GetWorldPosLandNormal(pPos);
-
-	Transform()->SetRelativePos(pPos);
-
-	// 노말이 유효하면 사용
-	if (LandNormal.Length() > 0.001f)
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 충돌 노말 추가
-		m_vecCollisionNormal.push_back(LandNormal);
-
-		//// 파고듬 방지
-		//float dotProduct = m_Velocity.Dot(LandNormal);
-		//if (dotProduct < 0.f)
-		//{
-		//	// 더 위치 옮겨봄
-		//	Vec3 adjustedPos = pPos + LandNormal * 0.05f;
-		//	Transform()->SetRelativePos(adjustedPos);
-		//}
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		m_CollObject = OtherCollider->GetOwner();
 	}
-}
 
-void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
-{
-	Vec3 pPos = Transform()->GetRelativePos();
-
-	//// 충돌 전 위치로 약간 되돌림
-	//Vec3 prevPos = pPos - m_Velocity * DT;
-
-	// 지형의 노말 벡터를 얻음
-	Vec3 LandNormal = POtherCollider->GetWorldPosLandNormal(pPos);
-
-	// 노말이 유효하면 사용
-	if (LandNormal.Length() > 0.001f)
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::MeshCollider)
 	{
-		// 충돌 노말 추가
-		m_vecCollisionNormal.push_back(LandNormal);
+		FMeshCollider* OtherCollider = static_cast<FMeshCollider*>(InOtherCollider);
 
-		//// 지속적으로 파고듬 방지
-		//float dotProduct = m_Velocity.Dot(LandNormal);
-		//if (dotProduct < 0.f)
-		//{
-		//	// 혹시 모르니 더 옳김
-		//	Vec3 adjustedPos = pPos + LandNormal * 0.05f;
-		//	Transform()->SetRelativePos(adjustedPos);
-		//}
-	}
-}
+		Vec3 CollisionNormal = OtherCollider->GetCollisionNormal();
+		float PenetrationDepth = OtherCollider->GetPenetrationDepth();
 
-void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
-{
-}
-
-/**
- * @brief 플레이어 기준, 3D Collider와 Mesh Collider가 충돌했을 때 처리하는 BeginOverlap 함수
- *
- * @param PCollider
- * @param POtherObject
- * @param POtherCollider
- */
-void PlayerCharacter::BeginOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
-{
-	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
-	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
-
-	// Valid Check
-	if (CollisionNormal.Length() > 0.001f)
-	{
-		// Add Normal
-		m_vecCollisionNormal.push_back(CollisionNormal);
-
-		// Position Correction
-		// 보정 제한은 임의의 값 Setting
-		if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
+		// Valid Check
+		if (CollisionNormal.Length() > 0.001f)
 		{
-			Vec3 Correction = CollisionNormal * PenetrationDepth;
-			Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
-		}
-		else
-		{
-			// Set Default Margin
-			constexpr float DefaultMargin = 0.05f;
-			Vec3 Correction = CollisionNormal * DefaultMargin;
-			Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
-		}
-	}
-}
+			// Add Normal
+			m_vecCollisionNormal.push_back(CollisionNormal);
 
-/**
- * @brief 플레이어 기준, 3D Collider와 Mesh Collider가 충돌했을 때 처리하는 Overlap 함수
- *
- * @param PCollider
- * @param POtherObject
- * @param POtherCollider
- */
-void PlayerCharacter::Overlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
-{
-	Vec3 CollisionNormal = POtherCollider->GetCollisionNormal();
-	float PenetrationDepth = POtherCollider->GetPenetrationDepth();
-
-	// Valid Check
-	if (CollisionNormal.Length() > 0.001f)
-	{
-		// Add Normal
-		m_vecCollisionNormal.push_back(CollisionNormal);
-
-		// Position Correction
-		// 보정 제한은 임의의 값 Setting
-		if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
-		{
-			// Speed Decay By Direction
-			float VelocityDotNormal = m_Velocity.Dot(CollisionNormal);
-			if (VelocityDotNormal < 0.0f)
+			// Position Correction
+			// 보정 제한은 임의의 값 Setting
+			if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
 			{
-				Vec3 ReflectedVelocity = m_Velocity - 2.0f * VelocityDotNormal * CollisionNormal;
-				m_Velocity = ReflectedVelocity * 0.8f;
-
-				// Additional Position Correction
-				Vec3 SmallCorrection = CollisionNormal * 0.01f;
-				Transform()->SetRelativePos(Transform()->GetRelativePos() + SmallCorrection);
+				Vec3 Correction = CollisionNormal * PenetrationDepth;
+				Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
+			}
+			else
+			{
+				// Set Default Margin
+				constexpr float DefaultMargin = 0.05f;
+				Vec3 Correction = CollisionNormal * DefaultMargin;
+				Transform()->SetRelativePos(Transform()->GetRelativePos() + Correction);
 			}
 		}
 	}
 }
 
-void PlayerCharacter::EndOverlap(CCollider3D* PCollider, CGameObject* POtherObject, CMeshCollider* POtherCollider)
+void PlayerCharacter::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	{
+		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		// 트리거용 충돌체면 해당 코드 사용 x
+		if (OtherCollider->IsTrigger())
+		{
+		}
+		else
+		{
+			Vec3 hitNormal = Collider->GetCollisionNormal();
+			// 노말이 유효하면 사용
+			if (hitNormal.Length() > 0.001f)
+			{
+				// 충돌 노말 추가
+				m_vecCollisionNormal.push_back(hitNormal);
+			}
+			else
+			{
+				// 노말이 유효하면 사용
+				if (hitNormal.Length() > 0.001f)
+				{
+					// 충돌 노말 추가
+					m_vecCollisionNormal.push_back(hitNormal);
+				}
+				else
+				{
+					Vec3 myPos = Transform()->GetRelativePos();
+					Vec3 otherPos = OtherObject->Transform()->GetRelativePos();
+					Vec3 normal = myPos - otherPos;
+					normal.Normalize();
+
+					// 충돌 벡터 추가
+					m_vecCollisionNormal.push_back(normal);
+				}
+			}
+		}
+	}
+
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::MeshCollider)
+	{
+		FMeshCollider* OtherCollider = static_cast<FMeshCollider*>(InOtherCollider);
+
+		Vec3 CollisionNormal = OtherCollider->GetCollisionNormal();
+		float PenetrationDepth = OtherCollider->GetPenetrationDepth();
+
+		// Valid Check
+		if (CollisionNormal.Length() > 0.001f)
+		{
+			// Add Normal
+			m_vecCollisionNormal.push_back(CollisionNormal);
+
+			// Position Correction
+			// 보정 제한은 임의의 값 Setting
+			if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
+			{
+				// Speed Decay By Direction
+				float VelocityDotNormal = m_Velocity.Dot(CollisionNormal);
+				if (VelocityDotNormal < 0.0f)
+				{
+					Vec3 ReflectedVelocity = m_Velocity - 2.0f * VelocityDotNormal * CollisionNormal;
+					m_Velocity = ReflectedVelocity * 0.8f;
+
+					// Additional Position Correction
+					Vec3 SmallCorrection = CollisionNormal * 0.01f;
+					Transform()->SetRelativePos(Transform()->GetRelativePos() + SmallCorrection);
+				}
+			}
+		}
+	}
 }
+
+void PlayerCharacter::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
+{
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	{
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		if (m_CollObject == OtherCollider->GetOwner())
+		{
+			m_CollObject = nullptr;
+		}
+	}
+}
+
+// void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
+// {
+// 	Vec3 pPos = Transform()->GetRelativePos();
+//
+// 	//// 충돌 전 위치로 약간 되돌림
+// 	//Vec3 prevPos = pPos - m_Velocity * DT;
+//
+// 	// 지형의 노말 벡터를 얻음
+// 	Vec3 LandNormal = POtherCollider->GetWorldPosLandNormal(pPos);
+//
+// 	Transform()->SetRelativePos(pPos);
+//
+// 	// 노말이 유효하면 사용
+// 	if (LandNormal.Length() > 0.001f)
+// 	{
+// 		// 충돌 노말 추가
+// 		m_vecCollisionNormal.push_back(LandNormal);
+//
+// 		//// 파고듬 방지
+// 		//float dotProduct = m_Velocity.Dot(LandNormal);
+// 		//if (dotProduct < 0.f)
+// 		//{
+// 		//	// 더 위치 옮겨봄
+// 		//	Vec3 adjustedPos = pPos + LandNormal * 0.05f;
+// 		//	Transform()->SetRelativePos(adjustedPos);
+// 		//}
+// 	}
+// }
+//
+// void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
+// {
+// 	Vec3 pPos = Transform()->GetRelativePos();
+//
+// 	//// 충돌 전 위치로 약간 되돌림
+// 	//Vec3 prevPos = pPos - m_Velocity * DT;
+//
+// 	// 지형의 노말 벡터를 얻음
+// 	Vec3 LandNormal = POtherCollider->GetWorldPosLandNormal(pPos);
+//
+// 	// 노말이 유효하면 사용
+// 	if (LandNormal.Length() > 0.001f)
+// 	{
+// 		// 충돌 노말 추가
+// 		m_vecCollisionNormal.push_back(LandNormal);
+//
+// 		//// 지속적으로 파고듬 방지
+// 		//float dotProduct = m_Velocity.Dot(LandNormal);
+// 		//if (dotProduct < 0.f)
+// 		//{
+// 		//	// 혹시 모르니 더 옳김
+// 		//	Vec3 adjustedPos = pPos + LandNormal * 0.05f;
+// 		//	Transform()->SetRelativePos(adjustedPos);
+// 		//}
+// 	}
+// }
+//
+// void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
+// {
+// }

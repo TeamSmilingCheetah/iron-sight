@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 
-class CLandScape;
+class FLandscape;
 
 
 class MissileProjectile :
@@ -26,18 +26,14 @@ public:
 	void SetSpeed(float _Speed) { m_Speed = _Speed; }
 	void SetDir(Vec3 _Dir) { m_Dir = _Dir; }
 
-	void SetBulletInfo(CGameObject* _Object, CGameObject* _Weapon, float _Dmg) { m_BulletDmg.m_Owner = _Object, m_BulletDmg.m_ShotWeapon = _Weapon, m_BulletDmg.m_Dmg = _Dmg; }
+	void SetBulletInfo(CGameObject* _Object, CGameObject* _Weapon, float _Dmg)
+	{
+		m_BulletDmg.m_Owner = _Object, m_BulletDmg.m_ShotWeapon = _Weapon, m_BulletDmg.m_Dmg = _Dmg;
+	}
 
-	void BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-	void EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject,
-		CCollider3D* _OtherCollider) override;
-
-	virtual void BeginOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void Overlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void EndOverlap(class CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	void BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
+	void Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override {}
+	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override {}
 
 	void Begin() override;
 	void Tick() override;

@@ -4,13 +4,13 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/CColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/FCollisionManager.h"
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Runtime/Public/Component/Light/CLight3D.h"
-#include "Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Runtime/Public/Component/Physics/Collider3D.h"
+#include "Runtime/Public/Component/Rendering/LandScape.h"
 #include "Runtime/Public/Component/Rendering/CSkyBox.h"
 
 unique_ptr<CGameObject> Engine::Common::CreateNewObject()
@@ -45,7 +45,7 @@ void Engine::Layer::SetLayerName(CLevel* PLevel, int PLayerNumber, const ::wstri
 
 void Engine::Layer::SetLayerCollision(int PLayer, int POtherLayer)
 {
-	FCollisionManager::GetInst()->ActiveLayerCollision(PLayer, POtherLayer);
+	CollisionManager::GetInst()->ActiveLayerCollision(PLayer, POtherLayer);
 }
 
 unique_ptr<CLevel> Engine::Level::CreateNewLevel()

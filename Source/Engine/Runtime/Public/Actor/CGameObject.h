@@ -2,7 +2,7 @@
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
-using ColliderVariant = variant<CCollider2D*, CCollider3D*, CMeshCollider*, CLandScape*, CColliderRay*>;
+using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, FColliderRay*>;
 
 /**
  * @brief 게임 월드를 구성하는 모든 오브젝트의 기본 단위
@@ -164,9 +164,9 @@ public:
 	CTransform* Transform() const { return reinterpret_cast<CTransform*>(GetComponent(COMPONENT_TYPE::TRANSFORM)); }
 	CMeshRender* MeshRender() const { return reinterpret_cast<CMeshRender*>(GetComponent(COMPONENT_TYPE::MESHRENDER)); }
 	CCamera* Camera() const { return reinterpret_cast<CCamera*>(GetComponent(COMPONENT_TYPE::CAMERA)); }
-	CCollider2D* Collider2D() const { return reinterpret_cast<CCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
-	CCollider3D* Collider3D() const { return reinterpret_cast<CCollider3D*>(GetComponent(COMPONENT_TYPE::COLLIDER3D)); }
-	CColliderRay* ColliderRay() const{ return reinterpret_cast<CColliderRay*>(GetComponent(COMPONENT_TYPE::COLLIDERRAY)); }
+	FCollider2D* Collider2D() const { return reinterpret_cast<FCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
+	FCollider3D* Collider3D() const { return reinterpret_cast<FCollider3D*>(GetComponent(COMPONENT_TYPE::COLLIDER3D)); }
+	FColliderRay* ColliderRay() const{ return reinterpret_cast<FColliderRay*>(GetComponent(COMPONENT_TYPE::COLLIDERRAY)); }
 	CFlipbookPlayer* FlipbookPlayer() const { return reinterpret_cast<CFlipbookPlayer*>(GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)); }
 	CTileMap* TileMap() const { return reinterpret_cast<CTileMap*>(GetComponent(COMPONENT_TYPE::TILEMAP)); }
 	CLight2D* Light2D() const { return reinterpret_cast<CLight2D*>(GetComponent(COMPONENT_TYPE::LIGHT2D)); }
@@ -174,10 +174,10 @@ public:
 	CParticleSystem* ParticleSystem() const { return reinterpret_cast<CParticleSystem*>(GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM)); }
 	CSkyBox* SkyBox() const { return reinterpret_cast<CSkyBox*>(GetComponent(COMPONENT_TYPE::SKYBOX)); }
 	CDecal* Decal() const { return reinterpret_cast<CDecal*>(GetComponent(COMPONENT_TYPE::DECAL)); }
-	CLandScape* LandScape() const { return reinterpret_cast<CLandScape*>(GetComponent(COMPONENT_TYPE::LANDSCAPE)); }
+	FLandscape* LandScape() const { return reinterpret_cast<FLandscape*>(GetComponent(COMPONENT_TYPE::LANDSCAPE)); }
 	CUI* UI() const { return reinterpret_cast<CUI*>(GetComponent(COMPONENT_TYPE::UI)); }
 	CUIRender* UIRender() const { return reinterpret_cast<CUIRender*>(GetComponent(COMPONENT_TYPE::UIRENDER)); }
-	CMeshCollider* MeshCollider() const { return reinterpret_cast<CMeshCollider*>(GetComponent(COMPONENT_TYPE::MESH_COLLIDER)); }
+	FMeshCollider* MeshCollider() const { return reinterpret_cast<FMeshCollider*>(GetComponent(COMPONENT_TYPE::MESH_COLLIDER)); }
 	CAnimator3D* Animator3D() const;
 
 	// Special Member Function

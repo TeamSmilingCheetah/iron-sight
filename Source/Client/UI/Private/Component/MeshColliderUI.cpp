@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Client/UI/Public/Component/MeshColliderUI.h"
-#include "Engine/Runtime/Public/Component/Physics/CMeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 
 
 MeshColliderUI::MeshColliderUI()

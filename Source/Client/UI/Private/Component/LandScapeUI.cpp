@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Client/UI/Public/Component/LandScapeUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 
 LandScapeUI::LandScapeUI()
 	: ComponentUI("LandScapeUI", COMPONENT_TYPE::LANDSCAPE)
@@ -16,7 +16,7 @@ LandScapeUI::~LandScapeUI()
 void LandScapeUI::Render_Update()
 {
 	ComponentTitle("LandScape");
-	CLandScape* pLandScape = GetTargetObject()->LandScape();
+	FLandscape* pLandScape = GetTargetObject()->LandScape();
 
 	// 지형 면 개수
 	Vec2 Face = pLandScape->GetFace();

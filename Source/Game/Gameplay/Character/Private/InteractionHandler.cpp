@@ -1,27 +1,27 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 
-#include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/System/Public/Manager/CKeyMgr.h"
-#include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
-
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Interaction/Public/InteractableScript.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderBase.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+
 InteractionHandler::InteractionHandler()
 	: CScript(SCRIPT_TYPE::INTERACTION_HANDLER)
-	, m_Player(nullptr)
-	, m_PlayerScript(nullptr)
-	, m_Interactable(false)
-	, m_InteractableObject(nullptr)
-	, m_InteractionUI(nullptr)
+	  , m_Player(nullptr)
+	  , m_PlayerScript(nullptr)
+	  , m_Interactable(false)
+	  , m_InteractableObject(nullptr)
+	  , m_InteractionUI(nullptr)
 {
 }
 
-InteractionHandler::~InteractionHandler()
-{
-}
+InteractionHandler::~InteractionHandler() = default;
 
 void InteractionHandler::SetPlayer(CGameObject* _Player)
 {
@@ -88,71 +88,95 @@ void InteractionHandler::LoadComponentReference()
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
-void InteractionHandler::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void InteractionHandler::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	// Interactable Script
-	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	{
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
 
-	if (!pInteractable)
-		return;
+		// Interactable Script
+		auto pInteractable = static_cast<InteractableScript*>(
+			GetScriptWithType(OtherObject, SCRIPT_TYPE::INTERACTABLE));
 
-	pInteractable->EnterDetection(this);
+		if (!pInteractable)
+			return;
+
+		pInteractable->EnterDetection(this);
+	}
 }
 
-void InteractionHandler::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void InteractionHandler::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	// 플레이어가 바라보고 있는 오브젝트
-	CGameObject* pTarget = m_PlayerScript->GetRayTarget();
-
-	// 바라보고 있는 오브젝트가 존재하지 않거나 충돌 오브젝트와 다르다면 리턴
-	if (!pTarget || pTarget != _OtherObject)
-		return;
-
-	// Interactable Script
-	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
-
-	if (pInteractable)
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 인터랙션 가능한 오브젝트로 바뀐 경우
-		if (!m_Interactable)
-		{
-			SetInteractable(true);
-		}
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
 
-		// 오브젝트가 바뀌었으면 UI 설정
-		if (m_InteractableObject != _OtherObject)
-		{
-			m_InteractableObject = _OtherObject;
-			m_InteractionUI->UI()->GetTextInfoRef()[0].Text = pInteractable->GetInteractionDesc();
-		}
+		// 플레이어가 바라보고 있는 오브젝트
+		CGameObject* pTarget = m_PlayerScript->GetRayTarget();
 
-		// F 키 입력에 따라 상호작용
-		if (KEY_TAP(KEY::F))
+		// 바라보고 있는 오브젝트가 존재하지 않거나 충돌 오브젝트와 다르다면 리턴
+		if (!pTarget || pTarget != OtherObject)
+			return;
+
+		// Interactable Script
+		auto pInteractable = static_cast<InteractableScript*>(
+			GetScriptWithType(OtherObject, SCRIPT_TYPE::INTERACTABLE));
+
+		if (pInteractable)
 		{
-			pInteractable->Interact(this);
+			// 인터랙션 가능한 오브젝트로 바뀐 경우
+			if (!m_Interactable)
+			{
+				SetInteractable(true);
+			}
+
+			// 오브젝트가 바뀌었으면 UI 설정
+			if (m_InteractableObject != OtherObject)
+			{
+				m_InteractableObject = OtherObject;
+				m_InteractionUI->UI()->GetTextInfoRef()[0].Text = pInteractable->GetInteractionDesc();
+			}
+
+			// F 키 입력에 따라 상호작용
+			if (KEY_TAP(KEY::F))
+			{
+				pInteractable->Interact(this);
+			}
+		}
+		else
+		{
+			// 상호작용 불가 상태로 변경
+			if (m_Interactable)
+			{
+				SetInteractable(false);
+			}
 		}
 	}
-	else
+}
+
+void InteractionHandler::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
+{
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 상호작용 불가 상태로 변경
-		if (m_Interactable)
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		// Interactable Script
+		auto pInteractable = static_cast<InteractableScript*>(
+			GetScriptWithType(OtherObject, SCRIPT_TYPE::INTERACTABLE));
+		if (!pInteractable)
+			return;
+
+		if (m_InteractableObject == OtherObject)
 		{
 			SetInteractable(false);
 		}
+
+		pInteractable->ExitDetection(this);
 	}
-}
-
-void InteractionHandler::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-	// Interactable Script
-	auto pInteractable = static_cast<InteractableScript*>(GetScriptWithType(_OtherObject, SCRIPT_TYPE::INTERACTABLE));
-	if (!pInteractable)
-		return;
-
-	if (m_InteractableObject == _OtherObject)
-	{
-		SetInteractable(false);
-	}
-
-	pInteractable->ExitDetection(this);
 }

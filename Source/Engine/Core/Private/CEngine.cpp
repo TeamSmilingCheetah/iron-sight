@@ -90,7 +90,7 @@ void CEngine::Progress()
 	CTimeMgr::GetInst()->Tick();
 	CLevelMgr::GetInst()->Progress();
 	CUIMgr::GetInst()->Tick();
-	FCollisionManager::GetInst()->Tick();
+	CollisionManager::GetInst()->Tick();
 
 	// Engine Render
 	CRenderMgr::GetInst()->Render();

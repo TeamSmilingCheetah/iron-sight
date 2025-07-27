@@ -2,7 +2,7 @@
 #include "Client/UI/Public/Component/Collider3DUI.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 
 Collider3DUI::Collider3DUI()
 	: ComponentUI("Collider3DUI", COMPONENT_TYPE::COLLIDER3D)
@@ -15,7 +15,7 @@ void Collider3DUI::Render_Update()
 {
 	ComponentTitle("Collider3D");
 
-	CCollider3D* pCollider3D = GetTargetObject()->Collider3D();
+	FCollider3D* pCollider3D = GetTargetObject()->Collider3D();
 
 	Vec3 vOffset = pCollider3D->GetOffset();
 	Vec3 vScale = pCollider3D->GetScale();
@@ -51,11 +51,11 @@ void Collider3DUI::Render_Update()
 	{
 		if (bActive)
 		{
-			pCollider3D->Activate();
+			pCollider3D->SetActivate();
 		}
 		else
 		{
-			pCollider3D->Deactivate();
+			pCollider3D->SetSemiDeactivate();
 		}
 	}
 

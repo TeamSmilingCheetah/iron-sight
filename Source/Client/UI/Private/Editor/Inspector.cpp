@@ -244,7 +244,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CCamera);
 		break;
 	case COMPONENT_TYPE::COLLIDER2D:
-		m_TargetObject->AddComponent(new CCollider2D);
+		m_TargetObject->AddComponent(new FCollider2D);
 		break;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		m_TargetObject->AddComponent(new CFlipbookPlayer);
@@ -262,10 +262,10 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CParticleSystem);
 		break;
 	case COMPONENT_TYPE::COLLIDER3D:
-		m_TargetObject->AddComponent(new CCollider3D);
+		m_TargetObject->AddComponent(new FCollider3D);
 		break;
 	case COMPONENT_TYPE::COLLIDERRAY:
-		m_TargetObject->AddComponent(new CColliderRay);
+		m_TargetObject->AddComponent(new FColliderRay);
 		break;
 	case COMPONENT_TYPE::ANIMATOR3D:
 		m_TargetObject->AddComponent(new CAnimator3D);
@@ -283,7 +283,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CDecal);
 		break;
 	case COMPONENT_TYPE::LANDSCAPE:
-		m_TargetObject->AddComponent(new CLandScape);
+		m_TargetObject->AddComponent(new FLandscape);
 		break;
 	case COMPONENT_TYPE::UI:
 		m_TargetObject->AddComponent(new CUI);

@@ -61,7 +61,7 @@ struct tWeight8
 	float arrWeight[8];
 };
 
-class CLandScape :
+class FLandscape :
 	public CRenderComponent
 {
 	UINT m_FaceX; // 지형 가로 면 개수
@@ -94,92 +94,55 @@ class CLandScape :
 	CStructuredBuffer* m_RayCollisionOut;
 	vector<tRayCollision> m_vecRayColInst;
 
-	// AABB
-	AABB m_AABB;
-
 	// LandScape 모드
 	LANDSCAPE_MODE m_Mode;
-
-	COLLIDER_STATE  m_State = ACTIVE;
-
-public:
-	void SetFace(UINT PX, UINT PZ);
-	void SetMode(LANDSCAPE_MODE PMode) { m_Mode = PMode; }
-	void SetBrushIdx(UINT PIdx) { m_BrushIdx = PIdx; }
-	void SetWeightIdx(int PIdx) { m_WeightIdx = PIdx; }
-	void SetBrushScale(Vec2 PScale) { m_BrushScale = PScale; }
-
-	void SetHeightMapTexture(Ptr<CTexture> PHeightMap) { m_HeightMap = PHeightMap; }
-	void CreateHeightMap(UINT PWidth, UINT PHeight);
-	void AddBrushTexture(Ptr<CTexture> PBrushTexture) { m_vecBrush.push_back(PBrushTexture); }
-	void SetColorTexture(Ptr<CTexture> PArrTex);
-	void SetNormalTexture(Ptr<CTexture> PArrTex);
-
-	Vec2 GetFace() const { return {static_cast<float>(m_FaceX), static_cast<float>(m_FaceZ)}; }
-	Vec2 GetBrushScale() const { return m_BrushScale; }
-	UINT GetBrushIdx() const { return m_BrushIdx; }
-	UINT GetWeigtIdx() const { return m_WeightIdx; }
-	int GetBrushSize() const { return static_cast<int>(m_vecBrush.size()); }
-	int GetWeightSize() const { return m_ColorTex->GetArraySize(); }
-
-	// AABB
-	void SetAABB();
-	AABB GetAABB() const { return m_AABB; }
-
-	LANDSCAPE_MODE GetMode() const { return m_Mode; }
-	COLLIDER_STATE GetState() const { return m_State; }
-
-	Vec3 GetWorldPosByLandScape(Vec3 PTargetWorldPos) const;
-
-	Vec3 GetWorldPosLandNormal(Vec3& PTargetWorldPos) const;
-
-	// 들어있는 Ray연산(구형 방식)
-	tRaycastOut ColliderRaycasting(tRay PRay) const;
-	// 들어있는 Ray연산
-	void AddRayCol(const tRayCollision& PRayInfo) { m_vecRayColInst.push_back(PRayInfo); }
-	void ColisionRayStack(void* PRayObject, const tRay& PRayPosDir);
-	vector<tRayCollision>& Collidercalcul();
-
-	void FinalTick() override;
-	void Render() override;
-	void SaveComponent(FILE* PFile) override;
-	void LoadComponent(FILE* PFile) override;
-
-	template <typename T>
-	static void BeginOverlap(T* POther);
-	template <typename T>
-	static void Overlap(T* POther);
-	template <typename T>
-	static void EndOverlap(T* POther);
 
 private:
 	void Init() override;
 	void CreateMesh();
 	void CreateMaterial();
 	void CreateComputeShader();
-
 	int Raycasting();
 
 public:
-	CLONE(CLandScape);
-	CLandScape();
-	~CLandScape() override;
+	void FinalTick() override;
+	void Render() override;
+	void SaveComponent(FILE* InFile) override;
+	void LoadComponent(FILE* InFile) override;
+
+	// 들어있는 Ray 연산 (구형 방식)
+	tRaycastOut ColliderRaycasting(tRay InRay) const;
+	// 들어있는 Ray 연산
+	void AddRayCol(const tRayCollision& InRayInfo) { m_vecRayColInst.push_back(InRayInfo); }
+	void ColisionRayStack(void* InRayObject, const tRay& InRayPosDir);
+	vector<tRayCollision>& Collidercalcul();
+
+	// Getter & Setter
+	Vec2 GetFace() const { return {static_cast<float>(m_FaceX), static_cast<float>(m_FaceZ)}; }
+	Vec2 GetBrushScale() const { return m_BrushScale; }
+	UINT GetBrushIdx() const { return m_BrushIdx; }
+	UINT GetWeigtIdx() const { return m_WeightIdx; }
+	int GetBrushSize() const { return static_cast<int>(m_vecBrush.size()); }
+	int GetWeightSize() const { return m_ColorTex->GetArraySize(); }
+	LANDSCAPE_MODE GetMode() const { return m_Mode; }
+
+	void SetFace(UINT InX, UINT InZ);
+	void SetMode(LANDSCAPE_MODE InMode) { m_Mode = InMode; }
+	void SetBrushIdx(UINT InIdx) { m_BrushIdx = InIdx; }
+	void SetWeightIdx(int InIdx) { m_WeightIdx = InIdx; }
+	void SetBrushScale(Vec2 InScale) { m_BrushScale = InScale; }
+	void SetHeightMapTexture(Ptr<CTexture> InHeightMap) { m_HeightMap = InHeightMap; }
+	void AddBrushTexture(Ptr<CTexture> InBrushTexture) { m_vecBrush.push_back(InBrushTexture); }
+
+	void CreateHeightMap(UINT InWidth, UINT InHeight);
+	void SetColorTexture(Ptr<CTexture> InArrTex);
+	void SetNormalTexture(Ptr<CTexture> InArrTex);
+
+	Vec3 GetWorldPosByLandScape(Vec3 PTargetWorldPos) const;
+	Vec3 GetWorldPosLandNormal(Vec3& PTargetWorldPos) const;
+
+	// Special Member Function
+	FLandscape();
+	~FLandscape() override;
+	CLONE(FLandscape);
 };
-
-template <typename T>
-void CLandScape::BeginOverlap(T* POther)
-{
-	// Do Nothing
-}
-
-template <typename T>
-void CLandScape::Overlap(T* POther)
-{
-	// Do Nothing
-}
-
-template <typename T>
-void CLandScape::EndOverlap(T* POther)
-{
-	// Do Nothing
-}

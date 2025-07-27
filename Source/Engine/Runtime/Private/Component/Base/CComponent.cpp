@@ -31,9 +31,9 @@ void CComponent::LoadFromLevel(FILE* _File)
 CTransform* CComponent::Transform() const { return m_Owner ? m_Owner->Transform() : nullptr; }
 CMeshRender* CComponent::MeshRender() const { return m_Owner ? m_Owner->MeshRender() : nullptr; }
 CCamera* CComponent::Camera() const { return m_Owner ? m_Owner->Camera() : nullptr; }
-CCollider2D* CComponent::Collider2D() const { return m_Owner ? m_Owner->Collider2D() : nullptr; }
-CCollider3D* CComponent::Collider3D() const { return m_Owner ? m_Owner->Collider3D() : nullptr; }
-CColliderRay* CComponent::ColliderRay() const { return m_Owner ? m_Owner->ColliderRay() : nullptr; }
+FCollider2D* CComponent::Collider2D() const { return m_Owner ? m_Owner->Collider2D() : nullptr; }
+FCollider3D* CComponent::Collider3D() const { return m_Owner ? m_Owner->Collider3D() : nullptr; }
+FColliderRay* CComponent::ColliderRay() const { return m_Owner ? m_Owner->ColliderRay() : nullptr; }
 CFlipbookPlayer* CComponent::FlipbookPlayer() const { return m_Owner ? m_Owner->FlipbookPlayer() : nullptr; }
 CTileMap* CComponent::TileMap() const { return m_Owner ? m_Owner->TileMap() : nullptr; }
 CLight2D* CComponent::Light2D() const { return m_Owner ? m_Owner->Light2D() : nullptr; }
@@ -42,7 +42,7 @@ CAnimator3D* CComponent::Animator3D() const { return m_Owner ? m_Owner->Animator
 CParticleSystem* CComponent::ParticleSystem() const { return m_Owner ? m_Owner->ParticleSystem() : nullptr; }
 CSkyBox* CComponent::SkyBox() const { return m_Owner ? m_Owner->SkyBox() : nullptr; }
 CDecal* CComponent::Decal() const { return m_Owner ? m_Owner->Decal() : nullptr; }
-CLandScape* CComponent::LandScape() const { return m_Owner ? m_Owner->LandScape() : nullptr; }
+FLandscape* CComponent::LandScape() const { return m_Owner ? m_Owner->LandScape() : nullptr; }
 CUI* CComponent::UI() const { return m_Owner ? m_Owner->UI() : nullptr; }
 CUIRender* CComponent::UIRender() const { return m_Owner ? m_Owner->UIRender() : nullptr; }
-CMeshCollider* CComponent::MeshCollider() const { return m_Owner ? m_Owner->MeshCollider() : nullptr; }
+FMeshCollider* CComponent::MeshCollider() const { return m_Owner ? m_Owner->MeshCollider() : nullptr; }

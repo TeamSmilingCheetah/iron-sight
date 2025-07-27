@@ -5,9 +5,9 @@
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
 
 using ColliderPairVariant = variant<
-	pair<CMeshCollider*, CMeshCollider*>,
-	pair<CMeshCollider*, CCollider3D*>,
-	pair<CCollider3D*, CMeshCollider*>
+	pair<FMeshCollider*, FMeshCollider*>,
+	pair<FMeshCollider*, FCollider3D*>,
+	pair<FCollider3D*, FMeshCollider*>
 >;
 
 union COLLISION_ID
@@ -37,11 +37,11 @@ union COLLISION_ID
 	}
 };
 
-class CCollider2D;
-class CCollider3D;
-class CColliderRay;
-class CLandScape;
-class CMeshCollider;
+class FCollider2D;
+class FCollider3D;
+class FColliderRay;
+class FLandscape;
+class FMeshCollider;
 
 /**
  * @brief 충돌을 관리하는 매니저 클래스
@@ -57,10 +57,10 @@ class CMeshCollider;
  * @param MFrameAllIndices CS 처리 대상 충돌체들의 World Index 데이터를 하나로 합친 Buffer
  * @param MFrameDataCache 동일한 충돌체의 데이터가 중복으로 추가되는 것을 방지하기 위한 Cache
  */
-class FCollisionManager :
-	public singleton<FCollisionManager>
+class CollisionManager :
+	public singleton<CollisionManager>
 {
-	SINGLE(FCollisionManager)
+	SINGLE(CollisionManager)
 
 private:
 	struct MeshBatchData
@@ -70,25 +70,25 @@ private:
 		UINT TriCount;
 	};
 
-	UINT MLayerCollisionMatrix[MAX_LAYER];
-	map<ULONGLONG, bool> MColllisionMap;
-	vector<CGameObject*> MLevelActiveObjects;
-	set<ULONGLONG> MFrameCollisionSet;
-	CMeshCollisionCS MMeshCollisionCS;
-	CRaycastCS MRaycastCS;
-	vector<pair<const CGameObject*, const CGameObject*>> MCandidatePairVector;
-	BVHNode* MBVHRootNode = nullptr;
+	UINT LayerCollisionMatrix[MAX_LAYER];
+	map<ULONGLONG, bool> ColllisionMap;
+	vector<CGameObject*> LevelActiveObjects;
+	set<ULONGLONG> FrameCollisionSet;
+	CMeshCollisionCS MeshCollisionCS;
+	CRaycastCS RaycastCS;
+	vector<pair<const CGameObject*, const CGameObject*>> CandidatePairVector;
+	BVHNode* BVHRootNode = nullptr;
 
-	vector<Vec3> MFrameAllVertices;
-	vector<UINT> MFrameAllIndices;
+	vector<Vec3> FrameAllVertices;
+	vector<UINT> FrameAllIndices;
 
-	vector<tCollisionTask> MTasks;
-	vector<ColliderPairVariant> MTaskColliders;
-	map<const void*, MeshBatchData> MDataCache;
+	vector<tRaycastTask> RaycastTasks;
+	vector<pair<FColliderRay*, FMeshCollider*>> RaycastColliders;
+	map<const void*, MeshBatchData> RaycastDataCache;
 
-	vector<tRaycastTask> MRaycastTasks;
-	vector<pair<CColliderRay*, CMeshCollider*>> MRaycastColliders;
-	map<const void*, MeshBatchData> MRaycastDataCache;
+	vector<tCollisionTask> Tasks;
+	vector<ColliderPairVariant> TaskColliders;
+	map<const void*, MeshBatchData> DataCache;
 
 public:
 	struct SimpleVtx
@@ -111,43 +111,42 @@ private:
 	void CleanResource();
 
 	// BVH Function
-	void BuildBVH(const vector<CGameObject*>& PObjects);
+	void BuildBVH(const vector<CGameObject*>& InObjects);
 	void DestroyBVH();
-	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& PObjects, int PDepth = 0);
+	static BVHNode* BuildBVHRecursive(const vector<CGameObject*>& InObjects, int InDepth = 0);
 
 	// Raycast Function
-	static void QueryBVH(const BVHNode* PNode, const CColliderRay* PRay, vector<RayColliderInfo>& PIntersectVector);
-	MeshBatchData GetOrAddRaycastBatchData(CMeshCollider* pCollider);
-	void AddRayShaderTask(CColliderRay* PRay, const CGameObject* PObject);
+	static void QueryBVH(const BVHNode* InNode, const FColliderRay* InRay, vector<FRayColliderInfo>& OutIntersectVector);
+	MeshBatchData GetOrAddRaycastBatchData(const FMeshCollider* InCollider);
+	void AddRayShaderTask(FColliderRay* InRay, const CGameObject* InObject);
 	void ExecuteAndProcessRaycastCS();
 
 	// Broad Phase Function
-	static void QueryBVH(const BVHNode* PNode, const CGameObject* PObject, vector<CGameObject*>& PCandidates);
-	void AddCandidate(const CGameObject* PLeftObject, const CGameObject* PRightObject);
+	static void QueryBVH(const BVHNode* InNode, const CGameObject* InObject, vector<CGameObject*>& OutCandidates);
+	void AddCandidate(const CGameObject* InLeftObject, const CGameObject* InRightObject);
 
 	// Narrow Phase Function
-	void CheckPair(const CGameObject* PRightObject, const CGameObject* PLeftObject);
-	void AddFrameCollision(ColliderVariant PLeftCollider, ColliderVariant PRightCollider);
+	void CheckPair(const CGameObject* InRightObject, const CGameObject* InLeftObject);
+	void AddFrameCollision(ColliderVariant InLeftCollider, ColliderVariant InRightCollider);
 
 	// Narrow CPU Task
-	static bool IsCollision(const CCollider2D* PLeftCollider, const CCollider2D* PRightCollider);
-	static bool IsCollision(const CCollider3D* PLeftCollider, const CCollider3D* PRightCollider);
-	static bool IsCollision(const CCollider3D* PLeftCollider, const CLandScape* PRightCollider);
+	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
+	static bool IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider);
 
 	// Narrow GPU Task
-	static bool NeedComputeShader(const CGameObject* PLeftObject, const CGameObject* PRightObject);
-	MeshBatchData GetOrAddBatchData(const CCollider3D* PCollider);
-	MeshBatchData GetOrAddBatchData(const CMeshCollider* PCollider);
-	void AddShaderTask(const CGameObject* PLeftObject, const CGameObject* PRightObject);
+	static bool NeedComputeShader(const CGameObject* InLeftObject, const CGameObject* InRightObject);
+	MeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
+	MeshBatchData GetOrAddBatchData(const FMeshCollider* InCollider);
+	void AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject);
 	void ExecuteAndProcessCS();
 
 	// Collision PostProcess
-	void CollisionsInLayer(UINT PLayerIndex);
-	void CollisionBtwLayer(UINT PLeftIndex, UINT PRightIndex);
-	void ExecuteOverlap(ColliderVariant PLeftCollider, ColliderVariant PRightCollider);
+	void CollisionsInLayer(UINT InLayerIndex);
+	void CollisionBtwLayer(UINT InLeftLayerIndex, UINT InRightLayerIndex);
+	void ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVariant InRightCollider);
 
 public:
 	void Tick();
-	void ActiveLayerCollision(UINT PLeft, UINT PRight);
+	void ActiveLayerCollision(UINT InLeftLayer, UINT InRightLayer);
 	void ClearCollisionBtwLayerSetting();
 };

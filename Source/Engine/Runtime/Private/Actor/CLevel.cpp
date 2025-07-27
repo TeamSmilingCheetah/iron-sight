@@ -136,7 +136,10 @@ void CLevel::GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects)
 	{
 		for (auto* Object : m_arrLayer[i].GetObjects())
 		{
-			PObjects.push_back(Object);
+			if (Object->IsActive())
+			{
+				PObjects.push_back(Object);
+			}
 		}
 	}
 }

@@ -392,11 +392,11 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 	switch (_Type)
 	{
 	case COMPONENT_TYPE::COLLIDER2D:
-		return new CCollider2D;
+		return new FCollider2D;
 	case COMPONENT_TYPE::COLLIDER3D:
-		return new CCollider3D;
+		return new FCollider3D;
 	case COMPONENT_TYPE::COLLIDERRAY:
-		return new CColliderRay;
+		return new FColliderRay;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		return new CFlipbookPlayer;
 	case COMPONENT_TYPE::ANIMATOR3D:
@@ -418,13 +418,13 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::DECAL:
 		return new CDecal;
 	case COMPONENT_TYPE::LANDSCAPE:
-		return new CLandScape;
+		return new FLandscape;
 	case COMPONENT_TYPE::UI:
 		return new CUI;
 	case COMPONENT_TYPE::UIRENDER:
 		return new CUIRender;
 	case COMPONENT_TYPE::MESH_COLLIDER:
-		return new CMeshCollider;
+		return new FMeshCollider;
 	}
 
 	return nullptr;

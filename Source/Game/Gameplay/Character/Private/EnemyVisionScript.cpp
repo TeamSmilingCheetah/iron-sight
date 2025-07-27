@@ -5,14 +5,14 @@
 #include "Engine/Runtime/Public/Component/Base/components.h"
 
 EnemyVisionScript::EnemyVisionScript()
-	:CScript(SCRIPT_TYPE::ENEMYVISION)
-	, m_TargetType(SCRIPT_TYPE::PLAYERSCRIPT)
-	, m_VisionRange(5000.f)
-	, m_AtkRange(2000.f)
-	, m_AtkRgmax(3000.f)
-	, m_Vision(false)
-	, m_RayTarget(false)
-	, m_RayAtkRg(false)
+	: CScript(SCRIPT_TYPE::ENEMYVISION)
+	  , m_TargetType(SCRIPT_TYPE::PLAYERSCRIPT)
+	  , m_VisionRange(5000.f)
+	  , m_AtkRange(2000.f)
+	  , m_AtkRgmax(3000.f)
+	  , m_Vision(false)
+	  , m_RayTarget(false)
+	  , m_RayAtkRg(false)
 {
 }
 
@@ -28,8 +28,8 @@ void EnemyVisionScript::Begin()
 void EnemyVisionScript::Tick()
 {
 	// Collider가 존재해야한다(없으면 종료)
-	CColliderRay* pRay = GetOwner()->ColliderRay();
-	CCollider3D* p3DCol = GetOwner()->Collider3D();
+	FColliderRay* pRay = GetOwner()->ColliderRay();
+	FCollider3D* p3DCol = GetOwner()->Collider3D();
 	if (pRay == nullptr || p3DCol == nullptr)
 	{
 		return;
@@ -53,7 +53,7 @@ void EnemyVisionScript::Tick()
 		m_Vision = true;
 	}
 	// 시야에 타겟이 존재한다면
-	CScript* pScript = *m_SetScript.begin();		// 지금 당장은 타겟이 하나기에 이렇게 설정
+	CScript* pScript = *m_SetScript.begin(); // 지금 당장은 타겟이 하나기에 이렇게 설정
 	Vec3 RayPos = pRay->GetRayFinalPos();
 	Vec3 TargetPos = pScript->GetOwner()->Transform()->GetRelativePos();
 	float Length = pRay->GetTargetInfoRef().Length;
@@ -79,85 +79,102 @@ void EnemyVisionScript::Tick()
 	Vec3 RayVector = TargetPos - RayPos;
 	pRay->SetRayDir(RayVector);
 	pRay->SetRayLength(m_VisionRange);
-
-
 }
 
-void EnemyVisionScript::BeginOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
+void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
-	if (targetScript == nullptr)
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 없으면 처리x
-		return;
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		// 타겟으로 지정된 스크립트가 들어있나 확인
+		CScript* targetScript = GetScriptWithType(OtherObject, m_TargetType);
+		if (targetScript == nullptr)
+		{
+			// 없으면 처리x
+			return;
+		}
+
+		// 타겟을 발견으로 침
+		m_RayTarget = true;
 	}
 
-	// 타겟을 발견으로 침
-	m_RayTarget = true;
-
-}
-
-void EnemyVisionScript::Overlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-{
-	// 혹시 모를 사태에 대비 무조건 true로
-	m_RayTarget = true;
-}
-
-void EnemyVisionScript::EndOverlap(CColliderRay* _RayCollider, CGameObject* _OtherObject, CCollider3D* _3DCollider)
-{
-	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
-	if (targetScript == nullptr)
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+	InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 없으면 처리x
-		return;
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		// 타겟으로 지정된 스크립트가 들어있나 확인
+		CScript* targetScript = GetScriptWithType(OtherObject, m_TargetType);
+		if (targetScript == nullptr)
+		{
+			// 없으면 처리x
+			return;
+		}
+
+		// 여기에 들어오면 시야 체크대상등록
+		m_SetScript.insert(targetScript);
 	}
-
-	// 타겟이제 놓친걸로 침
-	m_RayTarget = false;
 }
 
-void EnemyVisionScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyVisionScript::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
-	if (targetScript == nullptr)
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 없으면 처리x
-		return;
+		// 혹시 모를 사태에 대비 무조건 true로
+		m_RayTarget = true;
 	}
-
-	// 여기에 들어오면 시야 체크대상등록
-	m_SetScript.insert(targetScript);
 }
 
-void EnemyVisionScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyVisionScript::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	int a = 0;
-}
-
-void EnemyVisionScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-	// 타겟으로 지정된 스크립트가 들어있나 확인
-	CScript* targetScript = GetScriptWithType(_OtherObject, m_TargetType);
-	if (targetScript == nullptr)
+	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 없으면 처리x
-		return;
-	}
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
 
-	// 시야체크 대상이라면 해제해줌
-	m_SetScript.erase(targetScript);
+		// 타겟으로 지정된 스크립트가 들어있나 확인
+		CScript* targetScript = GetScriptWithType(OtherObject, m_TargetType);
+		if (targetScript == nullptr)
+		{
+			// 없으면 처리x
+			return;
+		}
 
-	// 시야지점에 타겟이 아무것도 없다면 전부 false로 강제 전환
-	if (m_SetScript.empty())
-	{
-		m_Vision = false;
+		// 타겟이제 놓친걸로 침
 		m_RayTarget = false;
-		m_RayAtkRg = false;
 	}
 
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+	InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	{
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		// 타겟으로 지정된 스크립트가 들어있나 확인
+		CScript* targetScript = GetScriptWithType(OtherObject, m_TargetType);
+		if (targetScript == nullptr)
+		{
+			// 없으면 처리x
+			return;
+		}
+
+		// 시야체크 대상이라면 해제해줌
+		m_SetScript.erase(targetScript);
+
+		// 시야지점에 타겟이 아무것도 없다면 전부 false로 강제 전환
+		if (m_SetScript.empty())
+		{
+			m_Vision = false;
+			m_RayTarget = false;
+			m_RayAtkRg = false;
+		}
+	}
 }
 
 void EnemyVisionScript::SaveComponent(FILE* _File)

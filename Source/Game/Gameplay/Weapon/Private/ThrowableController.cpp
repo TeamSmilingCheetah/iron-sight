@@ -3,8 +3,8 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -19,29 +19,29 @@
 
 ThrowableController::ThrowableController()
 	: WeaponController(SCRIPT_TYPE::THROWABLESCRIPT)
-	, m_BombSoundIdx(-1)
-	, m_SmokeSoundIdx(-1)
-	, m_PinSoundIdx(-1)
-	, m_ThrowSoundIdx(-1)
-	, m_BounceSoundIdx_1(-1)
-	, m_BounceSoundIdx_2(-1)
-	, m_Velocity()
-	, m_Dir()
-	, m_Mass(0.f)
-	, m_Speed(8000.f)
-	, m_GravityAccel(1000.f)
-	, m_CurClipAccTime(0.f)
-	, m_TriggeredTime(6.f)
-	, m_ThrowAngle(0.f)
-	, m_bGround(false)
-	, m_bCanThrow(false)
-	, m_bThrow(false)
-	, m_bTrigger(false)
-	, m_bUseFirstBounceSound(true)
-	, m_ThownOwner(nullptr)
-	, m_Player(nullptr)
-	, m_PlayerScript(nullptr)
-	, m_AfterThrowAccTime(0.f)
+	  , m_BombSoundIdx(-1)
+	  , m_SmokeSoundIdx(-1)
+	  , m_PinSoundIdx(-1)
+	  , m_ThrowSoundIdx(-1)
+	  , m_BounceSoundIdx_1(-1)
+	  , m_BounceSoundIdx_2(-1)
+	  , m_Velocity()
+	  , m_Dir()
+	  , m_Mass(0.f)
+	  , m_Speed(8000.f)
+	  , m_GravityAccel(1000.f)
+	  , m_CurClipAccTime(0.f)
+	  , m_TriggeredTime(6.f)
+	  , m_ThrowAngle(0.f)
+	  , m_bGround(false)
+	  , m_bCanThrow(false)
+	  , m_bThrow(false)
+	  , m_bTrigger(false)
+	  , m_bUseFirstBounceSound(true)
+	  , m_ThownOwner(nullptr)
+	  , m_Player(nullptr)
+	  , m_PlayerScript(nullptr)
+	  , m_AfterThrowAccTime(0.f)
 
 {
 	m_Mass = 4.f;
@@ -94,12 +94,12 @@ void ThrowableController::Tick()
 		m_ThownOwner = m_EquippedOwner;
 	}
 	// 소유주가 없다면 return
-	else if(m_EquippedOwner == nullptr && m_bThrow == false)
+	else if (m_EquippedOwner == nullptr && m_bThrow == false)
 	{
 		return;
 	}
 
-	if(m_EquippedOwner)
+	if (m_EquippedOwner)
 		AdjustFPSPos();
 
 	// 투척 준비 상태 진입
@@ -113,7 +113,7 @@ void ThrowableController::Tick()
 		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_PREPARE);
 	}
 
-	
+
 	// 투척 준비
 	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
@@ -128,7 +128,8 @@ void ThrowableController::Tick()
 	// 투척 상태 진입 가능한 지 판정
 	if (m_EquippedOwner && m_bCanThrow)
 	{
-		bool readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetFrameLength() - 1 == m_EquippedOwner->Animator3D()->GetCurFrameIdx();
+		bool readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetFrameLength() - 1 == m_EquippedOwner->
+			Animator3D()->GetCurFrameIdx();
 
 		// 준비 자세가 된 경우
 		if (readyToThrow)
@@ -164,7 +165,9 @@ void ThrowableController::Tick()
 				m_bThrow = true;
 
 				// 던지는 사운드 재생 (중복 x)
-				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
+				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound,
+				                                                    m_Player->Transform()->GetRelativePos(), 1.f,
+				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
 			}
 
@@ -200,21 +203,21 @@ void ThrowableController::Tick()
 				m_bThrow = true;
 
 				// 던지는 사운드 재생 (중복 x)
-				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
+				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound,
+				                                                    m_Player->Transform()->GetRelativePos(), 1.f,
+				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
 			}
 		}
 	}
 
 
-	
-
-
 	//
 	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
 	{
 		// 핀소리
-		m_PinSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+		m_PinSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
+		                                                  10000.f, 1, 1.f, true, true, -1);
 
 		m_bTrigger = true;
 	}
@@ -262,9 +265,11 @@ void ThrowableController::Triggered()
 			if (!GetOwner()->IsDead())
 			{
 				// 연막 소리
-				m_SmokeSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_SmokeSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+				m_SmokeSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_SmokeSound, Transform()->GetRelativePos(), 1.f,
+				                                                    10000.f, 1, 1.f, true, true, -1);
 
-				Ptr<CPrefab> SmokeParticelPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\SmokeParticle.pref", L"Prefab\\SmokeParticle.pref");
+				Ptr<CPrefab> SmokeParticelPrefab = CAssetMgr::GetInst()->Load<CPrefab>(
+					L"Prefab\\SmokeParticle.pref", L"Prefab\\SmokeParticle.pref");
 				Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 				vPos.y += 800.f;
 
@@ -276,10 +281,13 @@ void ThrowableController::Triggered()
 			if (!GetOwner()->IsDead())
 			{
 				// 폭발 소리
-				m_BombSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_BombSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+				m_BombSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_BombSound, Transform()->GetRelativePos(), 1.f,
+				                                                   10000.f, 1, 1.f, true, true, -1);
 
-				Ptr<CPrefab> GrenadeBombPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\GrenadeBomb.pref", L"Prefab\\GrenadeBomb.pref");
-				BombController* pBombScript = static_cast<BombController*>(GetScriptWithType(GrenadeBombPrefab->GetProtoObject(), SCRIPT_TYPE::BOMBSCRIPT));
+				Ptr<CPrefab> GrenadeBombPrefab = CAssetMgr::GetInst()->Load<CPrefab>(
+					L"Prefab\\GrenadeBomb.pref", L"Prefab\\GrenadeBomb.pref");
+				BombController* pBombScript = static_cast<BombController*>(GetScriptWithType(
+					GrenadeBombPrefab->GetProtoObject(), SCRIPT_TYPE::BOMBSCRIPT));
 				pBombScript->SetWeaponOwner(m_ThownOwner);
 				Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 				//vPos.y += 800.f;
@@ -293,10 +301,12 @@ void ThrowableController::Triggered()
 		if (m_Player && m_EquippedOwner && !GetOwner()->IsDead())
 		{
 			// 폭발 소리
-			m_BombSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_BombSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+			m_BombSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_BombSound, m_Player->Transform()->GetRelativePos(),
+			                                                   1.f, 10000.f, 1, 1.f, true, true, -1);
 
 			ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::ITEMSCRIPT));
-			static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT))->UseItem(pItem->GetItemType(), 1);
+			static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT))->UseItem(
+				pItem->GetItemType(), 1);
 			m_PlayerScript->SetThrow(false);
 		}
 
@@ -306,7 +316,7 @@ void ThrowableController::Triggered()
 
 void ThrowableController::Throw()
 {
- 	Vec3 vPos = Transform()->GetRelativePos();
+	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vRot = Transform()->GetRelativeRotation();
 
 	Collider3D()->SetTrigger(false);
@@ -331,14 +341,14 @@ void ThrowableController::Throw()
 
 
 	// 중력을 적용한다
-	if(!m_bGround)
+	if (!m_bGround)
 		m_Velocity.y -= m_GravityAccel * m_Mass * DT;
 
 
 	// 특정 속도 이하가 되면 멈춘다
 	if (veloLength < 5.f)
 	{
-		m_Velocity = Vec3(0.f, 0.f, 0.f);		
+		m_Velocity = Vec3(0.f, 0.f, 0.f);
 	}
 	else
 	{
@@ -381,82 +391,86 @@ void ThrowableController::MakeBounce(Vec3 _Normal, float _elastic, float _fricti
 }
 
 
-
-void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void ThrowableController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (_Collider->IsTrigger())
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		return;
-	}
-	else
-	{
-		Vec3 vHitNormal = _Collider->GetHitNormal();
-		
-		MakeBounce(vHitNormal, 1.f, 0.7f);
-	}
-}
+		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
 
-void ThrowableController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-}
-
-void ThrowableController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-}
-
-
-
-
-
-void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
-{
-	if (_Collider->IsTrigger())
-	{
-		return;
-	}
-	else
-	{
-		m_bGround = true;
-
-		// 지형의 노말 벡터를 얻음
-		Vec3 vPos = Transform()->GetRelativePos();
-		Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(vPos);
-
-		Transform()->SetRelativePos(vPos);
-
-		// 노말이 유효하면 사용
-		if (LandNormal.Length() > 0.001f)
+		if (Collider->IsTrigger())
 		{
-			// 마무리 튕기는 사운드 재생 (중복 x)
-			if (m_bUseFirstBounceSound)
-			{
-				m_BounceSoundIdx_1 = CSoundMgr::GetInst()->Play3DSound(m_BounceSound_1, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_BounceSoundIdx_1);
-			}
-			else
-			{
-				m_BounceSoundIdx_2 = CSoundMgr::GetInst()->Play3DSound(m_BounceSound_2, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_BounceSoundIdx_2);
-			}
-			m_bUseFirstBounceSound = !m_bUseFirstBounceSound;
+			return;
+		}
+		else
+		{
+			Vec3 vHitNormal = Collider->GetCollisionNormal();
 
-			// Bounce
-			MakeBounce(LandNormal, 1.f, 0.7f);
+			MakeBounce(vHitNormal, 1.f, 0.7f);
 		}
 	}
 }
 
-void ThrowableController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
 }
 
-void ThrowableController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (_Collider->IsTrigger())
-	{
-		return;
-	}
-	else
-	{
-		m_bGround = false;
-	}
-
 }
+
+// void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// {
+// 	if (_Collider->IsTrigger())
+// 	{
+// 		return;
+// 	}
+// 	else
+// 	{
+// 		m_bGround = true;
+//
+// 		// 지형의 노말 벡터를 얻음
+// 		Vec3 vPos = Transform()->GetRelativePos();
+// 		Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(vPos);
+//
+// 		Transform()->SetRelativePos(vPos);
+//
+// 		// 노말이 유효하면 사용
+// 		if (LandNormal.Length() > 0.001f)
+// 		{
+// 			// 마무리 튕기는 사운드 재생 (중복 x)
+// 			if (m_bUseFirstBounceSound)
+// 			{
+// 				m_BounceSoundIdx_1 = CSoundMgr::GetInst()->Play3DSound(m_BounceSound_1, Transform()->GetRelativePos(),
+// 				                                                       1.f, 10000.f, 1, 1.f, false, false,
+// 				                                                       m_BounceSoundIdx_1);
+// 			}
+// 			else
+// 			{
+// 				m_BounceSoundIdx_2 = CSoundMgr::GetInst()->Play3DSound(m_BounceSound_2, Transform()->GetRelativePos(),
+// 				                                                       1.f, 10000.f, 1, 1.f, false, false,
+// 				                                                       m_BounceSoundIdx_2);
+// 			}
+// 			m_bUseFirstBounceSound = !m_bUseFirstBounceSound;
+//
+// 			// Bounce
+// 			MakeBounce(LandNormal, 1.f, 0.7f);
+// 		}
+// 	}
+// }
+
+// void ThrowableController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// {
+// }
+
+// void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// {
+// 	if (_Collider->IsTrigger())
+// 	{
+// 		return;
+// 	}
+// 	else
+// 	{
+// 		m_bGround = false;
+// 	}
+// }

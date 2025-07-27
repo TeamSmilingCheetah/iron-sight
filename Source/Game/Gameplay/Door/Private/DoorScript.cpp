@@ -66,18 +66,6 @@ void DoorScript::LoadComponent(FILE* _File)
 {
 }
 
-void DoorScript::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-}
-
-void DoorScript::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-}
-
-void DoorScript::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-}
-
 void DoorScript::Interact(InteractionHandler* _Handler)
 {
 	if (m_Rotating)

@@ -239,17 +239,17 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 	if (*pStr == "Collider2D")
 	{
-		m_ProtoObject->AddComponent(new CCollider2D);
+		m_ProtoObject->AddComponent(new FCollider2D);
 		return;
 	}
 	if (*pStr == "Collider3D")
 	{
-		m_ProtoObject->AddComponent(new CCollider3D);
+		m_ProtoObject->AddComponent(new FCollider3D);
 		return;
 	}
 	if (*pStr == "ColliderRay")
 	{
-		m_ProtoObject->AddComponent(new CColliderRay);
+		m_ProtoObject->AddComponent(new FColliderRay);
 		return;
 	}
 	if (*pStr == "Camera")
@@ -284,7 +284,7 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 	if (*pStr == "LandScape")
 	{
-		m_ProtoObject->AddComponent(new CLandScape);
+		m_ProtoObject->AddComponent(new FLandscape);
 		return;
 	}
 	if (*pStr == "SkyBox")

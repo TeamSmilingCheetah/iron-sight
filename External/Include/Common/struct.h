@@ -2,7 +2,7 @@
 
 #include <thread>
 
-class CColliderRay;
+class FColliderRay;
 using std::thread;
 
 struct Vtx
@@ -634,19 +634,19 @@ struct tScriptParam
 	void* pData;
 };
 
-struct RayColliderInfo
+struct FRayColliderInfo
 {
-	CColliderRay* RayObject;
+	FColliderRay* RayObject;
 	CGameObject* HitObject;
 	CGameObject* PrevObject;
 	float Length;
 
-	bool operator<(const RayColliderInfo& POther) const
+	bool operator<(const FRayColliderInfo& POther) const
 	{
 		return Length < POther.Length;
 	}
 
-	RayColliderInfo()
+	FRayColliderInfo()
 		: RayObject(nullptr)
 		  , HitObject(nullptr)
 		  , PrevObject(nullptr)
@@ -654,7 +654,7 @@ struct RayColliderInfo
 	{
 	}
 
-	RayColliderInfo(CColliderRay* PRay, CGameObject* PObject, float PLength)
+	FRayColliderInfo(FColliderRay* PRay, CGameObject* PObject, float PLength)
 		: RayObject(PRay)
 		  , HitObject(PObject)
 		  , PrevObject(nullptr)

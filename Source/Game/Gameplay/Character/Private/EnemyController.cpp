@@ -5,8 +5,8 @@
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
-#include "Engine/Runtime/Public/Component/Physics/CCollider3D.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -14,21 +14,21 @@
 
 EnemyController::EnemyController(SCRIPT_TYPE _Type)
 	: CScript(_Type)
-	, m_Force(0.f)
-	, m_Velocity(0.f)
-	, m_GravidyVelocity(0.f)
-	, m_Mass(3.f)
-	, m_Friction(100.f)
-	, m_MaxSpeed(10.f)
-	, m_GravityAccel(10.f)
-	, m_GravityMaxSpeed(30.f)
-	, m_IsGround(true)
-	, m_HP(100.f)
-	, m_State(Enemy_State::None)
-	, m_PrevState(Enemy_State::None)
-	, m_KillinfoScript(nullptr)
-	, m_Player(nullptr)
-	, m_PlayerScript(nullptr)
+	  , m_Force(0.f)
+	  , m_Velocity(0.f)
+	  , m_GravidyVelocity(0.f)
+	  , m_Mass(3.f)
+	  , m_Friction(100.f)
+	  , m_MaxSpeed(10.f)
+	  , m_GravityAccel(10.f)
+	  , m_GravityMaxSpeed(30.f)
+	  , m_IsGround(true)
+	  , m_HP(100.f)
+	  , m_State(Enemy_State::None)
+	  , m_PrevState(Enemy_State::None)
+	  , m_KillinfoScript(nullptr)
+	  , m_Player(nullptr)
+	  , m_PlayerScript(nullptr)
 {
 }
 
@@ -83,7 +83,6 @@ void EnemyController::DamageCalcul(CGameObject* _AtkObject, CGameObject* _Weapon
 			m_KillinfoScript->OnEvent();
 		}
 	}
-
 }
 
 
@@ -153,7 +152,8 @@ void EnemyController::UpdateMove()
 {
 	// 이전 틱의 이동방향저장
 	Vec3 vPrevVelocityDir = m_Velocity;
-	if (vPrevVelocityDir.Length() > 0.001f) {
+	if (vPrevVelocityDir.Length() > 0.001f)
+	{
 		vPrevVelocityDir.Normalize();
 	}
 
@@ -193,7 +193,6 @@ void EnemyController::UpdateMove()
 			m_Velocity.Normalize();
 			m_Velocity *= m_MaxSpeed;
 		}
-
 	}
 	// 이동이 없다면 마찰계수에 따라 감속
 	else if (m_IsGround)
@@ -336,66 +335,30 @@ void EnemyController::KeyTick()
 	}
 }
 
-
-void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	// 트리거용 충돌체면 해당 코드 사용 x
-	if (_OtherCollider->IsTrigger())
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		return;
+		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
 
-	}
-	else
-	{
-		Vec3 pPos = Transform()->GetRelativePos();
-
-		Vec3 hitNormal = _Collider->GetHitNormal();
-		hitNormal.Normalize();
-
-		//Vec3 hitPoint = _Collider->GetHitPoint();
-		//Transform()->SetRelativePos(hitPoint);
-
-		// 노말이 유효하면 사용
-		if (hitNormal.Length() > 0.001f)
+		// 트리거용 충돌체면 해당 코드 사용 x
+		if (OtherCollider->IsTrigger())
 		{
-			// 충돌 노말 추가
-			m_vecCollisionNormal.push_back(hitNormal);
+			return;
 		}
 		else
 		{
-			Vec3 myPos = Transform()->GetRelativePos();
-			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-			Vec3 normal = myPos - otherPos;
-			normal.Normalize();
+			Vec3 pPos = Transform()->GetRelativePos();
 
-			// 충돌 벡터 추가
-			m_vecCollisionNormal.push_back(normal);
-		}
-	}
-}
+			Vec3 hitNormal = Collider->GetCollisionNormal();
+			hitNormal.Normalize();
 
-void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
-{
-	// 트리거용 충돌체면 해당 코드 사용 x
-	if (_OtherCollider->IsTrigger())
-	{
-		return;
-	}
-	else
-	{
-		Vec3 hitNormal = _Collider->GetHitNormal();
-		// 노말이 유효하면 사용
-		if (hitNormal.Length() > 0.001f)
-		{
-			// 충돌 노말 추가
-			m_vecCollisionNormal.push_back(hitNormal);
-		}
-		else
-		{
-			Vec3 myPos = Transform()->GetRelativePos();
-			Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
-			Vec3 normal = myPos - otherPos;
-			normal.Normalize();
+			//Vec3 hitPoint = _Collider->GetHitPoint();
+			//Transform()->SetRelativePos(hitPoint);
+
 			// 노말이 유효하면 사용
 			if (hitNormal.Length() > 0.001f)
 			{
@@ -405,7 +368,7 @@ void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 			else
 			{
 				Vec3 myPos = Transform()->GetRelativePos();
-				Vec3 otherPos = _OtherObject->Transform()->GetRelativePos();
+				Vec3 otherPos = OtherObject->Transform()->GetRelativePos();
 				Vec3 normal = myPos - otherPos;
 				normal.Normalize();
 
@@ -416,45 +379,95 @@ void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 }
 
-void EnemyController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CCollider3D* _OtherCollider)
+void EnemyController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-}
-
-void EnemyController::BeginOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
-{
-	Vec3 pPos = Transform()->GetRelativePos();
-
-	// 지형의 노말 벡터를 얻음
-	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
-
-	Transform()->SetRelativePos(pPos);
-
-	// 노말이 유효하면 사용
-	if (LandNormal.Length() > 0.001f)
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		// 충돌 노말 추가
-		m_vecCollisionNormal.push_back(LandNormal);
+		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
+		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		CGameObject* OtherObject = OtherCollider->GetOwner();
+
+		// 트리거용 충돌체면 해당 코드 사용 x
+		if (OtherCollider->IsTrigger())
+		{
+			return;
+		}
+		else
+		{
+			Vec3 hitNormal = Collider->GetCollisionNormal();
+			// 노말이 유효하면 사용
+			if (hitNormal.Length() > 0.001f)
+			{
+				// 충돌 노말 추가
+				m_vecCollisionNormal.push_back(hitNormal);
+			}
+			else
+			{
+				Vec3 myPos = Transform()->GetRelativePos();
+				Vec3 otherPos = OtherObject->Transform()->GetRelativePos();
+				Vec3 normal = myPos - otherPos;
+				normal.Normalize();
+				// 노말이 유효하면 사용
+				if (hitNormal.Length() > 0.001f)
+				{
+					// 충돌 노말 추가
+					m_vecCollisionNormal.push_back(hitNormal);
+				}
+				else
+				{
+					Vec3 myPos = Transform()->GetRelativePos();
+					Vec3 otherPos = OtherObject->Transform()->GetRelativePos();
+					Vec3 normal = myPos - otherPos;
+					normal.Normalize();
+
+					// 충돌 벡터 추가
+					m_vecCollisionNormal.push_back(normal);
+				}
+			}
+		}
 	}
 }
 
-void EnemyController::Overlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
-{
-	Vec3 pPos = Transform()->GetRelativePos();
-
-	// 지형의 노말 벡터를 얻음
-	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
-
-	// 노말이 유효하면 사용
-	if (LandNormal.Length() > 0.001f)
-	{
-		// 충돌 노말 추가
-		m_vecCollisionNormal.push_back(LandNormal);
-	}
-}
-
-void EnemyController::EndOverlap(CCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
 }
+
+// void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// {
+// 	Vec3 pPos = Transform()->GetRelativePos();
+//
+// 	// 지형의 노말 벡터를 얻음
+// 	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+//
+// 	Transform()->SetRelativePos(pPos);
+//
+// 	// 노말이 유효하면 사용
+// 	if (LandNormal.Length() > 0.001f)
+// 	{
+// 		// 충돌 노말 추가
+// 		m_vecCollisionNormal.push_back(LandNormal);
+// 	}
+// }
+//
+// void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// {
+// 	Vec3 pPos = Transform()->GetRelativePos();
+//
+// 	// 지형의 노말 벡터를 얻음
+// 	Vec3 LandNormal = _OtherCollider->GetWorldPosLandNormal(pPos);
+//
+// 	// 노말이 유효하면 사용
+// 	if (LandNormal.Length() > 0.001f)
+// 	{
+// 		// 충돌 노말 추가
+// 		m_vecCollisionNormal.push_back(LandNormal);
+// 	}
+// }
+//
+// void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// {
+// }
 
 
 void EnemyController::SaveComponent(FILE* _File)
