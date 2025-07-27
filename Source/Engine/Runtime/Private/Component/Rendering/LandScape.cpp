@@ -1,12 +1,13 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Rendering/CLandScape.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 
-CLandScape::CLandScape()
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
+
+FLandScape::FLandScape()
 	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)
 	  , m_FaceX(1)
 	  , m_FaceZ(1)
@@ -23,19 +24,19 @@ CLandScape::CLandScape()
 {
 }
 
-CLandScape::~CLandScape()
+FLandScape::~FLandScape()
 {
 	delete m_RaycastOut;
 	delete m_WeightMap;
 	delete m_RayCollisionOut;
 }
 
-void CLandScape::ColisionRayStack(void* PRayObject, const tRay& PRayPosDir)
+void FLandScape::ColisionRayStack(void* InRayObject, const tRay& InRayPosDir)
 {
-	m_vecRayColInst.push_back(tRayCollision(PRayObject, PRayPosDir));
+	m_vecRayColInst.push_back(tRayCollision(InRayObject, InRayPosDir));
 }
 
-void CLandScape::FinalTick()
+void FLandScape::FinalTick()
 {
 	m_vecRayColInst.clear();
 
@@ -102,7 +103,7 @@ void CLandScape::FinalTick()
 	}
 }
 
-void CLandScape::Render()
+void FLandScape::Render()
 {
 	Transform()->Binding();
 
@@ -133,100 +134,18 @@ void CLandScape::Render()
 	m_WeightMap->Clear(20); // WeightMap 버퍼 바인딩 클리어
 }
 
-void CLandScape::SetFace(UINT PX, UINT PZ)
+void FLandScape::SetFace(UINT InX, UINT InZ)
 {
-	if (m_FaceX == PX && m_FaceZ == PZ)
+	if (m_FaceX == InX && m_FaceZ == InZ)
 		return;
 
-	m_FaceX = PX;
-	m_FaceZ = PZ;
+	m_FaceX = InX;
+	m_FaceZ = InZ;
 
 	CreateMesh();
-	SetAABB();
 }
 
-/**
- * @brief Landscape의 AABB를 산출하는 함수
- */
-void CLandScape::SetAABB()
-{
-	// Landscape는 XZ 평면에 놓여있고, Y는 높이맵에 따라 결정됨
-	// 월드 스케일을 반영하여 실제 크기를 계산
-	Vec3 WorldScale = Transform()->GetWorldScale();
-	float FaceX = static_cast<float>(m_FaceX) * WorldScale.x;
-	float FaceZ = static_cast<float>(m_FaceZ) * WorldScale.z;
-
-	Vec3 LocalMin = Vec3(0.f, 0.f, 0.f);
-	Vec3 LocalMax = Vec3(FaceX, 0.f, FaceZ);
-
-	// 높이맵이 있다면 Y 범위도 계산
-	if (m_HeightMap != nullptr && !m_CachedHeightData.empty())
-	{
-		float MinHeight = FLT_MAX;
-		float MaxHeight = -FLT_MAX;
-
-		// 캐시된 높이 데이터에서 최소/최대 높이 찾기
-		for (float Height : m_CachedHeightData)
-		{
-			MinHeight = min(MinHeight, Height);
-			MaxHeight = max(MaxHeight, Height);
-		}
-
-		// Min Thickness
-		if (fabs(MaxHeight - MinHeight) < 1e-4f)
-		{
-			MinHeight -= 1.f;
-			MaxHeight += 1.f;
-		}
-
-		LocalMin.y = MinHeight * WorldScale.y;
-		LocalMax.y = MaxHeight * WorldScale.y;
-	}
-	// Make Min Thickness If No HeightMap
-	else
-	{
-		LocalMin.y = -1.f * WorldScale.y;
-		LocalMax.y = 1.f * WorldScale.y;
-	}
-
-	Vec3 LocalCorners[8] = {
-		Vec3(LocalMin.x, LocalMin.y, LocalMin.z),
-		Vec3(LocalMax.x, LocalMin.y, LocalMin.z),
-		Vec3(LocalMax.x, LocalMin.y, LocalMax.z),
-		Vec3(LocalMin.x, LocalMin.y, LocalMax.z),
-		Vec3(LocalMin.x, LocalMax.y, LocalMin.z),
-		Vec3(LocalMax.x, LocalMax.y, LocalMin.z),
-		Vec3(LocalMax.x, LocalMax.y, LocalMax.z),
-		Vec3(LocalMin.x, LocalMax.y, LocalMax.z),
-	};
-
-	// Calculate World AABB
-	Vec3 WorldCorners[8];
-	const Matrix& WorldMatrix = Transform()->GetWorldMat();
-	for (int i = 0; i < 8; ++i)
-	{
-		WorldCorners[i] = XMVector3TransformCoord(LocalCorners[i], WorldMatrix);
-	}
-
-	Vec3 WorldMin = WorldCorners[0];
-	Vec3 WorldMax = WorldCorners[0];
-
-	for (int i = 1; i < 8; ++i)
-	{
-		WorldMin.x = min(WorldMin.x, WorldCorners[i].x);
-		WorldMin.y = min(WorldMin.y, WorldCorners[i].y);
-		WorldMin.z = min(WorldMin.z, WorldCorners[i].z);
-
-		WorldMax.x = max(WorldMax.x, WorldCorners[i].x);
-		WorldMax.y = max(WorldMax.y, WorldCorners[i].y);
-		WorldMax.z = max(WorldMax.z, WorldCorners[i].z);
-	}
-
-	// Save New AABB
-	m_AABB = AABB(WorldMin, WorldMax);
-}
-
-int CLandScape::Raycasting()
+int FLandScape::Raycasting()
 {
 	// 현재 시점 카메라 가져오기
 	CCamera* pCam = CRenderMgr::GetInst()->GetMainCamera();
@@ -269,7 +188,7 @@ int CLandScape::Raycasting()
 	return m_Out.Success;
 }
 
-tRaycastOut CLandScape::ColliderRaycasting(tRay PRay) const
+tRaycastOut FLandScape::ColliderRaycasting(tRay InRay) const
 {
 	// 구조화버퍼 클리어
 	tRaycastOut pRayInfo;
@@ -280,16 +199,16 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay PRay) const
 	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
 
 	// 원본 Ray 정보 저장
-	tRay WorldRay = PRay;
+	tRay WorldRay = InRay;
 
 	// LandScape 의 WorldInv 행렬 가져옴
 	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
 	const Matrix& matWorld = Transform()->GetWorldMat();
 
 	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
-	PRay.vStart = XMVector3TransformCoord(PRay.vStart, matWorldInv);
-	PRay.vDir = XMVector3TransformNormal(PRay.vDir, matWorldInv);
-	PRay.vDir.Normalize();
+	InRay.vStart = XMVector3TransformCoord(InRay.vStart, matWorldInv);
+	InRay.vDir = XMVector3TransformNormal(InRay.vDir, matWorldInv);
+	InRay.vDir.Normalize();
 
 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
 	// m_RaycastCS->SetRayInfo(PRay);
@@ -346,7 +265,7 @@ tRaycastOut CLandScape::ColliderRaycasting(tRay PRay) const
 	return pRayInfo;
 }
 
-vector<tRayCollision>& CLandScape::Collidercalcul()
+vector<tRayCollision>& FLandScape::Collidercalcul()
 {
 	// 검사할 데이터가 0개 이면 즉시 종료
 	if (0 == m_vecRayColInst.size())
@@ -390,7 +309,7 @@ vector<tRayCollision>& CLandScape::Collidercalcul()
 	return m_vecRayColInst;
 }
 
-Vec3 CLandScape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
+Vec3 FLandScape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
 {
 	// 랜드스케이프의 월드 행렬
 	const Matrix& matWorld = Transform()->GetWorldMat();
@@ -439,7 +358,7 @@ Vec3 CLandScape::GetWorldPosByLandScape(Vec3 PTargetWorldPos) const
 	return worldPos;
 }
 
-Vec3 CLandScape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
+Vec3 FLandScape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
 {
 	// 랜드스케이프의 월드 행렬
 	const Matrix& matWorld = Transform()->GetWorldMat();
@@ -517,27 +436,26 @@ Vec3 CLandScape::GetWorldPosLandNormal(Vec3& PTargetWorldPos) const
 	return normal;
 }
 
-void CLandScape::SaveComponent(FILE* PFile)
+void FLandScape::SaveComponent(FILE* InFile)
 {
-	(void)fwrite(&m_FaceX, sizeof(UINT), 1, PFile);
-	(void)fwrite(&m_FaceZ, sizeof(UINT), 1, PFile);
+	(void)fwrite(&m_FaceX, sizeof(UINT), 1, InFile);
+	(void)fwrite(&m_FaceZ, sizeof(UINT), 1, InFile);
 
-	SaveAssetRef(m_HeightMap, PFile);
-	SaveAssetRef(m_ColorTex, PFile);
-	SaveAssetRef(m_NormalTex, PFile);
+	SaveAssetRef(m_HeightMap, InFile);
+	SaveAssetRef(m_ColorTex, InFile);
+	SaveAssetRef(m_NormalTex, InFile);
 }
 
-void CLandScape::LoadComponent(FILE* PFile)
+void FLandScape::LoadComponent(FILE* InFile)
 {
-	(void)fread(&m_FaceX, sizeof(UINT), 1, PFile);
-	(void)fread(&m_FaceZ, sizeof(UINT), 1, PFile);
+	(void)fread(&m_FaceX, sizeof(UINT), 1, InFile);
+	(void)fread(&m_FaceZ, sizeof(UINT), 1, InFile);
 	CreateMesh();
 
 
-	LoadAssetRef(m_HeightMap, PFile);
-	LoadAssetRef(m_ColorTex, PFile);
-	LoadAssetRef(m_NormalTex, PFile);
+	LoadAssetRef(m_HeightMap, InFile);
+	LoadAssetRef(m_ColorTex, InFile);
+	LoadAssetRef(m_NormalTex, InFile);
 
 	m_HeightMap->CaptureTextureCustom(m_CachedHeightData);
-	SetAABB();
 }

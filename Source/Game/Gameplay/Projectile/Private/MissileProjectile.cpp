@@ -223,15 +223,15 @@ void MissileProjectile::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherOb
 
 
 
-void MissileProjectile::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void MissileProjectile::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 
 }
 
-void MissileProjectile::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void MissileProjectile::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 }
 
-void MissileProjectile::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void MissileProjectile::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 }

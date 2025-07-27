@@ -2,7 +2,7 @@
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
-using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, CLandScape*, FColliderRay*>;
+using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, FLandScape*, FColliderRay*>;
 
 /**
  * @brief 게임 월드를 구성하는 모든 오브젝트의 기본 단위
@@ -174,7 +174,7 @@ public:
 	CParticleSystem* ParticleSystem() const { return reinterpret_cast<CParticleSystem*>(GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM)); }
 	CSkyBox* SkyBox() const { return reinterpret_cast<CSkyBox*>(GetComponent(COMPONENT_TYPE::SKYBOX)); }
 	CDecal* Decal() const { return reinterpret_cast<CDecal*>(GetComponent(COMPONENT_TYPE::DECAL)); }
-	CLandScape* LandScape() const { return reinterpret_cast<CLandScape*>(GetComponent(COMPONENT_TYPE::LANDSCAPE)); }
+	FLandScape* LandScape() const { return reinterpret_cast<FLandScape*>(GetComponent(COMPONENT_TYPE::LANDSCAPE)); }
 	CUI* UI() const { return reinterpret_cast<CUI*>(GetComponent(COMPONENT_TYPE::UI)); }
 	CUIRender* UIRender() const { return reinterpret_cast<CUIRender*>(GetComponent(COMPONENT_TYPE::UIRENDER)); }
 	FMeshCollider* MeshCollider() const { return reinterpret_cast<FMeshCollider*>(GetComponent(COMPONENT_TYPE::MESH_COLLIDER)); }

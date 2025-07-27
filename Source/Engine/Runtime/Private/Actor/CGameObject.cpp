@@ -11,7 +11,7 @@
 #include "System/Public/Manager/CLevelMgr.h"
 #include "Game/System/Public/GameplayManager.h"
 #include "Runtime/Public/Component/Physics/Collider3D.h"
-#include "Runtime/Public/Component/Rendering/CLandscape.h"
+#include "Runtime/Public/Component/Rendering/LandScape.h"
 
 UINT CGameObject::GUID = 0;
 const AABB NullAABB = {Vec3(FLT_MAX), Vec3(FLT_MIN)};

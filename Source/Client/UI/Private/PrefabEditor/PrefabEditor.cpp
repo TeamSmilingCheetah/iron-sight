@@ -284,7 +284,7 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 	if (*pStr == "LandScape")
 	{
-		m_ProtoObject->AddComponent(new CLandScape);
+		m_ProtoObject->AddComponent(new FLandScape);
 		return;
 	}
 	if (*pStr == "SkyBox")

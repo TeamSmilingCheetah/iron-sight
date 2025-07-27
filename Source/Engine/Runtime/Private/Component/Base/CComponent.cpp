@@ -42,7 +42,7 @@ CAnimator3D* CComponent::Animator3D() const { return m_Owner ? m_Owner->Animator
 CParticleSystem* CComponent::ParticleSystem() const { return m_Owner ? m_Owner->ParticleSystem() : nullptr; }
 CSkyBox* CComponent::SkyBox() const { return m_Owner ? m_Owner->SkyBox() : nullptr; }
 CDecal* CComponent::Decal() const { return m_Owner ? m_Owner->Decal() : nullptr; }
-CLandScape* CComponent::LandScape() const { return m_Owner ? m_Owner->LandScape() : nullptr; }
+FLandScape* CComponent::LandScape() const { return m_Owner ? m_Owner->LandScape() : nullptr; }
 CUI* CComponent::UI() const { return m_Owner ? m_Owner->UI() : nullptr; }
 CUIRender* CComponent::UIRender() const { return m_Owner ? m_Owner->UIRender() : nullptr; }
 FMeshCollider* CComponent::MeshCollider() const { return m_Owner ? m_Owner->MeshCollider() : nullptr; }

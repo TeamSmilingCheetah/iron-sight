@@ -6,7 +6,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -420,7 +420,7 @@ void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObje
 {
 }
 
-void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -437,7 +437,7 @@ void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherOb
 	}
 }
 
-void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -452,7 +452,7 @@ void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject,
 	}
 }
 
-void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 }
 

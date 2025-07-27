@@ -206,7 +206,7 @@
     <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CLandScape.h"/>
+    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h"/>
     <ClInclude Include="Runtime\Public\Component\Rendering\CParticleSystem.h"/>
     <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h"/>
@@ -280,7 +280,92 @@
     <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape.cpp"/>
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <UseDynamicDebugging>false</UseDynamicDebugging>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <EnableVectorLength>NotSet</EnableVectorLength>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Projects\iron-sight\External\Library\Engine\Engine_d.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Projects\iron-sight\External\Library\Engine\Intermediate\Engine_d.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Projects\iron-sight\External\Library\Engine\Intermediate\Engine.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Projects\iron-sight\External\Library\Engine\Intermediate\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <UnityFilesDirectory>C:\Projects\iron-sight\Source\Engine\</UnityFilesDirectory>
+      <OrderInUnityFile>100</OrderInUnityFile>
+      <CombineFilesOnlyFromTheSameFolder>false</CombineFilesOnlyFromTheSameFolder>
+      <MinFilesInUnityFile>10</MinFilesInUnityFile>
+      <MaxFilesInUnityFile>20</MaxFilesInUnityFile>
+      <MinUnityFiles>1</MinUnityFiles>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/source-charset:utf-8 </AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LibCompiled>true</LibCompiled>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CMeshRender.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Rendering\CParticleSystem.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp"/>
@@ -337,7 +422,6 @@
     <ClCompile Include="System\Private\Rendering\Tool\FBX\CFBXLoader.cpp"/>
     <ClCompile Include="System\Private\Manager\CAssetMgr_Init.cpp"/>
     <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp"/>
-    <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp"/>
     <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp"/>
     <ClCompile Include="API\Private\EngineFacade.cpp"/>
     <ClCompile Include="pch.cpp">

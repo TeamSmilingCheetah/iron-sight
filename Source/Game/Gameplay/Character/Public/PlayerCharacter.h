@@ -4,7 +4,7 @@
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 
 class CGameObject;
-class CLandScape;
+class FLandScape;
 class KillinfoUIScript;
 class InventoryController;
 class CameraController;
@@ -153,9 +153,9 @@ public:
 	void Overlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
 	void EndOverlap(FColliderRay* PRayCollider, CGameObject* POtherObject, FCollider3D* P3DCollider) override;
 
-	void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
-	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
-	void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider) override;
+	void BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider) override;
+	void Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider) override;
+	void EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider) override;
 
 	void BeginOverlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;
 	void Overlap(FCollider3D* P3DCollider, CGameObject* POtherObject, FMeshCollider* PMeshCollider) override;

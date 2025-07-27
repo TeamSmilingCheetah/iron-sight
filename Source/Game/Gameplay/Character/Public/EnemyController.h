@@ -77,9 +77,9 @@ public:
 	virtual void EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject,FCollider3D* _OtherCollider) override;
 
 
-	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
-	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider) override;
+	virtual void BeginOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider) override;
+	virtual void Overlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider) override;
+	virtual void EndOverlap(class FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider) override;
 
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;

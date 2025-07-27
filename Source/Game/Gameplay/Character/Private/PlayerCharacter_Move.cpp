@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
@@ -638,7 +638,7 @@ void PlayerCharacter::EndOverlap(FColliderRay* PRayCollider, CGameObject* POther
 		m_CollObject = nullptr;
 }
 
-void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -667,7 +667,7 @@ void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherOb
 	}
 }
 
-void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
 {
 	Vec3 pPos = Transform()->GetRelativePos();
 
@@ -694,7 +694,7 @@ void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject,
 	}
 }
 
-void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, CLandScape* POtherCollider)
+void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
 {
 }
 

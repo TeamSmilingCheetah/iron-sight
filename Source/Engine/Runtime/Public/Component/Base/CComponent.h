@@ -3,7 +3,7 @@
 class FMeshCollider;
 class CUIRender;
 class CUI;
-class CLandScape;
+class FLandScape;
 class CDecal;
 class CSkyBox;
 class CParticleSystem;
@@ -69,7 +69,7 @@ public:
 	CParticleSystem* ParticleSystem() const;
 	CSkyBox* SkyBox() const;
 	CDecal* Decal() const;
-	CLandScape* LandScape() const;
+	FLandScape* LandScape() const;
 	CUI* UI() const;
 	CUIRender* UIRender() const;
 	FMeshCollider* MeshCollider() const;

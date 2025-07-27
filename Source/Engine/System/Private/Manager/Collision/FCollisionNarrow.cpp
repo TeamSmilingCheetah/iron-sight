@@ -5,7 +5,7 @@
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
 /*************************/
@@ -437,7 +437,7 @@ bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FCol
 	return true;
 }
 
-bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const CLandScape* InRightCollider)
+bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FLandScape* InRightCollider)
 {
 	Vec3 ObjectPos = InLeftCollider->Transform()->GetWorldPos();
 	Vec3 LandScapePos = InRightCollider->GetWorldPosByLandScape(ObjectPos);

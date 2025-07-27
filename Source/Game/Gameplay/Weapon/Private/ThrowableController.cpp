@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Rendering/CLandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
@@ -408,7 +408,7 @@ void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _Other
 
 
 
-void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 	if (_Collider->IsTrigger())
 	{
@@ -444,11 +444,11 @@ void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _Oth
 	}
 }
 
-void ThrowableController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 }
 
-void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, CLandScape* _OtherCollider)
+void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 {
 	if (_Collider->IsTrigger())
 	{
