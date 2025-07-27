@@ -277,13 +277,13 @@ void CollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGam
 void CollisionManager::CheckPair(const CGameObject* InRightObject, const CGameObject* InLeftObject)
 {
 	// 2D 충돌체 검사
-	if (InLeftObject->Collider2D())
+	if (InLeftObject->GetCollider2D())
 	{
-		if (InRightObject->Collider2D())
+		if (InRightObject->GetCollider2D())
 		{
-			if (IsCollision(InLeftObject->Collider2D(), InRightObject->Collider2D()))
+			if (IsCollision(InLeftObject->GetCollider2D(), InRightObject->GetCollider2D()))
 			{
-				AddFrameCollision(InLeftObject->Collider2D(), InRightObject->Collider2D());
+				AddFrameCollision(InLeftObject->GetCollider2D(), InRightObject->GetCollider2D());
 			}
 		}
 	}
@@ -338,7 +338,7 @@ void CollisionManager::AddFrameCollision(ColliderVariant InLeftCollider, Collide
 
 // TODO(KHJ): 이하의 코드 재검토 필요
 
-bool CollisionManager::IsCollision(const CCollider2D* InLeftCollider, const CCollider2D* InRightCollider)
+bool CollisionManager::IsCollision(const Collider2D* InLeftCollider, const Collider2D* InRightCollider)
 {
 	// SAT(Separating Axis Theorem) 기반 2D 충돌 판정
 	static Vec3 arrRect[4] = {

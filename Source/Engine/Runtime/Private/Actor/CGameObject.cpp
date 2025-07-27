@@ -614,9 +614,9 @@ AABB CGameObject::GetAABB() const
 vector<ColliderVariant> CGameObject::GetColliders() const
 {
 	vector<ColliderVariant> VariantVector;
-	if (Collider2D())
+	if (GetCollider2D())
 	{
-		VariantVector.push_back(ColliderVariant(Collider2D()));
+		VariantVector.push_back(ColliderVariant(GetCollider2D()));
 	}
 	if (LandScape())
 	{

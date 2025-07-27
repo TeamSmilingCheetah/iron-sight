@@ -113,7 +113,7 @@ void ThrowableController::Tick()
 		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_PREPARE);
 	}
 
-	
+
 	// 투척 준비
 	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
@@ -207,7 +207,7 @@ void ThrowableController::Tick()
 	}
 
 
-	
+
 
 
 	//
@@ -338,7 +338,7 @@ void ThrowableController::Throw()
 	// 특정 속도 이하가 되면 멈춘다
 	if (veloLength < 5.f)
 	{
-		m_Velocity = Vec3(0.f, 0.f, 0.f);		
+		m_Velocity = Vec3(0.f, 0.f, 0.f);
 	}
 	else
 	{
@@ -391,7 +391,7 @@ void ThrowableController::BeginOverlap(CCollider3D* _Collider, CGameObject* _Oth
 	else
 	{
 		Vec3 vHitNormal = _Collider->GetHitNormal();
-		
+
 		MakeBounce(vHitNormal, 1.f, 0.7f);
 	}
 }

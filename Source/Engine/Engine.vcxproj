@@ -204,6 +204,7 @@
     <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h"/>
     <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h"/>
     <ClInclude Include="Runtime\Public\Component\Physics\CMeshCollider.h"/>
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h"/>
     <ClInclude Include="Runtime\Public\Component\Rendering\CLandScape.h"/>
     <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h"/>

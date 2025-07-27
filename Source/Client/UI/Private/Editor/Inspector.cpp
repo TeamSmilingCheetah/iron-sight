@@ -244,7 +244,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CCamera);
 		break;
 	case COMPONENT_TYPE::COLLIDER2D:
-		m_TargetObject->AddComponent(new CCollider2D);
+		m_TargetObject->AddComponent(new Collider2D);
 		break;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		m_TargetObject->AddComponent(new CFlipbookPlayer);

@@ -392,7 +392,7 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 	switch (_Type)
 	{
 	case COMPONENT_TYPE::COLLIDER2D:
-		return new CCollider2D;
+		return new Collider2D;
 	case COMPONENT_TYPE::COLLIDER3D:
 		return new CCollider3D;
 	case COMPONENT_TYPE::COLLIDERRAY:
