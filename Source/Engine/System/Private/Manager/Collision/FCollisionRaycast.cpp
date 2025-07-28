@@ -53,6 +53,9 @@ void CollisionManager::RaycastProcess()
 			}
 		}
 	}
+
+	// Batch Process
+	ExecuteAndProcessRaycastCS();
 }
 
 /**

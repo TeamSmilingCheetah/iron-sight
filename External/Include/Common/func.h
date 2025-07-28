@@ -3,9 +3,16 @@
 #include "Engine/System/Public/Manager/CAssetMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
-enum class SCRIPT_TYPE : UINT8;
 class CGameObject;
 class CScript;
+class IColliderBase;
+class FCollider2D;
+class FCollider3D;
+class FMeshCollider;
+
+enum class SCRIPT_TYPE : UINT8;
+
+using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, FColliderRay*>;
 
 void ExcutePreload();
 
@@ -50,6 +57,8 @@ float RandomFloat(float min, float max);
 CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type);
 
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj);
+
+IColliderBase* GetBaseFromVariant(const ColliderVariant& InVariant);
 
 float FloatLerp(float _Cur, float _Des, float _Speed);
 Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed);

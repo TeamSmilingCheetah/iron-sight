@@ -481,3 +481,13 @@ Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed)
 	result.z = _Cur.z + (_Des.z - _Cur.z) * _Speed * DT;
 	return result;
 }
+
+/**
+ * @brief Variant 그대로 사용할 경우 타입 추론이 어려워지므로, 이를 피하기 위한 ColliderBase 포인터 변환 함수
+ * @param InVariant Variant로 선언된 충돌체
+ * @return ColliderBase 베이스 클래스 포인터로 정의된 포인터
+ */
+IColliderBase* GetBaseFromVariant(const ColliderVariant& InVariant)
+{
+	return visit([](auto* Collider) -> IColliderBase* { return Collider; }, InVariant);
+}
