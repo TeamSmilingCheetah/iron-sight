@@ -46,7 +46,8 @@ class CameraController :
 	float m_CurrentVerticalVelocity;
 
 	UINT m_CameraFlag;
-	bool m_bObstacleHitFame;
+	bool m_bLevelChanged;
+	float m_LevelChangeTime;
 
 public:
 	void Begin() override;

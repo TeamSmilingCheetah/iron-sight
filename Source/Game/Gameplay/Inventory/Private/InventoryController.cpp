@@ -404,11 +404,11 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 
 		if (slotIdx == PRIMARY_FIRST)
 		{
-			AttachItem(_Item, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+			AttachItem(_Item, m_BackMeshObj, Vec3(-103.f, 53.f, -3.f), Vec3(12.f, 116.f, 128.f));
 		}
 		else
 		{
-			AttachItem(_Item, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+			AttachItem(_Item, m_BackMeshObj, Vec3(-17.f, 112.f, -19.f), Vec3(26.f, 62.f, 104.f));
 		}
 
 		SetObjectActive(_Item, true);
@@ -443,7 +443,7 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 
 			m_vecWeaponSlot[i].Object = _Item;
 			m_vecWeaponSlot[i].Type = static_cast<ItemScript*>(GetScriptWithType(_Item, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
-			AttachItem(_Item, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+			AttachItem(_Item, m_HandMeshObj, Vec3(-20.f, 1.f, 46.f), Vec3(8.f, 0.f, -62.f));
 			SetObjectActive(_Item, false);
 			bCanEquip = true;
 			break;
@@ -608,7 +608,7 @@ void InventoryController::ActivateSlot(int _SlotIdx)
 	// 활성화 로직 -> type에 따라 다름
 	if (_SlotIdx == PRIMARY_FIRST || _SlotIdx == PRIMARY_SECOND)
 	{
-		AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+		AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 30.f, 32.f), Vec3(-97.f, 228.f, 0.f));
 	}
 	else
 	{
@@ -640,7 +640,7 @@ void InventoryController::DeactivateSlot(bool _FPS)
 	// 1인칭인경우 Player HandMesh에 다시 붙혀준다.
 	else if (_FPS)
 	{
-		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_HandMeshObj, Vec3(0.f, 30.f, 32.f), Vec3(-97.f, 228.f, 0.f));
 		SetObjectActive(m_vecWeaponSlot[m_CurSlotIdx].Object, false);
 	}
 	else

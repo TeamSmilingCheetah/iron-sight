@@ -185,7 +185,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Transform::SetScale(Player, {6.f, 6.f, 6.f});
 
 	Common::AddComponentToObject<FColliderRay>(Player);
-	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 1500.f, 0.f}, 5000.f, true);
+	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
 
 	// Animation
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_rifle_jump.anim"));
@@ -230,7 +230,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));	// TEST: prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<FCollider3D>(Player);
-	Collider::SetColliderProperties(Player, {550.f, 1600.f, 385.f}, {35.f, 760.f, 0.f}, true);
+	Collider::SetColliderProperties(Player, {550.f, 820.f, 385.f}, {35.f, 498.f, 0.f}, true);
 
 	// Player Head Collider
 	auto HeaderCollider = Common::CreateNewObject();
@@ -244,7 +244,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Common::AddComponentToObject<FCollider3D>(RawHeaderCollider);
 
 	Transform::SetPosition(RawHeaderCollider, {0.f, 170.f, 0.f});
-	Collider::SetColliderProperties(RawHeaderCollider, {200.f, 200.f, 200.f}, {0, 0, 0}, true, false);
+	Collider::SetColliderProperties(RawHeaderCollider, {150.f, 150.f, 150.f }, {0, -27.f, 0}, true, false);
 
 	Common::AddChild(Player, RawHeaderCollider);
 

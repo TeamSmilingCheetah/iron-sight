@@ -246,10 +246,11 @@ void PlayerCharacter::PlayerView()
 			OriginRotY = vCameraRot.y;
 		}
 
+
 		if (KEY_PRESSED(KEY::LCTRL))
 		{
 			// 줌 하는 동안 둘러보기 키가 눌린경우를 방지한다.
-			if (bSearch)
+			if (bSearch && !bRecover)
 			{
 				vCameraRot.y += deltaX * m_MouseSensitivity;
 				if (120.f < vCameraRot.y - OriginRotY)
@@ -263,13 +264,11 @@ void PlayerCharacter::PlayerView()
 			}
 		}
 		// 평상시의 회전값 적용
-		else
+		if (!bRecover && !bSearch)
 		{
-			if (!bRecover)
-			{
-				vPlayerRot.y += deltaX * m_MouseSensitivity;
-			}
+			vPlayerRot.y += deltaX * m_MouseSensitivity;
 		}
+		
 	}
 
 	// 줌 혹은 사격중
