@@ -51,7 +51,7 @@ CameraController::CameraController()
 	  , m_VerticalSmoothTime(0.15f) // 150ms의 스무딩 시간
 	  , m_CurrentVerticalVelocity(0.f)
 	  , m_CameraFlag(0)
-	  , m_bObstacleHitFame(false)
+	  , m_bLevelChanged(false)
 {
 }
 
@@ -65,6 +65,8 @@ void CameraController::Begin()
 	m_Player = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT));
+
+	m_bLevelChanged = true;
 }
 
 void CameraController::Tick()
@@ -508,10 +510,16 @@ void CameraController::UpdateTPSCameraAdjustments()
 	}
 
 	// Add Smoothing
-	constexpr float SmoothSpeed = 5.0f;
+	constexpr float SmoothSpeed = 20.0f;
 	constexpr float VerticalDamping = 0.7f;
 
+	// 평상시
 	m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, SmoothSpeed * DT);
+	if (abs(m_AdjustFinalDistance - targetDistance) < 10.f)
+	{
+		m_AdjustFinalDistance = targetDistance;
+	}
+
 
 	// Vertical Smoothing
 	float heightDiff = targetHeight - m_AdjustFinalHeight;
@@ -520,41 +528,55 @@ void CameraController::UpdateTPSCameraAdjustments()
 	// Add Clamping
 	const float maxHeightChange = 50.0f * DT;
 	m_AdjustFinalHeight = std::clamp(m_AdjustFinalHeight,
-	                                 targetHeight - maxHeightChange,
-	                                 targetHeight + maxHeightChange);
+		targetHeight - maxHeightChange,
+		targetHeight + maxHeightChange);
+	
+	// 레벨이 시작되거나 바뀌어서 플레이어의 위치가 큰값으로 변동됨 -> 고정으로 카메라를 바로 붙혀준다.
+	if (m_bLevelChanged)
+	{
+		m_AdjustFinalDistance = targetDistance;
+		m_AdjustFinalHeight = targetHeight;
 
-	// // 충돌 콜백이 끊김 -> 클리어 검증
-	// if (m_CameraFlag & OBSTACLE_CLEAR_PENDING)
-	// {
-	// 	m_ObstacleResetTime += DT;
-	// 	if (2.f < m_ObstacleResetTime)
-	// 	{
-	// 		// 이제 진짜 복구 단계로 전환
-	// 		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
-	// 		m_CameraFlag |= OBSTACLE_DETECT_END;
-	// 		// 복구 시작 거리를 현재 보정된 최종값으로 초기화
-	// 		m_RayDistance = m_AdjustFinalDistance;
-	// 	}
-	// }
+		m_LevelChangeTime += DT;
+		// 값들이 세팅되는 시간을 기다려야 함. (다른 방법이 있나?)
+		if (1.f < m_LevelChangeTime)
+		{
+			m_bLevelChanged = false;
+			m_LevelChangeTime = 0.f;
+		}
+	}
+
+	// TPS 충돌 보정 코드 (보류)
+		// 충돌 콜백이 끊김 -> 클리어 검증
+		// if (m_CameraFlag & OBSTACLE_CLEAR_PENDING)
+		// {
+		// 	m_ObstacleResetTime += DT;
+		// 	if (2.f < m_ObstacleResetTime)
+		// 	{
+		// 		// 이제 진짜 복구 단계로 전환
+		// 		m_CameraFlag &= ~OBSTACLE_CLEAR_PENDING;
+		// 		m_CameraFlag |= OBSTACLE_DETECT_END;
+		// 		// 복구 시작 거리를 현재 보정된 최종값으로 초기화
+		// 		m_RayDistance = m_AdjustFinalDistance;
+		// 	}
+		// }
+		//
+		// // 복구 단계
+		// if (m_CameraFlag & OBSTACLE_DETECT_END)
+		// {
+		// 	ColliderRay()->SetOffset(Vec3(0, 0, -m_RayDistance));
+		// 	m_RayDistance += 500.f * DT;
+		//
+		// 	// 원래 거리까지 도달했거나 약간 넘어섰을 때
+		// 	if (abs(m_RayDistance) >= abs(m_OriginDistance))
+		// 	{
+		// 		// 콜백으로도 다시 Overlap이 안 들어온 상태이므로
+		// 		ColliderRay()->SetOffset(Vec3(0, 0, 0));
+		// 		m_CameraFlag &= ~OBSTACLE_DETECT_END;
+		// 		m_ObstacleResetTime = 0.f;
+		// 	}
+		// }
 	//
-	// // 복구 단계
-	// if (m_CameraFlag & OBSTACLE_DETECT_END)
-	// {
-	// 	ColliderRay()->SetOffset(Vec3(0, 0, -m_RayDistance));
-	// 	m_RayDistance += 500.f * DT;
-	//
-	// 	// 원래 거리까지 도달했거나 약간 넘어섰을 때
-	// 	if (abs(m_RayDistance) >= abs(m_OriginDistance))
-	// 	{
-	// 		// 콜백으로도 다시 Overlap이 안 들어온 상태이므로
-	// 		ColliderRay()->SetOffset(Vec3(0, 0, 0));
-	// 		m_CameraFlag &= ~OBSTACLE_DETECT_END;
-	// 		m_ObstacleResetTime = 0.f;
-	// 	}
-	// }
-	//
-	// m_AdjustFinalDistance = FloatLerp(m_AdjustFinalDistance, targetDistance, 20.f);
-	// m_AdjustFinalHeight = FloatLerp(m_AdjustFinalHeight, targetHeight, 20.f);
 }
 
 
@@ -645,8 +667,8 @@ void CameraController::UpdateSearchMode()
 	static float OriginRotY = 0.f;
 	static float OriginRotX = 0.f;
 
-	// 줌이나 사격 동안은 둘러보기가 안된다.
-	if (!m_PlayerScript->IsShot() && !(m_CameraFlag & SHOULDER))
+	// 줌이나 사격 동안은 둘러보기가 안된다. 
+	if (!m_PlayerScript->IsShot() && !(m_CameraFlag & SHOULDER) && !(m_CameraFlag & SEARCH_RECOVER))
 	{
 		if (KEY_TAP(KEY::LCTRL))
 		{
@@ -657,7 +679,7 @@ void CameraController::UpdateSearchMode()
 		}
 		if (KEY_RELEASED(KEY::LCTRL))
 		{
-			// 줌 혹은 사격 도중 Z키가 눌려서 생기는 버그를 방지한다.
+			// 줌 혹은 사격 도중 CTRL키가 눌려서 생기는 버그를 방지한다.
 			if (m_CameraFlag & SEARCH)
 			{
 				m_CameraFlag |= SEARCH_RECOVER;

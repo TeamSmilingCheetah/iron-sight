@@ -66,7 +66,7 @@ void TestLevel::CreateTestLevel()
 		L"AKM",
 		Vec3(90.f, 0.f, 30.f),
 		Vec3(0.f, 0.f, 0.f),
-		Vec3(900.f, 900.f, 900.f),
+		Vec3(700.f, 700.f, 700.f),
 		{
 			[](CGameObject* obj)
 			{
@@ -97,7 +97,7 @@ void TestLevel::CreateTestLevel()
 		L"Grenade",
 		Vec3(0.f, 0.f, 5000.f),
 		Vec3(0.f, 0.f, 0.f),
-		Vec3(15.f, 15.f, 15.f),
+		Vec3(10.f, 10.f, 10.f),
 		{
 			[](CGameObject* obj)
 			{
@@ -134,7 +134,7 @@ void TestLevel::CreateTestLevel()
 		L"Smoke Grenade",
 		Vec3(0.f, 0.f, 10000.f),
 		Vec3(0.f, 0.f, 0.f),
-		Vec3(15.f, 15.f, 15.f),
+		Vec3(10.f, 10.f, 10.f),
 		{
 			[](CGameObject* obj)
 			{
