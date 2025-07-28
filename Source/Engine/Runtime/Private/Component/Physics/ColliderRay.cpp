@@ -2,6 +2,7 @@
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 FColliderRay::FColliderRay()
 	: IColliderBase(COMPONENT_TYPE::COLLIDERRAY)

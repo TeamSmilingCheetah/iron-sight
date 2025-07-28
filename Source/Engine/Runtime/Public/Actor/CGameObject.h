@@ -2,8 +2,6 @@
 #include "Engine/Core/Public/CEntity.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
-using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, FColliderRay*>;
-
 /**
  * @brief 게임 월드를 구성하는 모든 오브젝트의 기본 단위
  * 오브젝트의 상태와 소속 레이어를 속성으로 보유하며, 컴포넌트 기반으로 동작, 계층 관계를 가질 수 있음

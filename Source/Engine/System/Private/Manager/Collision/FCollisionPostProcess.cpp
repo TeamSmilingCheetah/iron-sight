@@ -3,6 +3,7 @@
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
+#include "Runtime/Public/Component/Physics/ColliderBase.h"
 
 void CollisionManager::CollisionPostProcess()
 {
@@ -91,96 +92,96 @@ void CollisionManager::CollisionBtwLayer(UINT InLeftLayerIndex, UINT InRightLaye
  */
 void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
 {
-	visit([&](auto* LeftCollider, auto* RightCollider)
+	IColliderBase* LeftCollider = GetBaseFromVariant(InLeftCollider);
+	IColliderBase* RightCollider = GetBaseFromVariant(InRightCollider);
+
+	COLLISION_ID CollisionID(LeftCollider->GetID(), RightCollider->GetID());
+
+	auto iter = ColllisionMap.find(CollisionID.ID);
+	if (iter == ColllisionMap.end())
 	{
-		COLLISION_ID CollisionID(LeftCollider->GetID(), RightCollider->GetID());
+		ColllisionMap.insert({CollisionID.ID, false});
+		iter = ColllisionMap.find(CollisionID.ID);
+	}
 
-		auto iter = ColllisionMap.find(CollisionID.ID);
-		if (iter == ColllisionMap.end())
-		{
-			ColllisionMap.insert({CollisionID.ID, false});
-			iter = ColllisionMap.find(CollisionID.ID);
-		}
+	CGameObject* LeftObject = LeftCollider->GetOwner();
+	CGameObject* RightObject = RightCollider->GetOwner();
 
-		CGameObject* LeftObject = LeftCollider->GetOwner();
-		CGameObject* RightObject = RightCollider->GetOwner();
+	bool IsDead = LeftObject->IsDead() || RightObject->IsDead();
+	bool IsLayerChanged = LeftObject->IsLayerMove() || RightObject->IsLayerMove();
+	bool IsDeactive = LeftObject->IsDeactivated() || RightObject->IsDeactivated()
+		|| LeftCollider->IsDeactive() || RightCollider->IsDeactive();
 
-		bool IsDead = LeftObject->IsDead() || RightObject->IsDead();
-		bool IsLayerChanged = LeftObject->IsLayerMove() || RightObject->IsLayerMove();
-		bool IsDeactive = LeftObject->IsDeactivated() || RightObject->IsDeactivated()
-			|| LeftCollider->IsDeactive() || RightCollider->IsDeactive();
-
-		if (FrameCollisionSet.contains(CollisionID.ID))
-		{
-			if (iter->second)
-			{
-				// EndOverlap
-				if (IsDead || IsLayerChanged || IsDeactive)
-				{
-					LeftCollider->DecreaseOverlapCount();
-					RightCollider->DecreaseOverlapCount();
-
-					for (auto Script : LeftObject->GetScripts())
-					{
-						Script->EndOverlap(LeftCollider, RightCollider);
-					}
-					for (auto Script : RightObject->GetScripts())
-					{
-						Script->EndOverlap(RightCollider, LeftCollider);
-					}
-					iter->second = false;
-				}
-				// Overlap
-				else
-				{
-					for (auto Script : LeftObject->GetScripts())
-					{
-						Script->Overlap(LeftCollider, RightCollider);
-					}
-					for (auto Script : RightObject->GetScripts())
-					{
-						Script->Overlap(RightCollider, LeftCollider);
-					}
-				}
-			}
-			else
-			{
-				// BeginOverlap
-				if (!IsDead && !IsDeactive)
-				{
-					LeftCollider->IncreaseOverlapCount();
-					RightCollider->IncreaseOverlapCount();
-
-					for (auto Script : LeftObject->GetScripts())
-					{
-						Script->BeginOverlap(LeftCollider, RightCollider);
-					}
-					for (auto Script : RightObject->GetScripts())
-					{
-						Script->BeginOverlap(RightCollider, LeftCollider);
-					}
-					iter->second = true;
-				}
-			}
-		}
-		else
+	if (FrameCollisionSet.contains(CollisionID.ID))
+	{
+		if (iter->second)
 		{
 			// EndOverlap
-			if (iter->second)
+			if (IsDead || IsLayerChanged || IsDeactive)
 			{
 				LeftCollider->DecreaseOverlapCount();
 				RightCollider->DecreaseOverlapCount();
 
-				for (auto Script : LeftObject->GetScripts())
+				for (auto* Script : LeftObject->GetScripts())
 				{
 					Script->EndOverlap(LeftCollider, RightCollider);
 				}
-				for (auto Script : RightObject->GetScripts())
+				for (auto* Script : RightObject->GetScripts())
 				{
 					Script->EndOverlap(RightCollider, LeftCollider);
 				}
 				iter->second = false;
 			}
+			// Overlap
+			else
+			{
+				for (auto* Script : LeftObject->GetScripts())
+				{
+					Script->Overlap(LeftCollider, RightCollider);
+				}
+				for (auto* Script : RightObject->GetScripts())
+				{
+					Script->Overlap(RightCollider, LeftCollider);
+				}
+			}
 		}
-	}, InLeftCollider, InRightCollider);
+		else
+		{
+			// BeginOverlap
+			if (!IsDead && !IsDeactive)
+			{
+				LeftCollider->IncreaseOverlapCount();
+				RightCollider->IncreaseOverlapCount();
+
+				for (auto* Script : LeftObject->GetScripts())
+				{
+					Script->BeginOverlap(LeftCollider, RightCollider);
+				}
+				for (auto* Script : RightObject->GetScripts())
+				{
+					Script->BeginOverlap(RightCollider, LeftCollider);
+				}
+				iter->second = true;
+			}
+		}
+	}
+	else
+	{
+		// EndOverlap
+		if (iter->second)
+		{
+			LeftCollider->DecreaseOverlapCount();
+			RightCollider->DecreaseOverlapCount();
+
+			for (auto* Script : LeftObject->GetScripts())
+			{
+				Script->EndOverlap(LeftCollider, RightCollider);
+			}
+			for (auto* Script : RightObject->GetScripts())
+			{
+				Script->EndOverlap(RightCollider, LeftCollider);
+			}
+			iter->second = false;
+		}
+	}
 }

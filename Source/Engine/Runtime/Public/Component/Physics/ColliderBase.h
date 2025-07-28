@@ -3,13 +3,13 @@
 
 enum class EColliderType : UINT8
 {
-	Null,
+	NONE,
 	Collider2D,
 	Collider3D,
 	MeshCollider,
 	ColliderRay,
 
-	End,
+	END = 0xFF,
 };
 
 /**
