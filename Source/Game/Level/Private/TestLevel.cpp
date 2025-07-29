@@ -359,15 +359,15 @@ void TestLevel::CreateTestLevel()
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
-	pVision->AddComponent(new FCollider3D);
 	pVision->AddComponent(new FColliderRay);
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
-	pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
-	pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2500.f));
-	pVision->Collider3D()->SetIndependentScale(true);
-	pVision->Collider3D()->SetTrigger(true);
+	//pVision->AddComponent(new FCollider3D);
+	//pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
+	//pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2500.f));
+	//pVision->Collider3D()->SetIndependentScale(true);
+	//pVision->Collider3D()->SetTrigger(true);
 
 	pVision->ColliderRay()->SetRayLength(1000);
 	pVision->ColliderRay()->SetIndependentDir(true);
@@ -566,43 +566,6 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 		DragUI->AddChild(ChildUI);
 	}
 
-	// "Cardinal Direction Canvas UI"
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Cardinal_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-	CanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
-	CanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
-
-	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
-	CanvasUI->UI()->SetPriority(1);
-
-	PLevel->AddObject(8, CanvasUI, false);
-
-	CGameObject* pImageUI = new CGameObject;
-	pImageUI->SetName(L"Cardinal_ImageUI");
-	pImageUI->AddComponent(new CUI);
-	pImageUI->UI()->SetImage(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
-	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
-	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
-
-	pImageUI->AddComponent(new CUIRender);
-	pImageUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
-
-	CanvasUI->AddChild(pImageUI);
-
-	pImageUI = new CGameObject;
-	pImageUI->SetName(L"Cardinal_ArrowUI");
-	pImageUI->AddComponent(new CUI);
-	pImageUI->UI()->SetImage(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
-	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
-	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
-
-	pImageUI->AddComponent(new CUIRender);
-
-	CanvasUI->AddChild(pImageUI);
 
 	// "Main Canvas UI" : 화면 전체 가리는 투명 ui
 	CanvasUI = new CGameObject;
@@ -758,6 +721,43 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddChild(pCameraPost);
 
+	// "Cardinal Direction Canvas UI"
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"Cardinal_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
+	CanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
+	CanvasUI->UI()->SetPriority(1);
+
+	PLevel->AddObject(8, CanvasUI, false);
+
+	CGameObject* pImageUI = new CGameObject;
+	pImageUI->SetName(L"Cardinal_ImageUI");
+	pImageUI->AddComponent(new CUI);
+	pImageUI->UI()->SetImage(
+		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
+	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
+	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
+
+	pImageUI->AddComponent(new CUIRender);
+	pImageUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
+
+	CanvasUI->AddChild(pImageUI);
+
+	pImageUI = new CGameObject;
+	pImageUI->SetName(L"Cardinal_ArrowUI");
+	pImageUI->AddComponent(new CUI);
+	pImageUI->UI()->SetImage(
+		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
+	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
+	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
+
+	pImageUI->AddComponent(new CUIRender);
+
+	CanvasUI->AddChild(pImageUI);
 
 	// ==========
 	// MiniMapCamera

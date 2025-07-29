@@ -6,6 +6,8 @@
 CameraEffect::CameraEffect()
 	: CScript(SCRIPT_TYPE::CAMERAEFFECT)
 	, m_HPLow(false)
+	, m_FadeOut(false)
+	, m_FadeIn(false)
 {
 }
 
@@ -19,6 +21,38 @@ void CameraEffect::Begin()
 
 void CameraEffect::Tick()
 {
+}
+
+void CameraEffect::FadeIn()
+{
+	// shader코드 내에서 진행됨.
+	// 시간은 1초동안 지속됨.
+	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+
+	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 2);
+	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, g_Data.Time);
+	m_FadeIn = true;
+}
+
+void CameraEffect::FadeOut()
+{
+	// shader코드 내에서 진행됨.
+	// 시간은 1초동안 지속됨.
+	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+
+	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 1);
+	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, g_Data.Time);
+	m_FadeOut = true;
+}
+
+void CameraEffect::FadeInOutOff()
+{
+	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+
+	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 0);
+	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, g_Data.Time);
+	m_FadeOut = false;
+	m_FadeIn = false;
 }
 
 void CameraEffect::HitEffect()
