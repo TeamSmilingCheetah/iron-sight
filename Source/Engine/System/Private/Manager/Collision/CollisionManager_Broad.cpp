@@ -1,74 +1,95 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
-#include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
-#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderBase.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 /**************************/
 /** Broad Phase Function **/
 /**************************/
 
-void FCollisionManager::BroadPhase()
+/**
+ * @brief 모든 Dynamic Collider를 특정 BVH와 충돌 검사를 진행하여 세부 판정이 필요한 충돌쌍을 확인하는 함수
+ *
+ * @param InTreeRootNode AABB 충돌을 검증할 VBH 트리의 Root Node
+ * @param InCandidateCheckSet 중복 충돌쌍을 배제하기 위한 Broad Phase 검증 Set
+ */
+void FCollisionManager::GetCandidatesInBVHTree(const BVHNode* InTreeRootNode,
+                                               unordered_set<FCollisionID>& InCandidateCheckSet)
 {
-	// Level Load Check
-	auto* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-	if (!CurrentLevel)
+	for (IColliderBase* LeftCollider : DynamicColliders)
 	{
-		LOG_INFO("[Collision][Broad] No Level Found");
-		return;
-	}
+		// BVH에 대한 쿼리를 실행하여 AABB가 겹치는 충돌 후보 선별
+		vector<IColliderBase*> AABBCollidedCandidates;
+		QueryBVH(InTreeRootNode, LeftCollider, AABBCollidedCandidates);
 
-	// 중복 배제를 위한 Set 추가
-	unordered_set<ULONGLONG> CandidateSet;
-
-	for (CGameObject* Object : LevelActiveObjects)
-	{
-		// 충돌 후보 선별
-		vector<CGameObject*> Candidates;
-		QueryBVH(BVHRootNode, Object, Candidates);
-
-		for (auto LeftCollider : Object->GetColliders())
+		// AABB가 겹치는 충돌체에 대해서 검증한 뒤, 세부 충돌 확인이 필요한 경우 AddCandidate
+		for (IColliderBase* RightCollider : AABBCollidedCandidates)
 		{
-			visit([&](auto* Left)
-			      {
-				      UINT ID_A = Left->GetID();
-
-				      for (CGameObject* Candidate : Candidates)
-				      {
-					      // Layer 조건 우선 배제
-					      if (LayerCollisionMatrix[Object->GetLayerIdx()] & (1 << Candidate->GetLayerIdx()))
-					      {
-						      for (auto RightCollider : Candidate->GetColliders())
-						      {
-							      visit([&](auto* Right)
-							      {
-								      UINT ID_B = Right->GetID();
-
-								      // 중복되지 않은 경우에만 세부 충돌 판정
-								      if (CandidateSet.insert(COLLISION_ID(ID_A, ID_B).ID).second)
-								      {
-									      AddCandidate(Object, Candidate);
-								      }
-							      }, RightCollider);
-						      }
-					      }
-				      }
-			      }
-			      , LeftCollider);
+			if (IsInCondition(InCandidateCheckSet, LeftCollider, RightCollider))
+			{
+				AddCandidate(LeftCollider, RightCollider);
+			}
 		}
 	}
 }
 
 /**
- * @brief 충돌 가능성이 보이는 오브젝트 쌍을 후보군 벡터에 올리는 함수
+ * @brief 두 충돌체에 대한 조건을 따져보면서 충돌의 가능성 자체가 있는지 판별하는 함수
  *
- * @param InLeftObject Object 1
- * @param InRightObject Object 2
+ * @param InCandidateCheckSet 중복 충돌쌍을 배제하기 위한 Broad Phase 검증 Set
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
+ * @return 충돌 가능 여부
  */
-void FCollisionManager::AddCandidate(const CGameObject* InLeftObject, const CGameObject* InRightObject)
+bool FCollisionManager::IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
+                                      IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const
 {
-	CandidatePairVector.push_back({InLeftObject, InRightObject});
+	if (IsLayerCollided(InLeftCollider, InRightCollider))
+	{
+		// 중복되지 않은 경우에만 세부 충돌 판정쌍으로 추가
+		if (InCandidateCheckSet.insert(FCollisionID(InLeftCollider, InRightCollider)).second)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * @brief 각 충돌체가 포함된 Layer의 충돌 여부를 확인하는 함수
+ *
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
+ * @return 충돌체가 포함된 Layer 간 충돌 여부
+ */
+bool FCollisionManager::IsLayerCollided(const IColliderBase* InLeftCollider, const IColliderBase* InRightCollider) const
+{
+	// Get Layer
+	int LeftObjectIndex = InLeftCollider->GetOwner()->GetLayerIdx();
+	int RightObjectIndex = InRightCollider->GetOwner()->GetLayerIdx();
+
+	if (LeftObjectIndex > RightObjectIndex)
+	{
+		std::swap(LeftObjectIndex, RightObjectIndex);
+	}
+
+	if (LayerCollisionMatrix[LeftObjectIndex] & (1 << RightObjectIndex))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * @brief 충돌 가능성이 보이는 충돌체 쌍을 후보군 벡터에 올리는 함수
+ *
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
+ */
+void FCollisionManager::AddCandidate(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
+{
+	CollisionCandidates.push_back(FCollisionID(InLeftCollider, InRightCollider));
 }

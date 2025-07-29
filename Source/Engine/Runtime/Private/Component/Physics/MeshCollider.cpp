@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+
 FMeshCollider::FMeshCollider()
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MMeshPtr(nullptr)
@@ -75,6 +77,9 @@ void FMeshCollider::SaveComponent(FILE* InFile)
 	}
 	wstring MeshKey = MMeshPtr->GetKey().empty() ? L"" : MMeshPtr->GetKey();
 	SaveWString(MeshKey, InFile);
+
+	bool IsStaticCollider = IsStatic();
+	(void)fwrite(&IsStaticCollider, sizeof(bool), 1, InFile);
 }
 
 void FMeshCollider::LoadComponent(FILE* InFile)
@@ -83,6 +88,18 @@ void FMeshCollider::LoadComponent(FILE* InFile)
 	LoadWString(MeshKey, InFile);
 
 	MMeshPtr = CAssetMgr::GetInst()->Load<CMesh>(MeshKey);
+
+	bool IsStaticCollider;
+	(void)fread(&IsStaticCollider, sizeof(bool), 1, InFile);
+
+	if (!IsStaticCollider)
+	{
+		SetDynamic();
+	}
+	else
+	{
+		SetStatic();
+	}
 }
 
 const AABB FMeshCollider::GetAABB() const

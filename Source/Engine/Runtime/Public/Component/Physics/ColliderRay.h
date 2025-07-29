@@ -47,7 +47,7 @@ public:
 	void LoadComponent(FILE* InFile) override;
 	const AABB GetAABB() const override;
 
-	bool UpdateRayColInfo(CGameObject* InHitObject, float InDistance);
+	bool UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance);
 	void ClearRayColInfo();
 
 	// Getter & Setter

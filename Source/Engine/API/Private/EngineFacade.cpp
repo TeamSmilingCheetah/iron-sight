@@ -94,6 +94,18 @@ void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
 	PObject->ColliderRay()->SetTriggerTarget(PIsTriggerTarget);
 }
 
+void Engine::Collider::SetColliderDynamic(const CGameObject* InObject, EColliderType InType)
+{
+	for (auto Variant : InObject->GetColliders())
+	{
+		IColliderBase* Collider = GetBaseFromVariant(Variant);
+		if (Collider->GetColliderType() == InType)
+		{
+			Collider->SetDynamic();
+		}
+	}
+}
+
 void Engine::Transform::SetPosition(CGameObject* PObject, Vec3 PPosition)
 {
 	PObject->Transform()->SetRelativePos(PPosition);

@@ -17,7 +17,8 @@ public:
 	CGameObject* FindObjectByObjectID(UINT _ObjectID);
 	LEVEL_STATE GetState() const { return m_State; }
 	void GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects);
-	void GetAllCollidersInLevel(vector<IColliderBase*>& InStatic, vector<IColliderBase*>& InDynamic);
+	void GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
+	                            vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays);
 
 	void RegisterClear()
 	{

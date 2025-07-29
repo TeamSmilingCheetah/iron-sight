@@ -309,28 +309,6 @@ void TestLevel::CreateTestLevel()
 		true
 	);
 
-	// Temp Ground
-	GameFactory::MakeFBXObject(
-		LevelRawPtr,
-		L"FBX\\Props\\Death Box\\box.fbx",
-		L"TempGround",
-		Vec3(250000, -700, 250000),
-		Vec3(0.f, 0.f, 0.f),
-		Vec3(500000, 30.f, 500000),
-		{
-			[](CGameObject* obj)
-			{
-				obj->AddComponentRecursive<FMeshCollider>();
-			},
-			[](CGameObject* obj)
-			{
-				obj->Transform()->SetFrustumCheck(false);
-			}
-		},
-		1,
-		true
-	);
-
 	// Enemy Test
 	auto* TestTarget = GameFactory::MakeFBXObject(
 		LevelRawPtr,
@@ -345,6 +323,7 @@ void TestLevel::CreateTestLevel()
 				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
 				obj->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -413,23 +392,23 @@ void TestLevel::CreateTestLevel()
 	//
 	// pLevel->AddObject(1, testPlayer, false);
 
-	// GameFactory::MakeFBXObject(
-	// 	LevelRawPtr,
-	// 	L"FBX\\Downtown_Alley_Scene.fbx",
-	// 	L"Downtown_Alley",
-	// 	Vec3(0.f, -1500.f, 0.f),
-	// 	Vec3(0.f, 0.f, 0.f),
-	// 	Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
-	// 	{
-	// 		[](CGameObject* obj)
-	// 		{
-	// 			obj->Transform()->SetRelativeScaleMultiply(4.f);
-	// 			obj->AddComponentRecursive<FMeshCollider>();
-	// 		}
-	// 	},
-	// 	1,
-	// 	true
-	// );
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Downtown_Alley_Scene.fbx",
+		L"Downtown_Alley",
+		Vec3(0.f, -1500.f, 0.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+		{
+			[](CGameObject* obj)
+			{
+				obj->Transform()->SetRelativeScaleMultiply(4.f);
+				obj->AddComponentRecursive<FMeshCollider>();
+			}
+		},
+		1,
+		true
+	);
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것

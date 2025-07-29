@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
@@ -29,50 +30,17 @@ constexpr Vec3 UnitCube[8] = {
 };
 
 /**
- * @brief 충돌 가능성이 있는 오브젝트 쌍에 대해 충돌 판정을 처리하는 함수
- */
-void FCollisionManager::NarrowPhase()
-{
-	// Reset Task Data
-	Tasks.clear();
-	TaskColliders.clear();
-	FrameAllVertices.clear();
-	FrameAllIndices.clear();
-	DataCache.clear();
-
-	// CPU와 GPU 처리 대상을 분리
-	for (auto& Pair : CandidatePairVector)
-	{
-		// CS 처리가 필요한 경우 CS Task에만 달고 나감
-		if (NeedComputeShader(Pair.first, Pair.second))
-		{
-			AddShaderTask(Pair.first, Pair.second);
-		}
-		// CS 처리 대상이 아닐 경우, 여기서 충돌 처리 완료
-		else
-		{
-			CheckPair(Pair.first, Pair.second);
-		}
-	}
-
-	// CS Task Batch Process
-	if (!Tasks.empty())
-	{
-		// LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MTasks.size());
-		ExecuteAndProcessCS();
-	}
-}
-
-/**
  * @brief 세부 충돌 검사에 Compute Shader 처리가 필요한지 판별하는 함수
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
  * @return CS 처리가 필요하다면 True
  */
-bool FCollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGameObject* ObjectB)
+bool FCollisionManager::NeedComputeShader(const IColliderBase* InLeftCollider, const IColliderBase* InRightCollider)
 {
-	const bool IsMeshA = (ObjectA->MeshCollider() != nullptr);
-	const bool IsMeshB = (ObjectB->MeshCollider() != nullptr);
-	const bool Is3DColliderA = (ObjectA->Collider3D() != nullptr);
-	const bool Is3DColliderB = (ObjectB->Collider3D() != nullptr);
+	const bool IsMeshA = (InLeftCollider->GetColliderType() == EColliderType::MeshCollider);
+	const bool IsMeshB = (InRightCollider->GetColliderType() == EColliderType::MeshCollider);
+	const bool Is3DColliderA = (InLeftCollider->GetColliderType() == EColliderType::Collider3D);
+	const bool Is3DColliderB = (InRightCollider->GetColliderType() == EColliderType::Collider3D);
 
 	if ((IsMeshA && IsMeshB) || (IsMeshA && Is3DColliderB) || (Is3DColliderA && IsMeshB))
 	{
@@ -85,10 +53,11 @@ bool FCollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGam
 /**
  * @brief MeshCollider 정보를 Buffer에 추가하는 함수
  */
-FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
+MeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
+
 	if (DataCache.contains(ColliderKey))
 	{
 		return DataCache.at(ColliderKey);
@@ -136,7 +105,7 @@ FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const FMes
 /**
  * @brief Collider3D 정보를 Buffer에 추가하는 함수
  */
-FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
+MeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
@@ -220,31 +189,36 @@ void FCollisionManager::ExecuteAndProcessCS()
 
 /**
  * @brief Task 추가 진행하면서 Object의 충돌체 관련 정보도 동시에 저장하는 함수
- * @param InLeftObject Collision Object 1
- * @param InRightObject Collision Object 2
+ * @param InLeftCollider Collision Object 1
+ * @param InRightCollider Collision Object 2
  */
-void FCollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject)
+void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
 {
-	FMeshCollider* LeftMesh = InLeftObject->MeshCollider();
-	FMeshCollider* RightMesh = InRightObject->MeshCollider();
-	FCollider3D* Left3D = InLeftObject->Collider3D();
-	FCollider3D* Right3D = InRightObject->Collider3D();
+	const bool IsMeshColliderA = (InLeftCollider->GetColliderType() == EColliderType::MeshCollider);
+	const bool IsMeshColliderB = (InRightCollider->GetColliderType() == EColliderType::MeshCollider);
+	const bool Is3DColliderA = (InLeftCollider->GetColliderType() == EColliderType::Collider3D);
+	const bool Is3DColliderB = (InRightCollider->GetColliderType() == EColliderType::Collider3D);
+
+	FMeshCollider* LeftMesh = static_cast<FMeshCollider*>(InLeftCollider);
+	FMeshCollider* RightMesh = static_cast<FMeshCollider*>(InRightCollider);
+	FCollider3D* Left3D = static_cast<FCollider3D*>(InLeftCollider);
+	FCollider3D* Right3D = static_cast<FCollider3D*>(InRightCollider);
 
 	MeshBatchData LeftData, RightData;
 
-	if (LeftMesh && RightMesh)
+	if (IsMeshColliderA && IsMeshColliderB)
 	{
 		LeftData = GetOrAddBatchData(LeftMesh);
 		RightData = GetOrAddBatchData(RightMesh);
 		TaskColliders.emplace_back(make_pair(LeftMesh, RightMesh));
 	}
-	else if (LeftMesh && Right3D)
+	else if (IsMeshColliderA && Is3DColliderB)
 	{
 		LeftData = GetOrAddBatchData(LeftMesh);
 		RightData = GetOrAddBatchData(Right3D);
 		TaskColliders.emplace_back(make_pair(LeftMesh, Right3D));
 	}
-	else if (Left3D && RightMesh)
+	else if (Is3DColliderA && IsMeshColliderB)
 	{
 		LeftData = GetOrAddBatchData(Left3D);
 		RightData = GetOrAddBatchData(RightMesh);
@@ -252,10 +226,11 @@ void FCollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGa
 	}
 	else
 	{
+		assert(!"Shader 처리가 필요 없는 충돌체이므로 여기서 들어올 수 없음");
 		return;
 	}
 
-	// 2. CS 작업 생성 및 추가
+	// CS 작업 생성 및 추가
 	tCollisionTask Task = {};
 	Task.LeftVertexOffset = LeftData.VertexOffset;
 	Task.LeftIndexOffset = LeftData.IndexOffset;
@@ -270,32 +245,37 @@ void FCollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGa
 /**
  * @brief Narrow 충돌 판정 중 CPU 기반의 판정을 진행하고, 충돌했다면 적절한 처리 로직을 호출하는 함수
  *
- * @param InLeftObject Object 1
- * @param InRightObject Object 2
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
  */
-void FCollisionManager::CheckPair(const CGameObject* InRightObject, const CGameObject* InLeftObject)
+void FCollisionManager::CheckPair(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
 {
+	const bool IsLeft2D = (InLeftCollider->GetColliderType() == EColliderType::Collider2D);
+	const bool IsRight2D = (InRightCollider->GetColliderType() == EColliderType::Collider2D);
+	const bool IsLeft3D = (InLeftCollider->GetColliderType() == EColliderType::Collider3D);
+	const bool IsRight3D = (InRightCollider->GetColliderType() == EColliderType::Collider3D);
+
+	FCollider2D* Left2D = static_cast<FCollider2D*>(InLeftCollider);
+	FCollider2D* Right2D = static_cast<FCollider2D*>(InRightCollider);
+	FCollider3D* Left3D = static_cast<FCollider3D*>(InLeftCollider);
+	FCollider3D* Right3D = static_cast<FCollider3D*>(InRightCollider);
+
 	// 2D 충돌체 검사
-	if (InLeftObject->Collider2D())
+	if (IsLeft2D && IsRight2D)
 	{
-		if (InRightObject->Collider2D())
+		if (IsCollision(Left2D, Right2D))
 		{
-			if (IsCollision(InLeftObject->Collider2D(), InRightObject->Collider2D()))
-			{
-				AddFrameCollision(InLeftObject->Collider2D(), InRightObject->Collider2D());
-			}
+			AddFrameCollision(Left2D, Right2D);
 		}
 	}
 
 	// 3D 충돌체 검사
-	if (InLeftObject->Collider3D())
+	if
+	(IsLeft3D && IsRight3D)
 	{
-		if (InRightObject->Collider3D())
+		if (IsCollision(Left3D, Right3D))
 		{
-			if (IsCollision(InLeftObject->Collider3D(), InRightObject->Collider3D()))
-			{
-				AddFrameCollision(InLeftObject->Collider3D(), InRightObject->Collider3D());
-			}
+			AddFrameCollision(Left3D, Right3D);
 		}
 	}
 
@@ -303,12 +283,12 @@ void FCollisionManager::CheckPair(const CGameObject* InRightObject, const CGameO
 	//            WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
 }
 
-void FCollisionManager::AddFrameCollision(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
+void FCollisionManager::AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const
 {
-	visit([&](auto* LeftCollider, auto* RightCollider)
-	{
-		FrameCollisionSet.insert(COLLISION_ID(LeftCollider->GetID(), RightCollider->GetID()).ID);
-	}, InLeftCollider, InRightCollider);
+	IColliderBase* LeftCollider = GetBaseFromVariant(InLeftVariant);
+	IColliderBase* RightCollider = GetBaseFromVariant(InRightVariant);
+
+	FrameCollisionSet->insert(FCollisionID(LeftCollider, RightCollider));
 }
 
 /**********************************/

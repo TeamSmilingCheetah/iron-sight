@@ -8,6 +8,7 @@
 
 #include "Engine/Runtime/Public/Component/Base/components.h"
 #include "Game/System/Public/GameplayManager.h"
+#include "System/Public/Manager/CollisionManager.h"
 
 CLevelMgr::CLevelMgr()
 	: m_CurLevel(nullptr)
@@ -105,13 +106,15 @@ void CLevelMgr::ChangeLevel(CLevel* _NextLevel, LEVEL_STATE _NextLevelState)
 {
 	CLevel* pPrevLevel = m_CurLevel;
 
-	m_CurLevel = _NextLevel;
-
-	ChangeLevelState(_NextLevelState);
-
 	// 이전 레벨은 삭제
-	if (nullptr != pPrevLevel)
+	if (pPrevLevel)
+	{
+		FCollisionManager::GetInst()->ClearPreviousLevelInformation();
 		delete pPrevLevel;
+	}
+
+	m_CurLevel = _NextLevel;
+	ChangeLevelState(_NextLevelState);
 }
 
 void CLevelMgr::ResolveReference(CLevel* _Level)
