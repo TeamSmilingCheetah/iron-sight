@@ -38,12 +38,12 @@ FColliderRay::FColliderRay(const FColliderRay& POrigin)
 
 FColliderRay::~FColliderRay() = default;
 
-bool FColliderRay::UpdateRayColInfo(CGameObject* InHitObject, float InDistance)
+bool FColliderRay::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance)
 {
 	// 기존 거리보다 가까운 거리에 있는 물체만 저장
 	if (InDistance < RayColliderInfo.Length)
 	{
-		RayColliderInfo.HitObject = InHitObject;
+		RayColliderInfo.HitCollider = InHitCollider;
 		RayColliderInfo.Length = InDistance;
 		TargetLength = RayColliderInfo.Length;
 		return true;
@@ -54,8 +54,8 @@ bool FColliderRay::UpdateRayColInfo(CGameObject* InHitObject, float InDistance)
 
 void FColliderRay::ClearRayColInfo()
 {
-	RayColliderInfo.PrevObject = RayColliderInfo.HitObject;
-	RayColliderInfo.HitObject = nullptr;
+	RayColliderInfo.PrevCollider = RayColliderInfo.HitCollider;
+	RayColliderInfo.HitCollider = nullptr;
 	RayColliderInfo.Length = 100000.f;
 }
 
@@ -104,7 +104,7 @@ void FColliderRay::FinalTick()
 	Vec3 vEndEdbugPos = FinalPosition + (FinalDirection * TargetLength);
 
 	// 히트된 오브젝트가 없을 때만 초기화
-	if (!RayColliderInfo.HitObject)
+	if (!RayColliderInfo.HitCollider)
 	{
 		TargetLength = 100000.f;
 	}

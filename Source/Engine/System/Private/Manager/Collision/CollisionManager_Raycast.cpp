@@ -1,11 +1,12 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 /*******************/
 /** Raycast Check **/
@@ -14,18 +15,8 @@
 /**
  * @brief 레벨 내 모든 Ray Collider와 충돌 가능한 오브젝트에 대해 Raycast를 처리하는 함수
  */
-void CollisionManager::RaycastProcess()
+void FCollisionManager::RaycastProcess()
 {
-	// 모든 Ray Collider 수집
-	vector<FColliderRay*> RayColliders;
-	for (const auto* Object : LevelActiveObjects)
-	{
-		if (Object->ColliderRay())
-		{
-			RayColliders.push_back(Object->ColliderRay());
-		}
-	}
-
 	// LOG_INFO_F("[Collision][Raycast] Total Active Raycast Objects: {}", RayColliders.size());
 
 	// Check Collision
@@ -33,35 +24,37 @@ void CollisionManager::RaycastProcess()
 	{
 		// Find All Candidates
 		vector<FRayColliderInfo> Candidates;
-		QueryBVH(BVHRootNode, Ray, Candidates);
+		QueryBVH(StaticBVHRoot, Ray, Candidates);
+		QueryBVH(DynamicBVHRoot, Ray, Candidates);
 
 		for (const FRayColliderInfo& Info : Candidates)
 		{
-			auto* Object = Info.HitObject;
+			auto* Collider = Info.HitCollider;
 
 			// AABB가 충돌 기준이므로 바로 Process
-			if (Object->Collider3D())
+			if (Collider->GetColliderType() == EColliderType::Collider3D)
 			{
-				AddFrameCollision(Ray, Object->Collider3D());
+				AddFrameCollision(Ray, static_cast<FCollider3D*>(Collider));
 				continue;
 			}
 
 			// RaycastCS 처리를 위한 Add Task
-			if (Object->MeshCollider())
+			if (Collider->GetColliderType() == EColliderType::MeshCollider)
 			{
-				AddRayShaderTask(Ray, Object);
+				AddRayShaderTask(Ray, static_cast<FMeshCollider*>(Collider));
 			}
 		}
 	}
 
 	// Batch Process
-	ExecuteAndProcessRaycastCS();
+	// TODO(KHJ): 관련 오류 처리할 것
+	// ExecuteAndProcessRaycastCS();
 }
 
 /**
  * @brief CS 처리를 위해 MeshCollider의 지오메트리 데이터를 전역 버퍼에 추가하고 정보를 반환하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const FMeshCollider* InCollider)
+MeshBatchData FCollisionManager::GetOrAddRaycastBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 방지
 	if (RaycastDataCache.contains(InCollider))
@@ -105,10 +98,10 @@ CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const
 	return NewData;
 }
 
-void CollisionManager::AddRayShaderTask(FColliderRay* InRay, const CGameObject* InObject)
+void FCollisionManager::AddRayShaderTask(FColliderRay* InRay, const FMeshCollider* InCollider)
 {
-	MeshBatchData MeshData = GetOrAddRaycastBatchData(InObject->MeshCollider());
-	RaycastColliders.push_back(make_pair(InRay, InObject->MeshCollider()));
+	MeshBatchData MeshData = GetOrAddRaycastBatchData(InCollider);
+	RaycastColliders.push_back(make_pair(InRay, InCollider->MeshCollider()));
 
 	tRaycastTask Task = {};
 	Task.RayOrigin = InRay->GetRayFinalPos();
@@ -123,9 +116,12 @@ void CollisionManager::AddRayShaderTask(FColliderRay* InRay, const CGameObject* 
 /**
  * @brief 레이캐스트 배치 처리를 실행하고 결과를 처리하는 함수
  */
-void CollisionManager::ExecuteAndProcessRaycastCS()
+void FCollisionManager::ExecuteAndProcessRaycastCS()
 {
-	if (RaycastTasks.empty()) return;
+	if (RaycastTasks.empty())
+	{
+		return;
+	}
 
 	// 1. GPU에 보낼 구조화된 버퍼 생성
 	CStructuredBuffer AllVtxBuffer, AllIdxBuffer, TasksBuffer, ResultsBuffer;

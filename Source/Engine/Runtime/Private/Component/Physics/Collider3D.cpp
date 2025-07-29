@@ -129,6 +129,9 @@ void FCollider3D::SaveComponent(FILE* PFile)
 
 	// 추가 필요 저장 데이터
 	(void)fwrite(&Status, sizeof(int), 1, PFile);
+
+	bool IsStaticCollider = IsStatic();
+	(void)fwrite(&IsStaticCollider, sizeof(bool), 1, PFile);
 }
 
 void FCollider3D::LoadComponent(FILE* PFile)
@@ -140,6 +143,18 @@ void FCollider3D::LoadComponent(FILE* PFile)
 
 	// 추가 필요 로드 데이터
 	(void)fread(&Status, sizeof(int), 1, PFile);
+
+	bool IsStaticCollider;
+	(void)fread(&IsStaticCollider, sizeof(bool), 1, PFile);
+
+	if (!IsStaticCollider)
+	{
+		SetDynamic();
+	}
+	else
+	{
+		SetStatic();
+	}
 }
 
 /**

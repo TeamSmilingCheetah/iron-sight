@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Runtime/Public/Actor/CLevel.h"
 #include "Runtime/Public/Actor/CGameObject.h"
+#include "Runtime/Public/Component/Physics/ColliderBase.h"
 
 CLevel::CLevel()
 	: m_State(LEVEL_STATE::NONE)
@@ -139,6 +140,46 @@ void CLevel::GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects)
 			if (Object->IsActive())
 			{
 				PObjects.push_back(Object);
+			}
+		}
+	}
+}
+
+/**
+ * @brief Level 시작 시점에 Manager가 관리할 수 있도록 움직임 유무에 따라 충돌체를 분류해서 제공하는 함수
+ * 여기서부터 Ray는 따로 분류해서 처리한다
+ * @param InStatic 정적인 충돌체를 모아놓을 Vector
+ * @param InDynamic 움직이는 충돌체를 모아놓을 Vector
+ * @param InRays Ray만 모아놓은 Vector
+ */
+void CLevel::GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
+                                    vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays)
+{
+	for (int i = 0; i < MAX_LAYER; ++i)
+	{
+		for (auto* Object : m_arrLayer[i].GetObjects())
+		{
+			if (Object->IsActive())
+			{
+				for (auto Variant : Object->GetColliders())
+				{
+					IColliderBase* Collider = GetBaseFromVariant(Variant);
+
+					if (Collider->GetColliderType() == EColliderType::ColliderRay)
+					{
+						InRays.push_back(reinterpret_cast<FColliderRay*>(Collider));
+						continue;
+					}
+
+					if (Collider->IsStatic())
+					{
+						InStatic.push_back(Collider);
+					}
+					else
+					{
+						InDynamic.push_back(Collider);
+					}
+				}
 			}
 		}
 	}

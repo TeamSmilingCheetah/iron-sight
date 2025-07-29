@@ -2,6 +2,7 @@
 
 #include <thread>
 
+class IColliderBase;
 class FColliderRay;
 using std::thread;
 
@@ -606,15 +607,15 @@ struct AABB
 struct BVHNode
 {
 	AABB Bounds;
-	vector<CGameObject*> Objects;
+	vector<IColliderBase*> Colliders;
 	BVHNode* Left = nullptr;
 	BVHNode* Right = nullptr;
 
 	~BVHNode()
 	{
 		// Cascade Delete
-		delete Left;
-		delete Right;
+		DELETE(Left);
+		DELETE(Right);
 	}
 
 	/**
@@ -637,8 +638,8 @@ struct tScriptParam
 struct FRayColliderInfo
 {
 	FColliderRay* RayObject;
-	CGameObject* HitObject;
-	CGameObject* PrevObject;
+	IColliderBase* HitCollider;
+	IColliderBase* PrevCollider;
 	float Length;
 
 	bool operator<(const FRayColliderInfo& POther) const
@@ -648,17 +649,17 @@ struct FRayColliderInfo
 
 	FRayColliderInfo()
 		: RayObject(nullptr)
-		  , HitObject(nullptr)
-		  , PrevObject(nullptr)
+		  , HitCollider(nullptr)
+		  , PrevCollider(nullptr)
 		  , Length(1000000.f)
 	{
 	}
 
-	FRayColliderInfo(FColliderRay* PRay, CGameObject* PObject, float PLength)
-		: RayObject(PRay)
-		  , HitObject(PObject)
-		  , PrevObject(nullptr)
-		  , Length(PLength)
+	FRayColliderInfo(FColliderRay* InRay, IColliderBase* InCollider, float InLength)
+		: RayObject(InRay)
+		  , HitCollider(InCollider)
+		  , PrevCollider(nullptr)
+		  , Length(InLength)
 	{
 	}
 };

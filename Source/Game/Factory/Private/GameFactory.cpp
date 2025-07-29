@@ -231,6 +231,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	Common::AddComponentToObject<FCollider3D>(Player);
 	Collider::SetColliderProperties(Player, {550.f, 820.f, 385.f}, {35.f, 498.f, 0.f}, true);
+	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
 
 	// Player Head Collider
 	auto HeaderCollider = Common::CreateNewObject();
