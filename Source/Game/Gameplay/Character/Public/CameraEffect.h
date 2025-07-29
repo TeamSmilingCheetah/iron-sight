@@ -7,10 +7,16 @@ class CameraEffect :
 {
 private:
 	bool	m_HPLow;
+	bool	m_FadeOut;
+	bool	m_FadeIn;
 
 public:
 	void Begin() override;
 	void Tick() override;
+
+	void FadeIn();
+	void FadeOut();
+	void FadeInOutOff();
 
 	void HitEffect();
 	void HPLow();

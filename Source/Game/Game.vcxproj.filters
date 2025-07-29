@@ -80,7 +80,6 @@
       <Filter>02. Gameplay\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Factory\Private\GameFactory.cpp" />
-    <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\MinimapCameraScript.cpp">
       <Filter>02. Gameplay\UI</Filter>
     </ClCompile>
@@ -89,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="Gameplay\Character\Private\CameraEffect.cpp">
       <Filter>02. Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp">
+      <Filter>02. Gameplay\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
