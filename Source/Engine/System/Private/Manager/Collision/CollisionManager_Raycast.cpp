@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
@@ -14,7 +14,7 @@
 /**
  * @brief 레벨 내 모든 Ray Collider와 충돌 가능한 오브젝트에 대해 Raycast를 처리하는 함수
  */
-void CollisionManager::RaycastProcess()
+void FCollisionManager::RaycastProcess()
 {
 	// 모든 Ray Collider 수집
 	vector<FColliderRay*> RayColliders;
@@ -61,7 +61,7 @@ void CollisionManager::RaycastProcess()
 /**
  * @brief CS 처리를 위해 MeshCollider의 지오메트리 데이터를 전역 버퍼에 추가하고 정보를 반환하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const FMeshCollider* InCollider)
+FCollisionManager::MeshBatchData FCollisionManager::GetOrAddRaycastBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 방지
 	if (RaycastDataCache.contains(InCollider))
@@ -105,7 +105,7 @@ CollisionManager::MeshBatchData CollisionManager::GetOrAddRaycastBatchData(const
 	return NewData;
 }
 
-void CollisionManager::AddRayShaderTask(FColliderRay* InRay, const CGameObject* InObject)
+void FCollisionManager::AddRayShaderTask(FColliderRay* InRay, const CGameObject* InObject)
 {
 	MeshBatchData MeshData = GetOrAddRaycastBatchData(InObject->MeshCollider());
 	RaycastColliders.push_back(make_pair(InRay, InObject->MeshCollider()));
@@ -123,7 +123,7 @@ void CollisionManager::AddRayShaderTask(FColliderRay* InRay, const CGameObject* 
 /**
  * @brief 레이캐스트 배치 처리를 실행하고 결과를 처리하는 함수
  */
-void CollisionManager::ExecuteAndProcessRaycastCS()
+void FCollisionManager::ExecuteAndProcessRaycastCS()
 {
 	if (RaycastTasks.empty()) return;
 

@@ -57,10 +57,10 @@ class FMeshCollider;
  * @param MFrameAllIndices CS 처리 대상 충돌체들의 World Index 데이터를 하나로 합친 Buffer
  * @param MFrameDataCache 동일한 충돌체의 데이터가 중복으로 추가되는 것을 방지하기 위한 Cache
  */
-class CollisionManager :
-	public singleton<CollisionManager>
+class FCollisionManager :
+	public singleton<FCollisionManager>
 {
-	SINGLE(CollisionManager)
+	SINGLE(FCollisionManager)
 
 private:
 	struct MeshBatchData

@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
-CollisionManager::CollisionManager() = default;
+FCollisionManager::FCollisionManager() = default;
 
-CollisionManager::~CollisionManager() = default;
+FCollisionManager::~FCollisionManager() = default;
 
 /*****************************/
 /** Layer Collision Setting **/
@@ -14,7 +14,7 @@ CollisionManager::~CollisionManager() = default;
 /**
  * @brief 레이어 간의 충돌 설정을 추가하는 함수
  */
-void CollisionManager::ActiveLayerCollision(UINT InLeftLayer, UINT InRightLayer)
+void FCollisionManager::ActiveLayerCollision(UINT InLeftLayer, UINT InRightLayer)
 {
 	UINT Row = InLeftLayer;
 	UINT Col = InRightLayer;
@@ -31,7 +31,7 @@ void CollisionManager::ActiveLayerCollision(UINT InLeftLayer, UINT InRightLayer)
 /**
  * @brief 충돌 등록 Matrix를 초기화하는 함수
  */
-void CollisionManager::ClearCollisionBtwLayerSetting()
+void FCollisionManager::ClearCollisionBtwLayerSetting()
 {
 	memset(LayerCollisionMatrix, 0, sizeof(UINT) * MAX_LAYER);
 }
@@ -49,7 +49,7 @@ void CollisionManager::ClearCollisionBtwLayerSetting()
  * -> PostProcess Phase : 확정된 충돌쌍에 대한 상호작용을 모든 오브젝트를 순회하면서 일괄 처리한다
  * -> Clean Resource : 사용된 자원들을 정리한다
  */
-void CollisionManager::Tick()
+void FCollisionManager::Tick()
 {
 	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
@@ -97,7 +97,7 @@ void CollisionManager::Tick()
 /**
  * @brief 모든 충돌 판정이 완료된 후 Tick에서 사용한 자원을 정리하는 함수
  */
-void CollisionManager::CleanResource()
+void FCollisionManager::CleanResource()
 {
 	// Reset Information
 	CandidatePairVector.clear();

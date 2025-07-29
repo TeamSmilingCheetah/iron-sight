@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
@@ -11,7 +11,7 @@
 /** Broad Phase Function **/
 /**************************/
 
-void CollisionManager::BroadPhase()
+void FCollisionManager::BroadPhase()
 {
 	// Level Load Check
 	auto* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
@@ -68,7 +68,7 @@ void CollisionManager::BroadPhase()
  * @param InLeftObject Object 1
  * @param InRightObject Object 2
  */
-void CollisionManager::AddCandidate(const CGameObject* InLeftObject, const CGameObject* InRightObject)
+void FCollisionManager::AddCandidate(const CGameObject* InLeftObject, const CGameObject* InRightObject)
 {
 	CandidatePairVector.push_back({InLeftObject, InRightObject});
 }

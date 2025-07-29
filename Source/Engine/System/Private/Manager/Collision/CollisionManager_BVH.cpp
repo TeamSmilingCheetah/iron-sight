@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
@@ -14,7 +14,7 @@ using std::ranges::sort;
 /**
  * @brief BVH Tree를 구축하는 함수
  */
-void CollisionManager::CreateBVHTree()
+void FCollisionManager::CreateBVHTree()
 {
 	CLevel* CurrentLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 
@@ -31,7 +31,7 @@ void CollisionManager::CreateBVHTree()
  * @param InDepth 재귀 Depth
  * @return 생성된 트리의 Root Node
  */
-BVHNode* CollisionManager::BuildBVHRecursive(const vector<CGameObject*>& InObjects, int InDepth)
+BVHNode* FCollisionManager::BuildBVHRecursive(const vector<CGameObject*>& InObjects, int InDepth)
 {
 	if (InObjects.empty())
 	{
@@ -92,7 +92,7 @@ BVHNode* CollisionManager::BuildBVHRecursive(const vector<CGameObject*>& InObjec
  *
  * @param InObjects 전체 오브젝트가 담긴 Vector
  */
-void CollisionManager::BuildBVH(const vector<CGameObject*>& InObjects)
+void FCollisionManager::BuildBVH(const vector<CGameObject*>& InObjects)
 {
 	DestroyBVH();
 	BVHRootNode = BuildBVHRecursive(InObjects, 0);
@@ -101,7 +101,7 @@ void CollisionManager::BuildBVH(const vector<CGameObject*>& InObjects)
 /**
  * @brief 기존에 BVH가 존재했다면 BVH를 제거하는 함수
  */
-void CollisionManager::DestroyBVH()
+void FCollisionManager::DestroyBVH()
 {
 	delete BVHRootNode;
 	BVHRootNode = nullptr;
@@ -114,7 +114,7 @@ void CollisionManager::DestroyBVH()
  * @param InObject [IN] Intersect 판정이 필요한 AABB를 가진 오브젝트
  * @param OutCandidates [OUT] AABB 충돌이 확정된 잠재적 충돌 의심군
  */
-void CollisionManager::QueryBVH(const BVHNode* InNode, const CGameObject* InObject, vector<CGameObject*>& OutCandidates)
+void FCollisionManager::QueryBVH(const BVHNode* InNode, const CGameObject* InObject, vector<CGameObject*>& OutCandidates)
 {
 	if (!InNode)
 	{
@@ -154,7 +154,7 @@ void CollisionManager::QueryBVH(const BVHNode* InNode, const CGameObject* InObje
  * @param InRay [IN] Node와 충돌 검사를 진행하는 Main 객체
  * @param OutIntersectVector [OUT] 충돌이 확정된 오브젝트들의 정보가 담길 Vector
  */
-void CollisionManager::QueryBVH(const BVHNode* InNode, const FColliderRay* InRay,
+void FCollisionManager::QueryBVH(const BVHNode* InNode, const FColliderRay* InRay,
                                  vector<FRayColliderInfo>& OutIntersectVector)
 {
 	if (!InNode || !InRay)

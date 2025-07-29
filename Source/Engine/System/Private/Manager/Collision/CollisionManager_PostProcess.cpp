@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Runtime/Public/Component/Physics/ColliderBase.h"
 
-void CollisionManager::CollisionPostProcess()
+void FCollisionManager::CollisionPostProcess()
 {
 	// Layer Matching
 	for (UINT Row = 0; Row < MAX_LAYER; ++Row)
@@ -34,7 +34,7 @@ void CollisionManager::CollisionPostProcess()
  *
  * @param InLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index
  */
-void CollisionManager::CollisionsInLayer(UINT InLayerIndex)
+void FCollisionManager::CollisionsInLayer(UINT InLayerIndex)
 {
 	const vector<CGameObject*>& ObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
 	                                                               ->GetLayer(InLayerIndex)->GetObjects();
@@ -61,7 +61,7 @@ void CollisionManager::CollisionsInLayer(UINT InLayerIndex)
  * @param InLeftLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 1
  * @param InRightLayerIndex 레벨 내의 충돌 검사할 Object 정보들이 들어 있는 Layer Index 2
  */
-void CollisionManager::CollisionBtwLayer(UINT InLeftLayerIndex, UINT InRightLayerIndex)
+void FCollisionManager::CollisionBtwLayer(UINT InLeftLayerIndex, UINT InRightLayerIndex)
 {
 	const vector<CGameObject*>& LeftObjectVector = CLevelMgr::GetInst()->GetCurrentLevel()
 	                                                                   ->GetLayer(InLeftLayerIndex)->GetObjects();
@@ -90,7 +90,7 @@ void CollisionManager::CollisionBtwLayer(UINT InLeftLayerIndex, UINT InRightLaye
  * @param InLeftCollider Collider 1
  * @param InRightCollider Collider 2
  */
-void CollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
+void FCollisionManager::ExecuteOverlap(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
 {
 	IColliderBase* LeftCollider = GetBaseFromVariant(InLeftCollider);
 	IColliderBase* RightCollider = GetBaseFromVariant(InRightCollider);

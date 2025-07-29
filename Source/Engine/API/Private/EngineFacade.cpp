@@ -6,7 +6,7 @@
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 #include "Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Runtime/Public/Component/Light/CLight3D.h"
 #include "Runtime/Public/Component/Physics/Collider3D.h"
@@ -45,7 +45,7 @@ void Engine::Layer::SetLayerName(CLevel* PLevel, int PLayerNumber, const ::wstri
 
 void Engine::Layer::SetLayerCollision(int PLayer, int POtherLayer)
 {
-	CollisionManager::GetInst()->ActiveLayerCollision(PLayer, POtherLayer);
+	FCollisionManager::GetInst()->ActiveLayerCollision(PLayer, POtherLayer);
 }
 
 unique_ptr<CLevel> Engine::Level::CreateNewLevel()

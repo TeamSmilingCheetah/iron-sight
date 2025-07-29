@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/FCollisionManager.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
@@ -31,7 +31,7 @@ constexpr Vec3 UnitCube[8] = {
 /**
  * @brief 충돌 가능성이 있는 오브젝트 쌍에 대해 충돌 판정을 처리하는 함수
  */
-void CollisionManager::NarrowPhase()
+void FCollisionManager::NarrowPhase()
 {
 	// Reset Task Data
 	Tasks.clear();
@@ -67,7 +67,7 @@ void CollisionManager::NarrowPhase()
  * @brief 세부 충돌 검사에 Compute Shader 처리가 필요한지 판별하는 함수
  * @return CS 처리가 필요하다면 True
  */
-bool CollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGameObject* ObjectB)
+bool FCollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGameObject* ObjectB)
 {
 	const bool IsMeshA = (ObjectA->MeshCollider() != nullptr);
 	const bool IsMeshB = (ObjectB->MeshCollider() != nullptr);
@@ -85,7 +85,7 @@ bool CollisionManager::NeedComputeShader(const CGameObject* ObjectA, const CGame
 /**
  * @brief MeshCollider 정보를 Buffer에 추가하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
+FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
@@ -136,7 +136,7 @@ CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const FMeshC
 /**
  * @brief Collider3D 정보를 Buffer에 추가하는 함수
  */
-CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
+FCollisionManager::MeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
@@ -176,7 +176,7 @@ CollisionManager::MeshBatchData CollisionManager::GetOrAddBatchData(const FColli
 /**
  * @brief 배치 처리를 실행하고 결과를 처리하는 함수
  */
-void CollisionManager::ExecuteAndProcessCS()
+void FCollisionManager::ExecuteAndProcessCS()
 {
 	// Create Structured Buffer
 	CStructuredBuffer AllVtxBuffer, AllIdxBuffer, TasksBuffer, ResultsBuffer;
@@ -223,7 +223,7 @@ void CollisionManager::ExecuteAndProcessCS()
  * @param InLeftObject Collision Object 1
  * @param InRightObject Collision Object 2
  */
-void CollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject)
+void FCollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGameObject* InRightObject)
 {
 	FMeshCollider* LeftMesh = InLeftObject->MeshCollider();
 	FMeshCollider* RightMesh = InRightObject->MeshCollider();
@@ -273,7 +273,7 @@ void CollisionManager::AddShaderTask(const CGameObject* InLeftObject, const CGam
  * @param InLeftObject Object 1
  * @param InRightObject Object 2
  */
-void CollisionManager::CheckPair(const CGameObject* InRightObject, const CGameObject* InLeftObject)
+void FCollisionManager::CheckPair(const CGameObject* InRightObject, const CGameObject* InLeftObject)
 {
 	// 2D 충돌체 검사
 	if (InLeftObject->Collider2D())
@@ -303,7 +303,7 @@ void CollisionManager::CheckPair(const CGameObject* InRightObject, const CGameOb
 	//            WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
 }
 
-void CollisionManager::AddFrameCollision(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
+void FCollisionManager::AddFrameCollision(ColliderVariant InLeftCollider, ColliderVariant InRightCollider)
 {
 	visit([&](auto* LeftCollider, auto* RightCollider)
 	{
@@ -317,7 +317,7 @@ void CollisionManager::AddFrameCollision(ColliderVariant InLeftCollider, Collide
 
 // TODO(KHJ): 이하의 코드 재검토 필요
 
-bool CollisionManager::IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider)
+bool FCollisionManager::IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider)
 {
 	// SAT(Separating Axis Theorem) 기반 2D 충돌 판정
 	static Vec3 arrRect[4] = {
@@ -347,7 +347,7 @@ bool CollisionManager::IsCollision(const FCollider2D* InLeftCollider, const FCol
 	return true;
 }
 
-bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider)
+bool FCollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider)
 {
 	constexpr float EPSILON = 0.0001f;
 	static Vec3 arrCube[8] = {
