@@ -96,6 +96,11 @@ void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
 
 void Engine::Collider::SetColliderDynamic(const CGameObject* InObject, EColliderType InType)
 {
+	for (auto ChildObject : InObject->GetChild())
+	{
+		SetColliderDynamic(ChildObject, InType);
+	}
+
 	for (auto Variant : InObject->GetColliders())
 	{
 		IColliderBase* Collider = GetBaseFromVariant(Variant);

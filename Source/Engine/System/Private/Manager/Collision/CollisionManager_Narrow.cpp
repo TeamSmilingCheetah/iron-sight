@@ -197,7 +197,7 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
  * @param InLeftCollider Collider 1
  * @param InRightCollider Collider 2
  */
-void FCollisionManager::CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const
+void FCollisionManager::CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
 {
 	const bool IsLeft2D = (InLeftCollider->GetColliderType() == EColliderType::Collider2D);
 	const bool IsRight2D = (InRightCollider->GetColliderType() == EColliderType::Collider2D);
