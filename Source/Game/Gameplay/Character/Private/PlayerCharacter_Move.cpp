@@ -268,6 +268,7 @@ void PlayerCharacter::UpdateGravity()
 	{
 		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
 
+		
 		// 상태
 		ChangeState(L"Player_Jump");
 	}

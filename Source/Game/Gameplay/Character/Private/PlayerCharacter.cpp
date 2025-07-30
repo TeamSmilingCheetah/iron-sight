@@ -125,6 +125,12 @@ void PlayerCharacter::Begin()
 
 	// Sound Load
 	LoadPlayerSounds();
+
+
+	// 테스트
+
+	m_MotionState = StateMachine()->GetCurMotionState();
+	StateMachine()->ChangeActionState(ACTION_STATE::NONE);
 }
 
 void PlayerCharacter::Tick()

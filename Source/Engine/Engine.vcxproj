@@ -214,8 +214,10 @@
     <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h"/>
     <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h"/>
     <ClInclude Include="Runtime\Public\Component\Script\CScript.h"/>
+    <ClInclude Include="Runtime\Public\Component\StateMachine\CStateMachine.h"/>
     <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h"/>
     <ClInclude Include="Runtime\Public\Component\UI\CUI.h"/>
+    <ClInclude Include="Runtime\Public\State\CState.h"/>
     <ClInclude Include="System\Public\Asset\Animation\CAnimation.h"/>
     <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h"/>
     <ClInclude Include="System\Public\Asset\Audio\CSound.h"/>
@@ -290,8 +292,10 @@
     <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp"/>
+    <ClCompile Include="Runtime\Private\Component\StateMachine\CStateMachine.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp"/>
     <ClCompile Include="Runtime\Private\Component\UI\CUI.cpp"/>
+    <ClCompile Include="Runtime\Private\State\CState.cpp"/>
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp"/>
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp"/>
     <ClCompile Include="System\Private\Asset\Audio\CSound.cpp"/>
