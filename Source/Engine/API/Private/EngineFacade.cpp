@@ -178,3 +178,8 @@ void Engine::Animation::AddAnimationClip(CGameObject* PObject, Ptr<CAnimation> P
 {
 	PObject->Animator3D()->AddAnimClip(PAnimation);
 }
+
+void Engine::StateMachine::AddState(CGameObject* PObject, CState* PState)
+{
+	PObject->StateMachine()->AddState(PState);
+}

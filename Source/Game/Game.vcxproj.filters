@@ -89,6 +89,51 @@
     <ClCompile Include="Gameplay\Character\Private\CameraEffect.cpp">
       <Filter>02. Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="System\Private\StateMgr.cpp">
+      <Filter>04. StateMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\AdrenalineState.cpp">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\BandageState.cpp">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\DeadState.cpp">
+      <Filter>02. Gameplay\State\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\FirstAidKitState.cpp">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\EnergyDrinkState.cpp">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\GrenadeThrowHighState.cpp">
+      <Filter>02. Gameplay\State\Grenade</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\GrenadeThrowLowState.cpp">
+      <Filter>02. Gameplay\State\Grenade</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\GrenadePrepareState.cpp">
+      <Filter>02. Gameplay\State\Grenade</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\GunFireState.cpp">
+      <Filter>02. Gameplay\State\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\GunReloadState.cpp">
+      <Filter>02. Gameplay\State\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\JumpState.cpp">
+      <Filter>02. Gameplay\State\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\MedKitState.cpp">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\PainKillerState.cpp">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\IdleState.cpp">
+      <Filter>02. Gameplay\State\Base</Filter>
+    </ClCompile>
     <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp">
       <Filter>02. Gameplay\Enemy</Filter>
     </ClCompile>
@@ -185,6 +230,55 @@
     <ClInclude Include="Gameplay\Character\Public\CameraEffect.h">
       <Filter>02. Gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="System\Public\StateMgr.h">
+      <Filter>04. StateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\states.h">
+      <Filter>04. StateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Gameplay\State\Public\AdrenalineState.h">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\BandageState.h">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\DeadState.h">
+      <Filter>02. Gameplay\State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\EnergyDrinkState.h">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\FirstAidKitState.h">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\GrenadeThrowHighState.h">
+      <Filter>02. Gameplay\State\Grenade</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\GrenadeThrowLowState.h">
+      <Filter>02. Gameplay\State\Grenade</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\GrenadePrepareState.h">
+      <Filter>02. Gameplay\State\Grenade</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\GunFireState.h">
+      <Filter>02. Gameplay\State\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\GunReloadState.h">
+      <Filter>02. Gameplay\State\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\MedKitState.h">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\PainKillerState.h">
+      <Filter>02. Gameplay\State\Heal</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\JumpState.h">
+      <Filter>02. Gameplay\State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\IdleState.h">
+      <Filter>02. Gameplay\State\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. ScriptMgr">
@@ -223,5 +317,26 @@
     <Filter Include="02. Gameplay\UI">
       <UniqueIdentifier>{81977f8a-4778-49e0-a186-a81c40a67a6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Gameplay\State">
+      <UniqueIdentifier>{b3ba6d7b-729e-48b1-8879-69cacb722452}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. StateMgr">
+      <UniqueIdentifier>{a467aa18-27c8-4538-8c55-4cb77ced1f3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\State\Gun">
+      <UniqueIdentifier>{b0381950-9bb4-48be-a3b3-97016b87a3f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\State\Grenade">
+      <UniqueIdentifier>{c15f611b-4055-463a-9d98-27bfd326f3af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\State\Heal">
+      <UniqueIdentifier>{f15a9ea6-a104-4b27-b88d-597e58c0ac2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Gameplay\State\Base">
+      <UniqueIdentifier>{cf89fb55-f353-4027-b522-e717f2d503f4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Game.rc" />
   </ItemGroup>
 </Project>

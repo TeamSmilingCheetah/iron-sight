@@ -31,6 +31,7 @@
 #include "Client/UI/Public/Component/TransformUI.h"
 #include "Client/UI/Public/Component/ParticleUI.h"
 #include "Client/UI/Public/Component/MeshColliderUI.h"
+#include "Client/UI/Public/Component/StateMachineUI.h"
 
 class CScript;
 
@@ -274,7 +275,7 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		m_TargetObject->AddComponent(new CLight3D);
 		break;
 	case COMPONENT_TYPE::STATEMACINE:
-		//m_TargetObject->AddComponent(new CStateMachine);
+		m_TargetObject->AddComponent(new CStateMachine);
 		break;
 	case COMPONENT_TYPE::SKYBOX:
 		m_TargetObject->AddComponent(new CSkyBox);
@@ -418,6 +419,10 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESH_COLLIDER)] = static_cast<ComponentUI*>(
 		AddChildUI(new MeshColliderUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::MESH_COLLIDER)]->SetChildSize(ImVec2(0.f, 300.f));
+
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::STATEMACINE)] = static_cast<ComponentUI*>(
+		AddChildUI(new StateMachineUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::STATEMACINE)]->SetChildSize(ImVec2(0.f, 150.f));
 
 	// FIXME : UI / UIRender ui 추가
 	/*m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::UI)] = static_cast<ComponentUI*>(

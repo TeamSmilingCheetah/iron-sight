@@ -11,6 +11,7 @@
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/State/Public/IdleState.h"
 
 using namespace Engine;
 
@@ -99,6 +100,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 	Common::AddComponentToObject<FColliderRay>(RawCameraPtr);
 	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
 
+
 	Level::AddObjectToLayer(PLevel, RawCameraPtr, 0, false);
 }
 
@@ -186,6 +188,11 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	Transform::SetPositionAndRotation(Player, PPosition, {0.f, 90.f, 0.f});
 	Transform::SetScale(Player, {6.f, 6.f, 6.f});
+
+	Common::AddComponentToObject<CStateMachine>(Player);
+
+	StateMachine::AddState(Player, Common::LoadState<IdleState>(ACTION_STATE::NONE));
+
 
 	Common::AddComponentToObject<FColliderRay>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);

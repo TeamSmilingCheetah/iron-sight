@@ -25,7 +25,7 @@
     <RootNamespace>Engine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -54,24 +54,24 @@
     <CharacterSet>Unicode</CharacterSet>
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros"/>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
@@ -214,8 +214,10 @@
     <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h"/>
     <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h"/>
     <ClInclude Include="Runtime\Public\Component\Script\CScript.h"/>
+    <ClInclude Include="Runtime\Public\Component\StateMachine\CStateMachine.h"/>
     <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h"/>
     <ClInclude Include="Runtime\Public\Component\UI\CUI.h"/>
+    <ClInclude Include="Runtime\Public\State\CState.h"/>
     <ClInclude Include="System\Public\Asset\Animation\CAnimation.h"/>
     <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h"/>
     <ClInclude Include="System\Public\Asset\Audio\CSound.h"/>
@@ -290,8 +292,10 @@
     <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp"/>
+    <ClCompile Include="Runtime\Private\Component\StateMachine\CStateMachine.cpp"/>
     <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp"/>
     <ClCompile Include="Runtime\Private\Component\UI\CUI.cpp"/>
+    <ClCompile Include="Runtime\Private\State\CState.cpp"/>
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp"/>
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp"/>
     <ClCompile Include="System\Private\Asset\Audio\CSound.cpp"/>

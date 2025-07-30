@@ -218,6 +218,7 @@
     <ClInclude Include="UI\Public\Component\ParticleUI.h" />
     <ClInclude Include="UI\Public\Component\ScriptUI.h" />
     <ClInclude Include="UI\Public\Component\SkyBoxUI.h" />
+    <ClInclude Include="UI\Public\Component\StateMachineUI.h" />
     <ClInclude Include="UI\Public\Component\TransformUI.h" />
     <ClInclude Include="UI\Public\Editor\AddObjectUI.h" />
     <ClInclude Include="UI\Public\Editor\ContentUI.h" />
@@ -284,6 +285,7 @@
     <ClCompile Include="UI\Private\Component\ParticleUI.cpp" />
     <ClCompile Include="UI\Private\Component\ScriptUI.cpp" />
     <ClCompile Include="UI\Private\Component\SkyBoxUI.cpp" />
+    <ClCompile Include="UI\Private\Component\StateMachineUI.cpp" />
     <ClCompile Include="UI\Private\Component\TransformUI.cpp" />
     <ClCompile Include="UI\Private\Editor\AddObjectUI.cpp" />
     <ClCompile Include="UI\Private\Editor\ContentUI.cpp" />

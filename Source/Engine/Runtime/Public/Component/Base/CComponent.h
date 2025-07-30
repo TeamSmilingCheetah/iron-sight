@@ -18,6 +18,7 @@ class FCollider2D;
 class CCamera;
 class CMeshRender;
 class CTransform;
+class CStateMachine;
 class CGameObject;
 
 class CComponent :
@@ -73,6 +74,7 @@ public:
 	CUI* UI() const;
 	CUIRender* UIRender() const;
 	FMeshCollider* MeshCollider() const;
+	CStateMachine* StateMachine() const;
 
 	CComponent(COMPONENT_TYPE _TYPE);
 	~CComponent() override;
