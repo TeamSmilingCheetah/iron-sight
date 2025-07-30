@@ -314,15 +314,15 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\Testasset.fbx",
 		L"TestTarget",
-		Vec3(3000.f, 0.f, 5000.f),
-		Vec3(0.f, 0.f, 0.f),
+		Vec3(20000.f, 0.f, 1000.f),
+		Vec3(0.f, 270.f, 0.f),
 		Vec3(5.f, 5.f, 5.f),
 		{
 			[](CGameObject* obj)
 			{
 				Engine::Common::AddComponentToObject<FCollider3D>(obj);
 				// TODO(KHJ): Wrapping
-				obj->Collider3D()->SetScale(Vec3(200.f, 200.f, 200.f));
+				Engine::Collider::SetColliderProperties(obj, {1000, 500, 1000}, {0, 50, 0}, true);
 				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
@@ -359,16 +359,16 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\door.fbx",
 		L"Door",
-		Vec3(2000.f, -500.f, 1500.f),
-		Vec3(0.f, 0.f, 0.f),
-		Vec3(1000.f, 1000.f, 1000.f),
+		Vec3(18000.f, -800.f, 7100.f),
+		Vec3(0.f, 350.f, 0.f),
+		Vec3(800.f, 800.f, 800.f),
 		{
 			[](CGameObject* obj)
 			{
 				obj->AddComponent(new FCollider3D);
 				// TODO(KHJ): Wrapping
-				obj->Collider3D()->SetScale(Vec3(800.f, 2000.f, 40.f));
-				obj->Collider3D()->SetOffset(Vec3(400.f, 1000.f, 0.f));
+				obj->Collider3D()->SetScale(Vec3(650.f, 1600.f, 40.f));
+				obj->Collider3D()->SetOffset(Vec3(310.f, 800.f, 0.f));
 				obj->Collider3D()->SetIndependentScale(true);
 			},
 			[](CGameObject* obj)
@@ -790,7 +790,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	MapCanvasUI->AddChild(pMinimapUI);
 
-	return { Vicinity, Inventory, interactionUI };
+	return {Vicinity, Inventory, interactionUI};
 }
 
 // TODO(KHJ): FBX 기반 Common Load Method 구축할 것

@@ -91,8 +91,6 @@ private:
 
 	// Broad Phase Functions
 	void GetCandidatesInBVH(const BVHNode* InTreeRootNode, unordered_set<FCollisionID>& InCandidateCheckSet);
-	bool IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
-	                   IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const;
 	bool IsLayerCollided(const IColliderBase* InLeftCollider, const IColliderBase* InRightCollider) const;
 	void AddCandidate(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 
@@ -118,6 +116,8 @@ private:
 	FMeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
 	FMeshBatchData GetOrAddBatchData(const FMeshCollider* InCollider);
 
+	bool IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
+	                   IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const;
 	void AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const;
 
 public:

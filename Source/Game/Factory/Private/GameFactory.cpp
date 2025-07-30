@@ -67,6 +67,9 @@ void GameFactory::LoadDefaultCollisionSetting()
 	Layer::SetLayerCollision(3, 6);
 	Layer::SetLayerCollision(3, 7);
 
+	Layer::SetLayerCollision(7, 0);
+	Layer::SetLayerCollision(7, 1);
+
 	// 총알이 충돌될 레이어
 	Layer::SetLayerCollision(0, 10);
 	Layer::SetLayerCollision(1, 10);
