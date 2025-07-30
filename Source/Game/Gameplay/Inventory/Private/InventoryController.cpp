@@ -57,12 +57,12 @@ void InventoryController::Begin()
 
 	for (int i = 0; i < vecBones.size(); ++i)
 	{
-		if (vecBones[i]->GetName() == L"mixamorig:RightHand")
+		if (vecBones[i]->GetName() == L"mixamorig9:RightHand")
 		{
 			m_HandMeshObj = vecBones[i];
 		}
 
-		if (vecBones[i]->GetName() == L"mixamorig:RightShoulder")
+		if (vecBones[i]->GetName() == L"mixamorig9:RightShoulder")
 		{
 			m_BackMeshObj = vecBones[i];
 		}
