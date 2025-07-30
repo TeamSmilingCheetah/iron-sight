@@ -9,15 +9,13 @@ FColliderRay::FColliderRay()
 	, Offset(Vec3(0.f))
 	, Length(1000.f)
 	, TargetLength(100000.f)
-	, OverlapCount(0)
-	, ColliderState(ACTIVE)
 	, bIndependentDirection(false)
 	, bRayTargetAll(false)
 	, bTriggerTarget(true)
 {
 	RayPosDir.vStart = Vec3(0.f, 0.f, 0.f);
 	RayPosDir.vDir = Vec3(1.f, 0.f, 0.f);
-	RayColliderInfo.RayObject = this;
+	RayCollisionInfo.RayObject = this;
 }
 
 FColliderRay::FColliderRay(const FColliderRay& POrigin)
@@ -25,15 +23,13 @@ FColliderRay::FColliderRay(const FColliderRay& POrigin)
 	, Offset(POrigin.Offset)
 	, Length(POrigin.Length)
 	, TargetLength(POrigin.TargetLength)
-	, OverlapCount(0)
-	, ColliderState(POrigin.ColliderState)
 	, bIndependentDirection(POrigin.bIndependentDirection)
 	, bRayTargetAll(POrigin.bRayTargetAll)
 	, bTriggerTarget(POrigin.bTriggerTarget)
 {
 	RayPosDir.vStart = POrigin.RayPosDir.vStart;
 	RayPosDir.vDir = POrigin.RayPosDir.vDir;
-	RayColliderInfo.RayObject = this;
+	RayCollisionInfo.RayObject = this;
 }
 
 FColliderRay::~FColliderRay() = default;
@@ -41,11 +37,11 @@ FColliderRay::~FColliderRay() = default;
 bool FColliderRay::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance)
 {
 	// 기존 거리보다 가까운 거리에 있는 물체만 저장
-	if (InDistance < RayColliderInfo.Length)
+	if (InDistance < RayCollisionInfo.Length)
 	{
-		RayColliderInfo.HitCollider = InHitCollider;
-		RayColliderInfo.Length = InDistance;
-		TargetLength = RayColliderInfo.Length;
+		RayCollisionInfo.HitCollider = InHitCollider;
+		RayCollisionInfo.Length = InDistance;
+		TargetLength = RayCollisionInfo.Length;
 		return true;
 	}
 
@@ -54,21 +50,21 @@ bool FColliderRay::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistan
 
 void FColliderRay::ClearRayColInfo()
 {
-	RayColliderInfo.PrevCollider = RayColliderInfo.HitCollider;
-	RayColliderInfo.HitCollider = nullptr;
-	RayColliderInfo.Length = 100000.f;
+	RayCollisionInfo.PrevCollider = RayCollisionInfo.HitCollider;
+	RayCollisionInfo.HitCollider = nullptr;
+	RayCollisionInfo.Length = 100000.f;
 }
 
 void FColliderRay::FinalTick()
 {
-	if (ColliderState == DEACTIVE)
+	if (IsDeactive())
 	{
 		return;
 	}
 
-	if (ColliderState == SEMIDEACTIVE)
+	if (IsSemiDeactive())
 	{
-		ColliderState = DEACTIVE;
+		SetDeactive();
 	}
 
 	// 크기, 이동 행렬
@@ -104,13 +100,13 @@ void FColliderRay::FinalTick()
 	Vec3 vEndEdbugPos = FinalPosition + (FinalDirection * TargetLength);
 
 	// 히트된 오브젝트가 없을 때만 초기화
-	if (!RayColliderInfo.HitCollider)
+	if (!RayCollisionInfo.HitCollider)
 	{
 		TargetLength = 100000.f;
 	}
 
 	// 디버그 랜더링
-	if (OverlapCount)
+	if (IsOverlapped())
 	{
 		DrawDebugLine(Vec4(1.0f, 0.0f, 1.0f, 1.0f), FinalPosition, vEndEdbugPos, false, 0.f);
 	}

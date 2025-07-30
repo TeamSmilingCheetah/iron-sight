@@ -1,5 +1,6 @@
 #pragma once
 #include "ColliderBase.h"
+#include "Common/struct.h"
 
 /**
  * @brief Raycast 처리를 위한 Ray 충돌체 클래스
@@ -31,15 +32,11 @@ private:
 
 	float Length;
 	float TargetLength;
-
-	int OverlapCount;
-
-	COLLIDER_STATE ColliderState;
-	FRayColliderInfo RayColliderInfo;
-
 	bool bIndependentDirection;
 	bool bRayTargetAll;
 	bool bTriggerTarget;
+
+	FRayCollisionInfo RayCollisionInfo;
 
 public:
 	void FinalTick() override;
@@ -63,8 +60,7 @@ public:
 	Vec3 GetRayFinalDir() const { return FinalDirection; }
 	bool IsIndependentDir() const { return bIndependentDirection; }
 
-	FRayColliderInfo& GetTargetInfoRef() { return RayColliderInfo; }
-
+	FRayCollisionInfo& GetTargetInfoRef() { return RayCollisionInfo; }
 	bool IsTargetAllMode() const { return bRayTargetAll; }
 	bool IsTriggerTarget() const { return bTriggerTarget; }
 

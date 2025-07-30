@@ -2,59 +2,19 @@
 #include "Engine/System/Public/Rendering/Shader/CMeshCollisionCS.h"
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
 
+struct FRayCollisionInfo;
+struct FCollisionID;
+
 using ColliderPairVariant = variant<
 	pair<FMeshCollider*, FMeshCollider*>,
 	pair<FMeshCollider*, FCollider3D*>,
 	pair<FCollider3D*, FMeshCollider*>
 >;
 
-struct FCollisionID
-{
-	IColliderBase* Left;
-	IColliderBase* Right;
-
-	FCollisionID(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
-	{
-		if (InLeftCollider > InRightCollider)
-		{
-			std::swap(InLeftCollider, InRightCollider);
-		}
-
-		Left = InLeftCollider;
-		Right = InRightCollider;
-	}
-
-	auto operator<=>(const FCollisionID& InOther) const = default;
-};
-
-namespace std
-{
-	template <>
-	struct hash<FCollisionID>
-	{
-		size_t operator()(const FCollisionID& InCollisionID) const noexcept
-		{
-			const size_t hash1 = hash<IColliderBase*>()(InCollisionID.Left);
-			const size_t hash2 = hash<IColliderBase*>()(InCollisionID.Right);
-
-			// Use hash_combine Method In Boost Library
-			// 피보나치 해싱
-			return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2));
-		}
-	};
-}
-
-struct MeshBatchData
-{
-	UINT VertexOffset;
-	UINT IndexOffset;
-	UINT TriCount;
-};
-
 class FCollider2D;
 class FCollider3D;
 class FColliderRay;
-class FLandscape;
+
 /**
  * @brief 충돌을 관리하는 매니저 클래스
  *
@@ -75,6 +35,7 @@ class FCollisionManager :
 	SINGLE(FCollisionManager)
 
 private:
+	// Level Status
 	UINT LayerCollisionMatrix[MAX_LAYER];
 	CLevel* CurrentLevel;
 
@@ -87,8 +48,9 @@ private:
 	BVHNode* StaticBVHRoot = nullptr;
 	BVHNode* DynamicBVHRoot = nullptr;
 
-	// Collision Collector
+	// Collision Containers
 	vector<FCollisionID> CollisionCandidates;
+	vector<FRayCollisionInfo> RayCandidates;
 	unordered_set<FCollisionID>* PrevFrameCollisionSet;
 	unordered_set<FCollisionID>* FrameCollisionSet;
 
@@ -98,72 +60,65 @@ private:
 	vector<Vec3> FrameAllVertices;
 	vector<UINT> FrameAllIndices;
 
-	vector<tRaycastTask> RaycastTasks;
-	vector<pair<FColliderRay*, FMeshCollider*>> RaycastColliders;
-	map<const void*, MeshBatchData> RaycastDataCache;
-
 	vector<tCollisionTask> Tasks;
+	vector<tRaycastTask> RaycastTasks;
 	vector<ColliderPairVariant> TaskColliders;
-	map<const void*, MeshBatchData> DataCache;
-
-public:
-	struct SimpleVtx
-	{
-		Vec3 pos;
-	};
-
-	struct SimpleIdx
-	{
-		uint32_t x, y, z;
-	};
+	vector<pair<FColliderRay*, FMeshCollider*>> RaycastTaskColliders;
+	unordered_map<const void*, FMeshBatchData> DataCache;
 
 private:
 	// Main Flow
 	bool PreProcess();
-	void CreateBVHTree();
+	void CreateBVHs();
 	void RaycastProcess();
 	void BroadPhase();
 	void NarrowPhase();
-	void CollisionPostProcess() const;
+	void PostProcess() const;
 	void CleanResource();
 
-	// BVH Function
+	// BVH Functions
 	static void BuildBVH(const vector<IColliderBase*>& InColliders, BVHNode*& OutNode);
 	static void DestroyBVH(BVHNode*& InRootNode);
 	static BVHNode* BuildBVHRecursive(const vector<IColliderBase*>& InColliders, int InDepth);
-	void GetCandidatesInBVHTree(const BVHNode* InTreeRootNode, unordered_set<FCollisionID>& InCandidateCheckSet);
+	static void QueryBVH(const BVHNode* InNode, const IColliderBase* InCollider, vector<IColliderBase*>& OutCandidates);
+	static void QueryBVH(const BVHNode* InNode, FColliderRay* InRay, vector<FRayCollisionInfo>& OutCandidates);
 
-	// Raycast Function
-	static void QueryBVH(const BVHNode* InNode, const FColliderRay* InRay,
-	                     vector<FRayColliderInfo>& OutIntersectVector);
-	MeshBatchData GetOrAddRaycastBatchData(const FMeshCollider* InCollider);
+	// Raycast Functions
+	void RaycastBroad();
+	void RaycastNarrow();
 	void AddRayShaderTask(FColliderRay* InRay, const FMeshCollider* InCollider);
 	void ExecuteAndProcessRaycastCS();
 
-	// Broad Phase Function
-	static void QueryBVH(const BVHNode* InNode, const IColliderBase* InCollider, vector<IColliderBase*>& OutCandidates);
+	// Broad Phase Functions
+	void GetCandidatesInBVH(const BVHNode* InTreeRootNode, unordered_set<FCollisionID>& InCandidateCheckSet);
 	bool IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
 	                   IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const;
 	bool IsLayerCollided(const IColliderBase* InLeftCollider, const IColliderBase* InRightCollider) const;
 	void AddCandidate(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 
-	// Narrow Phase Function
-	void CheckPair(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
-	void AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const;
-
-	// Narrow CPU Task
+	// Narrow Phase Functions
+	static bool IsNeedCSTask(const IColliderBase* InLeftObject, const IColliderBase* InRightObject);
+	void AddShaderTask(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
+	void CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const;
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
 	static bool IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider);
-
-	// Narrow GPU Task
-	static bool NeedComputeShader(const IColliderBase* InLeftObject, const IColliderBase* InRightObject);
-	MeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
-	MeshBatchData GetOrAddBatchData(const FMeshCollider* InCollider);
-	void AddShaderTask(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 	void ExecuteAndProcessCS();
 
-	// Collision PostProcess
+	// PostProcess Functions
 	void ExecuteOverlap() const;
+
+	// Common Functions
+	void ClearDynamicColliders();
+	void ClearAllColliders();
+	void ClearTasks();
+	void ClearCollisionContainers();
+	void ClearBVHs();
+	void ClearContainersForNextFrame();
+
+	FMeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
+	FMeshBatchData GetOrAddBatchData(const FMeshCollider* InCollider);
+
+	void AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const;
 
 public:
 	void Tick();

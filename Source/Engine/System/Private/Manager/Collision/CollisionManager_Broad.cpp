@@ -14,7 +14,7 @@
  * @param InTreeRootNode AABB 충돌을 검증할 VBH 트리의 Root Node
  * @param InCandidateCheckSet 중복 충돌쌍을 배제하기 위한 Broad Phase 검증 Set
  */
-void FCollisionManager::GetCandidatesInBVHTree(const BVHNode* InTreeRootNode,
+void FCollisionManager::GetCandidatesInBVH(const BVHNode* InTreeRootNode,
                                                unordered_set<FCollisionID>& InCandidateCheckSet)
 {
 	for (IColliderBase* LeftCollider : DynamicColliders)

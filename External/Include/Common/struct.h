@@ -635,19 +635,19 @@ struct tScriptParam
 	void* pData;
 };
 
-struct FRayColliderInfo
+struct FRayCollisionInfo
 {
 	FColliderRay* RayObject;
 	IColliderBase* HitCollider;
 	IColliderBase* PrevCollider;
 	float Length;
 
-	bool operator<(const FRayColliderInfo& POther) const
+	bool operator<(const FRayCollisionInfo& POther) const
 	{
 		return Length < POther.Length;
 	}
 
-	FRayColliderInfo()
+	FRayCollisionInfo()
 		: RayObject(nullptr)
 		  , HitCollider(nullptr)
 		  , PrevCollider(nullptr)
@@ -655,11 +655,54 @@ struct FRayColliderInfo
 	{
 	}
 
-	FRayColliderInfo(FColliderRay* InRay, IColliderBase* InCollider, float InLength)
+	FRayCollisionInfo(FColliderRay* InRay, IColliderBase* InCollider, float InLength)
 		: RayObject(InRay)
 		  , HitCollider(InCollider)
 		  , PrevCollider(nullptr)
 		  , Length(InLength)
 	{
 	}
+};
+
+struct FCollisionID
+{
+	IColliderBase* Left;
+	IColliderBase* Right;
+
+	FCollisionID(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
+	{
+		if (InLeftCollider > InRightCollider)
+		{
+			std::swap(InLeftCollider, InRightCollider);
+		}
+
+		Left = InLeftCollider;
+		Right = InRightCollider;
+	}
+
+	auto operator<=>(const FCollisionID& InOther) const = default;
+};
+
+namespace std
+{
+	template <>
+	struct hash<FCollisionID>
+	{
+		size_t operator()(const FCollisionID& InCollisionID) const noexcept
+		{
+			const size_t hash1 = hash<IColliderBase*>()(InCollisionID.Left);
+			const size_t hash2 = hash<IColliderBase*>()(InCollisionID.Right);
+
+			// Use hash_combine Method In Boost Library
+			// 피보나치 해싱
+			return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2));
+		}
+	};
+}
+
+struct FMeshBatchData
+{
+	UINT VertexOffset;
+	UINT IndexOffset;
+	UINT TriangleCount;
 };

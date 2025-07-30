@@ -59,6 +59,7 @@ public:
 
 	// Overlap
 	bool IsOverlapped() const { return OverlapCount != 0; }
+	int GetOverlapCount() const { return OverlapCount; }
 	void IncreaseOverlapCount() { ++OverlapCount; }
 	void DecreaseOverlapCount() { --OverlapCount; }
 
