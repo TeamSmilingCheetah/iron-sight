@@ -6,19 +6,9 @@
 #include "Runtime/Public/Component/Physics/ColliderBase.h"
 #include "Runtime/Public/Component/Physics/MeshCollider.h"
 
-FCollisionManager::FCollisionManager()
-	: LayerCollisionMatrix{}
-	  , CurrentLevel(nullptr)
-{
-	FrameCollisionSet = new unordered_set<FCollisionID>();
-	PrevFrameCollisionSet = new unordered_set<FCollisionID>();
-}
+FCollisionManager::FCollisionManager() = default;
 
-FCollisionManager::~FCollisionManager()
-{
-	DELETE(FrameCollisionSet);
-	DELETE(PrevFrameCollisionSet);
-}
+FCollisionManager::~FCollisionManager() = default;
 
 /*****************************/
 /** Layer Collision Setting **/
@@ -47,6 +37,23 @@ void FCollisionManager::ActiveLayerCollision(UINT InLeftLayer, UINT InRightLayer
 void FCollisionManager::ClearCollisionBtwLayerSetting()
 {
 	memset(LayerCollisionMatrix, 0, sizeof(UINT) * MAX_LAYER);
+}
+
+/**
+ * @brief 특정 충돌쌍을 외부에서 제거하기 위한 함수
+ * @param InLeftVariant Collider 1
+ * @param InRightVariant Collider 2
+ */
+void FCollisionManager::RemoveCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant)
+{
+	IColliderBase* LeftCollider =GetBaseFromVariant(InLeftVariant);
+	IColliderBase* RightCollider =GetBaseFromVariant(InRightVariant);
+
+	assert(LeftCollider && RightCollider);
+
+	FCollisionID CollisionID(LeftCollider, RightCollider);
+	FrameCollisionSet.erase(CollisionID);
+	PrevFrameCollisionSet.erase(CollisionID);
 }
 
 /**
@@ -200,7 +207,7 @@ void FCollisionManager::NarrowPhase()
 	ExecuteAndProcessCS();
 }
 
-void FCollisionManager::PostProcess() const
+void FCollisionManager::PostProcess()
 {
 	ExecuteOverlap();
 }

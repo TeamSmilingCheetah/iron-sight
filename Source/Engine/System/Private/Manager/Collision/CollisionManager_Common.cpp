@@ -60,8 +60,8 @@ void FCollisionManager::ClearTasks()
  */
 void FCollisionManager::ClearCollisionContainers()
 {
-	PrevFrameCollisionSet->clear();
-	FrameCollisionSet->clear();
+	PrevFrameCollisionSet.clear();
+	FrameCollisionSet.clear();
 	CollisionCandidates.clear();
 }
 
@@ -85,7 +85,7 @@ void FCollisionManager::ClearContainersForNextFrame()
 
 	// Swap & Clean Buffer To Use In Next Tick
 	swap(FrameCollisionSet, PrevFrameCollisionSet);
-	FrameCollisionSet->clear();
+	FrameCollisionSet.clear();
 }
 
 /**
@@ -151,10 +151,10 @@ bool FCollisionManager::IsInCondition(unordered_set<FCollisionID>& InCandidateCh
 	return false;
 }
 
-void FCollisionManager::AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const
+void FCollisionManager::AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant)
 {
 	IColliderBase* LeftCollider = GetBaseFromVariant(InLeftVariant);
 	IColliderBase* RightCollider = GetBaseFromVariant(InRightVariant);
 
-	FrameCollisionSet->insert(FCollisionID(LeftCollider, RightCollider));
+	FrameCollisionSet.insert(FCollisionID(LeftCollider, RightCollider));
 }

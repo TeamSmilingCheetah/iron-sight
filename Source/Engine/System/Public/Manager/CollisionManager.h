@@ -51,8 +51,8 @@ private:
 	// Collision Containers
 	vector<FCollisionID> CollisionCandidates;
 	vector<FRayCollisionInfo> RayCandidates;
-	unordered_set<FCollisionID>* PrevFrameCollisionSet;
-	unordered_set<FCollisionID>* FrameCollisionSet;
+	unordered_set<FCollisionID> PrevFrameCollisionSet;
+	unordered_set<FCollisionID> FrameCollisionSet;
 
 	// CS Task
 	CMeshCollisionCS MeshCollisionCS;
@@ -73,7 +73,7 @@ private:
 	void RaycastProcess();
 	void BroadPhase();
 	void NarrowPhase();
-	void PostProcess() const;
+	void PostProcess();
 	void CleanResource();
 
 	// BVH Functions
@@ -97,13 +97,13 @@ private:
 	// Narrow Phase Functions
 	static bool IsNeedCSTask(const IColliderBase* InLeftObject, const IColliderBase* InRightObject);
 	void AddShaderTask(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
-	void CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const;
+	void CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
 	static bool IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider);
 	void ExecuteAndProcessCS();
 
 	// PostProcess Functions
-	void ExecuteOverlap() const;
+	void ExecuteOverlap();
 
 	// Common Functions
 	void ClearDynamicColliders();
@@ -118,11 +118,12 @@ private:
 
 	bool IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
 	                   IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const;
-	void AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const;
+	void AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant);
 
 public:
 	void Tick();
 	void ActiveLayerCollision(UINT InLeftLayer, UINT InRightLayer);
 	void ClearCollisionBtwLayerSetting();
+	void RemoveCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant);
 	void ClearPreviousLevelInformation();
 };

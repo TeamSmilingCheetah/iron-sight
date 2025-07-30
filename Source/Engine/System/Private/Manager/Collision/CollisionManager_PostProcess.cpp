@@ -8,11 +8,11 @@
 /**
  * @brief 모든 충돌 판정이 완료된 이후 Object 간의 Overlap에 대한 처리를 일괄적으로 진행하는 함수
  */
-void FCollisionManager::ExecuteOverlap() const
+void FCollisionManager::ExecuteOverlap()
 {
-	// LOG_TRACE_F("[Collision][ExecuteOverlap] Total Collision In This Frame: {}", FrameCollisionSet->size());
+	// LOG_TRACE_F("[Collision][ExecuteOverlap] Total Collision In This Frame: {}", FrameCollisionSet.size());
 
-	for (const FCollisionID Collision : *FrameCollisionSet)
+	for (const FCollisionID& Collision : FrameCollisionSet)
 	{
 		IColliderBase* LeftCollider = Collision.Left;
 		IColliderBase* RightCollider = Collision.Right;
@@ -24,7 +24,7 @@ void FCollisionManager::ExecuteOverlap() const
 		bool IsDeactive = LeftObject->IsDeactivated() || RightObject->IsDeactivated()
 			|| LeftCollider->IsDeactive() || RightCollider->IsDeactive();
 
-		if (PrevFrameCollisionSet->contains(Collision))
+		if (PrevFrameCollisionSet.contains(Collision))
 		{
 			// LOG_TRACE_F("[Collision][Overlap] {} & {} EndOverlapped",
 			//             WStringToString(LeftObject->GetName()), WStringToString(RightObject->GetName()));
@@ -45,7 +45,7 @@ void FCollisionManager::ExecuteOverlap() const
 				}
 
 				// 여기서 EndOverlap하기 때문에 다음 프레임에 잡히지 않도록 제거
-				FrameCollisionSet->erase(Collision);
+				FrameCollisionSet.erase(Collision);
 			}
 			// Overlap
 			else
@@ -64,7 +64,7 @@ void FCollisionManager::ExecuteOverlap() const
 			}
 
 			// EndOverlap에 중복으로 처리되지 않도록 여기서 제거
-			PrevFrameCollisionSet->erase(Collision);
+			PrevFrameCollisionSet.erase(Collision);
 		}
 		else
 		{
@@ -90,7 +90,7 @@ void FCollisionManager::ExecuteOverlap() const
 	}
 
 	// 위에서 제거되지 않은 Previous Collision에 대해서는 전부 EndOverlap 처리
-	for (const FCollisionID PrevCollision : *PrevFrameCollisionSet)
+	for (const FCollisionID PrevCollision : PrevFrameCollisionSet)
 	{
 		IColliderBase* LeftCollider = PrevCollision.Left;
 		IColliderBase* RightCollider = PrevCollision.Right;
