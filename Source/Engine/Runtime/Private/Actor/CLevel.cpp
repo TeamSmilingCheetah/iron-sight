@@ -5,7 +5,7 @@
 
 CLevel::CLevel()
 	: m_State(LEVEL_STATE::NONE)
-	, m_arrLayer{}
+	  , m_arrLayer{}
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
@@ -176,6 +176,40 @@ void CLevel::GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
 						InStatic.push_back(Collider);
 					}
 					else
+					{
+						InDynamic.push_back(Collider);
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * @brief Level 중간 시점에 충돌체를 분류해서 제공하는 함수
+ * Static Collider는 다시 쌓지 않는다
+ * @param InDynamic 움직이는 충돌체를 모아놓을 Vector
+ * @param InRays Ray만 모아놓은 Vector
+ */
+void CLevel::GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays)
+{
+	for (int i = 0; i < MAX_LAYER; ++i)
+	{
+		for (auto* Object : m_arrLayer[i].GetObjects())
+		{
+			if (Object->IsActive())
+			{
+				for (auto Variant : Object->GetColliders())
+				{
+					IColliderBase* Collider = GetBaseFromVariant(Variant);
+
+					if (Collider->GetColliderType() == EColliderType::ColliderRay)
+					{
+						InRays.push_back(reinterpret_cast<FColliderRay*>(Collider));
+						continue;
+					}
+
+					if (!Collider->IsStatic())
 					{
 						InDynamic.push_back(Collider);
 					}
