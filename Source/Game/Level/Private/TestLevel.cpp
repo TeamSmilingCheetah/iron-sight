@@ -72,6 +72,7 @@ void TestLevel::CreateTestLevel()
 			{
 				Engine::Common::AddComponentToObject<FColliderRay>(obj);
 				Engine::Common::AddComponentToObject<FCollider3D>(obj);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -107,6 +108,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->Collider3D()->SetIndependentScale(true);
 				obj->Collider3D()->SetTrigger(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -144,6 +146,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->Collider3D()->SetIndependentScale(true);
 				obj->Collider3D()->SetTrigger(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -179,6 +182,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->Collider3D()->SetIndependentScale(true);
 				obj->Collider3D()->SetTrigger(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -214,6 +218,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->Collider3D()->SetIndependentScale(true);
 				obj->Collider3D()->SetTrigger(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -249,6 +254,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->Collider3D()->SetIndependentScale(true);
 				obj->Collider3D()->SetTrigger(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -277,6 +283,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->Collider3D()->SetIndependentScale(true);
 				obj->Collider3D()->SetTrigger(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -370,6 +377,7 @@ void TestLevel::CreateTestLevel()
 				obj->Collider3D()->SetScale(Vec3(650.f, 1600.f, 40.f));
 				obj->Collider3D()->SetOffset(Vec3(310.f, 800.f, 0.f));
 				obj->Collider3D()->SetIndependentScale(true);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
 			[](CGameObject* obj)
 			{
@@ -813,6 +821,7 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 	CGameObject* pInteractionHandler = new CGameObject;
 	pInteractionHandler->SetName(L"Interaction Handler");
 	pInteractionHandler->AddComponent(new FCollider3D);
+	Engine::Collider::SetColliderDynamic(pInteractionHandler, EColliderType::Collider3D);
 
 	pInteractionHandler->Collider3D()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
 	pInteractionHandler->Collider3D()->SetIndependentScale(true);
