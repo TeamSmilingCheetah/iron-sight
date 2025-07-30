@@ -9,6 +9,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
@@ -423,6 +424,39 @@ void EnemyController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherC
 
 					// 충돌 벡터 추가
 					m_vecCollisionNormal.push_back(normal);
+				}
+			}
+		}
+	}
+
+	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+		InOtherCollider->GetColliderType() == EColliderType::MeshCollider)
+	{
+		FMeshCollider* OtherCollider = static_cast<FMeshCollider*>(InOtherCollider);
+
+		Vec3 CollisionNormal = OtherCollider->GetCollisionNormal();
+		float PenetrationDepth = OtherCollider->GetPenetrationDepth();
+
+		// Valid Check
+		if (CollisionNormal.Length() > 0.001f)
+		{
+			// Add Normal
+			m_vecCollisionNormal.push_back(CollisionNormal);
+
+			// Position Correction
+			// 보정 제한은 임의의 값 Setting
+			if (PenetrationDepth > 0.0f && PenetrationDepth < 10.0f)
+			{
+				// Speed Decay By Direction
+				float VelocityDotNormal = m_Velocity.Dot(CollisionNormal);
+				if (VelocityDotNormal < 0.0f)
+				{
+					Vec3 ReflectedVelocity = m_Velocity - 2.0f * VelocityDotNormal * CollisionNormal;
+					m_Velocity = ReflectedVelocity * 0.8f;
+
+					// Additional Position Correction
+					Vec3 SmallCorrection = CollisionNormal * 0.01f;
+					Transform()->SetRelativePos(Transform()->GetRelativePos() + SmallCorrection);
 				}
 			}
 		}
