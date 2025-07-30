@@ -12,8 +12,9 @@ void FCollisionManager::ExecuteOverlap()
 {
 	// LOG_TRACE_F("[Collision][ExecuteOverlap] Total Collision In This Frame: {}", FrameCollisionSet.size());
 
-	for (const FCollisionID& Collision : FrameCollisionSet)
+	for (auto iter = FrameCollisionSet.begin(); iter != FrameCollisionSet.end();)
 	{
+		const FCollisionID& Collision = *iter;
 		IColliderBase* LeftCollider = Collision.Left;
 		IColliderBase* RightCollider = Collision.Right;
 		const CGameObject* LeftObject = LeftCollider->GetOwner();
@@ -24,11 +25,13 @@ void FCollisionManager::ExecuteOverlap()
 		bool IsDeactive = LeftObject->IsDeactivated() || RightObject->IsDeactivated()
 			|| LeftCollider->IsDeactive() || RightCollider->IsDeactive();
 
-		if (PrevFrameCollisionSet.contains(Collision))
+		bool iterUpdated = false;
+		auto prevIter = PrevFrameCollisionSet.find(Collision);
+
+		if (prevIter != PrevFrameCollisionSet.end())
 		{
 			// LOG_TRACE_F("[Collision][Overlap] {} & {} EndOverlapped",
 			//             WStringToString(LeftObject->GetName()), WStringToString(RightObject->GetName()));
-
 			// EndOverlap
 			if (IsDead || IsLayerChanged || IsDeactive)
 			{
@@ -45,7 +48,8 @@ void FCollisionManager::ExecuteOverlap()
 				}
 
 				// 여기서 EndOverlap하기 때문에 다음 프레임에 잡히지 않도록 제거
-				FrameCollisionSet.erase(Collision);
+				iter = FrameCollisionSet.erase(iter);
+				iterUpdated = true;
 			}
 			// Overlap
 			else
@@ -64,7 +68,7 @@ void FCollisionManager::ExecuteOverlap()
 			}
 
 			// EndOverlap에 중복으로 처리되지 않도록 여기서 제거
-			PrevFrameCollisionSet.erase(Collision);
+			PrevFrameCollisionSet.erase(prevIter);
 		}
 		else
 		{
@@ -87,10 +91,15 @@ void FCollisionManager::ExecuteOverlap()
 				}
 			}
 		}
+
+		if (!iterUpdated)
+			++iter;
 	}
 
 	// 위에서 제거되지 않은 Previous Collision에 대해서는 전부 EndOverlap 처리
-	for (const FCollisionID PrevCollision : PrevFrameCollisionSet)
+
+
+	for (const FCollisionID& PrevCollision : PrevFrameCollisionSet)
 	{
 		IColliderBase* LeftCollider = PrevCollision.Left;
 		IColliderBase* RightCollider = PrevCollision.Right;
