@@ -102,11 +102,12 @@ void FCollisionManager::DestroyBVH(BVHNode*& InRootNode)
  * @param InCollider [IN] Intersect 판정이 필요한 Collider
  * @param OutCandidates [OUT] AABB 충돌이 확정된 잠재적 충돌 의심군
  */
-void FCollisionManager::QueryBVH(const BVHNode* InNode, const IColliderBase* InCollider, vector<IColliderBase*>& OutCandidates)
+void FCollisionManager::QueryBVH(const BVHNode* InNode,
+                                 const IColliderBase* InCollider, vector<IColliderBase*>& OutCandidates)
 {
-	if (!InNode)
+	if (!InNode || !InCollider)
 	{
-		LOG_ERROR("[Collision][VBH] Query 처리 중 BVHNode가 존재하지 않음");
+		LOG_ERROR("[Collision][VBH] Query 처리 중 BVHNode 또는 Collider가 존재하지 않음");
 		return;
 	}
 
@@ -140,10 +141,10 @@ void FCollisionManager::QueryBVH(const BVHNode* InNode, const IColliderBase* InC
  * @brief BVH 트리를 탐색하며 Ray와의 충돌에서 가능성이 있는 객체 정보를 제공하는 함수
  * @param InNode [IN] 현재 Intersect 체크가 필요한 Node
  * @param InRay [IN] Node와 충돌 검사를 진행하는 Main 객체
- * @param OutIntersectVector [OUT] 충돌이 확정된 오브젝트들의 정보가 담길 Vector
+ * @param OutCandidates [OUT] AABB 충돌이 확정된 잠재적 충돌 의심군
  */
-void FCollisionManager::QueryBVH(const BVHNode* InNode, const FColliderRay* InRay,
-                                 vector<FRayColliderInfo>& OutIntersectVector)
+void FCollisionManager::QueryBVH(const BVHNode* InNode,
+                                 FColliderRay* InRay, vector<FRayCollisionInfo>& OutCandidates)
 {
 	if (!InNode || !InRay)
 	{
@@ -176,11 +177,11 @@ void FCollisionManager::QueryBVH(const BVHNode* InNode, const FColliderRay* InRa
 			float TimeMin = 0.f;
 			if (Collider->GetAABB().Intersects(RayInfo, &TimeMin))
 			{
-				FRayColliderInfo ColliderInfo;
-				ColliderInfo.RayObject = const_cast<FColliderRay*>(InRay);
-				ColliderInfo.HitCollider = Collider;
-				ColliderInfo.Length = TimeMin;
-				OutIntersectVector.push_back(ColliderInfo);
+				FRayCollisionInfo CollisionInfo;
+				CollisionInfo.RayObject = InRay;
+				CollisionInfo.HitCollider = Collider;
+				CollisionInfo.Length = TimeMin;
+				OutCandidates.push_back(CollisionInfo);
 			}
 		}
 	}
@@ -188,7 +189,7 @@ void FCollisionManager::QueryBVH(const BVHNode* InNode, const FColliderRay* InRa
 	// Leaf가 아니라면 Devide & Conquer로 재귀적 쿼리 처리
 	else
 	{
-		QueryBVH(InNode->Left, InRay, OutIntersectVector);
-		QueryBVH(InNode->Right, InRay, OutIntersectVector);
+		QueryBVH(InNode->Left, InRay, OutCandidates);
+		QueryBVH(InNode->Right, InRay, OutCandidates);
 	}
 }

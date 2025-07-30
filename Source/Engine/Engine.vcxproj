@@ -303,6 +303,7 @@
     <ClCompile Include="System\Private\Manager\CAssetMgr.cpp"/>
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Broad.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_BVH.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Common.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Main.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Narrow.cpp" />
     <ClCompile Include="System\Private\Manager\CFontMgr.cpp"/>

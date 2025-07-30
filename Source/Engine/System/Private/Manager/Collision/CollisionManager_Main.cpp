@@ -2,6 +2,9 @@
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Runtime/Public/Component/Physics/Collider3D.h"
+#include "Runtime/Public/Component/Physics/ColliderBase.h"
+#include "Runtime/Public/Component/Physics/MeshCollider.h"
 
 FCollisionManager::FCollisionManager()
 	: LayerCollisionMatrix{}
@@ -47,22 +50,19 @@ void FCollisionManager::ClearCollisionBtwLayerSetting()
 }
 
 /**
- * @brief 새로운 Level 시작 전 기존에 들고 있던 자료들을 전부 제거하는 함수
+ * @brief 새로운 Level 시작 전 기존 Level 기준으로 들고 있던 정보들을 전부 제거하는 함수
  */
 void FCollisionManager::ClearPreviousLevelInformation()
 {
-	// Reset Information
-	StaticColliders.clear();
-	DynamicColliders.clear();
-	RayColliders.clear();
-	CollisionCandidates.clear();
-	PrevFrameCollisionSet->clear();
-	FrameCollisionSet->clear();
-	Tasks.clear();
-	RaycastTasks.clear();
+	// Clear Information
+	ClearAllColliders();
+	ClearCollisionContainers();
 
-	DestroyBVH(StaticBVHRoot);
-	DestroyBVH(DynamicBVHRoot);
+	// Clear Tasks
+	ClearTasks();
+
+	// Clear BVH
+	ClearBVHs();
 }
 
 /****************/
@@ -72,8 +72,8 @@ void FCollisionManager::ClearPreviousLevelInformation()
 /**
  * @brief 전체 충돌 처리 로직의 처리 함수
  * PreProcess : 충돌 로직 진입 유무 등을 판단하고, 로직에 필요한 자원들을 미리 세팅한다
- * -> Create BVH Tree : Bounding Volume Hirachy 구축, 이 과정에서 Level의 Active Object를 전부 가져와서 기록해둔다
- * -> Raycast Process : Raycast는 Collision 중 처리 방식이 상이하여 우선 처리한다, 개별 Broad - Narrow 처리를 통해 충돌쌍을 기록한다
+ * -> Create BVHs : Bounding Volume Hirachy 구축, 이 과정에서 Level의 Active Object를 전부 가져와서 세팅한다
+ * -> Raycast Process : Raycast는 우선처리 대상으로, 내부적으로 Broad - Narrow 처리를 통해 충돌쌍을 기록하여 넘긴다
  * -> Broad Phase : Main Collision의 Broad Phase, 여기서 AABB 판정을 통해 Candidates를 한정 짓는다
  * -> Narrow Phase : Candidates에 대해서 Compute Shader 처리를 통해 정밀하게 판정을 진행하며 이 과정에서 충돌쌍을 기록한다
  * -> PostProcess Phase : 확정된 충돌쌍에 대한 상호작용을 모든 오브젝트를 순회하면서 일괄 처리한다
@@ -81,7 +81,7 @@ void FCollisionManager::ClearPreviousLevelInformation()
  */
 void FCollisionManager::Tick()
 {
-	// PreProcess에서 Collision 처리하지 않을 조건이 탐색되었다면 자원을 정리하고 Early Return
+	// Early Return
 	if (!PreProcess())
 	{
 		CleanResource();
@@ -89,27 +89,12 @@ void FCollisionManager::Tick()
 	}
 
 	// LOG_INFO("[Collision][Main] Collision Process Start");
-
-	// Create BVH Structure
-	// LOG_INFO("[Collision][Main] Create Bounding Volume Hirachy Start");
-	CreateBVHTree();
-
-	// Raycast Process
-	// LOG_INFO("[Collision][Main] Raycast Process Start");
+	CreateBVHs();
 	RaycastProcess();
-
-	// Check Collision
-	// LOG_INFO("[Collision][Main] Broad Phase Start");
 	BroadPhase();
-	// LOG_INFO("[Collision][Main] Narrow Phase Start");
 	NarrowPhase();
-
-	// LOG_INFO("[Collision][Main] PostProcess Phase Start");
-	CollisionPostProcess();
-
-	// Reset Information
+	PostProcess();
 	CleanResource();
-
 	// LOG_INFO("[Collision][Main] Collision Process Done");
 }
 
@@ -136,18 +121,26 @@ bool FCollisionManager::PreProcess()
 		return false;
 	}
 
-	CurrentLevel->GetAllCollidersInLevel(StaticColliders, DynamicColliders,RayColliders);
+	// Static Collider는 Level 변경 직후에만 제공 받고, 그 이후로는 따로 리셋하여 다시 쌓지 않는다
+	if (StaticColliders.empty())
+	{
+		CurrentLevel->GetAllCollidersInLevel(StaticColliders, DynamicColliders, RayColliders);
+	}
+	else
+	{
+		CurrentLevel->GetDynamicCollidersInLevel(DynamicColliders, RayColliders);
+	}
 
 	return true;
 }
 
 /**
- * @brief 충돌 판정을 위한 BVH Tree를 구축하는 함수
+ * @brief 충돌 판정을 위한 BVH 구조를 구축하는 함수
  * 이미 StaticBVH가 구축이 되어 있다면 따로 구축하지 않으며, DynamicBVH는 매 Tick마다 구축해야 한다
  */
-void FCollisionManager::CreateBVHTree()
+void FCollisionManager::CreateBVHs()
 {
-	// TODO(KHJ): 혹시 정적인 충돌체가 사라지는 케이스가 존재한다면 해당 케이스에는 재구축을 해야 한다
+	// XXX(KHJ): 혹시 정적인 충돌체가 사라지는 케이스가 존재한다면 해당 케이스에는 재구축을 해야 한다
 	// XXX(KHJ): 그러나 그런 케이스라면 그냥 처음부터 동적 충돌체로 잡는 게 나을 수 있음
 	if (!StaticBVHRoot)
 	{
@@ -160,14 +153,27 @@ void FCollisionManager::CreateBVHTree()
 	// LOG_INFO_F("[Collision][VBH] Total Dynamic Colliders: {}", DynamicColliders.size());
 }
 
+/**
+ * @brief 레벨 내 모든 Ray Collider와 충돌 가능한 오브젝트에 대해 Raycast를 처리하는 함수
+ * 다른 충돌체처럼 Ray를 대상으로 동일하게 Broad - Narrow 구조로 내부에서 처리 후 CS Task까지 완료한다
+ */
+void FCollisionManager::RaycastProcess()
+{
+	RaycastBroad();
+	RaycastNarrow();
+}
+
+/**
+ * @brief 모든 Dynamic Collider에 대해, Narrow Phase로 진행할 충돌쌍을 골라내는 과정
+ * Static BVH와 Dynamic BVH에 각각 검증하는 절차를 진행함
+ */
 void FCollisionManager::BroadPhase()
 {
 	// 중복 배제를 위한 Set 생성
 	unordered_set<FCollisionID> CandidateSet;
 
-	// 모든 Dynamic Collider에 대해, Static BVH와 Dynamic BVH에 검증하는 과정을 거쳐 Narrow Phase로 진행할 충돌쌍을 골라냄
-	GetCandidatesInBVHTree(StaticBVHRoot, CandidateSet);
-	GetCandidatesInBVHTree(DynamicBVHRoot, CandidateSet);
+	GetCandidatesInBVH(StaticBVHRoot, CandidateSet);
+	GetCandidatesInBVH(DynamicBVHRoot, CandidateSet);
 }
 
 /**
@@ -175,37 +181,26 @@ void FCollisionManager::BroadPhase()
  */
 void FCollisionManager::NarrowPhase()
 {
-	// Reset Task Data
-	Tasks.clear();
-	TaskColliders.clear();
-	FrameAllVertices.clear();
-	FrameAllIndices.clear();
-	DataCache.clear();
-
 	// CPU와 GPU 처리 대상을 분리
 	for (const FCollisionID ID : CollisionCandidates)
 	{
-		// CS 처리가 필요한 경우 CS Task에만 달고 나감
-		if (NeedComputeShader(ID.Left, ID.Right))
+		if (IsNeedCSTask(ID.Left, ID.Right))
 		{
+			// CS 처리가 필요한 경우 CS Task에만 달고 나감
 			AddShaderTask(ID.Left, ID.Right);
 		}
-		// CS 처리 대상이 아닐 경우, 여기서 충돌 처리 완료
 		else
 		{
-			CheckPair(ID.Left, ID.Right);
+			// CS 처리 대상이 아닐 경우, 여기서 충돌 처리 마무리
+			CheckCollisionInCPU(ID.Left, ID.Right);
 		}
 	}
 
-	// CS Task Batch Process
-	if (!Tasks.empty())
-	{
-		// LOG_INFO_F("[Collision][ComputeShader] True Collision After CS Check: {}", MTasks.size());
-		ExecuteAndProcessCS();
-	}
+	// Process Delayed Batch Process
+	ExecuteAndProcessCS();
 }
 
-void FCollisionManager::CollisionPostProcess() const
+void FCollisionManager::PostProcess() const
 {
 	ExecuteOverlap();
 }
@@ -216,15 +211,7 @@ void FCollisionManager::CollisionPostProcess() const
 void FCollisionManager::CleanResource()
 {
 	// Reset Information
-	CollisionCandidates.clear();
-	StaticColliders.clear();
-	DynamicColliders.clear();
-	RayColliders.clear();
-
-	Tasks.clear();
-	RaycastTasks.clear();
-
-	// Swap & Clean Buffer To Use In Next Tick
-	swap(FrameCollisionSet, PrevFrameCollisionSet);
-	FrameCollisionSet->clear();
+	ClearContainersForNextFrame();
+	ClearDynamicColliders();
+	ClearTasks();
 }

@@ -12,30 +12,13 @@
 /** Constant Structures **/
 /*************************/
 
-constexpr UINT Indices[36] = {
-	0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6,
-	0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6, 2,
-	2, 6, 7, 2, 7, 3, 3, 7, 4, 3, 4, 0
-};
-
-constexpr Vec3 UnitCube[8] = {
-	{-0.5f, 0.5f, -0.5f},
-	{0.5f, 0.5f, -0.5f},
-	{0.5f, -0.5f, -0.5f},
-	{-0.5f, -0.5f, -0.5f},
-	{-0.5f, 0.5f, 0.5f},
-	{0.5f, 0.5f, 0.5f},
-	{0.5f, -0.5f, 0.5f},
-	{-0.5f, -0.5f, 0.5f},
-};
-
 /**
  * @brief 세부 충돌 검사에 Compute Shader 처리가 필요한지 판별하는 함수
  * @param InLeftCollider Collider 1
  * @param InRightCollider Collider 2
  * @return CS 처리가 필요하다면 True
  */
-bool FCollisionManager::NeedComputeShader(const IColliderBase* InLeftCollider, const IColliderBase* InRightCollider)
+bool FCollisionManager::IsNeedCSTask(const IColliderBase* InLeftCollider, const IColliderBase* InRightCollider)
 {
 	const bool IsMeshA = (InLeftCollider->GetColliderType() == EColliderType::MeshCollider);
 	const bool IsMeshB = (InRightCollider->GetColliderType() == EColliderType::MeshCollider);
@@ -53,7 +36,7 @@ bool FCollisionManager::NeedComputeShader(const IColliderBase* InLeftCollider, c
 /**
  * @brief MeshCollider 정보를 Buffer에 추가하는 함수
  */
-MeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
+FMeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;
@@ -63,7 +46,7 @@ MeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollid
 		return DataCache.at(ColliderKey);
 	}
 
-	MeshBatchData NewData = {};
+	FMeshBatchData NewData = {};
 	NewData.VertexOffset = static_cast<UINT>(FrameAllVertices.size());
 	NewData.IndexOffset = static_cast<UINT>(FrameAllIndices.size());
 
@@ -93,48 +76,8 @@ MeshBatchData FCollisionManager::GetOrAddBatchData(const FMeshCollider* InCollid
 			TotalTriangleCount += Subset.IdxCount / 3;
 		}
 
-		NewData.TriCount = TotalTriangleCount;
+		NewData.TriangleCount = TotalTriangleCount;
 	}
-
-	// Cache에 등록
-	DataCache[ColliderKey] = NewData;
-
-	return NewData;
-}
-
-/**
- * @brief Collider3D 정보를 Buffer에 추가하는 함수
- */
-MeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
-{
-	// 중복 생성 방지
-	const void* ColliderKey = InCollider;
-	if (DataCache.contains(ColliderKey))
-	{
-		return DataCache.at(ColliderKey);
-	}
-
-	MeshBatchData NewData;
-	NewData.VertexOffset = static_cast<UINT>(FrameAllVertices.size());
-	NewData.IndexOffset = static_cast<UINT>(FrameAllIndices.size());
-
-	Matrix WorldMatrix = InCollider->GetColliderWorldMat();
-	Vec3 Vertices[8];
-	for (int i = 0; i < 8; ++i)
-	{
-		Vertices[i] = XMVector3Transform(UnitCube[i], WorldMatrix);
-	}
-
-	// Add Data
-	for (int i = 0; i < 8; ++i)
-	{
-		FrameAllVertices.push_back(Vertices[i]);
-	}
-	for (int i = 0; i < 36; ++i)
-	{
-		FrameAllIndices.push_back(Indices[i]);
-	}
-	NewData.TriCount = 12;
 
 	// Cache에 등록
 	DataCache[ColliderKey] = NewData;
@@ -147,6 +90,12 @@ MeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollider
  */
 void FCollisionManager::ExecuteAndProcessCS()
 {
+	// Early Return
+	if (Tasks.empty())
+	{
+		return;
+	}
+
 	// Create Structured Buffer
 	CStructuredBuffer AllVtxBuffer, AllIdxBuffer, TasksBuffer, ResultsBuffer;
 	AllVtxBuffer.Create(sizeof(Vec3), static_cast<UINT>(FrameAllVertices.size()),
@@ -204,7 +153,7 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
 	FCollider3D* Left3D = static_cast<FCollider3D*>(InLeftCollider);
 	FCollider3D* Right3D = static_cast<FCollider3D*>(InRightCollider);
 
-	MeshBatchData LeftData, RightData;
+	FMeshBatchData LeftData, RightData;
 
 	if (IsMeshColliderA && IsMeshColliderB)
 	{
@@ -234,10 +183,10 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
 	tCollisionTask Task = {};
 	Task.LeftVertexOffset = LeftData.VertexOffset;
 	Task.LeftIndexOffset = LeftData.IndexOffset;
-	Task.LeftTriCount = LeftData.TriCount;
+	Task.LeftTriCount = LeftData.TriangleCount;
 	Task.RightVertexOffset = RightData.VertexOffset;
 	Task.RightIndexOffset = RightData.IndexOffset;
-	Task.RightTriCount = RightData.TriCount;
+	Task.RightTriCount = RightData.TriangleCount;
 
 	Tasks.push_back(Task);
 }
@@ -248,7 +197,7 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
  * @param InLeftCollider Collider 1
  * @param InRightCollider Collider 2
  */
-void FCollisionManager::CheckPair(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
+void FCollisionManager::CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const
 {
 	const bool IsLeft2D = (InLeftCollider->GetColliderType() == EColliderType::Collider2D);
 	const bool IsRight2D = (InRightCollider->GetColliderType() == EColliderType::Collider2D);
@@ -261,34 +210,20 @@ void FCollisionManager::CheckPair(IColliderBase* InLeftCollider, IColliderBase* 
 	FCollider3D* Right3D = static_cast<FCollider3D*>(InRightCollider);
 
 	// 2D 충돌체 검사
-	if (IsLeft2D && IsRight2D)
+	if (IsLeft2D && IsRight2D && IsCollision(Left2D, Right2D))
 	{
-		if (IsCollision(Left2D, Right2D))
-		{
-			AddFrameCollision(Left2D, Right2D);
-		}
+		AddFrameCollision(Left2D, Right2D);
 	}
 
 	// 3D 충돌체 검사
 	if
-	(IsLeft3D && IsRight3D)
+	(IsLeft3D && IsRight3D && IsCollision(Left3D, Right3D))
 	{
-		if (IsCollision(Left3D, Right3D))
-		{
-			AddFrameCollision(Left3D, Right3D);
-		}
+		AddFrameCollision(Left3D, Right3D);
 	}
 
 	// LOG_INFO_F("[Collision][Narrow] Object {} & {}, Failed To Match Type Pairing",
 	//            WStringToString(PLeftObject->GetName()), WStringToString(PRightObject->GetName()));
-}
-
-void FCollisionManager::AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const
-{
-	IColliderBase* LeftCollider = GetBaseFromVariant(InLeftVariant);
-	IColliderBase* RightCollider = GetBaseFromVariant(InRightVariant);
-
-	FrameCollisionSet->insert(FCollisionID(LeftCollider, RightCollider));
 }
 
 /**********************************/
