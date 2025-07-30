@@ -20,4 +20,4 @@
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"

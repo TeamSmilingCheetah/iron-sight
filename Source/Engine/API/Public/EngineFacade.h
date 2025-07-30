@@ -6,6 +6,10 @@
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/Runtime/Public/State/CState.h"
+
+#include "Game/System/Public/StateMgr.h"
 
 enum class EColliderType : UINT8;
 /**
@@ -26,6 +30,9 @@ namespace Engine
 
 		template <class T>
 		void AddScriptToObject(CGameObject* PObject);
+
+		template <class T>
+		T* LoadState(ACTION_STATE PStateType);
 	}
 
 	namespace Transform
@@ -99,6 +106,11 @@ namespace Engine
 		void AddAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
 		void AddAnimationClip(CGameObject* PObject, Ptr<CAnimation> PAnimation);
 	}
+
+	namespace StateMachine
+	{
+		void AddState(CGameObject* PObject, CState* PState);
+	}
 }
 
 template <class T>
@@ -114,6 +126,13 @@ void Engine::Common::AddScriptToObject(CGameObject* PObject)
 {
 	static_assert(std::is_base_of_v<CScript, T>, "Object Can Only Get Script By This Function");
 	PObject->AddComponent(new T);
+}
+
+template <class T>
+T* Engine::Common::LoadState(ACTION_STATE PStateType)
+{
+	static_assert(std::is_base_of_v<CState, T>, "Object State Can Loaded By This Function");
+	return static_cast<T*>(StateMgr::GetState((UINT)PStateType));
 }
 
 template <typename T>

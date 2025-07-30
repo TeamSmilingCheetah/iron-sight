@@ -2,6 +2,7 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 
 class CGameObject;
 class FLandscape;
@@ -10,36 +11,36 @@ class InventoryController;
 class CameraController;
 class CameraEffect;
 
-enum class MOTION_STATE : uint8_t
-{
-	STAND,	// 서 있음
-	CROUCH,	// 앉아 있음
-	PRONE,	// 엎드려 있음
-};
-
-enum class ACTION_STATE : uint8_t
-{
-	JUMP,
-
-	GUN_FIRE,
-	GUN_RELOAD,
-
-	GRENADE_PREPARE,
-	GRENADE_THROW_LOW,
-	GRENADE_THROW_HIGH,
-
-	BANDAGE,
-	MED_KIT,
-	FIRST_AID_KIT,
-
-	ENERGY_DRINK,
-	PAIN_KILLER,
-	ADRENALINE_SYRINGE,
-
-	DEAD,
-
-	NONE,
-};
+//enum class MOTION_STATE : uint8_t
+//{
+//	STAND,	// 서 있음
+//	CROUCH,	// 앉아 있음
+//	PRONE,	// 엎드려 있음
+//};
+//
+//enum class ACTION_STATE : uint8_t
+//{
+//	JUMP,
+//
+//	GUN_FIRE,
+//	GUN_RELOAD,
+//
+//	GRENADE_PREPARE,
+//	GRENADE_THROW_LOW,
+//	GRENADE_THROW_HIGH,
+//
+//	BANDAGE,
+//	MED_KIT,
+//	FIRST_AID_KIT,
+//
+//	ENERGY_DRINK,
+//	PAIN_KILLER,
+//	ADRENALINE_SYRINGE,
+//
+//	DEAD,
+//
+//	NONE,
+//};
 
 class PlayerCharacter :
 	public CScript

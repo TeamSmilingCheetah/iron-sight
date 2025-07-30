@@ -7,10 +7,12 @@
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
+
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 

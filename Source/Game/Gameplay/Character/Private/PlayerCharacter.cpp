@@ -13,6 +13,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
@@ -125,6 +126,12 @@ void PlayerCharacter::Begin()
 
 	// Sound Load
 	LoadPlayerSounds();
+
+
+	// 테스트
+
+	m_MotionState = StateMachine()->GetCurMotionState();
+	StateMachine()->ChangeActionState(ACTION_STATE::NONE);
 }
 
 void PlayerCharacter::Tick()

@@ -79,9 +79,6 @@
     <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h">
       <Filter>07. Component\RenderComponent</Filter>
     </ClInclude>
-    <ClInclude Include="System\Public\Manager\CCollisionMgr.h">
-      <Filter>04. Manager\06. Collision</Filter>
-    </ClInclude>
     <ClInclude Include="System\Public\Manager\CTaskMgr.h">
       <Filter>04. Manager\07. TaskMgr</Filter>
     </ClInclude>
@@ -139,9 +136,6 @@
     <ClInclude Include="Runtime\Public\Component\Camera\CFrustum.h">
       <Filter>07. Component\02. Camera\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CLandScape.h">
-      <Filter>07. Component\RenderComponent\06. LandScape</Filter>
-    </ClInclude>
     <ClInclude Include="System\Public\Rendering\Shader\CHeightMapCS.h">
       <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
     </ClInclude>
@@ -193,9 +187,6 @@
     <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\CCollider3D.h">
-      <Filter>07. Component\04. Collider3D</Filter>
-    </ClInclude>
     <ClInclude Include="System\Public\Asset\Animation\CAnimation.h">
       <Filter>08. Asset\08. Animation</Filter>
     </ClInclude>
@@ -204,12 +195,6 @@
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Device\CDevice.h">
       <Filter>03. Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\CCollider2D.h">
-      <Filter>07. Component\04. Collider3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\CColliderRay.h">
-      <Filter>07. Component\04. Collider3D</Filter>
     </ClInclude>
     <ClInclude Include="System\Public\Rendering\Material\CMaterial.h">
       <Filter>08. Asset\10. Material</Filter>
@@ -229,11 +214,24 @@
     <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h">
       <Filter>04. Manager\12. ObjectPollMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider3D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderRay.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h" />
+    <ClInclude Include="System\Public\Manager\FCollisionManager.h" />
+    <ClInclude Include="System\Public\Manager\FLogManager.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CMeshCollisionCS.h" />
+    <ClInclude Include="API\Public\EngineFacade.h" />
+    <ClInclude Include="Runtime\Public\Component\StateMachine\CStateMachine.h">
+      <Filter>07. Component\10. StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\State\CState.h">
+      <Filter>Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>00. Default</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>00. Default</Filter>
     </ClCompile>
@@ -315,9 +313,6 @@
     <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp">
       <Filter>07. Component\RenderComponent</Filter>
     </ClCompile>
-    <ClCompile Include="System\Private\Manager\CCollisionMgr.cpp">
-      <Filter>04. Manager\06. Collision</Filter>
-    </ClCompile>
     <ClCompile Include="System\Private\Manager\CTaskMgr.cpp">
       <Filter>04. Manager\07. TaskMgr</Filter>
     </ClCompile>
@@ -384,9 +379,6 @@
     <ClCompile Include="Runtime\Private\Component\Camera\CFrustum.cpp">
       <Filter>07. Component\02. Camera\Frustum</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CLandScape.cpp">
-      <Filter>07. Component\RenderComponent\06. LandScape</Filter>
-    </ClCompile>
     <ClCompile Include="System\Private\Rendering\Shader\CHeightMapCS.cpp">
       <Filter>HLSL\03. Compute\LandScape\HeightMap</Filter>
     </ClCompile>
@@ -414,23 +406,11 @@
     <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp">
       <Filter>04. Manager\09. InstancingBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Physics\CCollider3D.cpp">
-      <Filter>07. Component\04. Collider3D</Filter>
-    </ClCompile>
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp">
       <Filter>08. Asset\08. Animation</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp">
       <Filter>08. Asset\09. Skeleton</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Private\Manager\CLandScape_Init.cpp">
-      <Filter>07. Component\RenderComponent\06. LandScape</Filter>
-    </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Physics\CCollider2D.cpp">
-      <Filter>07. Component\04. Collider3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Physics\CColliderRay.cpp">
-      <Filter>07. Component\04. Collider3D</Filter>
     </ClCompile>
     <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp">
       <Filter>08. Asset\10. Material</Filter>
@@ -449,6 +429,27 @@
     </ClCompile>
     <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp">
       <Filter>04. Manager\12. ObjectPollMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionBroad.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionBVH.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionManager.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionNarrow.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionPostProcess.cpp" />
+    <ClCompile Include="System\Private\Manager\Collision\FCollisionRaycast.cpp" />
+    <ClCompile Include="System\Private\Manager\FLogManager.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CMeshCollisionCS.cpp" />
+    <ClCompile Include="API\Private\EngineFacade.cpp" />
+    <ClCompile Include="Runtime\Private\Component\StateMachine\CStateMachine.cpp">
+      <Filter>07. Component\10. StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\State\CState.cpp">
+      <Filter>Module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -673,6 +674,9 @@
     </Filter>
     <Filter Include="04. Manager\12. ObjectPollMgr">
       <UniqueIdentifier>{22ef37b4-1a2c-4b80-b8bd-4802b8417339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\10. StateMachine">
+      <UniqueIdentifier>{3c02103d-a603-4941-8017-881f17ab3358}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
