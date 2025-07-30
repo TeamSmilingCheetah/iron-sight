@@ -128,6 +128,29 @@ FMeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollide
 	return NewData;
 }
 
+/**
+ * @brief 두 충돌체에 대한 조건을 따져보면서 충돌의 가능성 자체가 있는지 판별하는 함수
+ *
+ * @param InCandidateCheckSet 중복 충돌쌍을 배제하기 위한 Broad Phase 검증 Set
+ * @param InLeftCollider Collider 1
+ * @param InRightCollider Collider 2
+ * @return 충돌 가능 여부
+ */
+bool FCollisionManager::IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
+									  IColliderBase* InLeftCollider, IColliderBase* InRightCollider) const
+{
+	if (IsLayerCollided(InLeftCollider, InRightCollider))
+	{
+		// 중복되지 않은 경우에만 세부 충돌 판정쌍으로 추가
+		if (InCandidateCheckSet.insert(FCollisionID(InLeftCollider, InRightCollider)).second)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void FCollisionManager::AddFrameCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant) const
 {
 	IColliderBase* LeftCollider = GetBaseFromVariant(InLeftVariant);

@@ -34,17 +34,21 @@ void FCollisionManager::RaycastNarrow()
 		FColliderRay* Ray = Info.RayObject;
 		IColliderBase* Collider = Info.HitCollider;
 
-		// AABB가 충돌 기준이므로 바로 Process
-		if (Collider->GetColliderType() == EColliderType::Collider3D)
+		unordered_set<FCollisionID> CheckSet;
+		if (IsInCondition(CheckSet, Ray, Collider))
 		{
-			AddFrameCollision(Info.RayObject, static_cast<FCollider3D*>(Collider));
-			continue;
-		}
+			// AABB가 충돌 기준이므로 바로 Process
+			if (Collider->GetColliderType() == EColliderType::Collider3D)
+			{
+				AddFrameCollision(Info.RayObject, static_cast<FCollider3D*>(Collider));
+				continue;
+			}
 
-		// RaycastCS 처리를 위한 Add Task
-		if (Collider->GetColliderType() == EColliderType::MeshCollider)
-		{
-			AddRayShaderTask(Ray, static_cast<FMeshCollider*>(Collider));
+			// RaycastCS 처리를 위한 Add Task
+			if (Collider->GetColliderType() == EColliderType::MeshCollider)
+			{
+				AddRayShaderTask(Ray, static_cast<FMeshCollider*>(Collider));
+			}
 		}
 	}
 
