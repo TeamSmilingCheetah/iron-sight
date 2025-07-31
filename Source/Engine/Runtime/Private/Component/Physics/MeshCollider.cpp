@@ -2,24 +2,49 @@
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Physics/PhysicsHelper.h"
 
 FMeshCollider::FMeshCollider()
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
-	  , MMeshPtr(nullptr)
+	  , MeshPtr(nullptr)
 {
 }
 
 FMeshCollider::~FMeshCollider() = default;
 
-FMeshCollider::FMeshCollider(const FMeshCollider& POrigin)
+FMeshCollider::FMeshCollider(const FMeshCollider& InOrigin)
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
-	  , MMeshPtr(POrigin.GetMesh())
+	  , MeshPtr(InOrigin.GetMesh())
 {
+	GenerateConvexHull();
 }
 
 void FMeshCollider::Init()
 {
-	MMeshPtr = GetOwner()->MeshRender()->GetMesh();
+	MeshPtr = GetOwner()->MeshRender()->GetMesh();
+	GenerateConvexHull();
+}
+
+/**
+ * @brief PhysicsHelper를 통해 Convex Hull Mesh를 생성하고, 보유하도록 하는 함수
+ */
+void FMeshCollider::GenerateConvexHull()
+{
+	if (!MeshPtr.Get())
+	{
+		ConvexHullMeshPtr = nullptr;
+		LOG_ERROR_F("[Collider][Mesh] {}: Can't Generate Convex Hull Mesh", WStringToString(GetOwner()->GetName()));
+
+		return;
+	}
+
+	ConvexHullMeshPtr = FPhysicsHelper::CreateConvexHullFromMesh(MeshPtr);
+
+	if (!ConvexHullMeshPtr.Get())
+	{
+		LOG_ERROR_F("[Collider][Mesh] {}: Failed To Generate Convex Hull",
+		            WStringToString(GetOwner()->GetName()));
+	}
 }
 
 /**
@@ -30,7 +55,7 @@ void FMeshCollider::Init()
 void FMeshCollider::FinalTick()
 {
 	// 메시가 없거나 유효하지 않은 경우 즉시 반환
-	if (!MMeshPtr.Get())
+	if (!MeshPtr.Get())
 	{
 		LOG_CRITICAL_F("[Collision][MeshCollider] {}: Don't Have Mesh But Enter MeshCollider FinalTick",
 		               WStringToString(GetOwner()->GetName()));
@@ -71,11 +96,11 @@ void FMeshCollider::FinalTick()
 
 void FMeshCollider::SaveComponent(FILE* InFile)
 {
-	if (MMeshPtr->GetKey().empty())
+	if (MeshPtr->GetKey().empty())
 	{
 		assert("일단 mesh가 없으면 save 안하는 걸로 정책 설정");
 	}
-	wstring MeshKey = MMeshPtr->GetKey().empty() ? L"" : MMeshPtr->GetKey();
+	wstring MeshKey = MeshPtr->GetKey().empty() ? L"" : MeshPtr->GetKey();
 	SaveWString(MeshKey, InFile);
 
 	bool IsStaticCollider = IsStatic();
@@ -87,7 +112,7 @@ void FMeshCollider::LoadComponent(FILE* InFile)
 	wstring MeshKey;
 	LoadWString(MeshKey, InFile);
 
-	MMeshPtr = CAssetMgr::GetInst()->Load<CMesh>(MeshKey);
+	MeshPtr = CAssetMgr::GetInst()->Load<CMesh>(MeshKey);
 
 	bool IsStaticCollider;
 	(void)fread(&IsStaticCollider, sizeof(bool), 1, InFile);

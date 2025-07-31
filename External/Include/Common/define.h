@@ -9,7 +9,6 @@ using Quaternion = SimpleMath::Quaternion;
 using GAMEOBJECT_SAVE = int(*)(class CGameObject*, FILE*);
 using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
-
 #define RELEASE(Inst) if(nullptr != Inst) Inst->Release();
 
 #define DEVICE CDevice::GetInst()->GetDevice().Get()
@@ -34,7 +33,6 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 
 #define CLONE_DISABLE(Type) virtual Type* Clone() { return nullptr; }\
 							Type(const Type& _Origin) = delete;
-
 
 #define FONT_RGBA(r, g, b, a) (((((BYTE)a << 24 ) | (BYTE)b << 16) | (BYTE)g << 8) | (BYTE)r)
 
@@ -76,4 +74,15 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define LOG_ERROR_F(PFormat, ...)
 #define LOG_CRITICAL_F(PFormat, ...)
 #define LOG_UNKNOWN_F(PFormat, ...)
+#endif
+
+// Lib Macro
+#ifdef _DEBUG
+#define QHULL_LIB R"(qhull/qhullstatic_rd)"
+#define ENGINE_LIB R"(Engine/Engine_d)"
+#define GAME_LIB R"(Game/Game_d)"
+#else
+#define QHULL_LIB R"(qhull/qhullstatic_r)"
+#define ENGINE_LIB R"(Engine/Engine)"
+#define GAME_LIB R"(Game/Game)"
 #endif

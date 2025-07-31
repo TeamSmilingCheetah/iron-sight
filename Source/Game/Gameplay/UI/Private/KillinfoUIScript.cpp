@@ -8,7 +8,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
-#include "Game/Gameplay/Inventory/Public/Item.h"
+using std::to_wstring;
 
 KillinfoUIScript::KillinfoUIScript()
 	: CScript(SCRIPT_TYPE::KILLINFOUI)
@@ -71,7 +71,7 @@ void KillinfoUIScript::Tick()
 			m_bEvent = false;
 			m_AccTime = 0.f;
 		}
-	}	
+	}
 }
 
 void KillinfoUIScript::OnEvent()

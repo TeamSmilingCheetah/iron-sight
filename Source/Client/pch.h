@@ -1,19 +1,11 @@
-#pragma once
+#ifndef PCH_H
+#define PCH_H
 
 #include "Common/global.h"
-#include "Engine/System/Public/Manager/FLogManager.h"
 
-#ifdef _DEBUG
-#pragma comment(lib, R"(Engine/Engine_d)")
-#else
-#pragma comment(lib, R"(Engine/Engine)")
-#endif
+#pragma comment(lib, ENGINE_LIB)
+#pragma comment(lib, GAME_LIB)
 
-#ifdef _DEBUG
-#pragma comment(lib, R"(Game/Game_d)")
-#else
-#pragma comment(lib, R"(Game/Game)")
-#endif
+#include "Engine/System/Public/Manager/LogManager.h"
 
-#include <set>
-using std::set;
+#endif // PCH_H

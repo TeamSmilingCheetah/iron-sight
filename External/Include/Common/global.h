@@ -15,11 +15,12 @@
 #include <unordered_set>
 #include <set>
 #include <string>
-#include <typeinfo>
 #include <random>
 #include <algorithm>
 #include <array>
 #include <variant>
+#include <filesystem>
+#include <functional>
 
 using std::array;
 using std::vector;
@@ -27,26 +28,37 @@ using std::list;
 using std::queue;
 using std::priority_queue;
 using std::map;
+using std::set;
 using std::unordered_map;
 using std::unordered_set;
+using std::pair;
 using std::make_pair;
-using std::set;
 using std::string;
 using std::wstring;
 using std::min;
 using std::max;
-using std::pair;
-using std::make_unique;
 using std::unique_ptr;
+using std::make_unique;
 using std::variant;
+using std::function;
 
-#include <filesystem>
-using namespace std::filesystem;
+namespace fs = std::filesystem;
 
-
-#include "singleton.h"
+#ifdef _DEBUG
+#pragma comment(lib, "DirectxTex/DirectXTex_debug")
+#pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
+#pragma comment(lib, "FMOD/fmodL64_vc.lib")
+#else
+#pragma comment(lib, "DirectxTex/DirectXTex")
+#pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
+#pragma comment(lib, "FMOD/fmod64_vc.lib")
+#endif
 
 // DirectX 11
+#pragma comment(lib, "d3d11")
+#pragma comment(lib, "d3dcompiler")
+#pragma comment(lib, "dxguid")
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -55,10 +67,6 @@ using namespace std::filesystem;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
-#pragma comment(lib, "dxguid")
-
 // ComPtr
 #include <wrl.h>
 using namespace Microsoft::WRL;
@@ -66,33 +74,19 @@ using namespace Microsoft::WRL;
 // DirectxTex
 #include <DirectxTex/DirectXTex.h>
 
-#ifdef _DEBUG
-#pragma comment(lib, "DirectxTex/DirectXTex_debug")
-#else
-#pragma comment(lib, "DirectxTex/DirectXTex")
-#endif
+// SimpleMath
+#include "SimpleMath.h"
 
-// Fbx Loader
+// FBX Loader
 #include <FBXLoader/fbxsdk.h>
-#ifdef _DEBUG
-#pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
-#else
-#pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
-#endif
 
 // FMOD
 #include <FMOD/fmod.h>
 #include <FMOD/fmod.hpp>
 #include <FMOD/fmod_codec.h>
 
-#ifdef _DEBUG
-#pragma comment(lib, "FMOD/fmodL64_vc.lib")
-#else
-#pragma comment(lib, "FMOD/fmod64_vc.lib")
-#endif
-
-#include "SimpleMath.h"
-
+// Global Headers
+#include "singleton.h"
 #include "enum.h"
 #include "define.h"
 #include "struct.h"
