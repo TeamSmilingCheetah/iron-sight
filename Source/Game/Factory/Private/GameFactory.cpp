@@ -191,7 +191,10 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	Common::AddComponentToObject<CStateMachine>(Player);
 
+	// StateMachine
 	StateMachine::AddState(Player, Common::LoadState<Player_Idle>(L"Player_Idle"));
+	StateMachine::AddState(Player, Common::LoadState<Player_Idle>(L"Player_Jump"));
+	StateMachine::AddState(Player, Common::LoadState<Player_Idle>(L"Player_Dead"));
 
 
 	Common::AddComponentToObject<FColliderRay>(Player);

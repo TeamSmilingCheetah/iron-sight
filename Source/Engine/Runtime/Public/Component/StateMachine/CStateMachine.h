@@ -23,6 +23,8 @@ public:
 	CState* GetPrevState() const { return m_PrevState; }
 	CState* GetCurState() const { return m_CurState; }
 
+	map<wstring, CState*> GetStateMap() { return m_mapState; }
+
 	bool ChangeState(const wstring& _Name);	// State 구현부에서 호출, state 바뀌었는지 여부 리턴
 
 	virtual void FinalTick() override;

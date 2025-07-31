@@ -14,6 +14,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/Runtime/Public/State/CState.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
@@ -125,6 +126,9 @@ void PlayerCharacter::Begin()
 
 	// Sound Load
 	LoadPlayerSounds();
+
+	// State Machine Base Set
+	StateMachine()->ChangeState(L"Player_Idle");
 }
 
 void PlayerCharacter::Tick()
@@ -195,6 +199,9 @@ void PlayerCharacter::Tick()
 			m_HitSoundAccTime = 0.f;
 		}
 	}
+
+	// StateMachine -> Tick위치 고려 필요 (햔재 임시)
+	StateMachine()->FinalTick();
 }
 
 

@@ -14,13 +14,18 @@ class CState
 	: public CEntity
 {
 	friend class CStateMachine;
+protected:
+	wstring				m_ClipName;		// 실행할 애니메이션 클립이름
+	float				m_Delay;		// 애니메이션 딜레이
 
 private:
-	CStateMachine*		m_Owner;
+	CStateMachine* m_Owner;
 
 public:
-	CStateMachine* GetStateMachine() const { return m_Owner; }
+	CStateMachine* SM() const { return m_Owner; }
 	void SetOwner(CStateMachine* _StateMachine) { m_Owner = _StateMachine; }
+
+	void AdjustAnim();
 
 	virtual void Enter() = 0;
 	virtual void FinalTick() = 0;
