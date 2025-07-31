@@ -51,7 +51,12 @@ public:
 		return static_cast<int>(m_vecLight3D.size()) - 1;
 	}
 
-	void AddDebugShape(const tDebugShapeInfo& _info) { m_DbgList.push_back(_info); }
+	void AddDebugShape(const tDebugShapeInfo& _info)
+	{
+#ifdef _DEBUG
+		m_DbgList.push_back(_info);
+#endif
+	}
 
 	void CopyRenderTarget();
 	void SetEditorMode(bool _IsEditor) { m_IsEditor = _IsEditor; }
