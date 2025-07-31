@@ -400,6 +400,26 @@ void TestLevel::CreateTestLevel()
 	//
 	// pLevel->AddObject(1, testPlayer, false);
 
+	// Temp Landscape
+	// GameFactory::MakeFBXObject(
+	// 	LevelRawPtr,
+	// 	L"FBX\\Props\\Death Box\\box.fbx",
+	// 	L"TempLandscape",
+	// 	Vec3(0.f, -800.f, 0.f),
+	// 	Vec3(0.f, 0.f, 0.f),
+	// 	Vec3(20000.f, 200.f, 20000.f),
+	// 	{
+	// 		[](CGameObject* obj)
+	// 		{
+	// 			obj->AddComponentRecursive<FMeshCollider>();
+	// 			obj->MeshCollider()->SetUseOriginalMesh(true);
+	// 			obj->Transform()->SetFrustumCheck(false);
+	// 		}
+	// 	},
+	// 	1,
+	// 	true
+	// );
+
 	GameFactory::MakeFBXObject(
 		LevelRawPtr,
 		L"FBX\\Downtown_Alley_Scene.fbx",
