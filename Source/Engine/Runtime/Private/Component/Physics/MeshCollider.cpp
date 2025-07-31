@@ -8,6 +8,7 @@
 FMeshCollider::FMeshCollider()
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MeshPtr(nullptr)
+	  , bIsUseOriginalMesh(false)
 {
 }
 
@@ -16,6 +17,7 @@ FMeshCollider::~FMeshCollider() = default;
 FMeshCollider::FMeshCollider(const FMeshCollider& InOrigin)
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MeshPtr(InOrigin.GetMesh())
+	  , bIsUseOriginalMesh(InOrigin.bIsUseOriginalMesh)
 {
 	GenerateConvexHull();
 }

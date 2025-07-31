@@ -13,6 +13,7 @@ class FMeshCollider :
 private:
 	Ptr<CMesh> MeshPtr;
 	Ptr<CMesh> ConvexHullMeshPtr;
+	bool bIsUseOriginalMesh;
 
 private:
 	void GenerateConvexHull();
@@ -27,9 +28,14 @@ public:
 
 	// Getter & Setter
 	[[nodiscard]] EColliderType GetColliderType() const override { return EColliderType::MeshCollider; }
-	[[nodiscard]] Ptr<CMesh> GetMesh() const { return !!ConvexHullMeshPtr.Get() ? ConvexHullMeshPtr : MeshPtr; }
+
+	[[nodiscard]] Ptr<CMesh> GetMesh() const
+	{
+		return (!!ConvexHullMeshPtr.Get() && !bIsUseOriginalMesh) ? ConvexHullMeshPtr : MeshPtr;
+	}
 
 	void SetMesh(CMesh* InMesh) { MeshPtr = InMesh; }
+	void SetUseOriginalMesh(bool InUse) { bIsUseOriginalMesh = InUse; }
 
 	// Special Member Function
 	FMeshCollider();
