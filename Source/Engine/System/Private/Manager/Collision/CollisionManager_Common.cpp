@@ -62,6 +62,7 @@ void FCollisionManager::ClearCollisionContainers()
 {
 	PrevFrameCollisionSet.clear();
 	FrameCollisionSet.clear();
+	RayCandidates.clear();
 	CollisionCandidates.clear();
 }
 
