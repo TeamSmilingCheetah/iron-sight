@@ -5,10 +5,12 @@
 #include "Engine/Runtime/Public/Component/Physics/PhysicsHelper.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
 
+constexpr UINT TRIANGLE_THRESHOLD = 256;
+
 FMeshCollider::FMeshCollider()
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MeshPtr(nullptr)
-	  , bIsUseOriginalMesh(false)
+	  , MeshColliderType(EMeshColliderType::NONE)
 {
 }
 
@@ -17,15 +19,17 @@ FMeshCollider::~FMeshCollider() = default;
 FMeshCollider::FMeshCollider(const FMeshCollider& InOrigin)
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
 	  , MeshPtr(InOrigin.GetMesh())
-	  , bIsUseOriginalMesh(InOrigin.bIsUseOriginalMesh)
+	  , MeshColliderType(InOrigin.MeshColliderType)
 {
 	GenerateConvexHull();
+	SelectOptimizedMesh();
 }
 
 void FMeshCollider::Init()
 {
 	MeshPtr = GetOwner()->MeshRender()->GetMesh();
 	GenerateConvexHull();
+	SelectOptimizedMesh();
 }
 
 /**
@@ -51,16 +55,69 @@ void FMeshCollider::GenerateConvexHull()
 }
 
 /**
+ * @brief Original Mesh의 복잡도에 따라 Convex Hull Mesh를 사용할지, Original Mesh를 그대로 사용할지 결정하는 함수
+ * 생성된 Convex Hull Mesh 자체는 Setting 값에 따라 사용이 가능하기 때문에 삭제하진 않는 걸로 결정
+ */
+void FMeshCollider::SelectOptimizedMesh()
+{
+	// Get Triangle Count
+	UINT TriangleCount = 0;
+	for (UINT i = 0; i < MeshPtr->GetSubsetCount(); ++i)
+	{
+		auto& IndexInfo = MeshPtr->GetIndexInfo()[i];
+		TriangleCount += IndexInfo.IdxCount;
+	}
+	TriangleCount /= 3;
+
+	if (TriangleCount < TRIANGLE_THRESHOLD)
+	{
+		MeshColliderType = EMeshColliderType::Original;
+		LOG_INFO_F("[Collider][Mesh] {}: Using Original Mesh For Collision (Triangle Count: {})",
+				   WStringToString(GetOwner()->GetName()), TriangleCount);
+	}
+	else
+	{
+		UINT HullTriangleCount = 0;
+		for (UINT i = 0; i < ConvexHullMeshPtr->GetSubsetCount(); ++i)
+		{
+			auto& IndexInfo = ConvexHullMeshPtr->GetIndexInfo()[i];
+			HullTriangleCount += IndexInfo.IdxCount;
+		}
+		HullTriangleCount /= 3;
+
+		MeshColliderType = EMeshColliderType::ConvexHull;
+		LOG_INFO_F("[Collider][Mesh] {}: Using Convex Hull For Collision (Triangle Count: {} -> {})",
+				   WStringToString(GetOwner()->GetName()), TriangleCount, HullTriangleCount);
+	}
+}
+
+/**
+ * @brief 설정된 Type값에 따라 적절한 Mesh 충돌체를 반환하는 함수
+ * @return 설정한 Mesh Pointer
+ */
+Ptr<CMesh> FMeshCollider::GetMesh() const
+{
+	switch (MeshColliderType)
+	{
+	case EMeshColliderType::Original:
+		return MeshPtr;
+	case EMeshColliderType::ConvexHull:
+		return ConvexHullMeshPtr;
+	default:
+		return nullptr;
+	}
+}
+
+/**
  * @brief Mesh Collider Final Tick
- *
- * Mesh Collider는 Mesh와 매칭되는 형태로 Final Tick에서는 디버그 렌더링만 처리
+ * Mesh Collider는 Mesh와 유사한 형태를 보유하며 Final Tick에서는 AABB의 디버그 렌더링만 처리
  */
 void FMeshCollider::FinalTick()
 {
 	// 메시가 없거나 유효하지 않은 경우 즉시 반환
 	if (!MeshPtr.Get())
 	{
-		LOG_CRITICAL_F("[Collision][MeshCollider] {}: Don't Have Mesh But Enter MeshCollider FinalTick",
+		LOG_CRITICAL_F("[Collider][Mesh] {}: Don't Have Mesh But Enter MeshCollider FinalTick",
 		               WStringToString(GetOwner()->GetName()));
 		assert(!"Mesh가 없는데 Mesh Collider FinalTick 처리 분기로 들어옴");
 		return;
@@ -163,7 +220,7 @@ void FMeshCollider::SaveComponent(FILE* InFile)
 {
 	if (MeshPtr->GetKey().empty())
 	{
-		assert("일단 mesh가 없으면 save 안하는 걸로 정책 설정");
+		assert(!"일단 Mesh가 없으면 Save 안하는 걸로 정책 설정");
 	}
 	wstring MeshKey = MeshPtr->GetKey().empty() ? L"" : MeshPtr->GetKey();
 	SaveWString(MeshKey, InFile);
@@ -190,9 +247,4 @@ void FMeshCollider::LoadComponent(FILE* InFile)
 	{
 		SetStatic();
 	}
-}
-
-const AABB FMeshCollider::GetAABB() const
-{
-	return GetOwner()->GetAABB();
 }

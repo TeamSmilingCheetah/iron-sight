@@ -412,7 +412,7 @@ void TestLevel::CreateTestLevel()
 	// 		[](CGameObject* obj)
 	// 		{
 	// 			obj->AddComponentRecursive<FMeshCollider>();
-	// 			obj->MeshCollider()->SetUseOriginalMesh(true);
+	// 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
 	// 			obj->Transform()->SetFrustumCheck(false);
 	// 		}
 	// 	},
