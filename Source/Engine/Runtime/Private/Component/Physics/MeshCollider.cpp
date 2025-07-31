@@ -3,6 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/PhysicsHelper.h"
+#include "Runtime/Public/Component/Transform/CTransform.h"
 
 FMeshCollider::FMeshCollider()
 	: IColliderBase(COMPONENT_TYPE::MESH_COLLIDER)
@@ -90,6 +91,68 @@ void FMeshCollider::FinalTick()
 
 	// 디버그 렌더링
 	DrawDebugCube(CubeColor, DebugMatrix, false, 0.f);
+
+	// TODO(KHJ): 드로우콜 최적화 완료되면 정상 렌더링 시도해볼 것
+	// 현재는 CPU 연산량이 커서 그런지 프레임 확보가 안됨
+
+	// // 색상 판정
+	// Vec4 WireframeColor;
+	// if (IsOverlapped())
+	// {
+	// 	// 충돌 중인 경우 빨간색으로 표시
+	// 	WireframeColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	// }
+	// else
+	// {
+	// 	// 충돌하지 않는 경우 초록색으로 표시
+	// 	WireframeColor = Vec4(0.f, 1.f, 0.f, 1.f);
+	// }
+	//
+	// Vtx* Vertices = static_cast<Vtx*>(ConvexHullMeshPtr->GetVtxSysMem());
+	// UINT VertexCount = ConvexHullMeshPtr->GetVertexCount();
+	//
+	// if (Vertices && VertexCount > 0)
+	// {
+	// 	Matrix WorldMatrix = GetOwner()->Transform()->GetWorldMat();
+	//
+	// 	UINT SubsetCount = ConvexHullMeshPtr->GetSubsetCount();
+	// 	for (UINT SubsetIdx = 0; SubsetIdx < SubsetCount; ++SubsetIdx)
+	// 	{
+	// 		auto& IndexInfo = ConvexHullMeshPtr->GetIndexInfo()[SubsetIdx];
+	// 		UINT* Indices = static_cast<UINT*>(IndexInfo.IdxSysMem);
+	// 		UINT IndexCount = IndexInfo.IdxCount;
+	//
+	// 		if (Indices && IndexCount > 0)
+	// 		{
+	// 			// 삼각형 단위로 와이어프레임 렌더링
+	// 			for (UINT i = 0; i < IndexCount; i += 3)
+	// 			{
+	// 				if (i + 2 < IndexCount)
+	// 				{
+	// 					// 삼각형의 세 정점 인덱스
+	// 					UINT Idx0 = Indices[i];
+	// 					UINT Idx1 = Indices[i + 1];
+	// 					UINT Idx2 = Indices[i + 2];
+	//
+	// 					// 정점 위치를 월드 좌표로 변환
+	// 					Vec3 Vertex0 = Vertices[Idx0].vPos;
+	// 					Vec3 Vertex1 = Vertices[Idx1].vPos;
+	// 					Vec3 Vertex2 = Vertices[Idx2].vPos;
+	//
+	// 					// 월드 매트릭스 적용
+	// 					Vec4 WorldVertex0 = XMVector3Transform(Vec4(Vertex0, 1.f), WorldMatrix);
+	// 					Vec4 WorldVertex1 = XMVector3Transform(Vec4(Vertex1, 1.f), WorldMatrix);
+	// 					Vec4 WorldVertex2 = XMVector3Transform(Vec4(Vertex2, 1.f), WorldMatrix);
+	//
+	// 					// 삼각형의 세 변을 선으로 렌더링
+	// 					DrawDebugLine(WireframeColor, WorldVertex0, WorldVertex1, false, 0.f);
+	// 					DrawDebugLine(WireframeColor, WorldVertex1, WorldVertex2, false, 0.f);
+	// 					DrawDebugLine(WireframeColor, WorldVertex2, WorldVertex0, false, 0.f);
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
 
 /** Save & Load **/
