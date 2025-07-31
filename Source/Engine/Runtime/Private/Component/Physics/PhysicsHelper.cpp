@@ -36,9 +36,9 @@ Ptr<CMesh> FPhysicsHelper::CreateConvexHullFromMesh(Ptr<CMesh> InOriginalMesh)
 	QHULL_LIB_CHECK
 
 	// qhull Option
-	// Qt (Triangulated Output) : 결과를 삼각형 면으로 분할하여 제공
 	// QJ (Joggled Input) : 동일 평면 상의 점들로 인한 오류 방지
-	char Flags[] = "qhull Qt QJ";
+	// Qbb (Scale Last Coordinate) : 평면에 가까운 데이터의 정밀도 오류 방지
+	char Flags[] = "qhull QJ Qbb";
 	int Exitcode = qh_new_qhull(QHullManager.GetQHullData(), Dimension, VertexCount,
 	                            HullPoints.data(), false, Flags, nullptr,stderr);
 
