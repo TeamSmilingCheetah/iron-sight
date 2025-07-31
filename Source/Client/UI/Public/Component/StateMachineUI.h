@@ -13,9 +13,6 @@ public:
 
 private:
 
-	string GetActionStateStr(ACTION_STATE _State);
-	string GetMotionStateStr(MOTION_STATE _State);
-
 public:
 	StateMachineUI();
 	~StateMachineUI() override;

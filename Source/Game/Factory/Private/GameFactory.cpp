@@ -11,7 +11,7 @@
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/State/Public/IdleState.h"
+#include "Game/Gameplay/State/Public/Player_Idle.h"
 
 using namespace Engine;
 
@@ -191,7 +191,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	Common::AddComponentToObject<CStateMachine>(Player);
 
-	StateMachine::AddState(Player, Common::LoadState<IdleState>(ACTION_STATE::NONE));
+	StateMachine::AddState(Player, Common::LoadState<Player_Idle>(L"Player_Idle"));
 
 
 	Common::AddComponentToObject<FColliderRay>(Player);
