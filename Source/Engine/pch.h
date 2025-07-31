@@ -7,14 +7,13 @@
 #ifndef PCH_H
 #define PCH_H
 
-// 여기에 미리 컴파일하려는 헤더 추가
-#include "framework.h"
-
-#include <stdlib.h>
+#ifdef _DEBUG
+#pragma comment(lib, R"(qhull/qhullstatic_rd)")
+#else
+#pragma comment(lib, R"(qhull/qhullstatic_r)")
+#endif
 
 #include "Common/global.h"
 #include "Engine/System/Public/Manager/FLogManager.h"
-
-#include <format>
 
 #endif //PCH_H
