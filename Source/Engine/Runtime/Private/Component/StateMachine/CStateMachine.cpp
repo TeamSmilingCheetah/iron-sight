@@ -26,7 +26,7 @@ void CStateMachine::AddState(CState* _State)
 bool CStateMachine::ChangeState(const wstring& _Name)
 {
 	// 현재 상태가 exit 할 수 없는 상황이라면 바로 return
-	if (CanExit())
+	if (!CanExit())
 	{
 		return false;
 	}
@@ -40,12 +40,6 @@ bool CStateMachine::ChangeState(const wstring& _Name)
 
 	m_PrevState = m_CurState;
 	m_CurState = iter->second;
-
-	// 이전 state는 exit
-	if (m_PrevState)
-	{
-		m_PrevState->Exit();
-	}
 
 	// 현재 state에 enter
 	m_CurState->Enter();

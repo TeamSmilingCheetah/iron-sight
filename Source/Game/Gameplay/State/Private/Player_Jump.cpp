@@ -15,6 +15,10 @@ Player_Jump::~Player_Jump()
 
 void Player_Jump::Enter_Override()
 {
+	m_Delay = 0.02f;
+	m_ClipName = L"Animation\\Armature_rifle_jump.anim";
+
+	AdjustAnim();
 }
 
 void Player_Jump::FinalTick_Override()

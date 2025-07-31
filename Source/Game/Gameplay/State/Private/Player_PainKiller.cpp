@@ -16,6 +16,8 @@ Player_PainKiller::~Player_PainKiller()
 
 void Player_PainKiller::Enter_Override()
 {
+
+
 }
 
 void Player_PainKiller::FinalTick_Override()

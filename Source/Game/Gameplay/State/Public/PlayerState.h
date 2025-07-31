@@ -3,6 +3,7 @@
 #include "Engine/System/Public/Asset/Animation/CAnimation.h"
 
 class PlayerCharacter;
+class CStateMachine;
 
 // 모든 Player State들의 부모 class. 애니메이션 컨트롤을 공통적으로 적용하기 위해 설계함.
 class PlayerState
@@ -11,6 +12,9 @@ class PlayerState
 private:
 	PlayerCharacter*	m_PlayerScript;
 	bool				m_CanExitDuringAnimation;
+
+private:
+	void ControlMoveAnimation();
 
 public:
 	PlayerCharacter* GetPlayerScript() const { return m_PlayerScript; }
@@ -23,6 +27,7 @@ public:
 	virtual void Enter_Override() = 0;
 	virtual void FinalTick_Override() = 0;
 
+	
 public:
 	virtual CState* Clone() = 0;
 	PlayerState(const wstring& _Name);
