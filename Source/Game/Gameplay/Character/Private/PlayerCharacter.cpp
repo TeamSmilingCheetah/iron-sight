@@ -128,7 +128,7 @@ void PlayerCharacter::Begin()
 	LoadPlayerSounds();
 
 	// State Machine Base Set
-	StateMachine()->ChangeState(L"Player_Idle");
+	ChangeState(L"Player_Idle");
 }
 
 void PlayerCharacter::Tick()
