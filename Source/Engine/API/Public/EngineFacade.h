@@ -32,7 +32,7 @@ namespace Engine
 		void AddScriptToObject(CGameObject* PObject);
 
 		template <class T>
-		T* LoadState(ACTION_STATE PStateType);
+		T* LoadState(const wstring& PStateType);
 	}
 
 	namespace Transform
@@ -129,10 +129,10 @@ void Engine::Common::AddScriptToObject(CGameObject* PObject)
 }
 
 template <class T>
-T* Engine::Common::LoadState(ACTION_STATE PStateType)
+T* Engine::Common::LoadState(const wstring& PStateType)
 {
 	static_assert(std::is_base_of_v<CState, T>, "Object State Can Loaded By This Function");
-	return static_cast<T*>(StateMgr::GetState((UINT)PStateType));
+	return static_cast<T*>(StateMgr::GetState(PStateType));
 }
 
 template <typename T>

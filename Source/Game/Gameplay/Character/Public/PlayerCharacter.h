@@ -11,36 +11,12 @@ class InventoryController;
 class CameraController;
 class CameraEffect;
 
-//enum class MOTION_STATE : uint8_t
-//{
-//	STAND,	// 서 있음
-//	CROUCH,	// 앉아 있음
-//	PRONE,	// 엎드려 있음
-//};
-//
-//enum class ACTION_STATE : uint8_t
-//{
-//	JUMP,
-//
-//	GUN_FIRE,
-//	GUN_RELOAD,
-//
-//	GRENADE_PREPARE,
-//	GRENADE_THROW_LOW,
-//	GRENADE_THROW_HIGH,
-//
-//	BANDAGE,
-//	MED_KIT,
-//	FIRST_AID_KIT,
-//
-//	ENERGY_DRINK,
-//	PAIN_KILLER,
-//	ADRENALINE_SYRINGE,
-//
-//	DEAD,
-//
-//	NONE,
-//};
+enum class MOTION_STATE : uint8_t
+{
+	STAND,	// 서 있음
+	CROUCH,	// 앉아 있음
+	PRONE,	// 엎드려 있음
+};
 
 class PlayerCharacter :
 	public CScript
@@ -129,7 +105,6 @@ private:
 	// State
 	// =====
 	MOTION_STATE		m_MotionState;
-	ACTION_STATE		m_ActionState;
 
 	// =======
 	// UI 관리
@@ -166,7 +141,7 @@ private:
 	void UpdateMove();
 	void UpdateGravity();
 	void UpdateCollision();
-	void AnimationControl();
+	//void AnimationControl();
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
@@ -193,10 +168,10 @@ public:
 	int GetKillCount() const { return m_KillCounts; }
 
 	void SetMotionState(MOTION_STATE _State) { m_MotionState = _State; }
-	void SetActionState(ACTION_STATE _State) { m_ActionState = _State; }
 
 	MOTION_STATE GetMotionState() const { return m_MotionState; }
-	ACTION_STATE GetActionState() const { return m_ActionState; }
+
+	void ChangeState(const wstring& _Name);
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;

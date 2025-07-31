@@ -1,75 +1,36 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 
-
-enum class MOTION_STATE : uint8_t
-{
-	STAND,	// 서 있음
-	CROUCH,	// 앉아 있음
-	PRONE,	// 엎드려 있음
-};
-
-enum class ACTION_STATE : uint8_t
-{
-	JUMP,
-
-	GUN_FIRE,
-	GUN_RELOAD,
-
-	GRENADE_PREPARE,
-	GRENADE_THROW_LOW,
-	GRENADE_THROW_HIGH,
-
-	BANDAGE,
-	MED_KIT,
-	FIRST_AID_KIT,
-
-	ENERGY_DRINK,
-	PAIN_KILLER,
-	ADRENALINE_SYRINGE,
-
-	DEAD,
-
-	NONE,
-};
-
-
 class CState;
 
-class CStateMachine :
-	public CComponent
+class CStateMachine
+	: public CComponent
 {
 private:
-	map<UINT, CState*> m_mapActionState;
+	map<wstring, CState*>		m_mapState;
 
-	MOTION_STATE m_CurMotionState;
-	CState*		 m_CurActionState;
-
-	MOTION_STATE m_PrevMotionState;
-	CState*		 m_PrevActionState;
+	CState*				m_PrevState;
+	CState*				m_CurState;
+	bool				m_CanExit;	// 다른 state로 변경 가능한 상태인지
 
 public:
-	MOTION_STATE GetCurMotionState() { return m_CurMotionState; }
-	CState* GetCurActionState() { return m_CurActionState; }
-
-	MOTION_STATE GetPrevMotionState() { return m_PrevMotionState; }
-	CState* GetPrevActionState() { return m_PrevActionState; }
-
-	void ChangeActionState(ACTION_STATE _State);
-	void SetMoitionState(MOTION_STATE _State) { m_PrevMotionState = m_CurMotionState; m_CurMotionState = _State; }
-
-
+	CState* GetState(const wstring& _Key) const { return m_mapState.find(_Key)->second; }
 	void AddState(CState* _State);
-	CState* FindState(ACTION_STATE _State);
-public:
+
+	void SetCanExit(bool _b) { m_CanExit = _b; }
+	bool CanExit() const { return m_CanExit; }
+
+	CState* GetPrevState() const { return m_PrevState; }
+	CState* GetCurState() const { return m_CurState; }
+
+	bool ChangeState(const wstring& _Name);	// State 구현부에서 호출, state 바뀌었는지 여부 리턴
+
 	virtual void FinalTick() override;
 	virtual void SaveComponent(FILE* _File) override;
 	virtual void LoadComponent(FILE* _File) override;
 
 public:
-	CLONE(CStateMachine);
+	CLONE(CStateMachine)
 	CStateMachine();
-	CStateMachine(const CStateMachine& _Other);
-	~CStateMachine() override;
+	~CStateMachine();
 };
-

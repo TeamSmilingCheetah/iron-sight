@@ -68,7 +68,6 @@ PlayerCharacter::PlayerCharacter()
 	, m_BoostSpeed(1.f)
 	, m_KillCounts(0)
 	, m_MotionState(MOTION_STATE::STAND)
-	, m_ActionState(ACTION_STATE::NONE)
 	, m_InventoryCanvasUI(nullptr)
 	, m_InventoryOpened(false)
 	, m_CardinalImageUI(nullptr)
@@ -126,12 +125,6 @@ void PlayerCharacter::Begin()
 
 	// Sound Load
 	LoadPlayerSounds();
-
-
-	// 테스트
-
-	m_MotionState = StateMachine()->GetCurMotionState();
-	StateMachine()->ChangeActionState(ACTION_STATE::NONE);
 }
 
 void PlayerCharacter::Tick()
@@ -660,7 +653,7 @@ void PlayerCharacter::PlayerHeal()
 			SetObjectActive(m_ItemUseUI, false);
 
 			// 상태
-			SetActionState(ACTION_STATE::NONE);
+			ChangeState(L"Player_Idle");
 		}
 
 		// 진행 중
@@ -745,7 +738,7 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 		m_KillinfoScript->OnEvent();
 
 		// 상태
-		SetActionState(ACTION_STATE::DEAD);
+		ChangeState(L"Player_Dead");
 	}
 
 	// 피격 화면 효과
@@ -788,7 +781,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 75.f;
-		SetActionState(ACTION_STATE::FIRST_AID_KIT);
+		ChangeState(L"Player_FirstAidKit");
 		break;
 	case ITEM_TYPE::MED_KIT:
 		if (m_CurHP >= m_MaxHP)
@@ -798,7 +791,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
-		SetActionState(ACTION_STATE::MED_KIT);
+		ChangeState(L"Player_MedKit");
 		break;
 	case ITEM_TYPE::BANDAGE:
 		if (m_CurHP >= m_SemiMaxHP)
@@ -808,22 +801,22 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 10.f;
-		SetActionState(ACTION_STATE::BANDAGE);
+		ChangeState(L"Player_Bandage");
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 100.f;
-		SetActionState(ACTION_STATE::ADRENALINE_SYRINGE);
+		ChangeState(L"Player_Adrenaline");
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 60.f;
-		SetActionState(ACTION_STATE::PAIN_KILLER);
+		ChangeState(L"Player_PainKiller");
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 40.f;
-		SetActionState(ACTION_STATE::ENERGY_DRINK);
+		ChangeState(L"Player_EnergyDrink");
 		break;
 	default:
 		break;
@@ -846,6 +839,11 @@ void PlayerCharacter::LoadPlayerSounds()
 	m_HitSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_hit.mp3");
 	m_FootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep.mp3");
 	m_RunFootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
+}
+
+void PlayerCharacter::ChangeState(const wstring& _Name)
+{
+	StateMachine()->ChangeState(_Name);
 }
 
 void PlayerCharacter::SaveComponent(FILE* PFile)

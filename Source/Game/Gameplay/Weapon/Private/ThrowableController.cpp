@@ -110,7 +110,7 @@ void ThrowableController::Tick()
 		ClearKey();
 
 		// 상태
-		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_PREPARE);
+		m_PlayerScript->ChangeState(L"Player_Grenade_Prepare");
 	}
 
 
@@ -122,7 +122,7 @@ void ThrowableController::Tick()
 		ClearKey();
 
 		// 상태
-		m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_PREPARE);
+		m_PlayerScript->ChangeState(L"Player_Grenade_Prepare");
 	}
 
 	// 투척 상태 진입 가능한 지 판정
@@ -154,7 +154,7 @@ void ThrowableController::Tick()
 				GetOwner()->Collider3D()->SetTrigger(false);
 
 				// 상태
-				m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_THROW_HIGH);
+				m_PlayerScript->ChangeState(L"Player_Grenade_Throw_High");
 
 				// 애니메이션 다 끝날 때까지 상태 유지
 				m_AfterThrowAccTime = 0.f;
@@ -192,7 +192,7 @@ void ThrowableController::Tick()
 				GetOwner()->Collider3D()->SetTrigger(false);
 
 				// 상태
-				m_PlayerScript->SetActionState(ACTION_STATE::GRENADE_THROW_LOW);
+				m_PlayerScript->ChangeState(L"Player_Grenade_Throw_Low");
 
 				// 애니메이션 다 끝날 때까지 상태 유지
 				m_AfterThrowAccTime = 0.f;
@@ -241,7 +241,7 @@ void ThrowableController::Tick()
 		}
 		else
 		{
-			m_PlayerScript->SetActionState(ACTION_STATE::NONE);
+			m_PlayerScript->ChangeState(L"Player_Idle");
 			m_bAfterThrow = false;
 		}
 	}

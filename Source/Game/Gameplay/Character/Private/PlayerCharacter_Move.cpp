@@ -35,7 +35,7 @@ void PlayerCharacter::PlayerMove()
 	Transform()->SetRelativePos(vPos);
 
 	// 애니메이션
-	AnimationControl();
+	//AnimationControl();
 
 	// 초기화
 	InitMove();
@@ -255,11 +255,11 @@ void PlayerCharacter::UpdateGravity()
 		{
 			m_GravityVelocity = Vec3(0.f, 0.f, 0.f);
 
-			// 상태
-			if (m_ActionState == ACTION_STATE::JUMP)
-			{
-				SetActionState(ACTION_STATE::NONE);
-			}
+			// TODO: State
+			//if (m_ActionState == ACTION_STATE::JUMP)
+			//{
+			//	SetActionState(ACTION_STATE::NONE);
+			//}
 		}
 	}
 
@@ -269,7 +269,7 @@ void PlayerCharacter::UpdateGravity()
 		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
 
 		// 상태
-		SetActionState(ACTION_STATE::JUMP);
+		ChangeState(L"Player_Jump");
 	}
 
 	m_Velocity += m_GravityVelocity;
@@ -291,261 +291,261 @@ void PlayerCharacter::UpdateCollision()
 	}
 }
 
-void PlayerCharacter::AnimationControl()
-{
-	float delay = 0.f;
-	wstring clipName = L"";
-
-	switch (m_ActionState)
-	{
-	case ACTION_STATE::JUMP:
-		{
-			delay = 0.02f;
-			clipName = L"Animation\\Armature_rifle_jump.anim";
-		}
-		break;
-	case ACTION_STATE::GUN_FIRE:
-		{
-			delay = 0.02f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_firing_rifle.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_firing_rifle.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_firing_rifle.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::GUN_RELOAD:
-		{
-			delay = 0.4f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_reloading.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_reloading.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_reloading.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::GRENADE_PREPARE:
-		{
-			delay = 1.f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_grenade_prepare.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::GRENADE_THROW_HIGH:
-		{
-			delay = 0.07f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_toss_grenade_test.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_toss_grenade_test.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::GRENADE_THROW_LOW:
-		{
-			delay = 0.3f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_toss_grenade_low.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_toss_grenade_low.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::BANDAGE:
-		break;
-	case ACTION_STATE::MED_KIT:
-		break;
-	case ACTION_STATE::FIRST_AID_KIT:
-		{
-			delay = 0.4f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_first_aid_kit.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::ENERGY_DRINK:
-		{
-			delay = 0.4f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_stand_energy_drink.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_stand_energy_drink.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_energy_drink.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::PAIN_KILLER:
-		{
-			delay = 0.4f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_stand_pain_killer.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_stand_pain_killer.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_pain_killer.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::ADRENALINE_SYRINGE:
-		{
-			delay = 0.4f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_reloading.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_reloading.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_reloading.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::DEAD:
-		{
-			delay = 1.f;
-			switch (m_MotionState)
-			{
-			case MOTION_STATE::STAND:
-				clipName = L"Animation\\Armature_death_from_the_front.anim";
-				break;
-			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
-				clipName = L"Animation\\Armature_death_from_the_front.anim";
-				break;
-			case MOTION_STATE::PRONE:
-				clipName = L"Animation\\Armature_prone_death.anim";
-				break;
-			}
-		}
-		break;
-	case ACTION_STATE::NONE:
-		{
-			delay = 0.07f;
-
-			if (KEY_PRESSED(KEY::W))
-			{
-				if (m_MotionState == MOTION_STATE::CROUCH)
-					clipName = L"Animation\\Armature_walk_crouching_forward.anim";
-				else if (m_MotionState == MOTION_STATE::PRONE)
-					clipName = L"Animation\\Armature_prone_forward.anim";
-				else if (KEY_PRESSED(KEY::LSHIFT))
-					clipName = L"Animation\\Armature_run_forward.anim";
-				else
-					clipName = L"Animation\\Armature_walk_forward.anim";
-			}
-			else if (KEY_PRESSED(KEY::A))
-			{
-				if (m_MotionState == MOTION_STATE::CROUCH)
-					clipName = L"Animation\\Armature_walk_crouching_left.anim";
-				else if (m_MotionState == MOTION_STATE::PRONE)
-					clipName = L"Animation\\Armature_prone_left.anim";
-				else if (KEY_PRESSED(KEY::LSHIFT))
-					clipName = L"Animation\\Armature_run_left.anim";
-				else
-					clipName = L"Animation\\Armature_walk_left.anim";
-			}
-			else if (KEY_PRESSED(KEY::S))
-			{
-				if (m_MotionState == MOTION_STATE::CROUCH)
-					clipName = L"Animation\\Armature_walk_crouching_backward.anim";
-				else if (m_MotionState == MOTION_STATE::PRONE)
-					clipName = L"Animation\\Armature_prone_backward.anim";
-				else if (KEY_PRESSED(KEY::LSHIFT))
-					clipName = L"Animation\\Armature_run_backward.anim";
-				else
-					clipName = L"Animation\\Armature_walk_backward.anim";
-			}
-			else if (KEY_PRESSED(KEY::D))
-			{
-				if (m_MotionState == MOTION_STATE::CROUCH)
-					clipName = L"Animation\\Armature_walk_crouching_right.anim";
-				else if (m_MotionState == MOTION_STATE::PRONE)
-					clipName = L"Animation\\Armature_prone_right.anim";
-				else if (KEY_PRESSED(KEY::LSHIFT))
-					clipName = L"Animation\\Armature_run_right.anim";
-				else
-					clipName = L"Animation\\Armature_walk_right.anim";
-			}
-			else
-			{
-				if (m_MotionState == MOTION_STATE::CROUCH)
-					clipName = L"Animation\\Armature_idle_crouching.anim";
-				else if (m_MotionState == MOTION_STATE::PRONE)
-					clipName = L"Animation\\Armature_prone_idle.anim";
-				else
-					clipName = L"Animation\\Armature_idle.anim";
-			}
-		}
-		break;
-	}
-
-
-	if (Animator3D()->GetCurClip()->GetKey() != clipName
-		&& (Animator3D()->GetNextClip() == nullptr || Animator3D()->GetNextClip()->GetKey() != clipName))
-	{
-		Animator3D()->SetCurClipBlend(clipName, delay);
-	}
-}
+//void PlayerCharacter::AnimationControl()
+//{
+//	float delay = 0.f;
+//	wstring clipName = L"";
+//
+//	switch (m_ActionState)
+//	{
+//	case ACTION_STATE::JUMP:
+//		{
+//			delay = 0.02f;
+//			clipName = L"Animation\\Armature_rifle_jump.anim";
+//		}
+//		break;
+//	case ACTION_STATE::GUN_FIRE:
+//		{
+//			delay = 0.02f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_firing_rifle.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_firing_rifle.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_firing_rifle.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::GUN_RELOAD:
+//		{
+//			delay = 0.4f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_reloading.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_reloading.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_reloading.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::GRENADE_PREPARE:
+//		{
+//			delay = 1.f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_stand_grenade_prepare.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_grenade_prepare.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::GRENADE_THROW_HIGH:
+//		{
+//			delay = 0.07f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_toss_grenade_test.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_toss_grenade_test.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::GRENADE_THROW_LOW:
+//		{
+//			delay = 0.3f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_toss_grenade_low.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_toss_grenade_low.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_toss_grenade_test.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::BANDAGE:
+//		break;
+//	case ACTION_STATE::MED_KIT:
+//		break;
+//	case ACTION_STATE::FIRST_AID_KIT:
+//		{
+//			delay = 0.4f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_stand_first_aid_kit.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_first_aid_kit.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::ENERGY_DRINK:
+//		{
+//			delay = 0.4f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_stand_energy_drink.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_stand_energy_drink.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_energy_drink.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::PAIN_KILLER:
+//		{
+//			delay = 0.4f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_stand_pain_killer.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_stand_pain_killer.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_pain_killer.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::ADRENALINE_SYRINGE:
+//		{
+//			delay = 0.4f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_reloading.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_reloading.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_reloading.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::DEAD:
+//		{
+//			delay = 1.f;
+//			switch (m_MotionState)
+//			{
+//			case MOTION_STATE::STAND:
+//				clipName = L"Animation\\Armature_death_from_the_front.anim";
+//				break;
+//			case MOTION_STATE::CROUCH: // TODO: Crouch Animation
+//				clipName = L"Animation\\Armature_death_from_the_front.anim";
+//				break;
+//			case MOTION_STATE::PRONE:
+//				clipName = L"Animation\\Armature_prone_death.anim";
+//				break;
+//			}
+//		}
+//		break;
+//	case ACTION_STATE::NONE:
+//		{
+//			delay = 0.07f;
+//
+//			if (KEY_PRESSED(KEY::W))
+//			{
+//				if (m_MotionState == MOTION_STATE::CROUCH)
+//					clipName = L"Animation\\Armature_walk_crouching_forward.anim";
+//				else if (m_MotionState == MOTION_STATE::PRONE)
+//					clipName = L"Animation\\Armature_prone_forward.anim";
+//				else if (KEY_PRESSED(KEY::LSHIFT))
+//					clipName = L"Animation\\Armature_run_forward.anim";
+//				else
+//					clipName = L"Animation\\Armature_walk_forward.anim";
+//			}
+//			else if (KEY_PRESSED(KEY::A))
+//			{
+//				if (m_MotionState == MOTION_STATE::CROUCH)
+//					clipName = L"Animation\\Armature_walk_crouching_left.anim";
+//				else if (m_MotionState == MOTION_STATE::PRONE)
+//					clipName = L"Animation\\Armature_prone_left.anim";
+//				else if (KEY_PRESSED(KEY::LSHIFT))
+//					clipName = L"Animation\\Armature_run_left.anim";
+//				else
+//					clipName = L"Animation\\Armature_walk_left.anim";
+//			}
+//			else if (KEY_PRESSED(KEY::S))
+//			{
+//				if (m_MotionState == MOTION_STATE::CROUCH)
+//					clipName = L"Animation\\Armature_walk_crouching_backward.anim";
+//				else if (m_MotionState == MOTION_STATE::PRONE)
+//					clipName = L"Animation\\Armature_prone_backward.anim";
+//				else if (KEY_PRESSED(KEY::LSHIFT))
+//					clipName = L"Animation\\Armature_run_backward.anim";
+//				else
+//					clipName = L"Animation\\Armature_walk_backward.anim";
+//			}
+//			else if (KEY_PRESSED(KEY::D))
+//			{
+//				if (m_MotionState == MOTION_STATE::CROUCH)
+//					clipName = L"Animation\\Armature_walk_crouching_right.anim";
+//				else if (m_MotionState == MOTION_STATE::PRONE)
+//					clipName = L"Animation\\Armature_prone_right.anim";
+//				else if (KEY_PRESSED(KEY::LSHIFT))
+//					clipName = L"Animation\\Armature_run_right.anim";
+//				else
+//					clipName = L"Animation\\Armature_walk_right.anim";
+//			}
+//			else
+//			{
+//				if (m_MotionState == MOTION_STATE::CROUCH)
+//					clipName = L"Animation\\Armature_idle_crouching.anim";
+//				else if (m_MotionState == MOTION_STATE::PRONE)
+//					clipName = L"Animation\\Armature_prone_idle.anim";
+//				else
+//					clipName = L"Animation\\Armature_idle.anim";
+//			}
+//		}
+//		break;
+//	}
+//
+//
+//	if (Animator3D()->GetCurClip()->GetKey() != clipName
+//		&& (Animator3D()->GetNextClip() == nullptr || Animator3D()->GetNextClip()->GetKey() != clipName))
+//	{
+//		Animator3D()->SetCurClipBlend(clipName, delay);
+//	}
+//}
 
 void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
