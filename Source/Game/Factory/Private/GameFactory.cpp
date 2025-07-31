@@ -233,7 +233,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));	// TEST: prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<FCollider3D>(Player);
-	Collider::SetColliderProperties(Player, {550.f, 820.f, 385.f}, {35.f, 498.f, 0.f}, true);
+	Collider::SetColliderProperties(Player, {400.f, 910.f, 400.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
 
 	// Player Head Collider
