@@ -5,6 +5,8 @@
 #include <mutex>
 #include <fstream>
 
+using namespace fs;
+
 using std::thread;
 using std::atomic;
 using std::mutex;

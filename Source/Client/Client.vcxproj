@@ -175,8 +175,8 @@
     <ClInclude Include="Build\Resource.h" />
     <ClInclude Include="Build\targetver.h" />
     <ClInclude Include="Core\Public\CEditorMgr.h" />
-    <ClInclude Include="Core\Public\FClientApp.h" />
-    <ClInclude Include="Core\Public\FWindow.h" />
+    <ClInclude Include="Core\Public\ClientApp.h" />
+    <ClInclude Include="Core\Public\AppWindow.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx11.h" />
@@ -238,8 +238,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Private\CEditorMgr.cpp" />
-    <ClCompile Include="Core\Private\FClientApp.cpp" />
-    <ClCompile Include="Core\Private\FWindow.cpp" />
+    <ClCompile Include="Core\Private\ClientApp.cpp" />
+    <ClCompile Include="Core\Private\AppWindow.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -303,8 +303,8 @@
     <ClCompile Include="API\Private\ClientFacade.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Build\Client.ico" />
-    <Image Include="Build\small.ico" />
+    <Image Include="Build\MainIcon.ico" />
+    <Image Include="Build\TitleBarIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="imgui\LICENSE.txt" />

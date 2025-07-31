@@ -27,8 +27,8 @@ LANGUAGE 18, 1
 // 애플리케이션 아이콘이 모든 시스템에서 일관된 상태로 유지되도록
 // 가장 낮은 ID 값을 가진 아이콘이 맨 처음 배치됩니다.
 
-IDI_CLIENT       ICON         "Build\Client.ico"
-IDI_SMALL               ICON         "Build\small.ico"
+IDI_CLIENT       ICON         "Build\\MainIcon.ico"
+IDI_SMALL               ICON         "Build\\TitleBarIcon.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
