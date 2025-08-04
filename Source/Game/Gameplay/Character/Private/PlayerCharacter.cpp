@@ -128,7 +128,7 @@ void PlayerCharacter::Begin()
 	LoadPlayerSounds();
 
 	// State Machine Base Set
-	ChangeState(L"Player_Idle");
+	StateMachine()->SetChange(L"Player_Idle");
 }
 
 void PlayerCharacter::Tick()
@@ -201,7 +201,11 @@ void PlayerCharacter::Tick()
 	}
 
 	// StateMachine -> Tick위치 고려 필요 (햔재 임시)
-	StateMachine()->FinalTick();
+
+	if (StateMachine()->GetCurState() != nullptr)
+	{
+		StateMachine()->GetCurState()->FinalTick();
+	}	
 }
 
 
@@ -660,7 +664,8 @@ void PlayerCharacter::PlayerHeal()
 			SetObjectActive(m_ItemUseUI, false);
 
 			// 상태
-			ChangeState(L"Player_Idle");
+			StateMachine()->SetChange(L"Player_Idle");
+			//ChangeState(L"Player_Idle");
 		}
 
 		// 진행 중
@@ -745,7 +750,8 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 		m_KillinfoScript->OnEvent();
 
 		// 상태
-		ChangeState(L"Player_Dead");
+		StateMachine()->SetChange(L"Player_Idle");
+		//ChangeState(L"Player_Dead");
 	}
 
 	// 피격 화면 효과
@@ -788,7 +794,8 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 75.f;
-		ChangeState(L"Player_FirstAidKit");
+		StateMachine()->SetChange(L"Player_FirstAidKit");
+		//ChangeState(L"Player_FirstAidKit");
 		break;
 	case ITEM_TYPE::MED_KIT:
 		if (m_CurHP >= m_MaxHP)
@@ -798,7 +805,8 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
-		ChangeState(L"Player_MedKit");
+		StateMachine()->SetChange(L"Player_MedKit");
+		//ChangeState(L"Player_MedKit");
 		break;
 	case ITEM_TYPE::BANDAGE:
 		if (m_CurHP >= m_SemiMaxHP)
@@ -808,22 +816,26 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 10.f;
-		ChangeState(L"Player_Bandage");
+		StateMachine()->SetChange(L"Player_Bandage");
+		//ChangeState(L"Player_Bandage");
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 100.f;
-		ChangeState(L"Player_Adrenaline");
+		StateMachine()->SetChange(L"Player_Adrenaline");
+		//ChangeState(L"Player_Adrenaline");
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 60.f;
-		ChangeState(L"Player_PainKiller");
+		StateMachine()->SetChange(L"Player_PainKiller");
+		//ChangeState(L"Player_PainKiller");
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 40.f;
-		ChangeState(L"Player_EnergyDrink");
+		StateMachine()->SetChange(L"Player_EnergyDrink");
+		//ChangeState(L"Player_EnergyDrink");
 		break;
 	default:
 		break;
@@ -848,10 +860,11 @@ void PlayerCharacter::LoadPlayerSounds()
 	m_RunFootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
 }
 
-void PlayerCharacter::ChangeState(const wstring& _Name)
-{
-	StateMachine()->ChangeState(_Name);
-}
+//void PlayerCharacter::ChangeState(const wstring& _Name)
+//{
+//	StateMachine()->ChangeState(_Name);
+//}
+
 
 void PlayerCharacter::SaveComponent(FILE* PFile)
 {

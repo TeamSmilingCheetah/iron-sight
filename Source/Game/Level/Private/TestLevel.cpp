@@ -51,7 +51,7 @@ void TestLevel::CreateTestLevel()
 	GameFactory::LoadMainCamera(LevelRawPtr);
 	GameFactory::LoadDefaultLight(LevelRawPtr);
 	GameFactory::LoadDefaultSkyBox(LevelRawPtr);
-	GameFactory::LoadDefaultLandscape(LevelRawPtr);
+	//GameFactory::LoadDefaultLandscape(LevelRawPtr);
 
 	// Initialize Item Parts
 	auto UIInfo = SetUpUI(LevelRawPtr);

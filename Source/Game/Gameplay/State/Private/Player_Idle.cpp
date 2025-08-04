@@ -30,8 +30,6 @@ void Player_Idle::Enter_Override()
 	case MOTION_STATE::PRONE:
 		m_ClipName = L"Animation\\Armature_prone_idle.anim";
 		break;
-	default:
-		break;
 	}
 
 	// 애니메이션 실행

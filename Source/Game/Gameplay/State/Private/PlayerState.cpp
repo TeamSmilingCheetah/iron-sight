@@ -67,7 +67,8 @@ void PlayerState::ControlMoveAnimation()
 	// 상체 하체의 애니메이션이 따로 적용되지 않고 있기 때문에 움직이는 애니메이션을 최우선으로 둬야하는지?
 	// 일단은 다른 애니메이션을 우선으로 하여 현재 진행중인 애니메이션이 없을때만 적용 될 수 있게 조건을 달아줌.
 
-	// 현재 진행중인 애니메이션이 있다면 return & Idle Animaton은 무시하고 실행해야 함
+	// 현재 진행중인 애니메이션이 있다면 return
+	// TODO: Idle Animaton은 무시하고 실행해야 함
 	if (SM()->Animator3D()->IsActive())
 	{
 		return;

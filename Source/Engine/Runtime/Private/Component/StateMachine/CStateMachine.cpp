@@ -6,6 +6,7 @@ CStateMachine::CStateMachine()
 	: CComponent(COMPONENT_TYPE::STATEMACINE)
 	, m_CurState(nullptr)
 	, m_CanExit(true)
+	, m_CanChange(false)
 {
 }
 
@@ -25,8 +26,10 @@ void CStateMachine::AddState(CState* _State)
 
 bool CStateMachine::ChangeState(const wstring& _Name)
 {
+	m_CanChange = false;
+
 	// 현재 상태가 exit 할 수 없는 상황이라면 바로 return
-	if (!CanExit())
+	if (!m_CanExit)
 	{
 		return false;
 	}
@@ -49,8 +52,14 @@ bool CStateMachine::ChangeState(const wstring& _Name)
 
 void CStateMachine::FinalTick()
 {
-	if (m_CurState)
-		m_CurState->FinalTick();
+	// Script에서 State 변경 요청이 들어왔다.
+	if (m_CanChange)
+	{
+		ChangeState(m_NextState);
+	}
+
+	/*if (m_CurState)
+		m_CurState->FinalTick();*/
 }
 
 void CStateMachine::SaveComponent(FILE* _File)

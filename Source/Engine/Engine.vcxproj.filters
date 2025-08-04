@@ -214,21 +214,44 @@
     <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h">
       <Filter>04. Manager\12. ObjectPollMgr</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h" />
-    <ClInclude Include="Runtime\Public\Component\Physics\Collider3D.h" />
-    <ClInclude Include="Runtime\Public\Component\Physics\ColliderRay.h" />
-    <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h" />
-    <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
-    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h" />
-    <ClInclude Include="System\Public\Manager\FCollisionManager.h" />
-    <ClInclude Include="System\Public\Manager\FLogManager.h" />
-    <ClInclude Include="System\Public\Rendering\Shader\CMeshCollisionCS.h" />
-    <ClInclude Include="API\Public\EngineFacade.h" />
     <ClInclude Include="Runtime\Public\Component\StateMachine\CStateMachine.h">
       <Filter>07. Component\10. StateMachine</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Public\State\CState.h">
       <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Rendering\Shader\CMeshCollisionCS.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider3D.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderRay.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Manager\CollisionManager.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Public\EngineFacade.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Manager\LogManager.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Public\Component\Physics\PhysicsHelper.h">
+      <Filter>07. Component\04. Collider3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -430,26 +453,62 @@
     <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp">
       <Filter>04. Manager\12. ObjectPollMgr</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Physics\Collider3D.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp" />
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionBroad.cpp" />
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionBVH.cpp" />
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionManager.cpp" />
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionNarrow.cpp" />
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionPostProcess.cpp" />
-    <ClCompile Include="System\Private\Manager\Collision\FCollisionRaycast.cpp" />
-    <ClCompile Include="System\Private\Manager\FLogManager.cpp" />
-    <ClCompile Include="System\Private\Rendering\Shader\CMeshCollisionCS.cpp" />
-    <ClCompile Include="API\Private\EngineFacade.cpp" />
     <ClCompile Include="Runtime\Private\Component\StateMachine\CStateMachine.cpp">
       <Filter>07. Component\10. StateMachine</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Private\State\CState.cpp">
       <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Rendering\Shader\CMeshCollisionCS.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider3D.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Broad.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_BVH.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Common.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Main.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Narrow.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_PostProcess.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Raycast.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Private\EngineFacade.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\LogManager.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Private\Component\Physics\PhysicsHelper.cpp">
+      <Filter>07. Component\04. Collider3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

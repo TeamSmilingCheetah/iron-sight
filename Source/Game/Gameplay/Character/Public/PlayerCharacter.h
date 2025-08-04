@@ -174,7 +174,7 @@ public:
 	MOTION_STATE GetMotionState() const { return m_MotionState; }
 
 	Vec3 GetPlayerVelocity() { return m_Velocity; }
-	void ChangeState(const wstring& _Name);
+	//void ChangeState(const wstring& _Name);
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;

@@ -117,7 +117,7 @@ void GunController::Tick()
 				ClearKey();
 
 				// 상태
-				m_PlayerScript->ChangeState(L"Player_Gun_Fire");
+				m_PlayerScript->StateMachine()->SetChange(L"Player_Gun_Fire");
 			}
 			else if (m_CurRounds == 0 && !m_bReload)
 			{
@@ -150,7 +150,7 @@ void GunController::Tick()
 			ClearKey();
 
 			// 상태
-			m_PlayerScript->ChangeState(L"Player_Gun_Reload");
+			m_PlayerScript->StateMachine()->SetChange(L"Player_Gun_Reload");
 		}
 
 		if (m_CurKey == KEY::B && m_CurKeyState == KEY_STATE::TAP)
@@ -476,7 +476,7 @@ void GunController::Reload()
 			m_PlayerScript->SetReloadingEnd(true);
 
 			// 상태
-			m_PlayerScript->ChangeState(L"Player_Idle");
+			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 		}
 
 	}
@@ -492,7 +492,7 @@ void GunController::StopFiring()
 		m_PlayerScript->SetShot(false);
 
 		// 상태
-		m_PlayerScript->ChangeState(L"Player_Idle");
+		m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 	}
 
 	ClearKey();

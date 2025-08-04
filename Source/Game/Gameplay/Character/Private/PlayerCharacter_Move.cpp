@@ -270,7 +270,8 @@ void PlayerCharacter::UpdateGravity()
 
 		
 		// 상태
-		ChangeState(L"Player_Jump");
+		StateMachine()->SetChange(L"Player_Jump");
+		//ChangeState(L"Player_Jump");
 	}
 
 	m_Velocity += m_GravityVelocity;

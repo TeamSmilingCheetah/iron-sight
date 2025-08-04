@@ -12,12 +12,17 @@ private:
 	CState*				m_PrevState;
 	CState*				m_CurState;
 	bool				m_CanExit;	// 다른 state로 변경 가능한 상태인지
+	bool				m_CanChange; // 저번 Tick동안 State변경 요청이 있었는지
+
+	wstring				m_NextState;
 
 public:
 	CState* GetState(const wstring& _Key) const { return m_mapState.find(_Key)->second; }
 	void AddState(CState* _State);
 
 	void SetCanExit(bool _b) { m_CanExit = _b; }
+	void SetChange(const wstring& _str) { m_NextState = _str; m_CanChange = true; }
+
 	bool CanExit() const { return m_CanExit; }
 
 	CState* GetPrevState() const { return m_PrevState; }
@@ -25,11 +30,13 @@ public:
 
 	map<wstring, CState*> GetStateMap() { return m_mapState; }
 
-	bool ChangeState(const wstring& _Name);	// State 구현부에서 호출, state 바뀌었는지 여부 리턴
-
 	virtual void FinalTick() override;
 	virtual void SaveComponent(FILE* _File) override;
 	virtual void LoadComponent(FILE* _File) override;
+
+private:
+	bool ChangeState(const wstring& _Name);	// State 구현부에서 호출, state 바뀌었는지 여부 리턴
+
 
 public:
 	CLONE(CStateMachine)
