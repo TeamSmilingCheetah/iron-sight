@@ -96,7 +96,7 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\Props\\Throwable\\GRENADE.fbx",
 		L"Grenade",
-		Vec3(0.f, 0.f, 5000.f),
+		Vec3(0.f, 0.f, 0.f),
 		Vec3(0.f, 0.f, 0.f),
 		Vec3(10.f, 10.f, 10.f),
 		{
@@ -134,7 +134,7 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\Props\\Throwable\\M18_Smoke.fbx",
 		L"Smoke Grenade",
-		Vec3(0.f, 0.f, 10000.f),
+		Vec3(0.f, 0.f, 0.f),
 		Vec3(0.f, 0.f, 0.f),
 		Vec3(10.f, 10.f, 10.f),
 		{

@@ -179,7 +179,7 @@ public:
 	CAnimator3D* Animator3D() const;
 
 	// Special Member Function
-	CLONE(CGameObject);
+	CLONE(CGameObject)
 	CGameObject();
 	CGameObject(const CGameObject& POrigin);
 	~CGameObject() override;

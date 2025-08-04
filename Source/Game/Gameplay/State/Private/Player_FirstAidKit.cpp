@@ -6,6 +6,7 @@
 Player_FirstAidKit::Player_FirstAidKit()
 	: PlayerState(L"Player_FirstAidKit")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_FirstAidKit::~Player_FirstAidKit()

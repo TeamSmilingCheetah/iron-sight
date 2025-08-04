@@ -6,6 +6,7 @@
 Player_Adrenaline::Player_Adrenaline()
 	: PlayerState(L"Player_Adrenaline")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_Adrenaline::~Player_Adrenaline()

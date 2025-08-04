@@ -158,8 +158,10 @@ public:
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
-	bool IsPlayerReloading() { return m_bReloading; }
-	bool IsPlayerReloadingEnd() { return m_bReloadingEnd; }
+	bool IsPlayerReloading() const { return m_bReloading; }
+	bool IsPlayerReloadingEnd() const { return m_bReloadingEnd; }
+
+	bool IsGround() const { return m_IsGround; }
 
 	void TriggerHeal(ITEM_TYPE PHealType);
 	void DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage);	// 공격 피격 처리

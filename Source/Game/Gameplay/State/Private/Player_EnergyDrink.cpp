@@ -6,6 +6,7 @@
 Player_EnergyDrink::Player_EnergyDrink()
 	: PlayerState(L"Player_EnergyDrink")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_EnergyDrink::~Player_EnergyDrink()

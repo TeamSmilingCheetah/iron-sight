@@ -7,6 +7,7 @@
 Player_Bandage::Player_Bandage()
 	: PlayerState(L"Player_Bandage")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_Bandage::~Player_Bandage()

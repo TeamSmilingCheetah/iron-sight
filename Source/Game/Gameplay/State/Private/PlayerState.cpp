@@ -8,6 +8,7 @@
 
 PlayerState::PlayerState(const wstring& _Name)
 	: CState(_Name)
+	, m_CanExitDuringAnimation(true)
 {
 }
 
@@ -17,7 +18,7 @@ PlayerState::~PlayerState()
 
 void PlayerState::Enter()
 {
-
+	// TODO: State에 Script를 저장하는 게 좀.. 맞나 싶네
 	if (!m_PlayerScript)
 	{
 		m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(SM()->GetOwner(), SCRIPT_TYPE::PLAYERSCRIPT));
@@ -30,18 +31,18 @@ void PlayerState::Enter()
 		SM()->SetCanExit(false);
 	}
 
+	// Override Function
 	Enter_Override();
 }
 
 void PlayerState::FinalTick()
 {
-	// TODO: 매 프레임 하지 않도록 개선
-	// --> Get함수 자체가 단순한 포인터 반환이기 때문에 굳이 캐싱할 필요가 없어 보임 / 변수에 할당하는것이 아니라 함수자체로 사용해도 될 것 같음.
-	//CStateMachine* pStateMachine = m_OwnerSM;
-
 	// 애니메이션이 종료되어야 전환 가능한 상태인 경우
 	if (!SM()->CanExit() && !m_CanExitDuringAnimation)
 	{
+		// m_CanExitDuringAnimation이 false라면 loop 하면 안됨.
+		//assert(!SM()->Animator3D()->GetCurClip()->IsLoop());
+
 		// 애니메이터가 멈춘 경우 전환 가능 상태로 변경
 		if (!SM()->Animator3D()->IsActive())
 		{
@@ -52,14 +53,7 @@ void PlayerState::FinalTick()
 	// PlayerState는 매 틱 입력을 감지해 움직이는 애니메이션을 적용해줘야 한다.
 	ControlMoveAnimation();
 
-	// TODO: CState 쪽으로 올리기
-	// 다음 State가 지정되어 있고, 상태 전환 가능한 경우
-	//if (GetNextStateIndex() != -1 && pStateMachine->CanExit())
-	//{
-	//	// 바로 상태 전환 호출
-	//	pStateMachine->ChangeState(GetNextStateIndex());
-	//}
-
+	// Override Function
 	FinalTick_Override();
 }
 
