@@ -67,7 +67,6 @@ public:
 	UINT GetParentObjectID() const;
 	bool IsAncestor(const CGameObject* POther) const;
 	AABB GetAABB() const;
-	AABB GetCollisionAABB() const;
 	vector<ColliderVariant> GetColliders() const;
 
 	// Getter & Setter
@@ -180,7 +179,7 @@ public:
 	CAnimator3D* Animator3D() const;
 
 	// Special Member Function
-	CLONE(CGameObject);
+	CLONE(CGameObject)
 	CGameObject();
 	CGameObject(const CGameObject& POrigin);
 	~CGameObject() override;

@@ -6,6 +6,7 @@
 Player_Grenade_Throw_High::Player_Grenade_Throw_High()
 	: PlayerState(L"Player_Grenade_Throw_High")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_Grenade_Throw_High::~Player_Grenade_Throw_High()

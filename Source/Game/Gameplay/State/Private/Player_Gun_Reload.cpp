@@ -7,6 +7,7 @@
 Player_Gun_Reload::Player_Gun_Reload()
 	: PlayerState(L"Player_Gun_Reload")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_Gun_Reload::~Player_Gun_Reload()

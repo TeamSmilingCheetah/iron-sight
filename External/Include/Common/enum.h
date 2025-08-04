@@ -435,3 +435,16 @@ inline ELogFlag& operator|=(ELogFlag& lhs, ELogFlag rhs)
 	lhs = lhs | rhs;
 	return lhs;
 }
+
+enum class EMeshColliderType : UINT8
+{
+	NONE = 0,
+
+	Original, // 원본 그대로 사용
+	ConvexHull, // 삼각형 갯수 감소
+
+	// XXX(KHJ): 필요한 상황이 있을지는 모르겠음
+	Tessellation, // 삼각형 갯수 증가
+
+	END = 0xFF,
+};

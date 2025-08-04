@@ -7,6 +7,7 @@
 Player_Idle::Player_Idle()
 	: PlayerState(L"Player_Idle")
 {
+	SetCanExitDuringAnimation(true);
 }
 
 Player_Idle::~Player_Idle()

@@ -410,6 +410,8 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new CLight2D;
 	case COMPONENT_TYPE::LIGHT3D:
 		return new CLight3D;
+	case COMPONENT_TYPE::STATEMACINE:
+		return new CStateMachine;
 	case COMPONENT_TYPE::MESHRENDER:
 		return new CMeshRender;
 	case COMPONENT_TYPE::TILEMAP:

@@ -1,5 +1,6 @@
 #pragma once
 #include "ColliderBase.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 /**
  * @brief Mesh에 충돌체 성질을 부여하는 컴포넌트
@@ -13,6 +14,7 @@ class FMeshCollider :
 private:
 	Ptr<CMesh> MeshPtr;
 	Ptr<CMesh> ConvexHullMeshPtr;
+	EMeshColliderType MeshColliderType;
 
 private:
 	void GenerateConvexHull();
@@ -20,16 +22,20 @@ private:
 public:
 	void Init() override;
 	void FinalTick() override;
-	[[nodiscard]] const AABB GetAABB() const override;
+	void SelectOptimizedMesh();
+
+	[[nodiscard]] const AABB GetAABB() const override { return GetOwner()->GetAABB(); }
 
 	void SaveComponent(FILE* InFile) override;
 	void LoadComponent(FILE* InFile) override;
 
 	// Getter & Setter
 	[[nodiscard]] EColliderType GetColliderType() const override { return EColliderType::MeshCollider; }
-	[[nodiscard]] Ptr<CMesh> GetMesh() const { return !!ConvexHullMeshPtr.Get() ? ConvexHullMeshPtr : MeshPtr; }
+
+	[[nodiscard]] Ptr<CMesh> GetMesh() const;
 
 	void SetMesh(CMesh* InMesh) { MeshPtr = InMesh; }
+	void SetMeshType(EMeshColliderType InType) { MeshColliderType = InType; }
 
 	// Special Member Function
 	FMeshCollider();

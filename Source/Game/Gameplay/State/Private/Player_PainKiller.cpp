@@ -7,6 +7,7 @@
 Player_PainKiller::Player_PainKiller()
 	: PlayerState(L"Player_PainKiller")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_PainKiller::~Player_PainKiller()

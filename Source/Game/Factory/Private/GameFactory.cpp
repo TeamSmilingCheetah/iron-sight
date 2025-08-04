@@ -237,13 +237,17 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_adrenaline.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_pain_killer.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_low.anim"));
-	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_grenade_prepare.anim"));		// TEST: PUBG_ANIMSET에서 자름
-	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_test.anim"));			// TEST: toss_grenade 뒷부분 자름
-	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_grenade_prepare.anim"));		// TEST: prone_toss_grenade 앞부분 자름
-	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));	// TEST: prone_toss_grenade 뒷부분 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_grenade_prepare.anim"));
+	// TEST: PUBG_ANIMSET에서 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_test.anim"));
+	// TEST: toss_grenade 뒷부분 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_grenade_prepare.anim"));
+	// TEST: prone_toss_grenade 앞부분 자름
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));
+	// TEST: prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<FCollider3D>(Player);
-	Collider::SetColliderProperties(Player, {400.f, 910.f, 400.f}, {0.f, 455.f, 0.f}, true);
+	Collider::SetColliderProperties(Player, {800.f, 910.f, 800.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
 
 	// Player Head Collider
@@ -258,7 +262,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Common::AddComponentToObject<FCollider3D>(RawHeaderCollider);
 
 	Transform::SetPosition(RawHeaderCollider, {0.f, 170.f, 0.f});
-	Collider::SetColliderProperties(RawHeaderCollider, {150.f, 150.f, 150.f }, {0, -27.f, 0}, true, false);
+	Collider::SetColliderProperties(RawHeaderCollider, {150.f, 150.f, 150.f}, {0, -27.f, 0}, true, false);
 
 	Common::AddChild(Player, RawHeaderCollider);
 

@@ -7,6 +7,7 @@
 Player_MedKit::Player_MedKit()
 	: PlayerState(L"Player_MedKit")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_MedKit::~Player_MedKit()

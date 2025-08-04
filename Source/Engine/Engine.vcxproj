@@ -312,10 +312,10 @@
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Common.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Main.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Narrow.cpp" />
-    <ClCompile Include="System\Private\Manager\CFontMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CKeyMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CLevelMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp"/>
+    <ClCompile Include="System\Private\Manager\CFontMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CKeyMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CLevelMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_PostProcess.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Raycast.cpp" />
     <ClCompile Include="System\Private\Manager\CPathMgr.cpp"/>
@@ -435,9 +435,9 @@
     </HLSL>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl"/>
+    <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

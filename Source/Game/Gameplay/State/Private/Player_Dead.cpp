@@ -7,6 +7,7 @@
 Player_Dead::Player_Dead()
 	: PlayerState(L"Player_Dead")
 {
+	SetCanExitDuringAnimation(false);
 }
 
 Player_Dead::~Player_Dead()

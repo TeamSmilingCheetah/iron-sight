@@ -96,7 +96,7 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\Props\\Throwable\\GRENADE.fbx",
 		L"Grenade",
-		Vec3(0.f, 0.f, 5000.f),
+		Vec3(0.f, 0.f, 0.f),
 		Vec3(0.f, 0.f, 0.f),
 		Vec3(10.f, 10.f, 10.f),
 		{
@@ -134,7 +134,7 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\Props\\Throwable\\M18_Smoke.fbx",
 		L"Smoke Grenade",
-		Vec3(0.f, 0.f, 10000.f),
+		Vec3(0.f, 0.f, 0.f),
 		Vec3(0.f, 0.f, 0.f),
 		Vec3(10.f, 10.f, 10.f),
 		{
@@ -399,6 +399,26 @@ void TestLevel::CreateTestLevel()
 	// testPlayer->Animator3D()->SetAnimClip(pAnimationSet->GetAnimations());
 	//
 	// pLevel->AddObject(1, testPlayer, false);
+
+	// Temp Landscape
+	// GameFactory::MakeFBXObject(
+	// 	LevelRawPtr,
+	// 	L"FBX\\Props\\Death Box\\box.fbx",
+	// 	L"TempLandscape",
+	// 	Vec3(0.f, -800.f, 0.f),
+	// 	Vec3(0.f, 0.f, 0.f),
+	// 	Vec3(20000.f, 200.f, 20000.f),
+	// 	{
+	// 		[](CGameObject* obj)
+	// 		{
+	// 			obj->AddComponentRecursive<FMeshCollider>();
+	// 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
+	// 			obj->Transform()->SetFrustumCheck(false);
+	// 		}
+	// 	},
+	// 	1,
+	// 	true
+	// );
 
 	GameFactory::MakeFBXObject(
 		LevelRawPtr,

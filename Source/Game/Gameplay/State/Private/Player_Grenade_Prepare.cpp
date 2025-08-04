@@ -7,6 +7,7 @@
 Player_Grenade_Prepare::Player_Grenade_Prepare()
 	: PlayerState(L"Player_Grenade_Prepare")
 {
+	SetCanExitDuringAnimation(true);
 }
 
 Player_Grenade_Prepare::~Player_Grenade_Prepare()

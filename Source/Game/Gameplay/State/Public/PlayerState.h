@@ -18,6 +18,8 @@ private:
 
 public:
 	PlayerCharacter* GetPlayerScript() const { return m_PlayerScript; }
+
+	// 생성자에서 옵션 세팅
 	void SetCanExitDuringAnimation(bool _b) { m_CanExitDuringAnimation = _b; }
 
 	virtual void Enter() final;

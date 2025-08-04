@@ -6,6 +6,7 @@
 
 CState::CState(const wstring& _Name)
 	: m_Owner(nullptr)
+	, m_Delay(0.f)
 {
 	SetName(_Name);
 }
