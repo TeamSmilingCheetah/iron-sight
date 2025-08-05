@@ -34,7 +34,7 @@ CGameObject* CMeshData::Instantiate()
 
 		pNewObj->MeshRender()->SetMesh(m_vecMesh[0]);
 
-		// TEST : m_vecMtrlSet[0].size() 대신 subset count로 임시 테스트
+		// TEST(Ssio) : m_vecMtrlSet[0].size() 대신 subset count로 임시 테스트
 		// CMesh.cpp, 77 에서 index가 0개인 경우 continue로 처리함에 따라 여기서 mtrlset 개수 대신 subset count로 처리.
 		for (UINT i = 0; i < m_vecMtrlSet[0].size(); ++i)
 		{
@@ -121,7 +121,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 			_Obj->AddComponent(pAnimator);
 			_Obj->MeshRender()->SetSkinRender(true);
 
-			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			// FIXME(Ssio) : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
 			pAnimator->SetAnimClips(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}
@@ -136,7 +136,7 @@ void CMeshData::Instantiate(CGameObject* _Obj)
 			CAnimator3D* pAnimator = new CAnimator3D;
 			_Obj->AddComponent(pAnimator);
 
-			// FIXME : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
+			// FIXME(Ssio) : 본이 여러 개인 경우 이상해질 수 잇음 (서로 다른 bone을 사용하는 애니메이션이 로드 될 수 있음)
 			pAnimator->SetAnimClips(m_vecAnimSet);
 			pAnimator->SetCurClip(m_vecAnimSet[0]->GetKey());
 		}

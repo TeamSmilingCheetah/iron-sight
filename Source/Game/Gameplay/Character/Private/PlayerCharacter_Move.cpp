@@ -255,7 +255,7 @@ void PlayerCharacter::UpdateGravity()
 		{
 			m_GravityVelocity = Vec3(0.f, 0.f, 0.f);
 
-			// TODO: State
+			// TODO(Ssio): State
 			//if (m_ActionState == ACTION_STATE::JUMP)
 			//{
 			//	SetActionState(ACTION_STATE::NONE);

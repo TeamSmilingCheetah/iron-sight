@@ -369,6 +369,7 @@ CGameObject* CLevelMgr::LoadGameObject(FILE* _File)
 		wstring ScriptName;
 		LoadWString(ScriptName, _File);
 
+		// FIXME(Ssio): Engine-Client 종속성 무너짐
 		// Script 이름으로 해당 스크립트 객체를 생성 후 GameObject 에 넣어준다.
 		CScript* pScript = GameplayManager::GetScript(ScriptName);
 		pObject->AddComponent(pScript);

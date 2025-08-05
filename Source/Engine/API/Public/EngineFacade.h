@@ -24,15 +24,13 @@ namespace Engine
 		void SetObjectName(CGameObject* PObject, const wstring& PName);
 		CComponent* GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType);
 		void AddChild(CGameObject* PObject, CGameObject* PChild);
+		CState* LoadState(const wstring& PStateName);
 
 		template <class T>
 		void AddComponentToObject(CGameObject* PObject);
 
 		template <class T>
 		void AddScriptToObject(CGameObject* PObject);
-
-		template <class T>
-		T* LoadState(const wstring& PStateName);
 	}
 
 	namespace Transform
@@ -110,6 +108,9 @@ namespace Engine
 	namespace StateMachine
 	{
 		void AddState(CGameObject* PObject, CState* PState);
+		void AddTransition(CGameObject* PObject, const wstring& PFrom, const wstring& PTo);
+		void AddAnyTransition(CGameObject* PObject, const wstring& PTo);
+		void SetDefaultState(CGameObject* PObject, const wstring& PStateName);
 	}
 }
 
@@ -126,13 +127,6 @@ void Engine::Common::AddScriptToObject(CGameObject* PObject)
 {
 	static_assert(std::is_base_of_v<CScript, T>, "Object Can Only Get Script By This Function");
 	PObject->AddComponent(new T);
-}
-
-template <class T>
-T* Engine::Common::LoadState(const wstring& PStateName)
-{
-	static_assert(std::is_base_of_v<CState, T>, "Object State Can Loaded By This Function");
-	return static_cast<T*>(StateMgr::GetState(PStateName));
 }
 
 template <typename T>

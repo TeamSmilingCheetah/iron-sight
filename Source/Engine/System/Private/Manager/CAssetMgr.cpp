@@ -131,13 +131,13 @@ bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	// map에 새로운 키값으로 등록
 	AddAsset(_NewKey, _Asset);
 
-	// FIXME : Relative Path랑 Key랑 동일하게 설정. 진짜 하나로 합치고 싶네 ㅅㅂ
+	// FIXME(Ssio) : Relative Path랑 Key랑 동일하게 설정. 진짜 하나로 합치고 싶네 ㅅㅂ
 	_Asset->SetRelativePath(_NewKey);
 
 	// map에서 제거
 	m_mapAsset[typeToIndex].erase(iter);
 
-	// TODO : 이 Asset을 참조하던 다른 애셋에게도 알려줘야 함!!!!
+	// TODO(Ssio) : 이 Asset을 참조하던 다른 애셋에게도 알려줘야 함!!!!
 
 	return true;
 }
@@ -160,7 +160,7 @@ Ptr<CAsset> CAssetMgr::CopyAsset(Ptr<CAsset> _Source)
 		wchar_t buffer[4]{};
 		UINT id = 0;
 
-		// FIXME : 순회 방식 개선할 수 있을 거 같긴 함 (iterator 잘 써서 one pass로)
+		// FIXME(Ssio) : 순회 방식 개선할 수 있을 거 같긴 함 (iterator 잘 써서 one pass로)
 		while (true)
 		{
 			swprintf_s(buffer, L"%d", id);

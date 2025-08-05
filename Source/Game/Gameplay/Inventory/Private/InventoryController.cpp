@@ -270,7 +270,7 @@ bool InventoryController::UseItem(ITEM_TYPE _Type, int _Count)
 		// 아이템이 남아있다면
 		if (m_arrInventory[static_cast<UINT>(_Type)] > 0)
 		{
-			// TODO: object pooling으로 개선
+			// TODO(Ssio): object pooling으로 개선
 			Ptr<CPrefab> pPrefab = ItemMgr::GetInst()->GetItemInfo(_Type).Prefab;
 			CGameObject* newItem = pPrefab->Instantiate();
 			CreateObject(newItem, 0, false);
@@ -315,7 +315,7 @@ void InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 	}
 	else
 	{
-		// TODO: Object Pooling으로 개선
+		// TODO(Ssio): Object Pooling으로 개선
 		Ptr<CPrefab> itemPrefab = ItemMgr::GetInst()->GetItemInfo(_Type).Prefab;
 		assert(itemPrefab != nullptr);
 
@@ -472,7 +472,7 @@ void InventoryController::EquipWeapon(CGameObject* _Item)
 	// 이미 해당 타입이 슬롯에 존재하거나 빈 슬롯이 없었다면 아이템 정보만 얻고 객체는 파괴함
 	else
 	{
-		// TODO : object pooling으로 개선 (파괴가 아니라 비활성화 후 pool에 넣기)
+		// TODO(Ssio) : object pooling으로 개선 (파괴가 아니라 비활성화 후 pool에 넣기)
 		DestroyObject(_Item);
 	}
 }
@@ -555,7 +555,7 @@ void InventoryController::ChangeSlot(int _SlotIdx)
 	DeactivateSlot();
 
 	ActivateSlot(_SlotIdx);
-	// TODO : Animation Trigger 등
+	// TODO(Ssio) : Animation Trigger 등
 
 }
 

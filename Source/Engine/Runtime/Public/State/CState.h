@@ -10,13 +10,17 @@
 									   		return;													\
 									   }
 
+// State를 애셋 개념이 아니라 StateMachine에 종속된 자원으로 생각
 class CState
 	: public CEntity
 {
 	friend class CStateMachine;
+
 protected:
 	wstring				m_ClipName;		// 실행할 애니메이션 클립이름
 	float				m_Delay;		// 애니메이션 딜레이
+
+	set<wstring>		m_Transitions;	// 이 상태로부터 전환이 가능한 상태 목록
 
 private:
 	CStateMachine* m_Owner;
@@ -30,6 +34,14 @@ public:
 	virtual void Enter() = 0;
 	virtual void FinalTick() = 0;
 	virtual void Exit() = 0;
+
+	virtual void Save(FILE* _File);
+	virtual void Load(FILE* _File);
+
+private:
+	bool AddTransition(const wstring& _StateName);
+	bool DeleteTransition(const wstring& _StateName);
+	bool IsTransitionable(const wstring& _StateName) { return m_Transitions.contains(_StateName); }
 
 public:
 	virtual CState* Clone() = 0;

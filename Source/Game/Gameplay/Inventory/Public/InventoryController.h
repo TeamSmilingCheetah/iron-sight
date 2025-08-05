@@ -83,7 +83,7 @@ public:
 	void PlayerInteractWeapon();
 
 
-	// TODO: 데이터 구조 개선
+	// TODO(Ssio): 데이터 구조 개선
 	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);
 	void DetachItem(CGameObject* _Item, bool _Disconnect = true, int _Layer = 6);
 
@@ -126,7 +126,7 @@ public:
 
 
 public:
-	CLONE(InventoryController);
+	CLONE(InventoryController)
 	InventoryController();
 	~InventoryController();
 };

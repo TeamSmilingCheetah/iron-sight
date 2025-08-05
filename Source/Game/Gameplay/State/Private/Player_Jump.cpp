@@ -20,6 +20,8 @@ void Player_Jump::Enter_Override()
 	m_Delay = 0.02f;
 	m_ClipName = L"Animation\\Armature_rifle_jump.anim";
 
+	SM()->SetCanExit(false);
+
 	AdjustAnim();
 }
 
@@ -29,8 +31,7 @@ void Player_Jump::FinalTick_Override()
 	// 아니면 State Tick에서 시간 계산해서 수동으로 bool값 설정 해줘야 하는지?
 	if (GetPlayerScript()->IsGround())
 	{
-		SM()->SetChange(L"Player_Idle");
-		//SM()->ChangeState(L"Player_Idle");
+		SM()->SetCanExit(true);
 	}
 }
 

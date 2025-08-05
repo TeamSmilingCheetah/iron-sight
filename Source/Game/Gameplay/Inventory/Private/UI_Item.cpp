@@ -84,7 +84,7 @@ PayLoad ItemUI::OnMouseBeginDrag()
 	{
 		payload.Type = L"ItemUI_Inventory";
 
-		// TODO : trick 사용했음.. 개선 필요하면 개선
+		// TODO(Ssio) : trick 사용했음.. 개선 필요하면 개선
 		if (KEY_PRESSED(KEY::LCTRL))
 		{
 			m_ItemInfo.Count = 1;

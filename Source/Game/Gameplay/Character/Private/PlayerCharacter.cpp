@@ -93,7 +93,7 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::Begin()
 {
-	// TODO : ObjectReference로 변경하기
+	// TODO(Ssio) : ObjectReference로 변경하기
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 
 	// Collider
@@ -138,6 +138,9 @@ void PlayerCharacter::Tick()
 	// =================
 	// 항상 작동하는 로직
 	// =================
+
+	//TEST(Ssio)
+	StateMachine()->SetChange(L"Player_Idle");
 
 	// 이동 로직
 	PlayerMove();
@@ -843,7 +846,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 
 	if (CantHeal)
 	{
-		// TODO : 사용 할 수 없다는 경고 문구 UI
+		// TODO(Ssio) : 사용 할 수 없다는 경고 문구 UI
 		return;
 	}
 
