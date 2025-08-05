@@ -1,11 +1,12 @@
 #pragma once
 #include "Common/global.h"
-#include <type_traits>
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/Runtime/Public/State/CState.h"
 
 enum class EColliderType : UINT8;
 /**
@@ -20,6 +21,7 @@ namespace Engine
 		void SetObjectName(CGameObject* PObject, const wstring& PName);
 		CComponent* GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType);
 		void AddChild(CGameObject* PObject, CGameObject* PChild);
+		CState* LoadState(const wstring& PStateName);
 
 		template <class T>
 		void AddComponentToObject(CGameObject* PObject);
@@ -98,6 +100,14 @@ namespace Engine
 		void SetAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
 		void AddAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet);
 		void AddAnimationClip(CGameObject* PObject, Ptr<CAnimation> PAnimation);
+	}
+
+	namespace StateMachine
+	{
+		void AddState(CGameObject* PObject, CState* PState);
+		void AddTransition(CGameObject* PObject, const wstring& PFrom, const wstring& PTo);
+		void AddAnyTransition(CGameObject* PObject, const wstring& PTo);
+		void SetDefaultState(CGameObject* PObject, const wstring& PStateName);
 	}
 }
 

@@ -6,6 +6,7 @@ class CScript;
 class ScriptUI :
 	public ComponentUI
 {
+private:
 	CScript* m_TargetScript;
 
 public:

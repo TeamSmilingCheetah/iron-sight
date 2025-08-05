@@ -7,6 +7,6 @@
 #pragma comment(lib, ENGINE_LIB)
 
 #include "Engine/System/Public/Manager/LogManager.h"
-#include "Game/System/Public/GameplayManager.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 
 #endif // PCH_H

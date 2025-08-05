@@ -21,7 +21,7 @@ CAnimation::CAnimation(bool _bEngineRes)
 }
 
 CAnimation::CAnimation(const CAnimation& _Src)
-	: CAsset(ANIMATION, false)	// FIXME : clone은 engine resource가 아니라고 가정.
+	: CAsset(ANIMATION, false)	// FIXME(Ssio) : clone은 engine resource가 아니라고 가정.
 	, m_Skeleton(_Src.m_Skeleton)
 	, m_StartFrame(_Src.m_StartFrame)
 	, m_EndFrame(_Src.m_EndFrame)
@@ -31,7 +31,7 @@ CAnimation::CAnimation(const CAnimation& _Src)
 	, m_TimeLength(_Src.m_TimeLength)
 	, m_TimeMode(_Src.m_TimeMode)
 	, m_Loop(_Src.m_Loop)
-	, m_vecKeyFrames(_Src.m_vecKeyFrames)	// FIXME : cpu 데이터는 날려야 함. 나중에 gpu copyresource로 변경하기
+	, m_vecKeyFrames(_Src.m_vecKeyFrames)	// FIXME(Ssio) : cpu 데이터는 날려야 함. 나중에 gpu copyresource로 변경하기
 	, m_BoneFrameData(nullptr)
 {
 	CreateBoneFrameSB();
@@ -45,7 +45,7 @@ CAnimation::~CAnimation()
 
 void CAnimation::Crop(int _StartIdx, int _EndIdx)
 {
-	// TODO : CPU 데이터를 GPU에서 가져오도록 변경
+	// TODO(Ssio) : CPU 데이터를 GPU에서 가져오도록 변경
 	m_FrameLength = _EndIdx - _StartIdx + 1;
 
 	assert(m_TimeMode == FbxTime::EMode::eFrames30);

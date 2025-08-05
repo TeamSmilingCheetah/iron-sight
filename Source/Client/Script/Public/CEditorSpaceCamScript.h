@@ -24,7 +24,7 @@ private:
 
 
 public:
-	CLONE_DISABLE(CEditorSpaceCamScript);
+	CLONE_DISABLE(CEditorSpaceCamScript)
 	CEditorSpaceCamScript();
 	~CEditorSpaceCamScript() override;
 };

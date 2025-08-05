@@ -149,6 +149,23 @@
     <ClInclude Include="Gameplay\Character\Public\EnemyVisionScript.h" />
     <ClInclude Include="Gameplay\Character\Public\TestCharacter.h" />
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
+    <ClInclude Include="Gameplay\scripts.h" />
+    <ClInclude Include="Gameplay\states.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Adrenaline.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Bandage.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Dead.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_EnergyDrink.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_FirstAidKit.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_High.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_Low.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Gun_Fire.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Gun_Reload.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Idle.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Jump.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_MedKit.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_PainKiller.h" />
+    <ClInclude Include="Gameplay\State\Public\PlayerState.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\UI\Public\KillinfoUIScript.h" />
     <ClInclude Include="Gameplay\UI\Public\MinimapCameraScript.h" />
@@ -160,7 +177,8 @@
     <ClInclude Include="Gameplay\Weapon\Public\WeaponController.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="System\Public\GameplayManager.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="System\Public\CGameMgr.h" />
     <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
     <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h" />
@@ -169,6 +187,7 @@
   <ItemGroup>
     <ClCompile Include="Factory\Private\GameFactory.cpp" />
     <ClCompile Include="Gameplay\Character\Private\CameraEffect.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp" />
     <ClCompile Include="Gameplay\Character\Private\InteractionHandler.cpp" />
     <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp" />
     <ClCompile Include="Gameplay\Interaction\Private\InteractableScript.cpp" />
@@ -180,8 +199,22 @@
     <ClCompile Include="Gameplay\Inventory\Private\UI_Vicinity.cpp" />
     <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
-    <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Adrenaline.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Dead.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_EnergyDrink.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_FirstAidKit.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_High.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_Low.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Gun_Fire.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Gun_Reload.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Idle.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Jump.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_MedKit.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_PainKiller.cpp" />
+    <ClCompile Include="Gameplay\State\Private\PlayerState.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\MinimapCameraScript.cpp" />
@@ -198,11 +231,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="System\Private\GameplayManager.cpp" />
+    <ClCompile Include="System\Private\CGameMgr.cpp" />
     <ClCompile Include="Gameplay\Character\Private\CameraController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp" />
     <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
     <ClCompile Include="Level\Private\TestLevel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Game.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

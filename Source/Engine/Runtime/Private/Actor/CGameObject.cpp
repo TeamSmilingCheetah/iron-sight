@@ -10,7 +10,7 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Game/System/Public/GameplayManager.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 
 UINT CGameObject::GUID = 0;
 
@@ -238,7 +238,7 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE PType)
 
 void CGameObject::DeleteScript(const wstring& PScriptName)
 {
-	CScript* pScript = GameplayManager::GetScript(PScriptName);
+	CScript* pScript = CScriptMgr::GetInst()->GetScript(PScriptName);
 
 	for (UINT i = 0; i < MScriptsVector.size(); ++i)
 	{

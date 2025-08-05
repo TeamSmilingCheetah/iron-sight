@@ -2,6 +2,7 @@
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 
 class CGameObject;
 class FLandscape;
@@ -15,30 +16,6 @@ enum class MOTION_STATE : uint8_t
 	STAND,	// 서 있음
 	CROUCH,	// 앉아 있음
 	PRONE,	// 엎드려 있음
-};
-
-enum class ACTION_STATE : uint8_t
-{
-	JUMP,
-
-	GUN_FIRE,
-	GUN_RELOAD,
-
-	GRENADE_PREPARE,
-	GRENADE_THROW_LOW,
-	GRENADE_THROW_HIGH,
-
-	BANDAGE,
-	MED_KIT,
-	FIRST_AID_KIT,
-
-	ENERGY_DRINK,
-	PAIN_KILLER,
-	ADRENALINE_SYRINGE,
-
-	DEAD,
-
-	NONE,
 };
 
 class PlayerCharacter :
@@ -128,7 +105,6 @@ private:
 	// State
 	// =====
 	MOTION_STATE		m_MotionState;
-	ACTION_STATE		m_ActionState;
 
 	// =======
 	// UI 관리
@@ -165,7 +141,7 @@ private:
 	void UpdateMove();
 	void UpdateGravity();
 	void UpdateCollision();
-	void AnimationControl();
+	//void AnimationControl();
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
@@ -182,8 +158,10 @@ public:
 	bool IsShot() const { return m_bShoot; }
 	bool IsThrow() const { return m_bCanThrow; }
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
-	bool IsPlayerReloading() { return m_bReloading; }
-	bool IsPlayerReloadingEnd() { return m_bReloadingEnd; }
+	bool IsPlayerReloading() const { return m_bReloading; }
+	bool IsPlayerReloadingEnd() const { return m_bReloadingEnd; }
+
+	bool IsGround() const { return m_IsGround; }
 
 	void TriggerHeal(ITEM_TYPE PHealType);
 	void DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage);	// 공격 피격 처리
@@ -192,10 +170,11 @@ public:
 	int GetKillCount() const { return m_KillCounts; }
 
 	void SetMotionState(MOTION_STATE _State) { m_MotionState = _State; }
-	void SetActionState(ACTION_STATE _State) { m_ActionState = _State; }
 
 	MOTION_STATE GetMotionState() const { return m_MotionState; }
-	ACTION_STATE GetActionState() const { return m_ActionState; }
+
+	Vec3 GetPlayerVelocity() { return m_Velocity; }
+	//void ChangeState(const wstring& _Name);
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;

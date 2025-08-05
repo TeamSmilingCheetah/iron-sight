@@ -13,6 +13,8 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/Runtime/Public/State/CState.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
@@ -67,7 +69,6 @@ PlayerCharacter::PlayerCharacter()
 	, m_BoostSpeed(1.f)
 	, m_KillCounts(0)
 	, m_MotionState(MOTION_STATE::STAND)
-	, m_ActionState(ACTION_STATE::NONE)
 	, m_InventoryCanvasUI(nullptr)
 	, m_InventoryOpened(false)
 	, m_CardinalImageUI(nullptr)
@@ -92,7 +93,7 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::Begin()
 {
-	// TODO : ObjectReference로 변경하기
+	// TODO(Ssio) : ObjectReference로 변경하기
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 
 	// Collider
@@ -125,6 +126,9 @@ void PlayerCharacter::Begin()
 
 	// Sound Load
 	LoadPlayerSounds();
+
+	// State Machine Base Set
+	StateMachine()->SetChange(L"Player_Idle");
 }
 
 void PlayerCharacter::Tick()
@@ -134,6 +138,9 @@ void PlayerCharacter::Tick()
 	// =================
 	// 항상 작동하는 로직
 	// =================
+
+	//TEST(Ssio)
+	StateMachine()->SetChange(L"Player_Idle");
 
 	// 이동 로직
 	PlayerMove();
@@ -195,6 +202,13 @@ void PlayerCharacter::Tick()
 			m_HitSoundAccTime = 0.f;
 		}
 	}
+
+	// StateMachine -> Tick위치 고려 필요 (햔재 임시)
+
+	if (StateMachine()->GetCurState() != nullptr)
+	{
+		StateMachine()->GetCurState()->FinalTick();
+	}	
 }
 
 
@@ -653,7 +667,8 @@ void PlayerCharacter::PlayerHeal()
 			SetObjectActive(m_ItemUseUI, false);
 
 			// 상태
-			SetActionState(ACTION_STATE::NONE);
+			StateMachine()->SetChange(L"Player_Idle");
+			//ChangeState(L"Player_Idle");
 		}
 
 		// 진행 중
@@ -738,7 +753,8 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 		m_KillinfoScript->OnEvent();
 
 		// 상태
-		SetActionState(ACTION_STATE::DEAD);
+		StateMachine()->SetChange(L"Player_Idle");
+		//ChangeState(L"Player_Dead");
 	}
 
 	// 피격 화면 효과
@@ -781,7 +797,8 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 75.f;
-		SetActionState(ACTION_STATE::FIRST_AID_KIT);
+		StateMachine()->SetChange(L"Player_FirstAidKit");
+		//ChangeState(L"Player_FirstAidKit");
 		break;
 	case ITEM_TYPE::MED_KIT:
 		if (m_CurHP >= m_MaxHP)
@@ -791,7 +808,8 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
-		SetActionState(ACTION_STATE::MED_KIT);
+		StateMachine()->SetChange(L"Player_MedKit");
+		//ChangeState(L"Player_MedKit");
 		break;
 	case ITEM_TYPE::BANDAGE:
 		if (m_CurHP >= m_SemiMaxHP)
@@ -801,22 +819,26 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 10.f;
-		SetActionState(ACTION_STATE::BANDAGE);
+		StateMachine()->SetChange(L"Player_Bandage");
+		//ChangeState(L"Player_Bandage");
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 100.f;
-		SetActionState(ACTION_STATE::ADRENALINE_SYRINGE);
+		StateMachine()->SetChange(L"Player_Adrenaline");
+		//ChangeState(L"Player_Adrenaline");
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 60.f;
-		SetActionState(ACTION_STATE::PAIN_KILLER);
+		StateMachine()->SetChange(L"Player_PainKiller");
+		//ChangeState(L"Player_PainKiller");
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 40.f;
-		SetActionState(ACTION_STATE::ENERGY_DRINK);
+		StateMachine()->SetChange(L"Player_EnergyDrink");
+		//ChangeState(L"Player_EnergyDrink");
 		break;
 	default:
 		break;
@@ -824,7 +846,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 
 	if (CantHeal)
 	{
-		// TODO : 사용 할 수 없다는 경고 문구 UI
+		// TODO(Ssio) : 사용 할 수 없다는 경고 문구 UI
 		return;
 	}
 
@@ -840,6 +862,12 @@ void PlayerCharacter::LoadPlayerSounds()
 	m_FootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep.mp3");
 	m_RunFootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
 }
+
+//void PlayerCharacter::ChangeState(const wstring& _Name)
+//{
+//	StateMachine()->ChangeState(_Name);
+//}
+
 
 void PlayerCharacter::SaveComponent(FILE* PFile)
 {

@@ -99,7 +99,7 @@ void CAnimator3D::FinalTick()
 		}
 
 		// 다음 클립이 종료되었다면
-		// TEST : 다음 클립이 현재 클립보다 먼저 끝나도 다음 클립을 loop 해준다
+		// TEST(Ssio) : 다음 클립이 현재 클립보다 먼저 끝나도 다음 클립을 loop 해준다
 		if (m_NextClipCurFrameIdx >= m_NextClip->GetFrameLength())
 		{
 			m_NextClipCurFrameIdx -= m_NextClip->GetFrameLength();
@@ -230,7 +230,7 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		pBoneMatCS->SetNextClipFrame(m_NextClipCurFrameIdx + m_NextClipRatio);
 		pBoneMatCS->SetBlendRatio(m_BlendRatio);
 
-		// TEST: minus blendratio
+		// TEST(Ssio): minus blendratio
 		if (m_BlendRatio < 0.f)
 		{
 			int a = 0;
@@ -242,7 +242,7 @@ void CAnimator3D::Binding(CMeshRender* _Renderer)
 		DrawDebugSkeleton(Vec4(0.f, 1.f, 0.f, 1.f), _Renderer->Transform()->GetWorldMat(), m_BonePureMatBuffer, m_CurClip->GetBoneParentBuffer(), false, 0.f);
 
 		// Bone Object World Transform 직접 세팅
-		//  TODO : ZCompute shader로 world transform까지 계산해서 pipeline 넘겨주도록 개선하기
+		// TODO(Ssio) : ZCompute shader로 world transform까지 계산해서 pipeline 넘겨주도록 개선하기
 		m_BonePureMatBuffer->GetData(m_vecBoneWorldTransform.data());
 
 		for (UINT i = 0; i < iBoneCount; ++i)

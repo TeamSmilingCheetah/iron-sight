@@ -60,8 +60,7 @@ void RoundsUIScript::Tick()
 		// 현재 들고 있는 투척무기 종류의 개수를 구한다.
 		ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_PlayerWeapon, SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 		int iCurCounts = m_InvetoryScript->GetItemCount(type);
-		wstring wCurCounts = to_wstring(iCurCounts);
-
+		wstring wCurCounts = std::to_wstring(iCurCounts);
 
 		// 만약 현재 UI TEXT가 비어있는 상태라면 만들어준다.
 		if (UI()->GetTextvecSize() == 0)
@@ -81,8 +80,8 @@ void RoundsUIScript::Tick()
 		int iLeftRounds = m_InvetoryScript->GetItemCount(RoundType);
 		bool bAuto = pGunScript->IsAuto();
 
-		wstring wCurRounds = to_wstring(iCurRounds);
-		wstring wLeftRounds = to_wstring(iLeftRounds);
+		wstring wCurRounds = std::to_wstring(iCurRounds);
+		wstring wLeftRounds = std::to_wstring(iLeftRounds);
 
 		// 만약 현재 UI TEXT가 비어있는 상태라면 만들어준다.
 		if (UI()->GetTextvecSize() == 0)

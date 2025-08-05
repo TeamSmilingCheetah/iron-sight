@@ -10,7 +10,9 @@
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
+#include "Engine/System/Public/Manager/CStateMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/State/Public/Player_Idle.h"
 
 using namespace Engine;
 
@@ -98,6 +100,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 
 	Common::AddComponentToObject<FColliderRay>(RawCameraPtr);
 	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
+
 
 	Level::AddObjectToLayer(PLevel, RawCameraPtr, 0, false);
 }
@@ -187,6 +190,44 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Transform::SetPositionAndRotation(Player, PPosition, {0.f, 90.f, 0.f});
 	Transform::SetScale(Player, {6.f, 6.f, 6.f});
 
+	Common::AddComponentToObject<CStateMachine>(Player);
+
+	// StateMachine
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Idle"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Dead"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_PainKiller"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_MedKit"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_FirstAidKit"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Bandage"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Adrenaline"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_EnergyDrink"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Prepare"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Throw_Low"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Throw_High"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Gun_Reload"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Gun_Fire"));
+
+	StateMachine::SetDefaultState(Player, L"Player_Idle");
+
+	StateMachine::AddAnyTransition(Player, L"Player_Idle");
+	StateMachine::AddAnyTransition(Player, L"Player_Dead");
+
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Jump");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_PainKiller");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_MedKit");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_FirstAidKit");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Bandage");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Adrenaline");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_EnergyDrink");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Fire");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Reload");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Grenade_Prepare");
+
+	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_Low");
+	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
+
+
 	Common::AddComponentToObject<FColliderRay>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
 
@@ -228,13 +269,13 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_pain_killer.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_low.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_stand_grenade_prepare.anim"));
-	// TEST: PUBG_ANIMSET에서 자름
+	// TEST(Ssio): PUBG_ANIMSET에서 자름
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_toss_grenade_test.anim"));
-	// TEST: toss_grenade 뒷부분 자름
+	// TEST(Ssio): toss_grenade 뒷부분 자름
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_grenade_prepare.anim"));
-	// TEST: prone_toss_grenade 앞부분 자름
+	// TEST(Ssio): prone_toss_grenade 앞부분 자름
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));
-	// TEST: prone_toss_grenade 뒷부분 자름
+	// TEST(Ssio): prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<FCollider3D>(Player);
 	Collider::SetColliderProperties(Player, {800.f, 910.f, 800.f}, {0.f, 455.f, 0.f}, true);

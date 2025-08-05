@@ -3,15 +3,11 @@
 
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
-#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CollisionManager.h"
-#include "Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Runtime/Public/Component/Light/CLight3D.h"
-#include "Runtime/Public/Component/Physics/Collider3D.h"
-#include "Runtime/Public/Component/Rendering/LandScape.h"
-#include "Runtime/Public/Component/Rendering/CSkyBox.h"
+
+#include "Engine/Runtime/Public/Component/Base/components.h"
+
+#include "Engine/System/Public/Manager/CStateMgr.h"
 
 unique_ptr<CGameObject> Engine::Common::CreateNewObject()
 {
@@ -37,6 +33,13 @@ void Engine::Common::AddChild(CGameObject* PObject, CGameObject* PChild)
 {
 	PObject->AddChild(PChild);
 }
+
+
+CState* Engine::Common::LoadState(const wstring& PStateName)
+{
+	return CStateMgr::GetInst()->GetState(PStateName);
+}
+
 
 void Engine::Layer::SetLayerName(CLevel* PLevel, int PLayerNumber, const ::wstring& PLayerName)
 {
@@ -177,4 +180,24 @@ void Engine::Animation::AddAnimationClips(CGameObject* PObject, Ptr<CMeshData> P
 void Engine::Animation::AddAnimationClip(CGameObject* PObject, Ptr<CAnimation> PAnimation)
 {
 	PObject->Animator3D()->AddAnimClip(PAnimation);
+}
+
+void Engine::StateMachine::AddState(CGameObject* PObject, CState* PState)
+{
+	PObject->StateMachine()->AddState(PState);
+}
+
+void Engine::StateMachine::AddTransition(CGameObject* PObject, const wstring& PFrom, const wstring& PTo)
+{
+	PObject->StateMachine()->AddTransition(PFrom, PTo);
+}
+
+void Engine::StateMachine::AddAnyTransition(CGameObject* PObject, const wstring& PTo)
+{
+	PObject->StateMachine()->AddAnyTransition(PTo);
+}
+
+void Engine::StateMachine::SetDefaultState(CGameObject* PObject, const wstring& PStateName)
+{
+	PObject->StateMachine()->SetDefaultState(PStateName);
 }

@@ -2,10 +2,11 @@
 #include "Client/UI/Public/Component/ScriptUI.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Client/UI/Public/Editor/ParamUI.h"
-#include "Game/System/Public/GameplayManager.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 
 ScriptUI::ScriptUI()
 	: ComponentUI("ScriptUI", COMPONENT_TYPE::SCRIPT)
+	, m_TargetScript(nullptr)
 {
 }
 
@@ -15,9 +16,8 @@ ScriptUI::~ScriptUI()
 
 void ScriptUI::Render_Update()
 {
-	string ScriptName = WStringToString(GameplayManager::GetScriptName(m_TargetScript));
+	string ScriptName = WStringToString(CScriptMgr::GetInst()->GetScriptName(m_TargetScript->GetScriptType()));
 	ComponentTitle(ScriptName.c_str());
-
 
 	const vector<tScriptParam>& vecParam = m_TargetScript->GetScriptParam();
 

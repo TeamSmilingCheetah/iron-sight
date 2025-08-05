@@ -25,7 +25,7 @@
     <RootNamespace>Engine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -54,24 +54,24 @@
     <CharacterSet>Unicode</CharacterSet>
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros"/>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)External\Library\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
@@ -177,172 +177,180 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\define.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\enum.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\func.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\global.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\Ptr.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\SimpleMath.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\singleton.h"/>
-    <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h"/>
-    <ClInclude Include="Core\Public\CEngine.h"/>
-    <ClInclude Include="Core\Public\CEntity.h"/>
-    <ClInclude Include="Runtime\Public\Actor\CGameObject.h"/>
-    <ClInclude Include="Runtime\Public\Actor\CLayer.h"/>
-    <ClInclude Include="Runtime\Public\Actor\CLevel.h"/>
-    <ClInclude Include="Runtime\Public\Component\Animation\CAnimator3D.h"/>
-    <ClInclude Include="Runtime\Public\Component\Animation\CFlipbookPlayer.h"/>
-    <ClInclude Include="Runtime\Public\Component\Base\CComponent.h"/>
-    <ClInclude Include="Runtime\Public\Component\Base\components.h"/>
-    <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h"/>
-    <ClInclude Include="Runtime\Public\Component\Camera\CCamera.h"/>
-    <ClInclude Include="Runtime\Public\Component\Camera\CFrustum.h"/>
-    <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h"/>
-    <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h"/>
-    <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h"/>
-    <ClInclude Include="Runtime\Public\Component\Physics\Collider3D.h"/>
-    <ClInclude Include="Runtime\Public\Component\Physics\ColliderRay.h"/>
-    <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h"/>
-    <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h"/>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\define.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\enum.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\func.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\global.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\Ptr.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\SimpleMath.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\singleton.h" />
+    <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h" />
+    <ClInclude Include="Core\Public\CEngine.h" />
+    <ClInclude Include="Core\Public\CEntity.h" />
+    <ClInclude Include="Runtime\Public\Actor\CGameObject.h" />
+    <ClInclude Include="Runtime\Public\Actor\CLayer.h" />
+    <ClInclude Include="Runtime\Public\Actor\CLevel.h" />
+    <ClInclude Include="Runtime\Public\Component\Animation\CAnimator3D.h" />
+    <ClInclude Include="Runtime\Public\Component\Animation\CFlipbookPlayer.h" />
+    <ClInclude Include="Runtime\Public\Component\Base\CComponent.h" />
+    <ClInclude Include="Runtime\Public\Component\Base\components.h" />
+    <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h" />
+    <ClInclude Include="Runtime\Public\Component\Camera\CCamera.h" />
+    <ClInclude Include="Runtime\Public\Component\Camera\CFrustum.h" />
+    <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h" />
+    <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\Collider3D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderRay.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\PhysicsHelper.h" />
-    <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CParticleSystem.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h"/>
-    <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h"/>
-    <ClInclude Include="Runtime\Public\Component\Script\CScript.h"/>
-    <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h"/>
-    <ClInclude Include="Runtime\Public\Component\UI\CUI.h"/>
-    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h"/>
-    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h"/>
-    <ClInclude Include="System\Public\Asset\Audio\CSound.h"/>
-    <ClInclude Include="System\Public\Asset\Base\assets.h"/>
-    <ClInclude Include="System\Public\Asset\Base\CAsset.h"/>
-    <ClInclude Include="System\Public\Asset\Mesh\CMesh.h"/>
-    <ClInclude Include="System\Public\Asset\Mesh\CMeshData.h"/>
-    <ClInclude Include="System\Public\Asset\Prefab\CPrefab.h"/>
-    <ClInclude Include="System\Public\Asset\Texture\CFlipbook.h"/>
-    <ClInclude Include="System\Public\Asset\Texture\CSprite.h"/>
-    <ClInclude Include="System\Public\Asset\Texture\CTexture.h"/>
-    <ClInclude Include="System\Public\Manager\CAssetMgr.h"/>
+    <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\CParticleSystem.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\CTileMap.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\CUIRender.h" />
+    <ClInclude Include="Runtime\Public\Component\Script\CScript.h" />
+    <ClInclude Include="Runtime\Public\Component\StateMachine\CStateMachine.h" />
+    <ClInclude Include="Runtime\Public\Component\Transform\CTransform.h" />
+    <ClInclude Include="Runtime\Public\Component\UI\CUI.h" />
+    <ClInclude Include="Runtime\Public\State\CState.h" />
+    <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
+    <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
+    <ClInclude Include="System\Public\Asset\Audio\CSound.h" />
+    <ClInclude Include="System\Public\Asset\Base\assets.h" />
+    <ClInclude Include="System\Public\Asset\Base\CAsset.h" />
+    <ClInclude Include="System\Public\Asset\Mesh\CMesh.h" />
+    <ClInclude Include="System\Public\Asset\Mesh\CMeshData.h" />
+    <ClInclude Include="System\Public\Asset\Prefab\CPrefab.h" />
+    <ClInclude Include="System\Public\Asset\Texture\CFlipbook.h" />
+    <ClInclude Include="System\Public\Asset\Texture\CSprite.h" />
+    <ClInclude Include="System\Public\Asset\Texture\CTexture.h" />
+    <ClInclude Include="System\Public\Manager\CAssetMgr.h" />
     <ClInclude Include="System\Public\Manager\CollisionManager.h" />
-    <ClInclude Include="System\Public\Manager\CFontMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CKeyMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CLevelMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CPathMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CRenderMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CSoundMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CTaskMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CTimeMgr.h"/>
-    <ClInclude Include="System\Public\Manager\CUIMgr.h"/>
+    <ClInclude Include="System\Public\Manager\CFontMgr.h" />
+    <ClInclude Include="System\Public\Manager\CKeyMgr.h" />
+    <ClInclude Include="System\Public\Manager\CLevelMgr.h" />
+    <ClInclude Include="System\Public\Manager\CObjectPoolMgr.h" />
+    <ClInclude Include="System\Public\Manager\CPathMgr.h" />
+    <ClInclude Include="System\Public\Manager\CRenderMgr.h" />
+    <ClInclude Include="System\Public\Manager\CScriptMgr.h" />
+    <ClInclude Include="System\Public\Manager\CSoundMgr.h" />
+    <ClInclude Include="System\Public\Manager\CStateMgr.h" />
+    <ClInclude Include="System\Public\Manager\CTaskMgr.h" />
+    <ClInclude Include="System\Public\Manager\CTimeMgr.h" />
+    <ClInclude Include="System\Public\Manager\CUIMgr.h" />
     <ClInclude Include="System\Public\Manager\LogManager.h" />
-    <ClInclude Include="System\Public\Rendering\Buffer\CConstBuffer.h"/>
-    <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h"/>
-    <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h"/>
-    <ClInclude Include="System\Public\Rendering\Device\CDevice.h"/>
-    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h"/>
-    <ClInclude Include="System\Public\Rendering\RenderTarget\CMRT.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CComputeShader.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CCopyBoneCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CGraphicShader.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CHeightMapCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CMeshCollisionCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CParticleTickCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CRaycastCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CShader.h"/>
-    <ClInclude Include="System\Public\Rendering\Shader\CWeightMapCS.h"/>
-    <ClInclude Include="System\Public\Rendering\Tool\FBX\CFBXLoader.h"/>
-    <ClInclude Include="API\Public\EngineFacade.h"/>
+    <ClInclude Include="System\Public\Rendering\Buffer\CConstBuffer.h" />
+    <ClInclude Include="System\Public\Rendering\Buffer\CInstancingBuffer.h" />
+    <ClInclude Include="System\Public\Rendering\Buffer\CStructuredBuffer.h" />
+    <ClInclude Include="System\Public\Rendering\Device\CDevice.h" />
+    <ClInclude Include="System\Public\Rendering\Material\CMaterial.h" />
+    <ClInclude Include="System\Public\Rendering\RenderTarget\CMRT.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CBoneMatrixCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CClearColorCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CComputeShader.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CCopyBoneCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CGraphicShader.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CHeightMapCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CMeshCollisionCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CParticleTickCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CRaycastCS.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CShader.h" />
+    <ClInclude Include="System\Public\Rendering\Shader\CWeightMapCS.h" />
+    <ClInclude Include="System\Public\Rendering\Tool\FBX\CFBXLoader.h" />
+    <ClInclude Include="API\Public\EngineFacade.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp"/>
-    <ClCompile Include="$(SolutionDir)External\Include\Common\extern.cpp"/>
-    <ClCompile Include="Core\Private\CEngine.cpp"/>
-    <ClCompile Include="Core\Private\CEntity.cpp"/>
-    <ClCompile Include="Runtime\Private\Actor\CGameObject.cpp"/>
-    <ClCompile Include="Runtime\Private\Actor\CLayer.cpp"/>
-    <ClCompile Include="Runtime\Private\Actor\CLevel.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Animation\CAnimator3D.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Animation\CFlipbookPlayer.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Base\CComponent.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Camera\CCamera.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Camera\CFrustum.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Physics\Collider3D.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp"/>
+    <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp" />
+    <ClCompile Include="$(SolutionDir)External\Include\Common\extern.cpp" />
+    <ClCompile Include="Core\Private\CEngine.cpp" />
+    <ClCompile Include="Core\Private\CEntity.cpp" />
+    <ClCompile Include="Runtime\Private\Actor\CGameObject.cpp" />
+    <ClCompile Include="Runtime\Private\Actor\CLayer.cpp" />
+    <ClCompile Include="Runtime\Private\Actor\CLevel.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Animation\CAnimator3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Animation\CFlipbookPlayer.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Base\CComponent.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Camera\CCamera.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Camera\CFrustum.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\Collider3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\PhysicsHelper.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CMeshRender.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CParticleSystem.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp"/>
-    <ClCompile Include="Runtime\Private\Component\UI\CUI.cpp"/>
-    <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp"/>
-    <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp"/>
-    <ClCompile Include="System\Private\Asset\Audio\CSound.cpp"/>
-    <ClCompile Include="System\Private\Asset\Base\CAsset.cpp"/>
-    <ClCompile Include="System\Private\Asset\Mesh\CMesh.cpp"/>
-    <ClCompile Include="System\Private\Asset\Mesh\CMeshData.cpp"/>
-    <ClCompile Include="System\Private\Asset\Prefab\CPrefab.cpp"/>
-    <ClCompile Include="System\Private\Asset\Texture\CFlipbook.cpp"/>
-    <ClCompile Include="System\Private\Asset\Texture\CSprite.cpp"/>
-    <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp"/>
-    <ClCompile Include="System\Private\Manager\CAssetMgr.cpp"/>
+    <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\CMeshRender.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\CParticleSystem.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\CTileMap.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\CUIRender.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Script\CScript.cpp" />
+    <ClCompile Include="Runtime\Private\Component\StateMachine\CStateMachine.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Transform\CTransform.cpp" />
+    <ClCompile Include="Runtime\Private\Component\UI\CUI.cpp" />
+    <ClCompile Include="Runtime\Private\State\CState.cpp" />
+    <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
+    <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
+    <ClCompile Include="System\Private\Asset\Audio\CSound.cpp" />
+    <ClCompile Include="System\Private\Asset\Base\CAsset.cpp" />
+    <ClCompile Include="System\Private\Asset\Mesh\CMesh.cpp" />
+    <ClCompile Include="System\Private\Asset\Mesh\CMeshData.cpp" />
+    <ClCompile Include="System\Private\Asset\Prefab\CPrefab.cpp" />
+    <ClCompile Include="System\Private\Asset\Texture\CFlipbook.cpp" />
+    <ClCompile Include="System\Private\Asset\Texture\CSprite.cpp" />
+    <ClCompile Include="System\Private\Asset\Texture\CTexture.cpp" />
+    <ClCompile Include="System\Private\Manager\CAssetMgr.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Broad.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_BVH.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Common.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Main.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Narrow.cpp" />
-    <ClCompile Include="System\Private\Manager\CFontMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CKeyMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CLevelMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp"/>
+    <ClCompile Include="System\Private\Manager\CFontMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CKeyMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CLevelMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CObjectPoolMgr.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_PostProcess.cpp" />
     <ClCompile Include="System\Private\Manager\Collision\CollisionManager_Raycast.cpp" />
-    <ClCompile Include="System\Private\Manager\CPathMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CRenderMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CSoundMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CTaskMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CTimeMgr.cpp"/>
-    <ClCompile Include="System\Private\Manager\CUIMgr.cpp"/>
+    <ClCompile Include="System\Private\Manager\CPathMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CRenderMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CScriptMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CSoundMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CStateMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CTaskMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CTimeMgr.cpp" />
+    <ClCompile Include="System\Private\Manager\CUIMgr.cpp" />
     <ClCompile Include="System\Private\Manager\LogManager.cpp" />
-    <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp"/>
-    <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CClearColorCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CComputeShader.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CGraphicShader.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CHeightMapCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CMeshCollisionCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CParticleTickCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CRaycastCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CShader.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Shader\CWeightMapCS.cpp"/>
-    <ClCompile Include="System\Private\Rendering\Tool\FBX\CFBXLoader.cpp"/>
-    <ClCompile Include="System\Private\Manager\CAssetMgr_Init.cpp"/>
-    <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp"/>
-    <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp"/>
-    <ClCompile Include="API\Private\EngineFacade.cpp"/>
+    <ClCompile Include="System\Private\Rendering\Buffer\CInstancingBuffer.cpp" />
+    <ClCompile Include="System\Private\Rendering\Buffer\CConstBuffer.cpp" />
+    <ClCompile Include="System\Private\Rendering\Buffer\CStructuredBuffer.cpp" />
+    <ClCompile Include="System\Private\Rendering\Device\CDevice.cpp" />
+    <ClCompile Include="System\Private\Rendering\Material\CMaterial.cpp" />
+    <ClCompile Include="System\Private\Rendering\RenderTarget\CMRT.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CCopyBoneCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CBoneMatrixCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CClearColorCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CComputeShader.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CGraphicShader.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CHeightMapCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CMeshCollisionCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CParticleTickCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CRaycastCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CShader.cpp" />
+    <ClCompile Include="System\Private\Rendering\Shader\CWeightMapCS.cpp" />
+    <ClCompile Include="System\Private\Rendering\Tool\FBX\CFBXLoader.cpp" />
+    <ClCompile Include="System\Private\Manager\CAssetMgr_Init.cpp" />
+    <ClCompile Include="System\Private\Manager\CAssetMgr_Mesh.cpp" />
+    <ClCompile Include="System\Private\Manager\CRenderMgr_Init.cpp" />
+    <ClCompile Include="API\Private\EngineFacade.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -431,9 +439,9 @@
     </HLSL>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl"/>
+    <None Include="$(SolutionDir)External\Include\Common\SimpleMath.inl" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

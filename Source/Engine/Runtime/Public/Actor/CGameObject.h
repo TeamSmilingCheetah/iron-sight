@@ -175,10 +175,11 @@ public:
 	CUI* UI() const { return reinterpret_cast<CUI*>(GetComponent(COMPONENT_TYPE::UI)); }
 	CUIRender* UIRender() const { return reinterpret_cast<CUIRender*>(GetComponent(COMPONENT_TYPE::UIRENDER)); }
 	FMeshCollider* MeshCollider() const { return reinterpret_cast<FMeshCollider*>(GetComponent(COMPONENT_TYPE::MESH_COLLIDER)); }
+	CStateMachine* StateMachine() const { return reinterpret_cast<CStateMachine*>(GetComponent(COMPONENT_TYPE::STATEMACINE)); }
 	CAnimator3D* Animator3D() const;
 
 	// Special Member Function
-	CLONE(CGameObject);
+	CLONE(CGameObject)
 	CGameObject();
 	CGameObject(const CGameObject& POrigin);
 	~CGameObject() override;

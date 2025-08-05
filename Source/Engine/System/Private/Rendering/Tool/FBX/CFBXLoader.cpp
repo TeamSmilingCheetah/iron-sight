@@ -785,7 +785,7 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 	//FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
 	FbxTime::EMode eTimeMode = FbxTime::EMode::eFrames30;
 
-	// FIXME: 애니메이션 반복문 구조 변경해서 개선 할 수 있을 거 같은데
+	// FIXME(Ssio): 애니메이션 반복문 구조 변경해서 개선 할 수 있을 거 같은데
 	// 애니메이션 clip을 각각 추출
 	for (int clipIdx = 0; clipIdx < m_vecAnimClip.size(); ++clipIdx)
 	{

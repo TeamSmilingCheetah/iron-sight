@@ -10,6 +10,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
 #include "Game/Level/Public/TestLevel.h"
+#include "Game/System/Public/CGameMgr.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Client/imgui/imgui.h"
@@ -33,6 +34,7 @@ int FClientApp::Run(HINSTANCE InInstanceHandle, int InCmdShow)
 // #ifdef _DEBUG
 	// Memory Leak Detection & Report
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(4067);
 // #endif
 
 	// Window Object Initialize
@@ -78,9 +80,17 @@ int FClientApp::InitializeSystem() const
 		CEngine::GetInst()->Init(Window->GetWindowHandle(), 1280, 768,
 			&CLevelMgr::SaveGameObject, &CLevelMgr::LoadGameObject)))
 	{
-		assert("Engine Initialize Failed");
+		assert(!"Engine Initialize Failed");
 		return E_FAIL;
 	}
+
+	// Initialize Game (User Defined = Script, State)
+	if (FAILED(CGameMgr::GetInst()->Init()))
+	{
+		assert(!"Game Initialize Failed");
+		return E_FAIL;
+	}
+
 
 #ifdef _DEBUG
 	// Debug Mode

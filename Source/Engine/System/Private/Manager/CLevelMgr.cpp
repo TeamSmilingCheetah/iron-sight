@@ -7,7 +7,7 @@
 
 
 #include "Engine/Runtime/Public/Component/Base/components.h"
-#include "Game/System/Public/GameplayManager.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 #include "System/Public/Manager/CollisionManager.h"
 
 CLevelMgr::CLevelMgr()
@@ -208,7 +208,7 @@ int CLevelMgr::SaveGameObject(CGameObject* _Object, FILE* _File)
 	for (size_t i = 0; i < vecScripts.size(); ++i)
 	{
 		// Script 클래스 이름 저장
-		wstring ScriptName = GameplayManager::GetScriptName(vecScripts[i]);
+		wstring ScriptName = CScriptMgr::GetInst()->GetScriptName(vecScripts[i]->GetScriptType());
 		SaveWString(ScriptName, _File);
 
 		// Script 가 저장해야할 데이터 저장
@@ -370,7 +370,7 @@ CGameObject* CLevelMgr::LoadGameObject(FILE* _File)
 		LoadWString(ScriptName, _File);
 
 		// Script 이름으로 해당 스크립트 객체를 생성 후 GameObject 에 넣어준다.
-		CScript* pScript = GameplayManager::GetScript(ScriptName);
+		CScript* pScript = CScriptMgr::GetInst()->GetScript(ScriptName);
 		pObject->AddComponent(pScript);
 
 		// Script 가 저장한 데이터를 다시 복구시킨다.
@@ -410,6 +410,8 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new CLight2D;
 	case COMPONENT_TYPE::LIGHT3D:
 		return new CLight3D;
+	case COMPONENT_TYPE::STATEMACINE:
+		return new CStateMachine;
 	case COMPONENT_TYPE::MESHRENDER:
 		return new CMeshRender;
 	case COMPONENT_TYPE::TILEMAP:

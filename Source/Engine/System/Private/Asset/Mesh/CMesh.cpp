@@ -105,7 +105,7 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int _ContainerIdx)
 		}
 		else
 		{
-			// TEST : index가 0개면 모든 걸 null로 등록.
+			// TEST(Ssio) : index가 0개면 모든 걸 null로 등록.
 			// 나중에 바인딩에서 문제 생길 수도 있음
 			info = {};
 		}

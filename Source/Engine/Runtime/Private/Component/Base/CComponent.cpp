@@ -46,3 +46,4 @@ FLandscape* CComponent::LandScape() const { return m_Owner ? m_Owner->LandScape(
 CUI* CComponent::UI() const { return m_Owner ? m_Owner->UI() : nullptr; }
 CUIRender* CComponent::UIRender() const { return m_Owner ? m_Owner->UIRender() : nullptr; }
 FMeshCollider* CComponent::MeshCollider() const { return m_Owner ? m_Owner->MeshCollider() : nullptr; }
+CStateMachine* CComponent::StateMachine() const { return m_Owner ? m_Owner->StateMachine() : nullptr; }
