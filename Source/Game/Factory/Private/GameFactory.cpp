@@ -10,7 +10,9 @@
 #include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
+#include "Engine/System/Public/Manager/CStateMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/State/Public/Player_Idle.h"
 
 using namespace Engine;
 
@@ -224,6 +226,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_Low");
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
+
 
 	Common::AddComponentToObject<FColliderRay>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);

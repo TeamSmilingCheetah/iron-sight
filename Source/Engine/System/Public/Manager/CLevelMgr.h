@@ -12,7 +12,7 @@ struct tObjectRefResolution
 class CLevelMgr :
 	public singleton<CLevelMgr>
 {
-	SINGLE(CLevelMgr);
+	SINGLE(CLevelMgr)
 	friend class CTaskMgr;
 
 private:

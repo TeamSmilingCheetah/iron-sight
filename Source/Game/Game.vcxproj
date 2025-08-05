@@ -149,6 +149,8 @@
     <ClInclude Include="Gameplay\Character\Public\EnemyVisionScript.h" />
     <ClInclude Include="Gameplay\Character\Public\TestCharacter.h" />
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
+    <ClInclude Include="Gameplay\scripts.h" />
+    <ClInclude Include="Gameplay\states.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Adrenaline.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Bandage.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Dead.h" />
@@ -176,13 +178,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="System\Public\GameplayManager.h" />
+    <ClInclude Include="System\Public\CGameMgr.h" />
     <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
     <ClInclude Include="Gameplay\Projectile\Public\MissileProjectile.h" />
     <ClInclude Include="Level\Public\TestLevel.h" />
-    <ClInclude Include="System\Public\StateMgr.h" />
-    <ClInclude Include="System\Public\states.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Factory\Private\GameFactory.cpp" />
@@ -231,12 +231,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="System\Private\GameplayManager.cpp" />
+    <ClCompile Include="System\Private\CGameMgr.cpp" />
     <ClCompile Include="Gameplay\Character\Private\CameraController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp" />
     <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
     <ClCompile Include="Level\Private\TestLevel.cpp" />
-    <ClCompile Include="System\Private\StateMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />

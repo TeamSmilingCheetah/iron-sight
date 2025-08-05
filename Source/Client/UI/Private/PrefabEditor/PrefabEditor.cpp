@@ -11,7 +11,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
 
-#include "Game/System/Public/GameplayManager.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 
 PrefabEditor::PrefabEditor()
 	: EditorUI("PrefabEditor")
@@ -109,13 +109,13 @@ void PrefabEditor::Render_Update()
 		// ListUI 에 넣어줄 문자열 정보 가져오기
 		pListUI->AddItem("None");
 
-		vector<wstring> vecComponentsNames;
-		vector<wstring> vecScirptsNames;
-		GetComponentsNames(vecComponentsNames);
-		GameplayManager::GetScriptInfo(vecScirptsNames);
-		vecComponentsNames.insert(vecComponentsNames.end(), vecScirptsNames.begin(), vecScirptsNames.end());
+		vector<wstring> vecComponentNames;
+		vector<wstring> vecScriptNames;
+		GetComponentsNames(vecComponentNames);
+		CScriptMgr::GetInst()->GetScriptNamesInVector(vecScriptNames);
+		vecComponentNames.insert(vecComponentNames.end(), vecScriptNames.begin(), vecScriptNames.end());
 
-		pListUI->AddItem(vecComponentsNames);
+		pListUI->AddItem(vecComponentNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
 		{
@@ -132,13 +132,13 @@ void PrefabEditor::Render_Update()
 		// ListUI 에 넣어줄 문자열 정보 가져오기
 		pListUI->AddItem("None");
 
-		vector<wstring> vecComponentsNames;
-		vector<wstring> vecScirptsNames;
-		GetComponentsNames(vecComponentsNames);
-		GameplayManager::GetScriptInfo(vecScirptsNames);
-		vecComponentsNames.insert(vecComponentsNames.end(), vecScirptsNames.begin(), vecScirptsNames.end());
+		vector<wstring> vecComponentNames;
+		vector<wstring> vecScriptNames;
+		GetComponentsNames(vecComponentNames);
+		CScriptMgr::GetInst()->GetScriptNamesInVector(vecScriptNames);
+		vecComponentNames.insert(vecComponentNames.end(), vecScriptNames.begin(), vecScriptNames.end());
 
-		pListUI->AddItem(vecComponentsNames);
+		pListUI->AddItem(vecComponentNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
 		{
@@ -295,7 +295,7 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 
 	// Scirpt를 추가하는 경우
 	wstring pScriptStr = wstring(pStr->begin(), pStr->end());
-	m_ProtoObject->AddComponent(GameplayManager::GetScript(pScriptStr));
+	m_ProtoObject->AddComponent(CScriptMgr::GetInst()->GetScript(pScriptStr));
 }
 
 void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)

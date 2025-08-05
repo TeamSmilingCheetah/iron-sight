@@ -4,8 +4,6 @@
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
-
-
 CState::CState(const wstring& _Name)
 	: m_Owner(nullptr)
 	, m_Delay(0.f)

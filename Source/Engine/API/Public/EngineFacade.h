@@ -1,6 +1,5 @@
 #pragma once
 #include "Common/global.h"
-#include <type_traits>
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/CComponent.h"
@@ -8,8 +7,6 @@
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/State/CState.h"
-
-#include "Game/System/Public/StateMgr.h"
 
 enum class EColliderType : UINT8;
 /**

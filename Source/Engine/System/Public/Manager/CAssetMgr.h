@@ -6,7 +6,7 @@
 class CAssetMgr :
 	public singleton<CAssetMgr>
 {
-	SINGLE(CAssetMgr);
+	SINGLE(CAssetMgr)
 
 private:
 	map<wstring, Ptr<CAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];

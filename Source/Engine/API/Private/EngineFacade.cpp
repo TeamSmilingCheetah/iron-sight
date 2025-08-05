@@ -7,6 +7,8 @@
 
 #include "Engine/Runtime/Public/Component/Base/components.h"
 
+#include "Engine/System/Public/Manager/CStateMgr.h"
+
 unique_ptr<CGameObject> Engine::Common::CreateNewObject()
 {
 	return make_unique<CGameObject>();
@@ -35,7 +37,7 @@ void Engine::Common::AddChild(CGameObject* PObject, CGameObject* PChild)
 
 CState* Engine::Common::LoadState(const wstring& PStateName)
 {
-	return StateMgr::GetState(PStateName);
+	return CStateMgr::GetInst()->GetState(PStateName);
 }
 
 

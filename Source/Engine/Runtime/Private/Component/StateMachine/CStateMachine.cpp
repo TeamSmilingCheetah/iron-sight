@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/State/CState.h"
-#include "Game/System/Public/StateMgr.h"
+#include "Engine/System/Public/Manager/CStateMgr.h"
 
 CStateMachine::CStateMachine()
 	: CComponent(COMPONENT_TYPE::STATEMACINE)
@@ -201,9 +201,9 @@ void CStateMachine::LoadComponent(FILE* _File)
 	for (int i = 0; i < stateCount; ++i)
 	{
 		LoadWString(stateName, _File);
-	
-		// FIXME(Ssio): Engine-Game 종속성 무너짐
-		pState = StateMgr::GetState(stateName);
+
+		// StateMgr에서 derived 객체를 받아옴
+		pState = CStateMgr::GetInst()->GetState(stateName);
 		pState->Load(_File);
 
 		// default state 찾기

@@ -23,7 +23,6 @@ void StateMachineUI::Render_Update()
 
 	CStateMachine* pSM = GetTargetObject()->StateMachine();
 
-
 	map<wstring, CState*> pMap = pSM->GetStateMap();
 
 	int stateCounts = static_cast<int>(pMap.size());

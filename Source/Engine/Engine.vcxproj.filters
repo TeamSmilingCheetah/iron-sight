@@ -253,6 +253,12 @@
     <ClInclude Include="Runtime\Public\Component\Physics\PhysicsHelper.h">
       <Filter>07. Component\04. Collider3D</Filter>
     </ClInclude>
+    <ClInclude Include="System\Public\Manager\CStateMgr.h">
+      <Filter>04. Manager\14. StateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Public\Manager\CScriptMgr.h">
+      <Filter>04. Manager\13. ScriptMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -510,6 +516,12 @@
     <ClCompile Include="Runtime\Private\Component\Physics\PhysicsHelper.cpp">
       <Filter>07. Component\04. Collider3D</Filter>
     </ClCompile>
+    <ClCompile Include="System\Private\Manager\CStateMgr.cpp">
+      <Filter>04. Manager\14. StateMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Private\Manager\CScriptMgr.cpp">
+      <Filter>04. Manager\13. ScriptMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -736,6 +748,12 @@
     </Filter>
     <Filter Include="07. Component\10. StateMachine">
       <UniqueIdentifier>{3c02103d-a603-4941-8017-881f17ab3358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Manager\13. ScriptMgr">
+      <UniqueIdentifier>{178879ca-12a5-4f14-b2d2-6181b9abacfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Manager\14. StateMgr">
+      <UniqueIdentifier>{02593036-17d5-4676-8d9e-7f9045dd001e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

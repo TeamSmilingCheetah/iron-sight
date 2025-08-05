@@ -294,35 +294,34 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 		break;
 	}
 
-
 	SetTargetObject(m_TargetObject);
 }
 
 void Inspector::AddScript(SCRIPT_TYPE _Type)
 {
-	CScript* pScripttype = GameplayManager::GetScript((UINT)_Type);
+	CScript* pScript = CScriptMgr::GetInst()->GetScript(_Type);
 
 	const vector<CScript*>& pvecScripts = m_TargetObject->GetScripts();
 
 	// 같은 스크립트가 존재하나 확인
-	SCRIPT_TYPE ScriptsType = pScripttype->GetScriptType();
+	SCRIPT_TYPE ScriptsType = pScript->GetScriptType();
 	for (auto& pair : pvecScripts)
 	{
 		// 같은 스크립트가 존재하면 만든 스크립트 삭제하고 끝냄
 		SCRIPT_TYPE vecScriptsType = pair->GetScriptType();
 		if (ScriptsType == vecScriptsType)
 		{
-			delete pScripttype;
+			delete pScript;
 			return;
 		}
 	}
 
-	m_TargetObject->AddComponent(pScripttype);
+	m_TargetObject->AddComponent(pScript);
 
 	SetTargetObject(m_TargetObject);
 }
 
-void Inspector::AddScriptCliked(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
+void Inspector::AddScriptClicked(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 {
 	string* pStr = (string*)_SelectString;
 
@@ -331,24 +330,24 @@ void Inspector::AddScriptCliked(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 		return;
 	}
 
-	CScript* pScripttype = GameplayManager::GetScript(wstring(pStr->begin(), pStr->end()));
+	CScript* pScript = CScriptMgr::GetInst()->GetScript(wstring(pStr->begin(), pStr->end()));
 
-	const vector<CScript*>& pvecScripts = m_TargetObject->GetScripts();
+	const vector<CScript*>& vecScripts = m_TargetObject->GetScripts();
 
 	// 같은 스크립트가 존재하나 확인
-	SCRIPT_TYPE ScriptsType = pScripttype->GetScriptType();
-	for (auto& pair : pvecScripts)
+	SCRIPT_TYPE ScriptsType = pScript->GetScriptType();
+	for (auto& pair : vecScripts)
 	{
 		// 같은 스크립트가 존재하면 만든 스크립트 삭제하고 끝냄
 		SCRIPT_TYPE vecScriptsType = pair->GetScriptType();
 		if (ScriptsType == vecScriptsType)
 		{
-			delete pScripttype;
+			delete pScript;
 			return;
 		}
 	}
 
-	m_TargetObject->AddComponent(pScripttype);
+	m_TargetObject->AddComponent(pScript);
 
 	SetTargetObject(m_TargetObject);
 }

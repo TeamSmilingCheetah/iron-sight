@@ -4,11 +4,13 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 
 CScript::CScript(SCRIPT_TYPE PScriptType)
 	: CComponent(COMPONENT_TYPE::SCRIPT)
 	, MScriptType(PScriptType)
 {
+	SetName(CScriptMgr::GetInst()->GetScriptName(PScriptType));
 }
 
 CScript::~CScript() = default;

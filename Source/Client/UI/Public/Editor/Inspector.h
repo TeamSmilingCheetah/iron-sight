@@ -1,7 +1,7 @@
 #pragma once
 #include "Client/UI/Public/Editor/EditorUI.h"
 #include "Common/Ptr.h"
-#include "Game/System/Public/GameplayManager.h"
+#include "Engine/System/Public/Manager/CScriptMgr.h"
 
 class CAsset;
 class CGameObject;
@@ -29,7 +29,7 @@ public:
 
 	void AddComponent(COMPONENT_TYPE _Type);
 	void AddScript(SCRIPT_TYPE _Type);
-	void AddScriptCliked(DWORD_PTR _ListUI, DWORD_PTR _SelectString);
+	void AddScriptClicked(DWORD_PTR _ListUI, DWORD_PTR _SelectString);
 	void DeleteComponent(COMPONENT_TYPE _Type);
 
 private:
