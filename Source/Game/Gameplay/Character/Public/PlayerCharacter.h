@@ -81,30 +81,27 @@ private:
 	// ======
 	// Status
 	// ======
-	const float		m_MaxHP;		// 최대 체력
-	const float		m_SemiMaxHP;	// 붕대, 구급상자로 회복할 수 있는 최대치의 비율
-	float			m_CurHP;		// 현재 체력
+	static constexpr float	m_MaxHP		= 100.f;	// 최대 체력
+	static constexpr float	m_SemiMaxHP = 75.f;		// 붕대, 구급상자로 회복할 수 있는 최대 체력
+	static constexpr float	m_MaxBoost	= 100.f;	// 최대 Boost
+	static constexpr float	m_BoostUnit = 0.3f;		// 시간 지나면 boost가 빠질 단위
 
-	const float		m_MaxBoost;		// 최대 Boost
-	float			m_CurBoost;		// 에너지
+	float					m_CurHP;		// 현재 체력
+	float					m_CurBoost;		// 현재 boost
 
-	ITEM_TYPE		m_HealType;		// 힐 아이템 종류
+	ITEM_TYPE				m_HealType;		// 힐 아이템 종류
 
-	float			m_HealRemainTime;
-	float			m_HealTotalTime;
-	float			m_HealAmount;		// heal 또는 boost 양
+	float					m_HealRemainTime;
+	float					m_HealTotalTime;
+	float					m_HealAmount;		// heal 또는 boost 양
 
-	float			m_BoostRemainTime;
-	const float		m_BoostTotalTime;	// boost가 수행되는 시간 단위
-	const float		m_BoostUnit;		// 시간 지나면 boost가 빠질 단위
-	float			m_BoostSpeed;		// 부스트로 인한 이동속도 보정
+	float					m_BoostRemainTime;	// boost 발생하는 시간 측정용 변수
+	static constexpr float	m_BoostTotalTime = 8.f;	// boost가 수행되는 시간 단위 (8s)
+	float					m_BoostSpeed;		// 부스트로 인한 이동속도 보정
 
-	int				m_KillCounts;	// 킬 카운트
+	int						m_KillCounts;		// 킬 카운트
 
-	// =====
-	// State
-	// =====
-	MOTION_STATE		m_MotionState;
+	MOTION_STATE			m_MotionState;
 
 	// =======
 	// UI 관리
@@ -163,8 +160,12 @@ public:
 
 	bool IsGround() const { return m_IsGround; }
 
+	// Heal
 	void TriggerHeal(ITEM_TYPE PHealType);
 	void DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, float _Damage);	// 공격 피격 처리
+	void Heal();
+
+	ITEM_TYPE GetHealType() const { return m_HealType; }
 
 	void PlusKillCount() { m_KillCounts += 1; }
 	int GetKillCount() const { return m_KillCounts; }
@@ -173,12 +174,17 @@ public:
 
 	MOTION_STATE GetMotionState() const { return m_MotionState; }
 
-	Vec3 GetPlayerVelocity() { return m_Velocity; }
+	InventoryController* GetInventory() const { return m_InventoryScript; }
+
+	Vec3 GetPlayerVelocity() const { return m_Velocity; }
 	//void ChangeState(const wstring& _Name);
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;
 	void LoadComponentReference() override;
+
+	// State Functions
+	void ProgressHealState();
 
 public:
 	CLONE(PlayerCharacter)
