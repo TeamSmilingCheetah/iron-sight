@@ -177,7 +177,6 @@
     <ClInclude Include="Gameplay\Weapon\Public\WeaponController.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="System\Public\CGameMgr.h" />
     <ClInclude Include="Gameplay\Character\Public\CameraController.h" />
     <ClInclude Include="Gameplay\Character\Public\PlayerCharacter.h" />
@@ -236,9 +235,6 @@
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter.cpp" />
     <ClCompile Include="Gameplay\Projectile\Private\MissileProjectile.cpp" />
     <ClCompile Include="Level\Private\TestLevel.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Game.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
