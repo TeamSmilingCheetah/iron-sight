@@ -151,7 +151,7 @@
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
     <ClInclude Include="Gameplay\scripts.h" />
     <ClInclude Include="Gameplay\states.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_Adrenaline.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Heal.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Bandage.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Dead.h" />
     <ClInclude Include="Gameplay\State\Public\Player_EnergyDrink.h" />
@@ -199,7 +199,7 @@
     <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_Adrenaline.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Heal.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Dead.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_EnergyDrink.cpp" />

@@ -51,12 +51,7 @@ int CGameMgr::Init()
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Jump", []() { return new Player_Jump; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Dead", []() { return new Player_Dead; });
-	CStateMgr::GetInst()->RegisterState(L"Player_PainKiller", []() { return new Player_PainKiller; });
-	CStateMgr::GetInst()->RegisterState(L"Player_MedKit", []() { return new Player_MedKit; });
-	CStateMgr::GetInst()->RegisterState(L"Player_FirstAidKit", []() { return new Player_FirstAidKit; });
-	CStateMgr::GetInst()->RegisterState(L"Player_EnergyDrink", []() { return new Player_EnergyDrink; });
-	CStateMgr::GetInst()->RegisterState(L"Player_Bandage", []() { return new Player_Bandage; });
-	CStateMgr::GetInst()->RegisterState(L"Player_Adrenaline", []() { return new Player_Adrenaline; });
+	CStateMgr::GetInst()->RegisterState(L"Player_Heal", []() { return new Player_Heal; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Throw_Low", []() { return new Player_Grenade_Throw_Low; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Throw_High", []() { return new Player_Grenade_Throw_High; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Prepare", []() { return new Player_Grenade_Prepare; });

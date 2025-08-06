@@ -196,12 +196,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Idle"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Dead"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_PainKiller"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_MedKit"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_FirstAidKit"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_Bandage"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_Adrenaline"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_EnergyDrink"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Heal"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Prepare"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Throw_Low"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Throw_High"));
@@ -214,12 +209,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddAnyTransition(Player, L"Player_Dead");
 
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Jump");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_PainKiller");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_MedKit");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_FirstAidKit");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Bandage");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Adrenaline");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_EnergyDrink");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Heal");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Fire");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Reload");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Grenade_Prepare");

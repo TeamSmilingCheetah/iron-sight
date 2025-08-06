@@ -98,7 +98,10 @@ bool CStateMachine::AddAnyTransition(const wstring& _To)
 	// StateMachine에 존재하는 경우에만 추가
 	auto iter = m_mapState.find(_To);
 	if (iter == m_mapState.end())
+	{
+		assert(!"Animation doesn't exist");
 		return false;
+	}
 
 	// Any State Transition 추가
 	m_AnyTransitions.emplace(_To);
@@ -109,7 +112,10 @@ bool CStateMachine::DeleteAnyTransition(const wstring& _To)
 {
 	auto iter = m_AnyTransitions.find(_To);
 	if (iter == m_AnyTransitions.end())
+	{
+		assert(!"Animation doesn't exist");
 		return false;
+	}
 
 	m_AnyTransitions.erase(iter);
 	return true;
@@ -120,11 +126,17 @@ bool CStateMachine::AddTransition(const wstring& _From, const wstring& _To)
 	// StateMachine에 존재하는 경우에만 추가
 	auto it1 = m_mapState.find(_From);
 	if (it1 == m_mapState.end())
+	{
+		assert(!"Animation doesn't exist");
 		return false;
+	}
 
 	auto it2 = m_mapState.find(_To);
 	if (it2 == m_mapState.end())
+	{
+		assert(!"Animation doesn't exist");
 		return false;
+	}
 
 	// Before State에 Transition 추가
 	return it1->second->AddTransition(_To);
@@ -134,7 +146,10 @@ bool CStateMachine::DeleteTransition(const wstring& _From, const wstring& _To)
 {
 	auto it = m_mapState.find(_From);
 	if (it == m_mapState.end())
+	{
+		assert(!"Animation doesn't exist");
 		return false;
+	}
 
 	// Befor State에서 Transition 제거
 	return it->second->DeleteTransition(_To);
@@ -155,8 +170,8 @@ void CStateMachine::FinalTick()
 		m_StateChanged = false;
 	}
 
-	/*if (m_CurState)
-		m_CurState->FinalTick();*/
+	if (m_CurState)
+		m_CurState->FinalTick();
 }
 
 void CStateMachine::SaveComponent(FILE* _File)

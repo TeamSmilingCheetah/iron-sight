@@ -1,11 +1,10 @@
 #pragma once
 #include "Game/Gameplay/State/Public/PlayerState.h"
 
-class Player_Bandage :
+class Player_Heal :
 	public PlayerState
 {
 private:
-
 
 public:
 	virtual void Enter_Override() override;
@@ -14,8 +13,8 @@ public:
 
 
 public:
-	CLONE(Player_Bandage)
-	Player_Bandage();
-	~Player_Bandage() override;
+	CLONE(Player_Heal)
+	Player_Heal();
+	~Player_Heal() override;
 };
 

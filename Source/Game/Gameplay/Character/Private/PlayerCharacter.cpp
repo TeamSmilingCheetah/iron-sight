@@ -54,18 +54,13 @@ PlayerCharacter::PlayerCharacter()
 	, m_FootStepSoundAccTime(0.f)
 	, m_InventoryScript(nullptr)
 	, m_KillinfoScript(nullptr)
-	, m_MaxHP(100.f)
-	, m_SemiMaxHP(75.f)
 	, m_CurHP(100.f)
-	, m_MaxBoost(100.f)
 	, m_CurBoost(0.f)
 	, m_HealType(ITEM_TYPE::END)
 	, m_HealRemainTime(0.f)
 	, m_HealTotalTime(0.f)
 	, m_HealAmount(0.f)
 	, m_BoostRemainTime(0.f)
-	, m_BoostTotalTime(8.f)
-	, m_BoostUnit(0.3f)
 	, m_BoostSpeed(1.f)
 	, m_KillCounts(0)
 	, m_MotionState(MOTION_STATE::STAND)
@@ -140,7 +135,7 @@ void PlayerCharacter::Tick()
 	// =================
 
 	//TEST(Ssio)
-	StateMachine()->SetChange(L"Player_Idle");
+	//StateMachine()->SetChange(L"Player_Idle");
 
 	// 이동 로직
 	PlayerMove();
@@ -148,7 +143,7 @@ void PlayerCharacter::Tick()
 	// UI 관리
 	PlayerControlUI();
 
-	// Heal 상태
+	// Heal 수치 계산
 	PlayerHeal();
 
 
@@ -202,13 +197,6 @@ void PlayerCharacter::Tick()
 			m_HitSoundAccTime = 0.f;
 		}
 	}
-
-	// StateMachine -> Tick위치 고려 필요 (햔재 임시)
-
-	if (StateMachine()->GetCurState() != nullptr)
-	{
-		StateMachine()->GetCurState()->FinalTick();
-	}	
 }
 
 
@@ -627,63 +615,6 @@ void PlayerCharacter::PlayerControlUI()
 
 void PlayerCharacter::PlayerHeal()
 {
-	UINT type = static_cast<UINT>(m_HealType);
-
-	// 회복 아이템 사용중이면
-	if (IS_HEAL(type) || IS_BOOST(type))
-	{
-		m_HealRemainTime -= DT;
-
-		// 완료
-		if (m_HealRemainTime <= 0.f)
-		{
-			m_InventoryScript->UseItem(m_HealType);
-
-			// 회복 수행
-			if (IS_HEAL(type))
-			{
-				// 의료용 키트라 풀피 채워야 되면
-				if (m_HealAmount == m_MaxHP)
-				{
-					m_CurHP = m_MaxHP;
-				}
-
-				// 나머지는 SemiMaxHP 기준으로 회복
-				else
-				{
-					m_CurHP = min(m_CurHP + m_HealAmount, m_SemiMaxHP);
-				}
-			}
-			else // if (IS_BOOST(type))
-			{
-				m_CurBoost = min(m_CurBoost + m_HealAmount, m_MaxBoost);
-			}
-
-			// 값 초기화
-			m_HealType = ITEM_TYPE::END;
-			m_HealRemainTime = 0.f;
-			m_HealAmount = 0.f;
-
-			SetObjectActive(m_ItemUseUI, false);
-
-			// 상태
-			StateMachine()->SetChange(L"Player_Idle");
-			//ChangeState(L"Player_Idle");
-		}
-
-		// 진행 중
-		else
-		{
-			// ItemUseUI : 아이템 사용딜레이 ui
-			m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - m_HealRemainTime / m_HealTotalTime);
-
-			// 남은 시간 글씨 출력
-			wchar_t text[4]{};	// 3글자 출력
-			swprintf_s(text, L"%.1f", m_HealRemainTime);
-			m_ItemUseUI->UI()->GetTextInfoRef()[0].Text = text;
-		}
-	}
-
 	// Boost가 남아있다면
 	if (m_CurBoost > 0.f)
 	{
@@ -761,6 +692,40 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 	m_CameraEffect->HitEffect();
 }
 
+void PlayerCharacter::Heal()
+{
+	UINT healType = static_cast<UINT>(m_HealType);
+
+	// 아이템 사용
+	m_InventoryScript->UseItem(m_HealType);
+
+	// 회복 수행
+	if (IS_HEAL(healType))
+	{
+		// 의료용 키트라 풀피 채워야 되면
+		if (m_HealAmount == m_MaxHP)
+		{
+			m_CurHP = m_MaxHP;
+		}
+
+		// 나머지는 SemiMaxHP 기준으로 회복
+		else
+		{
+			m_CurHP = min(m_CurHP + m_HealAmount, m_SemiMaxHP);
+		}
+	}
+	else // if (IS_BOOST(type))
+	{
+		m_CurBoost = min(m_CurBoost + m_HealAmount, m_MaxBoost);
+	}
+
+	// 값 초기화
+	m_HealType = ITEM_TYPE::END;
+	m_HealAmount = 0.f;
+
+	SetObjectActive(m_ItemUseUI, false);
+}
+
 void PlayerCharacter::SetMouseActive(bool _b)
 {
 	m_bMouseActive = _b;
@@ -797,8 +762,6 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 75.f;
-		StateMachine()->SetChange(L"Player_FirstAidKit");
-		//ChangeState(L"Player_FirstAidKit");
 		break;
 	case ITEM_TYPE::MED_KIT:
 		if (m_CurHP >= m_MaxHP)
@@ -808,7 +771,6 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
-		StateMachine()->SetChange(L"Player_MedKit");
 		//ChangeState(L"Player_MedKit");
 		break;
 	case ITEM_TYPE::BANDAGE:
@@ -819,30 +781,25 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 10.f;
-		StateMachine()->SetChange(L"Player_Bandage");
-		//ChangeState(L"Player_Bandage");
 		break;
 	case ITEM_TYPE::ADRENALINE_SYRINGE:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 100.f;
-		StateMachine()->SetChange(L"Player_Adrenaline");
-		//ChangeState(L"Player_Adrenaline");
 		break;
 	case ITEM_TYPE::PAIN_KILLER:
 		m_HealTotalTime = m_HealRemainTime = 6.f;
 		m_HealAmount = 60.f;
-		StateMachine()->SetChange(L"Player_PainKiller");
-		//ChangeState(L"Player_PainKiller");
 		break;
 	case ITEM_TYPE::ENERGY_DRINK:
 		m_HealTotalTime = m_HealRemainTime = 4.f;
 		m_HealAmount = 40.f;
-		StateMachine()->SetChange(L"Player_EnergyDrink");
-		//ChangeState(L"Player_EnergyDrink");
 		break;
 	default:
 		break;
 	}
+
+	m_HealType = PHealType;
+	StateMachine()->SetChange(L"Player_Heal");
 
 	if (CantHeal)
 	{
@@ -852,8 +809,6 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 
 	// ui 활성화
 	SetObjectActive(m_ItemUseUI, true);
-
-	m_HealType = PHealType;
 }
 
 void PlayerCharacter::LoadPlayerSounds()
@@ -883,6 +838,33 @@ void PlayerCharacter::LoadComponent(FILE* PFile)
 
 void PlayerCharacter::LoadComponentReference()
 {
+}
+
+void PlayerCharacter::ProgressHealState()
+{
+	// 회복 아이템 사용중이면
+	m_HealRemainTime -= DT;
+
+	// 완료
+	if (m_HealRemainTime <= 0.f)
+	{
+		Heal();
+
+		// 상태
+		StateMachine()->SetChange(L"Player_Idle");
+	}
+
+	// 진행 중
+	else
+	{
+		// ItemUseUI : 아이템 사용딜레이 ui
+		m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - m_HealRemainTime / m_HealTotalTime);
+
+		// 남은 시간 글씨 출력
+		wchar_t text[4]{};	// 3글자 출력
+		swprintf_s(text, L"%.1f", m_HealRemainTime);
+		m_ItemUseUI->UI()->GetTextInfoRef()[0].Text = text;
+	}
 }
 
 

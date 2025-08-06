@@ -86,7 +86,7 @@
     <ClCompile Include="Gameplay\Character\Private\CameraEffect.cpp">
       <Filter>03. Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_Adrenaline.cpp">
+    <ClCompile Include="Gameplay\State\Private\Player_Heal.cpp">
       <Filter>03. Gameplay\State\Heal</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp">
@@ -228,7 +228,7 @@
       <Filter>03. Gameplay</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_Adrenaline.h">
+    <ClInclude Include="Gameplay\State\Public\Player_Heal.h">
       <Filter>03. Gameplay\State\Heal</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Bandage.h">

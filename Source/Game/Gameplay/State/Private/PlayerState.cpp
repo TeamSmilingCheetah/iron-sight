@@ -55,6 +55,18 @@ void PlayerState::FinalTick()
 
 	// Override Function
 	FinalTick_Override();
+
+	if (!SM()->CanExit() && !m_CanExitDuringAnimation)
+	{
+		// m_CanExitDuringAnimation이 false라면 loop 하면 안됨.
+		//assert(!SM()->Animator3D()->GetCurClip()->IsLoop());
+
+		// 애니메이터가 멈춘 경우 전환 가능 상태로 변경
+		if (!SM()->Animator3D()->IsActive())
+		{
+			SM()->SetCanExit(true);
+		}
+	}
 }
 
 
