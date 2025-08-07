@@ -13,7 +13,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 
-
+#include "Game/System/Public/CGameMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
 
@@ -297,7 +297,7 @@ bool PlayerCharacter::CanRun()
 	{
 		return false;
 	}
-	if (m_CamScript->GetFlag(ADS))
+	if (CGameMgr::GetInst()->GetCamScript()->GetFlag(ADS))
 	{
 		return false;
 	}
@@ -309,6 +309,7 @@ bool PlayerCharacter::CanRun()
 	{
 		return false;
 	}
+	
 	// 현재 재장전 중이라면 불가능
 	if (m_bReloading)
 	{

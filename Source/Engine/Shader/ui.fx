@@ -122,8 +122,9 @@ float4 PS_UI_Minimap(VS_OUT _in) : SV_Target
 float4 PS_UI_HP(VS_OUT _in) : SV_Target
 {
 	// g_vec_0 : aspect, semiHP
-	// g_float_0 : curHP
-	// g_float_1 : boost
+	// g_float_0 : curHP / maxHP
+	// g_float_1 : curBoost / maxBoost
+	// g_float_2 : healAmount / maxHP
 
 	// ui에서 energy용으로 사용할 uv.y 비율
 	const float boostRatio = 0.15f;

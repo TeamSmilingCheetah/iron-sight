@@ -116,6 +116,12 @@ void CLevelMgr::ChangeLevel(CLevel* _NextLevel, LEVEL_STATE _NextLevelState)
 
 	m_CurLevel = _NextLevel;
 	ChangeLevelState(_NextLevelState);
+
+	// Init Callback 호출
+	for (const auto& func : m_LevelInitCallback)
+	{
+		func();
+	}
 }
 
 void CLevelMgr::ResolveReference(CLevel* _Level)

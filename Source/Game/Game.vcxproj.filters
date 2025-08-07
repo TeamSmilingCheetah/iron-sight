@@ -122,6 +122,11 @@
     <ClCompile Include="System\Private\CGameMgr.cpp">
       <Filter>01. GameMgr</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_EnergyDrink.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_FirstAidKit.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_MedKit.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_PainKiller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -251,6 +256,11 @@
     <ClInclude Include="Gameplay\states.h">
       <Filter>01. GameMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\Player_Bandage.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_EnergyDrink.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_FirstAidKit.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_MedKit.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_PainKiller.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">

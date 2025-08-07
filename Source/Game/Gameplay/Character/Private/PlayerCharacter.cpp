@@ -25,13 +25,13 @@
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
+#include "Game/System/Public/CGameMgr.h"
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_HitSoundIdx(-1)
 	, m_FootstepSoundIdx(-1)
 	, m_RunFootstepSoundIdx(-1)
-	, m_MainCamera(nullptr)
 	, m_Force(0.f)
 	, m_Velocity(0.f)
 	, m_GravityVelocity(0.f)
@@ -49,11 +49,9 @@ PlayerCharacter::PlayerCharacter()
 	, m_bFirstFootStep(true)
 	, m_CollObject(nullptr)
 	, m_HeadColl(nullptr)
-	, m_CamScript(nullptr)
 	, m_HitSoundAccTime(0.f)
 	, m_FootStepSoundAccTime(0.f)
 	, m_InventoryScript(nullptr)
-	, m_KillinfoScript(nullptr)
 	, m_CurHP(100.f)
 	, m_CurBoost(0.f)
 	, m_HealType(ITEM_TYPE::END)
@@ -64,14 +62,8 @@ PlayerCharacter::PlayerCharacter()
 	, m_BoostSpeed(1.f)
 	, m_KillCounts(0)
 	, m_MotionState(MOTION_STATE::STAND)
-	, m_InventoryCanvasUI(nullptr)
 	, m_InventoryOpened(false)
-	, m_CardinalImageUI(nullptr)
-	, m_HPUI(nullptr)
-	, m_ItemUseUI(nullptr)
 	, m_bMouseActive(false)
-	, m_ReloadUI(nullptr)
-	, m_CameraEffect(nullptr)
 	, m_StateAccTime(0.f)
 {
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });	// 질량
@@ -88,40 +80,21 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::Begin()
 {
-	// TODO(Ssio) : ObjectReference로 변경하기
-	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
-
 	// Collider
-	m_HeadColl = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player Head");
+	m_HeadColl = CLevelMgr::GetInst()->FindObjectByName(L"Player Head");
 
 	// UI
-	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
-	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
-
-	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
-
-	Vec2 uiSize = m_HPUI->UI()->GetRectSize();
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC2_0, Vec2(uiSize.x / uiSize.y, m_SemiMaxHP / m_MaxHP));	// 고정 값
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, m_CurHP / m_MaxHP);
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
-
-	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
-	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
+	CGameObject* HPUI = CGameMgr::GetInst()->GetHPUI();
+	Vec2 uiSize = HPUI->UI()->GetRectSize();
+	HPUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC2_0, Vec2(uiSize.x / uiSize.y, m_SemiMaxHP / m_MaxHP));	// 고정 값
+	HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, m_CurHP / m_MaxHP);
+	HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
 
 	// Script
-	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
-
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	CGameObject* InteractionHandlerObj = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Interaction Handler");
 	m_InteractionScript = static_cast<InteractionHandler*>(GetScriptWithType(InteractionHandlerObj, SCRIPT_TYPE::INTERACTION_HANDLER));
-
-	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
-	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
-
-	CGameObject* CameraPost = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"CameraPost");
-	m_CameraEffect = static_cast<CameraEffect*>(GetScriptWithType(CameraPost, SCRIPT_TYPE::CAMERAEFFECT));
-
 
 	// 마우스 끄기
 	CKeyMgr::GetInst()->SetCursorVisible(false);
@@ -157,7 +130,7 @@ void PlayerCharacter::Tick()
 	// ==========
 
 	// 마우스가 켜진 상태에서 키입력 방지,
-	if (!m_bMouseActive && !m_CamScript->GetFlag(FREE_PS))
+	if (!m_bMouseActive && !CGameMgr::GetInst()->GetCamScript()->GetFlag(FREE_PS))
 	{
 		// 행동 로직
 		PlayerStance();
@@ -168,7 +141,7 @@ void PlayerCharacter::Tick()
 		SetMouseActive(!m_bMouseActive);
 	}
 
-	if (!m_CamScript->GetFlag(FREE_PS))
+	if (!CGameMgr::GetInst()->GetCamScript()->GetFlag(FREE_PS))
 	{
 		if (KEY_TAP(KEY::ESC) || KEY_TAP(KEY::TAB))
 		{
@@ -207,16 +180,19 @@ void PlayerCharacter::Tick()
 
 void PlayerCharacter::PlayerView()
 {
-	bool bRecover = m_CamScript->GetFlag(SEARCH_RECOVER);
-	bool bSearch = m_CamScript->GetFlag(SEARCH);
-	bool bShoulder = m_CamScript->GetFlag(SHOULDER);
-	bool bADS = m_CamScript->GetFlag(ADS);
-	bool bTPS = m_CamScript->GetFlag(TPS);
+	CGameObject* MainCam = CGameMgr::GetInst()->GetMainCam();
+	CameraController* pCamScript = CGameMgr::GetInst()->GetCamScript();
+
+	bool bRecover = pCamScript->GetFlag(SEARCH_RECOVER);
+	bool bSearch = pCamScript->GetFlag(SEARCH);
+	bool bShoulder = pCamScript->GetFlag(SHOULDER);
+	bool bADS = pCamScript->GetFlag(ADS);
+	bool bTPS = pCamScript->GetFlag(TPS);
 
 	// 마우스 위치를 구해온다
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 	Vec3 vPlayerRot = Transform()->GetRelativeRotation();
-	Vec3 vCameraRot = m_MainCamera->Transform()->GetRelativeRotation();
+	Vec3 vCameraRot = MainCam->Transform()->GetRelativeRotation();
 
 	// LOG_DEBUG_F("[Player] 마우스: {}, {}", vMousePos.x, vMousePos.y);
 	// LOG_DEBUG_F("[Player] 플레이어 회전: {}, {}, {}", vPlayerRot.x, vPlayerRot.y, vPlayerRot.z);
@@ -301,7 +277,7 @@ void PlayerCharacter::PlayerView()
 			vCameraRot.x = 80.f;
 		}
 
-		m_MainCamera->Transform()->SetRelativeRotation(vCameraRot);
+		MainCam->Transform()->SetRelativeRotation(vCameraRot);
 	}
 
 	Transform()->SetRelativeRotation(vPlayerRot);
@@ -318,8 +294,10 @@ void PlayerCharacter::PlayerView()
 
 void PlayerCharacter::PlayerStance()
 {
+	CameraController* pCamScript = CGameMgr::GetInst()->GetCamScript();
+
 	// 기울이기
-	if (KEY_PRESSED(KEY::Q) && !m_CamScript->GetFlag(LAYING))
+	if (KEY_PRESSED(KEY::Q) && !pCamScript->GetFlag(LAYING))
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
@@ -330,7 +308,7 @@ void PlayerCharacter::PlayerStance()
 		}
 
 		// Head Coll 이동
-		if (m_CamScript->GetFlag(SITTING))
+		if (pCamScript->GetFlag(SITTING))
 		{
 			m_HeadColl->Transform()->SetRelativePos(Vec3(15.f, 110.f, 0.f));
 		}
@@ -342,7 +320,7 @@ void PlayerCharacter::PlayerStance()
 		m_bLean = true;
 	}
 
-	if (KEY_PRESSED(KEY::E) && !m_CamScript->GetFlag(LAYING))
+	if (KEY_PRESSED(KEY::E) && !pCamScript->GetFlag(LAYING))
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
@@ -354,7 +332,7 @@ void PlayerCharacter::PlayerStance()
 
 
 		// Head Coll 이동
-		if (m_CamScript->GetFlag(SITTING))
+		if (pCamScript->GetFlag(SITTING))
 		{
 			m_HeadColl->Transform()->SetRelativePos(Vec3(-15.f, 110.f, 0.f));
 		}
@@ -368,7 +346,7 @@ void PlayerCharacter::PlayerStance()
 
 
 	// 기울이기 해제
-	if ((KEY_RELEASED(KEY::Q) || KEY_RELEASED(KEY::E)) && !m_CamScript->GetFlag(LAYING))
+	if ((KEY_RELEASED(KEY::Q) || KEY_RELEASED(KEY::E)) && !pCamScript->GetFlag(LAYING))
 	{
 		// 현재 무기 슬롯이 총이라면
 		if (m_InventoryScript->GetCurSlotIdx() <= SECONDARY_FIRST)
@@ -385,7 +363,7 @@ void PlayerCharacter::PlayerStance()
 
 
 	// 앉아있는 상태
-	if (m_CamScript->GetFlag(SITTING) && m_CamScript->GetFlag(CHANGE_STANCE))
+	if (pCamScript->GetFlag(SITTING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
 		Collider3D()->SetScale(Vec3(555.f, 900.f, 385.f));
 		Collider3D()->SetOffset(Vec3(35.f, 550.f, 0.f));
@@ -395,7 +373,7 @@ void PlayerCharacter::PlayerStance()
 
 
 	// 누워있는 상태
-	if (m_CamScript->GetFlag(LAYING) && m_CamScript->GetFlag(CHANGE_STANCE))
+	if (pCamScript->GetFlag(LAYING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
 		Collider3D()->SetScale(Vec3(500.f, 480.f, 1475.f));
 		Collider3D()->SetOffset(Vec3(35.f, 25.f, 250.f));
@@ -405,7 +383,7 @@ void PlayerCharacter::PlayerStance()
 	}
 
 	// 평상시로
-	if (!m_CamScript->GetFlag(SITTING) && !m_CamScript->GetFlag(LAYING) && m_CamScript->GetFlag(CHANGE_STANCE))
+	if (!pCamScript->GetFlag(SITTING) && !pCamScript->GetFlag(LAYING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
 		Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
 		Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
@@ -416,7 +394,7 @@ void PlayerCharacter::PlayerStance()
 }
 void PlayerCharacter::PlayerControlWeapon()
 {
-	bool bSearch = m_CamScript->GetFlag(SEARCH);
+	bool bSearch = CGameMgr::GetInst()->GetCamScript()->GetFlag(SEARCH);
 
 	if (!bSearch && !m_InventoryOpened)
 	{
@@ -519,6 +497,8 @@ void PlayerCharacter::PlayerControlWeapon()
 
 void PlayerCharacter::PlayerControlUI()
 {
+	CameraController* pCamScript = CGameMgr::GetInst()->GetCamScript();
+
 	// 인벤토리 UI Toggle
 	if (KEY_TAP(KEY::TAB))
 	{
@@ -527,51 +507,45 @@ void PlayerCharacter::PlayerControlUI()
 		// 인벤토리가 열릴때, 상태를 초기화해준다.
 		if (m_InventoryOpened)
 		{
-			if (m_CamScript->GetFlag(WAS_TPS))
+			if (pCamScript->GetFlag(WAS_TPS))
 			{
-				m_CamScript->SetFlag(ADS, false);
-				m_CamScript->SetFlag(WAS_TPS, false);
-				m_CamScript->ChangePS(true);
+				pCamScript->SetFlag(ADS, false);
+				pCamScript->SetFlag(WAS_TPS, false);
+				pCamScript->ChangePS(true);
 			}
 			else
 			{
-				m_CamScript->SetFlag(ADS, false);
+				pCamScript->SetFlag(ADS, false);
 			}
-			m_CamScript->SetFlag(SHOULDER, false);
+			pCamScript->SetFlag(SHOULDER, false);
 		}
 
 		SetMouseActive(!m_InventoryOpened);
-		SetObjectActive(m_InventoryCanvasUI, m_InventoryOpened);
+		SetObjectActive(CGameMgr::GetInst()->GetInventoryCanvasUI(), m_InventoryOpened);
 	}
 
 	// 방위 UI : y축 회전값 전달
-	m_CardinalImageUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, Transform()->GetRelativeRotation().y);
+	CGameMgr::GetInst()->UpdateCardinalUI(Transform()->GetRelativeRotation().y);
+	
 
 	// HP UI : 현재 체력과 부스트에 대한 정보
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, m_CurHP / m_MaxHP);
-	m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, m_CurBoost / m_MaxBoost);
-
 	if (IS_HEAL(static_cast<UINT>(m_HealType)))
 	{
-		if (m_HealAmount == 100.f)
-			m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 1.f);
-		else
-			m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, min(m_CurHP + m_HealAmount, m_SemiMaxHP) / m_MaxHP);
+		CGameMgr::GetInst()->SetHPUI(m_CurHP, m_SemiMaxHP, m_MaxHP, m_CurBoost, m_MaxBoost, m_HealAmount);
 	}
 	else
 	{
-		m_HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.f);
+		CGameMgr::GetInst()->SetHPUI(m_CurHP, m_SemiMaxHP, m_MaxHP, m_CurBoost, m_MaxBoost);
 	}
-
 
 	// HP상태에 따른 화면 효과
 	if (m_CurHP / m_MaxHP <= 0.4f)
 	{
-		m_CameraEffect->HPLow();
+		CGameMgr::GetInst()->GetCamEffect()->HPLow();
 	}
 	else
 	{
-		m_CameraEffect->HPFine();
+		CGameMgr::GetInst()->GetCamEffect()->HPFine();
 	}
 }
 
@@ -642,8 +616,8 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 	if (m_CurHP <= 0)
 	{
 		m_CurHP = 0;
-		m_KillinfoScript->SetKillInfo(_AtkObj->GetName(), GetOwner()->GetName(), _Weapon->GetName());
-		m_KillinfoScript->OnEvent();
+		CGameMgr::GetInst()->GetKillInfoUI()->SetKillInfo(_AtkObj->GetName(), GetOwner()->GetName(), _Weapon->GetName());
+		CGameMgr::GetInst()->GetKillInfoUI()->OnEvent();
 
 		// 상태
 		StateMachine()->SetChange(L"Player_Idle");
@@ -651,7 +625,7 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 	}
 
 	// 피격 화면 효과
-	m_CameraEffect->HitEffect();
+	CGameMgr::GetInst()->GetCamEffect()->HitEffect();
 }
 
 void PlayerCharacter::Heal()
@@ -685,7 +659,7 @@ void PlayerCharacter::Heal()
 	m_HealType = ITEM_TYPE::END;
 	m_HealAmount = 0.f;
 
-	SetObjectActive(m_ItemUseUI, false);
+	SetObjectActive(CGameMgr::GetInst()->GetItemUseUI(), false);
 }
 
 void PlayerCharacter::SetMouseActive(bool _b)
@@ -733,7 +707,6 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		}
 		m_HealTotalTime = m_HealRemainTime = 8.f;
 		m_HealAmount = 100.f;
-		//ChangeState(L"Player_MedKit");
 		break;
 	case ITEM_TYPE::BANDAGE:
 		if (m_CurHP >= m_SemiMaxHP)
@@ -770,7 +743,7 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 	}
 
 	// ui 활성화
-	SetObjectActive(m_ItemUseUI, true);
+	SetObjectActive(CGameMgr::GetInst()->GetItemUseUI(), true);
 }
 
 void PlayerCharacter::LoadPlayerSounds()
@@ -820,12 +793,7 @@ void PlayerCharacter::ProgressHealState()
 	else
 	{
 		// ItemUseUI : 아이템 사용딜레이 ui
-		m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - m_HealRemainTime / m_HealTotalTime);
-
-		// 남은 시간 글씨 출력
-		wchar_t text[4]{};	// 3글자 출력
-		swprintf_s(text, L"%.1f", m_HealRemainTime);
-		m_ItemUseUI->UI()->GetTextInfoRef()[0].Text = text;
+		CGameMgr::GetInst()->SetItemUseUITime(m_HealRemainTime, m_HealTotalTime);
 	}
 }
 
@@ -953,7 +921,7 @@ void PlayerCharacter::ExitThrowPrepareState()
 
 void PlayerCharacter::ExitReloadState()
 {
-	SetObjectActive(m_ReloadUI, false);
+	SetObjectActive(CGameMgr::GetInst()->GetReloadUI(), false);
 	m_InteractionScript->SetInteractable(false);
 	m_bReloading = false;
 }

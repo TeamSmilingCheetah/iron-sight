@@ -16,7 +16,8 @@ class CLevelMgr :
 	friend class CTaskMgr;
 
 private:
-	CLevel* m_CurLevel;
+	CLevel*						m_CurLevel;
+	vector<function<void()>>	m_LevelInitCallback;
 
 public:
 	CLevel* GetCurrentLevel() { return m_CurLevel; }
@@ -25,6 +26,9 @@ public:
 	CGameObject* FindObjectByID(UINT _ID);
 	void ChangeLevelState(LEVEL_STATE _NextState);
 	void ChangeLevel(CLevel* _NextLevel, LEVEL_STATE _NextLevelState);
+
+	// Level이 초기화 (Change)될 때 호출되는 함수 등록
+	void RegisterLevelInitCallback(function<void()> _Func) { m_LevelInitCallback.emplace_back(std::move(_Func)); }
 
 public:
 	void Init();
