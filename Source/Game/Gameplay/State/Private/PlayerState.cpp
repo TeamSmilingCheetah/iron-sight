@@ -50,6 +50,9 @@ void PlayerState::FinalTick()
 		}
 	}
 
+	// Player의 움직임 조작
+	m_PlayerScript->ProgressPlayerMove();
+
 	// PlayerState는 매 틱 입력을 감지해 움직이는 애니메이션을 적용해줘야 한다.
 	ControlMoveAnimation();
 
