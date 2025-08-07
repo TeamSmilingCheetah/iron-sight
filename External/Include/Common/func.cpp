@@ -470,7 +470,16 @@ Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
 
 float FloatLerp(float _Cur, float _Des, float _Speed)
 {
-	return _Cur + (_Des - _Cur) * _Speed * DT;
+	float t = 1.f - expf(_Speed * DT);
+	return _Cur + (_Des - _Cur) * _Speed * t;
+}
+
+float MoveToward(float _Cur, float _Des, float _maxDelta)
+{
+	float delta = _Des - _Cur;
+	if (abs(delta) <= _maxDelta)
+		return _Des;
+	return _Cur + (delta > 0 ? 1.f : -1.f) * _maxDelta;
 }
 
 Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed)
@@ -479,6 +488,18 @@ Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed)
 	result.x = _Cur.x + (_Des.x - _Cur.x) * _Speed * DT;
 	result.y = _Cur.y + (_Des.y - _Cur.y) * _Speed * DT;
 	result.z = _Cur.z + (_Des.z - _Cur.z) * _Speed * DT;
+	return result;
+}
+
+Vec3 Vec3MoveToward(const Vec3& _Cur, const Vec3& _Des, float _MaxDelta)
+{
+	Vec3 result;
+	float deltaX = _Des.x - _Cur.x;
+	result.x = (abs(deltaX) <= _MaxDelta) ? _Des.x : _Cur.x + (deltaX > 0.f ? 1.f : -1.f) * _MaxDelta;
+	float deltaY = _Des.y - _Cur.y;
+	result.y = (abs(deltaY) <= _MaxDelta) ? _Des.y : _Cur.y + (deltaY > 0.f ? 1.f : -1.f) * _MaxDelta;
+	float deltaZ = _Des.z - _Cur.z;
+	result.z = (abs(deltaZ) <= _MaxDelta) ? _Des.z : _Cur.z + (deltaZ > 0.f ? 1.f : -1.f) * _MaxDelta;
 	return result;
 }
 

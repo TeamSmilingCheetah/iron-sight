@@ -126,15 +126,15 @@ void WeaponController::AdjustFPSPos()
 			// 정조준 도준 기울이기 입력이 들어오면 무기의 회전값 변경
 			if (m_CurKey == KEY::Q && m_CurKeyState == KEY_STATE::PRESSED)
 			{
-				leanAngle = FloatLerp(leanAngle, 10.f, 10.f);
+				leanAngle = MoveToward(leanAngle, 10.f, 50.f);
 			}
 			else if (m_CurKey == KEY::E && m_CurKeyState == KEY_STATE::PRESSED)
 			{
-				leanAngle = FloatLerp(leanAngle, -10.f, 10.f);
+				leanAngle = MoveToward(leanAngle, -10.f, 50.f);
 			}
 			else
 			{
-				leanAngle = FloatLerp(leanAngle, 0.f, 10.f);
+				leanAngle = MoveToward(leanAngle, 0.f, 50.f);
 			}
 
 			vRot.x += leanAngle;
@@ -173,9 +173,9 @@ void WeaponController::TransitionPos(Vec3 _DesPos)
 	Vec3 vPos = Transform()->GetRelativePos();
 
 	float fTimes = 0.95f;
-	float fChangeSpeed = 20.f;
+	float fChangeSpeed = 80.f;
 
-	vPos = Vec3Lerp(vPos, _DesPos, fChangeSpeed);
+	vPos = Vec3MoveToward(vPos, _DesPos, fChangeSpeed);
 	Transform()->SetRelativePos(vPos);
 
 	// 특정 구간에 도달하면 변환을 종료시킨다.
