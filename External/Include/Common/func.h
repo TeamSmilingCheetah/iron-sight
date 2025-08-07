@@ -62,6 +62,8 @@ IColliderBase* GetBaseFromVariant(const ColliderVariant& InVariant);
 
 float FloatLerp(float _Cur, float _Des, float _Speed);
 Vec3 Vec3Lerp(const Vec3& _Cur, const Vec3& _Des, float _Speed);
+float MoveToward(float _Cur, float _Des, float _maxDelta);
+Vec3 Vec3MoveToward(const Vec3& _Cur, const Vec3& _Des, float _MaxDelta);
 
 template <typename T>
 void SaveAssetRef(Ptr<T> _Asset, FILE* _File)

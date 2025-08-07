@@ -64,7 +64,7 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\ak47_test.fbx",
 		L"AKM",
-		Vec3(90.f, 0.f, 30.f),
+		Vec3(3770.f, 0.f, 1640.f),
 		Vec3(0.f, 0.f, 0.f),
 		Vec3(700.f, 700.f, 700.f),
 		{
