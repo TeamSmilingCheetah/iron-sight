@@ -17,7 +17,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
 
-void PlayerCharacter::PlayerMove()
+void PlayerCharacter::ProgressPlayerMove()
 {
 	// 이동할 방향 연산
 	UpdateMove();
@@ -72,26 +72,17 @@ void PlayerCharacter::UpdateMove()
 	// 힘의 량
 	float ForceScar;
 
-	if (KEY_PRESSED(KEY::LSHIFT) &&
-		KEY_PRESSED(KEY::W) &&
-		!(KEY_PRESSED(KEY::A)) &&
-		!(KEY_PRESSED(KEY::S)) &&
-		!(KEY_PRESSED(KEY::D)) &&
-		!m_CamScript->GetFlag(ADS) &&
-		!m_CamScript->GetFlag(SITTING) &&
-		!m_CamScript->GetFlag(LAYING) &&
-		!m_bLean &&
-		!m_bReloading)
+	if (CanRun())
 	{
 		ForceScar = 80.f;
 		m_MaxSpeed = 20.f;
 	}
-	else if (m_CamScript->GetFlag(SITTING))
+	else if (m_MotionState == MOTION_STATE::CROUCH)
 	{
 		ForceScar = 30.f;
 		m_MaxSpeed = 5.f;
 	}
-	else if (m_CamScript->GetFlag(LAYING))
+	else if (m_MotionState == MOTION_STATE::PRONE)
 	{
 		ForceScar = 20.f;
 		m_MaxSpeed = 2.f;
@@ -271,7 +262,6 @@ void PlayerCharacter::UpdateGravity()
 		
 		// 상태
 		StateMachine()->SetChange(L"Player_Jump");
-		//ChangeState(L"Player_Jump");
 	}
 
 	m_Velocity += m_GravityVelocity;
@@ -291,6 +281,21 @@ void PlayerCharacter::UpdateCollision()
 			m_Velocity -= m_vecCollisionNormal[i] * dotProduct;
 		}
 	}
+}
+
+bool PlayerCharacter::CanRun()
+{
+	if (!(KEY_PRESSED(KEY::LSHIFT))) return false;
+	if (!(KEY_PRESSED(KEY::W))) return false;
+	if (KEY_PRESSED(KEY::A) || KEY_PRESSED(KEY::S) || KEY_PRESSED(KEY::D)) return false;
+	if (m_CamScript->GetFlag(ADS)) return false;
+	if (m_bLean) return false;
+	if (m_MotionState != MOTION_STATE::STAND) return false;
+	// 현재 재장전 중이라면 불가능
+	if (m_bReloading)
+		return false;
+
+	return true;
 }
 
 //void PlayerCharacter::AnimationControl()

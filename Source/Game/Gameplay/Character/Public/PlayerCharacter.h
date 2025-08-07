@@ -6,6 +6,7 @@
 
 class CGameObject;
 class FLandscape;
+class InteractionHandler;
 class KillinfoUIScript;
 class InventoryController;
 class CameraController;
@@ -51,10 +52,8 @@ private:
 
 	float m_MouseSensitivity;
 
-	bool m_bShoot;
 	bool m_bReloading;
-	bool m_bReloadingEnd;
-	bool m_bCanThrow;
+	bool m_bShoot;
 	bool m_bThrowBoom;
 	bool m_bHitSoundPlayed;
 	bool m_bFirstFootStep;
@@ -76,6 +75,7 @@ private:
 	CameraController*		m_CamScript;
 	InventoryController*	m_InventoryScript;
 	KillinfoUIScript*		m_KillinfoScript;
+	InteractionHandler*		m_InteractionScript;
 	CameraEffect*			m_CameraEffect;
 
 	// ======
@@ -125,7 +125,7 @@ public:
 private:
 	void LoadPlayerSounds();
 
-	void PlayerMove();
+	//void PlayerMove();
 	void PlayerView();
 	void PlayerStance();
 
@@ -140,23 +140,19 @@ private:
 	void UpdateCollision();
 	//void AnimationControl();
 
+	bool CanRun();
+
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
 
 	void SetShot(bool PShot) { m_bShoot = PShot; }
-	void SetThrow(bool PThrow) { m_bCanThrow = PThrow; }
 	void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
 	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
-	void SetReloadingEnd(bool PReloadingEnd) { m_bReloadingEnd = PReloadingEnd; }
-
 	void SetMouseActive(bool _b);
 
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	bool IsShot() const { return m_bShoot; }
-	bool IsThrow() const { return m_bCanThrow; }
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
-	bool IsPlayerReloading() const { return m_bReloading; }
-	bool IsPlayerReloadingEnd() const { return m_bReloadingEnd; }
 
 	bool IsGround() const { return m_IsGround; }
 
@@ -177,14 +173,28 @@ public:
 	InventoryController* GetInventory() const { return m_InventoryScript; }
 
 	Vec3 GetPlayerVelocity() const { return m_Velocity; }
-	//void ChangeState(const wstring& _Name);
+
+	const wstring& GetCurStateName();
+
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;
 	void LoadComponentReference() override;
 
 	// State Functions
+	// Enter
+
+	// FinalTick
 	void ProgressHealState();
+	void ProgressReloadState();
+	void ProgressThrowPrepareState();
+	void ProgressPlayerMove();
+
+	// Exit
+	void ExitThrowPrepareState();
+	void ExitReloadState();
+
+	
 
 public:
 	CLONE(PlayerCharacter)

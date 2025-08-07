@@ -2,6 +2,10 @@
 #include "Game/Gameplay/State/Public/Player_Gun_Reload.h"
 
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+
+#include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 Player_Gun_Reload::Player_Gun_Reload()
@@ -18,6 +22,8 @@ Player_Gun_Reload::~Player_Gun_Reload()
 void Player_Gun_Reload::Enter_Override()
 {
 	MOTION_STATE eCurState = GetPlayerScript()->GetMotionState();
+
+	GetPlayerScript()->SetReloading(true);
 
 	m_Delay = 0.07f;
 	switch (eCurState)
@@ -39,10 +45,14 @@ void Player_Gun_Reload::Enter_Override()
 
 void Player_Gun_Reload::FinalTick_Override()
 {
+	GetPlayerScript()->ProgressReloadState();
+
+	// TODO : 애니메이션이랑 시간 동기화
 }
 
 void Player_Gun_Reload::Exit()
 {
+	GetPlayerScript()->ExitReloadState();
 }
 
 

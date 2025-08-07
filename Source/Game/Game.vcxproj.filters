@@ -89,17 +89,8 @@
     <ClCompile Include="Gameplay\State\Private\Player_Heal.cpp">
       <Filter>03. Gameplay\State\Heal</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp">
-      <Filter>03. Gameplay\State\Heal</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Dead.cpp">
       <Filter>03. Gameplay\State\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_FirstAidKit.cpp">
-      <Filter>03. Gameplay\State\Heal</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_EnergyDrink.cpp">
-      <Filter>03. Gameplay\State\Heal</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_High.cpp">
       <Filter>03. Gameplay\State\Grenade</Filter>
@@ -118,12 +109,6 @@
     </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Jump.cpp">
       <Filter>03. Gameplay\State\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_MedKit.cpp">
-      <Filter>03. Gameplay\State\Heal</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_PainKiller.cpp">
-      <Filter>03. Gameplay\State\Heal</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Idle.cpp">
       <Filter>03. Gameplay\State\Base</Filter>
@@ -227,21 +212,11 @@
     <ClInclude Include="Gameplay\Character\Public\CameraEffect.h">
       <Filter>03. Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Heal.h">
-      <Filter>03. Gameplay\State\Heal</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_Bandage.h">
       <Filter>03. Gameplay\State\Heal</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Dead.h">
       <Filter>03. Gameplay\State\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_EnergyDrink.h">
-      <Filter>03. Gameplay\State\Heal</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_FirstAidKit.h">
-      <Filter>03. Gameplay\State\Heal</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_High.h">
       <Filter>03. Gameplay\State\Grenade</Filter>
@@ -257,12 +232,6 @@
     </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Reload.h">
       <Filter>03. Gameplay\State\Gun</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_MedKit.h">
-      <Filter>03. Gameplay\State\Heal</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_PainKiller.h">
-      <Filter>03. Gameplay\State\Heal</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Jump.h">
       <Filter>03. Gameplay\State\Base</Filter>
@@ -335,8 +304,5 @@
     <Filter Include="01. GameMgr">
       <UniqueIdentifier>{bde1f4b8-70be-4f80-982a-aab63718c370}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Game.rc" />
   </ItemGroup>
 </Project>

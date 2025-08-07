@@ -134,7 +134,6 @@ void GunController::Tick()
 				m_PlayerScript->SetShot(false);
 				m_bReload = true;
 				SetObjectActive(m_ReloadUI, true);
-				m_PlayerScript->SetReloading(true);
 
 				// 현재 남은 탄창수에 따라 시간 설정
 				if (m_CurRounds == 0)
@@ -471,11 +470,10 @@ void GunController::Reload()
 
 		if (!m_bEnemy)
 		{
-			SetObjectActive(m_ReloadUI, false);
-			m_PlayerScript->SetReloading(false);
-			m_PlayerScript->SetReloadingEnd(true);
+			//SetObjectActive(m_ReloadUI, false);
 
 			// 상태
+			m_PlayerScript->StateMachine()->SetCanExit(true);
 			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 		}
 

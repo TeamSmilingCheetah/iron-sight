@@ -749,10 +749,9 @@ void InventoryController::PlayerInteractWeapon()
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
 			// 장전중이라면 취소시킨다.
-			if (m_PlayerScript->IsPlayerReloading() && m_CurSlotIdx != i)
+			if (m_PlayerScript->GetCurStateName() == L"Player_Reload" && m_CurSlotIdx != i)
 			{
-				m_PlayerScript->SetReloading(false);
-				m_PlayerScript->SetReloadingEnd(true);
+				m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 			}
 
 			if (!m_CamScript->GetFlag(TPS))
@@ -795,10 +794,9 @@ void InventoryController::PlayerInteractWeapon()
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));
 
 		// 장전중이라면 취소시킨다.
-		if (m_PlayerScript->IsPlayerReloading())
+		if (m_PlayerScript->GetCurStateName() == L"Player_Reload")
 		{
-			m_PlayerScript->SetReloading(false);
-			m_PlayerScript->SetReloadingEnd(true);
+			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 		}
 
 		m_CurWeapon = nullptr;

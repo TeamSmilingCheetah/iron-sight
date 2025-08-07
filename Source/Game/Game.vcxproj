@@ -152,10 +152,7 @@
     <ClInclude Include="Gameplay\scripts.h" />
     <ClInclude Include="Gameplay\states.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Heal.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_Bandage.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Dead.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_EnergyDrink.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_FirstAidKit.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_High.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_Low.h" />
@@ -163,8 +160,6 @@
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Reload.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Idle.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Jump.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_MedKit.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_PainKiller.h" />
     <ClInclude Include="Gameplay\State\Public\PlayerState.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\UI\Public\KillinfoUIScript.h" />
@@ -200,10 +195,7 @@
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Heal.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Dead.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_EnergyDrink.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_FirstAidKit.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_High.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_Low.cpp" />
@@ -211,8 +203,6 @@
     <ClCompile Include="Gameplay\State\Private\Player_Gun_Reload.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Idle.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Jump.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_MedKit.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_PainKiller.cpp" />
     <ClCompile Include="Gameplay\State\Private\PlayerState.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp" />

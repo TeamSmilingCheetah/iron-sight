@@ -17,6 +17,7 @@
 #include "Engine/Runtime/Public/State/CState.h"
 
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
@@ -42,9 +43,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_bLean(false)
 	, m_MouseSensitivity(0.1f)
 	, m_bShoot(false)
-	, m_bCanThrow(false)
 	, m_bThrowBoom(false)
-	, m_bReloading(false)
 	, m_bHitSoundPlayed(false)
 	, m_bFirstFootStep(true)
 	, m_CollObject(nullptr)
@@ -70,7 +69,6 @@ PlayerCharacter::PlayerCharacter()
 	, m_HPUI(nullptr)
 	, m_ItemUseUI(nullptr)
 	, m_bMouseActive(false)
-	, m_bReloadingEnd(true)
 	, m_ReloadUI(nullptr)
 	, m_CameraEffect(nullptr)
 {
@@ -110,11 +108,18 @@ void PlayerCharacter::Begin()
 
 	// Script
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
+
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::INVENTORYSCRIPT));
+
+	CGameObject* InteractionHandlerObj = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Interaction Handler");
+	m_InteractionScript = static_cast<InteractionHandler*>(GetScriptWithType(InteractionHandlerObj, SCRIPT_TYPE::INTERACTION_HANDLER));
+
 	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
 	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
+
 	CGameObject* CameraPost = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"CameraPost");
 	m_CameraEffect = static_cast<CameraEffect*>(GetScriptWithType(CameraPost, SCRIPT_TYPE::CAMERAEFFECT));
+
 
 	// 마우스 끄기
 	CKeyMgr::GetInst()->SetCursorVisible(false);
@@ -134,11 +139,9 @@ void PlayerCharacter::Tick()
 	// 항상 작동하는 로직
 	// =================
 
-	//TEST(Ssio)
-	//StateMachine()->SetChange(L"Player_Idle");
 
 	// 이동 로직
-	PlayerMove();
+	//PlayerMove();
 
 	// UI 관리
 	PlayerControlUI();
@@ -415,22 +418,6 @@ void PlayerCharacter::PlayerControlWeapon()
 
 	if (!bSearch && !m_InventoryOpened)
 	{
-		// 장전 상태가 아니라면 UI초기화
-		if (!m_bReloading)
-		{
-			SetObjectActive(m_ReloadUI, false);
-		}
-		else
-		{
-			if (KEY_TAP(KEY::F))
-			{
-				WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
-				pGunScript->SetCurKey(KEY::F);
-				pGunScript->SetCurKeyState(KEY_STATE::TAP);
-				m_bReloading = false;
-			}
-		}
-
 		int curSlot = m_InventoryScript->GetCurSlotIdx();
 
 
@@ -466,21 +453,21 @@ void PlayerCharacter::PlayerControlWeapon()
 				m_bShoot = false;
 			}
 
-			// 투척무기
-			if (m_bCanThrow)
-			{
-				if (m_InventoryScript->GetCurWeapon() != nullptr)
-				{
-					// 인벤토리에서 투척무기 하나 제거
-					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+			// 투척무기 -> State
+			//if (m_bCanThrow)
+			//{
+			//	if (m_InventoryScript->GetCurWeapon() != nullptr)
+			//	{
+			//		// 인벤토리에서 투척무기 하나 제거
+			//		ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
-					// 아이템이 남지 않았다면
-					if (!m_InventoryScript->UseItem(type, 1))
-					{
-						m_bCanThrow = false;
-					}
-				}
-			}
+			//		// 아이템이 남지 않았다면
+			//		if (!m_InventoryScript->UseItem(type, 1))
+			//		{
+			//			m_bCanThrow = false;
+			//		}
+			//	}
+			//}
 		}
 
 		// ======
@@ -497,35 +484,35 @@ void PlayerCharacter::PlayerControlWeapon()
 			pWeaponController->SetCurKey(KEY::RBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
 
-			if (m_bCanThrow)
-			{
-				if (KEY_TAP(KEY::R))
-				{
-					pWeaponController->SetCurKey(KEY::R);
-					pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-				}
-			}
+			//if (m_bCanThrow)
+			//{
+			//	if (KEY_TAP(KEY::R))
+			//	{
+			//		pWeaponController->SetCurKey(KEY::R);
+			//		pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			//	}
+			//}
 		}
 		else if (KEY_RELEASED(KEY::RBTN))
 		{
 			pWeaponController->SetCurKey(KEY::RBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
 
-			// 투척무기
-			if (m_bCanThrow)
-			{
-				if (m_InventoryScript->GetCurWeapon() != nullptr)
-				{
-					// 인벤토리에서 투척무기 하나 제거
-					ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+			// 투척무기 -> state
+			//if (m_bCanThrow)
+			//{
+			//	if (m_InventoryScript->GetCurWeapon() != nullptr)
+			//	{
+			//		// 인벤토리에서 투척무기 하나 제거
+			//		ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
 
-					// 아이템이 남지 않았다면
-					if (!m_InventoryScript->UseItem(type, 1))
-					{
-						m_bCanThrow = false;
-					}
-				}
-			}
+			//		// 아이템이 남지 않았다면
+			//		if (!m_InventoryScript->UseItem(type, 1))
+			//		{
+			//			m_bCanThrow = false;
+			//		}
+			//	}
+			//}
 		}
 
 		// ===
@@ -533,8 +520,8 @@ void PlayerCharacter::PlayerControlWeapon()
 		// ===
 		if (KEY_TAP(KEY::R))
 		{
-			if ((PRIMARY_FIRST <= curSlot && curSlot <= PRIMARY_SECOND)
-				|| (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND && m_bCanThrow))
+			if ((PRIMARY_FIRST <= curSlot && curSlot <= PRIMARY_SECOND))
+				//|| (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND && m_bCanThrow))
 			{
 				pWeaponController->SetCurKey(KEY::R);
 				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
@@ -549,10 +536,8 @@ void PlayerCharacter::PlayerControlWeapon()
 			pWeaponController->SetCurKey(KEY::B);
 			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 		}
-
 	}
 }
-
 
 
 void PlayerCharacter::PlayerControlUI()
@@ -726,6 +711,11 @@ void PlayerCharacter::Heal()
 	SetObjectActive(m_ItemUseUI, false);
 }
 
+const wstring& PlayerCharacter::GetCurStateName()
+{
+	return StateMachine()->GetCurState()->GetName();
+}
+
 void PlayerCharacter::SetMouseActive(bool _b)
 {
 	m_bMouseActive = _b;
@@ -818,12 +808,6 @@ void PlayerCharacter::LoadPlayerSounds()
 	m_RunFootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
 }
 
-//void PlayerCharacter::ChangeState(const wstring& _Name)
-//{
-//	StateMachine()->ChangeState(_Name);
-//}
-
-
 void PlayerCharacter::SaveComponent(FILE* PFile)
 {
 	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
@@ -868,3 +852,56 @@ void PlayerCharacter::ProgressHealState()
 }
 
 
+void PlayerCharacter::ProgressReloadState()
+{
+	m_InteractionScript->SetInteractable(true);
+
+	// 인벤토리가 열린 상태에서는 조작 불가능
+	if (!m_InventoryOpened)
+	{
+		// F 키를 누르면 즉시 재장전을 취소한다.
+		if (KEY_TAP(KEY::F))
+		{
+			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
+			pGunScript->SetCurKey(KEY::F);
+			pGunScript->SetCurKeyState(KEY_STATE::TAP);
+			StateMachine()->SetChange(L"Player_Idle");
+		}
+	}
+}
+
+void PlayerCharacter::ProgressThrowPrepareState()
+{
+	WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
+	assert(pWeaponController != nullptr);
+
+	// Trigger 작동
+	if (KEY_TAP(KEY::R))
+	{
+		pWeaponController->SetCurKey(KEY::R);
+		pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+	}
+}
+
+void PlayerCharacter::ExitThrowPrepareState()
+{
+	if (m_InventoryScript->GetCurWeapon() != nullptr)
+	{
+		// 인벤토리에서 투척무기 하나 제거
+		ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
+		m_InventoryScript->UseItem(type, 1);
+
+		// 아이템이 남지 않았다면
+		/*if (!)
+		{
+			m_bCanThrow = false;
+		}*/
+	}
+}
+
+void PlayerCharacter::ExitReloadState()
+{
+	SetObjectActive(m_ReloadUI, false);
+	m_InteractionScript->SetInteractable(false);
+	m_bReloading = false;
+}

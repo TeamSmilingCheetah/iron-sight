@@ -106,7 +106,7 @@ void ThrowableController::Tick()
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bCanThrow = true;
-		pPlayerScript->SetThrow(true);
+		//pPlayerScript->SetThrow(true);
 		ClearKey();
 
 		// 상태
@@ -118,7 +118,7 @@ void ThrowableController::Tick()
 	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bCanThrow = true;
-		pPlayerScript->SetThrow(true);
+		//pPlayerScript->SetThrow(true);
 		ClearKey();
 
 		// 상태
@@ -307,7 +307,11 @@ void ThrowableController::Triggered()
 			ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::ITEMSCRIPT));
 			static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT))->UseItem(
 				pItem->GetItemType(), 1);
-			m_PlayerScript->SetThrow(false);
+			//m_PlayerScript->SetThrow(false);
+
+			// 현재 Throw State에서 탈출시켜줘야 함,
+			// Damge Cal에서 Player Dead State로 이동시키는 로직이 추가된다면 순서 고려해야 함
+			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 		}
 
 		DestroyObject(GetOwner());
