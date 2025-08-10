@@ -380,6 +380,9 @@
     <HLSL Include="Shader\decal.fx">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </HLSL>
+    <HLSL Include="Shader\camera_postprocess.fx">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </HLSL>
     <HLSL Include="Shader\heightmap.fx">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </HLSL>
