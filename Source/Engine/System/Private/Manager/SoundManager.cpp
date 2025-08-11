@@ -5,16 +5,7 @@
 
 FSoundManager::FSoundManager() = default;
 
-FSoundManager::~FSoundManager()
-{
-	if (GlobalLowPassDSP)
-	{
-		GlobalLowPassDSP->release();
-		GlobalLowPassDSP = nullptr;
-	}
-
-	DELETE(FMODSystem);
-}
+FSoundManager::~FSoundManager() = default;
 
 void FSoundManager::Init()
 {
@@ -37,6 +28,25 @@ void FSoundManager::Init()
 	GlobalLowPassDSP->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, 22050.0f);
 }
 
+void FSoundManager::Shutdown()
+{
+	Sound3Ds.clear();
+
+	if (GlobalLowPassDSP)
+	{
+		GlobalLowPassDSP->release();
+		GlobalLowPassDSP = nullptr;
+	}
+
+	if (FMODSystem)
+	{
+		{
+			FMODSystem->release();
+			FMODSystem = nullptr;
+		}
+	}
+}
+
 /*
  * sound : 재생할 사운드, pos : 재생될 위치, minDist : 최소 거리,
  * maxDist : 최대 거리, _iRoopCount : 0 (무한반복),
@@ -53,8 +63,8 @@ int FSoundManager::Play3DSound(Ptr<CSound> InSound, const Vec3& InPosition, floa
 	// 입력된 inputSoundID가 유효하면 해당 ID의 사운드가 이미 재생 중인지 확인
 	if (InInputSoundID != -1)
 	{
-		map<int, Sound3DIdx>::iterator soundit = m_Sound3Ds.find(InInputSoundID);
-		if (soundit != m_Sound3Ds.end() && nullptr != soundit->second.Channel)
+		map<int, Sound3DIdx>::iterator soundit = Sound3Ds.find(InInputSoundID);
+		if (soundit != Sound3Ds.end() && nullptr != soundit->second.Channel)
 		{
 			bool isPlaying = false;
 			soundit->second.Channel->isPlaying(&isPlaying);
@@ -68,7 +78,7 @@ int FSoundManager::Play3DSound(Ptr<CSound> InSound, const Vec3& InPosition, floa
 			{
 				// 기존 사운드 중지 후 map에 삭제(새로 id발급받아서 넘길거임)
 				soundit->second.Channel->stop();
-				m_Sound3Ds.erase(soundit);
+				Sound3Ds.erase(soundit);
 			}
 		}
 	}
@@ -123,7 +133,7 @@ int FSoundManager::Play3DSound(Ptr<CSound> InSound, const Vec3& InPosition, floa
 	source.ChannelIdx = channelIdx;
 
 	int soundID = Next3DSoundID++;
-	m_Sound3Ds[soundID] = source;
+	Sound3Ds[soundID] = source;
 
 	return soundID;
 }
@@ -145,8 +155,8 @@ void FSoundManager::UpdateListener(const Vec3& position, const Vec3& forward, co
 
 void FSoundManager::Update3DSoundPosition(int soundID, const Vec3& newPosition)
 {
-	map<int, Sound3DIdx>::iterator iter = m_Sound3Ds.find(soundID);
-	if (iter == m_Sound3Ds.end() || nullptr == iter->second.Channel)
+	map<int, Sound3DIdx>::iterator iter = Sound3Ds.find(soundID);
+	if (iter == Sound3Ds.end() || nullptr == iter->second.Channel)
 	{
 		return;
 	}
@@ -161,25 +171,25 @@ void FSoundManager::Update3DSoundPosition(int soundID, const Vec3& newPosition)
 
 void FSoundManager::Stop3DSound(int soundID)
 {
-	map<int, Sound3DIdx>::iterator it = m_Sound3Ds.find(soundID);
-	if (it == m_Sound3Ds.end() || nullptr == it->second.Channel)
+	map<int, Sound3DIdx>::iterator it = Sound3Ds.find(soundID);
+	if (it == Sound3Ds.end() || nullptr == it->second.Channel)
 	{
 		return;
 	}
 
 	it->second.Channel->stop();
-	m_Sound3Ds.erase(it);
+	Sound3Ds.erase(it);
 }
 
 void FSoundManager::StopAll3DSounds()
 {
-	for (auto& pair : m_Sound3Ds) {
+	for (auto& pair : Sound3Ds) {
 		if (nullptr != pair.second.Channel)
 		{
 			pair.second.Channel->stop();
 		}
 	}
-	m_Sound3Ds.clear();
+	Sound3Ds.clear();
 }
 
 void FSoundManager::ApplyMuffle(float _fCutoff, float _fDuration)
@@ -203,8 +213,8 @@ void FSoundManager::ApplyMuffle(float _fCutoff, float _fDuration)
 void FSoundManager::Tick()
 {
 	// 이미 재생이 끝난 3D 사운드 채널 제거
-	map<int, Sound3DIdx>::iterator it = m_Sound3Ds.begin();
-	while (it != m_Sound3Ds.end())
+	map<int, Sound3DIdx>::iterator it = Sound3Ds.begin();
+	while (it != Sound3Ds.end())
 	{
 		bool isPlaying = false;
 		//해당 채널이 비어있는게 아니라면 플레이중인지 확인
@@ -216,7 +226,7 @@ void FSoundManager::Tick()
 		// 플레이중이 아니면 제거
 		if (!isPlaying)
 		{
-			it = m_Sound3Ds.erase(it);
+			it = Sound3Ds.erase(it);
 		}
 		else
 		{

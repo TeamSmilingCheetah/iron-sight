@@ -23,11 +23,12 @@ private:
 	float StartCutoff; // 효과 시작 시 컷오프
 	float TargetCutoff; // 회복 완료 시 컷오프
 
-	map<int, Sound3DIdx> m_Sound3Ds; // ID로 3D 사운드 소스 관리
+	map<int, Sound3DIdx> Sound3Ds; // ID로 3D 사운드 소스 관리
 	int Next3DSoundID;
 
 public:
 	void Init();
+	void Shutdown();
 	void Tick();
 
 	void PlayGameBGM(int InRoop, float InVolume, bool InOverlap = true);

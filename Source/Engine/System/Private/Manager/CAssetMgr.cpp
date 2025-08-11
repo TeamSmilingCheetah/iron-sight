@@ -11,6 +11,18 @@ CAssetMgr::~CAssetMgr()
 {
 }
 
+void CAssetMgr::Shutdown()
+{
+    // 모든 에셋 컨테이너를 비워 참조를 해제하여 각 에셋의 소멸자가 호출되도록 한다.
+    for (auto& assetBucket : m_mapAsset)
+    {
+        assetBucket.clear();
+    }
+
+    // 변경 플래그 초기화
+    m_bAssetChanged = false;
+}
+
 Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
                                        DXGI_FORMAT _PixelFormat, UINT _BindFlag, D3D11_USAGE _Usage)
 {
