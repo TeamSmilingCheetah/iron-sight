@@ -9,6 +9,7 @@
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"
 
 #include "Engine/System/Public/Manager/CStateMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -272,6 +273,10 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Common::AddComponentToObject<FBoxCollider>(Player);
 	Collider::SetColliderProperties(Player, {800.f, 910.f, 800.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
+
+	// TODO(KHJ): Facade 코드로 교체할 것
+	Common::AddComponentToObject<FSphereCollider>(Player);
+	Player->SphereCollider()->SetIndependent(600.f);
 
 	// Player Head Collider
 	auto HeaderCollider = Common::CreateNewObject();

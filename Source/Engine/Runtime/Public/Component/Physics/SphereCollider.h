@@ -4,15 +4,21 @@
 /**
  * @brief 구체 형태의 충돌체 컴포넌트
  *
- * @param Radius Collider의 반지름
+ * @param Offset 충돌체의 Local 중심점
+ * @param Scale 충돌체의 Local 반지름
+ * @param WorldOffset 충돌체의 World 중심점
+ * @param WorldScale 충돌체의 World 반지름
+ * @param bHasIndependentScale 부모 오브젝트와 독립적인 사이즈인지 여부
  */
 class FSphereCollider :
 	public IColliderBase
 {
 private:
 	Vec3 Offset;
+	Vec3 WorldOffset;
 	float Scale;
-	Matrix WorldMatrix;
+	float WorldScale;
+	bool bHasIndependentScale;
 
 public:
 	void Init() override;
@@ -25,6 +31,14 @@ public:
 
 	// Getter & Setter
 	[[nodiscard]] EColliderType GetColliderType() const override { return EColliderType::SphereCollider; }
+
+	void SetIndependent() { bHasIndependentScale = true; }
+
+	void SetIndependent(float InScale)
+	{
+		bHasIndependentScale = true;
+		Scale = InScale;
+	}
 
 	// Special Member Function
 	FSphereCollider();
