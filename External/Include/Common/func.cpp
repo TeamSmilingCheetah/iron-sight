@@ -426,8 +426,8 @@ CScript* GetScriptWithType(CGameObject* _Object, SCRIPT_TYPE _Type)
 Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
 {
 	Vec3 vTargetPos = _TargetObj->Transform()->GetRelativePos();
-	Vec3 vTargetCollOffset = _TargetObj->Collider3D()->GetOffset();
-	Vec3 vTargetCollScale = _TargetObj->Collider3D()->GetScale();
+	Vec3 vTargetCollOffset = _TargetObj->BoxCollider()->GetOffset();
+	Vec3 vTargetCollScale = _TargetObj->BoxCollider()->GetScale();
 
 	Vec3 vSubPos = _SubObj->Transform()->GetRelativePos();
 

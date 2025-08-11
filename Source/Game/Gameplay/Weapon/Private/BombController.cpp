@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
@@ -51,7 +51,7 @@ void BombController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOt
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = reinterpret_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = reinterpret_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		if (OtherCollider->IsTrigger())

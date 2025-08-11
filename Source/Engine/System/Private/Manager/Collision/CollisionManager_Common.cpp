@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 
 constexpr UINT Indices[36] = {
 	0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6,
@@ -92,7 +92,7 @@ void FCollisionManager::ClearContainersForNextFrame()
 /**
  * @brief Collider3D 정보를 Buffer에 추가하는 함수
  */
-FMeshBatchData FCollisionManager::GetOrAddBatchData(const FCollider3D* InCollider)
+FMeshBatchData FCollisionManager::GetOrAddBatchData(const FBoxCollider* InCollider)
 {
 	// 중복 생성 방지
 	const void* ColliderKey = InCollider;

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
@@ -12,8 +12,8 @@ constexpr static Vec3 CubeArr[8] = {
 	Vec3(0.5f, -0.5f, -0.5f), Vec3(-0.5f, -0.5f, -0.5f)
 };
 
-FCollider3D::FCollider3D()
-	: IColliderBase(COMPONENT_TYPE::COLLIDER3D)
+FBoxCollider::FBoxCollider()
+	: IColliderBase(COMPONENT_TYPE::BOX_COLLIDER)
 	  , Offset(Vec3(0.f))
 	  , Scale(Vec3(0.f))
 	  , RotY(0)
@@ -22,9 +22,9 @@ FCollider3D::FCollider3D()
 {
 }
 
-FCollider3D::~FCollider3D() = default;
+FBoxCollider::~FBoxCollider() = default;
 
-FCollider3D::FCollider3D(const FCollider3D& POrigin)
+FBoxCollider::FBoxCollider(const FBoxCollider& POrigin)
 	: IColliderBase(POrigin)
 	  , Offset(POrigin.Offset)
 	  , Scale(POrigin.Scale)
@@ -34,7 +34,7 @@ FCollider3D::FCollider3D(const FCollider3D& POrigin)
 {
 }
 
-void FCollider3D::FinalTick()
+void FBoxCollider::FinalTick()
 {
 	if (IsDeactive())
 	{
@@ -96,7 +96,7 @@ void FCollider3D::FinalTick()
 	}
 }
 
-void FCollider3D::SetTrigger(bool InTriggerStatus)
+void FBoxCollider::SetTrigger(bool InTriggerStatus)
 {
 	if (InTriggerStatus)
 	{
@@ -108,7 +108,7 @@ void FCollider3D::SetTrigger(bool InTriggerStatus)
 	}
 }
 
-void FCollider3D::SetIndependentRot(bool InIsIndependentRotation)
+void FBoxCollider::SetIndependentRot(bool InIsIndependentRotation)
 {
 	if (InIsIndependentRotation)
 	{
@@ -120,7 +120,7 @@ void FCollider3D::SetIndependentRot(bool InIsIndependentRotation)
 	}
 }
 
-void FCollider3D::SaveComponent(FILE* PFile)
+void FBoxCollider::SaveComponent(FILE* PFile)
 {
 	(void)fwrite(&Offset, sizeof(Vec3), 1, PFile);
 	(void)fwrite(&Scale, sizeof(Vec3), 1, PFile);
@@ -134,7 +134,7 @@ void FCollider3D::SaveComponent(FILE* PFile)
 	(void)fwrite(&IsStaticCollider, sizeof(bool), 1, PFile);
 }
 
-void FCollider3D::LoadComponent(FILE* PFile)
+void FBoxCollider::LoadComponent(FILE* PFile)
 {
 	(void)fread(&Offset, sizeof(Vec3), 1, PFile);
 	(void)fread(&Scale, sizeof(Vec3), 1, PFile);
@@ -162,7 +162,7 @@ void FCollider3D::LoadComponent(FILE* PFile)
  *
  * @return { AABB Min, AABB Max }
  */
-const AABB FCollider3D::GetAABB() const
+const AABB FBoxCollider::GetAABB() const
 {
 	Matrix WorldMatrix = GetColliderWorldMat();
 	Vec3 Vtxs[8];

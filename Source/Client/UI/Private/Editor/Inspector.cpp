@@ -93,7 +93,7 @@ void Inspector::Render_Update()
 				case COMPONENT_TYPE::COLLIDER2D:
 					ComponentName = "Collider2D";
 					break;
-				case COMPONENT_TYPE::COLLIDER3D:
+				case COMPONENT_TYPE::BOX_COLLIDER:
 					ComponentName = "Collider3D";
 					break;
 				case COMPONENT_TYPE::COLLIDERRAY:
@@ -262,8 +262,8 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::PARTICLE_SYSTEM:
 		m_TargetObject->AddComponent(new CParticleSystem);
 		break;
-	case COMPONENT_TYPE::COLLIDER3D:
-		m_TargetObject->AddComponent(new FCollider3D);
+	case COMPONENT_TYPE::BOX_COLLIDER:
+		m_TargetObject->AddComponent(new FBoxCollider);
 		break;
 	case COMPONENT_TYPE::COLLIDERRAY:
 		m_TargetObject->AddComponent(new FColliderRay);
@@ -371,9 +371,9 @@ void Inspector::CreateComponentUI()
 		AddChildUI(new Collider2DUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER2D)]->SetChildSize(ImVec2(0.f, 120.f));
 
-	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER3D)] = static_cast<ComponentUI*>(
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::BOX_COLLIDER)] = static_cast<ComponentUI*>(
 		AddChildUI(new Collider3DUI));
-	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER3D)]->SetChildSize(ImVec2(0.f, 150.f));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::BOX_COLLIDER)]->SetChildSize(ImVec2(0.f, 150.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDERRAY)] = static_cast<ComponentUI*>(
 		AddChildUI(new ColliderRayUI));

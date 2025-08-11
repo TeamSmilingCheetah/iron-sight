@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CSoundMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -151,7 +151,7 @@ void ThrowableController::Tick()
 				GetOwner()->Transform()->SetRelativePos(vSpanwPos);
 
 				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
-				GetOwner()->Collider3D()->SetTrigger(false);
+				GetOwner()->BoxCollider()->SetTrigger(false);
 
 				// 상태
 				m_PlayerScript->StateMachine()->SetChange(L"Player_Grenade_Throw_High");
@@ -189,7 +189,7 @@ void ThrowableController::Tick()
 				GetOwner()->Transform()->SetRelativePos(vSpanwPos);
 
 				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
-				GetOwner()->Collider3D()->SetTrigger(false);
+				GetOwner()->BoxCollider()->SetTrigger(false);
 
 				// 상태
 				m_PlayerScript->StateMachine()->SetChange(L"Player_Grenade_Throw_Low");
@@ -400,7 +400,7 @@ void ThrowableController::BeginOverlap(IColliderBase* InCollider, IColliderBase*
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
+		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
 
 		if (Collider->IsTrigger())
 		{

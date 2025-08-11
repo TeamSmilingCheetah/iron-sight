@@ -77,6 +77,9 @@ using namespace Microsoft::WRL;
 // SimpleMath
 #include "SimpleMath.h"
 
+// Magic Enum
+#include <magic_enum/magic_enum_all.hpp>
+
 // FBX Loader
 #include <FBXLoader/fbxsdk.h>
 

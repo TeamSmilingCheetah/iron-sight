@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -949,7 +949,7 @@ void CameraController::BeginOverlap(IColliderBase* InCollider, IColliderBase* In
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		if (OtherObject->GetName() == L"DeathBox")
@@ -957,7 +957,7 @@ void CameraController::BeginOverlap(IColliderBase* InCollider, IColliderBase* In
 			m_ObstacleResetTime = 0.f;
 			m_CameraFlag |= OBSTACLE_DETECT;
 			m_ObstaclePos = OtherObject->Transform()->GetRelativePos();
-			m_ObstacleScale = OtherObject->Collider3D()->GetScale();
+			m_ObstacleScale = OtherObject->BoxCollider()->GetScale();
 
 			m_ObstacleAdjustPos = m_ObstaclePos;
 			m_ObstacleAdjustPos.y = m_PlayerPos.y;
@@ -988,7 +988,7 @@ void CameraController::Overlap(IColliderBase* InCollider, IColliderBase* InOther
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		if (OtherObject->GetName() == L"DeathBox")
@@ -1023,7 +1023,7 @@ void CameraController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOt
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		if (OtherObject->GetName() == L"DeathBox")

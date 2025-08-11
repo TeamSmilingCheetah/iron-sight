@@ -7,6 +7,7 @@ enum class EColliderType : UINT8
 	Collider2D,
 	Collider3D,
 	MeshCollider,
+	SphereCollider,
 	ColliderRay,
 
 	END = 0xFF,

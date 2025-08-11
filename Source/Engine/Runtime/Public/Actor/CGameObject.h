@@ -162,7 +162,7 @@ public:
 	CMeshRender* MeshRender() const { return reinterpret_cast<CMeshRender*>(GetComponent(COMPONENT_TYPE::MESHRENDER)); }
 	CCamera* Camera() const { return reinterpret_cast<CCamera*>(GetComponent(COMPONENT_TYPE::CAMERA)); }
 	FCollider2D* Collider2D() const { return reinterpret_cast<FCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
-	FCollider3D* Collider3D() const { return reinterpret_cast<FCollider3D*>(GetComponent(COMPONENT_TYPE::COLLIDER3D)); }
+	FBoxCollider* BoxCollider() const { return reinterpret_cast<FBoxCollider*>(GetComponent(COMPONENT_TYPE::BOX_COLLIDER)); }
 	FColliderRay* ColliderRay() const{ return reinterpret_cast<FColliderRay*>(GetComponent(COMPONENT_TYPE::COLLIDERRAY)); }
 	CFlipbookPlayer* FlipbookPlayer() const { return reinterpret_cast<CFlipbookPlayer*>(GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)); }
 	CTileMap* TileMap() const { return reinterpret_cast<CTileMap*>(GetComponent(COMPONENT_TYPE::TILEMAP)); }
@@ -175,6 +175,7 @@ public:
 	CUI* UI() const { return reinterpret_cast<CUI*>(GetComponent(COMPONENT_TYPE::UI)); }
 	CUIRender* UIRender() const { return reinterpret_cast<CUIRender*>(GetComponent(COMPONENT_TYPE::UIRENDER)); }
 	FMeshCollider* MeshCollider() const { return reinterpret_cast<FMeshCollider*>(GetComponent(COMPONENT_TYPE::MESH_COLLIDER)); }
+	FSphereCollider* SphereCollider() const { return reinterpret_cast<FSphereCollider*>(GetComponent(COMPONENT_TYPE::SPHERE_COLLIDER)); }
 	CStateMachine* StateMachine() const { return reinterpret_cast<CStateMachine*>(GetComponent(COMPONENT_TYPE::STATEMACINE)); }
 	CAnimator3D* Animator3D() const;
 

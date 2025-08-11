@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
@@ -150,8 +150,8 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
 
 	FMeshCollider* LeftMesh = static_cast<FMeshCollider*>(InLeftCollider);
 	FMeshCollider* RightMesh = static_cast<FMeshCollider*>(InRightCollider);
-	FCollider3D* Left3D = static_cast<FCollider3D*>(InLeftCollider);
-	FCollider3D* Right3D = static_cast<FCollider3D*>(InRightCollider);
+	FBoxCollider* Left3D = static_cast<FBoxCollider*>(InLeftCollider);
+	FBoxCollider* Right3D = static_cast<FBoxCollider*>(InRightCollider);
 
 	FMeshBatchData LeftData, RightData;
 
@@ -206,8 +206,8 @@ void FCollisionManager::CheckCollisionInCPU(IColliderBase* InLeftCollider, IColl
 
 	FCollider2D* Left2D = static_cast<FCollider2D*>(InLeftCollider);
 	FCollider2D* Right2D = static_cast<FCollider2D*>(InRightCollider);
-	FCollider3D* Left3D = static_cast<FCollider3D*>(InLeftCollider);
-	FCollider3D* Right3D = static_cast<FCollider3D*>(InRightCollider);
+	FBoxCollider* Left3D = static_cast<FBoxCollider*>(InLeftCollider);
+	FBoxCollider* Right3D = static_cast<FBoxCollider*>(InRightCollider);
 
 	// 2D 충돌체 검사
 	if (IsLeft2D && IsRight2D && IsCollision(Left2D, Right2D))
@@ -262,7 +262,7 @@ bool FCollisionManager::IsCollision(const FCollider2D* InLeftCollider, const FCo
 	return true;
 }
 
-bool FCollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider)
+bool FCollisionManager::IsCollision(const FBoxCollider* InLeftCollider, const FBoxCollider* InRightCollider)
 {
 	constexpr float EPSILON = 0.0001f;
 	static Vec3 arrCube[8] = {

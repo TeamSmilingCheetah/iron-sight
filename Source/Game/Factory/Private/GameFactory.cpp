@@ -7,7 +7,7 @@
 // TODO(KHJ): 해당 헤더들과의 결합성 배제할 방법 찾기
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 
 #include "Engine/System/Public/Manager/CStateMgr.h"
@@ -267,7 +267,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_toss_grenade_test.anim"));
 	// TEST(Ssio): prone_toss_grenade 뒷부분 자름
 
-	Common::AddComponentToObject<FCollider3D>(Player);
+	Common::AddComponentToObject<FBoxCollider>(Player);
 	Collider::SetColliderProperties(Player, {800.f, 910.f, 800.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
 
@@ -280,7 +280,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	// Object Setting
 	Common::SetObjectName(RawHeaderCollider, L"Player Head");
-	Common::AddComponentToObject<FCollider3D>(RawHeaderCollider);
+	Common::AddComponentToObject<FBoxCollider>(RawHeaderCollider);
 
 	Transform::SetPosition(RawHeaderCollider, {0.f, 170.f, 0.f});
 	Collider::SetColliderProperties(RawHeaderCollider, {150.f, 150.f, 150.f}, {0, -27.f, 0}, true, false);

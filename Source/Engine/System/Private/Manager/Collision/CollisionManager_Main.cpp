@@ -2,7 +2,7 @@
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Runtime/Public/Component/Physics/Collider3D.h"
+#include "Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Runtime/Public/Component/Physics/ColliderBase.h"
 #include "Runtime/Public/Component/Physics/MeshCollider.h"
 

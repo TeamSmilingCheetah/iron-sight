@@ -7,12 +7,12 @@ struct FCollisionID;
 
 using ColliderPairVariant = variant<
 	pair<FMeshCollider*, FMeshCollider*>,
-	pair<FMeshCollider*, FCollider3D*>,
-	pair<FCollider3D*, FMeshCollider*>
+	pair<FMeshCollider*, FBoxCollider*>,
+	pair<FBoxCollider*, FMeshCollider*>
 >;
 
 class FCollider2D;
-class FCollider3D;
+class FBoxCollider;
 class FColliderRay;
 
 /**
@@ -99,7 +99,7 @@ private:
 	void AddShaderTask(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 	void CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
-	static bool IsCollision(const FCollider3D* InLeftCollider, const FCollider3D* InRightCollider);
+	static bool IsCollision(const FBoxCollider* InLeftCollider, const FBoxCollider* InRightCollider);
 	void ExecuteAndProcessCS();
 
 	// PostProcess Functions
@@ -113,7 +113,7 @@ private:
 	void ClearBVHs();
 	void ClearContainersForNextFrame();
 
-	FMeshBatchData GetOrAddBatchData(const FCollider3D* InCollider);
+	FMeshBatchData GetOrAddBatchData(const FBoxCollider* InCollider);
 	FMeshBatchData GetOrAddBatchData(const FMeshCollider* InCollider);
 
 	bool IsInCondition(unordered_set<FCollisionID>& InCandidateCheckSet,
