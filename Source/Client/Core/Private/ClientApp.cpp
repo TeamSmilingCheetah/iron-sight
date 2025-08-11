@@ -6,7 +6,7 @@
 #include "Client/Build/Resource.h"
 #include "Client/System/Public/CImGuiMgr.h"
 
-#include "Engine/Core/Public/CEngine.h"
+#include "Engine/Core/Public/Engine.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
 #include "Game/Level/Public/TestLevel.h"
@@ -64,7 +64,7 @@ int FClientApp::Run(HINSTANCE InInstanceHandle, int InCmdShow)
 
 	// Termination Process
 	SetCurrentDirectory(CPathMgr::GetInst()->GetBinPath().c_str());
-	CEngine::GetInst()->Shutdown();
+	FEngine::GetInst()->Shutdown();
 	delete Window;
 
 	return static_cast<int>(MainMessage.wParam);
@@ -77,7 +77,7 @@ int FClientApp::InitializeSystem() const
 {
 	// Initialize Engine
 	if (FAILED(
-		CEngine::GetInst()->Init(Window->GetWindowHandle(), 1280, 768,
+		FEngine::GetInst()->Init(Window->GetWindowHandle(), 1280, 768,
 			&CLevelMgr::SaveGameObject, &CLevelMgr::LoadGameObject)))
 	{
 		assert(!"Engine Initialize Failed");
@@ -126,7 +126,7 @@ int FClientApp::InitializeSystem() const
 void FClientApp::UpdateSystem()
 {
 	// System Progress
-	CEngine::GetInst()->Progress();
+	FEngine::GetInst()->Progress();
 
 #ifdef _DEBUG
 	// Editor & Imgui On Debug Mode

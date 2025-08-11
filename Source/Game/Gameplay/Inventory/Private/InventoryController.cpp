@@ -8,7 +8,7 @@
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -227,7 +227,7 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 
 	// Inventory에 추가 (count)
 	m_arrInventory[type] += pItem->GetCount();
-	m_AcquireSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AcquireSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+	m_AcquireSoundIdx = FSoundManager::GetInst()->Play3DSound(m_AcquireSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 	m_InventoryChanged = true;
 }
 
@@ -577,7 +577,7 @@ void InventoryController::ChangeCurTemp(int _SlotIdx)
 
 
 	// 무기바꾸는 사운드
-	m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+	m_EquipSoundIdx = FSoundManager::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 
 	// 현재 슬롯으로 변경
 	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
@@ -598,7 +598,7 @@ void InventoryController::ActivateSlot(int _SlotIdx)
 
 
 	// 무기바꾸는 사운드
-	m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+	m_EquipSoundIdx = FSoundManager::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 
 
 	m_CurWeapon = m_vecWeaponSlot[_SlotIdx].Object;
@@ -788,7 +788,7 @@ void InventoryController::PlayerInteractWeapon()
 		if (m_CurSlotIdx != NONE_WEAPON)
 		{
 			// 무기바꾸는 사운드
-			m_EquipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+			m_EquipSoundIdx = FSoundManager::GetInst()->Play3DSound(m_EquipSound, m_Player->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 		}
 
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));

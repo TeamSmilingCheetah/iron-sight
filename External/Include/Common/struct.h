@@ -2,8 +2,12 @@
 
 #include <thread>
 
+#include "Ptr.h"
+
+class CSound;
 class IColliderBase;
 class FColliderRay;
+
 using std::thread;
 
 struct Vtx
@@ -705,4 +709,14 @@ struct FMeshBatchData
 	UINT VertexOffset;
 	UINT IndexOffset;
 	UINT TriangleCount;
+};
+
+struct Sound3DIdx
+{
+	Ptr<CSound> Sound;
+	FMOD::Channel* Channel;
+	Vec3 Position;
+	int ChannelIdx;
+	float MinDist;
+	float MaxDist;
 };
