@@ -5,7 +5,7 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/EnemyController.h"
@@ -96,10 +96,10 @@ void BombController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOt
 			PlayerScript->DamageCalcul(m_WeaponOwner, GetOwner(), finalDMG);
 
 			// 플레이어의 소리를 먹먹하게 한다
-			CSoundMgr::GetInst()->ApplyMuffle(200.f, 10.f);
+			FSoundManager::GetInst()->ApplyMuffle(200.f, 10.f);
 
 			// 이명소리 출력
-			m_TinnitusSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_TinnitusSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_TinnitusSoundIdx);
+			m_TinnitusSoundIdx = FSoundManager::GetInst()->Play3DSound(m_TinnitusSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_TinnitusSoundIdx);
 
 			// 강제 종료
 			return;

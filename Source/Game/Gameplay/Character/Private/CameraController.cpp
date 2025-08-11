@@ -10,7 +10,7 @@
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/GamePlay/Inventory/Public/InventoryController.h"
@@ -116,7 +116,7 @@ void CameraController::Tick()
 	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vforward = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	Vec3 vUp = Transform()->GetWorldDir(DIR_TYPE::UP);
-	CSoundMgr::GetInst()->UpdateListener(vPos, vforward, vUp);
+	FSoundManager::GetInst()->UpdateListener(vPos, vforward, vUp);
 }
 
 void CameraController::CameraOrthgraphicMove()

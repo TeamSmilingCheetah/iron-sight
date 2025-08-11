@@ -6,7 +6,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
@@ -165,7 +165,7 @@ void ThrowableController::Tick()
 				m_bThrow = true;
 
 				// 던지는 사운드 재생 (중복 x)
-				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound,
+				m_ThrowSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ThrowSound,
 				                                                    m_Player->Transform()->GetRelativePos(), 1.f,
 				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
@@ -203,7 +203,7 @@ void ThrowableController::Tick()
 				m_bThrow = true;
 
 				// 던지는 사운드 재생 (중복 x)
-				m_ThrowSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ThrowSound,
+				m_ThrowSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ThrowSound,
 				                                                    m_Player->Transform()->GetRelativePos(), 1.f,
 				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
@@ -216,7 +216,7 @@ void ThrowableController::Tick()
 	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
 	{
 		// 핀소리
-		m_PinSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
+		m_PinSoundIdx = FSoundManager::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
 		                                                  10000.f, 1, 1.f, true, true, -1);
 
 		m_bTrigger = true;
@@ -265,7 +265,7 @@ void ThrowableController::Triggered()
 			if (!GetOwner()->IsDead())
 			{
 				// 연막 소리
-				m_SmokeSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_SmokeSound, Transform()->GetRelativePos(), 1.f,
+				m_SmokeSoundIdx = FSoundManager::GetInst()->Play3DSound(m_SmokeSound, Transform()->GetRelativePos(), 1.f,
 				                                                    10000.f, 1, 1.f, true, true, -1);
 
 				Ptr<CPrefab> SmokeParticelPrefab = CAssetMgr::GetInst()->Load<CPrefab>(
@@ -281,7 +281,7 @@ void ThrowableController::Triggered()
 			if (!GetOwner()->IsDead())
 			{
 				// 폭발 소리
-				m_BombSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_BombSound, Transform()->GetRelativePos(), 1.f,
+				m_BombSoundIdx = FSoundManager::GetInst()->Play3DSound(m_BombSound, Transform()->GetRelativePos(), 1.f,
 				                                                   10000.f, 1, 1.f, true, true, -1);
 
 				Ptr<CPrefab> GrenadeBombPrefab = CAssetMgr::GetInst()->Load<CPrefab>(
@@ -301,7 +301,7 @@ void ThrowableController::Triggered()
 		if (m_Player && m_EquippedOwner && !GetOwner()->IsDead())
 		{
 			// 폭발 소리
-			m_BombSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_BombSound, m_Player->Transform()->GetRelativePos(),
+			m_BombSoundIdx = FSoundManager::GetInst()->Play3DSound(m_BombSound, m_Player->Transform()->GetRelativePos(),
 			                                                   1.f, 10000.f, 1, 1.f, true, true, -1);
 
 			ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::ITEMSCRIPT));

@@ -14,26 +14,14 @@
 #include "Engine/System/Public/Manager/CTaskMgr.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 #include "Engine/System/Public/Manager/LogManager.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
-CEngine::CEngine()
-	: m_hMainWnd(nullptr)
-	  , m_FMODSystem(nullptr)
-{
-}
+CEngine::CEngine() = default;
 
-CEngine::~CEngine()
-{
-	if (nullptr != m_FMODSystem)
-	{
-		m_FMODSystem->release();
-
-		m_FMODSystem = nullptr;
-	}
-}
+CEngine::~CEngine() = default;
 
 int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
                   , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc)
@@ -56,22 +44,13 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 		return E_FAIL;
 	}
 
-	// FMOD 초기화
-	System_Create(&m_FMODSystem);
-	assert(m_FMODSystem);
-
-	// 32개 채널 생성
-	m_FMODSystem->init(32, FMOD_INIT_NORMAL, nullptr);
-
-	// 3D 환경 설정(도플러 효과, 거리 단위, 롤오프 스케일)
-	m_FMODSystem->set3DSettings(1.0f, 1.0f, 1.0f);
-
 	// Manager 초기화
 	CPathMgr::GetInst()->Init();
 	LogManager::GetInst()->Init();
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
 	CAssetMgr::GetInst()->Init();
+	FSoundManager::GetInst()->Init();
 	CRenderMgr::GetInst()->Init();
 	CLevelMgr::GetInst()->Init();
 	CFontMgr::GetInst()->Init();
@@ -83,7 +62,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 void CEngine::Progress()
 {
 	// FMOD Tick
-	CSoundMgr::GetInst()->Tick();
+	FSoundManager::GetInst()->Tick();
 
 	// Engine Tick
 	CKeyMgr::GetInst()->Tick();

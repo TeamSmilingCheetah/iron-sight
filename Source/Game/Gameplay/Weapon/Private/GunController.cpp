@@ -9,7 +9,7 @@
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 #include "Engine/System/Public/Manager/CObjectPoolMgr.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
@@ -91,8 +91,8 @@ void GunController::Tick()
 		m_bFire = false;
 		m_bReload = false;
 		m_AccTime_Reload = 0.f;
-		CSoundMgr::GetInst()->Stop3DSound(m_ReloadSoundIdx);
-		CSoundMgr::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
+		FSoundManager::GetInst()->Stop3DSound(m_ReloadSoundIdx);
+		FSoundManager::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
 		return;
 	}
 
@@ -122,7 +122,7 @@ void GunController::Tick()
 			else if (m_CurRounds == 0 && !m_bReload)
 			{
 				// 빈 탄창 발사 사운드
-				m_AkdrySoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkdrySound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+				m_AkdrySoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkdrySound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 				ClearKey();
 			}
 		}
@@ -164,7 +164,7 @@ void GunController::Tick()
 				m_bFire = false;
 				m_bAuto = !m_bAuto;
 				// 조정간 조정 사운드
-				m_ClipSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ClipSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+				m_ClipSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ClipSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
 				ClearKey();
 			}
 		}
@@ -181,8 +181,8 @@ void GunController::Tick()
 			m_bReload = false;
 			m_AccTime_Reload = 0.f;
 			// 재장전 사운드를 멈춰준다.
-			CSoundMgr::GetInst()->Stop3DSound(m_ReloadSoundIdx);
-			CSoundMgr::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
+			FSoundManager::GetInst()->Stop3DSound(m_ReloadSoundIdx);
+			FSoundManager::GetInst()->Stop3DSound(m_EmptyReloadSoundIdx);
 			ClearKey();
 		}
 		AdjustFPSPos();
@@ -271,7 +271,7 @@ void GunController::Firing()
 			m_bFire = false;
 
 			// 빈 탄창 발사 사운드
-			m_AkdrySoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkdrySound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+			m_AkdrySoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkdrySound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 			return;
 		}
 
@@ -325,7 +325,7 @@ void GunController::Firing()
 
 		// 사운드 재생
 		// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
-		m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+		m_AkSoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 
 		// 단발이라면 한발을 소모하고 사격을 비활성화 한다.
 		m_CamScript->ApplyRecoil();
@@ -353,7 +353,7 @@ void GunController::Firing()
 
 			// 사운드 재생
 			// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
-			m_AkSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+			m_AkSoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 		}
 	}
 
@@ -410,11 +410,11 @@ void GunController::Reload()
 		// 재장전 사운드 재생
 		if (bEmptyReload)
 		{
-			m_EmptyReloadSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_EmptyReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_EmptyReloadSoundIdx);
+			m_EmptyReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_EmptyReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_EmptyReloadSoundIdx);
 		}
 		else
 		{
-			m_ReloadSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_ReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
+			m_ReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
 		}
 
 

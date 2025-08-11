@@ -8,7 +8,7 @@
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
-#include "Engine/System/Public/Manager/CSoundMgr.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
@@ -657,7 +657,7 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 	// Hit Sound 출력
 	if(!m_bHitSoundPlayed)
 	{
-		m_HitSoundIdx = CSoundMgr::GetInst()->Play3DSound(m_HitSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_HitSoundIdx);
+		m_HitSoundIdx = FSoundManager::GetInst()->Play3DSound(m_HitSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_HitSoundIdx);
 		m_bHitSoundPlayed = true;
 	}
 
