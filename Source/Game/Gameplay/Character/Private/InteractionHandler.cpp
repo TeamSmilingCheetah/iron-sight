@@ -5,7 +5,7 @@
 #include "Game/Gameplay/Interaction/Public/InteractableScript.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderBase.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
@@ -93,7 +93,7 @@ void InteractionHandler::BeginOverlap(IColliderBase* InCollider, IColliderBase* 
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// Interactable Script
@@ -112,7 +112,7 @@ void InteractionHandler::Overlap(IColliderBase* InCollider, IColliderBase* InOth
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 플레이어가 바라보고 있는 오브젝트
@@ -163,7 +163,7 @@ void InteractionHandler::EndOverlap(IColliderBase* InCollider, IColliderBase* In
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// Interactable Script

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
@@ -498,9 +498,13 @@ vector<ColliderVariant> CGameObject::GetColliders() const
 	{
 		ColliderVector.push_back(Collider2D());
 	}
-	if (Collider3D())
+	if (BoxCollider())
 	{
-		ColliderVector.push_back(Collider3D());
+		ColliderVector.push_back(BoxCollider());
+	}
+	if (SphereCollider())
+	{
+		ColliderVector.push_back(SphereCollider());
 	}
 	if (MeshCollider())
 	{

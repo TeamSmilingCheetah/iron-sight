@@ -201,7 +201,7 @@
     <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h" />
     <ClInclude Include="Runtime\Public\Component\Light\CLight3D.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\Collider2D.h" />
-    <ClInclude Include="Runtime\Public\Component\Physics\Collider3D.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\BoxCollider.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\ColliderRay.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
@@ -282,7 +282,7 @@
     <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp" />
     <ClCompile Include="Runtime\Private\Component\Light\CLight3D.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\Collider2D.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Physics\Collider3D.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\BoxCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\PhysicsHelper.cpp" />

@@ -29,7 +29,7 @@ void EnemyVisionScript::Tick()
 {
 	// Collider가 존재해야한다(없으면 종료)
 	FColliderRay* pRay = GetOwner()->ColliderRay();
-	FCollider3D* p3DCol = GetOwner()->Collider3D();
+	FBoxCollider* p3DCol = GetOwner()->BoxCollider();
 	if (pRay == nullptr || p3DCol == nullptr)
 	{
 		return;
@@ -86,7 +86,7 @@ void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* I
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 타겟으로 지정된 스크립트가 들어있나 확인
@@ -104,7 +104,7 @@ void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* I
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 	InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 타겟으로 지정된 스크립트가 들어있나 확인
@@ -135,7 +135,7 @@ void EnemyVisionScript::EndOverlap(IColliderBase* InCollider, IColliderBase* InO
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 타겟으로 지정된 스크립트가 들어있나 확인
@@ -153,7 +153,7 @@ void EnemyVisionScript::EndOverlap(IColliderBase* InCollider, IColliderBase* InO
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 	InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 타겟으로 지정된 스크립트가 들어있나 확인

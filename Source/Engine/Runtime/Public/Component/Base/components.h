@@ -1,9 +1,11 @@
 #pragma once
 
-
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"
 #include "Engine/Runtime/Public/Component/Light/CLight2D.h"
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 #include "Engine/Runtime/Public/Component/Animation/CFlipBookPlayer.h"
@@ -14,10 +16,9 @@
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"

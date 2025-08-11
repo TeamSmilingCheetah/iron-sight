@@ -2,7 +2,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -559,8 +559,8 @@ void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InO
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 트리거용 충돌체면 해당 코드 사용 x
@@ -598,7 +598,7 @@ void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InO
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		m_CollObject = OtherCollider->GetOwner();
 	}
 
@@ -639,8 +639,8 @@ void PlayerCharacter::Overlap(IColliderBase* InCollider, IColliderBase* InOtherC
 	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* Collider = static_cast<FCollider3D*>(InCollider);
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
 
 		// 트리거용 충돌체면 해당 코드 사용 x
@@ -717,7 +717,7 @@ void PlayerCharacter::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
 		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
 	{
-		FCollider3D* OtherCollider = static_cast<FCollider3D*>(InOtherCollider);
+		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		if (m_CollObject == OtherCollider->GetOwner())
 		{
 			m_CollObject = nullptr;

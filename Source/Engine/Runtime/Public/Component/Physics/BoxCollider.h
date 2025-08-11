@@ -15,7 +15,7 @@
  * @param Status 충돌체의 상태 플래그 (트리거, 독립 회전 등)
  * @param IndependentScale 오브젝트의 스케일과 독립적으로 동작하는지 여부
  */
-class FCollider3D :
+class FBoxCollider :
 	public IColliderBase
 {
 private:
@@ -63,8 +63,8 @@ public:
 	void SetIndependentRot(bool InIsIndependentRotation);
 
 	// Special Member Function
-	CLONE(FCollider3D);
-	FCollider3D();
-	FCollider3D(const FCollider3D& POrigin);
-	~FCollider3D() override;
+	CLONE(FBoxCollider);
+	FBoxCollider();
+	FBoxCollider(const FBoxCollider& POrigin);
+	~FBoxCollider() override;
 };

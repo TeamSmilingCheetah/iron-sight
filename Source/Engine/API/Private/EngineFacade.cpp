@@ -74,10 +74,10 @@ void Engine::Camera::SetCameraOptions(CGameObject* PCameraObject, PROJ_TYPE PPro
 void Engine::Collider::SetColliderProperties(CGameObject* PObject, Vec3 PScale, Vec3 POffset,
                                           bool PIsIndependentScale, bool PIsTrigger)
 {
-	PObject->Collider3D()->SetScale(PScale);
-	PObject->Collider3D()->SetOffset(POffset);
-	PObject->Collider3D()->SetIndependentScale(PIsIndependentScale);
-	PObject->Collider3D()->SetTrigger(PIsTrigger);
+	PObject->BoxCollider()->SetScale(PScale);
+	PObject->BoxCollider()->SetOffset(POffset);
+	PObject->BoxCollider()->SetIndependentScale(PIsIndependentScale);
+	PObject->BoxCollider()->SetTrigger(PIsTrigger);
 }
 
 void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,

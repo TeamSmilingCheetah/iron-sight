@@ -2,7 +2,7 @@
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -40,7 +40,7 @@ void FCollisionManager::RaycastNarrow()
 			// AABB가 충돌 기준이므로 바로 Process
 			if (Collider->GetColliderType() == EColliderType::Collider3D)
 			{
-				AddFrameCollision(Info.RayObject, static_cast<FCollider3D*>(Collider));
+				AddFrameCollision(Info.RayObject, static_cast<FBoxCollider*>(Collider));
 				continue;
 			}
 

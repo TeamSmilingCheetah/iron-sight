@@ -3,14 +3,16 @@
 
 FSphereCollider::FSphereCollider()
 	: IColliderBase(COMPONENT_TYPE::SPHERE_COLLIDER)
-	  , Scale(0.f)
+	  , Offset(Vec3(0, 0, 0))
+	  , Scale(1.f)
 {
 }
 
 FSphereCollider::~FSphereCollider() = default;
 
 FSphereCollider::FSphereCollider(const FSphereCollider& InOrigin)
-	: IColliderBase(COMPONENT_TYPE::SPHERE_COLLIDER)
+	: IColliderBase(InOrigin)
+	  , Offset(InOrigin.Offset)
 	  , Scale(InOrigin.Scale)
 {
 }
@@ -45,7 +47,7 @@ void FSphereCollider::LoadComponent(FILE* InFile)
 {
 	bool IsStaticCollider;
 
-	(void)fwrite(&Offset, sizeof(Vec3), 1, InFile);
+	(void)fread(&Offset, sizeof(Vec3), 1, InFile);
 	(void)fread(&Scale, sizeof(float), 1, InFile);
 	(void)fread(&IsStaticCollider, sizeof(bool), 1, InFile);
 

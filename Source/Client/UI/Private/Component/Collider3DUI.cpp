@@ -2,10 +2,10 @@
 #include "Client/UI/Public/Component/Collider3DUI.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider3D.h"
+#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 
 Collider3DUI::Collider3DUI()
-	: ComponentUI("Collider3DUI", COMPONENT_TYPE::COLLIDER3D)
+	: ComponentUI("Collider3DUI", COMPONENT_TYPE::BOX_COLLIDER)
 {
 }
 
@@ -15,7 +15,7 @@ void Collider3DUI::Render_Update()
 {
 	ComponentTitle("Collider3D");
 
-	FCollider3D* pCollider3D = GetTargetObject()->Collider3D();
+	FBoxCollider* pCollider3D = GetTargetObject()->BoxCollider();
 
 	Vec3 vOffset = pCollider3D->GetOffset();
 	Vec3 vScale = pCollider3D->GetScale();
@@ -77,6 +77,6 @@ void Collider3DUI::Render_Update()
 
 	if (ImGui::Button("DELETE##Collider3D"))
 	{
-		DeleteComponent(COMPONENT_TYPE::COLLIDER3D);
+		DeleteComponent(COMPONENT_TYPE::BOX_COLLIDER);
 	}
 }
