@@ -9,10 +9,11 @@ class IColliderBase;
 class FCollider2D;
 class FCollider3D;
 class FMeshCollider;
+class FSphereCollider;
 
 enum class SCRIPT_TYPE : UINT8;
 
-using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, FColliderRay*>;
+using ColliderVariant = variant<FCollider2D*, FCollider3D*, FMeshCollider*, FSphereCollider*, FColliderRay*>;
 
 void ExcutePreload();
 

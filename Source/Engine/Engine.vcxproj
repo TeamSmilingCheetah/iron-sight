@@ -206,6 +206,7 @@
     <ClInclude Include="Runtime\Public\Component\Physics\MeshCollider.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\ColliderBase.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\PhysicsHelper.h" />
+    <ClInclude Include="Runtime\Public\Component\Physics\SphereCollider.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h" />
@@ -285,6 +286,7 @@
     <ClCompile Include="Runtime\Private\Component\Physics\ColliderRay.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\MeshCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\PhysicsHelper.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Physics\SphereCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp" />

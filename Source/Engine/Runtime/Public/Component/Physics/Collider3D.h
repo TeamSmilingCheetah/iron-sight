@@ -29,7 +29,8 @@ private:
 	int Status;
 	bool bIndependentScale;
 
-	// TODO(KHJ): 안 쓰는 변수 제거
+	// TODO(KHJ): 안 쓰는 변수 제거, 현재는 파일 저장되는 변수라 제거 보류
+	// [[deprecated]]
 	Vec3 FinalPos;
 
 public:
