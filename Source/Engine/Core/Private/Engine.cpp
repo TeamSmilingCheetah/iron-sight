@@ -1,45 +1,40 @@
 #include "pch.h"
-#include "Core/Public/CEngine.h"
+#include "Core/Public/Engine.h"
 
 #include <psapi.h>
 
-#include "Engine/System/Public/Asset/Prefab/CPrefab.h"
-#include "Engine/System/Public/Manager/CPathMgr.h"
-#include "Engine/System/Public/Manager/CTimeMgr.h"
-#include "Engine/System/Public/Manager/CKeyMgr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
-#include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/System/Public/Manager/CRenderMgr.h"
-#include "Engine/System/Public/Manager/CollisionManager.h"
-#include "Engine/System/Public/Manager/CTaskMgr.h"
 #include "Engine/System/Public/Manager/CFontMgr.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/System/Public/Manager/CollisionManager.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/System/Public/Manager/CTaskMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/CUIMgr.h"
 #include "Engine/System/Public/Manager/SoundManager.h"
-#include "Engine/System/Public/Manager/LogManager.h"
-#include "Engine/System/Public/Rendering/Device/CDevice.h"
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
-CEngine::CEngine() = default;
+FEngine::FEngine() = default;
 
-CEngine::~CEngine() = default;
+FEngine::~FEngine() = default;
 
-int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
-                  , GAMEOBJECT_SAVE _SaveFunc, GAMEOBJECT_LOAD _LoadFunc)
+int FEngine::Init(HWND InWindowHandle, UINT InWidth, UINT InHeight
+                  , GAMEOBJECT_SAVE InSaveFunction, GAMEOBJECT_LOAD InLoadFunction)
 {
-	m_hMainWnd = _hWnd;
+	MainWindowHandle = InWindowHandle;
 
-	m_Resolution.x = static_cast<float>(_Width);
-	m_Resolution.y = static_cast<float>(_Height);
+	Resolution.x = static_cast<float>(InWidth);
+	Resolution.y = static_cast<float>(InHeight);
 
 	// GameObject Save Load 함수 포인터
-	CPrefab::g_ObjectSave = _SaveFunc;
-	CPrefab::g_ObjectLoad = _LoadFunc;
+	CPrefab::g_ObjectSave = InSaveFunction;
+	CPrefab::g_ObjectLoad = InLoadFunction;
 
-	RECT rt = {0, 0, static_cast<int>(m_Resolution.x), static_cast<int>(m_Resolution.y)};
-	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, !!GetMenu(m_hMainWnd));
-	SetWindowPos(m_hMainWnd, nullptr, 10, 10, rt.right - rt.left, rt.bottom - rt.top, 0);
+	RECT rt = {0, 0, static_cast<int>(Resolution.x), static_cast<int>(Resolution.y)};
+	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, !!GetMenu(MainWindowHandle));
+	SetWindowPos(MainWindowHandle, nullptr, 10, 10, rt.right - rt.left, rt.bottom - rt.top, 0);
 
-	if (FAILED(CDevice::GetInst()->Init(m_hMainWnd, m_Resolution)))
+	if (FAILED(CDevice::GetInst()->Init(MainWindowHandle, Resolution)))
 	{
 		return E_FAIL;
 	}
@@ -59,7 +54,7 @@ int CEngine::Init(HWND _hWnd, UINT _Width, UINT _Height
 	return S_OK;
 }
 
-void CEngine::Progress()
+void FEngine::Progress()
 {
 	// FMOD Tick
 	FSoundManager::GetInst()->Tick();
@@ -79,18 +74,18 @@ void CEngine::Progress()
 	CTaskMgr::GetInst()->Tick();
 }
 
-void CEngine::Shutdown()
+void FEngine::Shutdown()
 {
 	LOG_INFO("Engine Shutdown Process");
 	LogManager::GetInst()->Shutdown();
 }
 
-void CEngine::PrintMemoryUsage(const string& PText)
+void FEngine::PrintMemoryUsage(const string& InText)
 {
 	PROCESS_MEMORY_COUNTERS_EX pmc;
 	if (GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
 	{
-		LOG_INFO(PText);
+		LOG_INFO(InText);
 		LOG_INFO_F("WorkingSet: {:.2f}MB", pmc.WorkingSetSize / (1024.0 * 1024.0));
 		LOG_INFO_F("PrivateUsage: {:.2f}MB", pmc.PrivateUsage / (1024.0 * 1024.0));
 	}

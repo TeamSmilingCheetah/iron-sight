@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "System/Public/Manager/CKeyMgr.h"
-#include "Core/Public/CEngine.h"
+#include "Core/Public/Engine.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 
 int g_arrKeyValue[static_cast<int>(KEY::END)] =
@@ -109,7 +109,7 @@ void CKeyMgr::Init()
 void CKeyMgr::Tick()
 {
 	// 포커싱중인 윈도우가 있는 경우에만
-	if (GetFocus() == CEngine::GetInst()->GetMainWnd())
+	if (GetFocus() == FEngine::GetInst()->GetMainWindowHandle())
 	{
 		for (size_t i = 0; i < m_vecKey.size(); ++i)
 		{
@@ -152,7 +152,7 @@ void CKeyMgr::Tick()
 
 		POINT Pos;
 		GetCursorPos(&Pos);
-		ScreenToClient(CEngine::GetInst()->GetMainWnd(), &Pos);
+		ScreenToClient(FEngine::GetInst()->GetMainWindowHandle(), &Pos);
 		m_MousePos = Vec2(static_cast<float>(Pos.x), static_cast<float>(Pos.y));
 		m_MouseDir = m_MousePos - m_MousePrevPos;
 
@@ -196,14 +196,14 @@ void CKeyMgr::SetMousePosAsCenter()
 {
 	RECT clientRect;
 	
-	GetClientRect(CEngine::GetInst()->GetMainWnd(), &clientRect);
+	GetClientRect(FEngine::GetInst()->GetMainWindowHandle(), &clientRect);
 	Vec2 ClientRect = CDevice::GetInst()->GetRenderResolution();
 
 	int centerX = (clientRect.right - clientRect.left) / 2;
 	int centerY = (clientRect.bottom - clientRect.top) / 2;
 
 	POINT centerPt = { centerX, centerY };
-	ClientToScreen(CEngine::GetInst()->GetMainWnd(), &centerPt);
+	ClientToScreen(FEngine::GetInst()->GetMainWindowHandle(), &centerPt);
 
 	SetCursorPos(static_cast<int>(centerPt.x), static_cast<int>(centerPt.y));
 

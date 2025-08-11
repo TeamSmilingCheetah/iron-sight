@@ -17,7 +17,7 @@
 #include "Client/imgui/imgui_impl_dx11.h"
 #include "Client/imgui/imgui_impl_win32.h"
 
-#include "Engine/Core/Public/CEngine.h"
+#include "Engine/Core/Public/Engine.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 
@@ -69,7 +69,7 @@ int CImGuiMgr::Init()
 	}
 
 	// Setup Platform/Renderer backends
-	ImGui_ImplWin32_Init(CEngine::GetInst()->GetMainWnd());
+	ImGui_ImplWin32_Init(FEngine::GetInst()->GetMainWindowHandle());
 	ImGui_ImplDX11_Init(DEVICE, CONTEXT);
 
 	// Load Fonts
@@ -198,14 +198,14 @@ void CImGuiMgr::CreateEditorUI()
 	pUI->SetActive(true);
 	m_mapUI.insert(make_pair(pUI->GetID(), pUI));
 
-	CEngine::GetInst()->PrintMemoryUsage("Before Content Loaded");
+	FEngine::GetInst()->PrintMemoryUsage("Before Content Loaded");
 
 	// ContentUI
 	pUI = new ContentUI;
 	pUI->SetActive(true);
 	m_mapUI.insert(make_pair(pUI->GetID(), pUI));
 
-	CEngine::GetInst()->PrintMemoryUsage("After Content Loaded");
+	FEngine::GetInst()->PrintMemoryUsage("After Content Loaded");
 
 	// SE_AtlasView
 	auto pSE_AtlasView = new SE_AtlasView;

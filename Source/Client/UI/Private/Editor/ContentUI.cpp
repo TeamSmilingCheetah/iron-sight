@@ -6,7 +6,7 @@
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 
-#include "Engine/Core/Public/CEngine.h"
+#include "Engine/Core/Public/Engine.h"
 
 tFSNode* ContentUI::m_rootAssetFileSystem = new tFSNode(L"Content");
 

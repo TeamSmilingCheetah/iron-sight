@@ -186,7 +186,7 @@
     <ClInclude Include="$(SolutionDir)External\Include\Common\SimpleMath.h" />
     <ClInclude Include="$(SolutionDir)External\Include\Common\singleton.h" />
     <ClInclude Include="$(SolutionDir)External\Include\Common\struct.h" />
-    <ClInclude Include="Core\Public\CEngine.h" />
+    <ClInclude Include="Core\Public\Engine.h" />
     <ClInclude Include="Core\Public\CEntity.h" />
     <ClInclude Include="Runtime\Public\Actor\CGameObject.h" />
     <ClInclude Include="Runtime\Public\Actor\CLayer.h" />
@@ -268,7 +268,7 @@
   <ItemGroup>
     <ClCompile Include="$(SolutionDir)External\Include\Common\func.cpp" />
     <ClCompile Include="$(SolutionDir)External\Include\Common\extern.cpp" />
-    <ClCompile Include="Core\Private\CEngine.cpp" />
+    <ClCompile Include="Core\Private\Engine.cpp" />
     <ClCompile Include="Core\Private\CEntity.cpp" />
     <ClCompile Include="Runtime\Private\Actor\CGameObject.cpp" />
     <ClCompile Include="Runtime\Private\Actor\CLayer.cpp" />
