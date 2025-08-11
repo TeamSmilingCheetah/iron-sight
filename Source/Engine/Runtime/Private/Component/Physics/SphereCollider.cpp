@@ -9,7 +9,7 @@ FSphereCollider::FSphereCollider()
 	  , Offset(Vec3(0, 0, 0))
 	  , WorldOffset(Vec3(0, 0, 0))
 	  , Scale(1.f)
-	  , WorldScale(0)
+	  , WorldScale(1.f)
 	  , bHasIndependentScale(false)
 {
 }
@@ -63,7 +63,16 @@ void FSphereCollider::FinalTick()
 
 const AABB FSphereCollider::GetAABB() const
 {
-	return AABB();
+    if (WorldScale <= 0.f)
+    {
+        return AABB();
+    }
+
+    const Vec3 Radius(WorldScale);
+    const Vec3 MinBound = WorldOffset - Radius;
+    const Vec3 MaxBound = WorldOffset + Radius;
+
+    return AABB(MinBound, MaxBound);
 }
 
 /*****************/
