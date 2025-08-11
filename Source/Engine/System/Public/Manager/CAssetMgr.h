@@ -14,6 +14,7 @@ private:
 
 public:
 	void Init();
+	void Shutdown();
 
 	bool IsAssetChanged()
 	{

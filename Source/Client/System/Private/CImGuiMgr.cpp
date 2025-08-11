@@ -129,9 +129,6 @@ void CImGuiMgr::Render()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	// Demo
-	ImGui::ShowDemoWindow();
-
 	for (const auto& pair : m_mapUI)
 	{
 		pair.second->Render();

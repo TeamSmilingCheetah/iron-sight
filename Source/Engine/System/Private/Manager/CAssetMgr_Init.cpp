@@ -283,8 +283,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// CameraPostProcess
 	// ===========
 	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"CameraPostProcess_vs.cso", L"CameraPostProcess.fx", L"VS_CameraPostProcess");
-	pShader->CreatePixelShader(L"CameraPostProcess_ps.cso", L"CameraPostProcess.fx", L"PS_CameraPostProcess");
+	pShader->CreateVertexShader(L"camera_postprocess_vs.cso", L"camera_postprocess.fx", L"VS_CameraPostProcess");
+	pShader->CreatePixelShader(L"camera_postprocess_ps.cso", L"camera_postprocess.fx", L"PS_CameraPostProcess");
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
