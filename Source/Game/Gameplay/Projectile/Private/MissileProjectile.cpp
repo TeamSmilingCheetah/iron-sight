@@ -5,7 +5,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/System/Public/Manager/CObjectPoolMgr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 
@@ -155,7 +155,7 @@ void MissileProjectile::BeginOverlap(IColliderBase* InCollider, IColliderBase* I
 
 		// 그 외의 경우 타겟위치에 데칼을 설정한다.
 		// Decal Prefab을 불러온다.
-		Ptr<CPrefab> DecalPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\asd.pref", L"Prefab\\asd.pref");
+		Ptr<CPrefab> DecalPrefab = FAssetManager::GetInst()->Load<CPrefab>(L"Prefab\\asd.pref", L"Prefab\\asd.pref");
 
 
 		Vec3 vPos = OtherObject->Transform()->GetRelativePos();

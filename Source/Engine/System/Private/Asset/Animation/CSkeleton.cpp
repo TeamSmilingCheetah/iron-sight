@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Engine/System/Public/Asset/Animation/CSkeleton.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
@@ -36,7 +36,7 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 	// 이미 (루트 본 이름으로) 등록된 skeleton이라면 로드하지 않음
 	wstring fileName = L"Skeleton\\" + vecBones[0]->strBoneName + L".bone";
 
-	pSkeleton = CAssetMgr::GetInst()->Load<CSkeleton>(fileName);
+	pSkeleton = FAssetManager::GetInst()->Load<CSkeleton>(fileName);
 	if (pSkeleton != nullptr)
 		return pSkeleton;
 
@@ -92,7 +92,7 @@ Ptr<CSkeleton> CSkeleton::LoadFromFBX(CFBXLoader& _loader)
 		false, pSkeleton->m_vecParent.data());
 
 	// AssetMgr 등록 (key 값 설정)
-	CAssetMgr::GetInst()->AddAsset<CSkeleton>(pSkeleton->GetName(), pSkeleton);
+	FAssetManager::GetInst()->AddAsset<CSkeleton>(pSkeleton->GetName(), pSkeleton);
 
 	// Save (relative path 설정)
 	pSkeleton->Save(fileName);

@@ -68,11 +68,11 @@ void GunController::Begin()
 	WeaponController::Begin();
 
 	// Sound
-	m_AkSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\akm_reverb.mp3");
-	m_AkdrySound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_dry_reverb.mp3");
-	m_ReloadSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_reload.mp3");
-	m_EmptyReloadSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_empty_reload.mp3");
-	m_ClipSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_clip.mp3");
+	m_AkSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\akm_reverb.mp3");
+	m_AkdrySound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\gun_dry_reverb.mp3");
+	m_ReloadSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\gun_reload.mp3");
+	m_EmptyReloadSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\gun_empty_reload.mp3");
+	m_ClipSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\gun_clip.mp3");
 
 
 	// Script

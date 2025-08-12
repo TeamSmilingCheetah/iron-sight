@@ -4,7 +4,7 @@
 #include "Client/Core/Public/CEditorMgr.h"
 #include "Client/Script/Public/CEditorSpaceCamScript.h"
 
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
@@ -23,7 +23,7 @@ void AnimationUI::Render_Update()
 
 	if (!m_SkinnedModel)
 	{
-		m_SkinnedModel = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\James.fbx")->Instantiate();
+		m_SkinnedModel = FAssetManager::GetInst()->LoadFBX(L"FBX\\Character\\James.fbx")->Instantiate();
 		CEditorMgr::GetInst()->SetEditorSpaceRender(true);
 		CEditorMgr::GetInst()->CreateEditorSpaceObj((CGameObjectEx*)m_SkinnedModel);
 
@@ -43,7 +43,7 @@ void AnimationUI::Render_Update()
 		m_FrameRange[1] = m_SkinnedModel->Animator3D()->GetCurClip()->GetFrameLength() - 1;
 	}
 
-	Ptr<CTexture> pAnimRT = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
+	Ptr<CTexture> pAnimRT = FAssetManager::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
 
 	float windowWidth = ImGui::GetContentRegionAvail().x;
 

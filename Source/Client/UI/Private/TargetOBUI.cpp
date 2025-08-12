@@ -27,17 +27,17 @@ TargetOBUI::~TargetOBUI()
 void TargetOBUI::Init()
 {
 	// 오브젝트 ID가 담긴 텍스쳐 가져오기(Data에 담음)
-	m_IDTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DataTargetTex");
+	m_IDTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"DataTargetTex");
 	// 위치 텍스쳐
-	m_PositionTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex");
+	m_PositionTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex");
 
 	m_PostObject = new CGameObjectEx;
 	m_PostObject->SetName(L"TargetPost");
 	m_PostObject->AddComponent(new CMeshRender);
 
 	// 전용 재질 사용(ID값이랑 텍스쳐를 넣어서 PostProcess로 랜더링하며 검사함)
-	m_PostObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	m_PostObject->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"TargetPostProcessMtrl"), 0);
+	m_PostObject->MeshRender()->SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	m_PostObject->MeshRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"TargetPostProcessMtrl"), 0);
 
 	m_PostObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_0, m_IDTex);
 	m_PostObject->GetRenderComponent()->GetMaterial(0)->SetTexParam(TEX_1, m_PositionTex);

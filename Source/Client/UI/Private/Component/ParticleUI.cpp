@@ -3,7 +3,7 @@
 
 #include "Engine/System/Public/Asset/Mesh/CMesh.h"
 #include "Engine/System/Public/Rendering/Material/CMaterial.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
@@ -79,7 +79,7 @@ void ParticleUI::Render_Update()
 		pListUI->AddItem("None");
 
 		vector<wstring> vecAssetNames;
-		CAssetMgr::GetInst()->GetAssetNames(ASSET_TYPE::MESH, vecAssetNames);
+		FAssetManager::GetInst()->GetAssetNames(ASSET_TYPE::MESH, vecAssetNames);
 		pListUI->AddItem(vecAssetNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
@@ -134,7 +134,7 @@ void ParticleUI::Render_Update()
 		pListUI->AddItem("None");
 
 		vector<wstring> vecAssetNames;
-		CAssetMgr::GetInst()->GetAssetNames(ASSET_TYPE::MATERIAL, vecAssetNames);
+		FAssetManager::GetInst()->GetAssetNames(ASSET_TYPE::MATERIAL, vecAssetNames);
 		pListUI->AddItem(vecAssetNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
@@ -455,7 +455,7 @@ void ParticleUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CMesh> pMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(wstring(pStr->begin(), pStr->end()));
+	Ptr<CMesh> pMesh = FAssetManager::GetInst()->FindAsset<CMesh>(wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pMesh)
 		return;
 
@@ -475,7 +475,7 @@ void ParticleUI::SelectMaterial(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(wstring(pStr->begin(), pStr->end()));
+	Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pMtrl)
 		return;
 

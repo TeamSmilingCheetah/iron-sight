@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Runtime/Public/Component/Rendering/LandScape.h"
 
@@ -9,11 +9,11 @@ void FLandscape::Init()
 	CreateMaterial();
 	CreateComputeShader();
 
-	Ptr<CTexture> GlowSceneTexture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_GlowScene_2.png");
-	Ptr<CTexture> HitFlashTexture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_HitFlash_0.png");
-	Ptr<CTexture> HitFlash02Texture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_HitFlash02.png");
-	Ptr<CTexture> TwirlTexture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_Twirl02.png");
-	Ptr<CTexture> FlareTexture = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\brush\\FX_Flare.png");
+	Ptr<CTexture> GlowSceneTexture = FAssetManager::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_GlowScene_2.png");
+	Ptr<CTexture> HitFlashTexture = FAssetManager::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_HitFlash_0.png");
+	Ptr<CTexture> HitFlash02Texture = FAssetManager::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_HitFlash02.png");
+	Ptr<CTexture> TwirlTexture = FAssetManager::GetInst()->Load<CTexture>(L"Texture\\brush\\TX_Twirl02.png");
+	Ptr<CTexture> FlareTexture = FAssetManager::GetInst()->Load<CTexture>(L"Texture\\brush\\FX_Flare.png");
 
 	// BrushTexture 추가
 	AddBrushTexture(GlowSceneTexture);
@@ -86,7 +86,7 @@ void FLandscape::CreateMaterial()
 	if (GetMaterial(0).Get())
 		return;
 
-	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"LandScapeMtrl");
+	Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"LandScapeMtrl");
 	if (nullptr != pMtrl)
 	{
 		SetMaterial(pMtrl, 0);
@@ -108,12 +108,12 @@ void FLandscape::CreateMaterial()
 
 	pShader->AddScalarParam("TessLevel", INT_2);
 
-	CAssetMgr::GetInst()->AddAsset<CGraphicShader>(L"LandScapeShader", pShader);
+	FAssetManager::GetInst()->AddAsset<CGraphicShader>(L"LandScapeShader", pShader);
 
 	pMtrl = new CMaterial;
 	pMtrl->SetName(L"LandScapeMtrl");
 	pMtrl->SetShader(pShader);
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(L"LandScapeMtrl", pMtrl);
+	FAssetManager::GetInst()->AddAsset<CMaterial>(L"LandScapeMtrl", pMtrl);
 
 	// Material 세팅
 	SetMaterial(pMtrl, 0);
@@ -140,10 +140,10 @@ void FLandscape::CreateHeightMap(UINT InWidth, UINT InHeight)
 {
 	if (nullptr != m_HeightMap)
 	{
-		CAssetMgr::GetInst()->DeleteAsset(TEXTURE, L"HeightMap");
+		FAssetManager::GetInst()->DeleteAsset(TEXTURE, L"HeightMap");
 	}
 
-	m_HeightMap = CAssetMgr::GetInst()->CreateTexture(L"HeightMap"
+	m_HeightMap = FAssetManager::GetInst()->CreateTexture(L"HeightMap"
 	                                                  , InWidth, InHeight, DXGI_FORMAT_R32_FLOAT
 	                                                  , D3D11_BIND_SHADER_RESOURCE |
 	                                                  D3D11_BIND_UNORDERED_ACCESS);

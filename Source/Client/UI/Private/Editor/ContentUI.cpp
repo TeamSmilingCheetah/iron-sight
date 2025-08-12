@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Client/UI/Public/Editor/ContentUI.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CTaskMgr.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/Inspector.h"
@@ -67,7 +67,7 @@ void ContentUI::ReloadContent()
 	{
 		wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
 
-		const map<wstring, Ptr<CAsset>>& mapAsset = CAssetMgr::GetInst()->GetAssets(
+		const map<wstring, Ptr<CAsset>>& mapAsset = FAssetManager::GetInst()->GetAssets(
 			static_cast<ASSET_TYPE>(i));
 
 		for (const auto& pair : mapAsset)
@@ -204,7 +204,7 @@ void ContentUI::ChangeName_ContentUI(DWORD_PTR _TreeNode)
 			wstrName = wstring(strName.begin(), strName.end());
 
 			// AssetMgr에 등록이 되어있는지 여부를 반환받음
-			bool registered = CAssetMgr::GetInst()->ChangeAssetKey(m_TargetAsset, wstrName);
+			bool registered = FAssetManager::GetInst()->ChangeAssetKey(m_TargetAsset, wstrName);
 			assert(registered);
 
 			ImGui::CloseCurrentPopup();
@@ -223,7 +223,7 @@ void ContentUI::CopyAsset(DWORD_PTR _TreeNode)
 		tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
 
 		m_TargetAsset = pFSNode->Asset;
-		m_TargetAsset = CAssetMgr::GetInst()->CopyAsset(m_TargetAsset);
+		m_TargetAsset = FAssetManager::GetInst()->CopyAsset(m_TargetAsset);
 
 		m_TargetAsset->Save(m_TargetAsset->GetRelativePath());
 	}
@@ -280,31 +280,31 @@ Ptr<CAsset> ContentUI::LoadAsset(tFSNode* _FSNode)
 		switch (Type)
 		{
 		case MESH:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CMesh>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CMesh>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case MESH_DATA:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CMeshData>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CMeshData>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case TEXTURE:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CTexture>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CTexture>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case SOUND:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CSound>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CSound>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case PREFAB:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CPrefab>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CPrefab>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case FLIPBOOK:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CFlipbook>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CFlipbook>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case ANIMATION:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CAnimation>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CAnimation>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case SPRITE:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CSprite>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CSprite>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		case MATERIAL:
-			pAsset = static_cast<CAsset*>(CAssetMgr::GetInst()->Load<CMaterial>(RelativeFilePath, RelativeFilePath).Get());
+			pAsset = static_cast<CAsset*>(FAssetManager::GetInst()->Load<CMaterial>(RelativeFilePath, RelativeFilePath).Get());
 			break;
 		}
 

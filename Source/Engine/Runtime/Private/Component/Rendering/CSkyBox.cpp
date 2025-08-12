@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 
 CSkyBox::CSkyBox()
     : CRenderComponent(COMPONENT_TYPE::SKYBOX)
@@ -45,7 +45,7 @@ void CSkyBox::CreateMaterial()
     if (GetMaterial(0).Get())
         return;
 
-    Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl");
+    Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl");
     if (nullptr != pMtrl)
     {
         SetMaterial(pMtrl, 0);
@@ -59,12 +59,12 @@ void CSkyBox::CreateMaterial()
     pSkyBoxShader->SetDSState(DS_TYPE::LESS_EQUAL);
     pSkyBoxShader->SetBSState(BS_TYPE::DEFAULT);
     pSkyBoxShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
-    CAssetMgr::GetInst()->AddAsset<CGraphicShader>(L"SkyBoxShader", pSkyBoxShader);
+    FAssetManager::GetInst()->AddAsset<CGraphicShader>(L"SkyBoxShader", pSkyBoxShader);
 
     pMtrl = new CMaterial;
     pMtrl->SetName(L"SkyBoxMtrl");
     pMtrl->SetShader(pSkyBoxShader);
-    CAssetMgr::GetInst()->AddAsset<CMaterial>(L"SkyBoxMtrl", pMtrl);
+    FAssetManager::GetInst()->AddAsset<CMaterial>(L"SkyBoxMtrl", pMtrl);
 
     // Material 세팅
     SetMaterial(pMtrl, 0);
@@ -75,14 +75,14 @@ void CSkyBox::SetMode(SKYBOX_MODE _Mode)
     m_Mode = _Mode;
     if (CUBE == m_Mode)
     {
-        SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
+        SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
     }
     else
     {
-        SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+        SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
     }
 
-	SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl"), 0);
+	SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"SkyBoxMtrl"), 0);
 }
 
 void CSkyBox::SaveComponent(FILE* _File)

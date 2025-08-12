@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Rendering/Device/CDevice.h"
 #include "System/Public/Rendering/Shader/CParticleTickCS.h"
 
-void CAssetMgr::Init()
+void FAssetManager::Init()
 {
 	CreateEngineMesh();
 	CreateEngineTexture();
@@ -13,7 +13,7 @@ void CAssetMgr::Init()
 	CreateEngineSprite();
 }
 
-void CAssetMgr::CreateEngineTexture()
+void FAssetManager::CreateEngineTexture()
 {
 	// NoiseTexture
 	Load<CTexture>(L"NoiseTex", L"Texture//noise//noise_03.jpg");
@@ -47,7 +47,7 @@ void CAssetMgr::CreateEngineTexture()
 
 }
 
-void CAssetMgr::CreateEngineGraphicShader()
+void FAssetManager::CreateEngineGraphicShader()
 {
 	Ptr<CGraphicShader> pShader = nullptr;
 
@@ -364,12 +364,12 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"TessShader", pShader);
 }
 
-void CAssetMgr::CreateEngineComputeShader()
+void FAssetManager::CreateEngineComputeShader()
 {
 	AddAsset<CComputeShader>(L"ParticleTickCS", new CParticleTickCS);
 }
 
-void CAssetMgr::CreateEngineMaterial()
+void FAssetManager::CreateEngineMaterial()
 {
 	Ptr<CMaterial> pMtrl = nullptr;
 
@@ -506,7 +506,7 @@ void CAssetMgr::CreateEngineMaterial()
 	AddAsset(L"TessMtrl", pMtrl);
 }
 
-void CAssetMgr::CreateEngineSprite()
+void FAssetManager::CreateEngineSprite()
 {
 	//Ptr<CTexture> pLinkTex = Load<CTexture>(L"LinkAtlas", L"Texture\\link.png");
 

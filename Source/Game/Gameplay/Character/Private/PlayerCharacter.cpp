@@ -803,9 +803,9 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 
 void PlayerCharacter::LoadPlayerSounds()
 {
-	m_HitSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_hit.mp3");
-	m_FootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep.mp3");
-	m_RunFootstepSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
+	m_HitSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\player_hit.mp3");
+	m_FootstepSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\player_footstep.mp3");
+	m_RunFootstepSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\player_footstep_faster.mp3");
 }
 
 void PlayerCharacter::SaveComponent(FILE* PFile)

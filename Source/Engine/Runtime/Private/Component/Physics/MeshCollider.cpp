@@ -234,7 +234,7 @@ void FMeshCollider::LoadComponent(FILE* InFile)
 	wstring MeshKey;
 	LoadWString(MeshKey, InFile);
 
-	MeshPtr = CAssetMgr::GetInst()->Load<CMesh>(MeshKey);
+	MeshPtr = FAssetManager::GetInst()->Load<CMesh>(MeshKey);
 
 	bool IsStaticCollider;
 	(void)fread(&IsStaticCollider, sizeof(bool), 1, InFile);

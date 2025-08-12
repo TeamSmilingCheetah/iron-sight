@@ -16,7 +16,7 @@ TestSound::~TestSound()
 
 void TestSound::Begin()
 {
-	m_BulletSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
+	m_BulletSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\ak_reverb.wav", L"Sound\\ak_reverb.wav");
 
 	Vec3 pPos = Transform()->GetRelativePos();
 	m_BulletSoundIdx = FSoundManager::GetInst()->Play3DSound(m_BulletSound, pPos, 1.f, 10000.f, 1, 1.f, false, false, -1);

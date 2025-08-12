@@ -44,7 +44,7 @@ int FEngine::Init(HWND InWindowHandle, UINT InWidth, UINT InHeight
 	LogManager::GetInst()->Init();
 	CKeyMgr::GetInst()->Init();
 	CTimeMgr::GetInst()->Init();
-	CAssetMgr::GetInst()->Init();
+	FAssetManager::GetInst()->Init();
 	FSoundManager::GetInst()->Init();
 	CRenderMgr::GetInst()->Init();
 	CLevelMgr::GetInst()->Init();
@@ -76,10 +76,11 @@ void FEngine::Progress()
 
 void FEngine::Shutdown()
 {
-	CAssetMgr::GetInst()->Shutdown();
+	LOG_INFO("[Engine][Main] Engine Shutdown Start");
 	FSoundManager::GetInst()->Shutdown();
+	FAssetManager::GetInst()->Shutdown();
 
-	LOG_INFO("Engine Shutdown Process");
+	LOG_INFO("[Engine][Main] Engine Shutdown Finish");
 	LogManager::GetInst()->Shutdown();
 }
 

@@ -20,7 +20,7 @@
 class CTexture :
 	public CAsset
 {
-	friend class CAssetMgr;
+	friend class FAssetManager;
 	
 private:
 	ScratchImage m_Image; // 이미지 파일 로딩 및 저장 기능

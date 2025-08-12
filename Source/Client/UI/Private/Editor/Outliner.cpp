@@ -250,7 +250,7 @@ void Outliner::CreateObject_Outliner(Ptr<CMesh> _pMesh)
 	{
 		pObj->AddComponent(new CMeshRender);
 
-		Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
+		Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
 		pObj->MeshRender()->SetMesh(_pMesh);
 		pObj->MeshRender()->SetMaterial(pMtrl, 0);
 	}
@@ -325,7 +325,7 @@ void Outliner::MakePrefab(DWORD_PTR _TreeNode)
 
 		Ptr<CPrefab> pPrefab = new CPrefab;
 		pPrefab->SetProtoObject(m_TargetObject->Clone());
-		CAssetMgr::GetInst()->AddAsset(m_TargetObject->GetName(), pPrefab);
+		FAssetManager::GetInst()->AddAsset(m_TargetObject->GetName(), pPrefab);
 
 		// 파일생성
 		// contentUI 로드방식벼경으로 파일이 생성되어야 보임
@@ -417,7 +417,7 @@ void Outliner::CreateObject_Outliner(DWORD_PTR _Nothing)
 	// Engine Mesh 또는 Empty Object를 만듦.
 	if (ImGui::BeginMenu("Create Object"))
 	{
-		const map<wstring, Ptr<CAsset>>& m_mapMesh = CAssetMgr::GetInst()->GetAssets(ASSET_TYPE::MESH);
+		const map<wstring, Ptr<CAsset>>& m_mapMesh = FAssetManager::GetInst()->GetAssets(ASSET_TYPE::MESH);
 
 		if (ImGui::MenuItem("Empty"))
 		{

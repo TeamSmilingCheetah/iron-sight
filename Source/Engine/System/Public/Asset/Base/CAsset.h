@@ -49,6 +49,6 @@ public:
 	template <typename T>
 	friend class Ptr;
 
-	friend class CAssetMgr;
+	friend class FAssetManager;
 	friend class CFBXLoader;
 };

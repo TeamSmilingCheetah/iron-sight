@@ -3,7 +3,7 @@
 #include "Client/imgui/imgui.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
@@ -187,7 +187,7 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 			pListUI->AddItem("None");
 
 			vector<wstring> vecAssetNames;
-			CAssetMgr::GetInst()->GetAssetNames(TEXTURE, vecAssetNames);
+			FAssetManager::GetInst()->GetAssetNames(TEXTURE, vecAssetNames);
 			pListUI->AddItem(vecAssetNames);
 
 			// 더블 클릭 시 호출시킬 함수 등록
@@ -255,7 +255,7 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
 			pListUI->AddItem("None");
 
 			vector<wstring> vecAssetNames;
-			CAssetMgr::GetInst()->GetAssetNames(PREFAB, vecAssetNames);
+			FAssetManager::GetInst()->GetAssetNames(PREFAB, vecAssetNames);
 			pListUI->AddItem(vecAssetNames);
 
 			// 더블 클릭 시 호출시킬 함수 등록

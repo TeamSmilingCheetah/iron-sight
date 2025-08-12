@@ -7,7 +7,7 @@
 #include "Client/UI/Public/Editor/Inspector.h"
 
 #include "Engine/System/Public/Manager/CPathMgr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
 
@@ -65,7 +65,7 @@ void PrefabEditor::Render_Update()
 
 		wstring RelativePath = SelectedPrefabPath.substr(SelectedPrefabPath.find(L"Prefab"));
 
-		m_Prefab = CAssetMgr::GetInst()->Load<CPrefab>(RelativePath, RelativePath);
+		m_Prefab = FAssetManager::GetInst()->Load<CPrefab>(RelativePath, RelativePath);
 		m_ProtoObject = m_Prefab->GetProtoObject();
 		string ObjectName = WStringToString(m_ProtoObject->GetName());	
 
@@ -359,6 +359,6 @@ void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 void PrefabEditor::LoadFBX(wstring _Path)
 {
 	Ptr<CMeshData> pMeshData = nullptr;
-	pMeshData = CAssetMgr::GetInst()->LoadFBX(_Path);
+	pMeshData = FAssetManager::GetInst()->LoadFBX(_Path);
 	pMeshData->Instantiate(m_ProtoObject);
 }

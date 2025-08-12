@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine/System/Public/Asset/Mesh/CMeshData.h"
 
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 #include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -190,7 +190,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		strMeshKey += Container.strName;
 		strMeshKey += L".mesh";
 
-		pMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(strMeshKey);
+		pMesh = FAssetManager::GetInst()->FindAsset<CMesh>(strMeshKey);
 
 		// AssetMgr 에 메쉬 등록
 		if (nullptr == pMesh)
@@ -198,7 +198,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 			pMesh = CMesh::CreateFromContainer(loader, idx);
 
 			// 메시를 실제 파일로 저장
-			CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
+			FAssetManager::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
 
 			wstring strFilePath = L"Mesh\\" + strMeshKey;
 			pMesh->Save(strFilePath);
@@ -216,7 +216,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		for (UINT i = 0; i < Container.vecMtrl.size(); ++i)
 		{
 			// 예외처리 (material 이름이 입력 안되어있을 수도 있다.)
-			Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(Container.vecMtrl[i].strMtrlName);
+			Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(Container.vecMtrl[i].strMtrlName);
 			assert(pMtrl.Get());
 
 			vecMtrl.push_back(pMtrl);

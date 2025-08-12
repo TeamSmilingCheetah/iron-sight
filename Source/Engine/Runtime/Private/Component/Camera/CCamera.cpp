@@ -9,7 +9,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CRenderMgr.h"
@@ -476,8 +476,8 @@ void CCamera::render_transparent()
 void CCamera::render_effect()
 {
 	// 렌더타겟 변경
-	Ptr<CTexture> pEffectTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectTargetTex");
-	Ptr<CTexture> pEffectDepth = CAssetMgr::GetInst()->FindAsset<
+	Ptr<CTexture> pEffectTarget = FAssetManager::GetInst()->FindAsset<CTexture>(L"EffectTargetTex");
+	Ptr<CTexture> pEffectDepth = FAssetManager::GetInst()->FindAsset<
 		CTexture>(L"EffectDepthStencilTex");
 
 	// 클리어
@@ -501,10 +501,10 @@ void CCamera::render_effect()
 	}
 
 	// BlurTarget 으로 변경
-	Ptr<CTexture> pEffectBlurTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	Ptr<CTexture> pEffectBlurTarget = FAssetManager::GetInst()->FindAsset<CTexture>(
 		L"EffectBlurTargetTex");
-	Ptr<CMaterial> pBlurMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
-	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+	Ptr<CMaterial> pBlurMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
+	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
 
 	CONTEXT->ClearRenderTargetView(pEffectBlurTarget->GetRTV().Get(), Vec4(0.f, 0.f, 0.f, 0.f));
 
@@ -519,9 +519,9 @@ void CCamera::render_effect()
 
 
 	// 원래 렌더타겟으로 변경
-	Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
-	Ptr<CMaterial> pEffectMergeMtrl = CAssetMgr::GetInst()->FindAsset<
+	Ptr<CTexture> pRTTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
+	Ptr<CTexture> pDSTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
+	Ptr<CMaterial> pEffectMergeMtrl = FAssetManager::GetInst()->FindAsset<
 		CMaterial>(L"EffectMergeMtrl");
 
 	viewport.Width = static_cast<FLOAT>(pRTTex->GetWidth());

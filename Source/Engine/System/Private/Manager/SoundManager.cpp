@@ -5,7 +5,18 @@
 
 FSoundManager::FSoundManager() = default;
 
-FSoundManager::~FSoundManager() = default;
+FSoundManager::~FSoundManager()
+{
+	if (FMODSystem)
+	{
+		{
+			FMODSystem->release();
+			FMODSystem = nullptr;
+		}
+	}
+
+	LOG_INFO("[Engine][SoundManager] Instance Deleted");
+}
 
 void FSoundManager::Init()
 {
@@ -30,21 +41,13 @@ void FSoundManager::Init()
 
 void FSoundManager::Shutdown()
 {
-	Sound3Ds.clear();
-
 	if (GlobalLowPassDSP)
 	{
 		GlobalLowPassDSP->release();
 		GlobalLowPassDSP = nullptr;
 	}
 
-	if (FMODSystem)
-	{
-		{
-			FMODSystem->release();
-			FMODSystem = nullptr;
-		}
-	}
+	LOG_INFO("[Engine][SoundManager] Shutdown Complete");
 }
 
 /*

@@ -164,7 +164,7 @@ void Engine::Landscape::SetLandscapeProperties(CGameObject* PLandscape, Unsigned
 
 Ptr<CMeshData> Engine::IO::LoadFBX(const wstring& PRelativeFilePath)
 {
-	return CAssetMgr::GetInst()->LoadFBX(PRelativeFilePath.c_str());
+	return FAssetManager::GetInst()->LoadFBX(PRelativeFilePath.c_str());
 }
 
 void Engine::Animation::SetAnimationClips(CGameObject* PObject, Ptr<CMeshData> PAnimationSet)

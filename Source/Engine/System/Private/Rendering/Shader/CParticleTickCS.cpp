@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "System/Public/Rendering/Shader/CParticleTickCS.h"
 
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CParticleTickCS::CParticleTickCS()
 	: CComputeShader(L"particle_tick_cs.cso", L"particle_tick.fx", L"CS_ParticleTick", 1024, 1, 1)
 	  , m_ParticleBuffer(nullptr), m_SpawnCountBuffer(nullptr), m_ModuleBuffer(nullptr)
 {
-	m_NoiseTex = CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\noise\\noise_03.jpg",
+	m_NoiseTex = FAssetManager::GetInst()->Load<CTexture>(L"Texture\\noise\\noise_03.jpg",
 	                                                  L"Texture\\noise\\noise_03.jpg");
 }
 

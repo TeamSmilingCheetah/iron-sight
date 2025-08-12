@@ -4,7 +4,7 @@
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/System/Public/CImGuiMgr.h"
 
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
@@ -60,9 +60,9 @@ void AddObjectUI::Render_Update()
 		wstring RelativePath = SelectedPrefabPath.substr(SelectedPrefabPath.find(L"Prefab"));
 
 		// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-		Ptr<CPrefab> pPrefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(RelativePath);
+		Ptr<CPrefab> pPrefab = FAssetManager::GetInst()->FindAsset<CPrefab>(RelativePath);
 
-		pPrefab = CAssetMgr::GetInst()->Load<CPrefab>(RelativePath, RelativePath);
+		pPrefab = FAssetManager::GetInst()->Load<CPrefab>(RelativePath, RelativePath);
 		m_Object = pPrefab->Instantiate();
 	}
 

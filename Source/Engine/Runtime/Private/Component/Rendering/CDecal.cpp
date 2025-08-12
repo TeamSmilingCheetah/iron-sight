@@ -2,7 +2,7 @@
 #include "Runtime/Public/Component/Rendering/CDecal.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Manager/CRenderMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
 
@@ -13,7 +13,7 @@ CDecal::CDecal()
 	  , m_LifeTime(0.f)
 	  , m_CurClipAccTime(0.f)
 {
-	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
+	SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
 
 	CreateMaterial();
 }
@@ -78,7 +78,7 @@ void CDecal::CreateMaterial()
 	if (GetMaterial(0).Get())
 		return;
 
-	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DecalMtrl");
+	Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"DecalMtrl");
 	if (nullptr != pMtrl)
 	{
 		SetMaterial(pMtrl, 0);
@@ -92,14 +92,14 @@ void CDecal::CreateMaterial()
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::DECAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DECAL);
-	CAssetMgr::GetInst()->AddAsset<CGraphicShader>(L"DecalShader", pShader);
+	FAssetManager::GetInst()->AddAsset<CGraphicShader>(L"DecalShader", pShader);
 
 	pMtrl = new CMaterial;
 	pMtrl->SetName(L"DecalMtrl");
 	pMtrl->SetShader(pShader);
-	pMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
 
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(L"DecalMtrl", pMtrl);
+	FAssetManager::GetInst()->AddAsset<CMaterial>(L"DecalMtrl", pMtrl);
 
 	// Material 세팅
 	SetMaterial(pMtrl, 0);

@@ -71,8 +71,8 @@ void InventoryController::Begin()
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera"), SCRIPT_TYPE::CAMERASCRIPT));
 
 	// Sound
-	m_EquipSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\gun_equip.mp3");
-	m_AcquireSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\item_acquire.mp3");
+	m_EquipSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\gun_equip.mp3");
+	m_AcquireSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\item_acquire.mp3");
 }
 
 void InventoryController::Tick()

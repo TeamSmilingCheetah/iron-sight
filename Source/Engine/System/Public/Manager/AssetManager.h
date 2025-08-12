@@ -3,10 +3,10 @@
 #include "Engine/System/Public/Asset/Base/assets.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 
-class CAssetMgr :
-	public singleton<CAssetMgr>
+class FAssetManager :
+	public singleton<FAssetManager>
 {
-	SINGLE(CAssetMgr)
+	SINGLE(FAssetManager)
 
 private:
 	map<wstring, Ptr<CAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];
@@ -103,7 +103,7 @@ ASSET_TYPE GetAssetType()
 }
 
 template <typename T>
-int CAssetMgr::AddAsset(const wstring& _Key, Ptr<T> _Asset)
+int FAssetManager::AddAsset(const wstring& _Key, Ptr<T> _Asset)
 {
 	static_assert(std::is_base_of<CAsset, T>::value, "T must derive from CAsset");
 
@@ -118,7 +118,7 @@ int CAssetMgr::AddAsset(const wstring& _Key, Ptr<T> _Asset)
 }
 
 template <typename T>
-Ptr<T> CAssetMgr::FindAsset(const wstring& _Key)
+Ptr<T> FAssetManager::FindAsset(const wstring& _Key)
 {
 	ASSET_TYPE Type = GetAssetType<T>();
 
@@ -131,7 +131,7 @@ Ptr<T> CAssetMgr::FindAsset(const wstring& _Key)
 }
 
 template <typename T>
-Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
+Ptr<T> FAssetManager::Load(const wstring& _Key, const wstring& _RelativePath)
 {
 	Ptr<CAsset> pAsset = FindAsset<T>(_Key).Get();
 
@@ -165,7 +165,7 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
 
 // TEST: Engine Resource가 아닌 경우 key와 relative path가 동일하다고 가정
 template <typename T>
-Ptr<T> CAssetMgr::Load(const wstring& _RelativePath)
+Ptr<T> FAssetManager::Load(const wstring& _RelativePath)
 {
 	Ptr<CAsset> pAsset = FindAsset<T>(_RelativePath).Get();
 

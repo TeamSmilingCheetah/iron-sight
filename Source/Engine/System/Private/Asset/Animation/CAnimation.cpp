@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "System/Public/Asset/Animation/CAnimation.h"
 #include "System/Public/Asset/Animation/CSkeleton.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
@@ -84,7 +84,7 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 	{
 		pAnim = new CAnimation;
 		pAnim->SetName(vecAnimClip[clipIdx]->strName + L".anim");
-		pAnim->m_Skeleton = CAssetMgr::GetInst()->Load<CSkeleton>(L"Skeleton\\" + vecBones[0]->strBoneName + L".bone");
+		pAnim->m_Skeleton = FAssetManager::GetInst()->Load<CSkeleton>(L"Skeleton\\" + vecBones[0]->strBoneName + L".bone");
 		pAnim->m_StartFrame = static_cast<int>(vecAnimClip[clipIdx]->tStartTime.GetFrameCount(
 			vecAnimClip[clipIdx]->eMode));
 		pAnim->m_EndFrame = static_cast<int>(vecAnimClip[clipIdx]->tEndTime.GetFrameCount(
@@ -123,7 +123,7 @@ vector<Ptr<CAnimation>> CAnimation::LoadFromFBX(CFBXLoader& _loader)
 		wstring strFilePath = L"Animation\\" + pAnim->GetName();
 
 		// AssetMgr 등록 (key 값 설정)
-		CAssetMgr::GetInst()->AddAsset<CAnimation>(strFilePath, pAnim);
+		FAssetManager::GetInst()->AddAsset<CAnimation>(strFilePath, pAnim);
 
 		// Save (relative path 설정)
 		pAnim->Save(strFilePath);
