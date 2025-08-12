@@ -389,7 +389,7 @@ void TestLevel::CreateTestLevel()
 		false
 	);
 
-	// CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
+	// CGameObject* testPlayer = FAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
 	// testPlayer->SetName(L"Test_Player");
 	//
 	// testPlayer->Transform()->SetRelativePos(Vec3(500.f, -380.f, 1000.f));

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/System/Public/Asset/Audio/CSound.h"
+#include "Engine/System/Public/Asset/Audio/Sound.h"
 #include "Engine/System/Public/Asset/Mesh/CMesh.h"
 #include "Engine/System/Public/Asset/Mesh/CMeshData.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"

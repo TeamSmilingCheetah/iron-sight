@@ -7,7 +7,7 @@
 class CConstBuffer;
 
 CSprite::CSprite(bool _bEngineRes)
-	: CAsset(SPRITE, _bEngineRes)
+	: FAsset(SPRITE, _bEngineRes)
 {
 }
 

@@ -4,7 +4,7 @@
 
 #include "Ptr.h"
 
-class CSound;
+class FSound;
 class IColliderBase;
 class FColliderRay;
 
@@ -713,7 +713,7 @@ struct FMeshBatchData
 
 struct Sound3DIdx
 {
-	Ptr<CSound> Sound;
+	Ptr<FSound> Sound;
 	FMOD::Channel* Channel;
 	Vec3 Position;
 	int ChannelIdx;

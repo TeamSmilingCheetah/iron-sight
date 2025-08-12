@@ -82,7 +82,7 @@ void FAssetManager::GetAssetNames(ASSET_TYPE _Type, vector<wstring>& _vecAssetNa
 
 void FAssetManager::DeleteAsset(ASSET_TYPE _Type, const wstring& _Key)
 {
-	map<wstring, Ptr<CAsset>>& mapAsset = m_mapAsset[static_cast<UINT>(_Type)];
+	map<wstring, Ptr<FAsset>>& mapAsset = m_mapAsset[static_cast<UINT>(_Type)];
 
 	auto iter = mapAsset.find(_Key);
 
@@ -120,7 +120,7 @@ Ptr<CMeshData> FAssetManager::LoadFBX(const wstring& _strPath)
 }
 
 // map 수정 여부를 반환함
-bool FAssetManager::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
+bool FAssetManager::ChangeAssetKey(Ptr<FAsset> _Asset, const wstring& _NewKey)
 {
 	ASSET_TYPE type = _Asset->GetAssetType();
 	UINT typeToIndex = static_cast<UINT>(type);
@@ -136,7 +136,7 @@ bool FAssetManager::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	}
 
 	// Engine 애셋 여부
-	bool isEngineRes = _Asset->IsEngineAsset();
+	bool isEngineRes = _Asset->IsEngineResource();
 
 	// 파일로 존재하는 Asset은 파일 시스템에서도 변경해준다.
 	if (!isEngineRes)
@@ -162,9 +162,9 @@ bool FAssetManager::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	return true;
 }
 
-Ptr<CAsset> FAssetManager::CopyAsset(Ptr<CAsset> _Source)
+Ptr<FAsset> FAssetManager::CopyAsset(Ptr<FAsset> _Source)
 {
-	Ptr<CAsset> pClone = _Source->Clone();
+	Ptr<FAsset> pClone = _Source->Clone();
 
 	if (pClone != nullptr)
 	{

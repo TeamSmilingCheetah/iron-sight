@@ -8,12 +8,12 @@ class ThrowableController :
 	public WeaponController
 {
 private:
-	Ptr<CSound> m_BombSound;
-	Ptr<CSound> m_SmokeSound;
-	Ptr<CSound> m_PinSound;
-	Ptr<CSound> m_ThrowSound;
-	Ptr<CSound> m_BounceSound_1;
-	Ptr<CSound> m_BounceSound_2;
+	Ptr<FSound> m_BombSound;
+	Ptr<FSound> m_SmokeSound;
+	Ptr<FSound> m_PinSound;
+	Ptr<FSound> m_ThrowSound;
+	Ptr<FSound> m_BounceSound_1;
+	Ptr<FSound> m_BounceSound_2;
 
 	int			m_BombSoundIdx;
 	int			m_SmokeSoundIdx;

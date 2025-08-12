@@ -221,9 +221,9 @@
     <ClInclude Include="Runtime\Public\State\CState.h" />
     <ClInclude Include="System\Public\Asset\Animation\CAnimation.h" />
     <ClInclude Include="System\Public\Asset\Animation\CSkeleton.h" />
-    <ClInclude Include="System\Public\Asset\Audio\CSound.h" />
-    <ClInclude Include="System\Public\Asset\Base\assets.h" />
-    <ClInclude Include="System\Public\Asset\Base\CAsset.h" />
+    <ClInclude Include="System\Public\Asset\Assets.h" />
+    <ClInclude Include="System\Public\Asset\Audio\Sound.h" />
+    <ClInclude Include="System\Public\Asset\Base\Asset.h" />
     <ClInclude Include="System\Public\Asset\Mesh\CMesh.h" />
     <ClInclude Include="System\Public\Asset\Mesh\CMeshData.h" />
     <ClInclude Include="System\Public\Asset\Prefab\CPrefab.h" />
@@ -302,8 +302,8 @@
     <ClCompile Include="Runtime\Private\State\CState.cpp" />
     <ClCompile Include="System\Private\Asset\Animation\CAnimation.cpp" />
     <ClCompile Include="System\Private\Asset\Animation\CSkeleton.cpp" />
-    <ClCompile Include="System\Private\Asset\Audio\CSound.cpp" />
-    <ClCompile Include="System\Private\Asset\Base\CAsset.cpp" />
+    <ClCompile Include="System\Private\Asset\Audio\Sound.cpp" />
+    <ClCompile Include="System\Private\Asset\Base\Asset.cpp" />
     <ClCompile Include="System\Private\Asset\Mesh\CMesh.cpp" />
     <ClCompile Include="System\Private\Asset\Mesh\CMeshData.cpp" />
     <ClCompile Include="System\Private\Asset\Prefab\CPrefab.cpp" />

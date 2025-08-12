@@ -72,12 +72,12 @@ void ThrowableController::Begin()
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 
 	// Sound
-	m_BombSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_bomb.mp3");
-	m_SmokeSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_smoke.mp3");
-	m_PinSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_pin.mp3");
-	m_ThrowSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_throw.mp3");
-	m_BounceSound_1 = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_bounce1.mp3");
-	m_BounceSound_2 = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_bounce2.mp3");
+	m_BombSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_bomb.mp3");
+	m_SmokeSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_smoke.mp3");
+	m_PinSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_pin.mp3");
+	m_ThrowSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_throw.mp3");
+	m_BounceSound_1 = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_bounce1.mp3");
+	m_BounceSound_2 = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_bounce2.mp3");
 
 	WeaponController::Begin();
 }

@@ -52,7 +52,7 @@ void MeshRenderUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -109,7 +109,7 @@ void MeshRenderUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 

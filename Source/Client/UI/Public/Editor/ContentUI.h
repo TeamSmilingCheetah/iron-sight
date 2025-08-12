@@ -7,7 +7,7 @@ struct tFSNode	// File System Node
 	bool				isFolder;
 	tFSNode*			Parent;
 	vector<tFSNode*>	vecChildren;
-	Ptr<CAsset>			Asset;
+	Ptr<FAsset>			Asset;
 
 	tFSNode() : isFolder(false), Parent(nullptr) {}
 	tFSNode(const wstring& _Name) : Name(_Name), isFolder(false), Parent(nullptr) {}
@@ -30,13 +30,13 @@ private:
 	// TEST : 파일 탐색기
 	static tFSNode*		m_rootAssetFileSystem;	// dummy root
 
-	Ptr<CAsset>		m_TargetAsset;
+	Ptr<FAsset>		m_TargetAsset;
 
 public:
 	void Render_Update() override;
 	void Reset();
 
-	static Ptr<CAsset> LoadAsset(tFSNode* _FSNode);
+	static Ptr<FAsset> LoadAsset(tFSNode* _FSNode);
 
 private:
 	void RenewContent();

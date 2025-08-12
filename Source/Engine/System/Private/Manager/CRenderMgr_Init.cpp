@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "System/Public/Asset/Base/assets.h"
-#include "System/Public/Manager/AssetManager.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Rendering/RenderTarget/CMRT.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+
+#include "Engine/System/Public/Manager/AssetManager.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 void CRenderMgr::Init()
 {

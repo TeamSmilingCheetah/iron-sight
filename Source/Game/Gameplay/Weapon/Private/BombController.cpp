@@ -32,7 +32,7 @@ void BombController::Begin()
 	m_MaxLength = sqrt(x * x + y * y);
 
 	// 소리
-	m_TinnitusSound = FAssetManager::GetInst()->Load<CSound>(L"Sound\\grenade_tinnitus.mp3");
+	m_TinnitusSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_tinnitus.mp3");
 }
 
 void BombController::Tick()

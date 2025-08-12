@@ -31,12 +31,12 @@ MissileProjectile::~MissileProjectile()
 
 void MissileProjectile::Begin()
 {
-	// CAssetMgr 의 재질을 복사시킨 재질을 참조
-	//Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl");
+	// FAssetMgr 의 재질을 복사시킨 재질을 참조
+	//Ptr<CMaterial> pMtrl = FAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl");
 	//MeshRender()->SetMaterial(pMtrl, 0);
 	//MeshRender()->GetDynamicMaterial(0);
 
-	//Ptr<CTexture> pMissileTex = CAssetMgr::GetInst()->Load<CTexture>(
+	//Ptr<CTexture> pMissileTex = FAssetMgr::GetInst()->Load<CTexture>(
 	//	L"Missile", L"Texture\\missile.png");
 	//MeshRender()->GetMaterial(0)->SetTexParam(TEX_0, pMissileTex);
 }

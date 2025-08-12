@@ -7,7 +7,7 @@
 struct tBone;
 
 CSkeleton::CSkeleton(bool _bEngineRes)
-	: CAsset(SKELETON, _bEngineRes)
+	: FAsset(SKELETON, _bEngineRes)
 	, m_BoneInvBuffer(nullptr)
 	, m_BoneParentBuffer(nullptr)
 {

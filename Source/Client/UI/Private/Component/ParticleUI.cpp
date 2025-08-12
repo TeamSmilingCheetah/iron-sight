@@ -52,7 +52,7 @@ void ParticleUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -107,7 +107,7 @@ void ParticleUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -422,7 +422,7 @@ void ParticleUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *((TreeNode**)pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 

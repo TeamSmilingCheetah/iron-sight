@@ -5,7 +5,7 @@
 #include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Manager/CLevelMgr.h"
 
-class CAsset;
+class FAsset;
 
 CTaskMgr::CTaskMgr()
 	: m_LevelChanged(false)
@@ -241,7 +241,7 @@ void CTaskMgr::Tick()
 
 		case TASK_TYPE::DELETE_ASSET:
 			{
-				Ptr<CAsset> pAsset = (CAsset*)task.Param0;
+				Ptr<FAsset> pAsset = (FAsset*)task.Param0;
 				FAssetManager::GetInst()->DeleteAsset(pAsset->GetAssetType(), pAsset->GetKey());
 			}
 			break;

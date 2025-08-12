@@ -1,22 +1,22 @@
 #include "pch.h"
-#include "System/Public/Asset/Audio/CSound.h"
+#include "Engine/System/Public/Asset/Audio/Sound.h"
 
-#include "System/Public/Manager/SoundManager.h"
+#include "Engine/System/Public/Manager/SoundManager.h"
 
 static FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL* InChannelControl,
                                     FMOD_CHANNELCONTROL_TYPE InControlType
                                     , FMOD_CHANNELCONTROL_CALLBACK_TYPE InCallBackType
                                     , void* InCommandData1, void* InCommandData2);
 
-CSound::CSound(bool InEngineRes)
-	: CAsset(SOUND, InEngineRes)
+FSound::FSound(bool InEngineRes)
+	: FAsset(SOUND, InEngineRes)
 	  , SoundBuffer(nullptr)
 {
 }
 
-CSound::~CSound()
+FSound::~FSound()
 {
-	const wstring Name = this->GetName();
+	// const wstring Name = this->GetName();
 
 	if (SoundBuffer)
 	{
@@ -24,10 +24,19 @@ CSound::~CSound()
 		SoundBuffer = nullptr;
 	}
 
-	LOG_DEBUG_F("[Asset][Sound] {} is Deleted", WStringToString(Name));
+	// 어차피 Sound 소멸자는 Log Manager 종료 시기보다 뒤에 호출된다
+	// LOG_DEBUG_F("[Asset][Sound] {} is Deleted", WStringToString(Name));
 }
 
-int CSound::Play(int InRoopCount, float InVolume, bool InIsOverlap)
+/**
+ * @brief 소리 출력 함수
+ *
+ * @param InRoopCount 반복 횟수 (0이라면 무한 반복)
+ * @param InVolume 0 ~ 1 사이의 Volume 수치
+ * @param InIsOverlap 소리 중첩 가능 여부
+ * @return Channel Index
+ */
+int FSound::Play(int InRoopCount, float InVolume, bool InIsOverlap)
 {
 	if (InRoopCount <= -1)
 	{
@@ -61,13 +70,13 @@ int CSound::Play(int InRoopCount, float InVolume, bool InIsOverlap)
 
 	ChannelList.push_back(Channel);
 
-	int iIdx = -1;
-	Channel->getIndex(&iIdx);
+	int ChannelIndex = -1;
+	Channel->getIndex(&ChannelIndex);
 
-	return iIdx;
+	return ChannelIndex;
 }
 
-void CSound::Stop()
+void FSound::Stop()
 {
 	for (auto Channel : ChannelList)
 	{
@@ -77,7 +86,13 @@ void CSound::Stop()
 	ChannelList.clear();
 }
 
-void CSound::SetVolume(float InVolume, int InChannelIdx)
+/**
+ * @brief 볼륨 설정 함수
+ *
+ * @param InVolume 0 ~ 1 사이의 Volume 값
+ * @param InChannelIdx Volume을 설정할 Channel Index
+ */
+void FSound::SetVolume(float InVolume, int InChannelIdx)
 {
 	int iIdx = -1;
 
@@ -92,7 +107,7 @@ void CSound::SetVolume(float InVolume, int InChannelIdx)
 	}
 }
 
-void CSound::RemoveChannel(const FMOD::Channel* InTargetChannel)
+void FSound::RemoveChannel(const FMOD::Channel* InTargetChannel)
 {
 	for (auto iter = ChannelList.begin(); iter != ChannelList.end(); ++iter)
 	{
@@ -104,7 +119,7 @@ void CSound::RemoveChannel(const FMOD::Channel* InTargetChannel)
 	}
 }
 
-int CSound::Load(const wstring& InFilePath)
+int FSound::Load(const wstring& InFilePath)
 {
 	string Path = WStringToString(InFilePath);
 	auto* System = FSoundManager::GetInst()->GetFMODSystem();
@@ -117,16 +132,23 @@ int CSound::Load(const wstring& InFilePath)
 	return S_OK;
 }
 
-// =========
-// Call Back
-// =========
+/**
+ * @brief FMOD Channel Event Call Back Function
+ * FMOD::Channel 객체에 등록되어 사운드 재생, 종료와 같은 다양한 채널 관련 이벤트에 대한 알림을 수신하는 콜백 함수
+ * @param InChannelControl 콜백을 트리거한 FMOD_CHANNELCONTROL 객체에 대한 포인터
+ * @param InControlType 콜백을 트리거한 채널 Control Type (현재는 FMOD_CHANNELCONTROL_CALLBACK_END만 처리 중)
+ * @param InCallBackType Event Type
+ * @param InCommandData1 Event Data Pointer 1
+ * @param InCommandData2 Event Data Pointer 2
+ * @return [Success] FMOD_OK | [Fail] FMOD Error Code
+ */
 FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL* InChannelControl,
                              FMOD_CHANNELCONTROL_TYPE InControlType,
                              FMOD_CHANNELCONTROL_CALLBACK_TYPE InCallBackType,
                              void* InCommandData1, void* InCommandData2)
 {
 	auto Channel = reinterpret_cast<FMOD::Channel*>(InChannelControl);
-	CSound* OwnerSound = nullptr;
+	FSound* OwnerSound = nullptr;
 
 	switch (InControlType)
 	{

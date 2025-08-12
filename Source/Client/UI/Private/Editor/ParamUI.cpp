@@ -155,7 +155,7 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -224,7 +224,7 @@ bool ParamUI::Param_Prefab(const string& _Desc, Ptr<CPrefab>& _Prefab, EditorUI*
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *reinterpret_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 

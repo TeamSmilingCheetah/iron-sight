@@ -1,12 +1,12 @@
 #pragma once
 #include "CSkeleton.h"
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CStructuredBuffer;
 
 // 3d model animation
 class CAnimation :
-	public CAsset
+	public FAsset
 {
 private:
 	// Bone 정보

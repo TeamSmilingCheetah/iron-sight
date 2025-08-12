@@ -77,8 +77,8 @@ void FEngine::Progress()
 void FEngine::Shutdown()
 {
 	LOG_INFO("[Engine][Main] Engine Shutdown Start");
-	FSoundManager::GetInst()->Shutdown();
 	FAssetManager::GetInst()->Shutdown();
+	FSoundManager::GetInst()->Shutdown();
 
 	LOG_INFO("[Engine][Main] Engine Shutdown Finish");
 	LogManager::GetInst()->Shutdown();

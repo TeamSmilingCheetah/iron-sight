@@ -27,7 +27,7 @@ public:
 		m_Ptr = _Ptr;
 
 		if (nullptr != m_Ptr)
-			m_Ptr->AddRef();
+			m_Ptr->AddReferenceCount();
 
 		return *this;
 	}
@@ -43,7 +43,7 @@ public:
 		m_Ptr = _Ptr.m_Ptr;
 
 		if (nullptr != _Ptr.m_Ptr)
-			m_Ptr->AddRef();
+			m_Ptr->AddReferenceCount();
 
 		return *this;
 	}
@@ -57,14 +57,14 @@ public:
 		: m_Ptr(_Ptr)
 	{
 		if (nullptr != m_Ptr)
-			m_Ptr->AddRef();
+			m_Ptr->AddReferenceCount();
 	}
 
 	Ptr(const Ptr<T>& _Ptr)
 		: m_Ptr(_Ptr.m_Ptr)
 	{
 		if (nullptr != m_Ptr)
-			m_Ptr->AddRef();
+			m_Ptr->AddReferenceCount();
 	}
 
 	~Ptr()

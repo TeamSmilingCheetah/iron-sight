@@ -9,11 +9,11 @@ class GunController :
 	public WeaponController
 {
 private:
-	Ptr<CSound> m_AkSound;
-	Ptr<CSound> m_AkdrySound;
-	Ptr<CSound> m_EmptyReloadSound;
-	Ptr<CSound> m_ReloadSound;
-	Ptr<CSound> m_ClipSound;
+	Ptr<FSound> m_AkSound;
+	Ptr<FSound> m_AkdrySound;
+	Ptr<FSound> m_EmptyReloadSound;
+	Ptr<FSound> m_ReloadSound;
+	Ptr<FSound> m_ClipSound;
 	
 	int			m_AkSoundIdx;
 	int			m_AkdrySoundIdx;

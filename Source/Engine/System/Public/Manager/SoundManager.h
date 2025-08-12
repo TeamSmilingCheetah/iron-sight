@@ -1,6 +1,6 @@
 #pragma once
 
-class CSound;
+class FSound;
 
 class FSoundManager :
 	public singleton<FSoundManager>
@@ -10,7 +10,7 @@ class FSoundManager :
 private:
 	FMOD::System* FMODSystem;
 
-	Ptr<CSound> GameBGM;
+	Ptr<FSound> GameBGM;
 	FMOD::DSP* GlobalLowPassDSP;
 
 	Vec3 PlayerPosition;
@@ -33,10 +33,10 @@ public:
 
 	void PlayGameBGM(int InRoop, float InVolume, bool InOverlap = true);
 	void StopGameBGM();
-	void SetGameBGM(Ptr<CSound> InBGM, bool InStopPrevBGM);
-	Ptr<CSound> GetGameBGM() { return GameBGM; }
+	void SetGameBGM(Ptr<FSound> InBGM, bool InStopPrevBGM);
+	Ptr<FSound> GetGameBGM() { return GameBGM; }
 
-	int Play3DSound(Ptr<CSound> InSound, const Vec3& InPosition, float InMinDist = 1.0f, float InMaxDist = 10000.0f,
+	int Play3DSound(Ptr<FSound> InSound, const Vec3& InPosition, float InMinDist = 1.0f, float InMaxDist = 10000.0f,
 	                int InRoopCount = 0, float InVolume = 1.0f, bool InOverlap = true, bool InInputOverlap = true,
 	                int InInputSoundID = -1);
 

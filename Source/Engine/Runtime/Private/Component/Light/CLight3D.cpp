@@ -33,7 +33,7 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 
 	else if (LIGHT_TYPE::SPOT == m_LightInfo.Type)
 	{
-		// m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh");
+		// m_VolumeMesh = FAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh");
 	}
 }
 
@@ -95,7 +95,7 @@ void CLight3D::SaveComponent(FILE* _File)
 	fwrite(&m_LightInfo, sizeof(tLight3DInfo), 1, _File);
 
 	SaveAssetRef(m_VolumeMesh, _File);
-	SaveAssetRef(m_LightMtrl, _File);	
+	SaveAssetRef(m_LightMtrl, _File);
 }
 
 void CLight3D::LoadComponent(FILE* _File)

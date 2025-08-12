@@ -129,6 +129,6 @@ void Engine::Common::AddScriptToObject(CGameObject* PObject)
 template <typename T>
 Ptr<T> Engine::IO::LoadAsset(const wstring& PRelativeFilePath)
 {
-	static_assert(std::is_base_of_v<CAsset, T>, "Only Asset Can Loaded By This Function");
+	static_assert(std::is_base_of_v<FAsset, T>, "Only Asset Can Loaded By This Function");
 	return FAssetManager::GetInst()->Load<T>(PRelativeFilePath);
 }

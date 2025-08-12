@@ -1,9 +1,9 @@
 #pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 #include "Engine/System/Public/Asset/Texture/CSprite.h"
 
 class CFlipbook :
-    public CAsset
+    public FAsset
 {
     vector<Ptr<CSprite>> m_vecSprite;
 

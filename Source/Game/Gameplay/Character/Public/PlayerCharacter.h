@@ -23,9 +23,9 @@ class PlayerCharacter :
 	public CScript
 {
 private:
-	Ptr<CSound>		m_HitSound;
-	Ptr<CSound>		m_FootstepSound;
-	Ptr<CSound>		m_RunFootstepSound;
+	Ptr<FSound>		m_HitSound;
+	Ptr<FSound>		m_FootstepSound;
+	Ptr<FSound>		m_RunFootstepSound;
 
 	int				m_HitSoundIdx;
 	int				m_FootstepSoundIdx;

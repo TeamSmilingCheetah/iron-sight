@@ -77,7 +77,7 @@ void AddObjectUI::Render_Update()
 	//	pListUI->AddItem("None");
 
 	//	vector<wstring> vecAssetNames;
-	//	CAssetMgr::GetInst()->GetAssetNames(ASSET_TYPE::PREFAB, vecAssetNames);
+	//	FAssetMgr::GetInst()->GetAssetNames(ASSET_TYPE::PREFAB, vecAssetNames);
 	//	pListUI->AddItem(vecAssetNames);
 
 	//	// 더블 클릭 시 호출시킬 함수 등록
@@ -137,7 +137,7 @@ void AddObjectUI::Render_Update()
 //	}
 //
 //	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-//	Ptr<CPrefab> pPrefab = CAssetMgr::GetInst()->FindAsset<CPrefab>(wstring(pStr->begin(), pStr->end()));
+//	Ptr<CPrefab> pPrefab = FAssetMgr::GetInst()->FindAsset<CPrefab>(wstring(pStr->begin(), pStr->end()));
 //	if (nullptr == pPrefab)
 //		return;
 //

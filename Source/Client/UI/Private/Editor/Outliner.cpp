@@ -417,7 +417,7 @@ void Outliner::CreateObject_Outliner(DWORD_PTR _Nothing)
 	// Engine Mesh 또는 Empty Object를 만듦.
 	if (ImGui::BeginMenu("Create Object"))
 	{
-		const map<wstring, Ptr<CAsset>>& m_mapMesh = FAssetManager::GetInst()->GetAssets(ASSET_TYPE::MESH);
+		const map<wstring, Ptr<FAsset>>& m_mapMesh = FAssetManager::GetInst()->GetAssets(ASSET_TYPE::MESH);
 
 		if (ImGui::MenuItem("Empty"))
 		{
@@ -427,7 +427,7 @@ void Outliner::CreateObject_Outliner(DWORD_PTR _Nothing)
 		// Engine Mesh에 대해서만 적용
 		for (auto iter = m_mapMesh.begin(); iter != m_mapMesh.end(); ++iter)
 		{
-			if (!iter->second->IsEngineAsset())
+			if (!iter->second->IsEngineResource())
 				continue;
 
 			string meshName = WStringToString(iter->second->GetKey());

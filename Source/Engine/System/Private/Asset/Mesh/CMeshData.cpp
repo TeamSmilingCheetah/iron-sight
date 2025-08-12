@@ -10,7 +10,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 CMeshData::CMeshData(bool _Engine)
-	: CAsset(MESH_DATA, false)
+	: FAsset(MESH_DATA, false)
 {
 }
 

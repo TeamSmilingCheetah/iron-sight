@@ -6,7 +6,7 @@
 #include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 CAnimation::CAnimation(bool _bEngineRes)
-	: CAsset(ANIMATION, _bEngineRes)
+	: FAsset(ANIMATION, _bEngineRes)
 	, m_Skeleton(nullptr)
 	, m_StartFrame(0)
 	, m_EndFrame(0)
@@ -21,7 +21,7 @@ CAnimation::CAnimation(bool _bEngineRes)
 }
 
 CAnimation::CAnimation(const CAnimation& _Src)
-	: CAsset(ANIMATION, false)	// FIXME(Ssio) : clone은 engine resource가 아니라고 가정.
+	: FAsset(ANIMATION, false)	// FIXME(Ssio) : clone은 engine resource가 아니라고 가정.
 	, m_Skeleton(_Src.m_Skeleton)
 	, m_StartFrame(_Src.m_StartFrame)
 	, m_EndFrame(_Src.m_EndFrame)

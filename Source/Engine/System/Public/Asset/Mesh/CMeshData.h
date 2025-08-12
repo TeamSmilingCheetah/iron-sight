@@ -1,12 +1,12 @@
 #pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CAnimation;
 class CMaterial;
 class CMesh;
 
 class CMeshData :
-    public CAsset
+    public FAsset
 {
 private:
     vector<Ptr<CMesh>>					m_vecMesh;

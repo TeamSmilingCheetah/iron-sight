@@ -6,14 +6,14 @@
 class CConstBuffer;
 
 CMaterial::CMaterial(bool _EngineRes)
-	: CAsset(MATERIAL, _EngineRes)
+	: FAsset(MATERIAL, _EngineRes)
 	  , m_Const{}
 {
 	m_Const.v4Arr[0] = Vec4(1.f, 0.f, 0.f, 1.f);
 }
 
 CMaterial::CMaterial(const CMaterial& _Origin)
-	: CAsset(_Origin)
+	: FAsset(_Origin)
 	  , m_Shader(_Origin.m_Shader)
 	  , m_Const(_Origin.m_Const)
 	  , m_arrTex{}

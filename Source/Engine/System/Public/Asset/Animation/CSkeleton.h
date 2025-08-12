@@ -1,10 +1,10 @@
 #pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CStructuredBuffer;
 
 class CSkeleton :
-	public CAsset
+	public FAsset
 {
 private:
 	vector<tMTBone> m_vecBones;

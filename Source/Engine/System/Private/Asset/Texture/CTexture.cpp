@@ -4,7 +4,7 @@
 #include "System/Public/Rendering/Device/CDevice.h"
 
 CTexture::CTexture()
-	: CAsset(TEXTURE, false)
+	: FAsset(TEXTURE, false)
 	  , m_Desc{}
 	  , m_RecentSRVNum(-1)
 	  , m_RecentUAVNum(-1)
