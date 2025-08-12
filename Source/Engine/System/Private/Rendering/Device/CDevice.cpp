@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Rendering/Buffer/CConstBuffer.h"
 
 CDevice::CDevice()
@@ -139,10 +139,10 @@ int CDevice::CreateView()
 	// 1. RenderTarget 텍스쳐
 	ComPtr<ID3D11Texture2D> pTex2D = nullptr;
 	m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)pTex2D.GetAddressOf());
-	CAssetMgr::GetInst()->CreateTexture(L"RenderTargetTex", pTex2D);
+	FAssetManager::GetInst()->CreateTexture(L"RenderTargetTex", pTex2D);
 
 	// 2. DepthStencil 텍스쳐
-	CAssetMgr::GetInst()->CreateTexture(L"DepthStencilTex"
+	FAssetManager::GetInst()->CreateTexture(L"DepthStencilTex"
 	                                    , static_cast<UINT>(m_Resolution.x), static_cast<UINT>(m_Resolution.y)
 	                                    , DXGI_FORMAT_D24_UNORM_S8_UINT
 	                                    , D3D11_BIND_DEPTH_STENCIL);

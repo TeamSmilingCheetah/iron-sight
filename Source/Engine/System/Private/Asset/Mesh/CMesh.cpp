@@ -7,7 +7,7 @@
 #include "System/Public/Rendering/Tool/FBX/CFBXLoader.h"
 
 CMesh::CMesh(bool _bEngineRes)
-	: CAsset(MESH, _bEngineRes)
+	: FAsset(MESH, _bEngineRes)
 	, m_VBDesc{}
 	, m_VtxCount(0)
 	, m_VtxSysMem(nullptr)

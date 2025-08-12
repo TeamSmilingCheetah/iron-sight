@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
@@ -52,7 +52,7 @@ void MeshRenderUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -79,7 +79,7 @@ void MeshRenderUI::Render_Update()
 		pListUI->AddItem("None");
 
 		vector<wstring> vecAssetNames;
-		CAssetMgr::GetInst()->GetAssetNames(MESH, vecAssetNames);
+		FAssetManager::GetInst()->GetAssetNames(MESH, vecAssetNames);
 		pListUI->AddItem(vecAssetNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
@@ -109,7 +109,7 @@ void MeshRenderUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -136,7 +136,7 @@ void MeshRenderUI::Render_Update()
 		pListUI->AddItem("None");
 
 		vector<wstring> vecAssetNames;
-		CAssetMgr::GetInst()->GetAssetNames(MATERIAL, vecAssetNames);
+		FAssetManager::GetInst()->GetAssetNames(MATERIAL, vecAssetNames);
 		pListUI->AddItem(vecAssetNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
@@ -178,7 +178,7 @@ void MeshRenderUI::SelectMesh(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CMesh> pMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(wstring(pStr->begin(), pStr->end()));
+	Ptr<CMesh> pMesh = FAssetManager::GetInst()->FindAsset<CMesh>(wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pMesh)
 		return;
 
@@ -198,7 +198,7 @@ void MeshRenderUI::SelectMaterial(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(
+	Ptr<CMaterial> pMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(
 		wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pMtrl)
 		return;

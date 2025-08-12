@@ -10,7 +10,7 @@ constexpr UINT CompileFlag = D3DCOMPILE_OPTIMIZATION_LEVEL3;
 #endif
 
 CShader::CShader(ASSET_TYPE PType)
-	: CAsset(PType, true)
+	: FAsset(PType, true)
 {
 }
 

@@ -83,8 +83,8 @@ void MinimapUIScript::Begin()
 		m_PlayerArrow->AddComponent(new CUI);
 		m_PlayerArrow->AddComponent(new CUIRender);
 
-		m_PlayerArrow->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"TriangleMesh"));
-		m_PlayerArrow->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+		m_PlayerArrow->UIRender()->SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"TriangleMesh"));
+		m_PlayerArrow->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 
 		m_PlayerArrow->UI()->SetColor(Vec4(0.f, 1.f, 0.f, 0.2f));
 		m_PlayerArrow->UI()->SetRectSize(Vec2(40.f, 80.f));

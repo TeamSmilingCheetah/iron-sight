@@ -1,10 +1,10 @@
 #pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CGameObject;
 
 class CPrefab :
-    public CAsset
+    public FAsset
 {
 public:
     static GAMEOBJECT_SAVE g_ObjectSave;

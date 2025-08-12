@@ -15,8 +15,8 @@ CUIRender::~CUIRender() = default;
 
 void CUIRender::Init()
 {
-	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 }
 
 void CUIRender::FinalTick()

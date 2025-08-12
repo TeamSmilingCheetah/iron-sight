@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Client/UI/Public/Asset/AssetUI.h"
 
-#include "Engine/System/Public/Asset/Base/assets.h"
-
 AssetUI::AssetUI(const string& _ID, ASSET_TYPE _Type)
 	: EditorUI(_ID)
 	, m_Type(_Type)
@@ -15,7 +13,7 @@ AssetUI::~AssetUI()
 {
 }
 
-void AssetUI::SetAsset(Ptr<CAsset> _Asset)
+void AssetUI::SetAsset(Ptr<FAsset> _Asset)
 {
 	if (m_TargetAsset == _Asset)
 		return;
@@ -43,7 +41,7 @@ void AssetUI::AssetTitle()
 void AssetUI::SaveButton()
 {
 	// Engine Resource는 저장할 수 없다.
-	if (m_TargetAsset->IsEngineAsset())
+	if (m_TargetAsset->IsEngineResource())
 		return;
 
 	if (ImGui::Button("SAVE"))

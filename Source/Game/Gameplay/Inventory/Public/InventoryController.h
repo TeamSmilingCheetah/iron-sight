@@ -22,8 +22,8 @@ class InventoryController :
 	public CScript
 {
 private:
-	Ptr<CSound> m_EquipSound;
-	Ptr<CSound> m_AcquireSound;
+	Ptr<FSound> m_EquipSound;
+	Ptr<FSound> m_AcquireSound;
 
 	int			m_EquipSoundIdx;
 	int			m_AcquireSoundIdx;

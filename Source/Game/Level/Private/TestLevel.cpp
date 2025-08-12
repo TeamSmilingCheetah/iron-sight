@@ -389,7 +389,7 @@ void TestLevel::CreateTestLevel()
 		false
 	);
 
-	// CGameObject* testPlayer = CAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
+	// CGameObject* testPlayer = FAssetMgr::GetInst()->LoadFBX(L"FBX\\Character\\GasMask.fbx")->Instantiate();
 	// testPlayer->SetName(L"Test_Player");
 	//
 	// testPlayer->Transform()->SetRelativePos(Vec3(500.f, -380.f, 1000.f));
@@ -597,7 +597,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->AddComponent(new CUIRender);
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.4f));
 
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
+	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
 
 	CanvasUI->AddChild(childUI);
 
@@ -611,7 +611,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->AddComponent(new CUIRender);
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
 
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
+	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
 	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
 	SetObjectActive(childUI, false);
 
@@ -627,7 +627,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	interactionUI->AddComponent(new CUIRender);
 	interactionUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
 
-	interactionUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	interactionUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	interactionUI->UI()->AddText(L"취소", 40.f, 4.f, 16, FONT_RGBA(255, 255, 255, 255));
 	SetObjectActive(interactionUI, false);
 
@@ -643,7 +643,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->AddComponent(new CUIRender);
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
 
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
+	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
 	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
 	SetObjectActive(childUI, false);
 
@@ -659,7 +659,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->AddComponent(new CUIRender);
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
 
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	childUI->UI()->AddText(L"F", 11.f, 4.f, 16, FONT_RGBA(255, 255, 255, 255));
 
 	interactionUI->AddChild(childUI);
@@ -674,7 +674,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	RoundsUI->AddComponent(new CUIRender);
 	RoundsUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 
-	RoundsUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	RoundsUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	RoundsUI->AddComponent(new RoundsUIScript);
 
 	CanvasUI->AddChild(RoundsUI);
@@ -689,7 +689,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	KillinfoUI->AddComponent(new CUIRender);
 	KillinfoUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 
-	KillinfoUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	KillinfoUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	KillinfoUI->AddComponent(new KillinfoUIScript);
 
 	CanvasUI->AddChild(KillinfoUI);
@@ -701,10 +701,10 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
 	childUI->UI()->SetRectSize(Vec2(70.f, 70.f));
 	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	childUI->UI()->SetImage(CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
+	childUI->UI()->SetImage(FAssetManager::GetInst()->Load<CTexture>(L"Texture\\UI\\CrossHair_1.png"));
 
 	childUI->AddComponent(new CUIRender);
-	childUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
+	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UICrosshairMtrl"), 0);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(INT_0, 1);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 0.08f);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, 0.03f);
@@ -722,8 +722,8 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pCameraPost->UI()->SetRectSize(Vec2(1280.f, 768.f));
 	pCameraPost->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
 	pCameraPost->AddComponent(new CUIRender);
-	pCameraPost->UIRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	pCameraPost->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"CameraPostMtrl"), 0);
+	pCameraPost->UIRender()->SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	pCameraPost->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"CameraPostMtrl"), 0);
 	pCameraPost->AddComponent(new CameraEffect);
 
 	CanvasUI->AddChild(pCameraPost);
@@ -745,12 +745,12 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pImageUI->SetName(L"Cardinal_ImageUI");
 	pImageUI->AddComponent(new CUI);
 	pImageUI->UI()->SetImage(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
+		FAssetManager::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal.png", L"Texture\\UI\\Cardinal.png"));
 	pImageUI->UI()->SetRectSize(Vec2(1140.f, 48.f));
 	pImageUI->UI()->SetRectPos(Vec2(0.f, -7.f));
 
 	pImageUI->AddComponent(new CUIRender);
-	pImageUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
+	pImageUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
 
 	CanvasUI->AddChild(pImageUI);
 
@@ -758,7 +758,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pImageUI->SetName(L"Cardinal_ArrowUI");
 	pImageUI->AddComponent(new CUI);
 	pImageUI->UI()->SetImage(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
+		FAssetManager::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
 	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
 	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
 
@@ -806,9 +806,9 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pMinimapUI->SetName(L"MinimapUI");
 	pMinimapUI->AddComponent(new CUI);
 	pMinimapUI->AddComponent(new CUIRender);
-	pMinimapUI->UIRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"UIMinimapMtrl"), 0);
+	pMinimapUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMinimapMtrl"), 0);
 
-	Ptr<CTexture> pMinimapTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"MinimapTargetTex");
+	Ptr<CTexture> pMinimapTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"MinimapTargetTex");
 	pMinimapUI->UI()->SetImage(pMinimapTex);
 	pMinimapUI->UI()->SetRectPos(Vec2(0.f, 0.f));
 	pMinimapUI->UI()->SetRectSize(Vec2(300.f, 300.f));

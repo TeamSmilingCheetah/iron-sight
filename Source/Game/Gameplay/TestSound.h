@@ -5,7 +5,7 @@ class TestSound :
     public CScript
 {
 public:
-	Ptr<CSound> m_BulletSound;
+	Ptr<FSound> m_BulletSound;
 	int			m_BulletSoundIdx;
 
 public:

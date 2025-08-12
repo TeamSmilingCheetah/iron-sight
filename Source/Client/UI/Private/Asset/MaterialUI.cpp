@@ -4,7 +4,7 @@
 #include "Client/UI/Public/Editor/ParamUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 #include "Client/System/Public/CImGuiMgr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Rendering/Material/CMaterial.h"
 #include "Client/UI/Public/Editor/ContentUI.h"
 
@@ -50,7 +50,7 @@ void MaterialUI::Render_Update()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -76,7 +76,7 @@ void MaterialUI::Render_Update()
 		pListUI->AddItem("None");
 
 		vector<wstring> vecAssetNames;
-		CAssetMgr::GetInst()->GetAssetNames(GRAPHIC_SHADER, vecAssetNames);
+		FAssetManager::GetInst()->GetAssetNames(GRAPHIC_SHADER, vecAssetNames);
 		pListUI->AddItem(vecAssetNames);
 
 		// 더블 클릭 시 호출시킬 함수 등록
@@ -199,7 +199,7 @@ void MaterialUI::SelectGraphicShader(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CGraphicShader> pShader = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(
+	Ptr<CGraphicShader> pShader = FAssetManager::GetInst()->FindAsset<CGraphicShader>(
 		wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pShader)
 		return;
@@ -221,7 +221,7 @@ void MaterialUI::SelectTexture(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	Ptr<CTexture> pTex = FAssetManager::GetInst()->FindAsset<CTexture>(
 		wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pTex)
 		return;

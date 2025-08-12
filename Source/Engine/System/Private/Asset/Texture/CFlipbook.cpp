@@ -3,7 +3,7 @@
 #include "System/Public/Manager/CPathMgr.h"
 
 CFlipbook::CFlipbook(bool _bEngineRes)
-	: CAsset(FLIPBOOK, _bEngineRes)
+	: FAsset(FLIPBOOK, _bEngineRes)
 {
 }
 

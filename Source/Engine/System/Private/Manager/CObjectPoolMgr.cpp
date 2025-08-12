@@ -12,7 +12,7 @@ CObjectPoolMgr::~CObjectPoolMgr()
 
 CGameObject* CObjectPoolMgr::GetPoolObject(const wstring& _Name, int _Layer)
 {
-	Ptr<CPrefab> pPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\" + _Name + L".pref", _Name);
+	Ptr<CPrefab> pPrefab = FAssetManager::GetInst()->Load<CPrefab>(L"Prefab\\" + _Name + L".pref", _Name);
 
 	vector<CGameObject*>& vec = m_mapPool[_Name];
 
@@ -46,7 +46,7 @@ void CObjectPoolMgr::ReturnObject(CGameObject* _Obj)
 
 void CObjectPoolMgr::Preload(const wstring& _Name, size_t _Count)
 {
-	Ptr<CPrefab> pPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\" + _Name + L".pref", _Name);
+	Ptr<CPrefab> pPrefab = FAssetManager::GetInst()->Load<CPrefab>(L"Prefab\\" + _Name + L".pref", _Name);
 
 	// count만큼 Clone & 비활성화 후 저장
 	vector<CGameObject*>& pool = m_mapPool[_Name];

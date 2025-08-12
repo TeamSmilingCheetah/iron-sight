@@ -1,6 +1,6 @@
 #pragma once
 #include "Common/global.h"
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 
 /**
@@ -18,9 +18,9 @@
  * @param m_IsMemoryReleased 시스템 메모리 관리를 위한 변수
  */
 class CTexture :
-	public CAsset
+	public FAsset
 {
-	friend class CAssetMgr;
+	friend class FAssetManager;
 	
 private:
 	ScratchImage m_Image; // 이미지 파일 로딩 및 저장 기능

@@ -18,6 +18,7 @@ CLevelMgr::CLevelMgr()
 CLevelMgr::~CLevelMgr()
 {
 	DELETE(m_CurLevel);
+	LOG_INFO("[Engine][LevelManager] Instance Deleted");
 }
 
 void CLevelMgr::Init()

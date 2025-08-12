@@ -2,7 +2,7 @@
 #include "Client/UI/Public/Editor/MenuUI.h"
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 #include "Engine/System/Public/Manager/CRenderMgr.h"
@@ -195,7 +195,7 @@ void MenuUI::Asset()
 		{
 			Ptr<CMaterial> pMtrl = new CMaterial;
 			wstring MtrlKey = GetNextMaterialName();
-			CAssetMgr::GetInst()->AddAsset(MtrlKey, pMtrl);
+			FAssetManager::GetInst()->AddAsset(MtrlKey, pMtrl);
 		}
 
 		EditorUI* pSpriteEditor = CImGuiMgr::GetInst()->FindUI("SpriteEditor");
@@ -237,7 +237,7 @@ void MenuUI::SelectRenderTarget(const string& _ItemName, const wstring& _TargetK
 	{
 		if (*(pTarget + _Idx))
 		{
-			Ptr<CTexture> pTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(_TargetKey);
+			Ptr<CTexture> pTarget = FAssetManager::GetInst()->FindAsset<CTexture>(_TargetKey);
 			CRenderMgr::GetInst()->SetSpecifyTarget(pTarget);
 		}
 		else
@@ -264,7 +264,7 @@ wstring MenuUI::GetNextMaterialName()
 	{
 		wsprintf(Buff, L"Material\\Default Material %d.mtrl", i++);
 
-		if (nullptr == CAssetMgr::GetInst()->FindAsset<CMaterial>(Buff))
+		if (nullptr == FAssetManager::GetInst()->FindAsset<CMaterial>(Buff))
 			break;
 	}
 

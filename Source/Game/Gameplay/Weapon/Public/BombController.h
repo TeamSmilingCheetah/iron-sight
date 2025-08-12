@@ -5,7 +5,7 @@ class BombController :
 	public CScript
 {
 private:
-	Ptr<CSound> m_TinnitusSound;
+	Ptr<FSound> m_TinnitusSound;
 
 	int			m_TinnitusSoundIdx;
 

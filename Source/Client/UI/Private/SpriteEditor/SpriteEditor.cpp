@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Client/UI/Public/SpriteEditor/SpriteEditor.h"
 #include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
@@ -30,7 +30,7 @@ void SpriteEditor::Init()
 	m_Detail->m_Owner = this;
 
 	m_Detail->SetAtlasTex(
-		CAssetMgr::GetInst()->Load<CTexture>(L"Texture\\link.png", L"Texture\\link.png"));
+		FAssetManager::GetInst()->Load<CTexture>(L"Texture\\link.png", L"Texture\\link.png"));
 }
 
 void SpriteEditor::Render_Update()

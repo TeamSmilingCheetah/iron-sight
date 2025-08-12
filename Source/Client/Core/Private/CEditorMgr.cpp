@@ -60,7 +60,7 @@ void CEditorMgr::Init()
 
 	// Render Target
 	m_EditorSpaceRT = new CMRT;
-	Ptr<CTexture> pRT = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
+	Ptr<CTexture> pRT = FAssetManager::GetInst()->FindAsset<CTexture>(L"EditorRenderTargetTex");
 	m_EditorSpaceRT->Create(&pRT, 1, nullptr);
 	m_EditorSpaceRT->SetClearColor(0, Vec4(0.343f, 0.343f, 0.343f, 1.f));
 
@@ -97,8 +97,8 @@ void CEditorMgr::Init()
 	m_Origin = new CGameObjectEx;
 	m_Origin->SetName(L"OriginSphere");
 	m_Origin->AddComponent(new CMeshRender);
-	m_Origin->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
-	m_Origin->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
+	m_Origin->MeshRender()->SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	m_Origin->MeshRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl"), 0);
 
 	m_Origin->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	m_Origin->Transform()->SetRelativeScale(10.f, 10.f, 10.f);
@@ -187,13 +187,13 @@ void CEditorMgr::Render_Merge()
 	m_EditorSpaceRT->Clear();
 	m_EditorSpaceRT->OMSet();
 
-	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
-	Ptr<CMaterial> pMergeMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"MergeMtrl");
-	pMergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
-	pMergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	pMergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
-	pMergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	pMergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
+	Ptr<CMaterial> pMergeMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"MergeMtrl");
+	pMergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	pMergeMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pMergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+	pMergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	pMergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 	pMergeMtrl->SetScalarParam(INT_0, 0);
 	pMergeMtrl->Binding();
 

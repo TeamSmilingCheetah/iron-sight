@@ -32,7 +32,7 @@ void LoadObjectRef(CGameObject*& _MissingAddress, FILE* _File)
 
 void ExcutePreload()
 {
-	Ptr<CPrefab> PoolPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
+	Ptr<CPrefab> PoolPrefab = FAssetManager::GetInst()->Load<CPrefab>(L"Prefab\\9mm.pref", L"Prefab\\9mm.pref");
 	CObjectPoolMgr::GetInst()->Preload(PoolPrefab->GetProtoObject()->GetName(), 30);
 
 }

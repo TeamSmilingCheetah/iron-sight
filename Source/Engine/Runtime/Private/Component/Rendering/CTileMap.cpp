@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 #include "Runtime/Public/Component/Rendering/CTileMap.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
@@ -16,8 +16,8 @@ CTileMap::CTileMap()
 	  , m_TileAtlasRow(0)
 	  , m_Buffer(nullptr)
 {
-	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"TileMapMtrl"), 0);
+	SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"TileMapMtrl"), 0);
 
 	// 구조화버퍼 객체 생성
 	m_Buffer = new CStructuredBuffer;

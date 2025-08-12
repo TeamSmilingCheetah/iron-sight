@@ -7,13 +7,13 @@ GAMEOBJECT_LOAD CPrefab::g_ObjectLoad = nullptr;
 
 
 CPrefab::CPrefab()
-    : CAsset(PREFAB, false)
+    : FAsset(PREFAB, false)
       , m_ProtoObj(nullptr)
 {
 }
 
 CPrefab::CPrefab(const CPrefab& _Origin)
-    : CAsset(_Origin)
+    : FAsset(_Origin)
       , m_ProtoObj(nullptr)
 {
     if (nullptr != _Origin.m_ProtoObj)

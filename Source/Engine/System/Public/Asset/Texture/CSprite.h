@@ -1,9 +1,9 @@
 #pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CSprite :
-    public CAsset
+    public FAsset
 {
     Ptr<CTexture> m_Atlas;
     Vec2 m_LeftTopUV;

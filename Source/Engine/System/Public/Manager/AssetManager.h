@@ -1,15 +1,15 @@
 #pragma once
 #include "Common/singleton.h"
-#include "Engine/System/Public/Asset/Base/assets.h"
+#include "Engine/System/Public/Asset/Assets.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 
-class CAssetMgr :
-	public singleton<CAssetMgr>
+class FAssetManager :
+	public singleton<FAssetManager>
 {
-	SINGLE(CAssetMgr)
+	SINGLE(FAssetManager)
 
 private:
-	map<wstring, Ptr<CAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];
+	map<wstring, Ptr<FAsset>> m_mapAsset[static_cast<UINT>(ASSET_TYPE::END)];
 	bool m_bAssetChanged;
 
 public:
@@ -50,7 +50,7 @@ public:
 		return FindAsset<CComputeShader>(_Key).Get();
 	}
 
-	bool ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey);
+	bool ChangeAssetKey(Ptr<FAsset> _Asset, const wstring& _NewKey);
 
 	Ptr<CTexture> CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
 								DXGI_FORMAT _PixelFormat, UINT _BindFlag,
@@ -59,16 +59,16 @@ public:
 
 	Ptr<CMeshData> LoadFBX(const wstring& _strPath);
 
-	void GetAssetNames(ASSET_TYPE _Type, vector<wstring>& _vecAssetNames);
+	void GetAssetNames(ASSET_TYPE _Type, vector<wstring>& _veFAssetNames);
 
-	const map<wstring, Ptr<CAsset>>& GetAssets(ASSET_TYPE _Type)
+	const map<wstring, Ptr<FAsset>>& GetAssets(ASSET_TYPE _Type)
 	{
 		return m_mapAsset[static_cast<UINT>(_Type)];
 	}
 
 	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
 
-	Ptr<CAsset> CopyAsset(Ptr<CAsset> _Source);
+	Ptr<FAsset> CopyAsset(Ptr<FAsset> _Source);
 };
 
 template <typename T>
@@ -86,7 +86,7 @@ ASSET_TYPE GetAssetType()
 		return MATERIAL;
 	if constexpr (std::is_same_v<T, CPrefab>)
 		return PREFAB;
-	if constexpr (std::is_same_v<T, CSound>)
+	if constexpr (std::is_same_v<T, FSound>)
 		return SOUND;
 	if constexpr (std::is_same_v<T, CFlipbook>)
 		return FLIPBOOK;
@@ -103,9 +103,9 @@ ASSET_TYPE GetAssetType()
 }
 
 template <typename T>
-int CAssetMgr::AddAsset(const wstring& _Key, Ptr<T> _Asset)
+int FAssetManager::AddAsset(const wstring& _Key, Ptr<T> _Asset)
 {
-	static_assert(std::is_base_of<CAsset, T>::value, "T must derive from CAsset");
+	static_assert(std::is_base_of<FAsset, T>::value, "T must derive from FAsset");
 
 	ASSET_TYPE Type = _Asset->GetAssetType();
 
@@ -118,7 +118,7 @@ int CAssetMgr::AddAsset(const wstring& _Key, Ptr<T> _Asset)
 }
 
 template <typename T>
-Ptr<T> CAssetMgr::FindAsset(const wstring& _Key)
+Ptr<T> FAssetManager::FindAsset(const wstring& _Key)
 {
 	ASSET_TYPE Type = GetAssetType<T>();
 
@@ -131,9 +131,9 @@ Ptr<T> CAssetMgr::FindAsset(const wstring& _Key)
 }
 
 template <typename T>
-Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
+Ptr<T> FAssetManager::Load(const wstring& _Key, const wstring& _RelativePath)
 {
-	Ptr<CAsset> pAsset = FindAsset<T>(_Key).Get();
+	Ptr<FAsset> pAsset = FindAsset<T>(_Key).Get();
 
 	if (nullptr != pAsset)
 		return static_cast<T*>(pAsset.Get());
@@ -165,9 +165,9 @@ Ptr<T> CAssetMgr::Load(const wstring& _Key, const wstring& _RelativePath)
 
 // TEST: Engine Resource가 아닌 경우 key와 relative path가 동일하다고 가정
 template <typename T>
-Ptr<T> CAssetMgr::Load(const wstring& _RelativePath)
+Ptr<T> FAssetManager::Load(const wstring& _RelativePath)
 {
-	Ptr<CAsset> pAsset = FindAsset<T>(_RelativePath).Get();
+	Ptr<FAsset> pAsset = FindAsset<T>(_RelativePath).Get();
 
 	if (nullptr != pAsset)
 		return static_cast<T*>(pAsset.Get());

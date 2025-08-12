@@ -72,12 +72,12 @@ void ThrowableController::Begin()
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 
 	// Sound
-	m_BombSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_bomb.mp3");
-	m_SmokeSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_smoke.mp3");
-	m_PinSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_pin.mp3");
-	m_ThrowSound = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_throw.mp3");
-	m_BounceSound_1 = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_bounce1.mp3");
-	m_BounceSound_2 = CAssetMgr::GetInst()->Load<CSound>(L"Sound\\grenade_bounce2.mp3");
+	m_BombSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_bomb.mp3");
+	m_SmokeSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_smoke.mp3");
+	m_PinSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_pin.mp3");
+	m_ThrowSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_throw.mp3");
+	m_BounceSound_1 = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_bounce1.mp3");
+	m_BounceSound_2 = FAssetManager::GetInst()->Load<FSound>(L"Sound\\grenade_bounce2.mp3");
 
 	WeaponController::Begin();
 }
@@ -268,7 +268,7 @@ void ThrowableController::Triggered()
 				m_SmokeSoundIdx = FSoundManager::GetInst()->Play3DSound(m_SmokeSound, Transform()->GetRelativePos(), 1.f,
 				                                                    10000.f, 1, 1.f, true, true, -1);
 
-				Ptr<CPrefab> SmokeParticelPrefab = CAssetMgr::GetInst()->Load<CPrefab>(
+				Ptr<CPrefab> SmokeParticelPrefab = FAssetManager::GetInst()->Load<CPrefab>(
 					L"Prefab\\SmokeParticle.pref", L"Prefab\\SmokeParticle.pref");
 				Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 				vPos.y += 800.f;
@@ -284,7 +284,7 @@ void ThrowableController::Triggered()
 				m_BombSoundIdx = FSoundManager::GetInst()->Play3DSound(m_BombSound, Transform()->GetRelativePos(), 1.f,
 				                                                   10000.f, 1, 1.f, true, true, -1);
 
-				Ptr<CPrefab> GrenadeBombPrefab = CAssetMgr::GetInst()->Load<CPrefab>(
+				Ptr<CPrefab> GrenadeBombPrefab = FAssetManager::GetInst()->Load<CPrefab>(
 					L"Prefab\\GrenadeBomb.pref", L"Prefab\\GrenadeBomb.pref");
 				BombController* pBombScript = static_cast<BombController*>(GetScriptWithType(
 					GrenadeBombPrefab->GetProtoObject(), SCRIPT_TYPE::BOMBSCRIPT));

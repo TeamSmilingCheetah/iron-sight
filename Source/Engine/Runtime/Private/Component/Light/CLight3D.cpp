@@ -2,7 +2,7 @@
 #include "Runtime/Public/Component/Light/CLight3D.h"
 #include "Runtime/Public/Component/Camera/CCamera.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Manager/CRenderMgr.h"
 
 CLight3D::CLight3D()
@@ -21,19 +21,19 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 
 	if (LIGHT_TYPE::DIRECTIONAL == m_LightInfo.Type)
 	{
-		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
-		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DirLightMtrl");
+		m_VolumeMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
+		m_LightMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"DirLightMtrl");
 	}
 
 	else if (LIGHT_TYPE::POINT == m_LightInfo.Type)
 	{
-		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh");
-		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"PointLightMtrl");
+		m_VolumeMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"SphereMesh");
+		m_LightMtrl = FAssetManager::GetInst()->FindAsset<CMaterial>(L"PointLightMtrl");
 	}
 
 	else if (LIGHT_TYPE::SPOT == m_LightInfo.Type)
 	{
-		// m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh");
+		// m_VolumeMesh = FAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh");
 	}
 }
 
@@ -95,7 +95,7 @@ void CLight3D::SaveComponent(FILE* _File)
 	fwrite(&m_LightInfo, sizeof(tLight3DInfo), 1, _File);
 
 	SaveAssetRef(m_VolumeMesh, _File);
-	SaveAssetRef(m_LightMtrl, _File);	
+	SaveAssetRef(m_LightMtrl, _File);
 }
 
 void CLight3D::LoadComponent(FILE* _File)

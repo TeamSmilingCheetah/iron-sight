@@ -2,7 +2,7 @@
 #include "Client/UI/Public/SpriteEditor/SE_Detail.h"
 #include "Client/System/Public/CImGuiMgr.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Client/UI/Public/Editor/ListUI.h"
 #include "Client/UI/Public/Editor/TreeUI.h"
 #include "Client/UI/Public/SpriteEditor/SE_AtlasView.h"
@@ -55,7 +55,7 @@ void SE_Detail::Atlas()
 			const ImGuiPayload* pPayload = ImGui::GetDragDropPayload();
 			TreeNode* pNode = *static_cast<TreeNode**>(pPayload->Data);
 			tFSNode* pFSNode = reinterpret_cast<tFSNode*>(pNode->GetData());
-			Ptr<CAsset> pAsset = pFSNode->Asset;
+			Ptr<FAsset> pAsset = pFSNode->Asset;
 			if (pAsset == nullptr)
 				pAsset = ContentUI::LoadAsset(pFSNode);
 
@@ -74,7 +74,7 @@ void SE_Detail::Atlas()
 		auto pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 		pListUI->SetName("Texture");
 		vector<wstring> vecTexNames;
-		CAssetMgr::GetInst()->GetAssetNames(TEXTURE, vecTexNames);
+		FAssetManager::GetInst()->GetAssetNames(TEXTURE, vecTexNames);
 		pListUI->AddItem(vecTexNames);
 		pListUI->AddDynamicDoubleCliked(
 			this, static_cast<EUI_DELEGATE_2>(&SE_Detail::SelectTexture));
@@ -120,7 +120,7 @@ void SE_Detail::SelectTexture(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 
 	// 해당 항목 에셋을 찾아서, MeshRenderComponent 가 해당 메시를 참조하게 한다.
-	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(
+	Ptr<CTexture> pTex = FAssetManager::GetInst()->FindAsset<CTexture>(
 		wstring(pStr->begin(), pStr->end()));
 	if (nullptr == pTex)
 		return;

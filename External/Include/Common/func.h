@@ -1,6 +1,6 @@
 #pragma once
 #include "Ptr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 
 class CGameObject;
@@ -92,7 +92,7 @@ void LoadAssetRef(Ptr<T>& _Asset, FILE* _File)
 		LoadWString(Key, _File);
 		LoadWString(Path, _File);
 
-		_Asset = CAssetMgr::GetInst()->template Load<T>(Key, Path);
+		_Asset = FAssetManager::GetInst()->template Load<T>(Key, Path);
 	}
 }
 
@@ -109,7 +109,7 @@ T* LoadAssetRef(FILE* _File)
 		wstring Key, Path;
 		LoadWString(Key, _File);
 		LoadWString(Path, _File);
-		pAsset = CAssetMgr::GetInst()->template Load<T>(Key, Path);
+		pAsset = FAssetManager::GetInst()->template Load<T>(Key, Path);
 	}
 
 	return pAsset.Get();

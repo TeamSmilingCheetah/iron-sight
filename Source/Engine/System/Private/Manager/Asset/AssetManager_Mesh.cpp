@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 
-void CAssetMgr::CreateEngineMesh()
+void FAssetManager::CreateEngineMesh()
 {
     Ptr<CMesh> pMesh = nullptr;
 

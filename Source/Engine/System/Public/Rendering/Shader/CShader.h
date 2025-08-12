@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CShader :
-	public CAsset
+	public FAsset
 {
 protected:
 	ComPtr<ID3DBlob> m_ErrBlob;

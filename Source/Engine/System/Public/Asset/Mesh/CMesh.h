@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CStructuredBuffer;
 
@@ -23,7 +23,7 @@ struct tIndexInfo
  * @var m_BoundMax   메시의 로컬 바운딩 박스 최대 좌표
  */
 class CMesh :
-	public CAsset
+	public FAsset
 {
 private:
 	ComPtr<ID3D11Buffer> m_VB;

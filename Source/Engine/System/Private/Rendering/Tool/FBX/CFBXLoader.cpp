@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Engine/System/Public/Rendering/Tool/FBX/CFBXLoader.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 
 CFBXLoader::CFBXLoader()
@@ -482,7 +482,7 @@ void CFBXLoader::LoadTexture()
 				}
 
 				path_dest = CPathMgr::GetInst()->GetRelativePath(path_dest);
-				CAssetMgr::GetInst()->Load<CTexture>(path_dest, path_dest);
+				FAssetManager::GetInst()->Load<CTexture>(path_dest, path_dest);
 
 				switch (k)
 				{
@@ -524,7 +524,7 @@ void CFBXLoader::CreateMaterial()
 			m_vecContainer[i].vecMtrl[j].strMtrlName = strPath;
 
 			// 이미 로딩된 재질이면 로딩된 것을 사용
-			Ptr<CMaterial> pMaterial = CAssetMgr::GetInst()->FindAsset<CMaterial>(strPath);
+			Ptr<CMaterial> pMaterial = FAssetManager::GetInst()->FindAsset<CMaterial>(strPath);
 			if (nullptr != pMaterial)
 				continue;
 
@@ -535,25 +535,25 @@ void CFBXLoader::CreateMaterial()
 			pMaterial->SetRelativePath(strPath);
 
 			pMaterial->SetShader(
-				CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"Std3D_DeferredShader"));
+				FAssetManager::GetInst()->FindAsset<CGraphicShader>(L"Std3D_DeferredShader"));
 
 			wstring strTexKey = m_vecContainer[i].vecMtrl[j].strDiff;
-			Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(strTexKey);
+			Ptr<CTexture> pTex = FAssetManager::GetInst()->FindAsset<CTexture>(strTexKey);
 			if (nullptr != pTex)
 				pMaterial->SetTexParam(TEX_0, pTex);
 
 			strTexKey = m_vecContainer[i].vecMtrl[j].strNormal;
-			pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(strTexKey);
+			pTex = FAssetManager::GetInst()->FindAsset<CTexture>(strTexKey);
 			if (nullptr != pTex)
 				pMaterial->SetTexParam(TEX_1, pTex);
 
 			strTexKey = m_vecContainer[i].vecMtrl[j].strSpec;
-			pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(strTexKey);
+			pTex = FAssetManager::GetInst()->FindAsset<CTexture>(strTexKey);
 			if (nullptr != pTex)
 				pMaterial->SetTexParam(TEX_2, pTex);
 
 			strTexKey = m_vecContainer[i].vecMtrl[j].strEmis;
-			pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(strTexKey);
+			pTex = FAssetManager::GetInst()->FindAsset<CTexture>(strTexKey);
 			if (nullptr != pTex)
 				pMaterial->SetTexParam(TEX_3, pTex);
 
@@ -563,7 +563,7 @@ void CFBXLoader::CreateMaterial()
 				, m_vecContainer[i].vecMtrl[j].tMtrl.vAmb
 				, m_vecContainer[i].vecMtrl[j].tMtrl.vEmv);
 
-			CAssetMgr::GetInst()->AddAsset<CMaterial>(pMaterial->GetKey(), pMaterial.Get());
+			FAssetManager::GetInst()->AddAsset<CMaterial>(pMaterial->GetKey(), pMaterial.Get());
 			pMaterial->Save(strPath);
 		}
 	}

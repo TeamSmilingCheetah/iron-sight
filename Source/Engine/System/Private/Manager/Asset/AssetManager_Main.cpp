@@ -1,29 +1,37 @@
 #include "pch.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CPathMgr.h"
 
-CAssetMgr::CAssetMgr()
+FAssetManager::FAssetManager()
 	: m_bAssetChanged(false)
 {
 }
 
-CAssetMgr::~CAssetMgr()
+FAssetManager::~FAssetManager() = default;
+
+void FAssetManager::Shutdown()
 {
+	for (auto& AssetBucket : m_mapAsset)
+	{
+		for (auto iter = AssetBucket.begin(); iter != AssetBucket.end();)
+		{
+			if (iter->second.Get())
+			{
+				iter = AssetBucket.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
+
+		AssetBucket.clear();
+	}
+
+	LOG_INFO("[Engine][AssetManager] Shutdown Complete");
 }
 
-void CAssetMgr::Shutdown()
-{
-    // 모든 에셋 컨테이너를 비워 참조를 해제하여 각 에셋의 소멸자가 호출되도록 한다.
-    for (auto& assetBucket : m_mapAsset)
-    {
-        assetBucket.clear();
-    }
-
-    // 변경 플래그 초기화
-    m_bAssetChanged = false;
-}
-
-Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
+Ptr<CTexture> FAssetManager::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height,
                                        DXGI_FORMAT _PixelFormat, UINT _BindFlag, D3D11_USAGE _Usage)
 {
 	Ptr<CTexture> pTex = FindAsset<CTexture>(_Key);
@@ -44,7 +52,7 @@ Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _H
 	return pTex;
 }
 
-Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, ComPtr<ID3D11Texture2D> _Tex2D)
+Ptr<CTexture> FAssetManager::CreateTexture(const wstring& _Key, ComPtr<ID3D11Texture2D> _Tex2D)
 {
 	Ptr<CTexture> pTex = FindAsset<CTexture>(_Key);
 
@@ -64,7 +72,7 @@ Ptr<CTexture> CAssetMgr::CreateTexture(const wstring& _Key, ComPtr<ID3D11Texture
 	return pTex;
 }
 
-void CAssetMgr::GetAssetNames(ASSET_TYPE _Type, vector<wstring>& _vecAssetNames)
+void FAssetManager::GetAssetNames(ASSET_TYPE _Type, vector<wstring>& _vecAssetNames)
 {
 	for (const auto& pair : m_mapAsset[static_cast<UINT>(_Type)])
 	{
@@ -72,9 +80,9 @@ void CAssetMgr::GetAssetNames(ASSET_TYPE _Type, vector<wstring>& _vecAssetNames)
 	}
 }
 
-void CAssetMgr::DeleteAsset(ASSET_TYPE _Type, const wstring& _Key)
+void FAssetManager::DeleteAsset(ASSET_TYPE _Type, const wstring& _Key)
 {
-	map<wstring, Ptr<CAsset>>& mapAsset = m_mapAsset[static_cast<UINT>(_Type)];
+	map<wstring, Ptr<FAsset>>& mapAsset = m_mapAsset[static_cast<UINT>(_Type)];
 
 	auto iter = mapAsset.find(_Key);
 
@@ -86,7 +94,7 @@ void CAssetMgr::DeleteAsset(ASSET_TYPE _Type, const wstring& _Key)
 	m_bAssetChanged = true;
 }
 
-Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
+Ptr<CMeshData> FAssetManager::LoadFBX(const wstring& _strPath)
 {
 	wstring strFileName = path(_strPath).stem();
 
@@ -112,7 +120,7 @@ Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
 }
 
 // map 수정 여부를 반환함
-bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
+bool FAssetManager::ChangeAssetKey(Ptr<FAsset> _Asset, const wstring& _NewKey)
 {
 	ASSET_TYPE type = _Asset->GetAssetType();
 	UINT typeToIndex = static_cast<UINT>(type);
@@ -128,7 +136,7 @@ bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	}
 
 	// Engine 애셋 여부
-	bool isEngineRes = _Asset->IsEngineAsset();
+	bool isEngineRes = _Asset->IsEngineResource();
 
 	// 파일로 존재하는 Asset은 파일 시스템에서도 변경해준다.
 	if (!isEngineRes)
@@ -154,9 +162,9 @@ bool CAssetMgr::ChangeAssetKey(Ptr<CAsset> _Asset, const wstring& _NewKey)
 	return true;
 }
 
-Ptr<CAsset> CAssetMgr::CopyAsset(Ptr<CAsset> _Source)
+Ptr<FAsset> FAssetManager::CopyAsset(Ptr<FAsset> _Source)
 {
-	Ptr<CAsset> pClone = _Source->Clone();
+	Ptr<FAsset> pClone = _Source->Clone();
 
 	if (pClone != nullptr)
 	{

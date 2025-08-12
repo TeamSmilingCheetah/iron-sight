@@ -3,7 +3,7 @@
 #include "Common/Ptr.h"
 #include "Engine/System/Public/Manager/CScriptMgr.h"
 
-class CAsset;
+class FAsset;
 class CGameObject;
 class ComponentUI;
 class ScriptUI;
@@ -16,14 +16,14 @@ class Inspector :
 	ComponentUI* m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::END)];
 	vector<ScriptUI*> m_vecScriptUI;
 
-	Ptr<CAsset> m_TargetAsset;
+	Ptr<FAsset> m_TargetAsset;
 	AssetUI* m_arrAssetUI[static_cast<UINT>(END)];
 
 	int                 m_ComponentListIdx;
 
 public:
 	void SetTargetObject(CGameObject* _Target);
-	void SetTargetAsset(Ptr<CAsset> _Asset);
+	void SetTargetAsset(Ptr<FAsset> _Asset);
 
 	void Render_Update() override;
 

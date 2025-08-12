@@ -3,7 +3,7 @@
 #include "Client/Rendering/Public/ComputeShaderUI.h"
 #include "Client/Rendering/Public/GraphicShaderUI.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/System/Public/Asset/Base/CAsset.h"
+#include "Engine/System/Public/Asset/Base/Asset.h"
 #include "Engine/Runtime/Public/Component/Base/components.h"
 #include "Client/UI/Public/Asset/AssetUI.h"
 #include "Client/UI/Public/Asset/FlipbookUI.h"
@@ -210,7 +210,7 @@ void Inspector::SetTargetObject(CGameObject* _Target)
 		SetTargetAsset(nullptr);
 }
 
-void Inspector::SetTargetAsset(Ptr<CAsset> _Asset)
+void Inspector::SetTargetAsset(Ptr<FAsset> _Asset)
 {
 	m_TargetAsset = _Asset;
 

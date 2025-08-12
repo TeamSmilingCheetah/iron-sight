@@ -5,7 +5,7 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/System/Public/Manager/CObjectPoolMgr.h"
-#include "Engine/System/Public/Manager/CAssetMgr.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 
@@ -31,12 +31,12 @@ MissileProjectile::~MissileProjectile()
 
 void MissileProjectile::Begin()
 {
-	// CAssetMgr 의 재질을 복사시킨 재질을 참조
-	//Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl");
+	// FAssetMgr 의 재질을 복사시킨 재질을 참조
+	//Ptr<CMaterial> pMtrl = FAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl");
 	//MeshRender()->SetMaterial(pMtrl, 0);
 	//MeshRender()->GetDynamicMaterial(0);
 
-	//Ptr<CTexture> pMissileTex = CAssetMgr::GetInst()->Load<CTexture>(
+	//Ptr<CTexture> pMissileTex = FAssetMgr::GetInst()->Load<CTexture>(
 	//	L"Missile", L"Texture\\missile.png");
 	//MeshRender()->GetMaterial(0)->SetTexParam(TEX_0, pMissileTex);
 }
@@ -155,7 +155,7 @@ void MissileProjectile::BeginOverlap(IColliderBase* InCollider, IColliderBase* I
 
 		// 그 외의 경우 타겟위치에 데칼을 설정한다.
 		// Decal Prefab을 불러온다.
-		Ptr<CPrefab> DecalPrefab = CAssetMgr::GetInst()->Load<CPrefab>(L"Prefab\\asd.pref", L"Prefab\\asd.pref");
+		Ptr<CPrefab> DecalPrefab = FAssetManager::GetInst()->Load<CPrefab>(L"Prefab\\asd.pref", L"Prefab\\asd.pref");
 
 
 		Vec3 vPos = OtherObject->Transform()->GetRelativePos();

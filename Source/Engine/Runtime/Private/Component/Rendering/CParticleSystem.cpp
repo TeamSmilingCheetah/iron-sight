@@ -2,7 +2,7 @@
 #include "Runtime/Public/Component/Rendering/CParticleSystem.h"
 
 #include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Manager/CTimeMgr.h"
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
@@ -15,16 +15,16 @@ CParticleSystem::CParticleSystem()
 	  , m_MaxParticleCount(1000)
 {
 	// Mesh / Material
-	SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
-	SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"ParticleMtrl"), 0);
+	SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"PointMesh"));
+	SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"ParticleMtrl"), 0);
 
 	// ParticleTick ComputeShader
-	m_TickCS = static_cast<CParticleTickCS*>(CAssetMgr::GetInst()->FindAsset<CComputeShader>(
+	m_TickCS = static_cast<CParticleTickCS*>(FAssetManager::GetInst()->FindAsset<CComputeShader>(
 			L"ParticleTickCS").
 		Get());
 
 	// Particle Texture
-	m_ParticleTex = CAssetMgr::GetInst()->Load<CTexture>(
+	m_ParticleTex = FAssetManager::GetInst()->Load<CTexture>(
 		L"texture\\particle\\TX_GlowScene_2.png");
 
 	// Particle Buffer
@@ -36,7 +36,7 @@ CParticleSystem::CParticleSystem()
 	m_SpawnCountBuffer->Create(sizeof(tSpawnCount), 1, SRV_UAV, true, nullptr);
 
 	// ComputeShader
-	m_TickCS = static_cast<CParticleTickCS*>(CAssetMgr::GetInst()->FindAsset<CComputeShader>(
+	m_TickCS = static_cast<CParticleTickCS*>(FAssetManager::GetInst()->FindAsset<CComputeShader>(
 			L"ParticleTickCS").
 		Get());
 

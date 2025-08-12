@@ -6,7 +6,7 @@
 #include "Runtime/Public/Component/Light/CLight3D.h"
 #include "Runtime/Public/Component/Rendering/CMeshRender.h"
 #include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/CAssetMgr.h"
+#include "System/Public/Manager/AssetManager.h"
 #include "System/Public/Manager/CFontMgr.h"
 #include "System/Public/Manager/CKeyMgr.h"
 #include "System/Public/Manager/CTimeMgr.h"
@@ -187,26 +187,26 @@ void CRenderMgr::Render_Debug()
 			{
 			case DEBUG_SHAPE::RECT:
 				m_DbgObj->MeshRender()->SetMesh(
-					CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));
+					FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::CIRCLE:
 				m_DbgObj->MeshRender()->SetMesh(
-					CAssetMgr::GetInst()->FindAsset<CMesh>(L"CircleMesh_Debug"));
+					FAssetManager::GetInst()->FindAsset<CMesh>(L"CircleMesh_Debug"));
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::CROSS:
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::LINE:
 			{
 				m_DbgObj->MeshRender()->SetMesh(
-					CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
+					FAssetManager::GetInst()->FindAsset<CMesh>(L"PointMesh"));
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeLineMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugShapeLineMtrl"), 0);
 				m_DbgObj->MeshRender()->GetMaterial(0)->
 					SetScalarParam(VEC4_1, iter->WorldPos);
 				m_DbgObj->MeshRender()->GetMaterial(0)->SetScalarParam(VEC4_2, iter->Scale);
@@ -214,21 +214,21 @@ void CRenderMgr::Render_Debug()
 			break;
 			case DEBUG_SHAPE::CUBE:
 				m_DbgObj->MeshRender()->SetMesh(
-					CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh_Debug"));
+					FAssetManager::GetInst()->FindAsset<CMesh>(L"CubeMesh_Debug"));
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::SPHERE:
 				m_DbgObj->MeshRender()->SetMesh(
-					CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+					FAssetManager::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeSphereMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugShapeSphereMtrl"), 0);
 				break;
 			case DEBUG_SHAPE::SKELETON:
 				m_DbgObj->MeshRender()->SetMesh(
-					CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
+					FAssetManager::GetInst()->FindAsset<CMesh>(L"PointMesh"));
 				m_DbgObj->MeshRender()->SetMaterial(
-					CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugSkeletonMtrl"), 0);
+					FAssetManager::GetInst()->FindAsset<CMaterial>(L"DebugSkeletonMtrl"), 0);
 				break;
 			}
 
@@ -443,12 +443,12 @@ void CRenderMgr::Render_Clear()
 
 void CRenderMgr::MergeDeferredTarget()
 {
-	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
-	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_4, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
+	m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 	m_MergeMtrl->SetScalarParam(INT_0, 0);
 	m_MergeMtrl->Binding();
 
@@ -464,7 +464,7 @@ void CRenderMgr::MergeSpecifyTarget()
 {
 	if (nullptr != m_SpecifyTarget)
 	{
-		Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+		Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
 		m_MergeMtrl->SetTexParam(TEX_0, m_SpecifyTarget);
 		m_MergeMtrl->SetScalarParam(INT_0, 1);
 		m_MergeMtrl->Binding();
@@ -480,9 +480,9 @@ void CRenderMgr::MergeSpecifyTarget()
 
 void CRenderMgr::MergeMinimapTarget()
 {
-	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
 
-	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
 	m_MergeMtrl->SetScalarParam(INT_0, 1);
 	m_MergeMtrl->Binding();
 
@@ -520,6 +520,6 @@ void CRenderMgr::RegisterCamera(CCamera* _Cam, UINT _Priority)
 
 void CRenderMgr::CopyRenderTarget()
 {
-	Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
+	Ptr<CTexture> pRTTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
 	CONTEXT->CopyResource(m_PostProcessTex->GetTex2D().Get(), pRTTex->GetTex2D().Get());
 }

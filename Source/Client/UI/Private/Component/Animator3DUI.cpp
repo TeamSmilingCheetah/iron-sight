@@ -144,7 +144,7 @@ void Animator3DUI::Render_Update()
 
 				strFilePath = strFilePath.substr(strFilePath.find(Content) + Content.size(), strFilePath.size());
 
-				pAnim3D->AddAnimClip(CAssetMgr::GetInst()->Load<CAnimation>(strFilePath));
+				pAnim3D->AddAnimClip(FAssetManager::GetInst()->Load<CAnimation>(strFilePath));
 			}
 		}
 	}

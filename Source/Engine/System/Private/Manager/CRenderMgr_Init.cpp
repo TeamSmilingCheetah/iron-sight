@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "System/Public/Asset/Base/assets.h"
-#include "System/Public/Manager/CAssetMgr.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Rendering/RenderTarget/CMRT.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+
+#include "Engine/System/Public/Manager/AssetManager.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 void CRenderMgr::Init()
 {
@@ -21,7 +21,7 @@ void CRenderMgr::Init()
 	m_DbgObj->AddComponent(new CMeshRender);
 
 	// PostProcess 용 텍스쳐
-	m_PostProcessTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"PostProcessTex");
+	m_PostProcessTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"PostProcessTex");
 }
 
 void CRenderMgr::CreateMRT()
@@ -36,8 +36,8 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)] = new CMRT;
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->SetName(L"SwapChain");
 
-		Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
-		Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
+		Ptr<CTexture> pRTTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
+		Ptr<CTexture> pDSTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
 
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->Create(&pRTTex, 1, pDSTex);
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->
@@ -53,31 +53,31 @@ void CRenderMgr::CreateMRT()
 
 		Ptr<CTexture> arrTex[8] =
 		{
-			CAssetMgr::GetInst()->CreateTexture(L"ColorTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"ColorTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R8G8B8A8_UNORM,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
-			CAssetMgr::GetInst()->CreateTexture(L"NormalTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"NormalTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R32G32B32A32_FLOAT,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
-			CAssetMgr::GetInst()->CreateTexture(L"PositionTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"PositionTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R32G32B32A32_FLOAT,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
-			CAssetMgr::GetInst()->CreateTexture(L"EmissiveTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"EmissiveTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R8G8B8A8_UNORM,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
-			CAssetMgr::GetInst()->CreateTexture(L"DataTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"DataTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R32G32B32A32_FLOAT,
@@ -85,7 +85,7 @@ void CRenderMgr::CreateMRT()
 												D3D11_BIND_SHADER_RESOURCE),
 		};
 
-		Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
+		Ptr<CTexture> pDSTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
 
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Create(arrTex, 5, pDSTex);
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->SetClearColor(
@@ -101,8 +101,8 @@ void CRenderMgr::CreateMRT()
 
 		Ptr<CTexture> arrTex[8] =
 		{
-			CAssetMgr::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"),
-			CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"),
+			FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"),
+			FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"),
 		};
 
 		Ptr<CTexture> pDSTex = nullptr;
@@ -118,13 +118,13 @@ void CRenderMgr::CreateMRT()
 
 		Ptr<CTexture> arrTex[8] =
 		{
-			CAssetMgr::GetInst()->CreateTexture(L"DiffuseTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"DiffuseTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R32G32B32A32_FLOAT,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
-			CAssetMgr::GetInst()->CreateTexture(L"SpecularTargetTex"
+			FAssetManager::GetInst()->CreateTexture(L"SpecularTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
 												, DXGI_FORMAT_R32G32B32A32_FLOAT,
@@ -144,12 +144,12 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)] = new CMRT;
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::MINIMAP)]->SetName(L"Minimap");
 
-		Ptr<CTexture> pMinimapTex = CAssetMgr::GetInst()->CreateTexture(
+		Ptr<CTexture> pMinimapTex = FAssetManager::GetInst()->CreateTexture(
 			L"MinimapTargetTex", 256, 256,
 			DXGI_FORMAT_R8G8B8A8_UNORM,
 			D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 
-		Ptr<CTexture> pMinimapDepth = CAssetMgr::GetInst()->CreateTexture(
+		Ptr<CTexture> pMinimapDepth = FAssetManager::GetInst()->CreateTexture(
 			L"MinimapDepthTex", 256, 256,
 			DXGI_FORMAT_D24_UNORM_S8_UINT,
 			D3D11_BIND_DEPTH_STENCIL);
@@ -169,13 +169,13 @@ void CRenderMgr::CreateDebugMtrl()
 	pShader->CreatePixelShader(L"debug_shape_ps.cso", L"debug.fx", L"PS_DebugShape");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
-	CAssetMgr::GetInst()->AddAsset(L"DebugShapeShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"DebugShapeShader", pShader);
 
 	// DebugShapeMtrl
 	Ptr<CMaterial> pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"DebugShapeMtrl");
 	pMtrl->SetShader(pShader);
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+	FAssetManager::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 
 	// ================
@@ -186,12 +186,12 @@ void CRenderMgr::CreateDebugMtrl()
 	pShader->CreatePixelShader(L"debug_shape_sphere_ps.cso", L"debug.fx", L"PS_DebugShapeSphere");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
-	CAssetMgr::GetInst()->AddAsset(L"DebugShapeSphereShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"DebugShapeSphereShader", pShader);
 
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"DebugShapeSphereMtrl");
 	pMtrl->SetShader(pShader);
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+	FAssetManager::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 
 	// ==============
@@ -203,12 +203,12 @@ void CRenderMgr::CreateDebugMtrl()
 	pShader->CreatePixelShader(L"debug_shape_line_ps.cso", L"debug.fx", L"PS_DebugShapeLine");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST); // 입력 메쉬 기준
-	CAssetMgr::GetInst()->AddAsset(L"DebugShapeLineShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"DebugShapeLineShader", pShader);
 
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"DebugShapeLineMtrl");
 	pMtrl->SetShader(pShader);
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
+	FAssetManager::GetInst()->AddAsset<CMaterial>(pMtrl->GetName(), pMtrl);
 
 	// ==============
 	// Skeleton Debug
@@ -219,12 +219,12 @@ void CRenderMgr::CreateDebugMtrl()
 	pShader->CreatePixelShader(L"debug_skeleton_ps.cso", L"debug.fx", L"PS_DebugSkeleton");
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	CAssetMgr::GetInst()->AddAsset(L"DebugSkeletonShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"DebugSkeletonShader", pShader);
 
 	pMtrl = new CMaterial(true);
 	pMtrl->SetName(L"DebugSkeletonMtrl");
 	pMtrl->SetShader(pShader);
-	CAssetMgr::GetInst()->AddAsset(pMtrl->GetName(), pMtrl);
+	FAssetManager::GetInst()->AddAsset(pMtrl->GetName(), pMtrl);
 }
 
 void CRenderMgr::CreateRenderMtrl()
@@ -237,12 +237,12 @@ void CRenderMgr::CreateRenderMtrl()
 	pShader->CreatePixelShader(L"merge_ps.cso", L"merge.fx", L"PS_Merge");
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
-	CAssetMgr::GetInst()->AddAsset(L"MergeShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"MergeShader", pShader);
 
 	m_MergeMtrl = new CMaterial(true);
 	m_MergeMtrl->SetName(L"MergeMtrl");
 	m_MergeMtrl->SetShader(pShader);
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(m_MergeMtrl->GetName(), m_MergeMtrl);
+	FAssetManager::GetInst()->AddAsset<CMaterial>(m_MergeMtrl->GetName(), m_MergeMtrl);
 
 
 	// ==============
@@ -253,14 +253,14 @@ void CRenderMgr::CreateRenderMtrl()
 	pShader->CreatePixelShader(L"directional_light_ps.cso", L"light.fx", L"PS_DirLight");
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ONE_ONE);
-	CAssetMgr::GetInst()->AddAsset(L"DirLightShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"DirLightShader", pShader);
 
 	Ptr<CMaterial> pLightMtrl = new CMaterial(true);
 	pLightMtrl->SetName(L"DirLightMtrl");
 	pLightMtrl->SetShader(pShader);
-	pLightMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	pLightMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
+	pLightMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pLightMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	FAssetManager::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
 
 
 	// ================
@@ -272,14 +272,14 @@ void CRenderMgr::CreateRenderMtrl()
 	pShader->SetRSState(RS_TYPE::CULL_FRONT);
 	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSState(BS_TYPE::ONE_ONE);
-	CAssetMgr::GetInst()->AddAsset(L"PointLightShader", pShader);
+	FAssetManager::GetInst()->AddAsset(L"PointLightShader", pShader);
 
 	pLightMtrl = new CMaterial(true);
 	pLightMtrl->SetName(L"PointLightMtrl");
 	pLightMtrl->SetShader(pShader);
-	pLightMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	pLightMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
-	CAssetMgr::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
+	pLightMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pLightMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	FAssetManager::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
 }
 
 CCamera* CRenderMgr::GetMainCamera()

@@ -1,11 +1,22 @@
 #include "pch.h"
 #include "Engine/System/Public/Manager/SoundManager.h"
 #include "Engine/System/Public/Manager/CTimeMgr.h"
-#include "Engine/System/Public/Asset/Audio/CSound.h"
+#include "Engine/System/Public/Asset/Audio/Sound.h"
 
 FSoundManager::FSoundManager() = default;
 
-FSoundManager::~FSoundManager() = default;
+FSoundManager::~FSoundManager()
+{
+	if (FMODSystem)
+	{
+		{
+			FMODSystem->release();
+			FMODSystem = nullptr;
+		}
+	}
+
+	LOG_INFO("[Engine][SoundManager] Instance Deleted");
+}
 
 void FSoundManager::Init()
 {
@@ -30,21 +41,13 @@ void FSoundManager::Init()
 
 void FSoundManager::Shutdown()
 {
-	Sound3Ds.clear();
-
 	if (GlobalLowPassDSP)
 	{
 		GlobalLowPassDSP->release();
 		GlobalLowPassDSP = nullptr;
 	}
 
-	if (FMODSystem)
-	{
-		{
-			FMODSystem->release();
-			FMODSystem = nullptr;
-		}
-	}
+	LOG_INFO("[Engine][SoundManager] Shutdown Complete");
 }
 
 /*
@@ -53,7 +56,7 @@ void FSoundManager::Shutdown()
  * Volume : 0 ~ 1(Volume), overlap : 소리 중첩 가능여부, inputoverlap : 이미 등록된 id를 다시 재생
  * _inputSoundID : -1이면 평소대로, 그 외이면 id검색해서 중복되면 추가처리
  */
-int FSoundManager::Play3DSound(Ptr<CSound> InSound, const Vec3& InPosition, float InMinDist, float InMaxDist, int InRoopCount, float InVolume, bool InOverlap, bool InInputOverlap, int InInputSoundID)
+int FSoundManager::Play3DSound(Ptr<FSound> InSound, const Vec3& InPosition, float InMinDist, float InMaxDist, int InRoopCount, float InVolume, bool InOverlap, bool InInputOverlap, int InInputSoundID)
 {
 	if (nullptr == InSound)
 	{
@@ -277,7 +280,7 @@ void FSoundManager::StopGameBGM()
 	}
 }
 
-void FSoundManager::SetGameBGM(Ptr<CSound> InBGM, bool InStopPrevBGM)
+void FSoundManager::SetGameBGM(Ptr<FSound> InBGM, bool InStopPrevBGM)
 {
 	if (InStopPrevBGM && nullptr != GameBGM)
 	{
