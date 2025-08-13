@@ -4,6 +4,7 @@
 #include "Engine/System/Public/Asset/Prefab/CPrefab.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 
+
 class CGameObject;
 class FLandscape;
 class InteractionHandler;
@@ -11,6 +12,19 @@ class KillinfoUIScript;
 class InventoryController;
 class CameraController;
 class CameraEffect;
+
+enum class PLAYER_STATE
+{
+	Player_Dead,
+	Player_Idle,
+	Player_Jump,
+	Player_Grenade_Prepare,
+	Player_Grenade_Throw_High,
+	Player_Grenade_Throw_Low,
+	Player_Gun_Fire,
+	Player_Gun_Reload,
+	Player_Heal,
+};
 
 enum class MOTION_STATE : uint8_t
 {
@@ -53,13 +67,13 @@ private:
 	float m_MouseSensitivity;
 
 	bool m_bReloading;
-	bool m_bShoot;
 	bool m_bThrowBoom;
 	bool m_bHitSoundPlayed;
 	bool m_bFirstFootStep;
 
 	float m_HitSoundAccTime;
 	float m_FootStepSoundAccTime;
+	float m_StateAccTime;
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
@@ -141,17 +155,17 @@ private:
 	//void AnimationControl();
 
 	bool CanRun();
+	bool CanReload();
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
 
-	void SetShot(bool PShot) { m_bShoot = PShot; }
 	void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
 	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
 	void SetMouseActive(bool _b);
+	void ResetAccTime() { m_StateAccTime = 0.f; }
 
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
-	bool IsShot() const { return m_bShoot; }
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
 
 	bool IsGround() const { return m_IsGround; }
@@ -174,8 +188,8 @@ public:
 
 	Vec3 GetPlayerVelocity() const { return m_Velocity; }
 
-	const wstring& GetCurStateName();
-
+	PLAYER_STATE GetStateEnum() const;
+	
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;
@@ -187,8 +201,10 @@ public:
 	// FinalTick
 	void ProgressHealState();
 	void ProgressReloadState();
+	void ProgressFireState();
 	void ProgressThrowPrepareState();
 	void ProgressPlayerMove();
+
 
 	// Exit
 	void ExitThrowPrepareState();

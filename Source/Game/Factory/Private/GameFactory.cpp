@@ -214,6 +214,8 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Reload");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Grenade_Prepare");
 
+	StateMachine::AddTransition(Player, L"Player_Gun_Fire", L"Player_Gun_Reload");
+
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_Low");
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
 

@@ -148,3 +148,12 @@ void DeleteMap(map<T1, T2>& _map)
 	}
 	_map.clear();
 }
+
+
+template <typename EnumType>
+EnumType WstringToEnum(const std::wstring& _str, EnumType _defaultValue = static_cast<EnumType>(0))
+{
+	string str = WStringToString(_str);
+	auto opt = magic_enum::enum_cast<EnumType>(str);
+	return opt.value_or(_defaultValue);
+}

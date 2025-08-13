@@ -42,7 +42,7 @@ void Player_Dead::FinalTick_Override()
 {
 }
 
-void Player_Dead::Exit()
+void Player_Dead::Exit_Override()
 {
 }
 

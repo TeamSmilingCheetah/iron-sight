@@ -38,9 +38,10 @@ void Player_Gun_Fire::Enter_Override()
 
 void Player_Gun_Fire::FinalTick_Override()
 {
+	GetPlayerScript()->ProgressFireState();
 }
 
-void Player_Gun_Fire::Exit()
+void Player_Gun_Fire::Exit_Override()
 {
 }
 

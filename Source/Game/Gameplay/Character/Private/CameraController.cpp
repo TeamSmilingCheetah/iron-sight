@@ -293,10 +293,9 @@ void CameraController::CameraPerspectiveMove()
 	// 반동
 	//
 	// 플레이어가 총기를 발사하는 중이라면
-	if (m_PlayerScript->IsShot())
+	if (m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Gun_Fire)
 	{
 		m_RecoilTime += DT;
-
 		ApplyRecoil();
 	}
 
@@ -356,8 +355,19 @@ void CameraController::ApplyZoom(bool _IsADS)
 
 void CameraController::ApplyRecoil()
 {
-	// 총기의 발사 딜레이 시간을 가져와 반동 텀으로 둔다.
 	GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
+	if (pGunScript == nullptr)
+	{
+		return;
+	}
+
+	// 실제로 발사중이 아니라면 반동을 적용하지 않는다.
+	if (!pGunScript->IsFire())
+	{
+		return;
+	}
+
+	// 총기의 발사 딜레이 시간을 가져와 반동 텀으로 둔다.
 	float FireDelay = pGunScript->GetFireDelay();
 
 	if (!pGunScript->IsAuto())
@@ -669,7 +679,7 @@ void CameraController::UpdateSearchMode()
 	static float OriginRotX = 0.f;
 
 	// 줌이나 사격 동안은 둘러보기가 안된다. 
-	if (!m_PlayerScript->IsShot() && !(m_CameraFlag & SHOULDER) && !(m_CameraFlag & SEARCH_RECOVER))
+	if (m_PlayerScript->GetStateEnum() != PLAYER_STATE::Player_Gun_Fire && !(m_CameraFlag & SHOULDER) && !(m_CameraFlag & SEARCH_RECOVER))
 	{
 		if (KEY_TAP(KEY::LCTRL))
 		{

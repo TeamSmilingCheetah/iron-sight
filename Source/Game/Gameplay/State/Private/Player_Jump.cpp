@@ -35,6 +35,6 @@ void Player_Jump::FinalTick_Override()
 	}
 }
 
-void Player_Jump::Exit()
+void Player_Jump::Exit_Override()
 {
 }

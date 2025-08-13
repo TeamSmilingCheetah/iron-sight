@@ -41,7 +41,7 @@ void Player_Grenade_Throw_High::FinalTick_Override()
 {
 }
 
-void Player_Grenade_Throw_High::Exit()
+void Player_Grenade_Throw_High::Exit_Override()
 {
 }
 

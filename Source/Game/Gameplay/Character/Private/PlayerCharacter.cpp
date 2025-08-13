@@ -19,6 +19,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
+#include "Game/Gameplay/Weapon/Public/GunController.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -42,7 +43,6 @@ PlayerCharacter::PlayerCharacter()
 	, m_IsGround(true)
 	, m_bLean(false)
 	, m_MouseSensitivity(0.1f)
-	, m_bShoot(false)
 	, m_bThrowBoom(false)
 	, m_bHitSoundPlayed(false)
 	, m_bFirstFootStep(true)
@@ -71,6 +71,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_bMouseActive(false)
 	, m_ReloadUI(nullptr)
 	, m_CameraEffect(nullptr)
+	, m_StateAccTime(0.f)
 {
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });	// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -243,7 +244,7 @@ void PlayerCharacter::PlayerView()
 	static float OriginRotY = 0.f;
 
 	// 평상시 & TPS 상태일 때
-	if (!bADS && !bShoulder && !m_bShoot && bTPS)
+	if (!bADS && !bShoulder && bTPS && GetStateEnum() != PLAYER_STATE::Player_Gun_Fire)
 	{
 		// Search
 		if (KEY_TAP(KEY::LCTRL))
@@ -273,7 +274,7 @@ void PlayerCharacter::PlayerView()
 		{
 			vPlayerRot.y += deltaX * m_MouseSensitivity;
 		}
-		
+
 	}
 
 	// 줌 혹은 사격중
@@ -420,10 +421,19 @@ void PlayerCharacter::PlayerControlWeapon()
 	{
 		int curSlot = m_InventoryScript->GetCurSlotIdx();
 
+		// 무기가 바꼈다면 IDLE STATE로
+		if (m_InventoryScript->IsChange())
+		{
+			StateMachine()->SetCanExit(true);
+			StateMachine()->SetChange(L"Player_Idle");
+		}
 
 		// 무기 슬롯이 아니라면 리턴
 		if (!(PRIMARY_FIRST <= curSlot && curSlot <= THROWABLE_SECOND))
+		{
 			return;
+		}
+			
 
 		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
 		assert(pWeaponController != nullptr);
@@ -434,40 +444,18 @@ void PlayerCharacter::PlayerControlWeapon()
 
 		if (KEY_TAP(KEY::LBTN))
 		{
+			// 현재 총기라면 Fire State 로 변경
+			if (PRIMARY_FIRST <= curSlot && curSlot <= SECONDARY_FIRST)
+			{
+				StateMachine()->SetChange(L"Player_Gun_Fire");
+			}
 			pWeaponController->SetCurKey(KEY::LBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-		}
-		else if (KEY_PRESSED(KEY::LBTN))
-		{
-			pWeaponController->SetCurKey(KEY::LBTN);
-			pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
 		}
 		else if (KEY_RELEASED(KEY::LBTN))
 		{
 			pWeaponController->SetCurKey(KEY::LBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
-
-			// 총기
-			if (m_bShoot)
-			{
-				m_bShoot = false;
-			}
-
-			// 투척무기 -> State
-			//if (m_bCanThrow)
-			//{
-			//	if (m_InventoryScript->GetCurWeapon() != nullptr)
-			//	{
-			//		// 인벤토리에서 투척무기 하나 제거
-			//		ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
-
-			//		// 아이템이 남지 않았다면
-			//		if (!m_InventoryScript->UseItem(type, 1))
-			//		{
-			//			m_bCanThrow = false;
-			//		}
-			//	}
-			//}
 		}
 
 		// ======
@@ -483,36 +471,11 @@ void PlayerCharacter::PlayerControlWeapon()
 		{
 			pWeaponController->SetCurKey(KEY::RBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
-
-			//if (m_bCanThrow)
-			//{
-			//	if (KEY_TAP(KEY::R))
-			//	{
-			//		pWeaponController->SetCurKey(KEY::R);
-			//		pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-			//	}
-			//}
 		}
 		else if (KEY_RELEASED(KEY::RBTN))
 		{
 			pWeaponController->SetCurKey(KEY::RBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
-
-			// 투척무기 -> state
-			//if (m_bCanThrow)
-			//{
-			//	if (m_InventoryScript->GetCurWeapon() != nullptr)
-			//	{
-			//		// 인벤토리에서 투척무기 하나 제거
-			//		ITEM_TYPE type = static_cast<ItemScript*>(GetScriptWithType(m_InventoryScript->GetCurWeapon(), SCRIPT_TYPE::ITEMSCRIPT))->GetItemType();
-
-			//		// 아이템이 남지 않았다면
-			//		if (!m_InventoryScript->UseItem(type, 1))
-			//		{
-			//			m_bCanThrow = false;
-			//		}
-			//	}
-			//}
 		}
 
 		// ===
@@ -520,11 +483,11 @@ void PlayerCharacter::PlayerControlWeapon()
 		// ===
 		if (KEY_TAP(KEY::R))
 		{
-			if ((PRIMARY_FIRST <= curSlot && curSlot <= PRIMARY_SECOND))
-				//|| (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND && m_bCanThrow))
+			if (CanReload())
 			{
 				pWeaponController->SetCurKey(KEY::R);
 				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+				StateMachine()->SetChange(L"Player_Gun_Reload");
 			}
 		}
 
@@ -533,8 +496,11 @@ void PlayerCharacter::PlayerControlWeapon()
 		// ===
 		if (KEY_TAP(KEY::B))
 		{
-			pWeaponController->SetCurKey(KEY::B);
-			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			if (GetStateEnum() == PLAYER_STATE::Player_Idle)
+			{
+				pWeaponController->SetCurKey(KEY::B);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			}
 		}
 	}
 }
@@ -562,7 +528,7 @@ void PlayerCharacter::PlayerControlUI()
 			}
 			m_CamScript->SetFlag(SHOULDER, false);
 		}
-		
+
 		SetMouseActive(!m_InventoryOpened);
 		SetObjectActive(m_InventoryCanvasUI, m_InventoryOpened);
 	}
@@ -655,7 +621,7 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 {
 	m_CurHP -= _Damage;
 	// Hit Sound 출력
-	if(!m_bHitSoundPlayed)
+	if (!m_bHitSoundPlayed)
 	{
 		m_HitSoundIdx = FSoundManager::GetInst()->Play3DSound(m_HitSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_HitSoundIdx);
 		m_bHitSoundPlayed = true;
@@ -709,11 +675,6 @@ void PlayerCharacter::Heal()
 	m_HealAmount = 0.f;
 
 	SetObjectActive(m_ItemUseUI, false);
-}
-
-const wstring& PlayerCharacter::GetCurStateName()
-{
-	return StateMachine()->GetCurState()->GetName();
 }
 
 void PlayerCharacter::SetMouseActive(bool _b)
@@ -808,6 +769,12 @@ void PlayerCharacter::LoadPlayerSounds()
 	m_RunFootstepSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\player_footstep_faster.mp3");
 }
 
+
+PLAYER_STATE PlayerCharacter::GetStateEnum() const
+{
+	return WstringToEnum<PLAYER_STATE>(StateMachine()->GetCurState()->GetName());
+}
+
 void PlayerCharacter::SaveComponent(FILE* PFile)
 {
 	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
@@ -856,6 +823,33 @@ void PlayerCharacter::ProgressReloadState()
 {
 	m_InteractionScript->SetInteractable(true);
 
+	// 재장전 진행
+	// REFACTOR :현재 무기의 Script를 static_cast를 통해 받아오는 구조가 맘에 들진 않음
+	// 만약 개선 방법이 보인다면 변경하면 좋을 것 같음.
+
+	// 무기가 바꼇다면 Reloading State를 벗어난다.
+	//if (m_InventoryScript->IsChange())
+	//{
+	//	StateMachine()->SetCanExit(true);
+	//	StateMachine()->SetChange(L"Player_Idle");
+	//}
+
+	GunController* curWeaponScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
+	if (curWeaponScript == nullptr)
+	{
+		return;
+	}
+	float fReloadTime = curWeaponScript->GetReloadingTime();
+
+	m_StateAccTime += DT;
+
+	if (fReloadTime < m_StateAccTime)
+	{
+		// State 전환
+		StateMachine()->SetCanExit(true);
+		StateMachine()->SetChange(L"Player_Idle");
+	}
+
 	// 인벤토리가 열린 상태에서는 조작 불가능
 	if (!m_InventoryOpened)
 	{
@@ -865,8 +859,35 @@ void PlayerCharacter::ProgressReloadState()
 			WeaponController* pGunScript = m_InventoryScript->GetCurWeaponController();
 			pGunScript->SetCurKey(KEY::F);
 			pGunScript->SetCurKeyState(KEY_STATE::TAP);
+			StateMachine()->SetCanExit(true);
 			StateMachine()->SetChange(L"Player_Idle");
 		}
+	}
+}
+
+void PlayerCharacter::ProgressFireState()
+{
+	GunController* curWeaponScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());\
+	if (curWeaponScript == nullptr)
+	{
+		return;
+	}
+	bool bPullTigger = curWeaponScript->IsPullTrigger();
+
+
+	// PRESSED KEY 입력은 Gun에게만 넘긴다
+	if (KEY_PRESSED(KEY::LBTN))
+	{
+		
+		curWeaponScript->SetCurKey(KEY::LBTN);
+		curWeaponScript->SetCurKeyState(KEY_STATE::PRESSED);
+	}
+
+	m_StateAccTime += DT;
+	if (!bPullTigger && 0.2f < m_StateAccTime)
+	{
+		// State 전환
+		StateMachine()->SetChange(L"Player_Idle");
 	}
 }
 
@@ -904,4 +925,31 @@ void PlayerCharacter::ExitReloadState()
 	SetObjectActive(m_ReloadUI, false);
 	m_InteractionScript->SetInteractable(false);
 	m_bReloading = false;
+}
+
+
+bool PlayerCharacter::CanReload()
+{
+	int curSlot = m_InventoryScript->GetCurSlotIdx();
+	if (PRIMARY_SECOND < curSlot)
+	{
+		return false;
+	}
+	GunController* pWeaponScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
+	int iLeftRounds = m_InventoryScript->GetItemCount(pWeaponScript->GetRoundType());
+	int iCurRounds = pWeaponScript->GetCurRound();
+	if (iLeftRounds == 0)
+	{
+		return false;
+	}
+	if (iCurRounds == pWeaponScript->GetMaxRound())
+	{
+		return false;
+	}
+	if (GetStateEnum() == PLAYER_STATE::Player_Gun_Reload)
+	{
+		return false;
+	}
+
+	return true;
 }

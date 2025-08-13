@@ -208,19 +208,25 @@ void ThrowableController::Tick()
 				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
 			}
+
+			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
+			{
+				if (!m_bTrigger)
+				{
+					// 핀소리
+					m_PinSoundIdx = FSoundManager::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
+						10000.f, 1, 1.f, true, true, -1);
+
+					m_bTrigger = true;
+				}
+				ClearKey();
+			}
+
 		}
 	}
 
 
 	//
-	if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
-	{
-		// 핀소리
-		m_PinSoundIdx = FSoundManager::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
-		                                                  10000.f, 1, 1.f, true, true, -1);
-
-		m_bTrigger = true;
-	}
 
 
 	if (m_bTrigger)

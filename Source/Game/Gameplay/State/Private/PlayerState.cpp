@@ -72,6 +72,15 @@ void PlayerState::FinalTick()
 	}
 }
 
+void PlayerState::Exit()
+{
+	// State 내부에서 동일하게 사용되는 AccTime 초기화
+	m_PlayerScript->ResetAccTime();
+
+	// Override Function
+	Exit_Override();
+}
+
 
 void PlayerState::ControlMoveAnimation()
 {

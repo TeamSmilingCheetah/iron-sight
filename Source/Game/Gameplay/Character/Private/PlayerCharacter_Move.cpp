@@ -285,18 +285,40 @@ void PlayerCharacter::UpdateCollision()
 
 bool PlayerCharacter::CanRun()
 {
-	if (!(KEY_PRESSED(KEY::LSHIFT))) return false;
-	if (!(KEY_PRESSED(KEY::W))) return false;
-	if (KEY_PRESSED(KEY::A) || KEY_PRESSED(KEY::S) || KEY_PRESSED(KEY::D)) return false;
-	if (m_CamScript->GetFlag(ADS)) return false;
-	if (m_bLean) return false;
-	if (m_MotionState != MOTION_STATE::STAND) return false;
+	if (!(KEY_PRESSED(KEY::LSHIFT)))
+	{
+		return false;
+	}
+	if (!(KEY_PRESSED(KEY::W)))
+	{
+		return false;
+	}
+	if (KEY_PRESSED(KEY::A) || KEY_PRESSED(KEY::S) || KEY_PRESSED(KEY::D))
+	{
+		return false;
+	}
+	if (m_CamScript->GetFlag(ADS))
+	{
+		return false;
+	}
+	if (m_bLean)
+	{
+		return false;
+	}
+	if (m_MotionState != MOTION_STATE::STAND)
+	{
+		return false;
+	}
 	// 현재 재장전 중이라면 불가능
 	if (m_bReloading)
+	{
 		return false;
-
+	}
+	
 	return true;
 }
+
+
 
 //void PlayerCharacter::AnimationControl()
 //{

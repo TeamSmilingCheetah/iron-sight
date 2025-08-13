@@ -24,10 +24,11 @@ public:
 
 	virtual void Enter() final;
 	virtual void FinalTick() final;
-	virtual void Exit() = 0;
+	virtual void Exit() final;
 
 	virtual void Enter_Override() = 0;
 	virtual void FinalTick_Override() = 0;
+	virtual void Exit_Override() = 0;
 
 	
 public:
