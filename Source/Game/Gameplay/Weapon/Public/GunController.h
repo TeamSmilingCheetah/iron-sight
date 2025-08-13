@@ -36,6 +36,7 @@ private:
 	int m_MaxRounds;
 	int m_leftRounds;
 
+	bool m_bPullTrigger;
 	bool m_bFire;
 	bool m_bReload;
 	bool m_bAuto;
@@ -45,7 +46,6 @@ private:
 	CGameObject*			m_ReloadUI;
 
 	ITEM_TYPE m_WeaponRoundType;
-
 public:
 	void Begin() override;
 	void Tick() override;
@@ -55,19 +55,22 @@ public:
 	float GetHorizontalPower() const { return m_HorizontalRecoilPower; }
 	float GetVerticalPower() const { return m_VerticalRecoilPower; }
 	float GetFireDelay() const { return m_FireDelay; }
+	float GetReloadingTime() const { return m_ReloadingTime; }
 
 	int GetCurRound() const { return m_CurRounds; }
 	int GetMaxRound() const { return m_MaxRounds; }
 
 	bool IsReload() const { return m_bReload; }
+	bool IsPullTrigger() const { return m_bPullTrigger; }
 	bool IsFire() const { return m_bFire; }
 	bool IsAuto() const { return m_bAuto; }
-	
+
+	void SetCurRounds(int _Rounds) { m_CurRounds = _Rounds; }
 
 	ITEM_TYPE GetRoundType() const { return m_WeaponRoundType; }
 
 private:
-	void Firing();
+	void ActiveTrigger();
 	void Reload();
 	void StopFiring();
 

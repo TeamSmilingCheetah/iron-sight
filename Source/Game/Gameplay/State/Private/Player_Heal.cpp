@@ -84,7 +84,7 @@ void Player_Heal::FinalTick_Override()
 	GetPlayerScript()->ProgressHealState();
 }
 
-void Player_Heal::Exit()
+void Player_Heal::Exit_Override()
 {
 	
 }

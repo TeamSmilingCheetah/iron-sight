@@ -41,7 +41,7 @@ void RoundsUIScript::Tick()
 	if (m_InvetoryScript->IsChange())
 	{
 		UI()->ClearText();
-		m_InvetoryScript->OffChange();
+		//m_InvetoryScript->OffChange();
 	}
 
 	// 무기가 없다면 Tick 반환

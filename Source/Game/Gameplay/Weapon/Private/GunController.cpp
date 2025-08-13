@@ -88,6 +88,7 @@ void GunController::Tick()
 	if (m_EquippedOwner == nullptr || m_bIsEquipped == false)
 	{
 		// 진행중이던 상태 모두 초기화
+		m_bPullTrigger = false;
 		m_bFire = false;
 		m_bReload = false;
 		m_AccTime_Reload = 0.f;
@@ -110,71 +111,39 @@ void GunController::Tick()
 		// 총알을 발사한다.
 		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 		{
-			if (0 < m_CurRounds && !m_bReload)
+			if (!m_bReload)
 			{
-				m_PlayerScript->SetShot(true);
-				m_bFire = true;
-				ClearKey();
-
-				// 상태
-				m_PlayerScript->StateMachine()->SetChange(L"Player_Gun_Fire");
-			}
-			else if (m_CurRounds == 0 && !m_bReload)
-			{
-				// 빈 탄창 발사 사운드
-				m_AkdrySoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkdrySound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+				m_bPullTrigger = true;
 				ClearKey();
 			}
 		}
 
 		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
 		{
-			if (CanReload())
-			{
-				m_PlayerScript->SetShot(false);
-				m_bReload = true;
-				SetObjectActive(m_ReloadUI, true);
+			m_bReload = true;
+			SetObjectActive(m_ReloadUI, true);
 
-				// 현재 남은 탄창수에 따라 시간 설정
-				if (m_CurRounds == 0)
-				{
-					m_ReloadingTime = 2.8f;
-				}
-				else
-				{
-					m_ReloadingTime = 1.5f;
-				}
+			// 현재 남은 탄창수에 따라 시간 설정
+			if (m_CurRounds == 0)
+			{
+				m_ReloadingTime = 2.8f;
+			}
+			else
+			{
+				m_ReloadingTime = 1.5f;
 			}
 
 			ClearKey();
-
-			// 상태
-			m_PlayerScript->StateMachine()->SetChange(L"Player_Gun_Reload");
 		}
 
 		if (m_CurKey == KEY::B && m_CurKeyState == KEY_STATE::TAP)
 		{
-			if (m_bReload)
-			{
-				ClearKey();
-			}
-			else
-			{
-				m_PlayerScript->SetShot(false);
-				m_bFire = false;
-				m_bAuto = !m_bAuto;
-				// 조정간 조정 사운드
-				m_ClipSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ClipSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
-				ClearKey();
-			}
+			m_bAuto = !m_bAuto;
+			// 조정간 조정 사운드
+			m_ClipSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ClipSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, true, true, -1);
+			ClearKey();
 		}
 
-		// 총알을 발사한다.
-		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::PRESSED)
-		{
-			if (0 < m_CurRounds && m_bAuto)
-				m_bFire = true;
-		}
 
 		if (m_CurKey == KEY::F && m_CurKeyState == KEY_STATE::TAP && m_bReload)
 		{
@@ -202,7 +171,7 @@ void GunController::Tick()
 		{
 			if (0 < m_CurRounds)
 			{
-				m_bFire = true;
+				m_bPullTrigger = true;
 				m_bAuto = true;
 			}
 
@@ -216,9 +185,9 @@ void GunController::Tick()
 		StopFiring();
 	}
 
-	if (m_bFire && !m_bReload)
+	if (m_bPullTrigger && !m_bReload)
 	{
-		Firing();
+		ActiveTrigger();
 	}
 
 	if (m_bReload)
@@ -234,7 +203,7 @@ bool GunController::CanReload()
 		m_InventoryScript->GetItemCount(m_WeaponRoundType) > 0;
 }
 
-void GunController::Firing()
+void GunController::ActiveTrigger()
 {
 	// 총알의 시작 위치를 정해준다.
 	Vec3 vRayPos = ColliderRay()->GetRayFinalPos();
@@ -265,15 +234,21 @@ void GunController::Firing()
 		// 총알을 모두 소진했다면
 		if (m_CurRounds <= 0)
 		{
-			PlayerCharacter* pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
-
-			pPlayerScript->SetShot(false);
-			m_bFire = false;
-
 			// 빈 탄창 발사 사운드
-			m_AkdrySoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkdrySound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
+			m_bFire = false;
+			m_AkdrySoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkdrySound, vRayPos, 1.f, 10000.f, 1, 1.f, false, false, m_AkdrySoundIdx);
+			if (!m_bAuto)
+			{
+				StopFiring();
+			}
 			return;
 		}
+		// 총알이 있다면
+		if (!m_bFire)
+		{
+			m_bFire = true;
+		}
+		
 
 		// Camera의 줌 여부를 확인한다.
 		// 지향사격
@@ -320,7 +295,7 @@ void GunController::Firing()
 		MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
 		BulletScript->SetDir(vFinalDir);
 		BulletScript->SetSpeed(m_InitFirePower);
-		BulletScript->SetBulletInfo(m_EquippedOwner,GetOwner(), m_BulletDmg);
+		BulletScript->SetBulletInfo(m_EquippedOwner, GetOwner(), m_BulletDmg);
 		BulletScript->SetVelocity(vFinalDir * m_InitFirePower);
 
 		// 사운드 재생
@@ -348,34 +323,32 @@ void GunController::Firing()
 			MissileProjectile* BulletScript = static_cast<MissileProjectile*>(GetScriptWithType(go, SCRIPT_TYPE::MISSILESCRIPT));
 			BulletScript->SetDir(vFinalDir);
 			BulletScript->SetSpeed(m_InitFirePower);
-			BulletScript->SetBulletInfo(m_EquippedOwner, GetOwner() , m_BulletDmg);
-			BulletScript->SetVelocity(vFinalDir* m_InitFirePower);
+			BulletScript->SetBulletInfo(m_EquippedOwner, GetOwner(), m_BulletDmg);
+			BulletScript->SetVelocity(vFinalDir * m_InitFirePower);
 
 			// 사운드 재생
 			// vSpawnPos에 재생, 1번 재생, 중복재생 허용(Asset자체에서), 중복 재생 허용(Mgr자체에서), id넘기기(같은 사운드를 여러번 쓸거니 -1만넘김)
 			m_AkSoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 		}
 	}
-
-
-
 }
 
 void GunController::Reload()
 {
 
 	int iLeftRounds = 0;
+	wchar_t text[4]{};	// 3글자 출력
 
 	if (m_bEnemy)
 	{
 		iLeftRounds = 90;
+
 	}
 	// 플레이어의 인벤토리에서 남아있는 총알 정보를 가져온다.
 	else
 	{
 		iLeftRounds = m_InventoryScript->GetItemCount(m_WeaponRoundType);
 	}
-
 
 	// 여분의탄창이 없다면
 	if (iLeftRounds == 0)
@@ -384,9 +357,11 @@ void GunController::Reload()
 		return;
 	}
 
+
 	m_AccTime_Reload += DT;
 
 	// 사격중에 장전으로 넘어온 경우 사격을 비활성화 해준다.
+	m_bPullTrigger = false;
 	m_bFire = false;
 	bool bEmptyReload = false;
 
@@ -402,6 +377,7 @@ void GunController::Reload()
 
 	int iFilledRounds = 0;
 
+	// Player를 위한 UI 컨트롤
 	if (!m_bEnemy)
 	{
 		// ReloadUI : Reload Delay UI
@@ -419,13 +395,13 @@ void GunController::Reload()
 
 
 		// 남은 시간 글씨 출력
-		wchar_t text[4]{};	// 3글자 출력
 		if (m_ReloadingTime - m_AccTime_Reload > 0.f)
 		{
 			swprintf_s(text, L"%.1f", m_ReloadingTime - m_AccTime_Reload);
 		}
 		m_ReloadUI->UI()->GetTextInfoRef()[0].Text = text;
 	}
+
 
 	// 장전 시간이 지나면
 	if (m_ReloadingTime < m_AccTime_Reload)
@@ -454,44 +430,28 @@ void GunController::Reload()
 				m_CurRounds += iFilledRounds;
 			}
 		}
-
-		// 남은 총알 update
 		if (m_bEnemy)
 		{
+			// 남은 총알 update
 			iLeftRounds -= iFilledRounds;
 		}
 		else
 		{
+			// 사용한만큼의 탄알을 인벤토리에서 삭제한다.
 			m_InventoryScript->UseItem(m_WeaponRoundType, iFilledRounds);
 		}
 
+
 		m_AccTime_Reload = 0.f;
 		m_bReload = false;
-
-		if (!m_bEnemy)
-		{
-			//SetObjectActive(m_ReloadUI, false);
-
-			// 상태
-			m_PlayerScript->StateMachine()->SetCanExit(true);
-			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
-		}
-
 	}
 
 }
 
 void GunController::StopFiring()
 {
+	m_bPullTrigger = false;
 	m_bFire = false;
-
-	if (!m_bEnemy)
-	{
-		m_PlayerScript->SetShot(false);
-
-		// 상태
-		m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
-	}
 
 	ClearKey();
 }

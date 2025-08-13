@@ -50,7 +50,7 @@ void Player_Gun_Reload::FinalTick_Override()
 	// TODO : 애니메이션이랑 시간 동기화
 }
 
-void Player_Gun_Reload::Exit()
+void Player_Gun_Reload::Exit_Override()
 {
 	GetPlayerScript()->ExitReloadState();
 }

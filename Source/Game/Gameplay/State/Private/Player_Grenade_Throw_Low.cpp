@@ -40,6 +40,6 @@ void Player_Grenade_Throw_Low::FinalTick_Override()
 {
 }
 
-void Player_Grenade_Throw_Low::Exit()
+void Player_Grenade_Throw_Low::Exit_Override()
 {
 }

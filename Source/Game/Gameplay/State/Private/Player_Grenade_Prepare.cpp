@@ -41,7 +41,7 @@ void Player_Grenade_Prepare::FinalTick_Override()
 	GetPlayerScript()->ProgressThrowPrepareState();
 }
 
-void Player_Grenade_Prepare::Exit()
+void Player_Grenade_Prepare::Exit_Override()
 {
 	GetPlayerScript()->ExitThrowPrepareState();
 }

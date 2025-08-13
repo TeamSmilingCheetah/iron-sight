@@ -10,7 +10,7 @@ private:
 public:
 	virtual void Enter_Override() override;
 	virtual void FinalTick_Override() override;
-	virtual void Exit() override;
+	virtual void Exit_Override() override;
 
 
 public:

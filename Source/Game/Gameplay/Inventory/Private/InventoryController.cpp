@@ -32,6 +32,7 @@ InventoryController::InventoryController()
 	, m_CurSlotIdx(NONE_WEAPON)
 	, m_HandMeshObj(nullptr)
 	, m_BackMeshObj(nullptr)
+	, m_bWeaponChange(false)
 {
 	m_vecWeaponSlot.resize(5);
 	char name[10]{};
@@ -77,6 +78,11 @@ void InventoryController::Begin()
 
 void InventoryController::Tick()
 {
+	if (m_bWeaponChange)
+	{
+		OffChange();
+	}
+
 	if (m_VicinityChanged)
 	{
 		DisplayUI_Vicinity();
@@ -749,10 +755,10 @@ void InventoryController::PlayerInteractWeapon()
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
 			// 장전중이라면 취소시킨다.
-			if (m_PlayerScript->GetCurStateName() == L"Player_Reload" && m_CurSlotIdx != i)
-			{
-				m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
-			}
+			//if (m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Gun_Reload && m_CurSlotIdx != i)
+			//{
+			//	m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
+			//}
 
 			if (!m_CamScript->GetFlag(TPS))
 			{
@@ -794,10 +800,10 @@ void InventoryController::PlayerInteractWeapon()
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));
 
 		// 장전중이라면 취소시킨다.
-		if (m_PlayerScript->GetCurStateName() == L"Player_Reload")
-		{
-			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
-		}
+		//if (m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Gun_Reload)
+		//{
+		//	m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
+		//}
 
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;

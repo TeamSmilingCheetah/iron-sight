@@ -40,7 +40,7 @@ void Player_Idle::FinalTick_Override()
 {
 }
 
-void Player_Idle::Exit()
+void Player_Idle::Exit_Override()
 {
 }
 
