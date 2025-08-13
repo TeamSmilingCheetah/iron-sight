@@ -47,6 +47,11 @@ void FSoundManager::Shutdown()
 		GlobalLowPassDSP = nullptr;
 	}
 
+	for (auto iter = Sound3Ds.begin(); iter != Sound3Ds.end(); )
+	{
+		iter = Sound3Ds.erase(iter);
+	}
+
 	LOG_INFO("[Engine][SoundManager] Shutdown Complete");
 }
 
