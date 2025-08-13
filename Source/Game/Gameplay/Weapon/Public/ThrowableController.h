@@ -61,6 +61,10 @@ public:
 	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 
 
+	bool IsThrow() { return m_bThrow; }
+	bool IsAfterThrow() { return m_bAfterThrow; }
+	const float GetActionEndTime() { return m_ActionEndTime; }
+
 public:
 	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT)
 	CLONE(ThrowableController)

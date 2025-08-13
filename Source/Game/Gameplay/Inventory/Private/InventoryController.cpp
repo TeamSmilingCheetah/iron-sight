@@ -247,7 +247,7 @@ void InventoryController::ConvertPS()
 	if (m_CamScript->GetFlag(TPS))
 	{
 		// 현재 착용중인 무기를 다시 Bone에 붙혀준다.
-		AttachItem(m_CurTempWeapon, m_HandMeshObj, Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 0.f));
+		AttachItem(m_CurTempWeapon, m_HandMeshObj, Vec3(0.f, 30.f, 32.f), Vec3(-97.f, 228.f, 0.f));
 	}
 
 	// 현재 FPS이다. (즉, TPS->FPS로 변환 됨)
@@ -636,11 +636,11 @@ void InventoryController::DeactivateSlot(bool _FPS)
 	// 주무기는 비활성화가 아닌 등에 다시 부착 시켜 준다.
 	if (m_CurSlotIdx == PRIMARY_FIRST)
 	{
-		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_BackMeshObj, Vec3(-810.f, -99.f, -234.f), Vec3(75.9f, -2.f, -4.3f));
+		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_BackMeshObj, Vec3(-103.f, 53.f, -3.f), Vec3(12.f, 116.f, 128.f));
 	}
 	else if (m_CurSlotIdx == PRIMARY_SECOND)
 	{
-		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_BackMeshObj, Vec3(-810.f, -99.f, 75.f), Vec3(75.9f, -2.f, -4.3f));
+		AttachItem(m_vecWeaponSlot[m_CurSlotIdx].Object, m_BackMeshObj, Vec3(-17.f, 112.f, -19.f), Vec3(26.f, 62.f, 104.f));
 	}
 	// 나머지는 비활성화 해준다.
 	// 1인칭인경우 Player HandMesh에 다시 붙혀준다.
@@ -754,12 +754,6 @@ void InventoryController::PlayerInteractWeapon()
 
 		if (KEY_TAP(static_cast<KEY>(static_cast<int>(KEY::NUM_1) + i)))
 		{
-			// 장전중이라면 취소시킨다.
-			//if (m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Gun_Reload && m_CurSlotIdx != i)
-			//{
-			//	m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
-			//}
-
 			if (!m_CamScript->GetFlag(TPS))
 			{
 				// 현재 FPS모드라면 비활성화할 무기 대상을 바꿔준다.
@@ -798,12 +792,6 @@ void InventoryController::PlayerInteractWeapon()
 		}
 
 		DeactivateSlot(!m_CamScript->GetFlag(TPS));
-
-		// 장전중이라면 취소시킨다.
-		//if (m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Gun_Reload)
-		//{
-		//	m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
-		//}
 
 		m_CurWeapon = nullptr;
 		m_CurSlotIdx = NONE_WEAPON;

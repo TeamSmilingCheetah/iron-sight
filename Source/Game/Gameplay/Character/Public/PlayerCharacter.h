@@ -202,9 +202,10 @@ public:
 	void ProgressHealState();
 	void ProgressReloadState();
 	void ProgressFireState();
-	void ProgressThrowPrepareState();
+	void ProgressThrowPrepareState(bool _InputThrow, bool _LBTN);
+	void ProgressThrowState();
 	void ProgressPlayerMove();
-
+	
 
 	// Exit
 	void ExitThrowPrepareState();
