@@ -31,7 +31,13 @@ public:
 
 	// Getter & Setter
 	[[nodiscard]] EColliderType GetColliderType() const override { return EColliderType::SphereCollider; }
+	[[nodiscard]] Vec3 GetWorldCenter() const { return WorldOffset; }
+	[[nodiscard]] float GetWorldRadius() const { return WorldScale; }
+	[[nodiscard]] Vec3 GetOffset() const { return Offset; }
+	[[nodiscard]] float GetScale() const { return Scale; }
 
+	void SetOffset(const Vec3& InOffset) { Offset = InOffset; }
+	void SetScale(float InScale) { Scale = InScale; }
 	void SetIndependent() { bHasIndependentScale = true; }
 
 	void SetIndependent(float InScale)

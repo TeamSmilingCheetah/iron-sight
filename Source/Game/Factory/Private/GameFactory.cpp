@@ -271,12 +271,23 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	// TEST(Ssio): prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<FBoxCollider>(Player);
-	Collider::SetColliderProperties(Player, {800.f, 910.f, 800.f}, {0.f, 455.f, 0.f}, true);
+	Collider::SetColliderProperties(Player, {300.f, 910.f, 300.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
 
+	// Player Ground
+	auto UniqueGroundChecker = Common::CreateNewObject();
+
+	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
+	auto GroundChecker = UniqueGroundChecker.get();
+	UniqueGroundChecker.release();
+
 	// TODO(KHJ): Facade 코드로 교체할 것
-	Common::AddComponentToObject<FSphereCollider>(Player);
-	Player->SphereCollider()->SetIndependent(600.f);
+	Common::AddComponentToObject<FSphereCollider>(GroundChecker);
+	GroundChecker->SphereCollider()->SetIndependent(300.f);
+
+	Collider::SetColliderDynamic(GroundChecker, EColliderType::SphereCollider);
+
+	Common::AddChild(Player, GroundChecker);
 
 	// Player Head Collider
 	auto HeaderCollider = Common::CreateNewObject();

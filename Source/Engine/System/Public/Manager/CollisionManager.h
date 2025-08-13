@@ -8,11 +8,17 @@ struct FCollisionID;
 using ColliderPairVariant = variant<
 	pair<FMeshCollider*, FMeshCollider*>,
 	pair<FMeshCollider*, FBoxCollider*>,
-	pair<FBoxCollider*, FMeshCollider*>
+	pair<FBoxCollider*, FMeshCollider*>,
+	pair<FSphereCollider*, FSphereCollider*>,
+	pair<FSphereCollider*, FBoxCollider*>,
+	pair<FBoxCollider*, FSphereCollider*>,
+	pair<FSphereCollider*, FMeshCollider*>,
+	pair<FMeshCollider*, FSphereCollider*>
 >;
 
 class FCollider2D;
 class FBoxCollider;
+class FSphereCollider;
 class FColliderRay;
 
 /**
@@ -100,6 +106,13 @@ private:
 	void CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
 	static bool IsCollision(const FBoxCollider* InLeftCollider, const FBoxCollider* InRightCollider);
+	static bool IsCollision(const FSphereCollider* InLeftCollider, const FSphereCollider* InRightCollider);
+	static bool IsCollision(const FSphereCollider* InSphereCollider, const FBoxCollider* InBoxCollider);
+	static bool IsCollision(const FBoxCollider* InBoxCollider, const FSphereCollider* InSphereCollider);
+	static bool IsCollision(const FSphereCollider* InSphereCollider, const FMeshCollider* InMeshCollider);
+	static bool IsCollision(const FMeshCollider* InMeshCollider, const FSphereCollider* InSphereCollider);
+	static Vec3 GetClosestPointOnTriangle(const Vec3& InPoint,
+	                                      const Vec3& InVertexA, const Vec3& InVertexB, const Vec3& InVertexC);
 	void ExecuteAndProcessCS();
 
 	// PostProcess Functions

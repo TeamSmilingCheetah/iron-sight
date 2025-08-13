@@ -403,42 +403,42 @@ void TestLevel::CreateTestLevel()
 	// pLevel->AddObject(1, testPlayer, false);
 
 	// Temp Landscape
-	 GameFactory::MakeFBXObject(
-	 	LevelRawPtr,
-	 	L"FBX\\Props\\Death Box\\box.fbx",
-	 	L"TempLandscape",
-	 	Vec3(0.f, -800.f, 0.f),
-	 	Vec3(0.f, 0.f, 0.f),
-	 	Vec3(20000.f, 200.f, 20000.f),
-	 	{
-	 		[](CGameObject* obj)
-	 		{
-	 			obj->AddComponentRecursive<FMeshCollider>();
-	 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
-	 			obj->Transform()->SetFrustumCheck(false);
-	 		}
-	 	},
-	 	1,
-	 	true
-	 );
+	// GameFactory::MakeFBXObject(
+	// 	LevelRawPtr,
+	// 	L"FBX\\Props\\Death Box\\box.fbx",
+	// 	L"TempLandscape",
+	// 	Vec3(0.f, -800.f, 0.f),
+	// 	Vec3(0.f, 0.f, 0.f),
+	// 	Vec3(20000.f, 200.f, 20000.f),
+	// 	{
+	// 		[](CGameObject* obj)
+	// 		{
+	// 			obj->AddComponentRecursive<FMeshCollider>();
+	// 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
+	// 			obj->Transform()->SetFrustumCheck(false);
+	// 		}
+	// 	},
+	// 	1,
+	// 	true
+	// );
 
-	//GameFactory::MakeFBXObject(
-	//	LevelRawPtr,
-	//	L"FBX\\Downtown_Alley_Scene.fbx",
-	//	L"Downtown_Alley",
-	//	Vec3(0.f, -1500.f, 0.f),
-	//	Vec3(0.f, 0.f, 0.f),
-	//	Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
-	//	{
-	//		[](CGameObject* obj)
-	//		{
-	//			obj->Transform()->SetRelativeScaleMultiply(4.f);
-	//			obj->AddComponentRecursive<FMeshCollider>();
-	//		}
-	//	},
-	//	1,
-	//	true
-	//);
+	GameFactory::MakeFBXObject(
+		LevelRawPtr,
+		L"FBX\\Downtown_Alley_Scene.fbx",
+		L"Downtown_Alley",
+		Vec3(0.f, -1500.f, 0.f),
+		Vec3(0.f, 0.f, 0.f),
+		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+		{
+			[](CGameObject* obj)
+			{
+				obj->Transform()->SetRelativeScaleMultiply(4.f);
+				obj->AddComponentRecursive<FMeshCollider>();
+			}
+		},
+		1,
+		true
+	);
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
@@ -760,7 +760,8 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pImageUI->SetName(L"Cardinal_ArrowUI");
 	pImageUI->AddComponent(new CUI);
 	pImageUI->UI()->SetImage(
-		FAssetManager::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png", L"Texture\\UI\\Cardinal_Arrow.png"));
+		FAssetManager::GetInst()->Load<CTexture>(L"Texture\\UI\\Cardinal_Arrow.png",
+		                                         L"Texture\\UI\\Cardinal_Arrow.png"));
 	pImageUI->UI()->SetRectSize(Vec2(15.f, 15.f));
 	pImageUI->UI()->SetRectPos(Vec2(0.f, 20.f));
 
