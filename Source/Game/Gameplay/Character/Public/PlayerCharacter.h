@@ -46,8 +46,6 @@ private:
 	int				m_RunFootstepSoundIdx;
 
 
-	CGameObject*	m_MainCamera;
-
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
 	Vec3 m_Velocity;			// 속도
@@ -86,11 +84,8 @@ private:
 	// ======
 	// Script
 	// ======
-	CameraController*		m_CamScript;
 	InventoryController*	m_InventoryScript;
-	KillinfoUIScript*		m_KillinfoScript;
 	InteractionHandler*		m_InteractionScript;
-	CameraEffect*			m_CameraEffect;
 
 	// ======
 	// Status
@@ -120,13 +115,7 @@ private:
 	// =======
 	// UI 관리
 	// =======
-	CGameObject*	m_InventoryCanvasUI;	// 인벤토리 UI
 	bool			m_InventoryOpened;
-
-	CGameObject*	m_CardinalImageUI;		// 방위 UI
-	CGameObject*	m_HPUI;					// HP UI
-	CGameObject*	m_ItemUseUI;			// 아이템 사용 UI
-	CGameObject*	m_ReloadUI;				// 재장전 UI
 
 public:
 	void Begin() override;

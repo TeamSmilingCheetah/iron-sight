@@ -7,6 +7,11 @@
 #include "Game/Gameplay/states.h"
 #include "Game/Gameplay/scripts.h"
 
+#include "Engine/System/Public/Manager/CLevelMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+
 CGameMgr::CGameMgr()
 {
 
@@ -15,6 +20,37 @@ CGameMgr::CGameMgr()
 CGameMgr::~CGameMgr()
 {
 
+}
+
+// _RemainTime = 아이템 사용까지 남은 시간
+// _TotalTIme = 아이템 사용에 걸리는 총 시간
+void CGameMgr::SetItemUseUITime(float _RemainTime, float _TotalTime)
+{
+	m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - _RemainTime / _TotalTime);
+
+	// 남은 시간 글씨 출력
+	wchar_t text[4]{};	// 3글자 출력
+	swprintf_s(text, L"%.1f", _RemainTime);
+	m_ItemUseUI->UI()->GetTextInfoRef()[0].Text = text;
+}
+
+void CGameMgr::UpdateCardinalUI(float _RotationY)
+{
+	CGameMgr::GetInst()->GetCardinalUI()->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, _RotationY);
+}
+
+void CGameMgr::SetHPUI(float _curHP, float _semimaxHP, float _maxHP, float _curBoost, float _maxBoost, float _healAmount)
+{
+	CGameObject* HPUI = CGameMgr::GetInst()->GetHPUI();
+	HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, _curHP / _maxHP);
+	HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_1, _curBoost / _maxBoost);
+
+	if (_healAmount == 100.f)
+		HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 1.f);
+	else if (_healAmount == 0.f)
+		HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.f);
+	else
+		HPUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, min(_curHP + _healAmount, _semimaxHP) / _maxHP);
 }
 
 int CGameMgr::Init()
@@ -46,7 +82,6 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"MinimapUIScript", []() { return new MinimapUIScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"CameraEffect", []() { return new CameraEffect; });
 
-
 	// StateMgr 등록
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Jump", []() { return new Player_Jump; });
@@ -58,6 +93,30 @@ int CGameMgr::Init()
 	CStateMgr::GetInst()->RegisterState(L"Player_Gun_Reload", []() { return new Player_Gun_Reload; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Gun_Fire", []() { return new Player_Gun_Fire; });
 
+	// LevelMgr InitCallback 등록
+	CLevelMgr::GetInst()->RegisterLevelInitCallback([]() { CGameMgr::GetInst()->Begin(); });
 
 	return S_OK;
+}
+
+void CGameMgr::Begin()
+{
+	// Main Camera
+	m_MainCamera		= CLevelMgr::GetInst()->FindObjectByName(L"MainCamera");
+
+	// Player UI
+	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
+	m_CardinalImageUI	= CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
+	m_HPUI				= CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
+	m_ItemUseUI			= CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
+	m_ReloadUI			= CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
+
+	// Script (Camera, UI)
+	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
+	CGameObject* killinfoUI = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Killinfo_UI");
+	m_KillinfoScript = static_cast<KillinfoUIScript*>(GetScriptWithType(killinfoUI, SCRIPT_TYPE::KILLINFOUI));
+	CGameObject* CameraPost = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"CameraPost");
+	m_CameraEffect = static_cast<CameraEffect*>(GetScriptWithType(CameraPost, SCRIPT_TYPE::CAMERAEFFECT));
+
+
 }
