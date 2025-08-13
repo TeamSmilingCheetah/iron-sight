@@ -2,10 +2,16 @@
 #include "Game/Gameplay/State/Public/Player_Grenade_Prepare.h"
 
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
+
+
 
 Player_Grenade_Prepare::Player_Grenade_Prepare()
 	: PlayerState(L"Player_Grenade_Prepare")
+	, m_bInputThrow(false)
+	, m_bLBTN(false)
 {
 	SetCanExitDuringAnimation(false);
 }
@@ -38,11 +44,23 @@ void Player_Grenade_Prepare::Enter_Override()
 
 void Player_Grenade_Prepare::FinalTick_Override()
 {
-	GetPlayerScript()->ProgressThrowPrepareState();
+	if (KEY_RELEASED(KEY::LBTN))
+	{
+		m_bInputThrow = true;
+		m_bLBTN = true;
+	}
+	if (KEY_RELEASED(KEY::RBTN))
+	{
+		m_bInputThrow = true;
+		m_bLBTN = false;
+	}
+	GetPlayerScript()->ProgressThrowPrepareState(m_bInputThrow, m_bLBTN);
 }
 
 void Player_Grenade_Prepare::Exit_Override()
 {
+	m_bInputThrow = false;
+	m_bLBTN = false;
 	GetPlayerScript()->ExitThrowPrepareState();
 }
 

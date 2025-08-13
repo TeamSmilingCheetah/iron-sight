@@ -106,11 +106,7 @@ void ThrowableController::Tick()
 	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bCanThrow = true;
-		//pPlayerScript->SetThrow(true);
 		ClearKey();
-
-		// 상태
-		m_PlayerScript->StateMachine()->SetChange(L"Player_Grenade_Prepare");
 	}
 
 
@@ -118,11 +114,7 @@ void ThrowableController::Tick()
 	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
 	{
 		m_bCanThrow = true;
-		//pPlayerScript->SetThrow(true);
 		ClearKey();
-
-		// 상태
-		m_PlayerScript->StateMachine()->SetChange(L"Player_Grenade_Prepare");
 	}
 
 	// 투척 상태 진입 가능한 지 판정
@@ -152,9 +144,6 @@ void ThrowableController::Tick()
 
 				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
 				GetOwner()->BoxCollider()->SetTrigger(false);
-
-				// 상태
-				m_PlayerScript->StateMachine()->SetChange(L"Player_Grenade_Throw_High");
 
 				// 애니메이션 다 끝날 때까지 상태 유지
 				m_AfterThrowAccTime = 0.f;
@@ -190,9 +179,6 @@ void ThrowableController::Tick()
 
 				// Trigger를 꺼서 충돌을 진행할 수 있게 해준다.
 				GetOwner()->BoxCollider()->SetTrigger(false);
-
-				// 상태
-				m_PlayerScript->StateMachine()->SetChange(L"Player_Grenade_Throw_Low");
 
 				// 애니메이션 다 끝날 때까지 상태 유지
 				m_AfterThrowAccTime = 0.f;
@@ -247,7 +233,6 @@ void ThrowableController::Tick()
 		}
 		else
 		{
-			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 			m_bAfterThrow = false;
 		}
 	}
@@ -313,11 +298,6 @@ void ThrowableController::Triggered()
 			ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::ITEMSCRIPT));
 			static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT))->UseItem(
 				pItem->GetItemType(), 1);
-			//m_PlayerScript->SetThrow(false);
-
-			// 현재 Throw State에서 탈출시켜줘야 함,
-			// Damge Cal에서 Player Dead State로 이동시키는 로직이 추가된다면 순서 고려해야 함
-			m_PlayerScript->StateMachine()->SetChange(L"Player_Idle");
 		}
 
 		DestroyObject(GetOwner());

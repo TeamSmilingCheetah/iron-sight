@@ -20,6 +20,7 @@
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Weapon/Public/GunController.h"
+#include "Game/Gameplay/Weapon/Public/ThrowableController.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
@@ -449,6 +450,11 @@ void PlayerCharacter::PlayerControlWeapon()
 			{
 				StateMachine()->SetChange(L"Player_Gun_Fire");
 			}
+			// 현재 투척무기라면 Grenade Prepare State 로 변경
+			if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
+			{
+				StateMachine()->SetChange(L"Player_Grenade_Prepare");
+			}
 			pWeaponController->SetCurKey(KEY::LBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 		}
@@ -464,6 +470,11 @@ void PlayerCharacter::PlayerControlWeapon()
 
 		if (KEY_TAP(KEY::RBTN))
 		{
+			// 현재 투척무기라면 Grenade Prepare State 로 변경
+			if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
+			{
+				StateMachine()->SetChange(L"Player_Grenade_Prepare");
+			}
 			pWeaponController->SetCurKey(KEY::RBTN);
 			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 		}
@@ -827,13 +838,6 @@ void PlayerCharacter::ProgressReloadState()
 	// REFACTOR :현재 무기의 Script를 static_cast를 통해 받아오는 구조가 맘에 들진 않음
 	// 만약 개선 방법이 보인다면 변경하면 좋을 것 같음.
 
-	// 무기가 바꼇다면 Reloading State를 벗어난다.
-	//if (m_InventoryScript->IsChange())
-	//{
-	//	StateMachine()->SetCanExit(true);
-	//	StateMachine()->SetChange(L"Player_Idle");
-	//}
-
 	GunController* curWeaponScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
 	if (curWeaponScript == nullptr)
 	{
@@ -891,16 +895,43 @@ void PlayerCharacter::ProgressFireState()
 	}
 }
 
-void PlayerCharacter::ProgressThrowPrepareState()
+void PlayerCharacter::ProgressThrowPrepareState(bool _InputThrow, bool _LBTN)
 {
 	WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
-	assert(pWeaponController != nullptr);
+	if (pWeaponController == nullptr)
+	{
+		// Tigger 발동으로 준비동작에서 수류탄이 터짐
+		// DamgeCal에서 SetChange와 순서고려
+		StateMachine()->SetChange(L"Player_Idle");
+		return;
+	}
 
 	// Trigger 작동
 	if (KEY_TAP(KEY::R))
 	{
 		pWeaponController->SetCurKey(KEY::R);
 		pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+	}
+
+	if(_InputThrow)
+	{
+		if (_LBTN)
+		{
+			StateMachine()->SetChange(L"Player_Grenade_Throw_High");
+		}
+		else
+		{
+			StateMachine()->SetChange(L"Player_Grenade_Throw_Low");
+		}
+	}
+}
+
+void PlayerCharacter::ProgressThrowState()
+{
+	m_StateAccTime += DT;
+	if (1.7f < m_StateAccTime)
+	{
+		StateMachine()->SetChange(L"Player_Idle");
 	}
 }
 

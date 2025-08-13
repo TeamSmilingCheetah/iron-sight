@@ -5,7 +5,8 @@ class Player_Grenade_Prepare :
 	public PlayerState
 {
 private:
-
+	bool m_bInputThrow;
+	bool m_bLBTN;
 
 public:
 	virtual void Enter_Override() override;

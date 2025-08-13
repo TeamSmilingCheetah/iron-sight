@@ -39,6 +39,7 @@ void Player_Grenade_Throw_High::Enter_Override()
 
 void Player_Grenade_Throw_High::FinalTick_Override()
 {
+	GetPlayerScript()->ProgressThrowState();
 }
 
 void Player_Grenade_Throw_High::Exit_Override()
