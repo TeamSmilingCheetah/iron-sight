@@ -107,9 +107,6 @@
     <ClCompile Include="Gameplay\State\Private\Player_Gun_Reload.cpp">
       <Filter>03. Gameplay\State\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_Jump.cpp">
-      <Filter>03. Gameplay\State\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Idle.cpp">
       <Filter>03. Gameplay\State\Base</Filter>
     </ClCompile>
@@ -136,6 +133,18 @@
     </ClCompile>
     <ClCompile Include="Gameplay\Event\Private\PlayerRevive.cpp">
       <Filter>03. Gameplay\Event\Revive</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\Player_Jump_Up.cpp">
+      <Filter>03. Gameplay\State\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\Player_Jump_Loop.cpp">
+      <Filter>03. Gameplay\State\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\Player_Jump_Down.cpp">
+      <Filter>03. Gameplay\State\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Character\Private\GroundCheck.cpp">
+      <Filter>03. Gameplay\GroundCheck</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +257,6 @@
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Reload.h">
       <Filter>03. Gameplay\State\Gun</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_Jump.h">
-      <Filter>03. Gameplay\State\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Idle.h">
       <Filter>03. Gameplay\State\Base</Filter>
     </ClInclude>
@@ -280,6 +286,18 @@
     </ClInclude>
     <ClInclude Include="Gameplay\Event\Public\PlayerRevive.h">
       <Filter>03. Gameplay\Event\Revive</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\Player_Jump_Up.h">
+      <Filter>03. Gameplay\State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\Player_Jump_Loop.h">
+      <Filter>03. Gameplay\State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\Player_Jump_Down.h">
+      <Filter>03. Gameplay\State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Character\Public\GroundCheck.h">
+      <Filter>03. Gameplay\GroundCheck</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -345,6 +363,8 @@
     </Filter>
     <Filter Include="03. Gameplay\Event\Revive">
       <UniqueIdentifier>{b23349af-e9d4-4965-b123-7ecaf1746d58}</UniqueIdentifier>
+    <Filter Include="03. Gameplay\GroundCheck">
+      <UniqueIdentifier>{79efeac8-b8c5-4bcd-8843-ba3b58b788ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -17,7 +17,9 @@ enum class PLAYER_STATE
 {
 	Player_Dead,
 	Player_Idle,
-	Player_Jump,
+	Player_Jump_Up,
+	Player_Jump_Loop,
+	Player_Jump_Down,
 	Player_Grenade_Prepare,
 	Player_Grenade_Throw_High,
 	Player_Grenade_Throw_Low,
@@ -31,6 +33,13 @@ enum class MOTION_STATE : uint8_t
 	STAND,	// 서 있음
 	CROUCH,	// 앉아 있음
 	PRONE,	// 엎드려 있음
+};
+
+enum class GROUND_STATE : uint8_t
+{
+	OnGround,
+	InAir,
+	Landing,
 };
 
 class PlayerCharacter :
@@ -57,7 +66,7 @@ private:
 	float m_GravityMaxSpeed;	// 중력으로 인해서 발생하는 속도의 최대 제한치
 	float m_JumpPower;			// 점프용
 
-	bool m_IsGround;				// 지상위에 서있는지 판정
+	GROUND_STATE m_GroundState;
 	bool m_bLean;
 	bool m_bMouseActive;			//  마우스 활성화
 
@@ -161,6 +170,11 @@ public:
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
 	bool IsGround() const { return m_IsGround; }
 	void SetOptionUIOpened(bool _Opened) { m_OptionUIOpened = _Opened; }
+	void SetGroundState(GROUND_STATE PState) { m_GroundState = PState; }
+
+	bool IsGround() const { return m_GroundState == GROUND_STATE::OnGround; }
+	bool IsInAir() const { return m_GroundState == GROUND_STATE::InAir; }
+	bool IsLanding() const { return m_GroundState == GROUND_STATE::Landing; }
 
 	// Heal
 	void TriggerHeal(ITEM_TYPE PHealType);

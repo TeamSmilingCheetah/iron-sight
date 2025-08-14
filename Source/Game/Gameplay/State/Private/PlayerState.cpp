@@ -5,6 +5,8 @@
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Game/System/Public/CGameMgr.h"
+#include "Game/Gameplay/Character/Public/CameraController.h"
 
 PlayerState::PlayerState(const wstring& _Name)
 	: CState(_Name)
@@ -57,7 +59,7 @@ void PlayerState::FinalTick()
 	}
 
 	// PlayerState는 매 틱 입력을 감지해 움직이는 애니메이션을 적용해줘야 한다.
-	ControlMoveAnimation();
+	//ControlMoveAnimation();
 
 	// Override Function
 	FinalTick_Override();
@@ -119,7 +121,7 @@ void PlayerState::ControlMoveAnimation()
 		}
 	}
 	// 만약 플레이어가 움직이는 중이라면
-	else if (1.f < m_PlayerScript->GetPlayerVelocity().Length())
+	else // if (1.f < m_PlayerScript->GetPlayerVelocity().Length())
 	{
 		MOTION_STATE eCurState = m_PlayerScript->GetMotionState();
 
@@ -159,7 +161,24 @@ void PlayerState::ControlMoveAnimation()
 			else
 				m_ClipName = L"Animation\\Armature_walk_right.anim";
 		}
+
+		else
+		{
+			switch (eCurState)
+			{
+			case MOTION_STATE::STAND:
+				m_ClipName = L"Animation\\Armature_idle.anim";
+				break;
+			case MOTION_STATE::CROUCH:
+				m_ClipName = L"Animation\\Armature_idle_crouching.anim";
+				break;
+			case MOTION_STATE::PRONE:
+				m_ClipName = L"Animation\\Armature_prone_idle.anim";
+				break;
+			}
+		}
 	}
+	
 
 	// 애니메이션 적용
 	AdjustAnim();

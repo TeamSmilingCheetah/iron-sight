@@ -13,6 +13,16 @@
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 
 CGameMgr::CGameMgr()
+	: m_Player(nullptr)
+	, m_MainCamera(nullptr)
+	, m_InventoryCanvasUI(nullptr)
+	, m_CardinalImageUI(nullptr)
+	, m_HPUI(nullptr)
+	, m_ItemUseUI(nullptr)
+	, m_ReloadUI(nullptr)
+	, m_CamScript(nullptr)
+	, m_KillinfoScript(nullptr)
+	, m_CameraEffect(nullptr)
 {
 
 }
@@ -86,11 +96,13 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"TestFadeInOutReset", []() { return new TestFadeInOutReset; });
 	CScriptMgr::GetInst()->RegisterScript(L"OptionUIScript", []() { return new OptionUIScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"PlayerRevive", []() { return new PlayerRevive; });
-
+	CScriptMgr::GetInst()->RegisterScript(L"GroundCheck", []() { return new GroundCheck; });
 
 	// StateMgr 등록
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });
-	CStateMgr::GetInst()->RegisterState(L"Player_Jump", []() { return new Player_Jump; });
+	CStateMgr::GetInst()->RegisterState(L"Player_Jump_Up", []() { return new Player_Jump_Up; });
+	CStateMgr::GetInst()->RegisterState(L"Player_Jump_Loop", []() { return new Player_Jump_Loop; });
+	CStateMgr::GetInst()->RegisterState(L"Player_Jump_Down", []() { return new Player_Jump_Down; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Dead", []() { return new Player_Dead; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Heal", []() { return new Player_Heal; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Throw_Low", []() { return new Player_Grenade_Throw_Low; });

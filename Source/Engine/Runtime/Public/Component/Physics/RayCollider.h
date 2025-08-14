@@ -76,5 +76,5 @@ public:
 	FRayCollider();
 	FRayCollider(const FRayCollider& POrigin);
 	~FRayCollider() override;
-	CLONE(FRayCollider);
+	CLONE(FRayCollider)
 };

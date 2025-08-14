@@ -38,10 +38,9 @@ private:
 	CameraEffect*			m_CameraEffect;
 	PlayerCharacter*		m_PlayerScript;
 
-
 public:
 	CGameObject* GetPlayer() const { return m_Player; }
-	CGameObject* GetMainCam() const { return m_MainCamera; }
+	CGameObject* GetMainCamera() const { return m_MainCamera; }
 
 	CGameObject* GetInventoryCanvasUI() const { return m_InventoryCanvasUI; }
 	CGameObject* GetPauseCanvasUI() const { return m_PauseCanvasUI; }

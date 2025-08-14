@@ -87,7 +87,7 @@ void TestLevel::CreateTestLevel()
 			},
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddScriptToObject<GunController>(obj);
+				Engine::Common::AddScriptToObject(obj, SCRIPT_TYPE::GUNSCRIPT);
 				// TODO(KHJ): Wrapping
 				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
 				script->SetWeaponType(WEAPON_TYPE::PRIMARY);
@@ -123,7 +123,7 @@ void TestLevel::CreateTestLevel()
 			},
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddScriptToObject<ThrowableController>(obj);
+				Engine::Common::AddScriptToObject(obj, SCRIPT_TYPE::THROWABLESCRIPT);
 				// TODO(KHJ): Wrapping
 				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
 				script->SetWeaponType(WEAPON_TYPE::THROWABLE);
@@ -161,7 +161,7 @@ void TestLevel::CreateTestLevel()
 			},
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddScriptToObject<ThrowableController>(obj);
+				Engine::Common::AddScriptToObject(obj, SCRIPT_TYPE::THROWABLESCRIPT);
 				// TODO(KHJ): Wrapping
 				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
 				script->SetWeaponType(WEAPON_TYPE::THROWABLE);
@@ -197,7 +197,7 @@ void TestLevel::CreateTestLevel()
 			},
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddScriptToObject<GunController>(obj);
+				Engine::Common::AddScriptToObject(obj, SCRIPT_TYPE::GUNSCRIPT);
 				// TODO(KHJ): Wrapping
 				WeaponController* script = static_cast<WeaponController*>(obj->GetScripts()[0]);
 				script->SetWeaponType(WEAPON_TYPE::SECONDARY);

@@ -8,6 +8,8 @@
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/State/CState.h"
 
+#include "Engine/System/Public/Manager/CScriptMgr.h"
+
 enum class EColliderType : UINT8;
 /**
  * @brief Game Contents Develop에 필요한 Engine API를 간접호출할 수 있도록 만든 namespace
@@ -26,8 +28,7 @@ namespace Engine
 		template <class T>
 		void AddComponentToObject(CGameObject* PObject);
 
-		template <class T>
-		void AddScriptToObject(CGameObject* PObject);
+		void AddScriptToObject(CGameObject* PObject, SCRIPT_TYPE PScriptType);
 	}
 
 	namespace Transform
@@ -119,12 +120,7 @@ void Engine::Common::AddComponentToObject(CGameObject* PObject)
 	PObject->AddComponent(new T);
 }
 
-template <class T>
-void Engine::Common::AddScriptToObject(CGameObject* PObject)
-{
-	static_assert(std::is_base_of_v<CScript, T>, "Object Can Only Get Script By This Function");
-	PObject->AddComponent(new T);
-}
+
 
 template <typename T>
 Ptr<T> Engine::IO::LoadAsset(const wstring& PRelativeFilePath)

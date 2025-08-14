@@ -142,7 +142,7 @@ void PlayerCharacter::UpdateMove()
 		m_Velocity += m_Accel * DT;
 
 		// 최대속도 확인(땅위에 있을 경우에만 판단)
-		if (m_IsGround && m_MaxSpeed < m_Velocity.Length())
+		if (IsGround() && m_MaxSpeed < m_Velocity.Length())
 		{
 			m_Velocity.Normalize();
 			m_Velocity *= m_MaxSpeed;
@@ -150,7 +150,7 @@ void PlayerCharacter::UpdateMove()
 	}
 
 	// 방향키 입력이 없다면 마칠계수에 따라 감속(땅에있다는 조건추가)
-	else if (m_IsGround)
+	else if (IsGround())
 	{
 		// 속도의 반대방향으로 마찰계수*질량을 곱합
 		Vec3 vFriction = -m_Velocity;
@@ -243,7 +243,7 @@ void PlayerCharacter::UpdateGravity()
 	}
 
 	Vec3 gravityDir = Vec3(0.f, -1.f, 0.f);
-	if (!m_IsGround)
+	if (!IsGround())
 	{
 		// 공중에 있을 때만 중력 적용
 		m_GravityVelocity += (gravityDir * m_GravityAccel) * DT;
@@ -263,13 +263,15 @@ void PlayerCharacter::UpdateGravity()
 		// }
 	}
 
-	// 점프 기능 (현재 틱의 실시간 지면 판정 사용)
-	if (m_IsGround && KEY_TAP(KEY::SPACE))
+	// 점프 기능
+	if (IsGround() && KEY_TAP(KEY::SPACE))
 	{
-		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
+		LOG_INFO("[Player_Move] Space Pushed!");
 
+		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
+		
 		// 상태
-		StateMachine()->SetChange(L"Player_Jump");
+		StateMachine()->SetChange(L"Player_Jump_Up");
 	}
 
 	// 최종 속도에 중력 속도 합산
