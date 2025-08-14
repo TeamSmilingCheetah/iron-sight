@@ -21,6 +21,32 @@ void CameraEffect::Begin()
 
 void CameraEffect::Tick()
 {
+
+	// 페이드 인/아웃 상태 체크
+	if (m_FadeIn || m_FadeOut)
+	{
+		Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+		void* pStartTime = pMtrl->GetScalarParam(SCALAR_PARAM::FLOAT_0);
+		float startTime = *(float*)pStartTime;
+		float currentTime = g_Data.Time;
+		float elapsedTime = currentTime - startTime;
+
+		// 페이드 효과가 1초 이상 지속되면 종료
+		if (elapsedTime >= 1.01f)
+		{
+			if (m_FadeIn)
+			{
+				// 페이드 인 완료
+				m_FadeIn = false;
+			}
+
+			if (m_FadeOut)
+			{
+				// 페이드 아웃 완료
+				m_FadeOut = false;
+			}
+		}
+	}
 }
 
 void CameraEffect::FadeIn()

@@ -122,11 +122,12 @@
     <ClCompile Include="System\Private\CGameMgr.cpp">
       <Filter>01. GameMgr</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_Bandage.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_EnergyDrink.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_FirstAidKit.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_MedKit.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_PainKiller.cpp" />
+    <ClCompile Include="Gameplay\Event\EventScriptBase.cpp">
+      <Filter>03. Gameplay\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Event\TestFadeInOutReset.cpp">
+      <Filter>03. Gameplay\Event\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -256,11 +257,12 @@
     <ClInclude Include="Gameplay\states.h">
       <Filter>01. GameMgr</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_Bandage.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_EnergyDrink.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_FirstAidKit.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_MedKit.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_PainKiller.h" />
+    <ClInclude Include="Gameplay\Event\EventScriptBase.h">
+      <Filter>03. Gameplay\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Event\TestFadeInOutReset.h">
+      <Filter>03. Gameplay\Event\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -313,6 +315,12 @@
     </Filter>
     <Filter Include="01. GameMgr">
       <UniqueIdentifier>{bde1f4b8-70be-4f80-982a-aab63718c370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Gameplay\Event">
+      <UniqueIdentifier>{4c81873f-f066-4bcf-9ac1-68c92e7706a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Gameplay\Event\Test">
+      <UniqueIdentifier>{72be63e3-16fc-42b6-963c-9e024b13da98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

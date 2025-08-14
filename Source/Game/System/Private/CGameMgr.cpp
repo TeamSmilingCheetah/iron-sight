@@ -81,6 +81,7 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"MinimapCameraScript", []() { return new MinimapCameraScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"MinimapUIScript", []() { return new MinimapUIScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"CameraEffect", []() { return new CameraEffect; });
+	CScriptMgr::GetInst()->RegisterScript(L"TestFadeInOutReset", []() { return new TestFadeInOutReset; });
 
 	// StateMgr 등록
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });

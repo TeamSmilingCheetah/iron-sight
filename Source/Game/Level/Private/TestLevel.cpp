@@ -20,6 +20,7 @@
 #include "Game/Gameplay/UI/Public/MinimapUIScript.h"
 #include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
+#include "Game/Gameplay/Event/TestFadeInOutReset.h"
 
 // TODO(KHJ): 이하 헤더 배제 시도
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -58,6 +59,7 @@ void TestLevel::CreateTestLevel()
 	ItemMgr::GetInst()->Init();
 
 	SetUpPlayer(LevelRawPtr, UIInfo);
+	SetUpEvent(LevelRawPtr);
 
 	// Weapon
 	GameFactory::MakeFBXObject(
@@ -856,4 +858,15 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 	pInteractionHandler->AddComponent(pHandlerScript);
 
 	Player->AddChild(pInteractionHandler);
+}
+
+void TestLevel::SetUpEvent(CLevel* PLevel)
+{
+	// FadeInOut테스트용
+	CGameObject* FadeInOutEvent = new CGameObject;
+	FadeInOutEvent->SetName(L"FadeInOut_Event");
+	FadeInOutEvent->AddComponent(new TestFadeInOutReset);
+
+	PLevel->AddObject(8, FadeInOutEvent, false);
+
 }
