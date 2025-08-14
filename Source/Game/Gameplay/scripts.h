@@ -24,3 +24,4 @@
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
 #include "Game/Gameplay/Character/Public/EnemyController.h"
 #include "Game/Gameplay/Interaction/Public/InteractableScript.h"
+#include "Game/Gameplay/Event/TestFadeInOutReset.h"
