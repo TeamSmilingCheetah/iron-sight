@@ -183,11 +183,13 @@ ipch/
 
 ## 실행 파일
 *.exe
-*.dll
-*.lib
 
 # User Ignore File
 OutputFile/
 Intermediate/
 unity_*.cpp
 imgui.ini
+
+# Build Library By Code
+External/Library/Engine
+External/Library/Game

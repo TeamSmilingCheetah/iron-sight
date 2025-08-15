@@ -1,0 +1,2 @@
+External/Library/FBXLoader/deb/libfbxsdk-md.lib filter=lfs diff=lfs merge=lfs -text
+External/Library/FBXLoader/rel/libfbxsdk-md.lib filter=lfs diff=lfs merge=lfs -text
