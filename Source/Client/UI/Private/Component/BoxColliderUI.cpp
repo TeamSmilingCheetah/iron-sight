@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Client/UI/Public/Component/Collider3DUI.h"
+#include "Client/UI/Public/Component/BoxColliderUI.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"

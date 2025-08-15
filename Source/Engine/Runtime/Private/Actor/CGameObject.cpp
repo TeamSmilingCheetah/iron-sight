@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"

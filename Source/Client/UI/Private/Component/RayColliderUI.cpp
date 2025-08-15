@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Client/UI/Public/Component/ColliderRayUI.h"
+#include "Client/UI/Public/Component/RayColliderUI.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 
 
 ColliderRayUI::ColliderRayUI()

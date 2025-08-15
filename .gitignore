@@ -190,6 +190,9 @@ Intermediate/
 unity_*.cpp
 imgui.ini
 
+# Personal AI Development Tools
+WARP.md
+
 # Build Library By Code
 External/Library/Engine
 External/Library/Game
