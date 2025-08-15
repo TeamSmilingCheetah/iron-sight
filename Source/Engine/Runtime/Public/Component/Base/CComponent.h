@@ -13,7 +13,7 @@ class CLight2D;
 class CFlipbookPlayer;
 class FBoxCollider;
 class CTileMap;
-class FColliderRay;
+class FRayCollider;
 class FCollider2D;
 class CCamera;
 class CMeshRender;
@@ -61,7 +61,7 @@ public:
 	CCamera* Camera() const;
 	FCollider2D* Collider2D() const;
 	FBoxCollider* Collider3D() const;
-	FColliderRay* ColliderRay() const;
+	FRayCollider* ColliderRay() const;
 	CFlipbookPlayer* FlipbookPlayer() const;
 	CTileMap* TileMap() const;
 	CLight2D* Light2D() const;

@@ -249,7 +249,7 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 	}
 	if (*pStr == "ColliderRay")
 	{
-		m_ProtoObject->AddComponent(new FColliderRay);
+		m_ProtoObject->AddComponent(new FRayCollider);
 		return;
 	}
 	if (*pStr == "Camera")

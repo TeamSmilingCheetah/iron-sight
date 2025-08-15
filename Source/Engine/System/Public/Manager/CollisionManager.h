@@ -8,12 +8,18 @@ struct FCollisionID;
 using ColliderPairVariant = variant<
 	pair<FMeshCollider*, FMeshCollider*>,
 	pair<FMeshCollider*, FBoxCollider*>,
-	pair<FBoxCollider*, FMeshCollider*>
+	pair<FBoxCollider*, FMeshCollider*>,
+	pair<FSphereCollider*, FSphereCollider*>,
+	pair<FSphereCollider*, FBoxCollider*>,
+	pair<FBoxCollider*, FSphereCollider*>,
+	pair<FSphereCollider*, FMeshCollider*>,
+	pair<FMeshCollider*, FSphereCollider*>
 >;
 
 class FCollider2D;
 class FBoxCollider;
-class FColliderRay;
+class FSphereCollider;
+class FRayCollider;
 
 /**
  * @brief 충돌을 관리하는 매니저 클래스
@@ -42,7 +48,7 @@ private:
 	// Colliders
 	vector<IColliderBase*> StaticColliders;
 	vector<IColliderBase*> DynamicColliders;
-	vector<FColliderRay*> RayColliders;
+	vector<FRayCollider*> RayColliders;
 
 	// BVH
 	BVHNode* StaticBVHRoot = nullptr;
@@ -63,7 +69,7 @@ private:
 	vector<tCollisionTask> Tasks;
 	vector<tRaycastTask> RaycastTasks;
 	vector<ColliderPairVariant> TaskColliders;
-	vector<pair<FColliderRay*, FMeshCollider*>> RaycastTaskColliders;
+	vector<pair<FRayCollider*, FMeshCollider*>> RaycastTaskColliders;
 	unordered_map<const void*, FMeshBatchData> DataCache;
 
 private:
@@ -81,12 +87,12 @@ private:
 	static void DestroyBVH(BVHNode*& InRootNode);
 	static BVHNode* BuildBVHRecursive(const vector<IColliderBase*>& InColliders, int InDepth);
 	static void QueryBVH(const BVHNode* InNode, const IColliderBase* InCollider, vector<IColliderBase*>& OutCandidates);
-	static void QueryBVH(const BVHNode* InNode, FColliderRay* InRay, vector<FRayCollisionInfo>& OutCandidates);
+	static void QueryBVH(const BVHNode* InNode, FRayCollider* InRay, vector<FRayCollisionInfo>& OutCandidates);
 
 	// Raycast Functions
 	void RaycastBroad();
 	void RaycastNarrow();
-	void AddRayShaderTask(FColliderRay* InRay, const FMeshCollider* InCollider);
+	void AddRayShaderTask(FRayCollider* InRay, const FMeshCollider* InCollider);
 	void ExecuteAndProcessRaycastCS();
 
 	// Broad Phase Functions
@@ -100,6 +106,13 @@ private:
 	void CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider);
 	static bool IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider);
 	static bool IsCollision(const FBoxCollider* InLeftCollider, const FBoxCollider* InRightCollider);
+	static bool IsCollision(const FSphereCollider* InLeftCollider, const FSphereCollider* InRightCollider);
+	static bool IsCollision(const FSphereCollider* InSphereCollider, const FBoxCollider* InBoxCollider);
+	static bool IsCollision(const FBoxCollider* InBoxCollider, const FSphereCollider* InSphereCollider);
+	static bool IsCollision(const FSphereCollider* InSphereCollider, const FMeshCollider* InMeshCollider);
+	static bool IsCollision(const FMeshCollider* InMeshCollider, const FSphereCollider* InSphereCollider);
+	static Vec3 GetClosestPointOnTriangle(const Vec3& InPoint,
+	                                      const Vec3& InVertexA, const Vec3& InVertexB, const Vec3& InVertexC);
 	void ExecuteAndProcessCS();
 
 	// PostProcess Functions

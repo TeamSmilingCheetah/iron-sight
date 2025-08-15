@@ -17,7 +17,7 @@
 void FCollisionManager::RaycastBroad()
 {
 	// Check All Collision
-	for (FColliderRay* Ray : RayColliders)
+	for (FRayCollider* Ray : RayColliders)
 	{
 		QueryBVH(StaticBVHRoot, Ray, RayCandidates);
 		QueryBVH(DynamicBVHRoot, Ray, RayCandidates);
@@ -31,7 +31,7 @@ void FCollisionManager::RaycastNarrow()
 {
 	for (const FRayCollisionInfo& Info : RayCandidates)
 	{
-		FColliderRay* Ray = Info.RayObject;
+		FRayCollider* Ray = Info.RayObject;
 		IColliderBase* Collider = Info.HitCollider;
 
 		unordered_set<FCollisionID> CheckSet;
@@ -62,7 +62,7 @@ void FCollisionManager::RaycastNarrow()
  * @param InRay Ray Collider
  * @param InCollider Other Collider (Mesh)
  */
-void FCollisionManager::AddRayShaderTask(FColliderRay* InRay, const FMeshCollider* InCollider)
+void FCollisionManager::AddRayShaderTask(FRayCollider* InRay, const FMeshCollider* InCollider)
 {
 	FMeshBatchData MeshData = GetOrAddBatchData(InCollider);
 	RaycastTaskColliders.push_back(make_pair(InRay, InCollider->MeshCollider()));
@@ -117,7 +117,7 @@ void FCollisionManager::ExecuteAndProcessRaycastCS()
 		{
 			const auto& Colliders = RaycastTaskColliders[i];
 
-			FColliderRay* Ray = Colliders.first;
+			FRayCollider* Ray = Colliders.first;
 			FMeshCollider* Mesh = Colliders.second;
 
 			// 충돌 정보를 레이 콜라이더에 설정

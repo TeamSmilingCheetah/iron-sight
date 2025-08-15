@@ -4,8 +4,8 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
-FColliderRay::FColliderRay()
-	: IColliderBase(COMPONENT_TYPE::COLLIDERRAY)
+FRayCollider::FRayCollider()
+	: IColliderBase(COMPONENT_TYPE::RAY_COLLIDER)
 	, Offset(Vec3(0.f))
 	, Length(1000.f)
 	, TargetLength(100000.f)
@@ -18,7 +18,7 @@ FColliderRay::FColliderRay()
 	RayCollisionInfo.RayObject = this;
 }
 
-FColliderRay::FColliderRay(const FColliderRay& POrigin)
+FRayCollider::FRayCollider(const FRayCollider& POrigin)
 	: IColliderBase(POrigin)
 	, Offset(POrigin.Offset)
 	, Length(POrigin.Length)
@@ -32,9 +32,9 @@ FColliderRay::FColliderRay(const FColliderRay& POrigin)
 	RayCollisionInfo.RayObject = this;
 }
 
-FColliderRay::~FColliderRay() = default;
+FRayCollider::~FRayCollider() = default;
 
-bool FColliderRay::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance)
+bool FRayCollider::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance)
 {
 	// 기존 거리보다 가까운 거리에 있는 물체만 저장
 	if (InDistance < RayCollisionInfo.Length)
@@ -48,14 +48,14 @@ bool FColliderRay::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistan
 	return false;
 }
 
-void FColliderRay::ClearRayColInfo()
+void FRayCollider::ClearRayColInfo()
 {
 	RayCollisionInfo.PrevCollider = RayCollisionInfo.HitCollider;
 	RayCollisionInfo.HitCollider = nullptr;
 	RayCollisionInfo.Length = 100000.f;
 }
 
-void FColliderRay::FinalTick()
+void FRayCollider::FinalTick()
 {
 	if (IsDeactive())
 	{
@@ -119,7 +119,7 @@ void FColliderRay::FinalTick()
 	ClearRayColInfo();
 }
 
-void FColliderRay::SaveComponent(FILE* InFile)
+void FRayCollider::SaveComponent(FILE* InFile)
 {
 	(void)fwrite(&Offset, sizeof(Vec3), 1, InFile);
 	(void)fwrite(&RayPosDir, sizeof(tRay), 1, InFile);
@@ -132,7 +132,7 @@ void FColliderRay::SaveComponent(FILE* InFile)
 	(void)fwrite(&bTriggerTarget, sizeof(bool), 1, InFile);
 }
 
-void FColliderRay::LoadComponent(FILE* InFile)
+void FRayCollider::LoadComponent(FILE* InFile)
 {
 	(void)fread(&Offset, sizeof(Vec3), 1, InFile);
 	(void)fread(&RayPosDir, sizeof(tRay), 1, InFile);
@@ -149,7 +149,7 @@ void FColliderRay::LoadComponent(FILE* InFile)
  * @brief 순수 가상 함수로 작성된 GetAABB에 대한 구현부, 호출될 수 없도록 컨트롤
  * @return Null AABB
  */
-const AABB FColliderRay::GetAABB() const
+const AABB FRayCollider::GetAABB() const
 {
 	LOG_ERROR_F("[Collision][Ray] {}: ColliderRay Don't Have AABB", WStringToString(GetOwner()->GetName()));
 	assert(!"ColliderRay Don't Have AABB");

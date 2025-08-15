@@ -227,6 +227,7 @@ void DrawDebugSphere(Vec4 _Color, Vec3 _Pos, float _Radius, bool _DepthTest, flo
 	info.Color = _Color;
 	info.WorldPos = _Pos;
 	info.Scale = Vec3(_Radius * 2.f, _Radius * 2.f, _Radius * 2.f);
+    info.matWorld = XMMatrixIdentity();
 	info.DepthTest = _DepthTest;
 	info.Duration = _Duration;
 	CRenderMgr::GetInst()->AddDebugShape(info);

@@ -9,6 +9,7 @@
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"
 
 #include "Engine/System/Public/Manager/CStateMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -98,7 +99,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 	Common::AddComponentToObject<CCamera>(RawCameraPtr);
 	Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
 
-	Common::AddComponentToObject<FColliderRay>(RawCameraPtr);
+	Common::AddComponentToObject<FRayCollider>(RawCameraPtr);
 	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
 
 
@@ -220,7 +221,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
 
 
-	Common::AddComponentToObject<FColliderRay>(Player);
+	Common::AddComponentToObject<FRayCollider>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
 
 	// Animation
@@ -270,8 +271,23 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	// TEST(Ssio): prone_toss_grenade 뒷부분 자름
 
 	Common::AddComponentToObject<FBoxCollider>(Player);
-	Collider::SetColliderProperties(Player, {800.f, 910.f, 800.f}, {0.f, 455.f, 0.f}, true);
+	Collider::SetColliderProperties(Player, {300.f, 910.f, 300.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
+
+	// Player Ground
+	auto UniqueGroundChecker = Common::CreateNewObject();
+
+	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
+	auto GroundChecker = UniqueGroundChecker.get();
+	UniqueGroundChecker.release();
+
+	// TODO(KHJ): Facade 코드로 교체할 것
+	Common::AddComponentToObject<FSphereCollider>(GroundChecker);
+	GroundChecker->SphereCollider()->SetIndependent(300.f);
+
+	Collider::SetColliderDynamic(GroundChecker, EColliderType::SphereCollider);
+
+	Common::AddChild(Player, GroundChecker);
 
 	// Player Head Collider
 	auto HeaderCollider = Common::CreateNewObject();
