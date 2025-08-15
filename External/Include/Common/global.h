@@ -44,16 +44,6 @@ using std::function;
 
 namespace fs = std::filesystem;
 
-#ifdef _DEBUG
-#pragma comment(lib, "DirectxTex/DirectXTex_debug")
-#pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
-#pragma comment(lib, "FMOD/fmodL64_vc.lib")
-#else
-#pragma comment(lib, "DirectxTex/DirectXTex")
-#pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
-#pragma comment(lib, "FMOD/fmod64_vc.lib")
-#endif
-
 // DirectX 11
 #pragma comment(lib, "d3d11")
 #pragma comment(lib, "d3dcompiler")
@@ -95,3 +85,8 @@ using namespace Microsoft::WRL;
 #include "struct.h"
 #include "func.h"
 #include "Ptr.h"
+
+// Linking Library
+#pragma comment(lib, DIRECTX_TEX_LIB)
+#pragma comment(lib, FBX_LIB)
+#pragma comment(lib, FMOD_LIB)
