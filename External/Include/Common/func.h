@@ -13,7 +13,7 @@ class FSphereCollider;
 
 enum class SCRIPT_TYPE : UINT8;
 
-using ColliderVariant = variant<FCollider2D*, FBoxCollider*, FMeshCollider*, FSphereCollider*, FColliderRay*>;
+using ColliderVariant = variant<FCollider2D*, FBoxCollider*, FMeshCollider*, FSphereCollider*, FRayCollider*>;
 
 void ExcutePreload();
 

@@ -144,7 +144,7 @@ void FCollisionManager::QueryBVH(const BVHNode* InNode,
  * @param OutCandidates [OUT] AABB 충돌이 확정된 잠재적 충돌 의심군
  */
 void FCollisionManager::QueryBVH(const BVHNode* InNode,
-                                 FColliderRay* InRay, vector<FRayCollisionInfo>& OutCandidates)
+                                 FRayCollider* InRay, vector<FRayCollisionInfo>& OutCandidates)
 {
 	if (!InNode || !InRay)
 	{

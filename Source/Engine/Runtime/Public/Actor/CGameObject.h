@@ -163,7 +163,7 @@ public:
 	CCamera* Camera() const { return reinterpret_cast<CCamera*>(GetComponent(COMPONENT_TYPE::CAMERA)); }
 	FCollider2D* Collider2D() const { return reinterpret_cast<FCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
 	FBoxCollider* BoxCollider() const { return reinterpret_cast<FBoxCollider*>(GetComponent(COMPONENT_TYPE::BOX_COLLIDER)); }
-	FColliderRay* ColliderRay() const{ return reinterpret_cast<FColliderRay*>(GetComponent(COMPONENT_TYPE::COLLIDERRAY)); }
+	FRayCollider* ColliderRay() const{ return reinterpret_cast<FRayCollider*>(GetComponent(COMPONENT_TYPE::RAY_COLLIDER)); }
 	CFlipbookPlayer* FlipbookPlayer() const { return reinterpret_cast<CFlipbookPlayer*>(GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)); }
 	CTileMap* TileMap() const { return reinterpret_cast<CTileMap*>(GetComponent(COMPONENT_TYPE::TILEMAP)); }
 	CLight2D* Light2D() const { return reinterpret_cast<CLight2D*>(GetComponent(COMPONENT_TYPE::LIGHT2D)); }

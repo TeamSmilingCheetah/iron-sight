@@ -28,7 +28,7 @@ void EnemyVisionScript::Begin()
 void EnemyVisionScript::Tick()
 {
 	// Collider가 존재해야한다(없으면 종료)
-	FColliderRay* pRay = GetOwner()->ColliderRay();
+	FRayCollider* pRay = GetOwner()->ColliderRay();
 	FBoxCollider* p3DCol = GetOwner()->BoxCollider();
 	if (pRay == nullptr || p3DCol == nullptr)
 	{

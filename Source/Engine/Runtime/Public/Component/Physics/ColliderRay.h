@@ -19,7 +19,7 @@
  * @param MRayTargetAll 레이가 발견 가능한 타겟 판정
  * @param MTriggerTarget 트리거용 충돌체를 감지할지 판정
  */
-class FColliderRay :
+class FRayCollider :
 	public IColliderBase
 {
 private:
@@ -80,8 +80,8 @@ public:
 	}
 
 	// Special Member Function
-	FColliderRay();
-	FColliderRay(const FColliderRay& POrigin);
-	~FColliderRay() override;
-	CLONE(FColliderRay);
+	FRayCollider();
+	FRayCollider(const FRayCollider& POrigin);
+	~FRayCollider() override;
+	CLONE(FRayCollider);
 };

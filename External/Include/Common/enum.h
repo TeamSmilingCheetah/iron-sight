@@ -121,7 +121,7 @@ enum class COMPONENT_TYPE : UINT
 	DECAL, // 깊이 체크, 문양 렌더링
 	LANDSCAPE, // 3D 지형 시뮬레이션 및 렌더링
 
-	COLLIDERRAY,		// Ray 충돌체
+	RAY_COLLIDER,		// Ray 충돌체
 
 	UI,			// UI 컴포넌트
 	UIRENDER,
@@ -133,7 +133,7 @@ enum class COMPONENT_TYPE : UINT
 
 	SCRIPT, // 대본
 
-	SAVE_END = 0xFFFFFFFF,	// File Save 반복문 종료 조건 값
+	SAVE_END = 0xFFFFFFFF, // File Save 반복문 종료 조건 값
 };
 
 // 카메라 투영 (Projection)

@@ -99,7 +99,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 	Common::AddComponentToObject<CCamera>(RawCameraPtr);
 	Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
 
-	Common::AddComponentToObject<FColliderRay>(RawCameraPtr);
+	Common::AddComponentToObject<FRayCollider>(RawCameraPtr);
 	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
 
 
@@ -221,7 +221,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
 
 
-	Common::AddComponentToObject<FColliderRay>(Player);
+	Common::AddComponentToObject<FRayCollider>(Player);
 	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
 
 	// Animation

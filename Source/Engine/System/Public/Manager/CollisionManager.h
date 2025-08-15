@@ -19,7 +19,7 @@ using ColliderPairVariant = variant<
 class FCollider2D;
 class FBoxCollider;
 class FSphereCollider;
-class FColliderRay;
+class FRayCollider;
 
 /**
  * @brief 충돌을 관리하는 매니저 클래스
@@ -48,7 +48,7 @@ private:
 	// Colliders
 	vector<IColliderBase*> StaticColliders;
 	vector<IColliderBase*> DynamicColliders;
-	vector<FColliderRay*> RayColliders;
+	vector<FRayCollider*> RayColliders;
 
 	// BVH
 	BVHNode* StaticBVHRoot = nullptr;
@@ -69,7 +69,7 @@ private:
 	vector<tCollisionTask> Tasks;
 	vector<tRaycastTask> RaycastTasks;
 	vector<ColliderPairVariant> TaskColliders;
-	vector<pair<FColliderRay*, FMeshCollider*>> RaycastTaskColliders;
+	vector<pair<FRayCollider*, FMeshCollider*>> RaycastTaskColliders;
 	unordered_map<const void*, FMeshBatchData> DataCache;
 
 private:
@@ -87,12 +87,12 @@ private:
 	static void DestroyBVH(BVHNode*& InRootNode);
 	static BVHNode* BuildBVHRecursive(const vector<IColliderBase*>& InColliders, int InDepth);
 	static void QueryBVH(const BVHNode* InNode, const IColliderBase* InCollider, vector<IColliderBase*>& OutCandidates);
-	static void QueryBVH(const BVHNode* InNode, FColliderRay* InRay, vector<FRayCollisionInfo>& OutCandidates);
+	static void QueryBVH(const BVHNode* InNode, FRayCollider* InRay, vector<FRayCollisionInfo>& OutCandidates);
 
 	// Raycast Functions
 	void RaycastBroad();
 	void RaycastNarrow();
-	void AddRayShaderTask(FColliderRay* InRay, const FMeshCollider* InCollider);
+	void AddRayShaderTask(FRayCollider* InRay, const FMeshCollider* InCollider);
 	void ExecuteAndProcessRaycastCS();
 
 	// Broad Phase Functions

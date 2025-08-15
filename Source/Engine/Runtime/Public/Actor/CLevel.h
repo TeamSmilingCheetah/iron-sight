@@ -18,8 +18,8 @@ public:
 	LEVEL_STATE GetState() const { return m_State; }
 	void GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects);
 	void GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
-	                            vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays);
-	void GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays);
+	                            vector<IColliderBase*>& InDynamic, vector<FRayCollider*>& InRays);
+	void GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vector<FRayCollider*>& InRays);
 
 	void RegisterClear()
 	{

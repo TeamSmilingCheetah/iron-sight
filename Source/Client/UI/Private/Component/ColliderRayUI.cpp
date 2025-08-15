@@ -6,7 +6,7 @@
 
 
 ColliderRayUI::ColliderRayUI()
-	: ComponentUI("ColliderRayUI", COMPONENT_TYPE::COLLIDERRAY)
+	: ComponentUI("ColliderRayUI", COMPONENT_TYPE::RAY_COLLIDER)
 {
 }
 
@@ -18,7 +18,7 @@ void ColliderRayUI::Render_Update()
 {
 	ComponentTitle("ColliderRay");
 
-	FColliderRay* pColliderRay = GetTargetObject()->ColliderRay();
+	FRayCollider* pColliderRay = GetTargetObject()->ColliderRay();
 
 	Vec3 vDir = pColliderRay->GetRayDir();
 	Vec3 vOffset = pColliderRay->GetOffset();
@@ -59,6 +59,6 @@ void ColliderRayUI::Render_Update()
 
 	if (ImGui::Button("DELETE##ColliderRay"))
 	{
-		DeleteComponent(COMPONENT_TYPE::COLLIDERRAY);
+		DeleteComponent(COMPONENT_TYPE::RAY_COLLIDER);
 	}
 }

@@ -6,7 +6,7 @@
 
 class FSound;
 class IColliderBase;
-class FColliderRay;
+class FRayCollider;
 
 using std::thread;
 
@@ -641,7 +641,7 @@ struct tScriptParam
 
 struct FRayCollisionInfo
 {
-	FColliderRay* RayObject;
+	FRayCollider* RayObject;
 	IColliderBase* HitCollider;
 	IColliderBase* PrevCollider;
 	float Length;
@@ -659,7 +659,7 @@ struct FRayCollisionInfo
 	{
 	}
 
-	FRayCollisionInfo(FColliderRay* InRay, IColliderBase* InCollider, float InLength)
+	FRayCollisionInfo(FRayCollider* InRay, IColliderBase* InCollider, float InLength)
 		: RayObject(InRay)
 		  , HitCollider(InCollider)
 		  , PrevCollider(nullptr)

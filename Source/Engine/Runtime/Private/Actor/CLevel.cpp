@@ -153,7 +153,7 @@ void CLevel::GetAllActiveObjectsInLevel(vector<CGameObject*>& PObjects)
  * @param InRays Ray만 모아놓은 Vector
  */
 void CLevel::GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
-                                    vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays)
+                                    vector<IColliderBase*>& InDynamic, vector<FRayCollider*>& InRays)
 {
 	for (int i = 0; i < MAX_LAYER; ++i)
 	{
@@ -167,7 +167,7 @@ void CLevel::GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
 
 					if (Collider->GetColliderType() == EColliderType::ColliderRay)
 					{
-						InRays.push_back(reinterpret_cast<FColliderRay*>(Collider));
+						InRays.push_back(reinterpret_cast<FRayCollider*>(Collider));
 						continue;
 					}
 
@@ -191,7 +191,7 @@ void CLevel::GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
  * @param InDynamic 움직이는 충돌체를 모아놓을 Vector
  * @param InRays Ray만 모아놓은 Vector
  */
-void CLevel::GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vector<FColliderRay*>& InRays)
+void CLevel::GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vector<FRayCollider*>& InRays)
 {
 	for (int i = 0; i < MAX_LAYER; ++i)
 	{
@@ -205,7 +205,7 @@ void CLevel::GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vecto
 
 					if (Collider->GetColliderType() == EColliderType::ColliderRay)
 					{
-						InRays.push_back(reinterpret_cast<FColliderRay*>(Collider));
+						InRays.push_back(reinterpret_cast<FRayCollider*>(Collider));
 						continue;
 					}
 

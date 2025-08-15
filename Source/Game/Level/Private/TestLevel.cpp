@@ -72,7 +72,7 @@ void TestLevel::CreateTestLevel()
 		{
 			[](CGameObject* obj)
 			{
-				Engine::Common::AddComponentToObject<FColliderRay>(obj);
+				Engine::Common::AddComponentToObject<FRayCollider>(obj);
 				Engine::Common::AddComponentToObject<FBoxCollider>(obj);
 				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
 			},
@@ -347,7 +347,7 @@ void TestLevel::CreateTestLevel()
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
-	pVision->AddComponent(new FColliderRay);
+	pVision->AddComponent(new FRayCollider);
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
