@@ -24,7 +24,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.3
 
       - name: Build solution
-        run: msbuild IronSight.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /verbosity:minimal
+        run: msbuild IronSight.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:PlatformToolset=v143 /verbosity:minimal
 
       - name: Upload build artifacts
         if: always()
