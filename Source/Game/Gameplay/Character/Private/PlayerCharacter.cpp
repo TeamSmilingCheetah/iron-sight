@@ -285,11 +285,15 @@ void PlayerCharacter::PlayerView()
 
 	// 마우스 위치를 중앙으로 다시 초기화한다.
 	CKeyMgr::GetInst()->SetMousePosAsCenter();
-	Vec3 RayDir = Vec3(0.f, 0.f, 0.f);
-	float angle = vCameraRot.x * (XM_PI / 180.f);
-	RayDir.y = -sin(angle);
-	RayDir.z = fabs(RayDir.y) - 1;
-	RayCollider()->SetFinalDirection(RayDir);
+
+	Vec3 RayDir;
+	float CameraFollowAngle = vCameraRot.x * (XM_PI / 180.f);
+
+	// 좌우 이동은 이미 Player가 바라보는 방향에 종속적, 상하 이동만 Camera Angle 연동
+	RayDir.x = 0.f;
+	RayDir.y = -sin(CameraFollowAngle);
+	RayDir.z = -cos(CameraFollowAngle);
+	RayCollider()->SetDirection(RayDir);
 }
 
 void PlayerCharacter::PlayerStance()

@@ -7,6 +7,8 @@
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 
+using std::ranges::sort;
+
 /*******************/
 /** Raycast Check **/
 /*******************/
@@ -29,6 +31,8 @@ void FCollisionManager::RaycastBroad()
  */
 void FCollisionManager::RaycastNarrow()
 {
+	map<FRayCollider*, vector<pair<IColliderBase*, float>>> RayHitMap;
+
 	for (const FRayCollisionInfo& Info : RayCandidates)
 	{
 		FRayCollider* Ray = Info.RayObject;
@@ -40,7 +44,20 @@ void FCollisionManager::RaycastNarrow()
 			// AABB가 충돌 기준이므로 바로 Process
 			if (Collider->GetColliderType() == EColliderType::BoxCollider)
 			{
-				AddFrameCollision(Info.RayObject, static_cast<FBoxCollider*>(Collider));
+				// 교차점 거리 계산
+				AABB BoxAABB = Collider->GetAABB();
+				float HitDistance = 0.0f;
+
+				// Ray와 AABB의 교차 여부 및 거리 계산
+				if (BoxAABB.Intersects(Ray->GetFinalPosition(), Ray->GetFinalDirection(), &HitDistance))
+				{
+					// 음수 거리는 Ray 뒤쪽 교차점이므로 제외해야 함
+					if (HitDistance >= 0.0f && HitDistance <= Ray->GetLength())
+					{
+						RayHitMap[Ray].push_back(make_pair(Collider, HitDistance));
+					}
+				}
+
 				continue;
 			}
 
@@ -54,6 +71,30 @@ void FCollisionManager::RaycastNarrow()
 
 	// Process Delayed Batch Process
 	ExecuteAndProcessRaycastCS();
+
+	for (auto& [Ray, Hits] : RayHitMap)
+	{
+		// 거리 순으로 정렬
+		sort(Hits, [](const pair<IColliderBase*, float>& ColliderA, const pair<IColliderBase*, float>& ColliderB)
+		{
+			return ColliderA.second < ColliderB.second;
+		});
+
+		// TargetAll 옵션이 켜져 있는 경우, 관통한 모든 Hit을 처리해야 함
+		// 그렇지 않다면 처음 충돌한 Hit만 처리
+		for (size_t i = 0; i < Hits.size(); ++i)
+		{
+			Ray->SetHitDistance(Hits[i].second);
+			// TODO(KHJ): Box Collider에 대해서 Normal 필요할진 모르겠지만 필요하면 반환할 수 있도록 처리해야 함
+			Ray->SetHitNormal(Vec3(0, 1, 0));
+			AddFrameCollision(Ray, static_cast<FBoxCollider*>(Hits[i].first));
+
+			if (!Ray->IsTargetAllMode())
+			{
+				break;
+			}
+		}
+	}
 }
 
 /**
@@ -79,6 +120,7 @@ void FCollisionManager::AddRayShaderTask(FRayCollider* InRay, const FMeshCollide
 
 /**
  * @brief Raycast Batch Process를 실행하고 결과를 처리하는 함수
+ * // TODO(KHJ): TargetAll 미구현, 해당 부분을 고려한 다중 처리를 할 수 있어야 할 듯
  */
 void FCollisionManager::ExecuteAndProcessRaycastCS()
 {

@@ -41,15 +41,12 @@ public:
 	void LoadComponent(FILE* InFile) override;
 	const AABB GetAABB() const override;
 
-	// bool UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance);
-	// void ClearRayColInfo();
-
 	// Getter & Setter
 	EColliderType GetColliderType() const override { return EColliderType::RayCollider; }
 	Vec3 GetOffset() const { return Offset; }
 	Vec3 GetDirection() const { return Direction; }
 	float GetLength() const { return Length; }
-	const Matrix& GetColliderWorldMat() const { return WorldMatrix; }
+	const Matrix& GetWorldMatrix() const { return WorldMatrix; }
 
 	Vec3 GetFinalPosition() const { return FinalPosition; }
 	Vec3 GetFinalDirection() const { return FinalDirection; }
@@ -57,6 +54,12 @@ public:
 	bool IsIndependentDir() const { return bIndependentDirection; }
 	bool IsTargetAllMode() const { return bRayTargetAll; }
 	bool IsTriggerTarget() const { return bTriggerTarget; }
+
+	const vector<float>& GetHitDistances() const { return HitDistances; }
+	const vector<Vec3>& GetHitNormals() const { return HitNormals; }
+
+	float GetClosestHitDistance() const;
+	Vec3 GetClosestHitNormal() const;
 
 	void SetOffset(Vec3 InOffset) { Offset = InOffset; }
 	void SetDirection(Vec3 InDirection) { Direction = InDirection; }

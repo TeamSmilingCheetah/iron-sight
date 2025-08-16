@@ -4,6 +4,10 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
+using std::ranges::min_element;
+
+constexpr Vec3 DefaultNormal = Vec3(0, 1, 0);
+
 FRayCollider::FRayCollider()
 	: IColliderBase(COMPONENT_TYPE::RAY_COLLIDER)
 	, Offset(Vec3(0.f))
@@ -26,26 +30,32 @@ FRayCollider::FRayCollider(const FRayCollider& POrigin)
 
 FRayCollider::~FRayCollider() = default;
 
-// bool FRayCollider::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance)
-// {
-// 	// 기존 거리보다 가까운 거리에 있는 물체만 저장
-// 	if (InDistance < RayCollisionInfo.Length)
-// 	{
-// 		RayCollisionInfo.HitCollider = InHitCollider;
-// 		RayCollisionInfo.Length = InDistance;
-// 		TargetLength = RayCollisionInfo.Length;
-// 		return true;
-// 	}
-//
-// 	return false;
-// }
+float FRayCollider::GetClosestHitDistance() const
+{
+	if (HitDistances.empty())
+	{
+		return -1.f;
+	}
+	return *min_element(HitDistances);
+}
 
-// void FRayCollider::ClearRayColInfo()
-// {
-// 	RayCollisionInfo.PrevCollider = RayCollisionInfo.HitCollider;
-// 	RayCollisionInfo.HitCollider = nullptr;
-// 	RayCollisionInfo.Length = 100000.f;
-// }
+Vec3 FRayCollider::GetClosestHitNormal() const
+{
+	if (HitDistances.empty())
+	{
+		return DefaultNormal;
+	}
+
+	auto MinIterator = min_element(HitDistances);
+	size_t MinIndex = distance(HitDistances.begin(), MinIterator);
+
+	if (MinIndex < HitNormals.size())
+	{
+		return HitNormals[MinIndex];
+	}
+
+	return DefaultNormal;
+}
 
 void FRayCollider::FinalTick()
 {
@@ -59,6 +69,10 @@ void FRayCollider::FinalTick()
 		SetDeactive();
 	}
 
+	// 매 틱마다 Hit 정보 초기화
+	HitDistances.clear();
+	HitNormals.clear();
+
 	// 크기, 이동 행렬
 	Matrix matTrans = XMMatrixTranslation(Offset.x, Offset.y, Offset.z);
 
@@ -68,7 +82,7 @@ void FRayCollider::FinalTick()
 	WorldMatrix = matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
 
 	// 기본 레이 방향
-	Direction.Normalized();
+	Direction = Direction.Normalized();
 
 	// 레이 시작점 계산
 	FinalPosition = WorldMatrix.Translation();
