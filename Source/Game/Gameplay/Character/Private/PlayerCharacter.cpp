@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/System/Public/Manager/CKeyMgr.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
@@ -285,11 +285,15 @@ void PlayerCharacter::PlayerView()
 
 	// 마우스 위치를 중앙으로 다시 초기화한다.
 	CKeyMgr::GetInst()->SetMousePosAsCenter();
-	Vec3 RayDir = Vec3(0.f, 0.f, 0.f);
-	float angle = vCameraRot.x * (XM_PI / 180.f);
-	RayDir.y = -sin(angle);
-	RayDir.z = fabs(RayDir.y) - 1;
-	ColliderRay()->SetRayDir(RayDir);
+
+	Vec3 RayDir;
+	float CameraFollowAngle = vCameraRot.x * (XM_PI / 180.f);
+
+	// 좌우 이동은 이미 Player가 바라보는 방향에 종속적, 상하 이동만 Camera Angle 연동
+	RayDir.x = 0.f;
+	RayDir.y = -sin(CameraFollowAngle);
+	RayDir.z = -cos(CameraFollowAngle);
+	RayCollider()->SetDirection(RayDir);
 }
 
 void PlayerCharacter::PlayerStance()
@@ -365,8 +369,8 @@ void PlayerCharacter::PlayerStance()
 	// 앉아있는 상태
 	if (pCamScript->GetFlag(SITTING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
-		Collider3D()->SetScale(Vec3(555.f, 900.f, 385.f));
-		Collider3D()->SetOffset(Vec3(35.f, 550.f, 0.f));
+		BoxCollider()->SetScale(Vec3(555.f, 900.f, 385.f));
+		BoxCollider()->SetOffset(Vec3(35.f, 550.f, 0.f));
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 110.f, 0.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	}
@@ -375,8 +379,8 @@ void PlayerCharacter::PlayerStance()
 	// 누워있는 상태
 	if (pCamScript->GetFlag(LAYING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
-		Collider3D()->SetScale(Vec3(500.f, 480.f, 1475.f));
-		Collider3D()->SetOffset(Vec3(35.f, 25.f, 250.f));
+		BoxCollider()->SetScale(Vec3(500.f, 480.f, 1475.f));
+		BoxCollider()->SetOffset(Vec3(35.f, 25.f, 250.f));
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 5.f, -60.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 		m_bLean = false;
@@ -385,8 +389,8 @@ void PlayerCharacter::PlayerStance()
 	// 평상시로
 	if (!pCamScript->GetFlag(SITTING) && !pCamScript->GetFlag(LAYING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
-		Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
-		Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
+		BoxCollider()->SetScale(Vec3(550.f, 1600.f, 385.f));
+		BoxCollider()->SetOffset(Vec3(35.f, 760.f, 0.f));
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	}
@@ -412,7 +416,7 @@ void PlayerCharacter::PlayerControlWeapon()
 		{
 			return;
 		}
-			
+
 
 		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
 		assert(pWeaponController != nullptr);
@@ -526,7 +530,7 @@ void PlayerCharacter::PlayerControlUI()
 
 	// 방위 UI : y축 회전값 전달
 	CGameMgr::GetInst()->UpdateCardinalUI(Transform()->GetRelativeRotation().y);
-	
+
 
 	// HP UI : 현재 체력과 부스트에 대한 정보
 	if (IS_HEAL(static_cast<UINT>(m_HealType)))
@@ -850,7 +854,7 @@ void PlayerCharacter::ProgressFireState()
 	// PRESSED KEY 입력은 Gun에게만 넘긴다
 	if (KEY_PRESSED(KEY::LBTN))
 	{
-		
+
 		curWeaponScript->SetCurKey(KEY::LBTN);
 		curWeaponScript->SetCurKeyState(KEY_STATE::PRESSED);
 	}

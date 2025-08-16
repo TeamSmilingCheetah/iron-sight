@@ -1,49 +1,49 @@
 #include "pch.h"
-#include "Client/UI/Public/Component/Collider3DUI.h"
+#include "Client/UI/Public/Component/BoxColliderUI.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 
-Collider3DUI::Collider3DUI()
-	: ComponentUI("Collider3DUI", COMPONENT_TYPE::BOX_COLLIDER)
+BoxColliderUI::BoxColliderUI()
+	: ComponentUI("BoxColliderUI", COMPONENT_TYPE::BOX_COLLIDER)
 {
 }
 
-Collider3DUI::~Collider3DUI() = default;
+BoxColliderUI::~BoxColliderUI() = default;
 
-void Collider3DUI::Render_Update()
+void BoxColliderUI::Render_Update()
 {
-	ComponentTitle("Collider3D");
+	ComponentTitle("BoxCollider");
 
-	FBoxCollider* pCollider3D = GetTargetObject()->BoxCollider();
+	FBoxCollider* pBoxCollider = GetTargetObject()->BoxCollider();
 
-	Vec3 vOffset = pCollider3D->GetOffset();
-	Vec3 vScale = pCollider3D->GetScale();
-	float fRotY = pCollider3D->GetRotY();
-	bool bIndependent = pCollider3D->IsIndependentScale();
-	bool bActive = pCollider3D->IsActive();
-	bool bIndependentRot = pCollider3D->IsIndependentRot();
-	bool bTrigger = pCollider3D->IsTrigger();
+	Vec3 vOffset = pBoxCollider->GetOffset();
+	Vec3 vScale = pBoxCollider->GetScale();
+	float fRotY = pBoxCollider->GetRotY();
+	bool bIndependent = pBoxCollider->IsIndependentScale();
+	bool bActive = pBoxCollider->IsActive();
+	bool bIndependentRot = pBoxCollider->IsIndependentRot();
+	bool bTrigger = pBoxCollider->IsTrigger();
 
 	ImGui::Text("Scale");
 	ImGui::SameLine(100);
 	ImGui::DragFloat3("##ColliderScale", vScale, 0.1f);
-	pCollider3D->SetScale(vScale);
+	pBoxCollider->SetScale(vScale);
 
 	ImGui::Text("Offset");
 	ImGui::SameLine(100);
 	ImGui::DragFloat3("##ColliderOffset", vOffset, 0.1f);
-	pCollider3D->SetOffset(vOffset);
+	pBoxCollider->SetOffset(vOffset);
 
 	ImGui::Text("Rotation");
 	ImGui::SameLine(100);
 	ImGui::DragFloat("##ColliderRotation", &fRotY, 0.01f);
-	pCollider3D->SetRotY(fRotY);
+	pBoxCollider->SetRotY(fRotY);
 
 	ImGui::Text("Independent");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##Independent", &bIndependent);
-	pCollider3D->SetIndependentScale(bIndependent);
+	pBoxCollider->SetIndependentScale(bIndependent);
 
 	ImGui::Text("IsActive");
 	ImGui::SameLine(100);
@@ -51,31 +51,31 @@ void Collider3DUI::Render_Update()
 	{
 		if (bActive)
 		{
-			pCollider3D->SetActivate();
+			pBoxCollider->SetActivate();
 		}
 		else
 		{
-			pCollider3D->SetSemiDeactivate();
+			pBoxCollider->SetSemiDeactivate();
 		}
 	}
 
 	ImGui::Text("IsIndependentRotation");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##IsIndependentRotation", &bIndependentRot);
-	pCollider3D->SetIndependentRot(bIndependentRot);
+	pBoxCollider->SetIndependentRot(bIndependentRot);
 
 	ImGui::Text("IsTrigger");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##IsTrigger", &bTrigger);
-	pCollider3D->SetTrigger(bTrigger);
+	pBoxCollider->SetTrigger(bTrigger);
 
 	// Penetration Depth (Read Only)
-	float PenetrationDepth = pCollider3D->GetPenetrationDepth();
+	float PenetrationDepth = pBoxCollider->GetPenetrationDepth();
 	ImGui::Text("Penetration");
 	ImGui::SameLine(100);
 	ImGui::DragFloat("##ColliderRotation", &PenetrationDepth, 0.01f);
 
-	if (ImGui::Button("DELETE##Collider3D"))
+	if (ImGui::Button("DELETE##BoxCollider"))
 	{
 		DeleteComponent(COMPONENT_TYPE::BOX_COLLIDER);
 	}

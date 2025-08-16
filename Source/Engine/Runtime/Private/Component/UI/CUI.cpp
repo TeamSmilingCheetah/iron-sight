@@ -8,7 +8,7 @@
 #include "Engine/System/Public/Manager/CUIMgr.h"
 
 CUI::CUI()
-	: CComponent(COMPONENT_TYPE::UI)
+	: FComponent(COMPONENT_TYPE::UI)
 	, m_UIType(UI_DEFAULT)
 	, m_Priority(0)
 	, m_BackGroundColor(Vec4(0.f, 0.f, 0.f, 0.f))	// 기본값 : alpha 0
@@ -16,7 +16,7 @@ CUI::CUI()
 }
 
 CUI::CUI(UINT _uiType)
-	: CComponent(COMPONENT_TYPE::UI)
+	: FComponent(COMPONENT_TYPE::UI)
 	, m_UIType(_uiType)
 	, m_Priority(0)
 	, m_BackGroundColor(Vec4(0.f, 0.f, 0.f, 0.f))	// 기본값 : alpha 0

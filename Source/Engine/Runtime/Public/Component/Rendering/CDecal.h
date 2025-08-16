@@ -1,9 +1,9 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 class CDecal :
-    public CRenderComponent
+    public FRenderComponent
 {
 private:
     Ptr<CTexture> m_DecalTex;

@@ -24,7 +24,7 @@ void Engine::Common::SetObjectName(CGameObject* PObject, const wstring& PName)
 	PObject->SetName(PName);
 }
 
-CComponent* Engine::Common::GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType)
+FComponent* Engine::Common::GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType)
 {
 	return PObject->GetComponent(PComponentType);
 }
@@ -80,21 +80,21 @@ void Engine::Collider::SetColliderProperties(CGameObject* PObject, Vec3 PScale, 
 	PObject->BoxCollider()->SetTrigger(PIsTrigger);
 }
 
-void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
-                                             Vec3 PDirection, float PLength, bool PIsIndependant)
+void Engine::Collider::SetRayColliderProperties(CGameObject* InObject,
+                                             Vec3 InDirection, float InLength, bool InIsIndependant)
 {
-	PObject->ColliderRay()->SetRayDir(PDirection);
-	PObject->ColliderRay()->SetRayLength(PLength);
-	PObject->ColliderRay()->SetIndependentDir(PIsIndependant);
+	InObject->RayCollider()->SetDirection(InDirection);
+	InObject->RayCollider()->SetLength(InLength);
+	InObject->RayCollider()->SetIndependentDir(InIsIndependant);
 }
 
-void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
-                                             Vec3 PDirection, Vec3 POffset, float PLength, bool PIsTriggerTarget)
+void Engine::Collider::SetRayColliderProperties(CGameObject* InObject,
+                                             Vec3 InDirection, Vec3 InOffset, float InLength, bool InIsTrigger)
 {
-	PObject->ColliderRay()->SetRayDir(PDirection);
-	PObject->ColliderRay()->SetOffset(POffset);
-	PObject->ColliderRay()->SetRayLength(PLength);
-	PObject->ColliderRay()->SetTriggerTarget(PIsTriggerTarget);
+	InObject->RayCollider()->SetDirection(InDirection);
+	InObject->RayCollider()->SetOffset(InOffset);
+	InObject->RayCollider()->SetLength(InLength);
+	InObject->RayCollider()->SetTriggerTarget(InIsTrigger);
 }
 
 void Engine::Collider::SetColliderDynamic(const CGameObject* InObject, EColliderType InType)

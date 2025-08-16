@@ -2,7 +2,7 @@
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -183,7 +183,7 @@ void CameraController::CameraPerspectiveMove()
 	Vec3 vDirtoPlayer = m_PlayerPos - m_CameraPos;
 	vDirtoPlayer.Normalize();
 
-	ColliderRay()->SetRayDir(vDirtoPlayer);
+	RayCollider()->SetFinalDirection(vDirtoPlayer);
 
 	// 카메라 전환
 	if (KEY_TAP(KEY::V))
@@ -541,7 +541,7 @@ void CameraController::UpdateTPSCameraAdjustments()
 	m_AdjustFinalHeight = std::clamp(m_AdjustFinalHeight,
 		targetHeight - maxHeightChange,
 		targetHeight + maxHeightChange);
-	
+
 	// 레벨이 시작되거나 바뀌어서 플레이어의 위치가 큰값으로 변동됨 -> 고정으로 카메라를 바로 붙혀준다.
 	if (m_bLevelChanged)
 	{
@@ -575,14 +575,14 @@ void CameraController::UpdateTPSCameraAdjustments()
 		// // 복구 단계
 		// if (m_CameraFlag & OBSTACLE_DETECT_END)
 		// {
-		// 	ColliderRay()->SetOffset(Vec3(0, 0, -m_RayDistance));
+		// 	RayCollider()->SetOffset(Vec3(0, 0, -m_RayDistance));
 		// 	m_RayDistance += 500.f * DT;
 		//
 		// 	// 원래 거리까지 도달했거나 약간 넘어섰을 때
 		// 	if (abs(m_RayDistance) >= abs(m_OriginDistance))
 		// 	{
 		// 		// 콜백으로도 다시 Overlap이 안 들어온 상태이므로
-		// 		ColliderRay()->SetOffset(Vec3(0, 0, 0));
+		// 		RayCollider()->SetOffset(Vec3(0, 0, 0));
 		// 		m_CameraFlag &= ~OBSTACLE_DETECT_END;
 		// 		m_ObstacleResetTime = 0.f;
 		// 	}
@@ -678,7 +678,7 @@ void CameraController::UpdateSearchMode()
 	static float OriginRotY = 0.f;
 	static float OriginRotX = 0.f;
 
-	// 줌이나 사격 동안은 둘러보기가 안된다. 
+	// 줌이나 사격 동안은 둘러보기가 안된다.
 	if (m_PlayerScript->GetStateEnum() != PLAYER_STATE::Player_Gun_Fire && !(m_CameraFlag & SHOULDER) && !(m_CameraFlag & SEARCH_RECOVER))
 	{
 		if (KEY_TAP(KEY::LCTRL))
@@ -956,8 +956,8 @@ void CameraController::CameraDebugMove()
 
 void CameraController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -995,8 +995,8 @@ void CameraController::BeginOverlap(IColliderBase* InCollider, IColliderBase* In
 
 void CameraController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -1030,8 +1030,8 @@ void CameraController::Overlap(IColliderBase* InCollider, IColliderBase* InOther
 
 void CameraController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();

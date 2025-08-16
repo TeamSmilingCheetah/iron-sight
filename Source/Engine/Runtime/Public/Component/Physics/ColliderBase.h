@@ -1,17 +1,19 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 enum class EColliderType : UINT8
 {
 	NONE,
-	Collider2D,
-	Collider3D,
+	PlaneCollider,
+	BoxCollider,
 	MeshCollider,
 	SphereCollider,
-	ColliderRay,
+	RayCollider,
 
 	END = 0xFF,
 };
+
+struct AABB;
 
 /**
  * @brief 모든 Collider의 기본 클래스
@@ -22,7 +24,7 @@ enum class EColliderType : UINT8
  * @param PenetrationDepth 충돌 이후 관통 깊이를 기록하는 변수
  * @param bIsStatic 해당 충돌체가 정적인지, 혹은 이동하는지 체크하는 변수
  */
-class IColliderBase : public CComponent
+class IColliderBase : public FComponent
 {
 private:
 	int OverlapCount;
@@ -76,7 +78,7 @@ public:
 };
 
 inline IColliderBase::IColliderBase(COMPONENT_TYPE InType)
-	: CComponent(InType)
+	: FComponent(InType)
 	  , OverlapCount(0)
 	  , ColliderState(ACTIVE)
 	  , PenetrationDepth(0)
@@ -85,7 +87,7 @@ inline IColliderBase::IColliderBase(COMPONENT_TYPE InType)
 }
 
 inline IColliderBase::IColliderBase(const IColliderBase& POrigin)
-	: CComponent(POrigin)
+	: FComponent(POrigin)
 	  , OverlapCount(0)
 	  , ColliderState(POrigin.ColliderState)
 	  , PenetrationDepth(0)

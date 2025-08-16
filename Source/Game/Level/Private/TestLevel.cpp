@@ -26,7 +26,7 @@
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
@@ -74,7 +74,7 @@ void TestLevel::CreateTestLevel()
 			{
 				Engine::Common::AddComponentToObject<FRayCollider>(obj);
 				Engine::Common::AddComponentToObject<FBoxCollider>(obj);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -110,7 +110,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->BoxCollider()->SetIndependentScale(true);
 				obj->BoxCollider()->SetTrigger(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -148,7 +148,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->BoxCollider()->SetIndependentScale(true);
 				obj->BoxCollider()->SetTrigger(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -184,7 +184,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->BoxCollider()->SetIndependentScale(true);
 				obj->BoxCollider()->SetTrigger(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -220,7 +220,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->BoxCollider()->SetIndependentScale(true);
 				obj->BoxCollider()->SetTrigger(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -256,7 +256,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->BoxCollider()->SetIndependentScale(true);
 				obj->BoxCollider()->SetTrigger(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -285,7 +285,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(500.f, 500.f, 500.f));
 				obj->BoxCollider()->SetIndependentScale(true);
 				obj->BoxCollider()->SetTrigger(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -332,7 +332,7 @@ void TestLevel::CreateTestLevel()
 				Engine::Common::AddComponentToObject<FBoxCollider>(obj);
 				// TODO(KHJ): Wrapping
 				Engine::Collider::SetColliderProperties(obj, {1000, 500, 1000}, {0, 50, 0}, true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -347,19 +347,20 @@ void TestLevel::CreateTestLevel()
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
-	pVision->AddComponent(new FRayCollider);
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
-	//pVision->AddComponent(new FCollider3D);
-	//pVision->Collider3D()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
-	//pVision->Collider3D()->SetOffset(Vec3(0.f, 0.f, 2500.f));
-	//pVision->Collider3D()->SetIndependentScale(true);
-	//pVision->Collider3D()->SetTrigger(true);
+	pVision->AddComponent(new FBoxCollider);
+	pVision->BoxCollider()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
+	pVision->BoxCollider()->SetOffset(Vec3(0.f, 0.f, 2500.f));
+	pVision->BoxCollider()->SetIndependentScale(true);
+	pVision->BoxCollider()->SetTrigger(true);
 
-	pVision->ColliderRay()->SetRayLength(1000);
-	pVision->ColliderRay()->SetIndependentDir(true);
-	pVision->ColliderRay()->SetTriggerTarget(false);
+	pVision->AddComponent(new FRayCollider);
+	pVision->RayCollider()->SetLength(1000);
+	pVision->RayCollider()->SetDirection({-1, 0, 0});
+	pVision->RayCollider()->SetIndependentDir(true);
+	pVision->RayCollider()->SetTriggerTarget(false);
 
 	TestTarget->AddChild(pVision);
 
@@ -379,7 +380,7 @@ void TestLevel::CreateTestLevel()
 				obj->BoxCollider()->SetScale(Vec3(650.f, 1600.f, 40.f));
 				obj->BoxCollider()->SetOffset(Vec3(310.f, 800.f, 0.f));
 				obj->BoxCollider()->SetIndependentScale(true);
-				Engine::Collider::SetColliderDynamic(obj, EColliderType::Collider3D);
+				Engine::Collider::SetColliderDynamic(obj, EColliderType::BoxCollider);
 			},
 			[](CGameObject* obj)
 			{
@@ -403,42 +404,42 @@ void TestLevel::CreateTestLevel()
 	// pLevel->AddObject(1, testPlayer, false);
 
 	// Temp Landscape
-	// GameFactory::MakeFBXObject(
-	// 	LevelRawPtr,
-	// 	L"FBX\\Props\\Death Box\\box.fbx",
-	// 	L"TempLandscape",
-	// 	Vec3(0.f, -800.f, 0.f),
-	// 	Vec3(0.f, 0.f, 0.f),
-	// 	Vec3(20000.f, 200.f, 20000.f),
-	// 	{
-	// 		[](CGameObject* obj)
-	// 		{
-	// 			obj->AddComponentRecursive<FMeshCollider>();
-	// 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
-	// 			obj->Transform()->SetFrustumCheck(false);
-	// 		}
-	// 	},
-	// 	1,
-	// 	true
-	// );
-
 	GameFactory::MakeFBXObject(
 		LevelRawPtr,
-		L"FBX\\Downtown_Alley_Scene.fbx",
-		L"Downtown_Alley",
-		Vec3(0.f, -1500.f, 0.f),
+		L"FBX\\Props\\Death Box\\box.fbx",
+		L"TempLandscape",
+		Vec3(0.f, -800.f, 0.f),
 		Vec3(0.f, 0.f, 0.f),
-		Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+		Vec3(20000.f, 200.f, 20000.f),
 		{
 			[](CGameObject* obj)
 			{
-				obj->Transform()->SetRelativeScaleMultiply(4.f);
 				obj->AddComponentRecursive<FMeshCollider>();
+				obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
+				obj->Transform()->SetFrustumCheck(false);
 			}
 		},
 		1,
 		true
 	);
+
+	// GameFactory::MakeFBXObject(
+	// 	LevelRawPtr,
+	// 	L"FBX\\Downtown_Alley_Scene.fbx",
+	// 	L"Downtown_Alley",
+	// 	Vec3(0.f, -1500.f, 0.f),
+	// 	Vec3(0.f, 0.f, 0.f),
+	// 	Vec3(1.f, 1.f, 1.f), // 기본 스케일, 아래에서 Multiply로 조정
+	// 	{
+	// 		[](CGameObject* obj)
+	// 		{
+	// 			obj->Transform()->SetRelativeScaleMultiply(4.f);
+	// 			obj->AddComponentRecursive<FMeshCollider>();
+	// 		}
+	// 	},
+	// 	1,
+	// 	true
+	// );
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
@@ -844,7 +845,7 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 	CGameObject* pInteractionHandler = new CGameObject;
 	pInteractionHandler->SetName(L"Interaction Handler");
 	pInteractionHandler->AddComponent(new FBoxCollider);
-	Engine::Collider::SetColliderDynamic(pInteractionHandler, EColliderType::Collider3D);
+	Engine::Collider::SetColliderDynamic(pInteractionHandler, EColliderType::BoxCollider);
 
 	pInteractionHandler->BoxCollider()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
 	pInteractionHandler->BoxCollider()->SetIndependentScale(true);

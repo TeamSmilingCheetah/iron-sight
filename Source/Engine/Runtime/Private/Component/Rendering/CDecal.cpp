@@ -7,7 +7,7 @@
 #include "System/Public/Manager/CTimeMgr.h"
 
 CDecal::CDecal()
-	: CRenderComponent(COMPONENT_TYPE::DECAL)
+	: FRenderComponent(COMPONENT_TYPE::DECAL)
 	  , m_GlobalAlpha(1.f)
 	  , m_AsLight(false)
 	  , m_LifeTime(0.f)

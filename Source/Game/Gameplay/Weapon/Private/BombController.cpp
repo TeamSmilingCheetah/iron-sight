@@ -26,8 +26,8 @@ BombController::~BombController()
 
 void BombController::Begin()
 {
-	float x = Collider3D()->GetScale().x / 2.f;
-	float y = Collider3D()->GetScale().y / 2.f;
+	float x = BoxCollider()->GetScale().x / 2.f;
+	float y = BoxCollider()->GetScale().y / 2.f;
 
 	m_MaxLength = sqrt(x * x + y * y);
 
@@ -48,8 +48,8 @@ void BombController::Tick()
 
 void BombController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = reinterpret_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();

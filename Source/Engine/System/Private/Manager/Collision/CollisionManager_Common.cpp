@@ -90,7 +90,7 @@ void FCollisionManager::ClearContainersForNextFrame()
 }
 
 /**
- * @brief Collider3D 정보를 Buffer에 추가하는 함수
+ * @brief BoxCollider 정보를 Buffer에 추가하는 함수
  */
 FMeshBatchData FCollisionManager::GetOrAddBatchData(const FBoxCollider* InCollider)
 {

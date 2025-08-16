@@ -6,7 +6,7 @@
 #include "System/Public/Manager/CRenderMgr.h"
 
 CLight3D::CLight3D()
-	: CComponent(COMPONENT_TYPE::LIGHT3D)
+	: FComponent(COMPONENT_TYPE::LIGHT3D)
 	  , m_LightIdx(-1)
 {
 }

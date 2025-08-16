@@ -49,6 +49,6 @@ public:
 	void AddObjectRefResolution(CGameObject*& _MissingAddress, UINT _ObjectID);
 
 private:
-	static class CComponent* CreateComponent(COMPONENT_TYPE _Type);
+	static class FComponent* CreateComponent(COMPONENT_TYPE _Type);
 
 };

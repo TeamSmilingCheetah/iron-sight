@@ -4,7 +4,7 @@
 #include "System/Public/Manager/AssetManager.h"
 
 CSkyBox::CSkyBox()
-    : CRenderComponent(COMPONENT_TYPE::SKYBOX)
+    : FRenderComponent(COMPONENT_TYPE::SKYBOX)
     , m_Mode(SPHERE)
 {
     SetMode(m_Mode);

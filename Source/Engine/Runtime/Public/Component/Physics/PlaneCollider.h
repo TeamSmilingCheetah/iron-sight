@@ -1,7 +1,7 @@
 #pragma once
 #include "ColliderBase.h"
 
-class FCollider2D :
+class FPlaneCollider :
 	public IColliderBase
 {
 private:
@@ -18,7 +18,7 @@ public:
 	void LoadComponent(FILE* InFile) override;
 
 	// Getter & Setter
-	EColliderType GetColliderType() const override { return EColliderType::Collider2D; }
+	EColliderType GetColliderType() const override { return EColliderType::PlaneCollider; }
 	Vec2 GetOffset() const { return Offset; }
 	Vec2 GetScale() const { return Scale; }
 	const Matrix& GetColliderWorldMatrix() const { return MatrixColliderWorld; }
@@ -29,8 +29,8 @@ public:
 	void SetIndependentScale(bool InScale) { bIndependentScale = InScale; }
 
 	// Special Member Function
-	FCollider2D();
-	FCollider2D(const FCollider2D& POrigin);
-	~FCollider2D() override;
-	CLONE(FCollider2D);
+	FPlaneCollider();
+	FPlaneCollider(const FPlaneCollider& POrigin);
+	~FPlaneCollider() override;
+	CLONE(FPlaneCollider);
 };

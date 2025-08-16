@@ -259,7 +259,7 @@ void PlayerCharacter::UpdateGravity()
 	{
 		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
 
-		
+
 		// 상태
 		StateMachine()->SetChange(L"Player_Jump");
 	}
@@ -309,13 +309,13 @@ bool PlayerCharacter::CanRun()
 	{
 		return false;
 	}
-	
+
 	// 현재 재장전 중이라면 불가능
 	if (m_bReloading)
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -579,8 +579,8 @@ bool PlayerCharacter::CanRun()
 
 void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
@@ -618,14 +618,14 @@ void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InO
 		}
 	}
 
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		m_CollObject = OtherCollider->GetOwner();
 	}
 
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
 		InOtherCollider->GetColliderType() == EColliderType::MeshCollider)
 	{
 		FMeshCollider* OtherCollider = static_cast<FMeshCollider*>(InOtherCollider);
@@ -659,8 +659,8 @@ void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InO
 
 void PlayerCharacter::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
@@ -701,7 +701,7 @@ void PlayerCharacter::Overlap(IColliderBase* InCollider, IColliderBase* InOtherC
 		}
 	}
 
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
 		InOtherCollider->GetColliderType() == EColliderType::MeshCollider)
 	{
 		FMeshCollider* OtherCollider = static_cast<FMeshCollider*>(InOtherCollider);
@@ -737,8 +737,8 @@ void PlayerCharacter::Overlap(IColliderBase* InCollider, IColliderBase* InOtherC
 
 void PlayerCharacter::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		if (m_CollObject == OtherCollider->GetOwner())
@@ -748,7 +748,7 @@ void PlayerCharacter::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 	}
 }
 
-// void PlayerCharacter::BeginOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
+// void PlayerCharacter::BeginOverlap(FBoxCollider* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
 // {
 // 	Vec3 pPos = Transform()->GetRelativePos();
 //
@@ -777,7 +777,7 @@ void PlayerCharacter::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 // 	}
 // }
 //
-// void PlayerCharacter::Overlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
+// void PlayerCharacter::Overlap(FBoxCollider* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
 // {
 // 	Vec3 pPos = Transform()->GetRelativePos();
 //
@@ -804,6 +804,6 @@ void PlayerCharacter::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 // 	}
 // }
 //
-// void PlayerCharacter::EndOverlap(FCollider3D* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
+// void PlayerCharacter::EndOverlap(FBoxCollider* PCollider, CGameObject* POtherObject, FLandScape* POtherCollider)
 // {
 // }

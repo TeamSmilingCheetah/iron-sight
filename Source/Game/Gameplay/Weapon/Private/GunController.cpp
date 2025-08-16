@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
@@ -206,7 +206,7 @@ bool GunController::CanReload()
 void GunController::ActiveTrigger()
 {
 	// 총알의 시작 위치를 정해준다.
-	Vec3 vRayPos = ColliderRay()->GetRayFinalPos();
+	Vec3 vRayPos = RayCollider()->GetFinalPosition();
 	Vec3 vFinalDir = GetFireDir();
 
 	// 현재 사격 자세에 따라 정확도를 부여한다.

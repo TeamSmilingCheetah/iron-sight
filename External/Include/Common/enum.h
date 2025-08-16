@@ -105,7 +105,7 @@ enum class LIGHT_TYPE
 enum class COMPONENT_TYPE : UINT
 {
 	TRANSFORM, // 위치, 크기, 회전, 부모자식 계층구조
-	COLLIDER2D, // 2D 충돌체
+	PLANE_COLLIDER, // 2D 충돌체
 	BOX_COLLIDER, // 3D 충돌체
 	FLIPBOOKPLAYER, // 2D Animation(FlipBook) 관리 및 재생
 	ANIMATOR3D, // 3D Animation 관리 및 재생

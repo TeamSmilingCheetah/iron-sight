@@ -1,11 +1,11 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 class IColliderBase;
 struct tScriptParam;
 
 class CScript :
-	public CComponent
+	public FComponent
 {
 private:
 	const SCRIPT_TYPE MScriptType;

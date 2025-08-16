@@ -3,7 +3,7 @@
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Runtime/Public/Component/Physics/RayCollider.h"
 
 using std::ranges::sort;
 
@@ -152,12 +152,8 @@ void FCollisionManager::QueryBVH(const BVHNode* InNode,
 		return;
 	}
 
-	tRay RayInfo;
-	RayInfo.vStart = InRay->GetRayFinalPos();
-	RayInfo.vDir = InRay->GetRayFinalDir();
-
 	// 현재 Node의 AABB와 Ray가 교차하지 않으면 탐색 중단
-	if (!InNode->Bounds.Intersects(RayInfo))
+	if (!InNode->Bounds.Intersects(InRay->GetFinalPosition(), InRay->GetFinalDirection()))
 	{
 		return;
 	}
@@ -175,7 +171,7 @@ void FCollisionManager::QueryBVH(const BVHNode* InNode,
 
 			// 충돌한 경우, 충돌 정보 담아서 기록
 			float TimeMin = 0.f;
-			if (Collider->GetAABB().Intersects(RayInfo, &TimeMin))
+			if (Collider->GetAABB().Intersects(InRay->GetFinalPosition(), InRay->GetFinalDirection(), &TimeMin))
 			{
 				FRayCollisionInfo CollisionInfo;
 				CollisionInfo.RayObject = InRay;

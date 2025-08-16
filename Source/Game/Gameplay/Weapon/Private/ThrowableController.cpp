@@ -309,7 +309,7 @@ void ThrowableController::Throw()
 	Vec3 vPos = Transform()->GetRelativePos();
 	Vec3 vRot = Transform()->GetRelativeRotation();
 
-	Collider3D()->SetTrigger(false);
+	BoxCollider()->SetTrigger(false);
 	m_bTrigger = true;
 
 	// 향할 초기 방향을 구한다.
@@ -383,8 +383,8 @@ void ThrowableController::MakeBounce(Vec3 _Normal, float _elastic, float _fricti
 
 void ThrowableController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
 
@@ -409,7 +409,7 @@ void ThrowableController::EndOverlap(IColliderBase* InCollider, IColliderBase* I
 {
 }
 
-// void ThrowableController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// void ThrowableController::BeginOverlap(FBoxCollider* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 // {
 // 	if (_Collider->IsTrigger())
 // 	{
@@ -449,11 +449,11 @@ void ThrowableController::EndOverlap(IColliderBase* InCollider, IColliderBase* I
 // 	}
 // }
 
-// void ThrowableController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// void ThrowableController::Overlap(FBoxCollider* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 // {
 // }
 
-// void ThrowableController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// void ThrowableController::EndOverlap(FBoxCollider* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 // {
 // 	if (_Collider->IsTrigger())
 // 	{

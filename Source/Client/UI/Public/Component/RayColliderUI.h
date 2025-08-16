@@ -1,12 +1,14 @@
 #pragma once
 #include "Client/UI/Public/Component/ComponentUI.h"
 
-class Collider2DUI :
+
+class RayColliderUI :
 	public ComponentUI
 {
 public:
 	void Render_Update() override;
 
-	Collider2DUI();
-	~Collider2DUI() override;
+	RayColliderUI();
+	~RayColliderUI() override;
+
 };

@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 class CLight2D :
-    public CComponent
+    public FComponent
 {
     tLight2DInfo m_LightInfo;
 

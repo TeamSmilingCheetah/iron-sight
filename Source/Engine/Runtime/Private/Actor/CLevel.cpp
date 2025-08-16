@@ -165,7 +165,7 @@ void CLevel::GetAllCollidersInLevel(vector<IColliderBase*>& InStatic,
 				{
 					IColliderBase* Collider = GetBaseFromVariant(Variant);
 
-					if (Collider->GetColliderType() == EColliderType::ColliderRay)
+					if (Collider->GetColliderType() == EColliderType::RayCollider)
 					{
 						InRays.push_back(reinterpret_cast<FRayCollider*>(Collider));
 						continue;
@@ -203,7 +203,7 @@ void CLevel::GetDynamicCollidersInLevel(vector<IColliderBase*>& InDynamic, vecto
 				{
 					IColliderBase* Collider = GetBaseFromVariant(Variant);
 
-					if (Collider->GetColliderType() == EColliderType::ColliderRay)
+					if (Collider->GetColliderType() == EColliderType::RayCollider)
 					{
 						InRays.push_back(reinterpret_cast<FRayCollider*>(Collider));
 						continue;

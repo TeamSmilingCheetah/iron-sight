@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 class CTransform :
-	public CComponent
+	public FComponent
 {
 	Vec3 m_RelativePos;
 	Vec3 m_RelativeScale;

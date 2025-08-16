@@ -205,9 +205,9 @@
     <ClInclude Include="UI\Public\Asset\TextureUI.h" />
     <ClInclude Include="UI\Public\Component\Animator3DUI.h" />
     <ClInclude Include="UI\Public\Component\CameraUI.h" />
-    <ClInclude Include="UI\Public\Component\Collider2DUI.h" />
-    <ClInclude Include="UI\Public\Component\Collider3DUI.h" />
-    <ClInclude Include="UI\Public\Component\ColliderRayUI.h" />
+    <ClInclude Include="UI\Public\Component\PlaneColliderUI.h" />
+    <ClInclude Include="UI\Public\Component\BoxColliderUI.h" />
+    <ClInclude Include="UI\Public\Component\RayColliderUI.h" />
     <ClInclude Include="UI\Public\Component\ComponentUI.h" />
     <ClInclude Include="UI\Public\Component\DecalUI.h" />
     <ClInclude Include="UI\Public\Component\LandScapeUI.h" />
@@ -272,9 +272,9 @@
     <ClCompile Include="UI\Private\Asset\TextureUI.cpp" />
     <ClCompile Include="UI\Private\Component\Animator3DUI.cpp" />
     <ClCompile Include="UI\Private\Component\CameraUI.cpp" />
-    <ClCompile Include="UI\Private\Component\ColliderRayUI.cpp" />
-    <ClCompile Include="UI\Private\Component\Collider2DUI.cpp" />
-    <ClCompile Include="UI\Private\Component\Collider3DUI.cpp" />
+    <ClCompile Include="UI\Private\Component\RayColliderUI.cpp" />
+    <ClCompile Include="UI\Private\Component\PlaneColliderUI.cpp" />
+    <ClCompile Include="UI\Private\Component\BoxColliderUI.cpp" />
     <ClCompile Include="UI\Private\Component\ComponentUI.cpp" />
     <ClCompile Include="UI\Private\Component\DecalUI.cpp" />
     <ClCompile Include="UI\Private\Component\LandScapeUI.cpp" />

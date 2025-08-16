@@ -10,7 +10,7 @@
 #include "Engine/System/Public/Rendering/Shader/CBoneMatrixCS.h"
 
 CAnimator3D::CAnimator3D()
-	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
+	: FComponent(COMPONENT_TYPE::ANIMATOR3D)
 	, m_FPS(30)
 	, m_FrameDuration(1.f / 30.f)
 	, m_CurClipAccTime(0.f)
@@ -35,7 +35,7 @@ CAnimator3D::CAnimator3D()
 }
 
 CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
-	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
+	: FComponent(COMPONENT_TYPE::ANIMATOR3D)
 	, m_mapClip(_origin.m_mapClip)
 	, m_FPS(_origin.m_FPS)
 	, m_FrameDuration(_origin.m_FrameDuration)
@@ -542,7 +542,7 @@ void CAnimator3D::LinkBoneObject()
 
 void CAnimator3D::SetOwner(CGameObject* _Owner)
 {
-	CComponent::SetOwner(_Owner);
+	FComponent::SetOwner(_Owner);
 
 	// 복사로 생성된 경우, 복사된 Bone Object를 이름으로 연결한다.
 	if (!m_mapClip.empty())

@@ -36,8 +36,8 @@ public:
 private:
 	UINT MObjectID;
 
-	CComponent* MComponentArray[static_cast<UINT>(COMPONENT_TYPE::END)];
-	CRenderComponent* MRenderComponent;
+	FComponent* MComponentArray[static_cast<UINT>(COMPONENT_TYPE::END)];
+	FRenderComponent* MRenderComponent;
 	vector<CScript*> MScriptsVector;
 	unordered_map<SCRIPT_TYPE, UINT> MScriptShortcut;
 
@@ -55,7 +55,7 @@ public:
 	void FinalTick();
 	void Render() const;
 
-	void AddComponent(CComponent* PComponent);
+	void AddComponent(FComponent* PComponent);
 	void AddChild(CGameObject* PChild);
 	void DeleteComponent(COMPONENT_TYPE PType);
 	void DeleteScript(const wstring& PScriptName);
@@ -74,8 +74,8 @@ public:
 
 	const vector<CScript*>& GetScripts() const { return MScriptsVector; }
 	const unordered_map<SCRIPT_TYPE, UINT>& GetScriptShortcut() const { return MScriptShortcut; }
-	CComponent* GetComponent(COMPONENT_TYPE PType) const { return MComponentArray[static_cast<UINT>(PType)]; }
-	CRenderComponent* GetRenderComponent() const { return MRenderComponent; }
+	FComponent* GetComponent(COMPONENT_TYPE PType) const { return MComponentArray[static_cast<UINT>(PType)]; }
+	FRenderComponent* GetRenderComponent() const { return MRenderComponent; }
 
 	const vector<CGameObject*>& GetChild() const { return MChildVector; }
 	CGameObject* GetParent() const { return MParent; }
@@ -161,9 +161,9 @@ public:
 	CTransform* Transform() const { return reinterpret_cast<CTransform*>(GetComponent(COMPONENT_TYPE::TRANSFORM)); }
 	CMeshRender* MeshRender() const { return reinterpret_cast<CMeshRender*>(GetComponent(COMPONENT_TYPE::MESHRENDER)); }
 	CCamera* Camera() const { return reinterpret_cast<CCamera*>(GetComponent(COMPONENT_TYPE::CAMERA)); }
-	FCollider2D* Collider2D() const { return reinterpret_cast<FCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
+	FPlaneCollider* PlaneCollider() const { return reinterpret_cast<FPlaneCollider*>(GetComponent(COMPONENT_TYPE::PLANE_COLLIDER)); }
 	FBoxCollider* BoxCollider() const { return reinterpret_cast<FBoxCollider*>(GetComponent(COMPONENT_TYPE::BOX_COLLIDER)); }
-	FRayCollider* ColliderRay() const{ return reinterpret_cast<FRayCollider*>(GetComponent(COMPONENT_TYPE::RAY_COLLIDER)); }
+	FRayCollider* RayCollider() const{ return reinterpret_cast<FRayCollider*>(GetComponent(COMPONENT_TYPE::RAY_COLLIDER)); }
 	CFlipbookPlayer* FlipbookPlayer() const { return reinterpret_cast<CFlipbookPlayer*>(GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)); }
 	CTileMap* TileMap() const { return reinterpret_cast<CTileMap*>(GetComponent(COMPONENT_TYPE::TILEMAP)); }
 	CLight2D* Light2D() const { return reinterpret_cast<CLight2D*>(GetComponent(COMPONENT_TYPE::LIGHT2D)); }

@@ -2,9 +2,9 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/PlaneCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
@@ -161,7 +161,7 @@ void CGameObject::Render() const
 	}
 }
 
-void CGameObject::AddComponent(CComponent* PComponent)
+void CGameObject::AddComponent(FComponent* PComponent)
 {
 	COMPONENT_TYPE Type = PComponent->GetType();
 
@@ -187,10 +187,10 @@ void CGameObject::AddComponent(CComponent* PComponent)
 		assert(!MComponentArray[static_cast<UINT>(Type)]);
 
 		// 입력된 컴포넌트가 CRenderComponent의 자식 클래스 타입인지 확인
-		if (dynamic_cast<CRenderComponent*>(PComponent))
+		if (dynamic_cast<FRenderComponent*>(PComponent))
 		{
 			assert(!MRenderComponent);
-			MRenderComponent = static_cast<CRenderComponent*>(PComponent);
+			MRenderComponent = static_cast<FRenderComponent*>(PComponent);
 		}
 
 		// 입력된 컴포넌트의 주소를 저장
@@ -494,9 +494,9 @@ vector<ColliderVariant> CGameObject::GetColliders() const
 {
 	vector<ColliderVariant> ColliderVector;
 
-	if (Collider2D())
+	if (PlaneCollider())
 	{
-		ColliderVector.push_back(Collider2D());
+		ColliderVector.push_back(PlaneCollider());
 	}
 	if (BoxCollider())
 	{
@@ -510,9 +510,9 @@ vector<ColliderVariant> CGameObject::GetColliders() const
 	{
 		ColliderVector.push_back(MeshCollider());
 	}
-	if (ColliderRay())
+	if (RayCollider())
 	{
-		ColliderVector.push_back(ColliderRay());
+		ColliderVector.push_back(RayCollider());
 	}
 
 	return ColliderVector;

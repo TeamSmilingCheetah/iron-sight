@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Core/Public/CEntity.h"
 
 class FMeshCollider;
 class CUIRender;
@@ -14,27 +15,25 @@ class CFlipbookPlayer;
 class FBoxCollider;
 class CTileMap;
 class FRayCollider;
-class FCollider2D;
+class FPlaneCollider;
 class CCamera;
 class CMeshRender;
 class CTransform;
 class CStateMachine;
 class CGameObject;
 
-class CComponent :
+class FComponent :
 	public CEntity
 {
 private:
-	CGameObject* m_Owner;
-	const COMPONENT_TYPE m_Type;
+	const COMPONENT_TYPE Type;
+	CGameObject* Owner;
 
 public:
-	COMPONENT_TYPE GetType() const { return m_Type; }
-	CGameObject* GetOwner() const { return m_Owner; }
-
 	virtual void Init()
 	{
-	} // 생성자 시점 이후에, GameObject 에 AddComponent 된 직후 호출되는 함수
+		// 생성자 시점 이후에, GameObject 에 AddComponent 된 직후 호출되는 함수
+	}
 
 	virtual void Begin()
 	{
@@ -43,25 +42,15 @@ public:
 	virtual void Tick()
 	{
 	}
+
 	virtual void FinalTick() = 0;
-
-	virtual void SetOwner(CGameObject* _Owner) { m_Owner = _Owner; }
-
-	CComponent* Clone() override = 0;
-
-	void SaveToLevel(FILE* _File) override;
-	void LoadFromLevel(FILE* _File) override;
-
-	virtual void SaveComponent(FILE* _File) = 0;
-	virtual void LoadComponent(FILE* _File) = 0;
-	virtual void LoadComponentReference() {}
 
 	CTransform* Transform() const;
 	CMeshRender* MeshRender() const;
 	CCamera* Camera() const;
-	FCollider2D* Collider2D() const;
-	FBoxCollider* Collider3D() const;
-	FRayCollider* ColliderRay() const;
+	FPlaneCollider* PlaneCollider() const;
+	FBoxCollider* BoxCollider() const;
+	FRayCollider* RayCollider() const;
 	CFlipbookPlayer* FlipbookPlayer() const;
 	CTileMap* TileMap() const;
 	CLight2D* Light2D() const;
@@ -76,6 +65,25 @@ public:
 	FMeshCollider* MeshCollider() const;
 	CStateMachine* StateMachine() const;
 
-	CComponent(COMPONENT_TYPE _TYPE);
-	~CComponent() override;
+	// Getter & Setter
+	COMPONENT_TYPE GetType() const { return Type; }
+	CGameObject* GetOwner() const { return Owner; }
+
+	virtual void SetOwner(CGameObject* InOwner) { Owner = InOwner; }
+
+	// Save & Load
+	void SaveToLevel(FILE* InFile) override;
+	void LoadFromLevel(FILE* InFile) override;
+
+	virtual void SaveComponent(FILE* InFile) = 0;
+	virtual void LoadComponent(FILE* InFile) = 0;
+
+	virtual void LoadComponentReference()
+	{
+	}
+
+	// Special Member Function
+	FComponent(COMPONENT_TYPE InType);
+	~FComponent() override;
+	FComponent* Clone() override = 0;
 };

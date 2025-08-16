@@ -132,7 +132,7 @@ void TestCharacter::DeathEntry()
 	DetachItem(m_CurWeapon);
 
 	// 충돌체 비활성화
-	Collider3D()->SetSemiDeactivate();
+	BoxCollider()->SetSemiDeactivate();
 }
 
 void TestCharacter::None()

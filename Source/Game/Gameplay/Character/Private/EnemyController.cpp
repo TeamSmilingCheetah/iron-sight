@@ -338,8 +338,8 @@ void EnemyController::KeyTick()
 
 void EnemyController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
@@ -382,8 +382,8 @@ void EnemyController::BeginOverlap(IColliderBase* InCollider, IColliderBase* InO
 
 void EnemyController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* Collider = static_cast<FBoxCollider*>(InCollider);
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
@@ -429,7 +429,7 @@ void EnemyController::Overlap(IColliderBase* InCollider, IColliderBase* InOtherC
 		}
 	}
 
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
 		InOtherCollider->GetColliderType() == EColliderType::MeshCollider)
 	{
 		FMeshCollider* OtherCollider = static_cast<FMeshCollider*>(InOtherCollider);
@@ -467,7 +467,7 @@ void EnemyController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 {
 }
 
-// void EnemyController::BeginOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// void EnemyController::BeginOverlap(FBoxCollider* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 // {
 // 	Vec3 pPos = Transform()->GetRelativePos();
 //
@@ -484,7 +484,7 @@ void EnemyController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 // 	}
 // }
 //
-// void EnemyController::Overlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// void EnemyController::Overlap(FBoxCollider* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 // {
 // 	Vec3 pPos = Transform()->GetRelativePos();
 //
@@ -499,7 +499,7 @@ void EnemyController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOth
 // 	}
 // }
 //
-// void EnemyController::EndOverlap(FCollider3D* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
+// void EnemyController::EndOverlap(FBoxCollider* _Collider, CGameObject* _OtherObject, FLandScape* _OtherCollider)
 // {
 // }
 

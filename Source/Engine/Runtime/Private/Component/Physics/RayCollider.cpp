@@ -1,58 +1,60 @@
 #include "pch.h"
-#include "Engine/Runtime/Public/Component/Physics/ColliderRay.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
+
+using std::ranges::min_element;
+
+constexpr Vec3 DefaultNormal = Vec3(0, 1, 0);
 
 FRayCollider::FRayCollider()
 	: IColliderBase(COMPONENT_TYPE::RAY_COLLIDER)
 	, Offset(Vec3(0.f))
 	, Length(1000.f)
-	, TargetLength(100000.f)
 	, bIndependentDirection(false)
 	, bRayTargetAll(false)
 	, bTriggerTarget(true)
 {
-	RayPosDir.vStart = Vec3(0.f, 0.f, 0.f);
-	RayPosDir.vDir = Vec3(1.f, 0.f, 0.f);
-	RayCollisionInfo.RayObject = this;
 }
 
 FRayCollider::FRayCollider(const FRayCollider& POrigin)
 	: IColliderBase(POrigin)
 	, Offset(POrigin.Offset)
 	, Length(POrigin.Length)
-	, TargetLength(POrigin.TargetLength)
 	, bIndependentDirection(POrigin.bIndependentDirection)
 	, bRayTargetAll(POrigin.bRayTargetAll)
 	, bTriggerTarget(POrigin.bTriggerTarget)
 {
-	RayPosDir.vStart = POrigin.RayPosDir.vStart;
-	RayPosDir.vDir = POrigin.RayPosDir.vDir;
-	RayCollisionInfo.RayObject = this;
 }
 
 FRayCollider::~FRayCollider() = default;
 
-bool FRayCollider::UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance)
+float FRayCollider::GetClosestHitDistance() const
 {
-	// 기존 거리보다 가까운 거리에 있는 물체만 저장
-	if (InDistance < RayCollisionInfo.Length)
+	if (HitDistances.empty())
 	{
-		RayCollisionInfo.HitCollider = InHitCollider;
-		RayCollisionInfo.Length = InDistance;
-		TargetLength = RayCollisionInfo.Length;
-		return true;
+		return -1.f;
 	}
-
-	return false;
+	return *min_element(HitDistances);
 }
 
-void FRayCollider::ClearRayColInfo()
+Vec3 FRayCollider::GetClosestHitNormal() const
 {
-	RayCollisionInfo.PrevCollider = RayCollisionInfo.HitCollider;
-	RayCollisionInfo.HitCollider = nullptr;
-	RayCollisionInfo.Length = 100000.f;
+	if (HitDistances.empty())
+	{
+		return DefaultNormal;
+	}
+
+	auto MinIterator = min_element(HitDistances);
+	size_t MinIndex = distance(HitDistances.begin(), MinIterator);
+
+	if (MinIndex < HitNormals.size())
+	{
+		return HitNormals[MinIndex];
+	}
+
+	return DefaultNormal;
 }
 
 void FRayCollider::FinalTick()
@@ -67,6 +69,10 @@ void FRayCollider::FinalTick()
 		SetDeactive();
 	}
 
+	// 매 틱마다 Hit 정보 초기화
+	HitDistances.clear();
+	HitNormals.clear();
+
 	// 크기, 이동 행렬
 	Matrix matTrans = XMMatrixTranslation(Offset.x, Offset.y, Offset.z);
 
@@ -76,8 +82,7 @@ void FRayCollider::FinalTick()
 	WorldMatrix = matTrans * matScaleInv * GetOwner()->Transform()->GetWorldMat();
 
 	// 기본 레이 방향
-	Vec3 rayDir = RayPosDir.vDir;
-	rayDir.Normalize();
+	Direction = Direction.Normalized();
 
 	// 레이 시작점 계산
 	FinalPosition = WorldMatrix.Translation();
@@ -85,44 +90,36 @@ void FRayCollider::FinalTick()
 	// 독립적인지 아닌지에 따라 계산 구분
 	if (bIndependentDirection)
 	{
-		FinalDirection = rayDir;
+		FinalDirection = Direction;
 	}
 	else
 	{
-		FinalDirection = XMVector3TransformNormal(Vec4(rayDir.x, rayDir.y, rayDir.z, 0.f), WorldMatrix);
+		FinalDirection = XMVector3TransformNormal(Vec4(Direction.x, Direction.y, Direction.z, 0.f), WorldMatrix);
 	}
+
 	FinalDirection.Normalize();
 
 	// 레이 끝점 계산
-	Vec3 vEndPos = FinalPosition + (FinalDirection * Length);
-
-	// 디버깅용 길이 끝점
-	Vec3 vEndEdbugPos = FinalPosition + (FinalDirection * TargetLength);
-
-	// 히트된 오브젝트가 없을 때만 초기화
-	if (!RayCollisionInfo.HitCollider)
-	{
-		TargetLength = 100000.f;
-	}
+	Vec3 EndPosition = FinalPosition + (FinalDirection * Length);
 
 	// 디버그 랜더링
 	if (IsOverlapped())
 	{
-		DrawDebugLine(Vec4(1.0f, 0.0f, 1.0f, 1.0f), FinalPosition, vEndEdbugPos, false, 0.f);
+		DrawDebugLine(Vec4(1.0f, 0.0f, 1.0f, 1.0f), FinalPosition, EndPosition, false, 0.f);
 	}
 	else
 	{
-		DrawDebugLine(Vec4(0.0f, 0.0f, 1.0f, 1.0f), FinalPosition, vEndPos, false, 0.f);
+		DrawDebugLine(Vec4(0.0f, 0.0f, 1.0f, 1.0f), FinalPosition, EndPosition, false, 0.f);
 	}
-
-	// 충돌 기록 초기화
-	ClearRayColInfo();
 }
 
 void FRayCollider::SaveComponent(FILE* InFile)
 {
+	// TODO(KHJ): tRay 구조체 잔재 정리할 것
+	Vec3 Dummy[2];
+
 	(void)fwrite(&Offset, sizeof(Vec3), 1, InFile);
-	(void)fwrite(&RayPosDir, sizeof(tRay), 1, InFile);
+	(void)fwrite(&Dummy, sizeof(Vec3[2]), 1, InFile);
 	(void)fwrite(&Length, sizeof(float), 1, InFile);
 	(void)fwrite(&bRayTargetAll, sizeof(bool), 1, InFile);
 
@@ -134,8 +131,11 @@ void FRayCollider::SaveComponent(FILE* InFile)
 
 void FRayCollider::LoadComponent(FILE* InFile)
 {
+	// TODO(KHJ): tRay 구조체 잔재 정리할 것
+	Vec3 Dummy[2];
+
 	(void)fread(&Offset, sizeof(Vec3), 1, InFile);
-	(void)fread(&RayPosDir, sizeof(tRay), 1, InFile);
+	(void)fread(&Dummy, sizeof(Vec3[2]), 1, InFile);
 	(void)fread(&Length, sizeof(float), 1, InFile);
 	(void)fread(&bRayTargetAll, sizeof(bool), 1, InFile);
 
@@ -151,7 +151,7 @@ void FRayCollider::LoadComponent(FILE* InFile)
  */
 const AABB FRayCollider::GetAABB() const
 {
-	LOG_ERROR_F("[Collision][Ray] {}: ColliderRay Don't Have AABB", WStringToString(GetOwner()->GetName()));
-	assert(!"ColliderRay Don't Have AABB");
+	LOG_ERROR_F("[Collision][Ray] {}: RayCollider Don't Have AABB", WStringToString(GetOwner()->GetName()));
+	assert(!"RayCollider Don't Have AABB");
 	return AABB();
 }

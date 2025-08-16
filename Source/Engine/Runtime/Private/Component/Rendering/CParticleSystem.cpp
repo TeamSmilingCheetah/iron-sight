@@ -7,7 +7,7 @@
 #include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CParticleSystem::CParticleSystem()
-	: CRenderComponent(COMPONENT_TYPE::PARTICLE_SYSTEM)
+	: FRenderComponent(COMPONENT_TYPE::PARTICLE_SYSTEM)
 	  , m_ParticleBuffer(nullptr)
 	  , m_SpawnCountBuffer(nullptr)
 	  , m_ModuleBuffer(nullptr)
@@ -99,7 +99,7 @@ CParticleSystem::CParticleSystem()
 }
 
 CParticleSystem::CParticleSystem(const CParticleSystem& _Origin)
-	: CRenderComponent(_Origin)
+	: FRenderComponent(_Origin)
 	  , m_TickCS(_Origin.m_TickCS)
 	  , m_ParticleBuffer(nullptr)
 	  , m_SpawnCountBuffer(nullptr)
