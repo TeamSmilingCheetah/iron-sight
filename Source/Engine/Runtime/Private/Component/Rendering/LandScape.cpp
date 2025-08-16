@@ -8,7 +8,7 @@
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 FLandscape::FLandscape()
-	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)
+	: FRenderComponent(COMPONENT_TYPE::LANDSCAPE)
 	  , m_FaceX(1)
 	  , m_FaceZ(1)
 	  , m_RaycastOut()
@@ -31,10 +31,10 @@ FLandscape::~FLandscape()
 	delete m_RayCollisionOut;
 }
 
-void FLandscape::ColisionRayStack(void* InRayObject, const tRay& InRayPosDir)
-{
-	m_vecRayColInst.push_back(tRayCollision(InRayObject, InRayPosDir));
-}
+// void FLandscape::ColisionRayStack(void* InRayObject, const tRay& InRayPosDir)
+// {
+// 	m_vecRayColInst.push_back(tRayCollision(InRayObject, InRayPosDir));
+// }
 
 void FLandscape::FinalTick()
 {
@@ -160,15 +160,16 @@ int FLandscape::Raycasting()
 	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
 
 	// 카메라가 시점에서 마우스를 향하는 Ray 정보를 가져옴
-	tRay ray = pCam->GetRay();
+	Vec3 rayPosition = pCam->GetRayPosition();
+	Vec3 rayDirection = pCam->GetRayDirection();
 
 	// LandScape 의 WorldInv 행렬 가져옴
 	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
 
 	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
-	ray.vStart = XMVector3TransformCoord(ray.vStart, matWorldInv);
-	ray.vDir = XMVector3TransformNormal(ray.vDir, matWorldInv);
-	ray.vDir.Normalize();
+	rayPosition = XMVector3TransformCoord(rayPosition, matWorldInv);
+	rayDirection = XMVector3TransformNormal(rayDirection, matWorldInv);
+	rayDirection.Normalize();
 
 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
 	// m_RaycastCS->SetRayInfo(ray);
@@ -188,82 +189,82 @@ int FLandscape::Raycasting()
 	return m_Out.Success;
 }
 
-tRaycastOut FLandscape::ColliderRaycasting(tRay InRay) const
-{
-	// 구조화버퍼 클리어
-	tRaycastOut pRayInfo;
-	pRayInfo = {};
-	pRayInfo.Distance = 0xffffffff;
-	m_RaycastOut->SetData(&pRayInfo);
-
-	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
-
-	// 원본 Ray 정보 저장
-	tRay WorldRay = InRay;
-
-	// LandScape 의 WorldInv 행렬 가져옴
-	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
-	const Matrix& matWorld = Transform()->GetWorldMat();
-
-	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
-	InRay.vStart = XMVector3TransformCoord(InRay.vStart, matWorldInv);
-	InRay.vDir = XMVector3TransformNormal(InRay.vDir, matWorldInv);
-	InRay.vDir.Normalize();
-
-	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
-	// m_RaycastCS->SetRayInfo(PRay);
-	// m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
-	// m_RaycastCS->SetOutBuffer(m_RaycastOut);
-	// m_RaycastCS->SetHeightMap(m_HeightMap);
-	//
-	// m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
-	// m_RaycastCS->SetRayInOutCount(0);
-
-	// 컴퓨트쉐이더 실행
-	m_RaycastCS->Execute();
-
-	// 결과 확인
-	m_RaycastOut->GetData(&pRayInfo);
-
-	// 성공 시 거리 계산
-	if (pRayInfo.Success)
-	{
-		// 충돌 위치를 UV에서 로컬 좌표로 변환
-		Vec3 localHitPos;
-		localHitPos.x = pRayInfo.Location.x * static_cast<float>(m_FaceX);
-		localHitPos.z = (1.0f - pRayInfo.Location.y) * static_cast<float>(m_FaceZ);
-
-		// 높이맵에서 y값 가져오기
-		localHitPos.y = 0.0f;
-		if (m_HeightMap != nullptr)
-		{
-			// 높이맵 텍스처에서 해당 UV 위치의 높이 값을 가져옴
-			UINT heightMapWidth = m_HeightMap->GetWidth();
-			UINT heightMapHeight = m_HeightMap->GetHeight();
-
-			// UV 좌표 계산
-			float u = pRayInfo.Location.x;
-			float v = pRayInfo.Location.y;
-
-			// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
-			UINT x = static_cast<UINT>(u * static_cast<float>(heightMapWidth - 1));
-			UINT y = static_cast<UINT>(v * static_cast<float>(heightMapHeight - 1));
-
-			// 높이값 추출
-			// 텍스처에서 높이 값 가져오기
-			localHitPos.y = m_CachedHeightData[y * heightMapWidth + x];
-		}
-
-		// 로컬 히트 위치를 월드로 변환
-		Vec3 worldHitPos = XMVector3TransformCoord(localHitPos, matWorld);
-
-		// 월드 공간에서의 거리 계산
-		Vec3 worldDist = worldHitPos - WorldRay.vStart;
-		pRayInfo.Distance = static_cast<UINT>(worldDist.Length());
-	}
-
-	return pRayInfo;
-}
+// tRaycastOut FLandscape::ColliderRaycasting(tRay InRay) const
+// {
+// 	// 구조화버퍼 클리어
+// 	tRaycastOut pRayInfo;
+// 	pRayInfo = {};
+// 	pRayInfo.Distance = 0xffffffff;
+// 	m_RaycastOut->SetData(&pRayInfo);
+//
+// 	m_RayCollisionOut->Create(sizeof(tRayCollision), 1, SRV_UAV, true);
+//
+// 	// 원본 Ray 정보 저장
+// 	tRay WorldRay = InRay;
+//
+// 	// LandScape 의 WorldInv 행렬 가져옴
+// 	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
+// 	const Matrix& matWorld = Transform()->GetWorldMat();
+//
+// 	// 월드 기준 Ray 정보를 LandScape 의 Local 공간으로 데려감
+// 	InRay.vStart = XMVector3TransformCoord(InRay.vStart, matWorldInv);
+// 	InRay.vDir = XMVector3TransformNormal(InRay.vDir, matWorldInv);
+// 	InRay.vDir.Normalize();
+//
+// 	// Raycast 컴퓨트 쉐이더에 필요한 데이터 전달
+// 	// m_RaycastCS->SetRayInfo(PRay);
+// 	// m_RaycastCS->SetFace(m_FaceX, m_FaceZ);
+// 	// m_RaycastCS->SetOutBuffer(m_RaycastOut);
+// 	// m_RaycastCS->SetHeightMap(m_HeightMap);
+// 	//
+// 	// m_RaycastCS->SetRayInOutBuffer(m_RayCollisionOut);
+// 	// m_RaycastCS->SetRayInOutCount(0);
+//
+// 	// 컴퓨트쉐이더 실행
+// 	m_RaycastCS->Execute();
+//
+// 	// 결과 확인
+// 	m_RaycastOut->GetData(&pRayInfo);
+//
+// 	// 성공 시 거리 계산
+// 	if (pRayInfo.Success)
+// 	{
+// 		// 충돌 위치를 UV에서 로컬 좌표로 변환
+// 		Vec3 localHitPos;
+// 		localHitPos.x = pRayInfo.Location.x * static_cast<float>(m_FaceX);
+// 		localHitPos.z = (1.0f - pRayInfo.Location.y) * static_cast<float>(m_FaceZ);
+//
+// 		// 높이맵에서 y값 가져오기
+// 		localHitPos.y = 0.0f;
+// 		if (m_HeightMap != nullptr)
+// 		{
+// 			// 높이맵 텍스처에서 해당 UV 위치의 높이 값을 가져옴
+// 			UINT heightMapWidth = m_HeightMap->GetWidth();
+// 			UINT heightMapHeight = m_HeightMap->GetHeight();
+//
+// 			// UV 좌표 계산
+// 			float u = pRayInfo.Location.x;
+// 			float v = pRayInfo.Location.y;
+//
+// 			// UV 좌표를 높이맵 텍스처 좌표로 변환 (픽셀 위치)
+// 			UINT x = static_cast<UINT>(u * static_cast<float>(heightMapWidth - 1));
+// 			UINT y = static_cast<UINT>(v * static_cast<float>(heightMapHeight - 1));
+//
+// 			// 높이값 추출
+// 			// 텍스처에서 높이 값 가져오기
+// 			localHitPos.y = m_CachedHeightData[y * heightMapWidth + x];
+// 		}
+//
+// 		// 로컬 히트 위치를 월드로 변환
+// 		Vec3 worldHitPos = XMVector3TransformCoord(localHitPos, matWorld);
+//
+// 		// 월드 공간에서의 거리 계산
+// 		Vec3 worldDist = worldHitPos - WorldRay.vStart;
+// 		pRayInfo.Distance = static_cast<UINT>(worldDist.Length());
+// 	}
+//
+// 	return pRayInfo;
+// }
 
 vector<tRayCollision>& FLandscape::Collidercalcul()
 {

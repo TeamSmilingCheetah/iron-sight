@@ -1,10 +1,10 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 class CFrustum;
 
 class CCamera :
-	public CComponent
+	public FComponent
 {
 private:
 	CFrustum* m_Frustum;
@@ -24,7 +24,8 @@ private:
 	float m_Scale; // 직교투영 배율
 
 	// 카메라가 바라보는 화면에서 마우스를 향하는 직선
-	tRay m_Ray;
+	Vec3 m_RayPosition;
+	Vec3 m_RayDirection;
 
 	// 변환행렬
 	Matrix m_matView; // View 행렬
@@ -65,7 +66,8 @@ public:
 	float GetScale() const { return m_Scale; }
 	PROJ_TYPE GetProjType() const { return m_ProjType; }
 
-	const tRay& GetRay() { return m_Ray; }
+	const Vec3& GetRayPosition() const { return m_RayPosition; }
+	const Vec3& GetRayDirection() const { return m_RayDirection; }
 
 	const Matrix& GetViewMat() { return m_matView; }
 	const Matrix& GetViewInvMat() { return m_matViewInv; }

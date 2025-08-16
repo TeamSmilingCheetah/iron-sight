@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 enum SKYBOX_MODE
@@ -9,7 +9,7 @@ enum SKYBOX_MODE
 };
 
 class CSkyBox :
-    public CRenderComponent
+    public FRenderComponent
 {
     Ptr<CTexture> m_SkyBoxTex;
     SKYBOX_MODE m_Mode;

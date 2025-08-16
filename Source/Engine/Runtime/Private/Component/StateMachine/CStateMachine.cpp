@@ -4,7 +4,7 @@
 #include "Engine/System/Public/Manager/CStateMgr.h"
 
 CStateMachine::CStateMachine()
-	: CComponent(COMPONENT_TYPE::STATEMACINE)
+	: FComponent(COMPONENT_TYPE::STATEMACINE)
 	, m_DefaultState(nullptr)
 	, m_PrevState(nullptr)
 	, m_CurState(nullptr)

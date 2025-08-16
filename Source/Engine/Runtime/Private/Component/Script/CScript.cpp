@@ -7,7 +7,7 @@
 #include "Engine/System/Public/Manager/CScriptMgr.h"
 
 CScript::CScript(SCRIPT_TYPE PScriptType)
-	: CComponent(COMPONENT_TYPE::SCRIPT)
+	: FComponent(COMPONENT_TYPE::SCRIPT)
 	, MScriptType(PScriptType)
 {
 	SetName(CScriptMgr::GetInst()->GetScriptName(PScriptType));

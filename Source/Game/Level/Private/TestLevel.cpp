@@ -357,7 +357,7 @@ void TestLevel::CreateTestLevel()
 	//pVision->BoxCollider()->SetIndependentScale(true);
 	//pVision->BoxCollider()->SetTrigger(true);
 
-	pVision->RayCollider()->SetRayLength(1000);
+	pVision->RayCollider()->SetLength(1000);
 	pVision->RayCollider()->SetIndependentDir(true);
 	pVision->RayCollider()->SetTriggerTarget(false);
 

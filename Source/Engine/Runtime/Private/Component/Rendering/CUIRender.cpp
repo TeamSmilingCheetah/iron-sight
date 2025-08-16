@@ -7,7 +7,7 @@
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 
 CUIRender::CUIRender()
-	: CRenderComponent(COMPONENT_TYPE::UIRENDER)
+	: FRenderComponent(COMPONENT_TYPE::UIRENDER)
 {
 }
 

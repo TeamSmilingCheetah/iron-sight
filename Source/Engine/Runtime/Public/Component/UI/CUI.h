@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 enum UI_TYPE
 {
@@ -18,7 +18,7 @@ enum UI_TYPE
 };
 
 class CUI :
-	public CComponent
+	public FComponent
 {
 	friend class CUIMgr;
 

@@ -193,9 +193,9 @@
     <ClInclude Include="Runtime\Public\Actor\CLevel.h" />
     <ClInclude Include="Runtime\Public\Component\Animation\CAnimator3D.h" />
     <ClInclude Include="Runtime\Public\Component\Animation\CFlipbookPlayer.h" />
-    <ClInclude Include="Runtime\Public\Component\Base\CComponent.h" />
+    <ClInclude Include="Runtime\Public\Component\Base\Component.h" />
     <ClInclude Include="Runtime\Public\Component\Base\components.h" />
-    <ClInclude Include="Runtime\Public\Component\Base\CRenderComponent.h" />
+    <ClInclude Include="Runtime\Public\Component\Base\RenderComponent.h" />
     <ClInclude Include="Runtime\Public\Component\Camera\CCamera.h" />
     <ClInclude Include="Runtime\Public\Component\Camera\CFrustum.h" />
     <ClInclude Include="Runtime\Public\Component\Light\CLight2D.h" />
@@ -275,8 +275,8 @@
     <ClCompile Include="Runtime\Private\Actor\CLevel.cpp" />
     <ClCompile Include="Runtime\Private\Component\Animation\CAnimator3D.cpp" />
     <ClCompile Include="Runtime\Private\Component\Animation\CFlipbookPlayer.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Base\CComponent.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Base\CRenderComponent.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Base\Component.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Base\RenderComponent.cpp" />
     <ClCompile Include="Runtime\Private\Component\Camera\CCamera.cpp" />
     <ClCompile Include="Runtime\Private\Component\Camera\CFrustum.cpp" />
     <ClCompile Include="Runtime\Private\Component\Light\CLight2D.cpp" />

@@ -1,10 +1,10 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 class CState;
 
 class CStateMachine
-	: public CComponent
+	: public FComponent
 {
 private:
 	map<wstring, CState*>		m_mapState;

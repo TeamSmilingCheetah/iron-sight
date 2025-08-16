@@ -183,7 +183,7 @@ void CameraController::CameraPerspectiveMove()
 	Vec3 vDirtoPlayer = m_PlayerPos - m_CameraPos;
 	vDirtoPlayer.Normalize();
 
-	RayCollider()->SetRayDir(vDirtoPlayer);
+	RayCollider()->SetFinalDirection(vDirtoPlayer);
 
 	// 카메라 전환
 	if (KEY_TAP(KEY::V))

@@ -6,7 +6,7 @@
 #include "Engine/System/Public/Rendering/Shader/CHeightMapCS.h"
 #include "Engine/System/Public/Rendering/Shader/CWeightMapCS.h"
 #include "Engine/System/Public/Rendering/Shader/CRaycastCS.h"
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 
 using std::array;
 
@@ -37,10 +37,10 @@ struct tRayCollision
 	{
 	}
 
-	tRayCollision(void* PID, const tRay& PRay)
-		: RayObj(PID)
-		  , RayPos(PRay.vStart)
-		  , RayDir(PRay.vDir)
+	tRayCollision(void* InID, const Vec3& InRayPos, const Vec3& InRayDir)
+		: RayObj(InID)
+		  , RayPos(InRayPos)
+		  , RayDir(InRayDir)
 		  , RayLength(0)
 		  , Distance(0xffffffff)
 		  , Success(0)
@@ -62,7 +62,7 @@ struct tWeight8
 };
 
 class FLandscape :
-	public CRenderComponent
+	public FRenderComponent
 {
 	UINT m_FaceX; // 지형 가로 면 개수
 	UINT m_FaceZ; // 지형 세로 면 개수
@@ -111,10 +111,10 @@ public:
 	void LoadComponent(FILE* InFile) override;
 
 	// 들어있는 Ray 연산 (구형 방식)
-	tRaycastOut ColliderRaycasting(tRay InRay) const;
+	// tRaycastOut ColliderRaycasting(tRay InRay) const;
 	// 들어있는 Ray 연산
 	void AddRayCol(const tRayCollision& InRayInfo) { m_vecRayColInst.push_back(InRayInfo); }
-	void ColisionRayStack(void* InRayObject, const tRay& InRayPosDir);
+	// void ColisionRayStack(void* InRayObject, const tRay& InRayPosDir);
 	vector<tRayCollision>& Collidercalcul();
 
 	// Getter & Setter

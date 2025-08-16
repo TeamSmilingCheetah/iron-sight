@@ -192,7 +192,7 @@ int CLevelMgr::SaveGameObject(CGameObject* _Object, FILE* _File)
 	// 오브젝트 컴포넌트
 	for (UINT i = 0; i < static_cast<UINT>(COMPONENT_TYPE::END); ++i)
 	{
-		CComponent* pComponent = _Object->GetComponent(static_cast<COMPONENT_TYPE>(i));
+		FComponent* pComponent = _Object->GetComponent(static_cast<COMPONENT_TYPE>(i));
 		if (nullptr == pComponent)
 			continue;
 
@@ -355,7 +355,7 @@ CGameObject* CLevelMgr::LoadGameObject(FILE* _File)
 		if (ComponentType == static_cast<UINT>(COMPONENT_TYPE::SAVE_END))
 			break;
 
-		CComponent* pComponent = CreateComponent(static_cast<COMPONENT_TYPE>(ComponentType));
+		FComponent* pComponent = CreateComponent(static_cast<COMPONENT_TYPE>(ComponentType));
 
 		if (ComponentType == static_cast<UINT>(COMPONENT_TYPE::TRANSFORM))
 			pComponent = pObject->Transform();
@@ -397,7 +397,7 @@ CGameObject* CLevelMgr::LoadGameObject(FILE* _File)
 	return pObject;
 }
 
-CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
+FComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 {
 	switch (_Type)
 	{

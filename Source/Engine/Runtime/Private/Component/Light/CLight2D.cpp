@@ -4,7 +4,7 @@
 #include "System/Public/Manager/CRenderMgr.h"
 
 CLight2D::CLight2D()
-    : CComponent(COMPONENT_TYPE::LIGHT2D)
+    : FComponent(COMPONENT_TYPE::LIGHT2D)
       , m_LightInfo{}
 {
     m_LightInfo.Type = static_cast<int>(LIGHT_TYPE::DIRECTIONAL);

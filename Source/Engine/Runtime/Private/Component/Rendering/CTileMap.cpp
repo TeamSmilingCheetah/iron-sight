@@ -5,7 +5,7 @@
 #include "Runtime/Public/Component/Transform/CTransform.h"
 
 CTileMap::CTileMap()
-	: CRenderComponent(COMPONENT_TYPE::TILEMAP)
+	: FRenderComponent(COMPONENT_TYPE::TILEMAP)
 	  , m_Col(1)
 	  , m_Row(1)
 	  , m_TileSizeX(1.f)
@@ -24,7 +24,7 @@ CTileMap::CTileMap()
 }
 
 CTileMap::CTileMap(const CTileMap& _Origin)
-	: CRenderComponent(_Origin)
+	: FRenderComponent(_Origin)
 	  , m_Col(_Origin.m_Col)
 	  , m_Row(_Origin.m_Row)
 	  , m_TileSizeX(_Origin.m_TileSizeX)

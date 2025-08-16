@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 
 struct tTileInfo
@@ -12,7 +12,7 @@ struct tTileInfo
 class CStructuredBuffer;
 
 class CTileMap :
-    public CRenderComponent
+    public FRenderComponent
 {
     // 타일 행렬 개수
     int m_Col;

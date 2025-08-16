@@ -3,7 +3,7 @@
 #include "System/Public/Manager/CTimeMgr.h"
 
 CFlipbookPlayer::CFlipbookPlayer()
-	: CComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)
+	: FComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)
 	, m_SpriteIdx(0)
 	, m_Repeat(false)
 	, m_FPS(24)

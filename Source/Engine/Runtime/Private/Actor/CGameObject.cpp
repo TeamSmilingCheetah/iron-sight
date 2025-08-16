@@ -161,7 +161,7 @@ void CGameObject::Render() const
 	}
 }
 
-void CGameObject::AddComponent(CComponent* PComponent)
+void CGameObject::AddComponent(FComponent* PComponent)
 {
 	COMPONENT_TYPE Type = PComponent->GetType();
 
@@ -187,10 +187,10 @@ void CGameObject::AddComponent(CComponent* PComponent)
 		assert(!MComponentArray[static_cast<UINT>(Type)]);
 
 		// 입력된 컴포넌트가 CRenderComponent의 자식 클래스 타입인지 확인
-		if (dynamic_cast<CRenderComponent*>(PComponent))
+		if (dynamic_cast<FRenderComponent*>(PComponent))
 		{
 			assert(!MRenderComponent);
-			MRenderComponent = static_cast<CRenderComponent*>(PComponent);
+			MRenderComponent = static_cast<FRenderComponent*>(PComponent);
 		}
 
 		// 입력된 컴포넌트의 주소를 저장

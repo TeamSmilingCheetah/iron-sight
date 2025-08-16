@@ -36,8 +36,8 @@ public:
 private:
 	UINT MObjectID;
 
-	CComponent* MComponentArray[static_cast<UINT>(COMPONENT_TYPE::END)];
-	CRenderComponent* MRenderComponent;
+	FComponent* MComponentArray[static_cast<UINT>(COMPONENT_TYPE::END)];
+	FRenderComponent* MRenderComponent;
 	vector<CScript*> MScriptsVector;
 	unordered_map<SCRIPT_TYPE, UINT> MScriptShortcut;
 
@@ -55,7 +55,7 @@ public:
 	void FinalTick();
 	void Render() const;
 
-	void AddComponent(CComponent* PComponent);
+	void AddComponent(FComponent* PComponent);
 	void AddChild(CGameObject* PChild);
 	void DeleteComponent(COMPONENT_TYPE PType);
 	void DeleteScript(const wstring& PScriptName);
@@ -74,8 +74,8 @@ public:
 
 	const vector<CScript*>& GetScripts() const { return MScriptsVector; }
 	const unordered_map<SCRIPT_TYPE, UINT>& GetScriptShortcut() const { return MScriptShortcut; }
-	CComponent* GetComponent(COMPONENT_TYPE PType) const { return MComponentArray[static_cast<UINT>(PType)]; }
-	CRenderComponent* GetRenderComponent() const { return MRenderComponent; }
+	FComponent* GetComponent(COMPONENT_TYPE PType) const { return MComponentArray[static_cast<UINT>(PType)]; }
+	FRenderComponent* GetRenderComponent() const { return MRenderComponent; }
 
 	const vector<CGameObject*>& GetChild() const { return MChildVector; }
 	CGameObject* GetParent() const { return MParent; }

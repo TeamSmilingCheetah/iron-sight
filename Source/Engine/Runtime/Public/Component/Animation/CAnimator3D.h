@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/System/Public/Asset/Mesh/CMesh.h"
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 #include "Engine/System/Public/Asset/Animation/CAnimation.h"
 
 class CAnimation;
@@ -9,7 +9,7 @@ class CMeshRender;
 class CGameObject;
 
 class CAnimator3D :
-	public CComponent
+	public FComponent
 {
 private:
 	// 애니메이션 목록

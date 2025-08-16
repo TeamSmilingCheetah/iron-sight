@@ -54,15 +54,14 @@ void EnemyVisionScript::Tick()
 	}
 	// 시야에 타겟이 존재한다면
 	CScript* pScript = *m_SetScript.begin(); // 지금 당장은 타겟이 하나기에 이렇게 설정
-	Vec3 RayPos = pRay->GetRayFinalPos();
+	Vec3 RayPos = pRay->GetFinalPosition();
 	Vec3 TargetPos = pScript->GetOwner()->Transform()->GetRelativePos();
-	float Length = pRay->GetTargetInfoRef().Length;
+	float Length = pRay->GetLength();
 
 	// Ray가 타겟을 찾은지 확인
 	if (m_RayTarget)
 	{
 		// 사거리 내에 있는지 확인
-		float Length = pRay->GetTargetInfoRef().Length;
 		if (Length <= m_AtkRange)
 		{
 			m_RayAtkRg = true;
@@ -77,8 +76,8 @@ void EnemyVisionScript::Tick()
 
 	// 레이 방향을 타겟 방향으로 설정
 	Vec3 RayVector = TargetPos - RayPos;
-	pRay->SetRayDir(RayVector);
-	pRay->SetRayLength(m_VisionRange);
+	pRay->SetFinalDirection(RayVector);
+	pRay->SetLength(m_VisionRange);
 }
 
 void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)

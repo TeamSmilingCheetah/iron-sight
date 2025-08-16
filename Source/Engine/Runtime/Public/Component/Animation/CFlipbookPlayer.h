@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "Engine/System/Public/Asset/Texture/CFlipbook.h"
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 
 class CFlipbookPlayer :
-	public CComponent
+	public FComponent
 {
 private:
 	vector<Ptr<CFlipbook>> m_vecFlipbook; // 재생 목록 Flipbook

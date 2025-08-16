@@ -1,6 +1,6 @@
 #pragma once
 #include "Common/Ptr.h"
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 #include "Engine/System/Public/Rendering/Shader/CParticleTickCS.h"
 
 class CStructuredBuffer;
@@ -12,7 +12,7 @@ struct tSpawnCount
 };
 
 class CParticleSystem :
-	public CRenderComponent
+	public FRenderComponent
 {
 	Ptr<CParticleTickCS> m_TickCS;
 	CStructuredBuffer* m_ParticleBuffer; // 모든 파티클 정보

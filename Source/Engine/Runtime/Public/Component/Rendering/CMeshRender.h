@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 
 
 class CMeshRender :
-	public CRenderComponent
+	public FRenderComponent
 {
 	friend class CRenderMgr;
 

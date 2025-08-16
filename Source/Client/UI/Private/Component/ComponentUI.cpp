@@ -5,7 +5,7 @@
 #include "Client/UI/Public/Editor/Inspector.h"
 #include "Client/System/Public/CImGuiMgr.h"
 
-class CComponent;
+class FComponent;
 
 ComponentUI::ComponentUI(const string& _ID, COMPONENT_TYPE _Type)
 	: EditorUI(_ID)
@@ -28,7 +28,7 @@ void ComponentUI::SetTargetObject(CGameObject* _Target)
 	}
 	else
 	{
-		CComponent* pComponent = m_TargetObject->GetComponent(m_Type);
+		FComponent* pComponent = m_TargetObject->GetComponent(m_Type);
 		if (nullptr == pComponent)
 		{
 			SetActive(false);

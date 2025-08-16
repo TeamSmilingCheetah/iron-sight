@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
 
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 #include "Engine/Runtime/Public/Component/Camera/CFrustum.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
@@ -19,7 +19,7 @@
 #include "Engine/System/Public/Rendering/Buffer/CInstancingBuffer.h"
 
 CCamera::CCamera()
-	: CComponent(COMPONENT_TYPE::CAMERA)
+	: FComponent(COMPONENT_TYPE::CAMERA)
 	, m_Frustum(nullptr)
 	, m_ProjType(ORTHOGRAPHIC)
 	, m_Far(3000000.f)
@@ -40,7 +40,7 @@ CCamera::CCamera()
 }
 
 CCamera::CCamera(const CCamera& _Origin)
-	: CComponent(_Origin)
+	: FComponent(_Origin)
 	  , m_Frustum(nullptr)
 	  , m_ProjType(_Origin.m_ProjType)
 	  , m_Far(_Origin.m_Far)
@@ -133,7 +133,7 @@ void CCamera::SortObject()
 
 			for (size_t j = 0; j < vecObjects.size(); ++j)
 			{
-				CRenderComponent* pRenderCom = vecObjects[j]->GetRenderComponent();
+				FRenderComponent* pRenderCom = vecObjects[j]->GetRenderComponent();
 
 				// 분류 예외조건 검사
 				if (nullptr == pRenderCom || nullptr == pRenderCom->GetMesh())
@@ -738,42 +738,42 @@ void CCamera::CalcRay()
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 
 	// 마우스를 향하는 직선은 카메라 위치를 지난다.
-	m_Ray.vStart = Transform()->GetWorldPos();
+	m_RayPosition = Transform()->GetWorldPos();
 
 	// View 공간 상에서 카메라에서 마우스 방향을 향하는 방향벡터를 구한다.
 	//  - 마우스가 있는 좌표를 -1 ~ 1 사이의 정규화된 좌표로 바꾼다.
 	//  - 투영행렬의 _11, _22 에 있는 값은 Near 평면상에서 Near 값을 가로 세로 길이로 나눈값
 	//  - 실제 ViewSpace 상에서의 Near 평명상에서 마우스가 있는 지점을 향하는 위치를 구하기 위해서 비율을 나누어서
 	//  - 실제 Near 평면상에서 마우스가 향하는 위치를 좌표를 구함
-	m_Ray.vDir.x = (((vMousePos.x - VP.TopLeftX) * 2.f / VP.Width) - 1.f) / m_matProj._11;
-	m_Ray.vDir.y = -(((vMousePos.y - VP.TopLeftY) * 2.f / VP.Height) - 1.f) / m_matProj._22;
-	m_Ray.vDir.z = 1.f;
+	m_RayDirection.x = (((vMousePos.x - VP.TopLeftX) * 2.f / VP.Width) - 1.f) / m_matProj._11;
+	m_RayDirection.y = -(((vMousePos.y - VP.TopLeftY) * 2.f / VP.Height) - 1.f) / m_matProj._22;
+	m_RayDirection.z = 1.f;
 
 	// 방향 벡터에 ViewMatInv 를 적용, 월드상에서의 방향을 알아낸다.
-	m_Ray.vDir = XMVector3TransformNormal(m_Ray.vDir, m_matViewInv);
-	m_Ray.vDir.Normalize();
+	m_RayDirection = XMVector3TransformNormal(m_RayDirection, m_matViewInv);
+	m_RayDirection.Normalize();
 }
 
 void CCamera::SaveComponent(FILE* _File)
 {
-	fwrite(&m_ProjType, sizeof(PROJ_TYPE), 1, _File);
-	fwrite(&m_Far, sizeof(float), 1, _File);
-	fwrite(&m_AspectRatio, sizeof(float), 1, _File);
-	fwrite(&m_LayerCheck, sizeof(UINT), 1, _File);
-	fwrite(&m_Priority, sizeof(int), 1, _File);
-	fwrite(&m_FOV, sizeof(float), 1, _File);
-	fwrite(&m_Width, sizeof(float), 1, _File);
-	fwrite(&m_Scale, sizeof(float), 1, _File);
+	(void)fwrite(&m_ProjType, sizeof(PROJ_TYPE), 1, _File);
+	(void)fwrite(&m_Far, sizeof(float), 1, _File);
+	(void)fwrite(&m_AspectRatio, sizeof(float), 1, _File);
+	(void)fwrite(&m_LayerCheck, sizeof(UINT), 1, _File);
+	(void)fwrite(&m_Priority, sizeof(int), 1, _File);
+	(void)fwrite(&m_FOV, sizeof(float), 1, _File);
+	(void)fwrite(&m_Width, sizeof(float), 1, _File);
+	(void)fwrite(&m_Scale, sizeof(float), 1, _File);
 }
 
 void CCamera::LoadComponent(FILE* _File)
 {
-	fread(&m_ProjType, sizeof(PROJ_TYPE), 1, _File);
-	fread(&m_Far, sizeof(float), 1, _File);
-	fread(&m_AspectRatio, sizeof(float), 1, _File);
-	fread(&m_LayerCheck, sizeof(UINT), 1, _File);
-	fread(&m_Priority, sizeof(int), 1, _File);
-	fread(&m_FOV, sizeof(float), 1, _File);
-	fread(&m_Width, sizeof(float), 1, _File);
-	fread(&m_Scale, sizeof(float), 1, _File);
+	(void)fread(&m_ProjType, sizeof(PROJ_TYPE), 1, _File);
+	(void)fread(&m_Far, sizeof(float), 1, _File);
+	(void)fread(&m_AspectRatio, sizeof(float), 1, _File);
+	(void)fread(&m_LayerCheck, sizeof(UINT), 1, _File);
+	(void)fread(&m_Priority, sizeof(int), 1, _File);
+	(void)fread(&m_FOV, sizeof(float), 1, _File);
+	(void)fread(&m_Width, sizeof(float), 1, _File);
+	(void)fread(&m_Scale, sizeof(float), 1, _File);
 }

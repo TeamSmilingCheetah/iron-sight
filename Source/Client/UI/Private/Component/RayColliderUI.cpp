@@ -20,16 +20,16 @@ void RayColliderUI::Render_Update()
 
 	FRayCollider* pRayCollider = GetTargetObject()->RayCollider();
 
-	Vec3 vDir = pRayCollider->GetRayDir();
+	Vec3 vDir = pRayCollider->GetDirection();
 	Vec3 vOffset = pRayCollider->GetOffset();
-	float vLength = pRayCollider->GetRayLength();
+	float vLength = pRayCollider->GetLength();
 	bool bIndependent = pRayCollider->IsIndependentDir();
 	bool bActive = pRayCollider->IsActive();
 
 	ImGui::Text("Direction");
 	ImGui::SameLine(100);
 	ImGui::DragFloat3("##ColliderDirection", vDir,0.01f);
-	pRayCollider->SetRayDir(vDir);
+	pRayCollider->SetDirection(vDir);
 
 	ImGui::Text("Offset");
 	ImGui::SameLine(100);
@@ -39,7 +39,7 @@ void RayColliderUI::Render_Update()
 	ImGui::Text("Length");
 	ImGui::SameLine(100);
 	ImGui::DragFloat("##Independent", &vLength);
-	pRayCollider->SetRayLength(vLength);
+	pRayCollider->SetLength(vLength);
 
 	ImGui::Text("Independent");
 	ImGui::SameLine(100);

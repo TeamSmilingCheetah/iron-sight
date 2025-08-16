@@ -8,7 +8,7 @@
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
 
 CMeshRender::CMeshRender()
-	: CRenderComponent(COMPONENT_TYPE::MESHRENDER)
+	: FRenderComponent(COMPONENT_TYPE::MESHRENDER)
 	  , m_SkinRender(false)
 {
 }

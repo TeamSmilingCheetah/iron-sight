@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Client/Script/Public/CGameObjectEx.h"
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
-#include "Engine/Runtime/Public/Component/Base/CRenderComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
+#include "Engine/Runtime/Public/Component/Base/RenderComponent.h"
 #include "Engine/Runtime/Public/Component/Light/CLight3D.h"
 
 void CGameObjectEx::FinalTick_Editor()
@@ -51,7 +51,7 @@ void CGameObjectEx::Render_Editor_Recur(CGameObject* _GameObject)
 	}
 }
 
-void CGameObjectEx::FinalTick_Component(CComponent* _Component)
+void CGameObjectEx::FinalTick_Component(FComponent* _Component)
 {
 	switch (_Component->GetType())
 	{

@@ -1,42 +1,39 @@
 #pragma once
 #include "ColliderBase.h"
-#include "Common/struct.h"
 
 /**
  * @brief Raycast 처리를 위한 Ray 충돌체 클래스
  *
- * @param MOffset
- * @param MRayPosDir
- * @param MWorldMatrix 크기, 회전, 이동
- * @param MFinalPosition 최종 레이의 위치
- * @param MFinalDirection 최종 레이의 방향
- * @param MLength Ray 길이
- * @param MTargetLength 디버그용 임시 길이
- * @param MOverlapCount
- * @param MColliderState 충돌체 상태
- * @param MRayColliderInfo 단일 타겟 용 검사 구조체
- * @param MIndependentDirection 독립적인 방향
- * @param MRayTargetAll 레이가 발견 가능한 타겟 판정
- * @param MTriggerTarget 트리거용 충돌체를 감지할지 판정
+ * @param Offset Local 좌표계에서의 Ray 시작점
+ * @param Direction Local 좌표계 기준 Ray 방향, IndependentDirection이면 해당 방향을 사용함
+ * @param FinalPosition World 좌표계 기준 Ray 시작점
+ * @param FinalDirection World 좌표계 기준 Ray 방향
+ * @param WorldMatrix 크기, 회전, 이동
+ * @param Length Ray의 길이
+ * @param bIndependentDirection 독립적인 방향을 가지는지 여부
+ * @param bRayTargetAll Target이 단일인지, 관통을 통한 다수의 Target을 가지는지 여부
+ * @param bTriggerTarget 트리거용 충돌체를 감지할지 여부
+ * @param HitDistance Ray와 충돌하는 가장 가까운 타겟과의 거리
+ * @param HitNormal Ray와 충돌하는 가장 가까운 타겟의 충돌 Normal
  */
 class FRayCollider :
 	public IColliderBase
 {
 private:
 	Vec3 Offset;
-	tRay RayPosDir;
-	Matrix WorldMatrix;
-
+	Vec3 Direction;
 	Vec3 FinalPosition;
 	Vec3 FinalDirection;
 
+	Matrix WorldMatrix;
 	float Length;
-	float TargetLength;
+
 	bool bIndependentDirection;
 	bool bRayTargetAll;
 	bool bTriggerTarget;
 
-	FRayCollisionInfo RayCollisionInfo;
+	vector<float> HitDistances;
+	vector<Vec3> HitNormals;
 
 public:
 	void FinalTick() override;
@@ -44,40 +41,33 @@ public:
 	void LoadComponent(FILE* InFile) override;
 	const AABB GetAABB() const override;
 
-	bool UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance);
-	void ClearRayColInfo();
+	// bool UpdateRayColInfo(IColliderBase* InHitCollider, float InDistance);
+	// void ClearRayColInfo();
 
 	// Getter & Setter
 	EColliderType GetColliderType() const override { return EColliderType::RayCollider; }
-	tRay GetRay() const { return RayPosDir; }
-	Vec3 GetRayPos() const { return RayPosDir.vStart; }
-	Vec3 GetRayDir() const { return RayPosDir.vDir; }
 	Vec3 GetOffset() const { return Offset; }
-	float GetRayLength() const { return Length; }
+	Vec3 GetDirection() const { return Direction; }
+	float GetLength() const { return Length; }
 	const Matrix& GetColliderWorldMat() const { return WorldMatrix; }
 
-	Vec3 GetRayFinalPos() const { return FinalPosition; }
-	Vec3 GetRayFinalDir() const { return FinalDirection; }
-	bool IsIndependentDir() const { return bIndependentDirection; }
+	Vec3 GetFinalPosition() const { return FinalPosition; }
+	Vec3 GetFinalDirection() const { return FinalDirection; }
 
-	FRayCollisionInfo& GetTargetInfoRef() { return RayCollisionInfo; }
+	bool IsIndependentDir() const { return bIndependentDirection; }
 	bool IsTargetAllMode() const { return bRayTargetAll; }
 	bool IsTriggerTarget() const { return bTriggerTarget; }
 
-	void SetRayLength(float PLength) { Length = PLength; }
-	void SetRayTargetMode(bool PTargetAll) { bRayTargetAll = PTargetAll; }
-	void SetRayTargetLength(float PTargetLength) { TargetLength = PTargetLength; }
-	void SetIndependentDir(bool PVal) { bIndependentDirection = PVal; }
-	void SetTriggerTarget(bool PVal) { bTriggerTarget = PVal; }
+	void SetOffset(Vec3 InOffset) { Offset = InOffset; }
+	void SetDirection(Vec3 InDirection) { Direction = InDirection; }
+	void SetFinalDirection(Vec3 InDirection) { FinalDirection = InDirection; }
+	void SetLength(float InLength) { Length = InLength; }
+	void SetRayTargetMode(bool InIsTargetAll) { bRayTargetAll = InIsTargetAll; }
+	void SetIndependentDir(bool InIsIndepenedent) { bIndependentDirection = InIsIndepenedent; }
+	void SetTriggerTarget(bool InIsTrigger) { bTriggerTarget = InIsTrigger; }
 
-	void SetOffset(Vec3 POffset) { Offset = POffset; }
-	void SetRayPos(Vec3 PPos) { RayPosDir.vStart = PPos; }
-
-	void SetRayDir(Vec3 PDir)
-	{
-		RayPosDir.vDir = PDir;
-		RayPosDir.vDir.Normalize();
-	}
+	void SetHitDistance(float InHitDistance) { HitDistances.push_back(InHitDistance); }
+	void SetHitNormal(Vec3 InHitNormal) { HitNormals.push_back(InHitNormal); }
 
 	// Special Member Function
 	FRayCollider();

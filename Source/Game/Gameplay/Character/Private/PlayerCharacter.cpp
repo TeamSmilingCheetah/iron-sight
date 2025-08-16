@@ -289,7 +289,7 @@ void PlayerCharacter::PlayerView()
 	float angle = vCameraRot.x * (XM_PI / 180.f);
 	RayDir.y = -sin(angle);
 	RayDir.z = fabs(RayDir.y) - 1;
-	RayCollider()->SetRayDir(RayDir);
+	RayCollider()->SetFinalDirection(RayDir);
 }
 
 void PlayerCharacter::PlayerStance()
@@ -412,7 +412,7 @@ void PlayerCharacter::PlayerControlWeapon()
 		{
 			return;
 		}
-			
+
 
 		WeaponController* pWeaponController = m_InventoryScript->GetCurWeaponController();
 		assert(pWeaponController != nullptr);
@@ -526,7 +526,7 @@ void PlayerCharacter::PlayerControlUI()
 
 	// 방위 UI : y축 회전값 전달
 	CGameMgr::GetInst()->UpdateCardinalUI(Transform()->GetRelativeRotation().y);
-	
+
 
 	// HP UI : 현재 체력과 부스트에 대한 정보
 	if (IS_HEAL(static_cast<UINT>(m_HealType)))
@@ -850,7 +850,7 @@ void PlayerCharacter::ProgressFireState()
 	// PRESSED KEY 입력은 Gun에게만 넘긴다
 	if (KEY_PRESSED(KEY::LBTN))
 	{
-		
+
 		curWeaponScript->SetCurKey(KEY::LBTN);
 		curWeaponScript->SetCurKeyState(KEY_STATE::PRESSED);
 	}

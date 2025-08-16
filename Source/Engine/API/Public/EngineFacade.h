@@ -2,7 +2,7 @@
 #include "Common/global.h"
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
-#include "Engine/Runtime/Public/Component/Base/CComponent.h"
+#include "Engine/Runtime/Public/Component/Base/Component.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
@@ -19,7 +19,7 @@ namespace Engine
 		unique_ptr<CGameObject> CreateNewObject();
 		CGameObject* InstantiateNewObject(Ptr<CMeshData> PMeshData);
 		void SetObjectName(CGameObject* PObject, const wstring& PName);
-		CComponent* GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType);
+		FComponent* GetComponent(const CGameObject* PObject, COMPONENT_TYPE PComponentType);
 		void AddChild(CGameObject* PObject, CGameObject* PChild);
 		CState* LoadState(const wstring& PStateName);
 
@@ -69,10 +69,10 @@ namespace Engine
 		                        bool PIsIndependentScale, bool PIsTrigger = false);
 
 		// TODO(KHJ): Common Form 구축할 것
-		void SetRayColliderProperties(CGameObject* PObject, Vec3 PDirection, Vec3 POffset,
-		                           float PLength, bool PIsTriggerTarget);
-		void SetRayColliderProperties(CGameObject* PObject, Vec3 PDirection,
-		                           float PLength, bool PIsIndependant);
+		void SetRayColliderProperties(CGameObject* InObject, Vec3 InDirection, Vec3 InOffset,
+		                           float InLength, bool InIsTrigger);
+		void SetRayColliderProperties(CGameObject* InObject, Vec3 InDirection,
+		                           float InLength, bool InIsIndependant);
 
 		void SetColliderDynamic(const CGameObject* InObject, EColliderType InType);
 	}
@@ -114,7 +114,7 @@ namespace Engine
 template <class T>
 void Engine::Common::AddComponentToObject(CGameObject* PObject)
 {
-	static_assert(std::is_base_of_v<CComponent, T> || std::is_base_of_v<CRenderComponent, T>,
+	static_assert(std::is_base_of_v<FComponent, T> || std::is_base_of_v<FRenderComponent, T>,
 	              "Object Can Only Get Component By This Function");
 	PObject->AddComponent(new T);
 }
