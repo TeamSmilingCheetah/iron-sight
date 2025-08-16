@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/PlaneCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"
@@ -23,8 +23,8 @@ bool FCollisionManager::IsNeedCSTask(const IColliderBase* InLeftCollider, const 
 {
 	const bool IsMeshA = (InLeftCollider->GetColliderType() == EColliderType::MeshCollider);
 	const bool IsMeshB = (InRightCollider->GetColliderType() == EColliderType::MeshCollider);
-	const bool Is3DColliderA = (InLeftCollider->GetColliderType() == EColliderType::Collider3D);
-	const bool Is3DColliderB = (InRightCollider->GetColliderType() == EColliderType::Collider3D);
+	const bool Is3DColliderA = (InLeftCollider->GetColliderType() == EColliderType::BoxCollider);
+	const bool Is3DColliderB = (InRightCollider->GetColliderType() == EColliderType::BoxCollider);
 	// const bool IsSphereA = (InLeftCollider->GetColliderType() == EColliderType::SphereCollider);
 	// const bool IsSphereB = (InRightCollider->GetColliderType() == EColliderType::SphereCollider);
 
@@ -153,8 +153,8 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
 {
 	const bool IsMeshColliderA = (InLeftCollider->GetColliderType() == EColliderType::MeshCollider);
 	const bool IsMeshColliderB = (InRightCollider->GetColliderType() == EColliderType::MeshCollider);
-	const bool Is3DColliderA = (InLeftCollider->GetColliderType() == EColliderType::Collider3D);
-	const bool Is3DColliderB = (InRightCollider->GetColliderType() == EColliderType::Collider3D);
+	const bool Is3DColliderA = (InLeftCollider->GetColliderType() == EColliderType::BoxCollider);
+	const bool Is3DColliderB = (InRightCollider->GetColliderType() == EColliderType::BoxCollider);
 
 	FMeshCollider* LeftMesh = static_cast<FMeshCollider*>(InLeftCollider);
 	FMeshCollider* RightMesh = static_cast<FMeshCollider*>(InRightCollider);
@@ -207,17 +207,17 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
  */
 void FCollisionManager::CheckCollisionInCPU(IColliderBase* InLeftCollider, IColliderBase* InRightCollider)
 {
-	const bool IsLeft2D = (InLeftCollider->GetColliderType() == EColliderType::Collider2D);
-	const bool IsRight2D = (InRightCollider->GetColliderType() == EColliderType::Collider2D);
-	const bool IsLeft3D = (InLeftCollider->GetColliderType() == EColliderType::Collider3D);
-	const bool IsRight3D = (InRightCollider->GetColliderType() == EColliderType::Collider3D);
+	const bool IsLeft2D = (InLeftCollider->GetColliderType() == EColliderType::PlaneCollider);
+	const bool IsRight2D = (InRightCollider->GetColliderType() == EColliderType::PlaneCollider);
+	const bool IsLeft3D = (InLeftCollider->GetColliderType() == EColliderType::BoxCollider);
+	const bool IsRight3D = (InRightCollider->GetColliderType() == EColliderType::BoxCollider);
 	const bool IsLeftSphere = (InLeftCollider->GetColliderType() == EColliderType::SphereCollider);
 	const bool IsRightSphere = (InRightCollider->GetColliderType() == EColliderType::SphereCollider);
 	const bool IsLeftMesh = (InLeftCollider->GetColliderType() == EColliderType::MeshCollider);
 	const bool IsRightMesh = (InRightCollider->GetColliderType() == EColliderType::MeshCollider);
 
-	FCollider2D* Left2D = static_cast<FCollider2D*>(InLeftCollider);
-	FCollider2D* Right2D = static_cast<FCollider2D*>(InRightCollider);
+	FPlaneCollider* Left2D = static_cast<FPlaneCollider*>(InLeftCollider);
+	FPlaneCollider* Right2D = static_cast<FPlaneCollider*>(InRightCollider);
 	FBoxCollider* LeftBox = static_cast<FBoxCollider*>(InLeftCollider);
 	FBoxCollider* RightBox = static_cast<FBoxCollider*>(InRightCollider);
 	FSphereCollider* LeftSphere = static_cast<FSphereCollider*>(InLeftCollider);
@@ -276,7 +276,7 @@ void FCollisionManager::CheckCollisionInCPU(IColliderBase* InLeftCollider, IColl
 /**********************************/
 
 // TODO(KHJ): 코드 재검토 필요
-bool FCollisionManager::IsCollision(const FCollider2D* InLeftCollider, const FCollider2D* InRightCollider)
+bool FCollisionManager::IsCollision(const FPlaneCollider* InLeftCollider, const FPlaneCollider* InRightCollider)
 {
 	// SAT(Separating Axis Theorem) 기반 2D 충돌 판정
 	static Vec3 arrRect[4] = {
@@ -603,7 +603,7 @@ Vec3 FCollisionManager::GetClosestPointOnTriangle(const Vec3& InPoint, const Vec
 	return InVertexA + AB * v + AC * w;
 }
 
-// bool CollisionManager::IsCollision(const FCollider3D* InLeftCollider, const FLandScape* InRightCollider)
+// bool CollisionManager::IsCollision(const FBoxCollider* InLeftCollider, const FLandScape* InRightCollider)
 // {
 // 	Vec3 ObjectPos = InLeftCollider->Transform()->GetWorldPos();
 // 	Vec3 LandScapePos = InRightCollider->GetWorldPosByLandScape(ObjectPos);

@@ -151,7 +151,7 @@ void FRayCollider::LoadComponent(FILE* InFile)
  */
 const AABB FRayCollider::GetAABB() const
 {
-	LOG_ERROR_F("[Collision][Ray] {}: ColliderRay Don't Have AABB", WStringToString(GetOwner()->GetName()));
-	assert(!"ColliderRay Don't Have AABB");
+	LOG_ERROR_F("[Collision][Ray] {}: RayCollider Don't Have AABB", WStringToString(GetOwner()->GetName()));
+	assert(!"RayCollider Don't Have AABB");
 	return AABB();
 }

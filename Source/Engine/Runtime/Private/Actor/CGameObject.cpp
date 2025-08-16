@@ -2,7 +2,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/PlaneCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
@@ -494,9 +494,9 @@ vector<ColliderVariant> CGameObject::GetColliders() const
 {
 	vector<ColliderVariant> ColliderVector;
 
-	if (Collider2D())
+	if (PlaneCollider())
 	{
-		ColliderVector.push_back(Collider2D());
+		ColliderVector.push_back(PlaneCollider());
 	}
 	if (BoxCollider())
 	{
@@ -510,9 +510,9 @@ vector<ColliderVariant> CGameObject::GetColliders() const
 	{
 		ColliderVector.push_back(MeshCollider());
 	}
-	if (ColliderRay())
+	if (RayCollider())
 	{
-		ColliderVector.push_back(ColliderRay());
+		ColliderVector.push_back(RayCollider());
 	}
 
 	return ColliderVector;

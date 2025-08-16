@@ -80,21 +80,21 @@ void Engine::Collider::SetColliderProperties(CGameObject* PObject, Vec3 PScale, 
 	PObject->BoxCollider()->SetTrigger(PIsTrigger);
 }
 
-void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
+void Engine::Collider::SetRayColliderProperties(CGameObject* PObject,
                                              Vec3 PDirection, float PLength, bool PIsIndependant)
 {
-	PObject->ColliderRay()->SetRayDir(PDirection);
-	PObject->ColliderRay()->SetRayLength(PLength);
-	PObject->ColliderRay()->SetIndependentDir(PIsIndependant);
+	PObject->RayCollider()->SetRayDir(PDirection);
+	PObject->RayCollider()->SetRayLength(PLength);
+	PObject->RayCollider()->SetIndependentDir(PIsIndependant);
 }
 
-void Engine::Collider::SetColliderRayProperties(CGameObject* PObject,
+void Engine::Collider::SetRayColliderProperties(CGameObject* PObject,
                                              Vec3 PDirection, Vec3 POffset, float PLength, bool PIsTriggerTarget)
 {
-	PObject->ColliderRay()->SetRayDir(PDirection);
-	PObject->ColliderRay()->SetOffset(POffset);
-	PObject->ColliderRay()->SetRayLength(PLength);
-	PObject->ColliderRay()->SetTriggerTarget(PIsTriggerTarget);
+	PObject->RayCollider()->SetRayDir(PDirection);
+	PObject->RayCollider()->SetOffset(POffset);
+	PObject->RayCollider()->SetRayLength(PLength);
+	PObject->RayCollider()->SetTriggerTarget(PIsTriggerTarget);
 }
 
 void Engine::Collider::SetColliderDynamic(const CGameObject* InObject, EColliderType InType)

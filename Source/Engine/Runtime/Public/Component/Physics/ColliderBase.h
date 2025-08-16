@@ -4,11 +4,11 @@
 enum class EColliderType : UINT8
 {
 	NONE,
-	Collider2D,
-	Collider3D,
+	PlaneCollider,
+	BoxCollider,
 	MeshCollider,
 	SphereCollider,
-	ColliderRay,
+	RayCollider,
 
 	END = 0xFF,
 };

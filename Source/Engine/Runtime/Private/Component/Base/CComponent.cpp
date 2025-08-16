@@ -31,9 +31,9 @@ void CComponent::LoadFromLevel(FILE* _File)
 CTransform* CComponent::Transform() const { return m_Owner ? m_Owner->Transform() : nullptr; }
 CMeshRender* CComponent::MeshRender() const { return m_Owner ? m_Owner->MeshRender() : nullptr; }
 CCamera* CComponent::Camera() const { return m_Owner ? m_Owner->Camera() : nullptr; }
-FCollider2D* CComponent::Collider2D() const { return m_Owner ? m_Owner->Collider2D() : nullptr; }
-FBoxCollider* CComponent::Collider3D() const { return m_Owner ? m_Owner->BoxCollider() : nullptr; }
-FRayCollider* CComponent::ColliderRay() const { return m_Owner ? m_Owner->ColliderRay() : nullptr; }
+FPlaneCollider* CComponent::PlaneCollider() const { return m_Owner ? m_Owner->PlaneCollider() : nullptr; }
+FBoxCollider* CComponent::BoxCollider() const { return m_Owner ? m_Owner->BoxCollider() : nullptr; }
+FRayCollider* CComponent::RayCollider() const { return m_Owner ? m_Owner->RayCollider() : nullptr; }
 CFlipbookPlayer* CComponent::FlipbookPlayer() const { return m_Owner ? m_Owner->FlipbookPlayer() : nullptr; }
 CTileMap* CComponent::TileMap() const { return m_Owner ? m_Owner->TileMap() : nullptr; }
 CLight2D* CComponent::Light2D() const { return m_Owner ? m_Owner->Light2D() : nullptr; }

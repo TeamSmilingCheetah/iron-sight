@@ -401,8 +401,8 @@ CComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 {
 	switch (_Type)
 	{
-	case COMPONENT_TYPE::COLLIDER2D:
-		return new FCollider2D;
+	case COMPONENT_TYPE::PLANE_COLLIDER:
+		return new FPlaneCollider;
 	case COMPONENT_TYPE::BOX_COLLIDER:
 		return new FBoxCollider;
 	case COMPONENT_TYPE::RAY_COLLIDER:

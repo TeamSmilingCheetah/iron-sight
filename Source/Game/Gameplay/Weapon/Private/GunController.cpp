@@ -206,7 +206,7 @@ bool GunController::CanReload()
 void GunController::ActiveTrigger()
 {
 	// 총알의 시작 위치를 정해준다.
-	Vec3 vRayPos = ColliderRay()->GetRayFinalPos();
+	Vec3 vRayPos = RayCollider()->GetRayFinalPos();
 	Vec3 vFinalDir = GetFireDir();
 
 	// 현재 사격 자세에 따라 정확도를 부여한다.

@@ -2,7 +2,7 @@
 
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Camera/CCamera.h"
-#include "Engine/Runtime/Public/Component/Physics/Collider2D.h"
+#include "Engine/Runtime/Public/Component/Physics/PlaneCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"

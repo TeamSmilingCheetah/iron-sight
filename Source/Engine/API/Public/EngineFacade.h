@@ -69,9 +69,9 @@ namespace Engine
 		                        bool PIsIndependentScale, bool PIsTrigger = false);
 
 		// TODO(KHJ): Common Form 구축할 것
-		void SetColliderRayProperties(CGameObject* PObject, Vec3 PDirection, Vec3 POffset,
+		void SetRayColliderProperties(CGameObject* PObject, Vec3 PDirection, Vec3 POffset,
 		                           float PLength, bool PIsTriggerTarget);
-		void SetColliderRayProperties(CGameObject* PObject, Vec3 PDirection,
+		void SetRayColliderProperties(CGameObject* PObject, Vec3 PDirection,
 		                           float PLength, bool PIsIndependant);
 
 		void SetColliderDynamic(const CGameObject* InObject, EColliderType InType);

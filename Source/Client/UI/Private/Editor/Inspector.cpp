@@ -17,7 +17,7 @@
 #include "Client/UI/Public/Asset/TextureUI.h"
 #include "Client/UI/Public/Component/Animator3DUI.h"
 #include "Client/UI/Public/Component/CameraUI.h"
-#include "Client/UI/Public/Component/Collider2DUI.h"
+#include "Client/UI/Public/Component/PlaneColliderUI.h"
 #include "Client/UI/Public/Component/BoxColliderUI.h"
 #include "Client/UI/Public/Component/RayColliderUI.h"
 #include "Client/UI/Public/Component/ComponentUI.h"
@@ -90,14 +90,14 @@ void Inspector::Render_Update()
 				case COMPONENT_TYPE::CAMERA:
 					ComponentName = "Camera";
 					break;
-				case COMPONENT_TYPE::COLLIDER2D:
-					ComponentName = "Collider2D";
+				case COMPONENT_TYPE::PLANE_COLLIDER:
+					ComponentName = "PlaneCollider";
 					break;
 				case COMPONENT_TYPE::BOX_COLLIDER:
-					ComponentName = "Collider3D";
+					ComponentName = "BoxCollider";
 					break;
 				case COMPONENT_TYPE::RAY_COLLIDER:
-					ComponentName = "ColliderRay";
+					ComponentName = "RayCollider";
 					break;
 				case COMPONENT_TYPE::ANIMATOR3D:
 					ComponentName = "Animator3D";
@@ -153,7 +153,7 @@ void Inspector::Render_Update()
 			{
 				COMPONENT_TYPE type = (COMPONENT_TYPE)(m_ComponentListIdx + 1);
 				CComponent* pCom = m_TargetObject->GetComponent(type);
-				if (nullptr == pCom) 
+				if (nullptr == pCom)
 				{
 					AddComponent(type);
 				}
@@ -244,8 +244,8 @@ void Inspector::AddComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::CAMERA:
 		m_TargetObject->AddComponent(new CCamera);
 		break;
-	case COMPONENT_TYPE::COLLIDER2D:
-		m_TargetObject->AddComponent(new FCollider2D);
+	case COMPONENT_TYPE::PLANE_COLLIDER:
+		m_TargetObject->AddComponent(new FPlaneCollider);
 		break;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		m_TargetObject->AddComponent(new CFlipbookPlayer);
@@ -367,16 +367,16 @@ void Inspector::CreateComponentUI()
 		new TransformUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::TRANSFORM)]->SetChildSize(ImVec2(0.f, 240.f));
 
-	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER2D)] = static_cast<ComponentUI*>(
-		AddChildUI(new Collider2DUI));
-	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::COLLIDER2D)]->SetChildSize(ImVec2(0.f, 120.f));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::PLANE_COLLIDER)] = static_cast<ComponentUI*>(
+		AddChildUI(new PlaneColliderUI));
+	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::PLANE_COLLIDER)]->SetChildSize(ImVec2(0.f, 120.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::BOX_COLLIDER)] = static_cast<ComponentUI*>(
-		AddChildUI(new Collider3DUI));
+		AddChildUI(new BoxColliderUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::BOX_COLLIDER)]->SetChildSize(ImVec2(0.f, 150.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::RAY_COLLIDER)] = static_cast<ComponentUI*>(
-		AddChildUI(new ColliderRayUI));
+		AddChildUI(new RayColliderUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::RAY_COLLIDER)]->SetChildSize(ImVec2(0.f, 200.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::CAMERA)] = static_cast<ComponentUI*>(AddChildUI(

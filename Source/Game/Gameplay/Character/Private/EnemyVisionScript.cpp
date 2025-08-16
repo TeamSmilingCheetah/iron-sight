@@ -28,7 +28,7 @@ void EnemyVisionScript::Begin()
 void EnemyVisionScript::Tick()
 {
 	// Collider가 존재해야한다(없으면 종료)
-	FRayCollider* pRay = GetOwner()->ColliderRay();
+	FRayCollider* pRay = GetOwner()->RayCollider();
 	FBoxCollider* p3DCol = GetOwner()->BoxCollider();
 	if (pRay == nullptr || p3DCol == nullptr)
 	{
@@ -83,8 +83,8 @@ void EnemyVisionScript::Tick()
 
 void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -101,8 +101,8 @@ void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* I
 		m_RayTarget = true;
 	}
 
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-	InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+	InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -122,8 +122,8 @@ void EnemyVisionScript::BeginOverlap(IColliderBase* InCollider, IColliderBase* I
 
 void EnemyVisionScript::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		// 혹시 모를 사태에 대비 무조건 true로
 		m_RayTarget = true;
@@ -132,8 +132,8 @@ void EnemyVisionScript::Overlap(IColliderBase* InCollider, IColliderBase* InOthe
 
 void EnemyVisionScript::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::ColliderRay &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::RayCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -150,8 +150,8 @@ void EnemyVisionScript::EndOverlap(IColliderBase* InCollider, IColliderBase* InO
 		m_RayTarget = false;
 	}
 
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-	InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+	InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();

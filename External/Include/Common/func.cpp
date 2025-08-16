@@ -318,9 +318,9 @@ wstring ToLower(const wstring& _str)
 void GetComponentsNames(vector<wstring>& _vecComponentsNames)
 {
 	_vecComponentsNames.push_back(L"Transform");
-	_vecComponentsNames.push_back(L"Collider2D");
-	_vecComponentsNames.push_back(L"Collider3D");
-	_vecComponentsNames.push_back(L"ColliderRay");
+	_vecComponentsNames.push_back(L"PlaneCollider");
+	_vecComponentsNames.push_back(L"BoxCollider");
+	_vecComponentsNames.push_back(L"RayCollider");
 	_vecComponentsNames.push_back(L"FlipbookPlayer");
 	_vecComponentsNames.push_back(L"Camera");
 	_vecComponentsNames.push_back(L"Light3D");

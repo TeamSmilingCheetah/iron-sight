@@ -67,7 +67,7 @@ void PrefabEditor::Render_Update()
 
 		m_Prefab = FAssetManager::GetInst()->Load<CPrefab>(RelativePath, RelativePath);
 		m_ProtoObject = m_Prefab->GetProtoObject();
-		string ObjectName = WStringToString(m_ProtoObject->GetName());	
+		string ObjectName = WStringToString(m_ProtoObject->GetName());
 
 		strncpy_s(m_Buffer, ObjectName.c_str(), sizeof(m_Buffer) - 1);
 	}
@@ -237,17 +237,17 @@ void PrefabEditor::SelectComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 		m_ProtoObject->AddComponent(new CTransform);
 		return;
 	}
-	if (*pStr == "Collider2D")
+	if (*pStr == "PlaneCollider")
 	{
-		m_ProtoObject->AddComponent(new FCollider2D);
+		m_ProtoObject->AddComponent(new FPlaneCollider);
 		return;
 	}
-	if (*pStr == "Collider3D")
+	if (*pStr == "BoxCollider")
 	{
 		m_ProtoObject->AddComponent(new FBoxCollider);
 		return;
 	}
-	if (*pStr == "ColliderRay")
+	if (*pStr == "RayCollider")
 	{
 		m_ProtoObject->AddComponent(new FRayCollider);
 		return;
@@ -315,9 +315,9 @@ void PrefabEditor::DeleteComponent(DWORD_PTR _ListUI, DWORD_PTR _SelectString)
 		m_ProtoObject->DeleteComponent(COMPONENT_TYPE::TRANSFORM);
 		return;
 	}
-	if (*pStr == "Collider2D")
+	if (*pStr == "PlaneCollider")
 	{
-		m_ProtoObject->DeleteComponent(COMPONENT_TYPE::COLLIDER2D);
+		m_ProtoObject->DeleteComponent(COMPONENT_TYPE::PLANE_COLLIDER);
 		return;
 	}
 	if (*pStr == "FlipbookPlayer")

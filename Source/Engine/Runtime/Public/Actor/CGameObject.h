@@ -161,9 +161,9 @@ public:
 	CTransform* Transform() const { return reinterpret_cast<CTransform*>(GetComponent(COMPONENT_TYPE::TRANSFORM)); }
 	CMeshRender* MeshRender() const { return reinterpret_cast<CMeshRender*>(GetComponent(COMPONENT_TYPE::MESHRENDER)); }
 	CCamera* Camera() const { return reinterpret_cast<CCamera*>(GetComponent(COMPONENT_TYPE::CAMERA)); }
-	FCollider2D* Collider2D() const { return reinterpret_cast<FCollider2D*>(GetComponent(COMPONENT_TYPE::COLLIDER2D)); }
+	FPlaneCollider* PlaneCollider() const { return reinterpret_cast<FPlaneCollider*>(GetComponent(COMPONENT_TYPE::PLANE_COLLIDER)); }
 	FBoxCollider* BoxCollider() const { return reinterpret_cast<FBoxCollider*>(GetComponent(COMPONENT_TYPE::BOX_COLLIDER)); }
-	FRayCollider* ColliderRay() const{ return reinterpret_cast<FRayCollider*>(GetComponent(COMPONENT_TYPE::RAY_COLLIDER)); }
+	FRayCollider* RayCollider() const{ return reinterpret_cast<FRayCollider*>(GetComponent(COMPONENT_TYPE::RAY_COLLIDER)); }
 	CFlipbookPlayer* FlipbookPlayer() const { return reinterpret_cast<CFlipbookPlayer*>(GetComponent(COMPONENT_TYPE::FLIPBOOKPLAYER)); }
 	CTileMap* TileMap() const { return reinterpret_cast<CTileMap*>(GetComponent(COMPONENT_TYPE::TILEMAP)); }
 	CLight2D* Light2D() const { return reinterpret_cast<CLight2D*>(GetComponent(COMPONENT_TYPE::LIGHT2D)); }

@@ -100,7 +100,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 	Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
 
 	Common::AddComponentToObject<FRayCollider>(RawCameraPtr);
-	Collider::SetColliderRayProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
+	Collider::SetRayColliderProperties(RawCameraPtr, {0, 0, 0}, 2000.f, true);
 
 
 	Level::AddObjectToLayer(PLevel, RawCameraPtr, 0, false);
@@ -222,7 +222,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 
 	Common::AddComponentToObject<FRayCollider>(Player);
-	Collider::SetColliderRayProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
+	Collider::SetRayColliderProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
 
 	// Animation
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_rifle_jump.anim"));
@@ -272,7 +272,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	Common::AddComponentToObject<FBoxCollider>(Player);
 	Collider::SetColliderProperties(Player, {300.f, 910.f, 300.f}, {0.f, 455.f, 0.f}, true);
-	Collider::SetColliderDynamic(Player, EColliderType::Collider3D);
+	Collider::SetColliderDynamic(Player, EColliderType::BoxCollider);
 
 	// Player Ground
 	auto UniqueGroundChecker = Common::CreateNewObject();

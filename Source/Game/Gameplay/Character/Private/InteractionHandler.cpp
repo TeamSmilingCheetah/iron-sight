@@ -90,8 +90,8 @@ void InteractionHandler::LoadComponentReference()
 
 void InteractionHandler::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -109,8 +109,8 @@ void InteractionHandler::BeginOverlap(IColliderBase* InCollider, IColliderBase* 
 
 void InteractionHandler::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();
@@ -160,8 +160,8 @@ void InteractionHandler::Overlap(IColliderBase* InCollider, IColliderBase* InOth
 
 void InteractionHandler::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::Collider3D &&
-		InOtherCollider->GetColliderType() == EColliderType::Collider3D)
+	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
 		CGameObject* OtherObject = OtherCollider->GetOwner();

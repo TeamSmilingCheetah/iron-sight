@@ -6,14 +6,14 @@
 class CGameObject;
 class CScript;
 class IColliderBase;
-class FCollider2D;
+class FPlaneCollider;
 class FBoxCollider;
 class FMeshCollider;
 class FSphereCollider;
 
 enum class SCRIPT_TYPE : UINT8;
 
-using ColliderVariant = variant<FCollider2D*, FBoxCollider*, FMeshCollider*, FSphereCollider*, FRayCollider*>;
+using ColliderVariant = variant<FPlaneCollider*, FBoxCollider*, FMeshCollider*, FSphereCollider*, FRayCollider*>;
 
 void ExcutePreload();
 

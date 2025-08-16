@@ -5,59 +5,59 @@
 #include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 
 
-ColliderRayUI::ColliderRayUI()
-	: ComponentUI("ColliderRayUI", COMPONENT_TYPE::RAY_COLLIDER)
+RayColliderUI::RayColliderUI()
+	: ComponentUI("RayColliderUI", COMPONENT_TYPE::RAY_COLLIDER)
 {
 }
 
-ColliderRayUI::~ColliderRayUI()
+RayColliderUI::~RayColliderUI()
 {
 }
 
-void ColliderRayUI::Render_Update()
+void RayColliderUI::Render_Update()
 {
-	ComponentTitle("ColliderRay");
+	ComponentTitle("RayCollider");
 
-	FRayCollider* pColliderRay = GetTargetObject()->ColliderRay();
+	FRayCollider* pRayCollider = GetTargetObject()->RayCollider();
 
-	Vec3 vDir = pColliderRay->GetRayDir();
-	Vec3 vOffset = pColliderRay->GetOffset();
-	float vLength = pColliderRay->GetRayLength();
-	bool bIndependent = pColliderRay->IsIndependentDir();
-	bool bActive = pColliderRay->IsActive();
+	Vec3 vDir = pRayCollider->GetRayDir();
+	Vec3 vOffset = pRayCollider->GetOffset();
+	float vLength = pRayCollider->GetRayLength();
+	bool bIndependent = pRayCollider->IsIndependentDir();
+	bool bActive = pRayCollider->IsActive();
 
 	ImGui::Text("Direction");
 	ImGui::SameLine(100);
 	ImGui::DragFloat3("##ColliderDirection", vDir,0.01f);
-	pColliderRay->SetRayDir(vDir);
+	pRayCollider->SetRayDir(vDir);
 
 	ImGui::Text("Offset");
 	ImGui::SameLine(100);
-	ImGui::DragFloat3("##ColliderRayOffset", vOffset);
-	pColliderRay->SetOffset(vOffset);
+	ImGui::DragFloat3("##RayColliderOffset", vOffset);
+	pRayCollider->SetOffset(vOffset);
 
 	ImGui::Text("Length");
 	ImGui::SameLine(100);
 	ImGui::DragFloat("##Independent", &vLength);
-	pColliderRay->SetRayLength(vLength);
+	pRayCollider->SetRayLength(vLength);
 
 	ImGui::Text("Independent");
 	ImGui::SameLine(100);
 	ImGui::Checkbox("##IndependentRay", &bIndependent);
-	pColliderRay->SetIndependentDir(bIndependent);
+	pRayCollider->SetIndependentDir(bIndependent);
 
 	ImGui::Text("IsActive");
 	ImGui::SameLine(100);
 	if (ImGui::Checkbox("##IsActiveRay", &bActive))
 	{
 		if (bActive)
-			pColliderRay->SetActivate();
+			pRayCollider->SetActivate();
 		else
-			pColliderRay->SetSemiDeactivate();
+			pRayCollider->SetSemiDeactivate();
 	}
 
 
-	if (ImGui::Button("DELETE##ColliderRay"))
+	if (ImGui::Button("DELETE##RayCollider"))
 	{
 		DeleteComponent(COMPONENT_TYPE::RAY_COLLIDER);
 	}

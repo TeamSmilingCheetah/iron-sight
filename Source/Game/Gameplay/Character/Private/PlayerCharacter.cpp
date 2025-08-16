@@ -289,7 +289,7 @@ void PlayerCharacter::PlayerView()
 	float angle = vCameraRot.x * (XM_PI / 180.f);
 	RayDir.y = -sin(angle);
 	RayDir.z = fabs(RayDir.y) - 1;
-	ColliderRay()->SetRayDir(RayDir);
+	RayCollider()->SetRayDir(RayDir);
 }
 
 void PlayerCharacter::PlayerStance()
@@ -365,8 +365,8 @@ void PlayerCharacter::PlayerStance()
 	// 앉아있는 상태
 	if (pCamScript->GetFlag(SITTING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
-		Collider3D()->SetScale(Vec3(555.f, 900.f, 385.f));
-		Collider3D()->SetOffset(Vec3(35.f, 550.f, 0.f));
+		BoxCollider()->SetScale(Vec3(555.f, 900.f, 385.f));
+		BoxCollider()->SetOffset(Vec3(35.f, 550.f, 0.f));
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 110.f, 0.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	}
@@ -375,8 +375,8 @@ void PlayerCharacter::PlayerStance()
 	// 누워있는 상태
 	if (pCamScript->GetFlag(LAYING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
-		Collider3D()->SetScale(Vec3(500.f, 480.f, 1475.f));
-		Collider3D()->SetOffset(Vec3(35.f, 25.f, 250.f));
+		BoxCollider()->SetScale(Vec3(500.f, 480.f, 1475.f));
+		BoxCollider()->SetOffset(Vec3(35.f, 25.f, 250.f));
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 5.f, -60.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 		m_bLean = false;
@@ -385,8 +385,8 @@ void PlayerCharacter::PlayerStance()
 	// 평상시로
 	if (!pCamScript->GetFlag(SITTING) && !pCamScript->GetFlag(LAYING) && pCamScript->GetFlag(CHANGE_STANCE))
 	{
-		Collider3D()->SetScale(Vec3(550.f, 1600.f, 385.f));
-		Collider3D()->SetOffset(Vec3(35.f, 760.f, 0.f));
+		BoxCollider()->SetScale(Vec3(550.f, 1600.f, 385.f));
+		BoxCollider()->SetOffset(Vec3(35.f, 760.f, 0.f));
 		m_HeadColl->Transform()->SetRelativePos(Vec3(0.f, 170.f, 0.f));
 		m_HeadColl->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 	}

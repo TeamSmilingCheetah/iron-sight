@@ -38,7 +38,7 @@ void FCollisionManager::RaycastNarrow()
 		if (IsInCondition(CheckSet, Ray, Collider))
 		{
 			// AABB가 충돌 기준이므로 바로 Process
-			if (Collider->GetColliderType() == EColliderType::Collider3D)
+			if (Collider->GetColliderType() == EColliderType::BoxCollider)
 			{
 				AddFrameCollision(Info.RayObject, static_cast<FBoxCollider*>(Collider));
 				continue;
