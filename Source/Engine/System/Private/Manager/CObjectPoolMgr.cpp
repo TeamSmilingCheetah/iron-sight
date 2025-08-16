@@ -2,6 +2,7 @@
 
 #include "System/Public/Manager/CObjectPoolMgr.h"
 #include "Runtime/Public/Actor/CGameObject.h"
+#include "Runtime/Public/Component/Physics/BoxCollider.h"
 
 CObjectPoolMgr::CObjectPoolMgr()
 {
@@ -41,7 +42,6 @@ void CObjectPoolMgr::ReturnObject(CGameObject* _Obj)
 	ChangeLayer(_Obj, 9);
 	wstring objName = _Obj->GetName();
 	m_mapPool[objName].push_back(_Obj);
-	
 }
 
 void CObjectPoolMgr::Preload(const wstring& _Name, size_t _Count)
@@ -57,6 +57,8 @@ void CObjectPoolMgr::Preload(const wstring& _Name, size_t _Count)
 	{
 		CGameObject* obj = pPrefab->GetProtoObject()->Clone();
 		SetObjectActive(obj, false);
+		// TODO(KHJ): 임시 처리, 관련 파라미터값에 따라 적절하게 처리할 수 있도록 할 것, Bullet의 경우는 Dynamic이 맞음
+		obj->BoxCollider()->SetDynamic();
 		obj->SetName(_Name);
 		pool.push_back(obj);
 		CreateObject(obj, 9, true);

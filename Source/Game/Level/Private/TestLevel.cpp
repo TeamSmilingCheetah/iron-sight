@@ -347,17 +347,18 @@ void TestLevel::CreateTestLevel()
 	// 적 시야 테스트
 	CGameObject* pVision = new CGameObject;
 	pVision->SetName(L"TestVision");
-	pVision->AddComponent(new FRayCollider);
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
-	//pVision->AddComponent(new FBoxCollider);
-	//pVision->BoxCollider()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
-	//pVision->BoxCollider()->SetOffset(Vec3(0.f, 0.f, 2500.f));
-	//pVision->BoxCollider()->SetIndependentScale(true);
-	//pVision->BoxCollider()->SetTrigger(true);
+	pVision->AddComponent(new FBoxCollider);
+	pVision->BoxCollider()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
+	pVision->BoxCollider()->SetOffset(Vec3(0.f, 0.f, 2500.f));
+	pVision->BoxCollider()->SetIndependentScale(true);
+	pVision->BoxCollider()->SetTrigger(true);
 
+	pVision->AddComponent(new FRayCollider);
 	pVision->RayCollider()->SetLength(1000);
+	pVision->RayCollider()->SetDirection({-1, 0, 0});
 	pVision->RayCollider()->SetIndependentDir(true);
 	pVision->RayCollider()->SetTriggerTarget(false);
 
