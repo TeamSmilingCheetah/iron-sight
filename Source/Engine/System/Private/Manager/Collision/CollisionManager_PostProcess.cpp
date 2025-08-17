@@ -93,12 +93,12 @@ void FCollisionManager::ExecuteOverlap()
 		}
 
 		if (!iterUpdated)
+		{
 			++iter;
+		}
 	}
 
 	// 위에서 제거되지 않은 Previous Collision에 대해서는 전부 EndOverlap 처리
-
-
 	for (const FCollisionID& PrevCollision : PrevFrameCollisionSet)
 	{
 		IColliderBase* LeftCollider = PrevCollision.Left;

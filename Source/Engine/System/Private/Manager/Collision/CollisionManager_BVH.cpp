@@ -2,8 +2,8 @@
 #include "Engine/System/Public/Manager/CollisionManager.h"
 
 #include "Engine/System/Public/Manager/CLevelMgr.h"
-#include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Runtime/Public/Component/Physics/RayCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/ColliderBase.h"
+#include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 
 using std::ranges::sort;
 

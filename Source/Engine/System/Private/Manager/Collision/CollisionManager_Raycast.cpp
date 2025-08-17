@@ -84,10 +84,13 @@ void FCollisionManager::RaycastNarrow()
 		// 그렇지 않다면 처음 충돌한 Hit만 처리
 		for (size_t i = 0; i < Hits.size(); ++i)
 		{
-			Ray->SetHitDistance(Hits[i].second);
-			// TODO(KHJ): Box Collider에 대해서 Normal 필요할진 모르겠지만 필요하면 반환할 수 있도록 처리해야 함
-			Ray->SetHitNormal(Vec3(0, 1, 0));
-			AddFrameCollision(Ray, static_cast<FBoxCollider*>(Hits[i].first));
+			if (Hits[i].second <= Ray->GetLength())
+			{
+				Ray->SetHitDistance(Hits[i].second);
+				// TODO(KHJ): Box Collider에 대해서 Normal 필요할진 모르겠지만 필요하면 반환할 수 있도록 처리해야 함
+				Ray->SetHitNormal(Vec3(0, 1, 0));
+				AddFrameCollision(Ray, static_cast<FBoxCollider*>(Hits[i].first));
+			}
 
 			if (!Ray->IsTargetAllMode())
 			{
@@ -162,12 +165,15 @@ void FCollisionManager::ExecuteAndProcessRaycastCS()
 			FRayCollider* Ray = Colliders.first;
 			FMeshCollider* Mesh = Colliders.second;
 
-			// 충돌 정보를 레이 콜라이더에 설정
-			Ray->SetHitDistance(Result[i].Distance);
-			Ray->SetHitNormal(Result[i].HitNormal);
+			if (Result[i].Distance <= Ray->GetLength())
+			{
+				// 충돌 정보를 레이 콜라이더에 설정
+				Ray->SetHitDistance(Result[i].Distance);
+				Ray->SetHitNormal(Result[i].HitNormal);
 
-			// 최종 충돌 처리 로직 호출
-			AddFrameCollision(Ray, Mesh);
+				// 최종 충돌 처리 로직 호출
+				AddFrameCollision(Ray, Mesh);
+			}
 		}
 	}
 }
