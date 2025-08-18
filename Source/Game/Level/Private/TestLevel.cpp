@@ -351,6 +351,7 @@ void TestLevel::CreateTestLevel()
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
 	pVision->AddComponent(new FBoxCollider);
+	Engine::Collider::SetColliderDynamic(pVision, EColliderType::BoxCollider);
 	pVision->BoxCollider()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
 	pVision->BoxCollider()->SetOffset(Vec3(0.f, 0.f, 2500.f));
 	pVision->BoxCollider()->SetIndependentScale(true);
