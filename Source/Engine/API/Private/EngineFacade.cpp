@@ -156,10 +156,10 @@ void Engine::Landscape::SetLandscapeProperties(CGameObject* PLandscape, Unsigned
                                                UnsignedIntegerSquare PHeightMapSize, Ptr<CTexture> PColorTexture,
                                                Ptr<CTexture> PNormalTexture)
 {
-	PLandscape->LandScape()->SetFace(PFaceSize.X, PFaceSize.Y);
-	PLandscape->LandScape()->CreateHeightMap(PHeightMapSize.X, PHeightMapSize.Y);
-	PLandscape->LandScape()->SetColorTexture(PColorTexture);
-	PLandscape->LandScape()->SetNormalTexture(PNormalTexture);
+	PLandscape->Landscape()->SetFace(PFaceSize.X, PFaceSize.Y);
+	PLandscape->Landscape()->CreateHeightMap(PHeightMapSize.X, PHeightMapSize.Y);
+	// PLandscape->LandScape()->SetColorTexture(PColorTexture);
+	// PLandscape->LandScape()->SetNormalTexture(PNormalTexture);
 }
 
 Ptr<CMeshData> Engine::IO::LoadFBX(const wstring& PRelativeFilePath)

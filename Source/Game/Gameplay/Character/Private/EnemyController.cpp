@@ -6,7 +6,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/Landscape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"

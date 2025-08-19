@@ -15,7 +15,7 @@
 #include "Engine/Runtime/Public/Component/Rendering/CParticleSystem.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 #include "Engine/Runtime/Public/Component/Rendering/CDecal.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/Landscape.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
