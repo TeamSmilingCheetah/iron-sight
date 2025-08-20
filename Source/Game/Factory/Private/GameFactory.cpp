@@ -274,21 +274,6 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Collider::SetColliderProperties(Player, {300.f, 910.f, 300.f}, {0.f, 455.f, 0.f}, true);
 	Collider::SetColliderDynamic(Player, EColliderType::BoxCollider);
 
-	// Player Ground
-	auto UniqueGroundChecker = Common::CreateNewObject();
-
-	// XXX(KHJ): 일단 Raw로, UniquePtr 고려해볼 것
-	auto GroundChecker = UniqueGroundChecker.get();
-	UniqueGroundChecker.release();
-
-	// TODO(KHJ): Facade 코드로 교체할 것
-	Common::AddComponentToObject<FSphereCollider>(GroundChecker);
-	GroundChecker->SphereCollider()->SetIndependent(300.f);
-
-	Collider::SetColliderDynamic(GroundChecker, EColliderType::SphereCollider);
-
-	Common::AddChild(Player, GroundChecker);
-
 	// Player Head Collider
 	auto HeaderCollider = Common::CreateNewObject();
 

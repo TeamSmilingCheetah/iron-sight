@@ -437,6 +437,8 @@ FComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new CUIRender;
 	case COMPONENT_TYPE::MESH_COLLIDER:
 		return new FMeshCollider;
+	case COMPONENT_TYPE::SPHERE_COLLIDER:
+		return new FSphereCollider;
 	}
 
 	return nullptr;
