@@ -178,7 +178,7 @@ public:
 	Vec3 GetPlayerVelocity() const { return m_Velocity; }
 
 	PLAYER_STATE GetStateEnum() const;
-	
+
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;
@@ -193,14 +193,15 @@ public:
 	void ProgressFireState();
 	void ProgressThrowPrepareState(bool _InputThrow, bool _LBTN);
 	void ProgressThrowState();
+	void UpdatePosition();
 	void ProgressPlayerMove();
-	
+
 
 	// Exit
 	void ExitThrowPrepareState();
 	void ExitReloadState();
 
-	
+
 
 public:
 	CLONE(PlayerCharacter)

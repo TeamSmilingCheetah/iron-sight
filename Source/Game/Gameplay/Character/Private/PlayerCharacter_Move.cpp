@@ -16,28 +16,30 @@
 #include "Game/System/Public/CGameMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
+// Mock function For Landscape Height
+static float GetLandscapeHeight(float x, float z)
+{
+	return -800.0f;
+}
 
 void PlayerCharacter::ProgressPlayerMove()
 {
-	// 이동할 방향 연산
+	// 1. 이동 입력 처리
 	UpdateMove();
 
-	// 중력 연산
+	// 2. 실시간 지면 판정 + 중력 / 점프 처리
 	UpdateGravity();
 
-	// 충돌 연산
+	// 3. 충돌 처리 (벽면 / 오브젝트 충돌만)
 	UpdateCollision();
 
-	// 위치 업데이트
-	Vec3 vPos = Transform()->GetRelativePos();
-	vPos += m_Velocity * 100 * DT;
-
-	Transform()->SetRelativePos(vPos);
+	// 4. 위치 업데이트 + Landscape 보정
+	UpdatePosition();
 
 	// 애니메이션
-	//AnimationControl();
+	// AnimationControl();
 
-	// 초기화
+	// 5. 다음 틱을 위한 초기화
 	InitMove();
 }
 
@@ -218,22 +220,32 @@ void PlayerCharacter::UpdateMove()
 
 void PlayerCharacter::UpdateGravity()
 {
-	// 땅 위에 있나 판단
-	m_IsGround = false;
-	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
+	// 현재 위치에서 실시간 지면 판정
+	Vec3 CurrentPosition = Transform()->GetRelativePos();
+	float GroundHeight = GetLandscapeHeight(CurrentPosition.x, CurrentPosition.z);
+	constexpr float Tolerance = 1.0f;
+
+	// Landscape 기반 지면 판정
+	m_IsGround = (CurrentPosition.y <= GroundHeight + Tolerance);
+
+	// 추가적으로 충돌 노말 벡터를 통한 지면 판정도 고려 (계단, 경사면 등)
+	if (!m_IsGround)
 	{
-		// 노말의 y성분이 0.3 이상이면 지면으로 판단 (약 60도)
-		if (m_vecCollisionNormal[i].y > 0.3f)
+		for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
 		{
-			m_IsGround = true;
-			break;
+			// 노말의 y성분이 0.3 이상이면 지면으로 판단 (약 60도)
+			if (m_vecCollisionNormal[i].y > 0.3f)
+			{
+				m_IsGround = true;
+				break;
+			}
 		}
 	}
 
 	Vec3 gravityDir = Vec3(0.f, -1.f, 0.f);
 	if (!m_IsGround)
 	{
-		// 중력가속도 추가하여 y축 아래로 중력 속도 변화
+		// 공중에 있을 때만 중력 적용
 		m_GravityVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
 
 		// 최대 중력속도 제한
@@ -241,44 +253,49 @@ void PlayerCharacter::UpdateGravity()
 	}
 	else
 	{
-		// 땅위이며 아래로 내려가는것이 아니라면 속도 0으로 설정
-		if (m_GravityVelocity.y < 0.f)
-		{
-			m_GravityVelocity = Vec3(0.f, 0.f, 0.f);
+		// 지면에 있으면 하향 중력 속도만 초기화
+		m_GravityVelocity.y = max(m_GravityVelocity.y, 0.f);
 
-			// TODO(Ssio): State
-			//if (m_ActionState == ACTION_STATE::JUMP)
-			//{
-			//	SetActionState(ACTION_STATE::NONE);
-			//}
-		}
+		// TODO(Ssio): State
+		// if (m_ActionState == ACTION_STATE::JUMP)
+		// {
+		// 	SetActionState(ACTION_STATE::NONE);
+		// }
 	}
 
-	// 점프 기능
+	// 점프 기능 (현재 틱의 실시간 지면 판정 사용)
 	if (m_IsGround && KEY_TAP(KEY::SPACE))
 	{
 		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
-
 
 		// 상태
 		StateMachine()->SetChange(L"Player_Jump");
 	}
 
+	// 최종 속도에 중력 속도 합산
 	m_Velocity += m_GravityVelocity;
 }
 
 void PlayerCharacter::UpdateCollision()
 {
-	// 충돌 처리
+	// 벽면과 오브젝트 충돌 처리 (지면 충돌은 UpdatePosition에서 처리)
 	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
 	{
+		Vec3 Normal = m_vecCollisionNormal[i];
+
+		// 지면 노말은 여기서 제외 (y 성분이 0.3 이상인 경우)
+		if (Normal.y > 0.3f)
+		{
+			continue;
+		}
+
 		// 속도벡터가 충돌노말벡터로의 투영길이확인
-		float dotProduct = m_Velocity.Dot(m_vecCollisionNormal[i]);
-		// 직각이거나 예각인 상태는 걸러냄 충돌노말벡터로 향하는게 아니니 걸러냄
+		float dotProduct = m_Velocity.Dot(Normal);
+		// 충돌 방향으로 향하는 경우에만 속도 조정
 		if (dotProduct < 0.f)
 		{
-			// 충돌 방향으로의 속도 성분 제거
-			m_Velocity -= m_vecCollisionNormal[i] * dotProduct;
+			// 충돌 방향으로의 속도 성분 제거 (벽면 슬라이딩)
+			m_Velocity -= Normal * dotProduct;
 		}
 	}
 }
@@ -576,6 +593,31 @@ bool PlayerCharacter::CanRun()
 //		Animator3D()->SetCurClipBlend(clipName, delay);
 //	}
 //}
+
+void PlayerCharacter::UpdatePosition()
+{
+	// 기본 위치 업데이트
+	Vec3 vPos = Transform()->GetRelativePos();
+	vPos += m_Velocity * 100 * DT;
+
+	// Landscape 높이 보정
+	float groundHeight = GetLandscapeHeight(vPos.x, vPos.z);
+
+	// 지면보다 아래로 내려갔다면 높이 보정
+	if (vPos.y < groundHeight)
+	{
+		vPos.y = groundHeight;
+
+		// 지면에 착지 시 하향 중력 속도 초기화
+		m_GravityVelocity.y = max(m_GravityVelocity.y, 0.f);
+
+		// 지면 판정 갱신
+		m_IsGround = true;
+	}
+
+	// 최종 위치 적용
+	Transform()->SetRelativePos(vPos);
+}
 
 void PlayerCharacter::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
