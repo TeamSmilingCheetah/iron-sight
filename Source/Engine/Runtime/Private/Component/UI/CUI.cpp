@@ -75,6 +75,7 @@ void CUI::AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize
 	m_TextInfo.push_back(info);
 }
 
+
 void CUI::ModifyText(int idx, const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font)
 {
 	m_TextInfo[idx].Text = _Text;

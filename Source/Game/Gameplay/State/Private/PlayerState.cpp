@@ -89,7 +89,7 @@ void PlayerState::ControlMoveAnimation()
 
 	// 현재 진행중인 애니메이션이 있다면 return
 	// TODO: Idle Animaton은 무시하고 실행해야 함
-	if (SM()->Animator3D()->IsActive())
+	if (SM()->Animator3D()->IsActive() && WstringToEnum<PLAYER_STATE>(SM()->GetCurState()->GetName()) != PLAYER_STATE::Player_Idle)
 	{
 		return;
 	}

@@ -39,6 +39,8 @@ public:
 	virtual void SaveComponent(FILE* _File) override {}
 	virtual void LoadComponent(FILE* _File) override {}
 
+	void SetEventStart() { m_bCanEvent = true; }
+
 	TestFadeInOutReset();
 	virtual ~TestFadeInOutReset();
 	CLONE(TestFadeInOutReset)

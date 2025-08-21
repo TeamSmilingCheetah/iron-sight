@@ -22,6 +22,7 @@ CGameMgr::~CGameMgr()
 
 }
 
+
 // _RemainTime = 아이템 사용까지 남은 시간
 // _TotalTIme = 아이템 사용에 걸리는 총 시간
 void CGameMgr::SetItemUseUITime(float _RemainTime, float _TotalTime)
@@ -74,6 +75,7 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"InventoryUIScript", []() { return new InventoryUI; });
 	CScriptMgr::GetInst()->RegisterScript(L"VicinityUIScript", []() { return new VicinityUI; });
 	CScriptMgr::GetInst()->RegisterScript(L"InteractionHandler", []() { return new InteractionHandler; });
+	CScriptMgr::GetInst()->RegisterScript(L"PauseUIScript", []() { return new PauseUIScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"DoorScript", []() { return new DoorScript; });
 	//CScriptMgr::GetInst()->RegisterScript(L"InteractableScript", []() { return new; });
 	CScriptMgr::GetInst()->RegisterScript(L"RoundsUIScript", []() { return new RoundsUIScript; });
@@ -82,6 +84,7 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"MinimapUIScript", []() { return new MinimapUIScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"CameraEffect", []() { return new CameraEffect; });
 	CScriptMgr::GetInst()->RegisterScript(L"TestFadeInOutReset", []() { return new TestFadeInOutReset; });
+	CScriptMgr::GetInst()->RegisterScript(L"OptionUIScript", []() { return new OptionUIScript; });
 
 	// StateMgr 등록
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });
@@ -103,14 +106,19 @@ int CGameMgr::Init()
 void CGameMgr::Begin()
 {
 	// Main Camera
-	m_MainCamera		= CLevelMgr::GetInst()->FindObjectByName(L"MainCamera");
+	m_MainCamera = CLevelMgr::GetInst()->FindObjectByName(L"MainCamera");
+
+	// Player
+	m_Player = CLevelMgr::GetInst()->FindObjectByName(L"Player");
 
 	// Player UI
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
-	m_CardinalImageUI	= CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
-	m_HPUI				= CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
-	m_ItemUseUI			= CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
-	m_ReloadUI			= CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
+	m_PauseCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Pause_CanvasUI");
+	m_OptionCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Option_CanvasUI");
+	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
+	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
+	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
+	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
 
 	// Script (Camera, UI)
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
@@ -119,5 +127,82 @@ void CGameMgr::Begin()
 	CGameObject* CameraPost = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"CameraPost");
 	m_CameraEffect = static_cast<CameraEffect*>(GetScriptWithType(CameraPost, SCRIPT_TYPE::CAMERAEFFECT));
 
+	// Player Script
+	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 
+	// Event
+	m_FadeInOutEvent = static_cast<TestFadeInOutReset*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"FadeInOut_Event"), SCRIPT_TYPE::TESTFADEINOUTRESET));
+}
+
+void CGameMgr::ResumeGame()
+{
+	// UI bool 값, Mouse 비활성화
+	m_PlayerScript->SetPasueUIOff();
+
+	// 인벤토리가 열려있다면 Mouse는 비활성화 하지 않는다.
+	if (m_PlayerScript->IsInventoryOpened())
+	{
+		m_PlayerScript->SetMouseActive(true);
+	}
+	else
+	{
+		m_PlayerScript->SetMouseActive(false);
+	}
+		
+	//  상태를 초기화해준다.
+	m_CamScript->SetFlag(ADS, false);
+
+	// UI 비 활성화
+	SetObjectActive(CGameMgr::GetInst()->GetPauseCanvasUI(), false);
+}
+
+
+// ==========
+// PauseMenu
+// ==========
+void CGameMgr::RestartGame()
+{
+	// Restart Event
+	m_FadeInOutEvent->SetEventStart();
+
+	// PauseUI 비활성화
+	SetObjectActive(CGameMgr::GetInst()->GetPauseCanvasUI(), false);
+	// Mouse 커서 비활성화
+	m_PlayerScript->SetMouseActive(false);
+}
+
+void CGameMgr::OpenOption()
+{
+	// PauseUI 비활성화
+	SetObjectActive(CGameMgr::GetInst()->GetPauseCanvasUI(), false);
+	// OptionUI 활성화
+	SetObjectActive(CGameMgr::GetInst()->GetOptionCanvasUI(), true);
+	m_PlayerScript->SetOptionUIOpened(true);
+}
+
+void CGameMgr::ExitGame()
+{
+	// 프로그램 종료
+	PostQuitMessage(0);
+}
+
+
+// ==========
+// OptionMenu
+// ==========
+void CGameMgr::UpSensi()
+{
+	m_PlayerScript->PlusMouseSensitivity();
+}
+
+void CGameMgr::DownSensi()
+{
+	m_PlayerScript->MinusMouseSensitivity();
+}
+
+void CGameMgr::ExitOption()
+{
+	SetObjectActive(CGameMgr::GetInst()->GetPauseCanvasUI(), true);
+	SetObjectActive(CGameMgr::GetInst()->GetOptionCanvasUI(), false);
+	m_PlayerScript->SetOptionUIOpened(false);
 }

@@ -69,6 +69,8 @@ public:
 	void ClearText() { m_TextInfo.clear(); }
 	int GetTextvecSize() { return (int)m_TextInfo.size(); }
 	void AddText(const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"");
+	void SetTextColor(int _idx, UINT _Color) { m_TextInfo[_idx].Color = _Color; }
+	void SetTextSize(int _idx, UINT _FontSize) { m_TextInfo[_idx].FontSize = _FontSize; }
 	void ModifyText(int idx, const wstring& _Text, float _posX, float _posY, UINT _FontSize, UINT _Color, const wstring& _Font = L"");
 	vector<FontRenderInfo>& GetTextInfoRef() { return m_TextInfo; }
 

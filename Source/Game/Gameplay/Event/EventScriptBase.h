@@ -10,6 +10,8 @@ protected:
 	bool                 m_EndEvent;         // 이벤트 완전 종료 여부
 	bool                 m_EventReset;		 // 이벤트 리셋 명령 확인 여부
 
+	bool				 m_bCanEvent;		 // 임시
+
 	float                m_EventDuration;    // 이벤트 지속 시간
 	float                m_Eventtime;        // 현재 남은 시간
 

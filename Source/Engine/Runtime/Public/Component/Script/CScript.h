@@ -47,6 +47,14 @@ public:
 	{
 	}
 
+	virtual void OnMouseBeginHover()
+	{
+	}
+
+	virtual void OnMouseEndHover()
+	{
+	}
+
 	virtual PayLoad OnMouseBeginDrag() { return PayLoad{}; }
 
 	virtual void OnMouseDrop(const PayLoad& PPayLoad)

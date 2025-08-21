@@ -10,7 +10,7 @@
 #include "Engine/Runtime/Public/Component/Base/components.h"
 
 TestFadeInOutReset::TestFadeInOutReset()
-	:EventScriptBase(SCRIPT_TYPE::TESTFADEINOUTRESET)
+	: EventScriptBase(SCRIPT_TYPE::TESTFADEINOUTRESET)
 {
 	// 이벤트 지속시간 2초로 설정
 	m_EventDuration = 2.f;
@@ -38,6 +38,7 @@ void TestFadeInOutReset::OnEventStart()
 {
 	// 페이드 아웃
 	m_CameraEffect->FadeOut();
+	m_bCanEvent = false;
 }
 
 void TestFadeInOutReset::OnEventEnd()
@@ -58,10 +59,10 @@ bool TestFadeInOutReset::CheckEventStart()
 	// 이벤트 시작 : 키 누름
 	if (KEY_TAP(KEY::PLUS))
 	{
-		return true;
+		m_bCanEvent = true;
 	}
 
-	return false;
+	return m_bCanEvent;
 }
 
 bool TestFadeInOutReset::CheckEndEvent()

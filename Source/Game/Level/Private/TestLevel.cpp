@@ -21,6 +21,9 @@
 #include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
 #include "Game/Gameplay/Event/TestFadeInOutReset.h"
+#include "Game/Gameplay/PauseMenu/Public/PauseUIScript.h"
+#include "Gameplay/UI/Public/OptionUIScript.h"
+#include "Game/System/Public/CGameMgr.h"
 
 // TODO(KHJ): 이하 헤더 배제 시도
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -469,7 +472,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddComponent(new CUIRender);
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
-	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetPriority(2);
 	CanvasUI->UI()->SetRectPos(0.f, 0.f);
 	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
@@ -520,6 +523,183 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	Vicinity->AddComponent(new VicinityUI);
 
 	CanvasUI->AddChild(Vicinity);
+
+
+	// "PauseMenu CanvasUI"
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"Pause_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
+	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetRectPos(0.f, 0.f);
+	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
+
+	SetObjectActive(CanvasUI, false);
+
+	PLevel->AddObject(8, CanvasUI, false); // UI layer
+
+	// Continue
+	CGameObject* Continue = new CGameObject;
+	Continue->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Continue->AddComponent(new CUIRender);
+	Continue->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Continue->SetName(L"ContinueUI");
+	Continue->UI()->ClearText();
+	Continue->UI()->AddText(L"CONTINUE", 90.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Continue->UI()->SetRectSize(320.f, 50.f);
+	Continue->UI()->SetRectPos(0.f, 140.f);
+
+	Continue->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ResumeGame(); }));
+
+	CanvasUI->AddChild(Continue);
+
+	// Restart
+	CGameObject* Restart = new CGameObject;
+	Restart->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Restart->AddComponent(new CUIRender);
+	Restart->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Restart->SetName(L"RestartUI");
+	Restart->UI()->ClearText();
+	Restart->UI()->AddText(L"RESTART", 100.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Restart->UI()->SetRectSize(320.f, 50.f);
+	Restart->UI()->SetRectPos(0.f, 60.f);
+
+	Restart->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->RestartGame(); }));
+
+	CanvasUI->AddChild(Restart);
+
+	// Option
+	CGameObject* Option = new CGameObject;
+	Option->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Option->AddComponent(new CUIRender);
+	Option->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Option->SetName(L"OptionUI");
+	Option->UI()->ClearText();
+	Option->UI()->AddText(L"OPTION", 105.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Option->UI()->SetRectSize(320.f, 50.f);
+	Option->UI()->SetRectPos(0.f, -20.f);
+
+	Option->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->OpenOption(); }));
+
+	CanvasUI->AddChild(Option);
+
+	// Exit
+	CGameObject* Exit = new CGameObject;
+	Exit->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Exit->AddComponent(new CUIRender);
+	Exit->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Exit->SetName(L"ExitUI");
+	Exit->UI()->ClearText();
+	Exit->UI()->AddText(L"GAME EXIT", 85.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Exit->UI()->SetRectSize(320.f, 50.f);
+	Exit->UI()->SetRectPos(0.f, -100.f);
+
+	Exit->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ExitGame(); }));
+
+	
+	CanvasUI->AddChild(Exit);
+
+	// "Option Menu Canvas" 
+	CanvasUI = new CGameObject;
+	CanvasUI->SetName(L"Option_CanvasUI");
+	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+
+	CanvasUI->AddComponent(new CUIRender);
+	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
+	CanvasUI->UI()->SetPriority(1);
+	CanvasUI->UI()->SetRectPos(0.f, 0.f);
+	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
+
+	SetObjectActive(CanvasUI, false);
+
+	PLevel->AddObject(8, CanvasUI, false); // UI layer
+
+	// Option Title
+	CGameObject* OptionTitle = new CGameObject;
+	OptionTitle->AddComponent(new CUI);
+
+	OptionTitle->AddComponent(new CUIRender);
+	OptionTitle->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 1.f));
+	OptionTitle->SetName(L"OptionTitle");
+	OptionTitle->UI()->ClearText();
+	OptionTitle->UI()->AddText(L"O P T I O N", 500.f, -5.f, 45, FONT_RGBA(255, 255, 255, 255));
+	OptionTitle->UI()->SetRectSize(1280.f, 100.f);
+	OptionTitle->UI()->SetRectPos(0.f, 315.f);
+
+	OptionTitle->AddComponent(new OptionUIScript);
+
+	CanvasUI->AddChild(OptionTitle);
+
+	// Drag bar & Cur Sensi
+	CGameObject* Sensi = new CGameObject;
+	Sensi->AddComponent(new CUI(UI_DRAG));
+
+	Sensi->AddComponent(new CUIRender);
+	Sensi->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	Sensi->SetName(L"SensiUI");
+	Sensi->UI()->ClearText();
+	Sensi->UI()->AddText(L"Cur Sensi : ", -75.f, 0.f, 20, FONT_RGBA(255, 255, 255, 255));
+	Sensi->UI()->AddText(L" 0 ", 50.f, 0.f, 20, FONT_RGBA(255, 255, 255, 255));
+	Sensi->UI()->SetRectSize(320.f, 50.f);
+	Sensi->UI()->SetRectPos(0.f, 160.f);
+
+	Sensi->AddComponent(new OptionUIScript);
+
+	CanvasUI->AddChild(Sensi);
+
+	// Up button
+	CGameObject* Upbtn = new CGameObject;
+	Upbtn->AddComponent(new CUI(UI_CLICK | UI_HOVER));
+
+	Upbtn->AddComponent(new CUIRender);
+	Upbtn->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Upbtn->SetName(L"Upbtn");
+	Upbtn->UI()->ClearText();
+	Upbtn->UI()->AddText(L">", 0.f, -8.f, 20, FONT_RGBA(0, 0, 0, 188));
+	Upbtn->UI()->SetRectSize(20.f, 20.f);
+	Upbtn->UI()->SetRectPos(230.f, 170.f);
+
+	Upbtn->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->UpSensi(); }));
+
+	CanvasUI->AddChild(Upbtn);
+
+	// Down button
+	CGameObject* Dwnbtn = new CGameObject;
+	Dwnbtn->AddComponent(new CUI(UI_CLICK | UI_HOVER));
+
+	Dwnbtn->AddComponent(new CUIRender);
+	Dwnbtn->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Dwnbtn->SetName(L"Dwnbtn");
+	Dwnbtn->UI()->ClearText();
+	Dwnbtn->UI()->AddText(L"<", 0.f, -8.f, 20, FONT_RGBA(0, 0, 0, 188));
+	Dwnbtn->UI()->SetRectSize(20.f, 20.f);
+	Dwnbtn->UI()->SetRectPos(200.f, 170.f);
+
+	Dwnbtn->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->DownSensi(); }));
+
+	CanvasUI->AddChild(Dwnbtn);
+
+	// Cancel button
+	CGameObject* ExitOption = new CGameObject;
+	ExitOption->AddComponent(new CUI(UI_CLICK | UI_HOVER));
+
+	ExitOption->AddComponent(new CUIRender);
+	ExitOption->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	ExitOption->SetName(L"ExitOption");
+	ExitOption->UI()->ClearText();
+	ExitOption->UI()->AddText(L"Exit", 0.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	ExitOption->UI()->SetRectSize(50.f, 50.f);
+	ExitOption->UI()->SetRectPos(0.f, -180.f);
+
+	ExitOption->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->ExitOption(); }));
+
+	CanvasUI->AddChild(ExitOption);
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -584,7 +764,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	CanvasUI->SetName(L"Main_CanvasUI");
 	CanvasUI->AddComponent(new CUI(UI_CANVAS));
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	CanvasUI->UI()->SetPriority(0);
+	CanvasUI->UI()->SetPriority(3);
 	CanvasUI->UI()->SetRectPos(0.f, 0.f);
 	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
@@ -742,7 +922,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddComponent(new CUIRender);
 	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
-	CanvasUI->UI()->SetPriority(1);
+	CanvasUI->UI()->SetPriority(4);
 
 	PLevel->AddObject(8, CanvasUI, false);
 
@@ -801,7 +981,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	MapCanvasUI->AddComponent(new CUIRender);
 	MapCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	MapCanvasUI->UI()->SetPriority(0);
+	MapCanvasUI->UI()->SetPriority(5);
 	MapCanvasUI->UI()->SetRectPos(485.f, -230.f);
 	MapCanvasUI->UI()->SetRectSize(300.f, 300.f);
 
@@ -831,7 +1011,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 {
-	auto* Player = GameFactory::LoadDefaultPlayer(PLevel, {4000.f, 500.f, 1500.f});
+	auto* Player = GameFactory::LoadDefaultPlayer(PLevel, {4000.f, 600.f, 1500.f});
 	Player->AddComponent(new PlayerCharacter);
 	Player->AddComponent(new InventoryController);
 

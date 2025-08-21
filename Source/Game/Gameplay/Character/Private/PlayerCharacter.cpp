@@ -63,6 +63,8 @@ PlayerCharacter::PlayerCharacter()
 	, m_KillCounts(0)
 	, m_MotionState(MOTION_STATE::STAND)
 	, m_InventoryOpened(false)
+	, m_PauseUIOpened(false)
+	, m_OptionUIOpened(false)
 	, m_bMouseActive(false)
 	, m_StateAccTime(0.f)
 {
@@ -139,14 +141,6 @@ void PlayerCharacter::Tick()
 	if (KEY_TAP(KEY::F1))
 	{
 		SetMouseActive(!m_bMouseActive);
-	}
-
-	if (!CGameMgr::GetInst()->GetCamScript()->GetFlag(FREE_PS))
-	{
-		if (KEY_TAP(KEY::ESC) || KEY_TAP(KEY::TAB))
-		{
-			SetMouseActive(!m_bMouseActive);
-		}
 	}
 
 	// 인벤토리 UI를 켠 상태라면 다른 로직 block
@@ -504,7 +498,7 @@ void PlayerCharacter::PlayerControlUI()
 	CameraController* pCamScript = CGameMgr::GetInst()->GetCamScript();
 
 	// 인벤토리 UI Toggle
-	if (KEY_TAP(KEY::TAB))
+	if (KEY_TAP(KEY::TAB) && !m_PauseUIOpened)
 	{
 		m_InventoryOpened = !m_InventoryOpened;
 
@@ -524,8 +518,40 @@ void PlayerCharacter::PlayerControlUI()
 			pCamScript->SetFlag(SHOULDER, false);
 		}
 
-		SetMouseActive(!m_InventoryOpened);
+		SetMouseActive(m_InventoryOpened);
 		SetObjectActive(CGameMgr::GetInst()->GetInventoryCanvasUI(), m_InventoryOpened);
+	}
+
+	// Pause UI Toggle
+	if (KEY_TAP(KEY::ESC) && !m_OptionUIOpened)
+	{
+		m_PauseUIOpened = !m_PauseUIOpened;
+
+		// 메뉴가 열릴때, 상태를 초기화해준다.
+		if (m_PauseUIOpened)
+		{
+			if (pCamScript->GetFlag(WAS_TPS))
+			{
+				pCamScript->SetFlag(ADS, false);
+				pCamScript->SetFlag(WAS_TPS, false);
+				pCamScript->ChangePS(true);
+			}
+			else
+			{
+				pCamScript->SetFlag(ADS, false);
+			}
+			pCamScript->SetFlag(SHOULDER, false);
+		}
+
+		if (m_InventoryOpened)
+		{
+			SetMouseActive(true);
+		}
+		else
+		{
+			SetMouseActive(m_PauseUIOpened);
+		}
+		SetObjectActive(CGameMgr::GetInst()->GetPauseCanvasUI(), m_PauseUIOpened);			
 	}
 
 	// 방위 UI : y축 회전값 전달

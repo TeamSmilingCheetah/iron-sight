@@ -116,6 +116,8 @@ private:
 	// UI 관리
 	// =======
 	bool			m_InventoryOpened;
+	bool			m_PauseUIOpened;
+	bool			m_OptionUIOpened;
 
 public:
 	void Begin() override;
@@ -152,12 +154,20 @@ public:
 	void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
 	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
 	void SetMouseActive(bool _b);
+	void SetPasueUIOff() { m_PauseUIOpened = false; }
 	void ResetAccTime() { m_StateAccTime = 0.f; }
 
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
-	bool IsInventoryOpened() const { return m_InventoryOpened; }
+	void PlusMouseSensitivity() { m_MouseSensitivity += 0.01f; }
+	void MinusMouseSensitivity() {
+		m_MouseSensitivity -= 0.01f;
+		if (m_MouseSensitivity <= 0.f)
+			m_MouseSensitivity = 0.01f;
+	}
 
+	bool IsInventoryOpened() const { return m_InventoryOpened; }
 	bool IsGround() const { return m_IsGround; }
+	void SetOptionUIOpened(bool _Opened) { m_OptionUIOpened = _Opened; }
 
 	// Heal
 	void TriggerHeal(ITEM_TYPE PHealType);
