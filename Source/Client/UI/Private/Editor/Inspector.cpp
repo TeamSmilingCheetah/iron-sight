@@ -21,7 +21,7 @@
 #include "Client/UI/Public/Component/BoxColliderUI.h"
 #include "Client/UI/Public/Component/RayColliderUI.h"
 #include "Client/UI/Public/Component/ComponentUI.h"
-#include "Client/UI/Public/Component/LandScapeUI.h"
+#include "Client/UI/Public/Component/LandscapeUI.h"
 #include "Client/UI/Public/Component/Light2DUI.h"
 #include "Client/UI/Public/Component/Light3DUI.h"
 #include "Client/UI/Public/Component/MeshRenderUI.h"
@@ -404,7 +404,7 @@ void Inspector::CreateComponentUI()
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::SKYBOX)]->SetChildSize(ImVec2(0.f, 150.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)] = static_cast<ComponentUI*>(
-		AddChildUI(new LandScapeUI));
+		AddChildUI(new LandscapeUI));
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::LANDSCAPE)]->SetChildSize(ImVec2(0.f, 150.f));
 
 	m_arrComUI[static_cast<UINT>(COMPONENT_TYPE::DECAL)] = static_cast<ComponentUI*>(

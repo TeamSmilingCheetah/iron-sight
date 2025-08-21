@@ -171,7 +171,7 @@ public:
 	CParticleSystem* ParticleSystem() const { return reinterpret_cast<CParticleSystem*>(GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM)); }
 	CSkyBox* SkyBox() const { return reinterpret_cast<CSkyBox*>(GetComponent(COMPONENT_TYPE::SKYBOX)); }
 	CDecal* Decal() const { return reinterpret_cast<CDecal*>(GetComponent(COMPONENT_TYPE::DECAL)); }
-	FLandscape* LandScape() const { return reinterpret_cast<FLandscape*>(GetComponent(COMPONENT_TYPE::LANDSCAPE)); }
+	FLandscape* Landscape() const { return reinterpret_cast<FLandscape*>(GetComponent(COMPONENT_TYPE::LANDSCAPE)); }
 	CUI* UI() const { return reinterpret_cast<CUI*>(GetComponent(COMPONENT_TYPE::UI)); }
 	CUIRender* UIRender() const { return reinterpret_cast<CUIRender*>(GetComponent(COMPONENT_TYPE::UIRENDER)); }
 	FMeshCollider* MeshCollider() const { return reinterpret_cast<FMeshCollider*>(GetComponent(COMPONENT_TYPE::MESH_COLLIDER)); }

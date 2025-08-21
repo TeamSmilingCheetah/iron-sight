@@ -42,7 +42,7 @@ CAnimator3D* FComponent::Animator3D() const { return Owner ? Owner->Animator3D()
 CParticleSystem* FComponent::ParticleSystem() const { return Owner ? Owner->ParticleSystem() : nullptr; }
 CSkyBox* FComponent::SkyBox() const { return Owner ? Owner->SkyBox() : nullptr; }
 CDecal* FComponent::Decal() const { return Owner ? Owner->Decal() : nullptr; }
-FLandscape* FComponent::LandScape() const { return Owner ? Owner->LandScape() : nullptr; }
+FLandscape* FComponent::LandScape() const { return Owner ? Owner->Landscape() : nullptr; }
 CUI* FComponent::UI() const { return Owner ? Owner->UI() : nullptr; }
 CUIRender* FComponent::UIRender() const { return Owner ? Owner->UIRender() : nullptr; }
 FMeshCollider* FComponent::MeshCollider() const { return Owner ? Owner->MeshCollider() : nullptr; }

@@ -90,7 +90,7 @@ void InteractionHandler::LoadComponentReference()
 
 void InteractionHandler::BeginOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+	if (InCollider->GetColliderType() == EColliderType::SphereCollider &&
 		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
@@ -109,7 +109,7 @@ void InteractionHandler::BeginOverlap(IColliderBase* InCollider, IColliderBase* 
 
 void InteractionHandler::Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+	if (InCollider->GetColliderType() == EColliderType::SphereCollider &&
 		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);
@@ -160,7 +160,7 @@ void InteractionHandler::Overlap(IColliderBase* InCollider, IColliderBase* InOth
 
 void InteractionHandler::EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider)
 {
-	if (InCollider->GetColliderType() == EColliderType::BoxCollider &&
+	if (InCollider->GetColliderType() == EColliderType::SphereCollider &&
 		InOtherCollider->GetColliderType() == EColliderType::BoxCollider)
 	{
 		FBoxCollider* OtherCollider = static_cast<FBoxCollider*>(InOtherCollider);

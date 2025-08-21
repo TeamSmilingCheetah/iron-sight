@@ -208,7 +208,7 @@
     <ClInclude Include="Runtime\Public\Component\Physics\PhysicsHelper.h" />
     <ClInclude Include="Runtime\Public\Component\Physics\SphereCollider.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CDecal.h" />
-    <ClInclude Include="Runtime\Public\Component\Rendering\LandScape.h" />
+    <ClInclude Include="Runtime\Public\Component\Rendering\Landscape.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CMeshRender.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CParticleSystem.h" />
     <ClInclude Include="Runtime\Public\Component\Rendering\CSkyBox.h" />
@@ -288,8 +288,8 @@
     <ClCompile Include="Runtime\Private\Component\Physics\PhysicsHelper.cpp" />
     <ClCompile Include="Runtime\Private\Component\Physics\SphereCollider.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CDecal.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape_Init.cpp" />
-    <ClCompile Include="Runtime\Private\Component\Rendering\LandScape.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\Landscape_Init.cpp" />
+    <ClCompile Include="Runtime\Private\Component\Rendering\Landscape.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CMeshRender.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CParticleSystem.cpp" />
     <ClCompile Include="Runtime\Private\Component\Rendering\CSkyBox.cpp" />

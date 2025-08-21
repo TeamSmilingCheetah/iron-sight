@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Base/Component.h"
 #include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/Landscape.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/State/CState.h"
 

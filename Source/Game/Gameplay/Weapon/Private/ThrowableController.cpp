@@ -3,7 +3,7 @@
 
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/Landscape.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/System/Public/Manager/SoundManager.h"

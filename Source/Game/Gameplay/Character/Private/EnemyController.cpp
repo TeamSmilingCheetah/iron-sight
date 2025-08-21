@@ -6,7 +6,7 @@
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/Landscape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
@@ -22,7 +22,7 @@ EnemyController::EnemyController(SCRIPT_TYPE _Type)
 	  , m_Friction(100.f)
 	  , m_MaxSpeed(10.f)
 	  , m_GravityAccel(10.f)
-	  , m_GravityMaxSpeed(30.f)
+	  , m_GravityMaxSpeed(15.f)
 	  , m_IsGround(true)
 	  , m_HP(100.f)
 	  , m_State(Enemy_State::None)

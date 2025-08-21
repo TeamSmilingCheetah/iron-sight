@@ -4,7 +4,7 @@
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
-#include "Engine/Runtime/Public/Component/Rendering/LandScape.h"
+#include "Engine/Runtime/Public/Component/Rendering/Landscape.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
@@ -19,7 +19,7 @@
 // Mock function For Landscape Height
 static float GetLandscapeHeight(float x, float z)
 {
-	return -800.0f;
+	return -790.f;
 }
 
 void PlayerCharacter::ProgressPlayerMove()
