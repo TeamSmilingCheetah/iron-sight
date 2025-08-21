@@ -28,6 +28,7 @@
 #include "Engine/Runtime/Public/Component/Physics/BoxCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/RayCollider.h"
 #include "Engine/Runtime/Public/Component/Physics/MeshCollider.h"
+#include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
@@ -845,13 +846,10 @@ void TestLevel::SetUpPlayer(CLevel* PLevel, const vector<CGameObject*>& PUIInfo)
 	// Interaction Object
 	CGameObject* pInteractionHandler = new CGameObject;
 	pInteractionHandler->SetName(L"Interaction Handler");
-	pInteractionHandler->AddComponent(new FBoxCollider);
-	Engine::Collider::SetColliderDynamic(pInteractionHandler, EColliderType::BoxCollider);
 
-	pInteractionHandler->BoxCollider()->SetScale(Vec3(2000.f, 2000.f, 2000.f));
-	pInteractionHandler->BoxCollider()->SetIndependentScale(true);
-	pInteractionHandler->BoxCollider()->SetTrigger(true);
-	pInteractionHandler->BoxCollider()->SetOffset(Vec3(0.f, 1000.f, 0.f));
+	pInteractionHandler->AddComponent(new FSphereCollider);
+	Engine::Collider::SetColliderDynamic(pInteractionHandler, EColliderType::SphereCollider);
+	pInteractionHandler->SphereCollider()->SetIndependent(1000.f);
 
 	auto pHandlerScript = new InteractionHandler;
 

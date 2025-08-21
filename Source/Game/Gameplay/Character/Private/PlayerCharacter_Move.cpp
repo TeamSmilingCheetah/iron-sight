@@ -19,7 +19,7 @@
 // Mock function For Landscape Height
 static float GetLandscapeHeight(float x, float z)
 {
-	return -800.0f;
+	return -790.f;
 }
 
 void PlayerCharacter::ProgressPlayerMove()
