@@ -9,6 +9,7 @@ EventScriptBase::EventScriptBase(SCRIPT_TYPE _ScriptType)
 	, m_EventEffect(false)
 	, m_EndEvent(false)
 	, m_EventReset(false)
+	, m_bCanEvent(false)
 	, m_EventDuration(3.0f)
 	, m_Eventtime(0.0f)
 {

@@ -11,6 +11,7 @@ private:
 	vector<CUI*>		m_vecUI;
 
 	CUI*				m_HoverUI;
+	CUI*				m_PrevHoverUI;
 	CUI*				m_FocusUI;		// 실제로 focus된 UI
 	CUI*				m_FocusCanvas;	// focusUI를 들고 있는 Canvas
 
@@ -27,11 +28,14 @@ public:
 	void ClearUI() { m_vecUI.clear(); }	// Render 이후 매 프레임 clear 해줌
 
 	// Event 함수 호출
-	void OnMouseClick();
+	void OnMouseClick();	
 	void OnMouseRightClick();
 	void OnMouseHover();
+	void OnMouseBeginHover();
+	void OnMouseEndHover();
 	void OnMouseBeginDrag();
 	void OnMouseDrop();
+
 
 public:
 	void Tick();

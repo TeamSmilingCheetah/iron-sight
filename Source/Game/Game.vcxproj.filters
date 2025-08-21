@@ -128,6 +128,12 @@
     <ClCompile Include="Gameplay\Event\TestFadeInOutReset.cpp">
       <Filter>03. Gameplay\Event\Test</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\PauseMenu\Private\PauseUIScript.cpp">
+      <Filter>03. Gameplay\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\UI\Private\OptionUIScript.cpp">
+      <Filter>03. Gameplay\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -263,6 +269,12 @@
     <ClInclude Include="Gameplay\Event\TestFadeInOutReset.h">
       <Filter>03. Gameplay\Event\Test</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\PauseMenu\Public\PauseUIScript.h">
+      <Filter>03. Gameplay\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\UI\Public\OptionUIScript.h">
+      <Filter>03. Gameplay\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -321,6 +333,9 @@
     </Filter>
     <Filter Include="03. Gameplay\Event\Test">
       <UniqueIdentifier>{72be63e3-16fc-42b6-963c-9e024b13da98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Gameplay\PauseMenu">
+      <UniqueIdentifier>{2ab72e8d-03e0-47af-b3fb-dddfaf9ec695}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

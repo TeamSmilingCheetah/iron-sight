@@ -11,6 +11,7 @@
 
 CUIMgr::CUIMgr()
 	: m_HoverUI(nullptr)
+	, m_PrevHoverUI(nullptr)
 	, m_FocusUI(nullptr)
 	, m_FocusCanvas(nullptr)
 	, m_DragUI(nullptr)
@@ -86,6 +87,26 @@ void CUIMgr::OnMouseHover()
 	for (CScript* script : vecScript)
 	{
 		script->OnMouseHover();
+	}
+}
+
+void CUIMgr::OnMouseBeginHover()
+{
+	const vector<CScript*>& vecScript = m_HoverUI->GetOwner()->GetScripts();
+
+	for (CScript* script : vecScript)
+	{
+		script->OnMouseBeginHover();
+	}
+}
+
+void CUIMgr::OnMouseEndHover()
+{
+	const vector<CScript*>& vecScript = m_PrevHoverUI->GetOwner()->GetScripts();
+
+	for (CScript* script : vecScript)
+	{
+		script->OnMouseEndHover();
 	}
 }
 
@@ -198,6 +219,22 @@ void CUIMgr::Tick()
 			OnMouseHover();
 	}
 
+	// HoverUI가 바꼇다면
+	if (m_PrevHoverUI && m_PrevHoverUI != m_HoverUI)
+	{
+		// Hover Event 옵션이 있다면
+		if (m_PrevHoverUI->CanHover())
+			OnMouseEndHover();
+	}
+
+	// HoverUI가 새로 들어온다면
+	if (m_HoverUI && m_HoverUI != m_PrevHoverUI)
+	{
+		// Hover Event 옵션이 있다면
+		if (m_HoverUI->CanHover())
+			OnMouseBeginHover();
+	}
+
 	// 마우스 Down이 감지된 경우
 	if (KEY_TAP(KEY::LBTN) || KEY_TAP(KEY::RBTN))
 	{
@@ -289,6 +326,9 @@ void CUIMgr::Tick()
 		// Drag 중에 다른 Canvas에 hover 된다면 포커스를 변경해줌.
 		ChangeFocus(HoverCanvasUI, m_HoverUI);
 	}
+
+	// 이번 프레임 HoverUI를 저장
+	m_PrevHoverUI = m_HoverUI;
 }
 
 

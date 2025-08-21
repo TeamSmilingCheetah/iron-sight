@@ -151,6 +151,7 @@
     <ClInclude Include="Gameplay\Character\Public\EnemyVisionScript.h" />
     <ClInclude Include="Gameplay\Character\Public\TestCharacter.h" />
     <ClInclude Include="Gameplay\Particle\Public\ParticleController.h" />
+    <ClInclude Include="Gameplay\PauseMenu\Public\PauseUIScript.h" />
     <ClInclude Include="Gameplay\scripts.h" />
     <ClInclude Include="Gameplay\states.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Heal.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Gameplay\UI\Public\KillinfoUIScript.h" />
     <ClInclude Include="Gameplay\UI\Public\MinimapCameraScript.h" />
     <ClInclude Include="Gameplay\UI\Public\MinimapUIScript.h" />
+    <ClInclude Include="Gameplay\UI\Public\OptionUIScript.h" />
     <ClInclude Include="Gameplay\UI\Public\RoundsUIScript.h" />
     <ClInclude Include="Gameplay\Weapon\Public\BombController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
@@ -198,6 +200,7 @@
     <ClCompile Include="Gameplay\Character\Private\EnemyController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
+    <ClCompile Include="Gameplay\PauseMenu\Private\PauseUIScript.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Heal.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Dead.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare.cpp" />
@@ -212,6 +215,7 @@
     <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\MinimapCameraScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\MinimapUIScript.cpp" />
+    <ClCompile Include="Gameplay\UI\Private\OptionUIScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\RoundsUIScript.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\BombController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\GunController.cpp" />
