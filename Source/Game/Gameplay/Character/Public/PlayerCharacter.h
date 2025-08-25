@@ -45,7 +45,6 @@ private:
 	int				m_FootstepSoundIdx;
 	int				m_RunFootstepSoundIdx;
 
-
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
 	Vec3 m_Velocity;			// 속도
@@ -64,8 +63,6 @@ private:
 
 	float m_MouseSensitivity;
 
-	bool m_bReloading;
-	bool m_bThrowBoom;
 	bool m_bHitSoundPlayed;
 	bool m_bFirstFootStep;
 
@@ -135,7 +132,6 @@ private:
 	void PlayerStance();
 
 	void PlayerControlWeapon();
-
 	void PlayerControlUI();
 	void PlayerHeal();
 
@@ -151,8 +147,7 @@ private:
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
 
-	void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
-	void SetReloading(bool PReloading) { m_bReloading = PReloading; }
+	//void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
 	void SetMouseActive(bool _b);
 	void SetPasueUIOff() { m_PauseUIOpened = false; }
 	void ResetAccTime() { m_StateAccTime = 0.f; }

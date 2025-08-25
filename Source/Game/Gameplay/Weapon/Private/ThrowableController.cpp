@@ -246,10 +246,10 @@ void ThrowableController::Triggered()
 	// 시간이 지나면 작동한다.
 	if (m_TriggeredTime < m_CurClipAccTime)
 	{
-		if (m_EquippedOwner != nullptr)
-		{
-			m_PlayerScript->SetThrowBoom(true);
-		}
+		//if (m_EquippedOwner != nullptr)
+		//{
+		//	m_PlayerScript->SetThrowBoom(true);
+		//}
 
 		if (GetOwner()->GetName() == L"Smoke Grenade")
 		{

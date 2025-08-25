@@ -32,7 +32,6 @@ void Player_Jump::FinalTick_Override()
 	if (GetPlayerScript()->IsGround())
 	{
 		SM()->SetCanExit(true);
-		//SM()->SetChange(L"Player_Idle");
 	}
 }
 
