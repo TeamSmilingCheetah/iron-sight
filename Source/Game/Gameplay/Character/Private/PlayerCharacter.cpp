@@ -44,7 +44,6 @@ PlayerCharacter::PlayerCharacter()
 	, m_IsGround(true)
 	, m_bLean(false)
 	, m_MouseSensitivity(0.1f)
-	, m_bThrowBoom(false)
 	, m_bHitSoundPlayed(false)
 	, m_bFirstFootStep(true)
 	, m_CollObject(nullptr)
@@ -953,7 +952,6 @@ void PlayerCharacter::ExitReloadState()
 {
 	SetObjectActive(CGameMgr::GetInst()->GetReloadUI(), false);
 	m_InteractionScript->SetInteractable(false);
-	m_bReloading = false;
 }
 
 

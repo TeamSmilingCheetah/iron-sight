@@ -16,6 +16,24 @@ Player_Idle::~Player_Idle()
 
 void Player_Idle::Enter_Override()
 {
+	Play_Idle_Anim();
+}
+
+void Player_Idle::FinalTick_Override()
+{
+	// 움직임이 없다 (멈춤)
+	if (GetPlayerScript()->GetPlayerVelocity().Length() <= 0.f)
+	{
+		Play_Idle_Anim();
+	}
+}
+
+void Player_Idle::Exit_Override()
+{
+}
+
+void Player_Idle::Play_Idle_Anim()
+{
 	MOTION_STATE eCurState = GetPlayerScript()->GetMotionState();
 
 	m_Delay = 0.07f;
@@ -34,13 +52,5 @@ void Player_Idle::Enter_Override()
 
 	// 애니메이션 실행
 	AdjustAnim();
-}
-
-void Player_Idle::FinalTick_Override()
-{
-}
-
-void Player_Idle::Exit_Override()
-{
 }
 

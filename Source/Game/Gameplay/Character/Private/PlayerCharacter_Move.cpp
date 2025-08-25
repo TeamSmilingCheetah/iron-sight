@@ -41,6 +41,12 @@ void PlayerCharacter::ProgressPlayerMove()
 
 	// 5. 다음 틱을 위한 초기화
 	InitMove();
+
+	// 점프 State 초기화
+	if (GetStateEnum() == PLAYER_STATE::Player_Jump && m_IsGround)
+	{
+		StateMachine()->SetChange(L"Player_Idle");
+	}
 }
 
 void PlayerCharacter::InitMove()
@@ -328,7 +334,7 @@ bool PlayerCharacter::CanRun()
 	}
 
 	// 현재 재장전 중이라면 불가능
-	if (m_bReloading)
+	if (GetStateEnum() == PLAYER_STATE::Player_Gun_Reload)
 	{
 		return false;
 	}

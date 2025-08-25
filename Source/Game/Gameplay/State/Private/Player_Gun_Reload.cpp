@@ -23,8 +23,6 @@ void Player_Gun_Reload::Enter_Override()
 {
 	MOTION_STATE eCurState = GetPlayerScript()->GetMotionState();
 
-	GetPlayerScript()->SetReloading(true);
-
 	m_Delay = 0.07f;
 	switch (eCurState)
 	{
