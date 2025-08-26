@@ -246,7 +246,7 @@ void PlayerCharacter::UpdateGravity()
 	if (!m_IsGround)
 	{
 		// 공중에 있을 때만 중력 적용
-		m_GravityVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
+		m_GravityVelocity += (gravityDir * m_GravityAccel) * DT;
 
 		// 최대 중력속도 제한
 		m_GravityVelocity.y = max(m_GravityVelocity.y, -m_GravityMaxSpeed);
@@ -273,7 +273,7 @@ void PlayerCharacter::UpdateGravity()
 	}
 
 	// 최종 속도에 중력 속도 합산
-	m_Velocity += m_GravityVelocity;
+	m_Velocity.y = m_GravityVelocity.y;
 }
 
 void PlayerCharacter::UpdateCollision()
