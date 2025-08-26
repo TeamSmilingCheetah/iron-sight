@@ -21,8 +21,8 @@ EnemyController::EnemyController(SCRIPT_TYPE _Type)
 	  , m_Mass(3.f)
 	  , m_Friction(100.f)
 	  , m_MaxSpeed(10.f)
-	  , m_GravityAccel(10.f)
-	  , m_GravityMaxSpeed(15.f)
+	  , m_GravityAccel(40.f)
+	  , m_GravityMaxSpeed(200.f)
 	  , m_IsGround(true)
 	  , m_HP(100.f)
 	  , m_State(Enemy_State::None)
@@ -233,7 +233,7 @@ void EnemyController::UpdateGravity()
 	if (!m_IsGround)
 	{
 		// 중력가속도 추가하여 y축 아래로 중력 속도 변화
-		m_GravidyVelocity += (gravityDir * m_GravityAccel * m_Mass) * DT;
+		m_GravidyVelocity += (gravityDir * m_GravityAccel) * DT;
 
 		// 최대 중력속도 제한
 		if (m_GravidyVelocity.y < -m_GravityMaxSpeed)
@@ -248,7 +248,7 @@ void EnemyController::UpdateGravity()
 		}
 	}
 
-	m_Velocity += m_GravidyVelocity;
+	m_Velocity.y = m_GravidyVelocity.y;
 }
 
 void EnemyController::UpdateCollision()
