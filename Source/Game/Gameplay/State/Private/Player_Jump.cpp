@@ -27,12 +27,7 @@ void Player_Jump::Enter_Override()
 
 void Player_Jump::FinalTick_Override()
 {
-	// StateMachine 의 CanExit가 false라서 State 전환이 안됨 (애니메이션이 loop 설정 어디서 해주는지?)
-	// 아니면 State Tick에서 시간 계산해서 수동으로 bool값 설정 해줘야 하는지?
-	if (GetPlayerScript()->IsGround())
-	{
-		SM()->SetCanExit(true);
-	}
+	GetPlayerScript()->ProgressJumpState();
 }
 
 void Player_Jump::Exit_Override()

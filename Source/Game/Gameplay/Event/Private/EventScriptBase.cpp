@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Game/Gameplay/Event/EventScriptBase.h"
+#include "Game/Gameplay/Event/Public/EventScriptBase.h"
 
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 

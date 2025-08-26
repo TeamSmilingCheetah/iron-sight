@@ -70,6 +70,11 @@ private:
 	float m_FootStepSoundAccTime;
 	float m_StateAccTime;
 
+	float m_accTime;
+	float m_testTime;
+	float m_TestTime;
+	bool m_bTest;
+
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
 
@@ -184,6 +189,8 @@ public:
 
 	PLAYER_STATE GetStateEnum() const;
 
+	void SetFullHP() { m_CurHP = m_MaxHP; }
+	void SetRevive();
 
 	void SaveComponent(FILE* PFile) override;
 	void LoadComponent(FILE* PFile) override;
@@ -191,6 +198,7 @@ public:
 
 	// State Functions
 	// Enter
+	void EnterDeadState();
 
 	// FinalTick
 	void ProgressHealState();
@@ -198,6 +206,8 @@ public:
 	void ProgressFireState();
 	void ProgressThrowPrepareState(bool _InputThrow, bool _LBTN);
 	void ProgressThrowState();
+	void ProgressDeadState();
+	void ProgressJumpState();
 	void UpdatePosition();
 	void ProgressPlayerMove();
 

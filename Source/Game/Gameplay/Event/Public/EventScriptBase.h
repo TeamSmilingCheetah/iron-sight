@@ -67,6 +67,7 @@ public:
 	bool IsEventEnded() const { return m_EndEvent; }
 
 	void SetEventDuration(float _Duration) { m_EventDuration = _Duration; }
+	void SetEventStart() { m_bCanEvent = true; }
 
 	float GetEventDuration() const { return m_EventDuration; }
 	float GetRemainingTime() const { return m_Eventtime; }

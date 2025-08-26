@@ -5,7 +5,8 @@ class Player_Dead :
 	public PlayerState
 {
 private:
-
+	float	m_AccTime;
+	bool	m_bCamFlag;
 
 public:
 	virtual void Enter_Override() override;
