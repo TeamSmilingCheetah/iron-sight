@@ -41,12 +41,6 @@ void PlayerCharacter::ProgressPlayerMove()
 
 	// 5. 다음 틱을 위한 초기화
 	InitMove();
-
-	// 점프 State 초기화
-	if (GetStateEnum() == PLAYER_STATE::Player_Jump && m_IsGround)
-	{
-		StateMachine()->SetChange(L"Player_Idle");
-	}
 }
 
 void PlayerCharacter::InitMove()
@@ -197,7 +191,7 @@ void PlayerCharacter::UpdateMove()
 		}
 	}
 	// 걷기
-	else if (10.f < v2DVelocity.Length())
+	else if (5.f < v2DVelocity.Length())
 	{
 		// 일정 속도 이상이 되면 소리를 재생시킨다.
 		m_FootstepSoundIdx = FSoundManager::GetInst()->Play3DSound(m_FootstepSound, Transform()->GetRelativePos(), 1.f,

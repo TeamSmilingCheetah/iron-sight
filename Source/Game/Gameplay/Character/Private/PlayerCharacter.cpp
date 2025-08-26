@@ -16,6 +16,7 @@
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/State/CState.h"
 
+#include "Game/System/Public/CGameMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Character/Public/InteractionHandler.h"
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
@@ -25,7 +26,10 @@
 #include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
 #include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
-#include "Game/System/Public/CGameMgr.h"
+#include "Game/Gameplay/Event/Public/TestFadeInOutReset.h"
+#include "Game/Gameplay/Event/Public/PlayerRevive.h"
+
+
 
 PlayerCharacter::PlayerCharacter()
 	: CScript(SCRIPT_TYPE::PLAYERSCRIPT)
@@ -115,12 +119,16 @@ void PlayerCharacter::Tick()
 	// 항상 작동하는 로직
 	// =================
 
-
 	// 이동 로직
 	//PlayerMove();
 
 	// UI 관리
 	PlayerControlUI();
+
+	if (GetStateEnum() == PLAYER_STATE::Player_Dead)
+	{
+		return;
+	}
 
 	// Heal 수치 계산
 	PlayerHeal();
@@ -641,16 +649,15 @@ void PlayerCharacter::DamageCalcul(CGameObject* _AtkObj, CGameObject* _Weapon, f
 		m_bHitSoundPlayed = true;
 	}
 
-	// 사망
-	if (m_CurHP <= 0)
+	// 사망 & 이미 사망 상태일때 중복 방지
+	if (m_CurHP <= 0 && GetStateEnum() != PLAYER_STATE::Player_Dead)
 	{
 		m_CurHP = 0;
 		CGameMgr::GetInst()->GetKillInfoUI()->SetKillInfo(_AtkObj->GetName(), GetOwner()->GetName(), _Weapon->GetName());
 		CGameMgr::GetInst()->GetKillInfoUI()->OnEvent();
 
 		// 상태
-		StateMachine()->SetChange(L"Player_Idle");
-		//ChangeState(L"Player_Dead");
+		StateMachine()->SetChange(L"Player_Dead");
 	}
 
 	// 피격 화면 효과
@@ -788,6 +795,14 @@ PLAYER_STATE PlayerCharacter::GetStateEnum() const
 	return WstringToEnum<PLAYER_STATE>(StateMachine()->GetCurState()->GetName());
 }
 
+void PlayerCharacter::SetRevive()
+{
+	SetFullHP();
+	SetObjectActive(CGameMgr::GetInst()->GetRestartUI(), false);
+	StateMachine()->SetCanExit(true);
+	StateMachine()->SetChange(L"Player_Idle");
+}
+
 void PlayerCharacter::SaveComponent(FILE* PFile)
 {
 	//fwrite(&m_PlayerSpeed, sizeof(float), 1, _File);
@@ -802,6 +817,13 @@ void PlayerCharacter::LoadComponent(FILE* PFile)
 
 void PlayerCharacter::LoadComponentReference()
 {
+}
+
+void PlayerCharacter::EnterDeadState()
+{
+	// 걷기 사운드 꺼주기
+	FSoundManager::GetInst()->Stop3DSound(m_FootstepSoundIdx);
+	FSoundManager::GetInst()->Stop3DSound(m_RunFootstepSoundIdx);
 }
 
 void PlayerCharacter::ProgressHealState()
@@ -931,6 +953,32 @@ void PlayerCharacter::ProgressThrowState()
 		StateMachine()->SetChange(L"Player_Idle");
 	}
 }
+
+void PlayerCharacter::ProgressDeadState()
+{
+	m_StateAccTime += DT;
+
+	// 일정 시간이 지나면 UI 활성화 및 FadeOut
+	if (2.5f < m_StateAccTime)
+	{
+		SetObjectActive(CGameMgr::GetInst()->GetRestartUI(), true);
+
+		// R키를 누르면 Restart Event 발생 및 State 전환
+		if (KEY_TAP(KEY::R))
+		{
+			CGameMgr::GetInst()->GetPlayerRevive()->SetEventStart();
+		}
+	}
+}
+void PlayerCharacter::ProgressJumpState()
+{
+	if (m_IsGround)
+	{
+		StateMachine()->SetCanExit(true);
+		StateMachine()->SetChange(L"Player_Idle");
+	}
+}
+
 
 void PlayerCharacter::ExitThrowPrepareState()
 {

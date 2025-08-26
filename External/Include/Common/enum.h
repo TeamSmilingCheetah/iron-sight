@@ -336,6 +336,7 @@ enum class SCRIPT_TYPE : UINT8
 
 	// Event
 	TESTFADEINOUTRESET,
+	PLAYERREVIVE,
 
 	NONE = 0xFF,
 };

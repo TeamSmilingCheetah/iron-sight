@@ -36,7 +36,7 @@ void CameraEffect::Tick()
 		{
 			if (m_FadeIn)
 			{
-				// 페이드 인 완료
+				// 페이드 인 완료				
 				m_FadeIn = false;
 			}
 

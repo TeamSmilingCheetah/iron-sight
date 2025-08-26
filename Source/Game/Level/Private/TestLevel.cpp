@@ -20,7 +20,8 @@
 #include "Game/Gameplay/UI/Public/MinimapUIScript.h"
 #include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
-#include "Game/Gameplay/Event/TestFadeInOutReset.h"
+#include "Game/Gameplay/Event/Public/TestFadeInOutReset.h"
+#include "Game/Gameplay/Event/Public/PlayerRevive.h"
 #include "Game/Gameplay/PauseMenu/Public/PauseUIScript.h"
 #include "Gameplay/UI/Public/OptionUIScript.h"
 #include "Game/System/Public/CGameMgr.h"
@@ -917,6 +918,23 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CanvasUI->AddChild(pCameraPost);
 
+	// Restart UI
+	CGameObject* RestartUI = new CGameObject;
+	RestartUI->SetName(L"Restart_UI");
+	RestartUI->AddComponent(new CUI);
+	RestartUI->UI()->SetRectPos(Vec2(0.f, 40.f));
+	RestartUI->UI()->SetRectSize(Vec2(900.f, 40.f));
+	RestartUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+
+	RestartUI->AddComponent(new CUIRender);
+	RestartUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+
+	RestartUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
+	RestartUI->UI()->AddText(L"Press \"R\" To Restart", 200.f, 0.f, 62, FONT_RGBA(255, 255, 255, 255));
+
+	SetObjectActive(RestartUI, false);
+	CanvasUI->AddChild(RestartUI);
+
 	// "Cardinal Direction Canvas UI"
 	CanvasUI = new CGameObject;
 	CanvasUI->SetName(L"Cardinal_CanvasUI");
@@ -1053,5 +1071,12 @@ void TestLevel::SetUpEvent(CLevel* PLevel)
 	FadeInOutEvent->AddComponent(new TestFadeInOutReset);
 
 	PLevel->AddObject(8, FadeInOutEvent, false);
+
+	// Player Revive
+	CGameObject* PlayerReviveEvent = new CGameObject;
+	PlayerReviveEvent->SetName(L"PlayerRevive_Event");
+	PlayerReviveEvent->AddComponent(new PlayerRevive);
+
+	PLevel->AddObject(8, PlayerReviveEvent, false);
 
 }

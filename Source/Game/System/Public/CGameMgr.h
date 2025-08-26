@@ -7,6 +7,7 @@ class KillinfoUIScript;
 class CameraEffect;
 class PlayerCharacter;
 class TestFadeInOutReset;
+class PlayerRevive;
 
 class CGameMgr
 	: public singleton<CGameMgr>
@@ -25,9 +26,11 @@ private:
 	CGameObject*	m_HPUI;					// HP UI
 	CGameObject*	m_ItemUseUI;			// 아이템 사용 UI
 	CGameObject*	m_ReloadUI;				// 재장전 UI
+	CGameObject*	m_RestartUI;			// 재시작 UI
 	
 	// Event
 	TestFadeInOutReset* m_FadeInOutEvent;			// Player Reset
+	PlayerRevive*		m_PlayerReviveEvent;		// Player Revive
 
 	// Script
 	CameraController*		m_CamScript;
@@ -47,11 +50,16 @@ public:
 	CGameObject* GetHPUI() const { return m_HPUI; }
 	CGameObject* GetItemUseUI() const { return m_ItemUseUI; }
 	CGameObject* GetReloadUI() const { return m_ReloadUI; }
+	CGameObject* GetRestartUI() const { return m_RestartUI; }
 
 	CameraController* GetCamScript() const { return m_CamScript; }
 	KillinfoUIScript* GetKillInfoUI() const { return m_KillinfoScript; }
 	CameraEffect* GetCamEffect() const { return m_CameraEffect; }
 	PlayerCharacter* GetPlayerScript() const { return m_PlayerScript; }
+
+
+	TestFadeInOutReset* GetFadeInOut() const { return m_FadeInOutEvent; }
+	PlayerRevive* GetPlayerRevive() const { return m_PlayerReviveEvent; }
 
 public:
 	// Game Callback Function -> 위치 고려 필요성

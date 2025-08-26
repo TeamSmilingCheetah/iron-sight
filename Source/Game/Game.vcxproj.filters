@@ -122,17 +122,20 @@
     <ClCompile Include="System\Private\CGameMgr.cpp">
       <Filter>01. GameMgr</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Event\EventScriptBase.cpp">
-      <Filter>03. Gameplay\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameplay\Event\TestFadeInOutReset.cpp">
-      <Filter>03. Gameplay\Event\Test</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\PauseMenu\Private\PauseUIScript.cpp">
       <Filter>03. Gameplay\PauseMenu</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\UI\Private\OptionUIScript.cpp">
       <Filter>03. Gameplay\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Event\Private\TestFadeInOutReset.cpp">
+      <Filter>03. Gameplay\Event\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Event\Private\EventScriptBase.cpp">
+      <Filter>03. Gameplay\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Event\Private\PlayerRevive.cpp">
+      <Filter>03. Gameplay\Event\Revive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,17 +266,20 @@
     <ClInclude Include="Gameplay\states.h">
       <Filter>01. GameMgr</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Event\EventScriptBase.h">
-      <Filter>03. Gameplay\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\Event\TestFadeInOutReset.h">
-      <Filter>03. Gameplay\Event\Test</Filter>
-    </ClInclude>
     <ClInclude Include="Gameplay\PauseMenu\Public\PauseUIScript.h">
       <Filter>03. Gameplay\PauseMenu</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\UI\Public\OptionUIScript.h">
       <Filter>03. Gameplay\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Event\Public\TestFadeInOutReset.h">
+      <Filter>03. Gameplay\Event\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Event\Public\EventScriptBase.h">
+      <Filter>03. Gameplay\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Event\Public\PlayerRevive.h">
+      <Filter>03. Gameplay\Event\Revive</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +342,9 @@
     </Filter>
     <Filter Include="03. Gameplay\PauseMenu">
       <UniqueIdentifier>{2ab72e8d-03e0-47af-b3fb-dddfaf9ec695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Gameplay\Event\Revive">
+      <UniqueIdentifier>{b23349af-e9d4-4965-b123-7ecaf1746d58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -85,6 +85,8 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"CameraEffect", []() { return new CameraEffect; });
 	CScriptMgr::GetInst()->RegisterScript(L"TestFadeInOutReset", []() { return new TestFadeInOutReset; });
 	CScriptMgr::GetInst()->RegisterScript(L"OptionUIScript", []() { return new OptionUIScript; });
+	CScriptMgr::GetInst()->RegisterScript(L"PlayerRevive", []() { return new PlayerRevive; });
+
 
 	// StateMgr 등록
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });
@@ -119,6 +121,7 @@ void CGameMgr::Begin()
 	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
 	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
 	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
+	m_RestartUI = CLevelMgr::GetInst()->FindObjectByName(L"Restart_UI");
 
 	// Script (Camera, UI)
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
@@ -132,6 +135,7 @@ void CGameMgr::Begin()
 
 	// Event
 	m_FadeInOutEvent = static_cast<TestFadeInOutReset*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"FadeInOut_Event"), SCRIPT_TYPE::TESTFADEINOUTRESET));
+	m_PlayerReviveEvent = static_cast<PlayerRevive*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"PlayerRevive_Event"), SCRIPT_TYPE::PLAYERREVIVE));
 }
 
 void CGameMgr::ResumeGame()

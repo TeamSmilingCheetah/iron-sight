@@ -1,7 +1,8 @@
 #pragma once
-#include "Game/Gameplay/Event/EventScriptBase.h"
+#include "Game/Gameplay/Event/Public/EventScriptBase.h"
 
 class CameraEffect;
+class PlayerCharacter;
 
 class TestFadeInOutReset :
     public EventScriptBase
@@ -9,6 +10,8 @@ class TestFadeInOutReset :
 private:
 	CGameObject* m_Player;
 	CameraEffect* m_CameraEffect;
+
+	PlayerCharacter* m_PlayerScript;
 
 private:
 	// 자식 클래스의 시작 시 호출되는 함수
@@ -38,8 +41,6 @@ private:
 public:
 	virtual void SaveComponent(FILE* _File) override {}
 	virtual void LoadComponent(FILE* _File) override {}
-
-	void SetEventStart() { m_bCanEvent = true; }
 
 	TestFadeInOutReset();
 	virtual ~TestFadeInOutReset();
