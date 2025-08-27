@@ -308,6 +308,20 @@ string WStringToString(const wstring& _str)
 	return res_str;
 }
 
+wstring StringToWString(const string& InString) {
+
+	// Calculate Size
+	size_t required_size;
+	(void)mbstowcs_s(&required_size, nullptr, 0, InString.c_str(), _TRUNCATE);
+
+	// Safe Convert
+	wstring wstr(required_size, L'\0');
+	(void)mbstowcs_s(&required_size, &wstr[0], required_size, InString.c_str(), _TRUNCATE);
+	wstr.resize(required_size - 1); // null 종단 문자 제거
+
+	return wstr;
+}
+
 wstring ToLower(const wstring& _str)
 {
 	wstring result = _str;

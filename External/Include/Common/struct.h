@@ -409,11 +409,11 @@ struct UnsignedIntegerSquare
 struct LogMessage
 {
 	ELogLevel LogLevel;
-	string Message;
-	string TimeStamp;
+	wstring Message;
+	wstring TimeStamp;
 	thread::id ThreadID;
 
-	LogMessage(ELogLevel PLevel, const string& PMessage);
+	LogMessage(ELogLevel PLevel, const wstring& PMessage);
 };
 
 struct AABB

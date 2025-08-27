@@ -35,7 +35,7 @@ LogManager::~LogManager() = default;
  * @param PLevel 로그 레벨
  * @param PMessage 로그가 담을 메시지
  */
-LogMessage::LogMessage(ELogLevel PLevel, const string& PMessage)
+LogMessage::LogMessage(ELogLevel PLevel, const wstring& PMessage)
 {
 	LogLevel = PLevel;
 	Message = PMessage;
@@ -53,7 +53,7 @@ LogMessage::LogMessage(ELogLevel PLevel, const string& PMessage)
 	ss << put_time(&tm_struct, "%Y-%m-%d %H:%M:%S"); // tm_struct의 주소 전달
 	ss << '.' << setfill('0') << setw(3) << ms.count();
 
-	TimeStamp = ss.str();
+	TimeStamp = StringToWString(ss.str());
 	ThreadID = get_id();
 }
 
@@ -99,7 +99,7 @@ void LogManager::Init(bool InHasConsoleOutput, bool InHasFileOutput)
 
 	LogThread = thread(&LogManager::LogWorker, this);
 
-	LogInfo("Log Manager Initialized Successfully");
+	LOG_INFO("Log Manager Initialized Successfully");
 }
 
 /**
@@ -129,7 +129,7 @@ void LogManager::Shutdown()
 		LogFile.close();
 	}
 
-	LogInfo("Log Manager Shutdown Completed");
+	LOG_INFO("Log Manager Shutdown Completed");
 }
 
 /**
@@ -177,10 +177,10 @@ void LogManager::LogWorker()
 void LogManager::ProcessLogMessage(const LogMessage& InMessage)
 {
 	stringstream ss;
-	ss << "[" << InMessage.TimeStamp << "]";
+	ss << "[" << WStringToString(InMessage.TimeStamp) << "]";
 	ss << "[" << InMessage.ThreadID << "]";
 	ss << "[" << GetLogLevelString(InMessage.LogLevel) << "] ";
-	ss << InMessage.Message;
+	ss << WStringToString(InMessage.Message);
 
 	string FormattedMessage = ss.str();
 
@@ -291,7 +291,7 @@ string LogManager::GetLogLevelString(ELogLevel InLevel)
  */
 void LogManager::MakeLog(ELogLevel InLevel, const string& InMessage)
 {
-	LogMessage LogMessage(InLevel, InMessage);
+	LogMessage LogMessage(InLevel, StringToWString(InMessage));
 
 	// Lock은 최소한으로 (구조체 생성에 Lock 잡지 않음)
 	{
@@ -342,7 +342,7 @@ void LogManager::ManageLogFiles(const path& InDirectoryPath)
 
 			int DeleteCount = static_cast<int>(Files.size()) - MAX_LOG_FILES + 1;
 
-			LogInfo("[Engine][Log] Log File Limit Exceeded. Deleting Oldest Log Files...");
+			LOG_INFO("[Engine][Log] Log File Limit Exceeded. Deleting Oldest Log Files...");
 
 			// 가장 오래된 파일부터 순서대로 삭제
 			for (int i = 0; i < DeleteCount; ++i)
