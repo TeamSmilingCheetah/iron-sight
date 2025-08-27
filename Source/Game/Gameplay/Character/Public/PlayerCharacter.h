@@ -70,11 +70,6 @@ private:
 	float m_FootStepSoundAccTime;
 	float m_StateAccTime;
 
-	float m_accTime;
-	float m_testTime;
-	float m_TestTime;
-	bool m_bTest;
-
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
 
@@ -151,8 +146,6 @@ private:
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
-
-	//void SetThrowBoom(bool PBoom) { m_bThrowBoom = PBoom; }
 	void SetMouseActive(bool _b);
 	void SetPasueUIOff() { m_PauseUIOpened = false; }
 	void ResetAccTime() { m_StateAccTime = 0.f; }

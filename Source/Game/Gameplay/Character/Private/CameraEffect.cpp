@@ -36,7 +36,8 @@ void CameraEffect::Tick()
 		{
 			if (m_FadeIn)
 			{
-				// 페이드 인 완료				
+				// 페이드 인 완료 (쉐이더 bool 값 초기화를 통해 다른 PostProcess 효과가 제대로 적용 될 수 있게 해준다.
+				pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 0);
 				m_FadeIn = false;
 			}
 
