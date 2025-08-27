@@ -280,7 +280,7 @@ string LogManager::GetLogLevelString(ELogLevel InLevel)
 		return LogLevelArr[LevelIndex];
 	}
 
-	assert(!R"(지정한 범위 바깥의 Log Level을 전달 받음");
+	assert(!R"(지정한 범위 바깥의 Log Level을 전달 받음)");
 	return "NULL";
 }
 
