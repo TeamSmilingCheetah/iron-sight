@@ -139,10 +139,4 @@ public:
 	void ClearCollisionBtwLayerSetting();
 	void RemoveCollision(ColliderVariant InLeftVariant, ColliderVariant InRightVariant);
 	void ClearPreviousLevelInformation();
-
-	FCollisionManager() = default;
-	~FCollisionManager()
-	{
-		ClearBVHs();
-	}
 };
