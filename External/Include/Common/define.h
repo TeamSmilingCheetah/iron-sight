@@ -82,13 +82,13 @@ using GAMEOBJECT_LOAD = class CGameObject* (*)(FILE*);
 #define ENGINE_LIB R"(Engine/Engine_d)"
 #define GAME_LIB R"(Game/Game_d)"
 #define DIRECTX_TEX_LIB R"(DirectxTex/DirectXTex_debug)"
-#define FBX_LIB R"(FBXLoader/deb/libfbxsdk-md)"
+#define FBX_LIB R"(FBXLoader/debug/libfbxsdk-md)"
 #define FMOD_LIB R"(FMOD/fmodL64_vc)"
 #else
 #define QHULL_LIB R"(qhull/qhullstatic_r)"
 #define ENGINE_LIB R"(Engine/Engine)"
 #define GAME_LIB R"(Game/Game)"
 #define DIRECTX_TEX_LIB R"(DirectxTex/DirectXTex)"
-#define FBX_LIB R"(FBXLoader/rel/libfbxsdk-md)"
+#define FBX_LIB R"(FBXLoader/release/libfbxsdk-md)"
 #define FMOD_LIB R"(FMOD/fmod64_vc)"
 #endif

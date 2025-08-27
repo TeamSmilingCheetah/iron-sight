@@ -19,8 +19,44 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          lfs: true
+
+      - name: Download External Libraries
+        run: |
+          # Create External/Library directory if it doesn't exist
+          New-Item -Path "External/Library" -ItemType Directory -Force
+
+          # Download External Library from Google Drive
+          $SampleLink = "${{ secrets.LIB_DIRECTORY }}"
+          if ([string]::IsNullOrEmpty($SampleLink)) {
+            Write-Error "LIB_DIRECTORY secret is not set"
+            exit 1
+          }
+
+          # Extract file ID from Google Drive link
+          if ($SampleLink -match "/file/d/([a-zA-Z0-9_-]+)") {
+            $FileID = $matches[1]
+          } elseif ($SampleLink -match "id=([a-zA-Z0-9_-]+)") {
+            $FileID = $matches[1]
+          } else {
+            Write-Error "Invalid Google Drive link format"
+            exit 1
+          }
+
+          # Download file using direct download link
+          $DownloadUrl = "https://drive.google.com/uc?export=download&id=$FileID"
+          $TempFile = "external_library.zip"
+
+          Write-Output "Downloading External Library..."
+          Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempFile -UserAgent "Mozilla/5.0"
+
+          # Extract the downloaded file
+          Write-Output "Extracting External Library..."
+          Expand-Archive -Path $TempFile -DestinationPath "External/" -Force
+
+          # Clean up
+          Remove-Item $TempFile
+
+          Write-Output "External Library download completed"
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3
