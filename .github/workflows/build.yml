@@ -45,20 +45,20 @@ jobs:
             exit 1
           }
 
-          Write-Output "Downloading External Library folder (ID: $FolderID)..."
+          Write-Output "Downloading External Library Folder..."
 
           # Use gdown to download the entire folder
           gdown --folder "https://drive.google.com/drive/folders/$FolderID" --output "External/Library/" --quiet
 
           if ($LASTEXITCODE -ne 0) {
-            Write-Error "Failed to download folder using gdown"
+            Write-Error "Failed To Download Folder Using gdown"
             exit 1
           }
 
-          Write-Output "External Library download completed"
+          Write-Output "External Library Download Completed"
 
           # List downloaded contents for verification
-          Write-Output "Downloaded contents:"
+          Write-Output "Downloaded Contents:"
           Get-ChildItem -Path "External/Library/" -Recurse | Select-Object FullName
 
       - name: Setup MSBuild
