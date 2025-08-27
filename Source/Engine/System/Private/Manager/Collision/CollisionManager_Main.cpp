@@ -8,7 +8,10 @@
 
 FCollisionManager::FCollisionManager() = default;
 
-FCollisionManager::~FCollisionManager() = default;
+FCollisionManager::~FCollisionManager()
+{
+	ClearBVHs();
+}
 
 /*****************************/
 /** Layer Collision Setting **/
