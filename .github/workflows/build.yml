@@ -24,7 +24,7 @@ jobs:
         run: pip install gdown==5.2.0
 
       - name: Download External Libraries
-        run: pwsh -ExecutionPolicy Bypass -File .\download_library.ps1
+        run: pwsh -ExecutionPolicy Bypass -File ".github/workflows/download_library.ps1"
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
