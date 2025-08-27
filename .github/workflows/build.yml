@@ -25,6 +25,8 @@ jobs:
 
       - name: Download External Libraries
         run: pwsh -ExecutionPolicy Bypass -File ".github/workflows/download_library.ps1"
+        env:
+          LIB_DIRECTORY: ${{ secrets.LIB_DIRECTORY }}
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2

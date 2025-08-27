@@ -1,9 +1,10 @@
 # Create External/Library directory if it doesn't exist
 New-Item -Path "External/Library" -ItemType Directory -Force
 
+$LibraryLink = $env:LIB_DIRECTORY
+
 # Download External Library from Google Drive
-$LibraryLink = "${{ secrets.LIB_DIRECTORY }}"
-if ( [string]::IsNullOrEmpty($LibraryLink))
+if ([string]::IsNullOrEmpty($LibraryLink))
 {
     Write-Error "LIB_DIRECTORY secret is not set"
     exit 1
