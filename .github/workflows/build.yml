@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       matrix:
@@ -17,8 +17,11 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Install gdown
+        run: pip install gdown
 
       - name: Download External Libraries
         run: |
@@ -26,45 +29,45 @@ jobs:
           New-Item -Path "External/Library" -ItemType Directory -Force
 
           # Download External Library from Google Drive
-          $SampleLink = "${{ secrets.LIB_DIRECTORY }}"
-          if ([string]::IsNullOrEmpty($SampleLink)) {
+          $LibraryLink = "${{ secrets.LIB_DIRECTORY }}"
+          if ([string]::IsNullOrEmpty($LibraryLink)) {
             Write-Error "LIB_DIRECTORY secret is not set"
             exit 1
           }
 
-          # Extract file ID from Google Drive link
-          if ($SampleLink -match "/file/d/([a-zA-Z0-9_-]+)") {
-            $FileID = $matches[1]
-          } elseif ($SampleLink -match "id=([a-zA-Z0-9_-]+)") {
-            $FileID = $matches[1]
+          # Extract folder ID from Google Drive link
+          if ($LibraryLink -match "/folders/([a-zA-Z0-9_-]+)") {
+            $FolderID = $matches[1]
+          } elseif ($LibraryLink -match "id=([a-zA-Z0-9_-]+)") {
+            $FolderID = $matches[1]
           } else {
-            Write-Error "Invalid Google Drive link format"
+            Write-Error "Invalid Google Drive folder link format. Expected format: https://drive.google.com/drive/folders/FOLDER_ID"
             exit 1
           }
 
-          # Download file using direct download link
-          $DownloadUrl = "https://drive.google.com/uc?export=download&id=$FileID"
-          $TempFile = "external_library.zip"
+          Write-Output "Downloading External Library folder (ID: $FolderID)..."
 
-          Write-Output "Downloading External Library..."
-          Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempFile -UserAgent "Mozilla/5.0"
+          # Use gdown to download the entire folder
+          gdown --folder --id $FolderID --output "External/Library/" --quiet
 
-          # Extract the downloaded file
-          Write-Output "Extracting External Library..."
-          Expand-Archive -Path $TempFile -DestinationPath "External/" -Force
-
-          # Clean up
-          Remove-Item $TempFile
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to download folder using gdown"
+            exit 1
+          }
 
           Write-Output "External Library download completed"
+
+          # List downloaded contents for verification
+          Write-Output "Downloaded contents:"
+          Get-ChildItem -Path "External/Library/" -Recurse | Select-Object FullName
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3
 
-      - name: Build solution
+      - name: Build Solution
         run: msbuild IronSight.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:PlatformToolset=v143 /verbosity:minimal
 
-      - name: Upload build artifacts
+      - name: Upload Build Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -75,7 +78,7 @@ jobs:
             !OutputFile/Bin/Log/
           retention-days: 1
 
-      - name: Upload build logs (on failure)
+      - name: Upload Build Logs (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
