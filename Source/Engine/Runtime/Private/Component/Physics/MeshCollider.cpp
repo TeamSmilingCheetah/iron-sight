@@ -119,7 +119,7 @@ void FMeshCollider::FinalTick()
 	{
 		LOG_CRITICAL_F("[Collider][Mesh] {}: Don't Have Mesh But Enter MeshCollider FinalTick",
 		               WStringToString(GetOwner()->GetName()));
-		assert(!R"(Mesh가 없는데 Mesh Collider FinalTick 처리 분기로 들어옴)");
+		assert(!u8"Mesh가 없는데 Mesh Collider FinalTick 처리 분기로 들어옴");
 		return;
 	}
 
@@ -220,7 +220,7 @@ void FMeshCollider::SaveComponent(FILE* InFile)
 {
 	if (MeshPtr->GetKey().empty())
 	{
-		assert(!R"(일단 Mesh가 없으면 Save 안하는 걸로 정책 설정)");
+		assert(!u8"일단 Mesh가 없으면 Save 안하는 걸로 정책 설정");
 	}
 	wstring MeshKey = MeshPtr->GetKey().empty() ? L"" : MeshPtr->GetKey();
 	SaveWString(MeshKey, InFile);

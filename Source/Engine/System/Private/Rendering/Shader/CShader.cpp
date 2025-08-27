@@ -30,7 +30,7 @@ ComPtr<ID3DBlob> CShader::LoadBlob(const wstring& PBlobFilePath, const wstring& 
 		ResultHandle = D3DReadFileToBlob(wstring(PBlobFilePath).c_str(), ResultBlob.GetAddressOf());
 		if (FAILED(ResultHandle))
 		{
-			assert("Blob 로딩 실패");
+			assert(!u8"Blob 로딩 실패");
 		}
 	}
 	// 2. Need Compile

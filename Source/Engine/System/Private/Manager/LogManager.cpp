@@ -240,7 +240,7 @@ void LogManager::ProcessLogMessage(const LogMessage& InMessage)
 			}
 		default:
 			{
-				assert(!R"(여기 들어오지 못하도록 세팅해 둠)");
+				assert(!u8"여기 들어오지 못하도록 세팅해 둠");
 			}
 		}
 
@@ -280,7 +280,7 @@ string LogManager::GetLogLevelString(ELogLevel InLevel)
 		return LogLevelArr[LevelIndex];
 	}
 
-	assert(!R"(지정한 범위 바깥의 Log Level을 전달 받음)");
+	assert(!u8"지정한 범위 바깥의 Log Level을 전달 받음");
 	return "NULL";
 }
 
