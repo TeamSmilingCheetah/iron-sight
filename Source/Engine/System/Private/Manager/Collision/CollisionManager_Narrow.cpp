@@ -183,7 +183,7 @@ void FCollisionManager::AddShaderTask(IColliderBase* InLeftCollider, IColliderBa
 	}
 	else
 	{
-		assert(!"Shader 처리가 필요 없는 충돌체이므로 여기서 들어올 수 없음");
+		assert(!R"(Shader 처리가 필요 없는 충돌체이므로 여기서 들어올 수 없음)");
 		return;
 	}
 

@@ -189,6 +189,7 @@ ipch/
 # User Ignore File
 OutputFile/
 Intermediate/
+External/Library/
 unity_*.cpp
 imgui.ini
 
