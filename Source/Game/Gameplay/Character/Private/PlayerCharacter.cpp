@@ -133,14 +133,6 @@ void PlayerCharacter::Tick()
 	// Heal 수치 계산
 	PlayerHeal();
 
-	m_accTime += DT;
-
-	if (2.f < m_accTime)
-	{
-		DamageCalcul(nullptr, nullptr, 20);
-		m_accTime = 0.f;
-	}
-
 	// ==========
 	// 조건부 로직
 	// ==========
