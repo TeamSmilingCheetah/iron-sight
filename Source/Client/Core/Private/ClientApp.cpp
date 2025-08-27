@@ -41,7 +41,7 @@ int FClientApp::Run(HINSTANCE InInstanceHandle, int InCmdShow)
 	Window = new FAppWindow(this);
 	if (!Window->Init(InInstanceHandle, InCmdShow))
 	{
-		assert("Window Creation Failed");
+		assert(!"Window Creation Failed");
 		return 0;
 	}
 
@@ -55,7 +55,7 @@ int FClientApp::Run(HINSTANCE InInstanceHandle, int InCmdShow)
 	int InitResult = InitializeSystem();
 	if (InitResult != S_OK)
 	{
-		assert("Initialize Failed");
+		assert(!"Initialize Failed");
 		return 0;
 	}
 

@@ -56,7 +56,7 @@ void FAppWindow::InitializeConsole()
 	// Error Handle
 	if (!AllocConsole())
 	{
-		MessageBoxA(nullptr, "콘솔 생성 실패", "Error", 0);
+		MessageBoxW(nullptr, L"콘솔 생성 실패", L"Error", 0);
 	}
 
 	// Console 출력 지정

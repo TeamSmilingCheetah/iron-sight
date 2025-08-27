@@ -30,7 +30,7 @@ ComPtr<ID3DBlob> CShader::LoadBlob(const wstring& PBlobFilePath, const wstring& 
 		ResultHandle = D3DReadFileToBlob(wstring(PBlobFilePath).c_str(), ResultBlob.GetAddressOf());
 		if (FAILED(ResultHandle))
 		{
-			assert("Blob 로딩 실패");
+			assert(!u8"Blob 로딩 실패");
 		}
 	}
 	// 2. Need Compile
@@ -56,12 +56,12 @@ ComPtr<ID3DBlob> CShader::LoadBlob(const wstring& PBlobFilePath, const wstring& 
 				if (2 == errNum || 3 == errNum)
 				{
 					// 잘못된 경로
-					MessageBoxA(nullptr, "쉐이더 파일이 존재하지 않습니다.", "쉐이더 컴파일 실패", MB_OK);
+					MessageBoxW(nullptr, L"쉐이더 파일이 존재하지 않습니다.", L"쉐이더 컴파일 실패", MB_OK);
 				}
 				else
 				{
-					auto ErrorMessage = static_cast<char*>(m_ErrBlob->GetBufferPointer());
-					MessageBoxA(nullptr, ErrorMessage, "쉐이더 컴파일 실패", MB_OK);
+					auto ErrorMessage = static_cast<wchar_t*>(m_ErrBlob->GetBufferPointer());
+					MessageBoxW(nullptr, ErrorMessage, L"쉐이더 컴파일 실패", MB_OK);
 				}
 			}
 
