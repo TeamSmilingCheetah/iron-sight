@@ -53,9 +53,6 @@ void PlayerRevive::OnEventStart()
 
 void PlayerRevive::OnEventEnd()
 {
-	// Fade 효과 없애기
-	m_CameraEffect->FadeInOutOff();
-
 	// 재 호출이 가능하도록 리셋
 	ForceReset();
 }
