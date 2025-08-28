@@ -19,6 +19,9 @@
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
+#include "Engine/Runtime/Public/Component/Physics/ColliderBase.h"
+#include "Engine/API/Public/EngineFacade.h"
+
 InventoryController::InventoryController()
 	: CScript(SCRIPT_TYPE::INVENTORYSCRIPT)
 	, m_EquipSoundIdx(-1)
@@ -326,6 +329,9 @@ void InventoryController::DropItem(ITEM_TYPE _Type, int _Count)
 		assert(itemPrefab != nullptr);
 
 		DropItem = itemPrefab->Instantiate();
+
+		// Collider Dynamic 설정
+		Engine::Collider::SetColliderDynamic(DropItem, EColliderType::BoxCollider);
 
 		// 오브젝트를 현재 레벨의 Item Layer에 추가함
 		CreateObject(DropItem, 6, true);
