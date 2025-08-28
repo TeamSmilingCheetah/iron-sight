@@ -19,13 +19,16 @@ private:
 	CGameObject*	m_MainCamera;
 
 	// UI
-	CGameObject*	m_InventoryCanvasUI;	// 인벤토리 UI
 	CGameObject*	m_PauseCanvasUI;		// Pause UI
 	CGameObject*	m_OptionCanvasUI;		// 옵션 UI
-	CGameObject*	m_CardinalImageUI;		// 방위 UI
+	CGameObject*	m_InventoryCanvasUI;	// 인벤토리 UI
+	CGameObject*	m_CardinalCanvasUI;		// 방위 UI
+	CGameObject*	m_MainCanvasUI;			// Main UI
+
+
+	CGameObject*	m_CardinalImageUI;		// 방위 이미지 UI
 	CGameObject*	m_HPUI;					// HP UI
-	CGameObject*	m_ItemUseUI;			// 아이템 사용 UI
-	CGameObject*	m_ReloadUI;				// 재장전 UI
+	CGameObject*	m_TimerUI;				// 아이템 사용 UI
 	CGameObject*	m_RestartUI;			// 재시작 UI
 	
 	// Event
@@ -47,8 +50,7 @@ public:
 	CGameObject* GetOptionCanvasUI() const {return m_OptionCanvasUI; }
 	CGameObject* GetCardinalUI() const { return m_CardinalImageUI; }
 	CGameObject* GetHPUI() const { return m_HPUI; }
-	CGameObject* GetItemUseUI() const { return m_ItemUseUI; }
-	CGameObject* GetReloadUI() const { return m_ReloadUI; }
+	CGameObject* GetTimerUI() const { return m_TimerUI; }
 	CGameObject* GetRestartUI() const { return m_RestartUI; }
 
 	CameraController* GetCamScript() const { return m_CamScript; }
@@ -72,7 +74,7 @@ public:
 	void ExitOption();
 
 public:
-	void SetItemUseUITime(float _RemainTime, float _TotalTime);
+	void SetTimerUI(float _RemainTime, float _TotalTime);
 	void UpdateCardinalUI(float _RotationY);
 	void SetHPUI(float _curHP, float _semimaxHP, float _maxHP, float _curBoost, float _maxBoost, float _healAmount = 0.f);
 

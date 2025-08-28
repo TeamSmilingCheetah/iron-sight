@@ -471,19 +471,19 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	PLevel->AddObject(0, UICamera, false);
 
 	// "Inventory CanvasUI"
-	CGameObject* CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Inventory_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CGameObject* InventoryCanvasUI = new CGameObject;
+	InventoryCanvasUI->SetName(L"Inventory_CanvasUI");
+	InventoryCanvasUI->AddComponent(new CUI(UI_CANVAS));
 
-	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
-	CanvasUI->UI()->SetPriority(2);
-	CanvasUI->UI()->SetRectPos(0.f, 0.f);
-	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
+	InventoryCanvasUI->AddComponent(new CUIRender);
+	InventoryCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
+	InventoryCanvasUI->UI()->SetPriority(2);
+	InventoryCanvasUI->UI()->SetRectPos(0.f, 0.f);
+	InventoryCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
-	SetObjectActive(CanvasUI, false);
+	SetObjectActive(InventoryCanvasUI, false);
 
-	PLevel->AddObject(8, CanvasUI, false); // UI layer
+	PLevel->AddObject(8, InventoryCanvasUI, false); // UI layer
 
 	// DropUI
 	CGameObject* UI = new CGameObject;
@@ -495,15 +495,15 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	UI->UI()->SetRectPos(400.f, 240.f);
 	UI->UI()->SetRectSize(350.f, 120.f);
 	UI->UI()->AddText(L"Drop", 0.f, 0.f, 16, FONT_RGBA(255, 20, 20, 255));
-	CanvasUI->AddChild(UI);
+	InventoryCanvasUI->AddChild(UI);
 
 	UI = UI->Clone();
 	UI->UI()->SetRectPos(400.f, 100.f);
-	CanvasUI->AddChild(UI);
+	InventoryCanvasUI->AddChild(UI);
 
 	UI = UI->Clone();
 	UI->UI()->SetRectPos(400.f, -40.f);
-	CanvasUI->AddChild(UI);
+	InventoryCanvasUI->AddChild(UI);
 
 	// 인벤토리
 	CGameObject* Inventory = UI->Clone();
@@ -515,7 +515,35 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	Inventory->AddComponent(new InventoryUI);
 
-	CanvasUI->AddChild(Inventory);
+	InventoryCanvasUI->AddChild(Inventory);
+
+	for (int i = 0; i < 20; ++i)
+	{
+		// DragUI
+		CGameObject* DragUI = new CGameObject;
+		DragUI->SetName(L"ItemUI");
+		DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
+
+		DragUI->AddComponent(new CUIRender);
+		DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+		DragUI->UI()->SetRectSize(150.f, 40.f);
+		DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
+		SetObjectActive(DragUI, false);
+
+		DragUI->AddComponent(new ItemUI);
+
+		Inventory->AddChild(DragUI);
+
+		CGameObject* ChildUI = new CGameObject;
+		ChildUI->SetName(L"ItemImageUI");
+		ChildUI->AddComponent(new CUI);
+		ChildUI->AddComponent(new CUIRender);
+		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+		ChildUI->UI()->SetRectPos(-55.f, 0.f);
+		ChildUI->UI()->SetRectSize(40.f, 40.f);
+
+		DragUI->AddChild(ChildUI);
+	}
 
 	// 주변
 	CGameObject* Vicinity = UI->Clone();
@@ -527,184 +555,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	Vicinity->AddComponent(new VicinityUI);
 
-	CanvasUI->AddChild(Vicinity);
-
-
-	// "PauseMenu CanvasUI"
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Pause_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-
-	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
-	CanvasUI->UI()->SetPriority(0);
-	CanvasUI->UI()->SetRectPos(0.f, 0.f);
-	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
-
-	SetObjectActive(CanvasUI, false);
-
-	PLevel->AddObject(8, CanvasUI, false); // UI layer
-
-	// Continue
-	CGameObject* Continue = new CGameObject;
-	Continue->AddComponent(new CUI(UI_HOVER | UI_CLICK));
-
-	Continue->AddComponent(new CUIRender);
-	Continue->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	Continue->SetName(L"ContinueUI");
-	Continue->UI()->ClearText();
-	Continue->UI()->AddText(L"CONTINUE", 90.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
-	Continue->UI()->SetRectSize(320.f, 50.f);
-	Continue->UI()->SetRectPos(0.f, 140.f);
-
-	Continue->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ResumeGame(); }));
-
-	CanvasUI->AddChild(Continue);
-
-	// Restart
-	CGameObject* Restart = new CGameObject;
-	Restart->AddComponent(new CUI(UI_HOVER | UI_CLICK));
-
-	Restart->AddComponent(new CUIRender);
-	Restart->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	Restart->SetName(L"RestartUI");
-	Restart->UI()->ClearText();
-	Restart->UI()->AddText(L"RESTART", 100.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
-	Restart->UI()->SetRectSize(320.f, 50.f);
-	Restart->UI()->SetRectPos(0.f, 60.f);
-
-	Restart->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->RestartGame(); }));
-
-	CanvasUI->AddChild(Restart);
-
-	// Option
-	CGameObject* Option = new CGameObject;
-	Option->AddComponent(new CUI(UI_HOVER | UI_CLICK));
-
-	Option->AddComponent(new CUIRender);
-	Option->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	Option->SetName(L"OptionUI");
-	Option->UI()->ClearText();
-	Option->UI()->AddText(L"OPTION", 105.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
-	Option->UI()->SetRectSize(320.f, 50.f);
-	Option->UI()->SetRectPos(0.f, -20.f);
-
-	Option->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->OpenOption(); }));
-
-	CanvasUI->AddChild(Option);
-
-	// Exit
-	CGameObject* Exit = new CGameObject;
-	Exit->AddComponent(new CUI(UI_HOVER | UI_CLICK));
-
-	Exit->AddComponent(new CUIRender);
-	Exit->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	Exit->SetName(L"ExitUI");
-	Exit->UI()->ClearText();
-	Exit->UI()->AddText(L"GAME EXIT", 85.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
-	Exit->UI()->SetRectSize(320.f, 50.f);
-	Exit->UI()->SetRectPos(0.f, -100.f);
-
-	Exit->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ExitGame(); }));
-
-	
-	CanvasUI->AddChild(Exit);
-
-	// "Option Menu Canvas" 
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Option_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-
-	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
-	CanvasUI->UI()->SetPriority(1);
-	CanvasUI->UI()->SetRectPos(0.f, 0.f);
-	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
-
-	SetObjectActive(CanvasUI, false);
-
-	PLevel->AddObject(8, CanvasUI, false); // UI layer
-
-	// Option Title
-	CGameObject* OptionTitle = new CGameObject;
-	OptionTitle->AddComponent(new CUI);
-
-	OptionTitle->AddComponent(new CUIRender);
-	OptionTitle->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 1.f));
-	OptionTitle->SetName(L"OptionTitle");
-	OptionTitle->UI()->ClearText();
-	OptionTitle->UI()->AddText(L"O P T I O N", 500.f, -5.f, 45, FONT_RGBA(255, 255, 255, 255));
-	OptionTitle->UI()->SetRectSize(1280.f, 100.f);
-	OptionTitle->UI()->SetRectPos(0.f, 315.f);
-
-	OptionTitle->AddComponent(new OptionUIScript);
-
-	CanvasUI->AddChild(OptionTitle);
-
-	// Drag bar & Cur Sensi
-	CGameObject* Sensi = new CGameObject;
-	Sensi->AddComponent(new CUI(UI_DRAG));
-
-	Sensi->AddComponent(new CUIRender);
-	Sensi->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	Sensi->SetName(L"SensiUI");
-	Sensi->UI()->ClearText();
-	Sensi->UI()->AddText(L"Cur Sensi : ", -75.f, 0.f, 20, FONT_RGBA(255, 255, 255, 255));
-	Sensi->UI()->AddText(L" 0 ", 50.f, 0.f, 20, FONT_RGBA(255, 255, 255, 255));
-	Sensi->UI()->SetRectSize(320.f, 50.f);
-	Sensi->UI()->SetRectPos(0.f, 160.f);
-
-	Sensi->AddComponent(new OptionUIScript);
-
-	CanvasUI->AddChild(Sensi);
-
-	// Up button
-	CGameObject* Upbtn = new CGameObject;
-	Upbtn->AddComponent(new CUI(UI_CLICK | UI_HOVER));
-
-	Upbtn->AddComponent(new CUIRender);
-	Upbtn->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	Upbtn->SetName(L"Upbtn");
-	Upbtn->UI()->ClearText();
-	Upbtn->UI()->AddText(L">", 0.f, -8.f, 20, FONT_RGBA(0, 0, 0, 188));
-	Upbtn->UI()->SetRectSize(20.f, 20.f);
-	Upbtn->UI()->SetRectPos(230.f, 170.f);
-
-	Upbtn->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->UpSensi(); }));
-
-	CanvasUI->AddChild(Upbtn);
-
-	// Down button
-	CGameObject* Dwnbtn = new CGameObject;
-	Dwnbtn->AddComponent(new CUI(UI_CLICK | UI_HOVER));
-
-	Dwnbtn->AddComponent(new CUIRender);
-	Dwnbtn->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	Dwnbtn->SetName(L"Dwnbtn");
-	Dwnbtn->UI()->ClearText();
-	Dwnbtn->UI()->AddText(L"<", 0.f, -8.f, 20, FONT_RGBA(0, 0, 0, 188));
-	Dwnbtn->UI()->SetRectSize(20.f, 20.f);
-	Dwnbtn->UI()->SetRectPos(200.f, 170.f);
-
-	Dwnbtn->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->DownSensi(); }));
-
-	CanvasUI->AddChild(Dwnbtn);
-
-	// Cancel button
-	CGameObject* ExitOption = new CGameObject;
-	ExitOption->AddComponent(new CUI(UI_CLICK | UI_HOVER));
-
-	ExitOption->AddComponent(new CUIRender);
-	ExitOption->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-	ExitOption->SetName(L"ExitOption");
-	ExitOption->UI()->ClearText();
-	ExitOption->UI()->AddText(L"Exit", 0.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
-	ExitOption->UI()->SetRectSize(50.f, 50.f);
-	ExitOption->UI()->SetRectPos(0.f, -180.f);
-
-	ExitOption->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->ExitOption(); }));
-
-	CanvasUI->AddChild(ExitOption);
+	InventoryCanvasUI->AddChild(Vicinity);
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -734,48 +585,193 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 		DragUI->AddChild(ChildUI);
 	}
 
-	for (int i = 0; i < 20; ++i)
-	{
-		// DragUI
-		CGameObject* DragUI = new CGameObject;
-		DragUI->SetName(L"ItemUI");
-		DragUI->AddComponent(new CUI(UI_DRAG | UI_RIGHT_CLICK));
+	// "PauseMenu CanvasUI"
+	CGameObject* PauseMenuCanvasUI = new CGameObject;
+	PauseMenuCanvasUI->SetName(L"Pause_CanvasUI");
+	PauseMenuCanvasUI->AddComponent(new CUI(UI_CANVAS));
 
-		DragUI->AddComponent(new CUIRender);
-		DragUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-		DragUI->UI()->SetRectSize(150.f, 40.f);
-		DragUI->UI()->SetRectPos(0.f, 200.f - 43.f * i);
-		SetObjectActive(DragUI, false);
+	PauseMenuCanvasUI->AddComponent(new CUIRender);
+	PauseMenuCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
+	PauseMenuCanvasUI->UI()->SetPriority(0);
+	PauseMenuCanvasUI->UI()->SetRectPos(0.f, 0.f);
+	PauseMenuCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
+	SetObjectActive(PauseMenuCanvasUI, false);
 
-		DragUI->AddComponent(new ItemUI);
+	PLevel->AddObject(8, PauseMenuCanvasUI, false); // UI layer
 
-		Inventory->AddChild(DragUI);
+	// Continue
+	CGameObject* Continue = new CGameObject;
+	Continue->AddComponent(new CUI(UI_HOVER | UI_CLICK));
 
-		CGameObject* ChildUI = new CGameObject;
-		ChildUI->SetName(L"ItemImageUI");
-		ChildUI->AddComponent(new CUI);
-		ChildUI->AddComponent(new CUIRender);
-		ChildUI->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
-		ChildUI->UI()->SetRectPos(-55.f, 0.f);
-		ChildUI->UI()->SetRectSize(40.f, 40.f);
+	Continue->AddComponent(new CUIRender);
+	Continue->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Continue->SetName(L"ContinueUI");
+	Continue->UI()->ClearText();
+	Continue->UI()->AddText(L"CONTINUE", 90.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Continue->UI()->SetRectSize(320.f, 50.f);
+	Continue->UI()->SetRectPos(0.f, 140.f);
 
-		DragUI->AddChild(ChildUI);
-	}
+	Continue->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ResumeGame(); }));
 
+	PauseMenuCanvasUI->AddChild(Continue);
+
+	// Restart
+	CGameObject* Restart = new CGameObject;
+	Restart->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Restart->AddComponent(new CUIRender);
+	Restart->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Restart->SetName(L"RestartUI");
+	Restart->UI()->ClearText();
+	Restart->UI()->AddText(L"RESTART", 100.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Restart->UI()->SetRectSize(320.f, 50.f);
+	Restart->UI()->SetRectPos(0.f, 60.f);
+
+	Restart->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->RestartGame(); }));
+
+	PauseMenuCanvasUI->AddChild(Restart);
+
+	// Option
+	CGameObject* Option = new CGameObject;
+	Option->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Option->AddComponent(new CUIRender);
+	Option->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Option->SetName(L"OptionUI");
+	Option->UI()->ClearText();
+	Option->UI()->AddText(L"OPTION", 105.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Option->UI()->SetRectSize(320.f, 50.f);
+	Option->UI()->SetRectPos(0.f, -20.f);
+
+	Option->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->OpenOption(); }));
+
+	PauseMenuCanvasUI->AddChild(Option);
+
+	// Exit
+	CGameObject* Exit = new CGameObject;
+	Exit->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	Exit->AddComponent(new CUIRender);
+	Exit->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Exit->SetName(L"ExitUI");
+	Exit->UI()->ClearText();
+	Exit->UI()->AddText(L"GAME EXIT", 85.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	Exit->UI()->SetRectSize(320.f, 50.f);
+	Exit->UI()->SetRectPos(0.f, -100.f);
+
+	Exit->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ExitGame(); }));
+
+	PauseMenuCanvasUI->AddChild(Exit);
+
+	// "Option Menu Canvas" 
+	CGameObject* OptionMenuCanvasUI = new CGameObject;
+	OptionMenuCanvasUI->SetName(L"Option_CanvasUI");
+	OptionMenuCanvasUI->AddComponent(new CUI(UI_CANVAS));
+
+	OptionMenuCanvasUI->AddComponent(new CUIRender);
+	OptionMenuCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
+	OptionMenuCanvasUI->UI()->SetPriority(1);
+	OptionMenuCanvasUI->UI()->SetRectPos(0.f, 0.f);
+	OptionMenuCanvasUI->UI()->SetRectSize(1280.f, 768.f);
+
+	SetObjectActive(OptionMenuCanvasUI, false);
+
+	PLevel->AddObject(8, OptionMenuCanvasUI, false); // UI layer
+
+	// Option Title
+	CGameObject* OptionTitle = new CGameObject;
+	OptionTitle->AddComponent(new CUI);
+
+	OptionTitle->AddComponent(new CUIRender);
+	OptionTitle->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 1.f));
+	OptionTitle->SetName(L"OptionTitle");
+	OptionTitle->UI()->ClearText();
+	OptionTitle->UI()->AddText(L"O P T I O N", 500.f, -5.f, 45, FONT_RGBA(255, 255, 255, 255));
+	OptionTitle->UI()->SetRectSize(1280.f, 100.f);
+	OptionTitle->UI()->SetRectPos(0.f, 315.f);
+
+	OptionTitle->AddComponent(new OptionUIScript);
+
+	OptionMenuCanvasUI->AddChild(OptionTitle);
+
+	// Drag bar & Cur Sensi
+	CGameObject* Sensi = new CGameObject;
+	Sensi->AddComponent(new CUI(UI_DRAG));
+
+	Sensi->AddComponent(new CUIRender);
+	Sensi->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	Sensi->SetName(L"SensiUI");
+	Sensi->UI()->ClearText();
+	Sensi->UI()->AddText(L"Cur Sensi : ", -75.f, 0.f, 20, FONT_RGBA(255, 255, 255, 255));
+	Sensi->UI()->AddText(L" 0 ", 50.f, 0.f, 20, FONT_RGBA(255, 255, 255, 255));
+	Sensi->UI()->SetRectSize(320.f, 50.f);
+	Sensi->UI()->SetRectPos(0.f, 160.f);
+
+	Sensi->AddComponent(new OptionUIScript);
+
+	OptionMenuCanvasUI->AddChild(Sensi);
+
+	// Up button
+	CGameObject* Upbtn = new CGameObject;
+	Upbtn->AddComponent(new CUI(UI_CLICK | UI_HOVER));
+
+	Upbtn->AddComponent(new CUIRender);
+	Upbtn->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Upbtn->SetName(L"Upbtn");
+	Upbtn->UI()->ClearText();
+	Upbtn->UI()->AddText(L">", 0.f, -8.f, 20, FONT_RGBA(0, 0, 0, 188));
+	Upbtn->UI()->SetRectSize(20.f, 20.f);
+	Upbtn->UI()->SetRectPos(230.f, 170.f);
+
+	Upbtn->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->UpSensi(); }));
+
+	OptionMenuCanvasUI->AddChild(Upbtn);
+
+	// Down button
+	CGameObject* Dwnbtn = new CGameObject;
+	Dwnbtn->AddComponent(new CUI(UI_CLICK | UI_HOVER));
+
+	Dwnbtn->AddComponent(new CUIRender);
+	Dwnbtn->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	Dwnbtn->SetName(L"Dwnbtn");
+	Dwnbtn->UI()->ClearText();
+	Dwnbtn->UI()->AddText(L"<", 0.f, -8.f, 20, FONT_RGBA(0, 0, 0, 188));
+	Dwnbtn->UI()->SetRectSize(20.f, 20.f);
+	Dwnbtn->UI()->SetRectPos(200.f, 170.f);
+
+	Dwnbtn->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->DownSensi(); }));
+
+	OptionMenuCanvasUI->AddChild(Dwnbtn);
+
+	// Cancel button
+	CGameObject* ExitOption = new CGameObject;
+	ExitOption->AddComponent(new CUI(UI_CLICK | UI_HOVER));
+
+	ExitOption->AddComponent(new CUIRender);
+	ExitOption->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	ExitOption->SetName(L"ExitOption");
+	ExitOption->UI()->ClearText();
+	ExitOption->UI()->AddText(L"Exit", 0.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	ExitOption->UI()->SetRectSize(50.f, 50.f);
+	ExitOption->UI()->SetRectPos(0.f, -180.f);
+
+	ExitOption->AddComponent(new OptionUIScript([]() { CGameMgr::GetInst()->ExitOption(); }));
+
+	OptionMenuCanvasUI->AddChild(ExitOption);
 
 	// "Main Canvas UI" : 화면 전체 가리는 투명 ui
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Main_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	CanvasUI->UI()->SetPriority(3);
-	CanvasUI->UI()->SetRectPos(0.f, 0.f);
-	CanvasUI->UI()->SetRectSize(1280.f, 768.f);
+	CGameObject* MainCanvasUI = new CGameObject;
+	MainCanvasUI->SetName(L"Main_CanvasUI");
+	MainCanvasUI->AddComponent(new CUI(UI_CANVAS));
+	MainCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	MainCanvasUI->UI()->SetPriority(4);
+	MainCanvasUI->UI()->SetRectPos(0.f, 0.f);
+	MainCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
-	CanvasUI->AddComponent(new CUIRender);
+	MainCanvasUI->AddComponent(new CUIRender);
 
-	PLevel->AddObject(8, CanvasUI, false);
+	PLevel->AddObject(8, MainCanvasUI, false);
 
 	// HP UI
 	CGameObject* childUI = new CGameObject;
@@ -789,11 +785,11 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIHPMtrl"), 0);
 
-	CanvasUI->AddChild(childUI);
+	MainCanvasUI->AddChild(childUI);
 
-	// ItemUse UI
+	// Timer UI
 	childUI = new CGameObject;
-	childUI->SetName(L"ItemUse_UI");
+	childUI->SetName(L"Timer_UI");
 	childUI->AddComponent(new CUI);
 	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
 	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
@@ -805,7 +801,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
 	SetObjectActive(childUI, false);
 
-	CanvasUI->AddChild(childUI);
+	MainCanvasUI->AddChild(childUI);
 
 	// Interaction UI
 	CGameObject* interactionUI = new CGameObject;
@@ -821,23 +817,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	interactionUI->UI()->AddText(L"취소", 40.f, 4.f, 16, FONT_RGBA(255, 255, 255, 255));
 	SetObjectActive(interactionUI, false);
 
-	CanvasUI->AddChild(interactionUI);
-
-	// Reload UI
-	childUI = new CGameObject;
-	childUI->SetName(L"Reload_UI");
-	childUI->AddComponent(new CUI);
-	childUI->UI()->SetRectPos(Vec2(0.f, 0.f));
-	childUI->UI()->SetRectSize(Vec2(60.f, 60.f));
-
-	childUI->AddComponent(new CUIRender);
-	childUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.6f));
-
-	childUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIItemUseMtrl"), 0);
-	childUI->UI()->AddText(L"", 17.f, 16.f, 20, FONT_RGBA(255, 255, 255, 255));
-	SetObjectActive(childUI, false);
-
-	CanvasUI->AddChild(childUI);
+	MainCanvasUI->AddChild(interactionUI);
 
 	// Interaction Key UI
 	childUI = new CGameObject;
@@ -867,7 +847,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	RoundsUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	RoundsUI->AddComponent(new RoundsUIScript);
 
-	CanvasUI->AddChild(RoundsUI);
+	MainCanvasUI->AddChild(RoundsUI);
 
 	// Kill Info
 	CGameObject* KillinfoUI = new CGameObject;
@@ -882,7 +862,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	KillinfoUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UIMtrl"), 0);
 	KillinfoUI->AddComponent(new KillinfoUIScript);
 
-	CanvasUI->AddChild(KillinfoUI);
+	MainCanvasUI->AddChild(KillinfoUI);
 
 	// 크로스헤어 UI
 	childUI = new CGameObject;
@@ -901,7 +881,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_2, 0.2f);
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	CanvasUI->AddChild(childUI);
+	MainCanvasUI->AddChild(childUI);
 
 
 	// PostProcess
@@ -916,7 +896,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pCameraPost->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"CameraPostMtrl"), 0);
 	pCameraPost->AddComponent(new CameraEffect);
 
-	CanvasUI->AddChild(pCameraPost);
+	InventoryCanvasUI->AddChild(pCameraPost);
 
 	// Restart UI
 	CGameObject* RestartUI = new CGameObject;
@@ -933,20 +913,20 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	RestartUI->UI()->AddText(L"Press \"R\" To Restart", 200.f, 0.f, 62, FONT_RGBA(255, 255, 255, 255));
 
 	SetObjectActive(RestartUI, false);
-	CanvasUI->AddChild(RestartUI);
+	MainCanvasUI->AddChild(RestartUI);
 
 	// "Cardinal Direction Canvas UI"
-	CanvasUI = new CGameObject;
-	CanvasUI->SetName(L"Cardinal_CanvasUI");
-	CanvasUI->AddComponent(new CUI(UI_CANVAS));
-	CanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
-	CanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
+	CGameObject* CardinalCanvasUI = new CGameObject;
+	CardinalCanvasUI->SetName(L"Cardinal_CanvasUI");
+	CardinalCanvasUI->AddComponent(new CUI(UI_CANVAS));
+	CardinalCanvasUI->UI()->SetRectPos(Vec2(0.f, 320.f));
+	CardinalCanvasUI->UI()->SetRectSize(Vec2(560.f, 55.f));
 
-	CanvasUI->AddComponent(new CUIRender);
-	CanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
-	CanvasUI->UI()->SetPriority(4);
+	CardinalCanvasUI->AddComponent(new CUIRender);
+	CardinalCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
+	CardinalCanvasUI->UI()->SetPriority(3);
 
-	PLevel->AddObject(8, CanvasUI, false);
+	PLevel->AddObject(8, CardinalCanvasUI, false);
 
 	CGameObject* pImageUI = new CGameObject;
 	pImageUI->SetName(L"Cardinal_ImageUI");
@@ -959,7 +939,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	pImageUI->AddComponent(new CUIRender);
 	pImageUI->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"UICardinalMtrl"), 0);
 
-	CanvasUI->AddChild(pImageUI);
+	CardinalCanvasUI->AddChild(pImageUI);
 
 	pImageUI = new CGameObject;
 	pImageUI->SetName(L"Cardinal_ArrowUI");
@@ -972,7 +952,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	pImageUI->AddComponent(new CUIRender);
 
-	CanvasUI->AddChild(pImageUI);
+	CardinalCanvasUI->AddChild(pImageUI);
 
 	// ==========
 	// MiniMapCamera
@@ -996,19 +976,6 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	PLevel->AddObject(0, MinimapCamera, false);
 
-	//Minimap CanvasUI
-	CGameObject* MapCanvasUI = new CGameObject;
-	MapCanvasUI->SetName(L"MiniMap_CanvasUI");
-	MapCanvasUI->AddComponent(new CUI(UI_CANVAS));
-
-	MapCanvasUI->AddComponent(new CUIRender);
-	MapCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	MapCanvasUI->UI()->SetPriority(5);
-	MapCanvasUI->UI()->SetRectPos(485.f, -230.f);
-	MapCanvasUI->UI()->SetRectSize(300.f, 300.f);
-
-	PLevel->AddObject(8, MapCanvasUI, false);
-
 	// MinimapUI
 	CGameObject* pMinimapUI = new CGameObject;
 	pMinimapUI->SetName(L"MinimapUI");
@@ -1018,13 +985,13 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	Ptr<CTexture> pMinimapTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"MinimapTargetTex");
 	pMinimapUI->UI()->SetImage(pMinimapTex);
-	pMinimapUI->UI()->SetRectPos(Vec2(0.f, 0.f));
+	pMinimapUI->UI()->SetRectPos(Vec2(450.f, -200.f));
 	pMinimapUI->UI()->SetRectSize(Vec2(300.f, 300.f));
 	pMinimapUI->UI()->SetColor(Vec4(0.2f, 0.2f, 0.2f, 0.7f));
 
 	pMinimapUI->AddComponent(new MinimapUIScript);
 
-	MapCanvasUI->AddChild(pMinimapUI);
+	MainCanvasUI->AddChild(pMinimapUI);
 
 	return {Vicinity, Inventory, interactionUI};
 }

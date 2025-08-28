@@ -167,34 +167,36 @@ void CUIMgr::Tick()
 	if (pLevel == nullptr || pLevel->GetState() != LEVEL_STATE::PLAY)
 		return;
 
+	// DEPRECATED(Ssio): Priority 고정
 	// Priority 정리 - nullptr인 부분 정리
-	for (auto iter = m_vecUI.begin(); iter != m_vecUI.end(); )
-	{
-		if (*iter == nullptr)
-			iter = m_vecUI.erase(iter);
-		else
-			++iter;
-	}
-
-	for (UINT i = 0; i < UINT(m_vecUI.size()); ++i)
-	{
-		m_vecUI[i]->SetPriority(i);
-	}
+	//for (auto iter = m_vecUI.begin(); iter != m_vecUI.end(); )
+	//{
+	//	if (*iter == nullptr)
+	//		iter = m_vecUI.erase(iter);
+	//	else
+	//		++iter;
+	//}
+	//
+	//for (UINT i = 0; i < UINT(m_vecUI.size()); ++i)
+	//{
+	//	m_vecUI[i]->SetPriority(i);
+	//}
 
 	// 마우스 Event 감지
 	m_HoverUI = nullptr;				// 실제로 Hover된 UI
 	CUI* HoverCanvasUI = nullptr;		// HoverUI가 속한 Canvas
-	UINT Priority = UINT_MAX;			// UI 우선순위
+	UINT Priority = UINT_MAX;			// 선택한 UI 우선순위
 
 	// Canvas UI의 자식 오브젝트를 순회 (DFS)하면서 마우스가 겹치는 가장 자식 UI를 찾음
 	for (size_t i = 0; i < m_vecUI.size(); ++i)
 	{
+		// Priority가 더 높은 (숫자가 작은) canvas에서 이미 선택이 발생했다면
+		if (i > Priority)
+			break;
+
+		// 비활성화된 UI는 계산 x (Finaltick에서 register 호출 안한)
 		if (m_vecUI[i] == nullptr)
 			continue;
-
-		// Canvas Priority가 더 높은 경우 (더 뒤에 있는 경우) 걸러냄
-		if (m_vecUI[i]->m_Priority > Priority)
-			break;
 
 		CUI* curUI = CheckMouseHover(m_vecUI[i]);
 
@@ -238,8 +240,9 @@ void CUIMgr::Tick()
 	// 마우스 Down이 감지된 경우
 	if (KEY_TAP(KEY::LBTN) || KEY_TAP(KEY::RBTN))
 	{
+		// DEPRECATED(Ssio): 우선순위 변경 기능 해제
 		// Focus를 변경해줌
-		ChangeFocus(HoverCanvasUI, m_HoverUI);
+		//ChangeFocus(HoverCanvasUI, m_HoverUI);
 
 		// Drag 처리
 		m_DragUI = m_HoverUI;
@@ -323,8 +326,9 @@ void CUIMgr::Tick()
 	{
 		// Drag가 이루어지는 중
 
+		// DEPRECATED(Ssio) : 우선순위 변경 기능 해제
 		// Drag 중에 다른 Canvas에 hover 된다면 포커스를 변경해줌.
-		ChangeFocus(HoverCanvasUI, m_HoverUI);
+		//ChangeFocus(HoverCanvasUI, m_HoverUI);
 	}
 
 	// 이번 프레임 HoverUI를 저장
