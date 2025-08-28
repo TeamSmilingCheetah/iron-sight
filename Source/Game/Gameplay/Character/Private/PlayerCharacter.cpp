@@ -704,7 +704,7 @@ void PlayerCharacter::Heal()
 	m_HealType = ITEM_TYPE::END;
 	m_HealAmount = 0.f;
 
-	SetObjectActive(CGameMgr::GetInst()->GetItemUseUI(), false);
+	SetObjectActive(CGameMgr::GetInst()->GetTimerUI(), false);
 }
 
 void PlayerCharacter::SetMouseActive(bool _b)
@@ -778,17 +778,21 @@ void PlayerCharacter::TriggerHeal(ITEM_TYPE PHealType)
 		break;
 	}
 
-	m_HealType = PHealType;
-	StateMachine()->SetChange(L"Player_Heal");
-
+	// 사용 불가능한 조건이라면
 	if (CantHeal)
 	{
 		// TODO(Ssio) : 사용 할 수 없다는 경고 문구 UI
 		return;
 	}
 
+	// 힐 타입 설정
+	m_HealType = PHealType;
+
+	// State 변경
+	StateMachine()->SetChange(L"Player_Heal");
+
 	// ui 활성화
-	SetObjectActive(CGameMgr::GetInst()->GetItemUseUI(), true);
+	SetObjectActive(CGameMgr::GetInst()->GetTimerUI(), true);
 }
 
 void PlayerCharacter::LoadPlayerSounds()
@@ -853,7 +857,7 @@ void PlayerCharacter::ProgressHealState()
 	else
 	{
 		// ItemUseUI : 아이템 사용딜레이 ui
-		CGameMgr::GetInst()->SetItemUseUITime(m_HealRemainTime, m_HealTotalTime);
+		CGameMgr::GetInst()->SetTimerUI(m_HealRemainTime, m_HealTotalTime);
 	}
 }
 
@@ -1007,7 +1011,7 @@ void PlayerCharacter::ExitThrowPrepareState()
 
 void PlayerCharacter::ExitReloadState()
 {
-	SetObjectActive(CGameMgr::GetInst()->GetReloadUI(), false);
+	SetObjectActive(CGameMgr::GetInst()->GetTimerUI(), false);
 	m_InteractionScript->SetInteractable(false);
 }
 

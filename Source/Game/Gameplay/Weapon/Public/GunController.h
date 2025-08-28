@@ -43,7 +43,6 @@ private:
 
 	PlayerCharacter*		m_PlayerScript;
 	InventoryController*	m_InventoryScript;
-	CGameObject*			m_ReloadUI;
 
 	ITEM_TYPE m_WeaponRoundType;
 public:
