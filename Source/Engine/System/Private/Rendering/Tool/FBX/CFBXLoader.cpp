@@ -150,10 +150,10 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 	Container.vScale = Vec3(static_cast<float>(temp[0]), static_cast<float>(temp[2]), static_cast<float>(temp[1]));
 
 	// 폴리곤 개수
-	int iPolyCnt = pFbxMesh->GetPolygonCount();
+	const int iPolyCnt = pFbxMesh->GetPolygonCount();
 
 	// 재질의 개수 ( ==> SubSet 개수 ==> Index Buffer Count)
-	int iMtrlCnt = pFbxMesh->GetNode()->GetMaterialCount();
+	const int iMtrlCnt = pFbxMesh->GetNode()->GetMaterialCount();
 	Container.vecIdx.resize(iMtrlCnt);
 
 	// 정점 정보가 속한 subset 을 알기위해서...
@@ -161,44 +161,23 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 	FbxGeometryElementMaterial* pMtrl = pFbxMesh->GetElementMaterial();
 
 	// 폴리곤을 구성하는 정점 개수
-	int iPolySize = pFbxMesh->GetPolygonSize(0);
+	const int iPolySize = pFbxMesh->GetPolygonSize(0);
 	if (3 != iPolySize)
 		assert(NULL); // Polygon 구성 정점이 3개가 아닌 경우
 
 	UINT arrIdx[3] = {};
 	UINT iVtxOrder = 0; // 폴리곤 순서로 접근하는 순번
-	UINT iVtxIndexCounter = 0;
 
-	// control point index와 uv index 조합으로 vertex index를 매핑
-	map<pair<int, int>, int> mapVertexIndex;
+	// 삼각형 개수 * 3으로 reserve
+	Container.Reserve(iPolyCnt * iPolySize);	
 
-	// vertex index를 미리 계산
-	for (int i = 0; i < iPolyCnt; ++i)
-	{
-		for (int j = 0; j < iPolySize; ++j)
-		{
-			// i 번째 폴리곤에, j 번째 정점
-			int iIdx = pFbxMesh->GetPolygonVertex(i, j);
-			int uvIndex = pFbxMesh->GetTextureUVIndex(i, j);
-
-			pair<int, int> vtxKey = make_pair(iIdx, uvIndex);
-
-			if (mapVertexIndex.count(vtxKey))
-				continue;
-
-			mapVertexIndex.emplace(vtxKey, iVtxIndexCounter++);
-		}
-	}
-
-	// vtx 개수로 container을 resize
-	Container.Resize(iVtxIndexCounter);
 	FbxVector4* pFbxPos = pFbxMesh->GetControlPoints();
 
 	// control point 개수로 초기화
 	Container.vecControlPointIndices.resize(pFbxMesh->GetControlPointsCount());
 
-	// 중복 계산을 피하기 위해 체크
-	vector<bool> vecCalculated(iVtxIndexCounter, false);
+	// control point index와 uv index 조합으로 vertex index를 매핑
+	unordered_map<pair<int, int>, int> mapVertexIndex;
 
 	for (int i = 0; i < iPolyCnt; ++i)
 	{
@@ -210,34 +189,43 @@ void CFBXLoader::LoadMesh(FbxNode* _pNode)
 
 			pair<int, int> vtxKey = make_pair(iIdx, uvIndex);
 
-			// vertex index 지정
-			int vtxIdx = arrIdx[j] = mapVertexIndex[vtxKey];
-
-			if (!vecCalculated[vtxIdx])
+			// 이미 등록된 vertex라면 pass
+			if (mapVertexIndex.contains(vtxKey))
 			{
-				Container.vecPos[vtxIdx].x = static_cast<float>(pFbxPos[iIdx].mData[0]);
-				Container.vecPos[vtxIdx].y = static_cast<float>(pFbxPos[iIdx].mData[2]);
-				Container.vecPos[vtxIdx].z = static_cast<float>(pFbxPos[iIdx].mData[1]);
+				arrIdx[j] = mapVertexIndex[vtxKey];
+			}
+			else
+			{
+				const int vtxIdx = static_cast<int>(Container.vecPos.size());
+				mapVertexIndex.emplace(vtxKey, vtxIdx);
 
-				GetTangent(pFbxMesh, &Container, vtxIdx, iVtxOrder);
-				GetBinormal(pFbxMesh, &Container, vtxIdx, iVtxOrder);
-				GetNormal(pFbxMesh, &Container, vtxIdx, iVtxOrder);
-				GetUV(pFbxMesh, &Container, vtxIdx, uvIndex);
+				Container.vecPos.push_back(Vec3(pFbxPos[iIdx].mData[0], pFbxPos[iIdx].mData[2], pFbxPos[iIdx].mData[1]));
+
+				arrIdx[j] = vtxIdx;
+
+				GetTangent(pFbxMesh, &Container, iIdx, iVtxOrder);
+				GetBinormal(pFbxMesh, &Container, iIdx, iVtxOrder);
+				GetNormal(pFbxMesh, &Container, iIdx, iVtxOrder);
+				GetUV(pFbxMesh, &Container, iIdx, uvIndex);
 
 				// control point에 대응되는 vertex를 기록
 				Container.vecControlPointIndices[iIdx].push_back(vtxIdx);
-
-				// 계산 완료
-				vecCalculated[vtxIdx] = true;
 			}
 
 			++iVtxOrder;
 		}
+
 		UINT iSubsetIdx = pMtrl->GetIndexArray().GetAt(i);
 		Container.vecIdx[iSubsetIdx].push_back(arrIdx[0]);
 		Container.vecIdx[iSubsetIdx].push_back(arrIdx[2]);
 		Container.vecIdx[iSubsetIdx].push_back(arrIdx[1]);
 	}
+
+	// Bone Weight를 계산하기 위해 vertex를 모두 계산한 시점에서 resize 해둠
+	size_t iSize = Container.vecPos.size();
+	Container.vecIndices.resize(iSize);
+	Container.vecWeights.resize(iSize);
+	Container.vecWI.resize(iSize);
 
 	LoadAnimationData(pFbxMesh, &Container);
 }
@@ -310,9 +298,7 @@ void CFBXLoader::GetTangent(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx,
 
 	FbxVector4 vTangent = pTangent->GetDirectArray().GetAt(iTangentIdx);
 
-	_pContainer->vecTangent[_iIdx].x = static_cast<float>(vTangent.mData[0]);
-	_pContainer->vecTangent[_iIdx].y = static_cast<float>(vTangent.mData[2]);
-	_pContainer->vecTangent[_iIdx].z = static_cast<float>(vTangent.mData[1]);
+	_pContainer->vecTangent.push_back(Vec3(vTangent.mData[0], vTangent.mData[2], vTangent.mData[1]));
 }
 
 void CFBXLoader::GetBinormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder)
@@ -342,9 +328,7 @@ void CFBXLoader::GetBinormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx
 
 	FbxVector4 vBinormal = pBinormal->GetDirectArray().GetAt(iBinormalIdx);
 
-	_pContainer->vecBinormal[_iIdx].x = static_cast<float>(vBinormal.mData[0]);
-	_pContainer->vecBinormal[_iIdx].y = static_cast<float>(vBinormal.mData[2]);
-	_pContainer->vecBinormal[_iIdx].z = static_cast<float>(vBinormal.mData[1]);
+	_pContainer->vecBinormal.push_back(Vec3(vBinormal.mData[0], vBinormal.mData[2], vBinormal.mData[1]));
 }
 
 void CFBXLoader::GetNormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iVtxOrder)
@@ -374,9 +358,7 @@ void CFBXLoader::GetNormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, 
 
 	FbxVector4 vNormal = pNormal->GetDirectArray().GetAt(iNormalIdx);
 
-	_pContainer->vecNormal[_iIdx].x = static_cast<float>(vNormal.mData[0]);
-	_pContainer->vecNormal[_iIdx].y = static_cast<float>(vNormal.mData[2]);
-	_pContainer->vecNormal[_iIdx].z = static_cast<float>(vNormal.mData[1]);
+	_pContainer->vecNormal.push_back(Vec3(vNormal.mData[0], vNormal.mData[2], vNormal.mData[1]));
 }
 
 void CFBXLoader::GetUV(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int _iUVIndex)
@@ -391,8 +373,8 @@ void CFBXLoader::GetUV(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int 
 		|| refMode == FbxGeometryElement::eIndexToDirect);
 
 	FbxVector2 vUV = pUV->GetDirectArray().GetAt(_iUVIndex);
-	_pContainer->vecUV[_iIdx].x = static_cast<float>(vUV.mData[0]);
-	_pContainer->vecUV[_iIdx].y = 1.f - static_cast<float>(vUV.mData[1]); // fbx uv 좌표계는 좌하단이 0,0
+
+	_pContainer->vecUV.push_back(Vec2(vUV.mData[0], 1.f - vUV.mData[1])); // fbx uv 좌표계는 좌하단이 0,0
 }
 
 Vec4 CFBXLoader::GetMtrlData(FbxSurfaceMaterial* _pSurface

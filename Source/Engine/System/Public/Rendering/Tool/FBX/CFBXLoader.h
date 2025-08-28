@@ -47,16 +47,13 @@ struct tContainer
 	bool bAnimation;
 	vector<vector<tWeightsAndIndices>> vecWI;
 
-	void Resize(UINT _iSize)
+	void Reserve(UINT _iSize)
 	{
-		vecPos.resize(_iSize);
-		vecTangent.resize(_iSize);
-		vecBinormal.resize(_iSize);
-		vecNormal.resize(_iSize);
-		vecUV.resize(_iSize);
-		vecIndices.resize(_iSize);
-		vecWeights.resize(_iSize);
-		vecWI.resize(_iSize);
+		vecPos.reserve(_iSize);
+		vecTangent.reserve(_iSize);
+		vecBinormal.reserve(_iSize);
+		vecNormal.reserve(_iSize);
+		vecUV.reserve(_iSize);
 	}
 };
 

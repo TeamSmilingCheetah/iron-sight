@@ -692,7 +692,19 @@ namespace std
 
 			// Use hash_combine Method In Boost Library
 			// 피보나치 해싱
-			return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2));
+			return hash1 ^ (hash2 + 0x9e3779b97f4a7c15ull + (hash1 << 6) + (hash1 >> 2));
+		}
+	};
+
+	template <>
+	struct hash<pair<int,int>>
+	{
+		size_t operator()(const pair<int, int>& p) const noexcept
+		{
+			const size_t hash1 = std::hash<int>{}(p.first);
+			const size_t hash2 = std::hash<int>{}(p.second);
+
+			return hash1 ^ (hash2 + 0x9e3779b97f4a7c15ull + (hash1 << 6) + (hash1 >> 2));
 		}
 	};
 }

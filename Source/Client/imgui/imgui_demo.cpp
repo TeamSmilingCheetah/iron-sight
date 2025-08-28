@@ -1660,8 +1660,8 @@ static void ShowDemoWindowWidgets()
             ImGui::TreePop();
         }
 
-        IMGUI_DEMO_MARKER("Widgets/Text Input/Resize Callback");
-        if (ImGui::TreeNode("Resize Callback"))
+        IMGUI_DEMO_MARKER("Widgets/Text Input/Reserve Callback");
+        if (ImGui::TreeNode("Reserve Callback"))
         {
             // To wire InputText() with std::string or any other custom string type,
             // you can use the ImGuiInputTextFlags_CallbackResize flag + create a custom ImGui::InputText() wrapper
@@ -7856,8 +7856,8 @@ static void ShowExampleAppConstrainedResize(bool* p_open)
     {
         "Between 100x100 and 500x500",
         "At least 100x100",
-        "Resize vertical + lock current width",
-        "Resize horizontal + lock current height",
+        "Reserve vertical + lock current width",
+        "Reserve horizontal + lock current height",
         "Width Between 400 and 500",
         "Height at least 400",
         "Custom: Aspect Ratio 16:9",
@@ -7888,7 +7888,7 @@ static void ShowExampleAppConstrainedResize(bool* p_open)
     if (!window_padding)
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     const ImGuiWindowFlags window_flags = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : 0;
-    const bool window_open = ImGui::Begin("Example: Constrained Resize", p_open, window_flags);
+    const bool window_open = ImGui::Begin("Example: Constrained Reserve", p_open, window_flags);
     if (!window_padding)
         ImGui::PopStyleVar();
     if (window_open)
