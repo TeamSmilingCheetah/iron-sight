@@ -15,14 +15,21 @@
 CGameMgr::CGameMgr()
 	: m_Player(nullptr)
 	, m_MainCamera(nullptr)
+	, m_PauseCanvasUI(nullptr)
+	, m_OptionCanvasUI(nullptr)
 	, m_InventoryCanvasUI(nullptr)
+	, m_CardinalCanvasUI(nullptr)
+	, m_MainCanvasUI(nullptr)
 	, m_CardinalImageUI(nullptr)
 	, m_HPUI(nullptr)
-	, m_ItemUseUI(nullptr)
-	, m_ReloadUI(nullptr)
+	, m_TimerUI(nullptr)
+	, m_RestartUI(nullptr)
+	, m_FadeInOutEvent(nullptr)
+	, m_PlayerReviveEvent(nullptr)
 	, m_CamScript(nullptr)
 	, m_KillinfoScript(nullptr)
 	, m_CameraEffect(nullptr)
+	, m_PlayerScript(nullptr)
 {
 
 }
@@ -35,14 +42,17 @@ CGameMgr::~CGameMgr()
 
 // _RemainTime = 아이템 사용까지 남은 시간
 // _TotalTIme = 아이템 사용에 걸리는 총 시간
-void CGameMgr::SetItemUseUITime(float _RemainTime, float _TotalTime)
+void CGameMgr::SetTimerUI(float _RemainTime, float _TotalTime)
 {
-	m_ItemUseUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - _RemainTime / _TotalTime);
+	if (_RemainTime < 0.f)
+		_RemainTime = 0.f;
+
+	m_TimerUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - _RemainTime / _TotalTime);
 
 	// 남은 시간 글씨 출력
 	wchar_t text[4]{};	// 3글자 출력
 	swprintf_s(text, L"%.1f", _RemainTime);
-	m_ItemUseUI->UI()->GetTextInfoRef()[0].Text = text;
+	m_TimerUI->UI()->GetTextInfoRef()[0].Text = text;
 }
 
 void CGameMgr::UpdateCardinalUI(float _RotationY)
@@ -126,13 +136,15 @@ void CGameMgr::Begin()
 	m_Player = CLevelMgr::GetInst()->FindObjectByName(L"Player");
 
 	// Player UI
-	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
 	m_PauseCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Pause_CanvasUI");
 	m_OptionCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Option_CanvasUI");
+	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
+	m_CardinalCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_CanvasUI");
+	m_MainCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Main_CanvasUI");
+
 	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
 	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
-	m_ItemUseUI = CLevelMgr::GetInst()->FindObjectByName(L"ItemUse_UI");
-	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
+	m_TimerUI = CLevelMgr::GetInst()->FindObjectByName(L"Timer_UI");
 	m_RestartUI = CLevelMgr::GetInst()->FindObjectByName(L"Restart_UI");
 
 	// Script (Camera, UI)

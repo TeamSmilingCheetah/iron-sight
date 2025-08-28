@@ -20,6 +20,8 @@
 #include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 
+#include "Game/System/Public/CGameMgr.h"
+
 GunController::GunController()
 	: WeaponController(SCRIPT_TYPE::GUNSCRIPT)
 	, m_AkSoundIdx(-1)
@@ -77,9 +79,6 @@ void GunController::Begin()
 
 	// Script
 	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player"), SCRIPT_TYPE::INVENTORYSCRIPT));
-
-	// UI
-	m_ReloadUI = CLevelMgr::GetInst()->FindObjectByName(L"Reload_UI");
 }
 
 void GunController::Tick()
@@ -121,7 +120,7 @@ void GunController::Tick()
 		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
 		{
 			m_bReload = true;
-			SetObjectActive(m_ReloadUI, true);
+			SetObjectActive(CGameMgr::GetInst()->GetTimerUI(), true);
 
 			// 현재 남은 탄창수에 따라 시간 설정
 			if (m_CurRounds == 0)
@@ -380,8 +379,8 @@ void GunController::Reload()
 	// Player를 위한 UI 컨트롤
 	if (!m_bEnemy)
 	{
-		// ReloadUI : Reload Delay UI
-		m_ReloadUI->UIRender()->GetMaterial(0)->SetScalarParam(FLOAT_0, 1.f - (m_ReloadingTime - m_AccTime_Reload) / m_ReloadingTime);
+		// TimerUI
+		CGameMgr::GetInst()->SetTimerUI(m_ReloadingTime - m_AccTime_Reload, m_ReloadingTime);
 
 		// 재장전 사운드 재생
 		if (bEmptyReload)
@@ -392,14 +391,6 @@ void GunController::Reload()
 		{
 			m_ReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
 		}
-
-
-		// 남은 시간 글씨 출력
-		if (m_ReloadingTime - m_AccTime_Reload > 0.f)
-		{
-			swprintf_s(text, L"%.1f", m_ReloadingTime - m_AccTime_Reload);
-		}
-		m_ReloadUI->UI()->GetTextInfoRef()[0].Text = text;
 	}
 
 
