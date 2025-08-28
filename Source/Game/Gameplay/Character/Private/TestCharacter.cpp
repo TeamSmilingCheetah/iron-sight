@@ -169,17 +169,9 @@ void TestCharacter::Trace()
 		else if (m_VisionScript->IsTargetView())
 		{
 			// 추적 대상을 향해 이동
-			set<CScript*> Script = m_VisionScript->GetTargetScript();
+			CScript* Script = m_VisionScript->GetTargetScript();
 
-			// 버그에 대비하여 만일 충돌된 대상이 없다면 강제적으로 전환
-			// 더미데이터로 내버려둠
-			if (Script.empty())
-			{
-
-			}
-
-			CScript* pScript = *Script.begin();
-			Vec3 TargetPos = pScript->Transform()->GetRelativePos();
+			Vec3 TargetPos = Script->Transform()->GetRelativePos();
 			Vec3 pPos = Transform()->GetRelativePos();
 
 			Vec3 MoveDir = TargetPos - pPos;

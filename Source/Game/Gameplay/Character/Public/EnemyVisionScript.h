@@ -6,9 +6,10 @@ class EnemyVisionScript :
 {
 private:
 	SCRIPT_TYPE m_TargetType;
-	set<CScript*> m_SetScript;
+	CScript*	m_TargetScript;
 
 	float		m_VisionRange;
+	float		m_VisionAngle;
 	float		m_AtkRange;
 	float		m_AtkRgmax;
 
@@ -24,6 +25,8 @@ public:
 	void Overlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 	void EndOverlap(IColliderBase* InCollider, IColliderBase* InOtherCollider) override;
 
+	void VisionCheck();
+
 	void SaveComponent(FILE* _File) override;
 	void LoadComponent(FILE* _File) override;
 
@@ -33,7 +36,7 @@ public:
 	bool IsTargetView() { return (m_Vision && m_RayTarget); }
 	bool IsTargetRange() { return (m_Vision && m_RayAtkRg); }
 
-	const set<CScript*>& GetTargetScript() { return m_SetScript; }
+	CScript* GetTargetScript() { return m_TargetScript; }
 
 public:
 	CLONE(EnemyVisionScript)
