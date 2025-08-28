@@ -157,8 +157,8 @@ void CAnimator3D::FinalTick()
 		// 현재 클립이 끝난 경우
 		if (m_CurClipCurFrameIdx >= m_CurClip->GetFrameLength())
 		{
-			// 다음 애니메이션이 있거나 다음 애니메이션이 없지만 Repeat인 경우
-			if (m_NextClip != nullptr || m_CurClip->IsLoop())
+			// Repeat인 경우
+			if (m_CurClip->IsLoop())
 			{
 				while (m_CurClipCurFrameIdx >= m_CurClip->GetFrameLength())
 				{
@@ -166,11 +166,17 @@ void CAnimator3D::FinalTick()
 				}
 			}
 
-			// 다음 애니메이션이 없고 Repeat이 아닌 경우. 마지막 프레임에서 정지
+			// Repeat이 아닌 경우.
 			else
 			{
+				// 마지막 프레임으로 고정
 				m_CurClipCurFrameIdx = m_CurClip->GetFrameLength() - 1;
-				Pause();
+
+				// 다음 애니메이션이 없다면 정지. 다음 애니메이션이 있으면 마지막 프레임을 계속 재생
+				if (m_NextClip == nullptr)
+				{
+					Pause();
+				}
 			}
 		}
 

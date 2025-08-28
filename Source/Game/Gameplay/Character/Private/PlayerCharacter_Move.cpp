@@ -76,23 +76,23 @@ void PlayerCharacter::UpdateMove()
 
 	if (CanRun())
 	{
-		ForceScar = 80.f;
-		m_MaxSpeed = 20.f;
+		ForceScar = 8000.f;
+		m_MaxSpeed = 2000.f;
 	}
 	else if (m_MotionState == MOTION_STATE::CROUCH)
 	{
-		ForceScar = 30.f;
-		m_MaxSpeed = 5.f;
+		ForceScar = 3000.f;
+		m_MaxSpeed = 500.f;
 	}
 	else if (m_MotionState == MOTION_STATE::PRONE)
 	{
-		ForceScar = 20.f;
-		m_MaxSpeed = 2.f;
+		ForceScar = 2000.f;
+		m_MaxSpeed = 200.f;
 	}
 	else
 	{
-		ForceScar = 50.f;
-		m_MaxSpeed = 10.f;
+		ForceScar = 5000.f;
+		m_MaxSpeed = 1000.f;
 	}
 
 	// 해당하는 방향으로 벡터를 추가한다.
@@ -142,10 +142,16 @@ void PlayerCharacter::UpdateMove()
 		m_Velocity += m_Accel * DT;
 
 		// 최대속도 확인(땅위에 있을 경우에만 판단)
-		if (IsGround() && m_MaxSpeed < m_Velocity.Length())
+		// x, z에 대해서만 적용. y는 m_GravityMaxSpeed로 별도 적용
+		Vec3 xzVelocity = Vec3(m_Velocity.x, 0.f, m_Velocity.z);
+
+		if (IsGround() && m_MaxSpeed < xzVelocity.Length())
 		{
-			m_Velocity.Normalize();
-			m_Velocity *= m_MaxSpeed;
+			xzVelocity.Normalize();
+			xzVelocity *= m_MaxSpeed;
+
+			m_Velocity.x = xzVelocity.x;
+			m_Velocity.z = xzVelocity.z;
 		}
 	}
 
@@ -153,14 +159,16 @@ void PlayerCharacter::UpdateMove()
 	else if (IsGround())
 	{
 		// 속도의 반대방향으로 마찰계수*질량을 곱합
-		Vec3 vFriction = -m_Velocity;
+		Vec3 horizontal = Vec3(m_Velocity.x, 0.f, m_Velocity.z);
+		Vec3 vFriction = -horizontal;
 		vFriction.Normalize();
 		vFriction *= m_Friction * m_Mass * DT;
 
 		// 마찰력이 더 높다면 속도0
 		if (m_Velocity.Length() < vFriction.Length())
 		{
-			m_Velocity = Vec3(0.f, 0.f, 0.f);
+			m_Velocity.x = 0.f;
+			m_Velocity.z = 0.f;
 		}
 		else
 		{
@@ -226,35 +234,31 @@ void PlayerCharacter::UpdateGravity()
 	constexpr float Tolerance = 1.0f;
 
 	// Landscape 기반 지면 판정
-	m_IsGround = (CurrentPosition.y <= GroundHeight + Tolerance);
+	//m_IsGround = (CurrentPosition.y <= GroundHeight + Tolerance);
+	//
+	//// 추가적으로 충돌 노말 벡터를 통한 지면 판정도 고려 (계단, 경사면 등)
+	//if (!m_IsGround)
+	//{
+	//	for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
+	//	{
+	//		// 노말의 y성분이 0.3 이상이면 지면으로 판단 (약 60도)
+	//		if (m_vecCollisionNormal[i].y > 0.3f)
+	//		{
+	//			m_IsGround = true;
+	//			break;
+	//		}
+	//	}
+	//}
 
-	// 추가적으로 충돌 노말 벡터를 통한 지면 판정도 고려 (계단, 경사면 등)
-	if (!m_IsGround)
-	{
-		for (int i = 0; i < m_vecCollisionNormal.size(); ++i)
-		{
-			// 노말의 y성분이 0.3 이상이면 지면으로 판단 (약 60도)
-			if (m_vecCollisionNormal[i].y > 0.3f)
-			{
-				m_IsGround = true;
-				break;
-			}
-		}
-	}
-
-	Vec3 gravityDir = Vec3(0.f, -1.f, 0.f);
 	if (!IsGround())
 	{
-		// 공중에 있을 때만 중력 적용
-		m_GravityVelocity += (gravityDir * m_GravityAccel) * DT;
-
 		// 최대 중력속도 제한
-		m_GravityVelocity.y = max(m_GravityVelocity.y, -m_GravityMaxSpeed);
+		m_Velocity.y = max(m_Velocity.y - m_GravityAccel * DT, -m_GravityMaxSpeed);
 	}
 	else
 	{
 		// 지면에 있으면 하향 중력 속도만 초기화
-		m_GravityVelocity.y = max(m_GravityVelocity.y, 0.f);
+		m_Velocity.y = max(m_Velocity.y, 0.f);
 
 		// TODO(Ssio): State
 		// if (m_ActionState == ACTION_STATE::JUMP)
@@ -268,14 +272,11 @@ void PlayerCharacter::UpdateGravity()
 	{
 		LOG_INFO("[Player_Move] Space Pushed!");
 
-		m_GravityVelocity += Vec3(0.f, 1.f, 0.f) * m_JumpPower;
+		m_Velocity.y = m_JumpPower;
 		
 		// 상태
 		StateMachine()->SetChange(L"Player_Jump_Up");
 	}
-
-	// 최종 속도에 중력 속도 합산
-	m_Velocity.y = m_GravityVelocity.y;
 }
 
 void PlayerCharacter::UpdateCollision()
@@ -600,24 +601,24 @@ void PlayerCharacter::UpdatePosition()
 {
 	// 기본 위치 업데이트
 	Vec3 vPos = Transform()->GetRelativePos();
-	vPos += m_Velocity * 100 * DT;
+	vPos += m_Velocity * DT;
 
 	// Landscape 높이 보정
-	float groundHeight = GetLandscapeHeight(vPos.x, vPos.z);
+	//float groundHeight = GetLandscapeHeight(vPos.x, vPos.z);
 
-	// 지면보다 아래로 내려갔다면 높이 보정
-	if (vPos.y < groundHeight)
-	{
-		vPos.y = groundHeight;
+	//// 지면보다 아래로 내려갔다면 높이 보정
+	//if (vPos.y < groundHeight)
+	//{
+	//	vPos.y = groundHeight;
 
-		// 지면에 착지 시 하향 중력 속도 초기화
-		m_GravityVelocity.y = max(m_GravityVelocity.y, 0.f);
+	//	// 지면에 착지 시 하향 중력 속도 초기화
+	//	m_GravityVelocity.y = max(m_GravityVelocity.y, 0.f);
 
-		// 지면 판정 갱신
-		m_IsGround = true;
-	}
+	//	// 지면 판정 갱신
+	//	m_GroundState = GROUND_STATE::OnGround;
+	//}
 
-	// 최종 위치 적용
+	//// 최종 위치 적용
 	Transform()->SetRelativePos(vPos);
 }
 

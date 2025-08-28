@@ -71,7 +71,7 @@ void TestLevel::CreateTestLevel()
 		LevelRawPtr,
 		L"FBX\\ak47_test.fbx",
 		L"AKM",
-		Vec3(3770.f, 0.f, 1640.f),
+		Vec3(2770.f, 0.f, 1640.f),
 		Vec3(0.f, 0.f, 0.f),
 		Vec3(700.f, 700.f, 700.f),
 		{
@@ -414,24 +414,24 @@ void TestLevel::CreateTestLevel()
 	// pLevel->AddObject(1, testPlayer, false);
 
 	// Temp Landscape
-	// GameFactory::MakeFBXObject(
-	// 	LevelRawPtr,
-	// 	L"FBX\\Props\\Death Box\\box.fbx",
-	// 	L"TempLandscape",
-	// 	Vec3(0.f, -800.f, 0.f),
-	// 	Vec3(0.f, 0.f, 0.f),
-	// 	Vec3(20000.f, 200.f, 20000.f),
-	// 	{
-	// 		[](CGameObject* obj)
-	// 		{
-	// 			obj->AddComponentRecursive<FMeshCollider>();
-	// 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
-	// 			obj->Transform()->SetFrustumCheck(false);
-	// 		}
-	// 	},
-	// 	1,
-	// 	true
-	// );
+	 GameFactory::MakeFBXObject(
+	 	LevelRawPtr,
+	 	L"FBX\\Props\\Death Box\\box.fbx",
+	 	L"TempLandscape",
+	 	Vec3(0.f, -800.f, 0.f),
+	 	Vec3(0.f, 0.f, 0.f),
+	 	Vec3(20000.f, 200.f, 20000.f),
+	 	{
+	 		[](CGameObject* obj)
+	 		{
+	 			obj->AddComponentRecursive<FMeshCollider>();
+	 			obj->MeshCollider()->SetMeshType(EMeshColliderType::Original);
+	 			obj->Transform()->SetFrustumCheck(false);
+	 		}
+	 	},
+	 	1,
+	 	true
+	 );
 
 	//GameFactory::MakeFBXObject(
 	//	LevelRawPtr,

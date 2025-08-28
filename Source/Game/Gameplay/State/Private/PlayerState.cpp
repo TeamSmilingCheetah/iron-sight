@@ -101,7 +101,7 @@ void PlayerState::ControlMoveAnimation()
 
 	m_Delay = 0.07f;
 	// 만약 플레이어가 달리는 중이라면
-	if (15.f < m_PlayerScript->GetPlayerVelocity().Length())
+	if (1500.f < m_PlayerScript->GetPlayerVelocity().Length())
 	{
 		if (KEY_PRESSED(KEY::W))
 		{

@@ -302,7 +302,7 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	Common::SetObjectName(RawGroundCheckRay, L"Player Ground Check Ray");
 	Common::AddComponentToObject<FRayCollider>(RawGroundCheckRay);
-	Collider::SetRayColliderProperties(RawGroundCheckRay, Vec3(0.f, -1.f, 0.f), Vec3(0.f, 100.f, 0.f), 500.f, true);
+	Collider::SetRayColliderProperties(RawGroundCheckRay, Vec3(0.f, -1.f, 0.f), Vec3(0.f, 500.f, 0.f), 1500.f, true);
 
 	Common::AddScriptToObject(RawGroundCheckRay, SCRIPT_TYPE::GROUNDCHECK);
 
