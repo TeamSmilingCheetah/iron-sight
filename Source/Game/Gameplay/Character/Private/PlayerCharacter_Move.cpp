@@ -155,8 +155,8 @@ void PlayerCharacter::UpdateMove()
 		}
 	}
 
-	// 방향키 입력이 없다면 마칠계수에 따라 감속(땅에있다는 조건추가)
-	else if (IsGround())
+	// 방향키 입력이 없다면 마칠계수에 따라 감속
+	else
 	{
 		// 속도의 반대방향으로 마찰계수*질량을 곱합
 		Vec3 horizontal = Vec3(m_Velocity.x, 0.f, m_Velocity.z);
@@ -164,7 +164,7 @@ void PlayerCharacter::UpdateMove()
 		vFriction.Normalize();
 		vFriction *= m_Friction * m_Mass * DT;
 
-		// 마찰력이 더 높다면 속도0
+		// 마찰력이 더 높다면 속도 0
 		if (m_Velocity.Length() < vFriction.Length())
 		{
 			m_Velocity.x = 0.f;
