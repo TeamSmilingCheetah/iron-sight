@@ -41,6 +41,9 @@ jobs:
         run: |
           chcp 65001
           msbuild IronSight.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:PlatformToolset=v143 /p:AdditionalOptions="/source-charset:utf-8 /execution-charset:utf-8" /verbosity:minimal
+        env:
+          _CL_: "/source-charset:utf-8 /execution-charset:utf-8"
+          MSBUILD_UNITY_CHARSET: "utf-8"
 
       - name: Upload Build Artifacts
         if: always()
