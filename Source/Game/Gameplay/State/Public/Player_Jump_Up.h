@@ -1,7 +1,7 @@
 #pragma once
 #include "Game/Gameplay/State/Public/PlayerState.h"
 
-class Player_Jump :
+class Player_Jump_Up :
 	public PlayerState
 {
 private:
@@ -14,8 +14,8 @@ public:
 
 
 public:
-	CLONE(Player_Jump)
-	Player_Jump();
-	~Player_Jump() override;
+	CLONE(Player_Jump_Up)
+	Player_Jump_Up();
+	~Player_Jump_Up() override;
 };
 

@@ -646,9 +646,9 @@ struct FRayCollisionInfo
 
 	FRayCollisionInfo()
 		: RayObject(nullptr)
-		  , HitCollider(nullptr)
-		  , PrevCollider(nullptr)
-		  , Length(1000000.f)
+		, HitCollider(nullptr)
+		, PrevCollider(nullptr)
+		, Length(1000000.f)
 	{
 	}
 

@@ -40,6 +40,13 @@ CState* Engine::Common::LoadState(const wstring& PStateName)
 	return CStateMgr::GetInst()->GetState(PStateName);
 }
 
+void Engine::Common::AddScriptToObject(CGameObject* PObject, SCRIPT_TYPE PScriptType)
+{
+	CScript* Script = CScriptMgr::GetInst()->GetScript(PScriptType);
+
+	PObject->AddComponent(Script);
+}
+
 
 void Engine::Layer::SetLayerName(CLevel* PLevel, int PLayerNumber, const ::wstring& PLayerName)
 {

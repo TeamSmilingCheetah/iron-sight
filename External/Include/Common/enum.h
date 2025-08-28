@@ -338,6 +338,9 @@ enum class SCRIPT_TYPE : UINT8
 	TESTFADEINOUTRESET,
 	PLAYERREVIVE,
 
+	// GroundCheck
+	GROUNDCHECK,
+
 	NONE = 0xFF,
 };
 

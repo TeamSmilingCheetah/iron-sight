@@ -13,7 +13,7 @@ private:
 	PlayerCharacter*	m_PlayerScript;
 	bool				m_CanExitDuringAnimation;
 
-private:
+protected:
 	void ControlMoveAnimation();
 
 public:

@@ -38,14 +38,13 @@ PlayerCharacter::PlayerCharacter()
 	, m_RunFootstepSoundIdx(-1)
 	, m_Force(0.f)
 	, m_Velocity(0.f)
-	, m_GravityVelocity(0.f)
 	, m_Mass(3.f)
-	, m_Friction(100.f)
-	, m_MaxSpeed(100.f)
-	, m_GravityAccel(40.f)
-	, m_GravityMaxSpeed(200.f)
-	, m_JumpPower(20.f)
-	, m_IsGround(true)
+	, m_Friction(10000.f)
+	, m_MaxSpeed(10000.f)
+	, m_GravityAccel(4000.f)
+	, m_GravityMaxSpeed(40000.f)
+	, m_JumpPower(2200.f)
+	, m_GroundState(GROUND_STATE::InAir)
 	, m_bLean(false)
 	, m_MouseSensitivity(0.1f)
 	, m_bHitSoundPlayed(false)
@@ -70,6 +69,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_OptionUIOpened(false)
 	, m_bMouseActive(false)
 	, m_StateAccTime(0.f)
+	, m_InteractionScript(nullptr)
 {
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Player Mass", &m_Mass });	// 질량
 	AddScriptParam(tScriptParam{ SCRIPT_PARAM::FLOAT, "Friction", &m_Friction });	// 마찰계수
@@ -137,6 +137,16 @@ void PlayerCharacter::Tick()
 	// 조건부 로직
 	// ==========
 
+	// TEST(Ssio): Jump
+	if (IsInAir())
+	{
+		StateMachine()->SetChange(L"Player_Jump_Loop");
+	}
+	else if (IsLanding())
+	{
+		StateMachine()->SetChange(L"Player_Jump_Down");
+	}
+
 	// 마우스가 켜진 상태에서 키입력 방지,
 	if (!m_bMouseActive && !CGameMgr::GetInst()->GetCamScript()->GetFlag(FREE_PS))
 	{
@@ -180,7 +190,7 @@ void PlayerCharacter::Tick()
 
 void PlayerCharacter::PlayerView()
 {
-	CGameObject* MainCam = CGameMgr::GetInst()->GetMainCam();
+	CGameObject* MainCam = CGameMgr::GetInst()->GetMainCamera();
 	CameraController* pCamScript = CGameMgr::GetInst()->GetCamScript();
 
 	bool bRecover = pCamScript->GetFlag(SEARCH_RECOVER);
@@ -971,7 +981,7 @@ void PlayerCharacter::ProgressDeadState()
 }
 void PlayerCharacter::ProgressJumpState()
 {
-	if (m_IsGround)
+	if (IsGround())
 	{
 		StateMachine()->SetCanExit(true);
 		StateMachine()->SetChange(L"Player_Idle");

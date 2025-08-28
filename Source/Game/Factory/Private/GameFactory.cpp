@@ -12,8 +12,7 @@
 #include "Engine/Runtime/Public/Component/Physics/SphereCollider.h"
 
 #include "Engine/System/Public/Manager/CStateMgr.h"
-#include "Game/Gameplay/Character/Public/CameraController.h"
-#include "Game/Gameplay/State/Public/Player_Idle.h"
+
 
 using namespace Engine;
 
@@ -94,7 +93,7 @@ void GameFactory::LoadMainCamera(CLevel* PLevel)
 	auto RawCameraPtr = Camera.get();
 	Camera.release();
 
-	Common::AddScriptToObject<CameraController>(RawCameraPtr);
+	Common::AddScriptToObject(RawCameraPtr, SCRIPT_TYPE::CAMERASCRIPT);
 
 	Common::AddComponentToObject<CCamera>(RawCameraPtr);
 	Camera::SetCameraOptions(RawCameraPtr, PERSPECTIVE, 0);
@@ -195,7 +194,9 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	// StateMachine
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Idle"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump_Up"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump_Loop"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump_Down"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Dead"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Heal"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Prepare"));
@@ -208,8 +209,10 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	StateMachine::AddAnyTransition(Player, L"Player_Idle");
 	StateMachine::AddAnyTransition(Player, L"Player_Dead");
+	StateMachine::AddAnyTransition(Player, L"Player_Jump_Loop"); // 떨어질 때
 
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Jump");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Jump_Up");		// 점프 시작
+	StateMachine::AddTransition(Player, L"Player_Jump_Loop", L"Player_Jump_Down");	// 착지
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Heal");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Fire");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Reload");
@@ -219,7 +222,6 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_Low");
 	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
-
 
 	Common::AddComponentToObject<FRayCollider>(Player);
 	Collider::SetRayColliderProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);
@@ -248,9 +250,12 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_right.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_run_right.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_walk_right.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_idle.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_idle_crouching.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_idle.anim"));
-	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_idle.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_jump_up.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_jump_loop.anim"));
+	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_jump_down.anim"));
 
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_first_aid_kit.anim"));
 	Animation::AddAnimationClip(Player, IO::LoadAsset<CAnimation>(L"Animation\\Armature_prone_energy_drink.anim"));
@@ -289,6 +294,19 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	Collider::SetColliderProperties(RawHeaderCollider, {150.f, 150.f, 150.f}, {0, -27.f, 0}, true, false);
 
 	Common::AddChild(Player, RawHeaderCollider);
+
+	// GroundCheckRay Object
+	auto GroundCheckRay = Common::CreateNewObject();
+	auto RawGroundCheckRay = GroundCheckRay.get();
+	GroundCheckRay.release();
+
+	Common::SetObjectName(RawGroundCheckRay, L"Player Ground Check Ray");
+	Common::AddComponentToObject<FRayCollider>(RawGroundCheckRay);
+	Collider::SetRayColliderProperties(RawGroundCheckRay, Vec3(0.f, -1.f, 0.f), Vec3(0.f, 500.f, 0.f), 1500.f, true);
+
+	Common::AddScriptToObject(RawGroundCheckRay, SCRIPT_TYPE::GROUNDCHECK);
+
+	Common::AddChild(Player, RawGroundCheckRay);
 
 	Level::AddObjectToLayer(PLevel, Player, 3, true);
 

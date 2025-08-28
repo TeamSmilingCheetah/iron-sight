@@ -405,8 +405,6 @@ FComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new FPlaneCollider;
 	case COMPONENT_TYPE::BOX_COLLIDER:
 		return new FBoxCollider;
-	case COMPONENT_TYPE::RAY_COLLIDER:
-		return new FRayCollider;
 	case COMPONENT_TYPE::FLIPBOOKPLAYER:
 		return new CFlipbookPlayer;
 	case COMPONENT_TYPE::ANIMATOR3D:
@@ -431,6 +429,8 @@ FComponent* CLevelMgr::CreateComponent(COMPONENT_TYPE _Type)
 		return new CDecal;
 	case COMPONENT_TYPE::LANDSCAPE:
 		return new FLandscape;
+	case COMPONENT_TYPE::RAY_COLLIDER:
+		return new FRayCollider;
 	case COMPONENT_TYPE::UI:
 		return new CUI;
 	case COMPONENT_TYPE::UIRENDER:

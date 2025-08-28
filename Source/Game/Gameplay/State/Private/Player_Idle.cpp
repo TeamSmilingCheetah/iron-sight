@@ -26,6 +26,8 @@ void Player_Idle::FinalTick_Override()
 	{
 		Play_Idle_Anim();
 	}
+
+	//ControlMoveAnimation();
 }
 
 void Player_Idle::Exit_Override()

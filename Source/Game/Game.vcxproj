@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Factory\Public\GameFactory.h" />
     <ClInclude Include="Gameplay\Character\Public\CameraEffect.h" />
+    <ClInclude Include="Gameplay\Character\Public\GroundCheck.h" />
     <ClInclude Include="Gameplay\Character\Public\InteractionHandler.h" />
     <ClInclude Include="Gameplay\Door\Public\DoorScript.h" />
     <ClInclude Include="Gameplay\Event\Public\EventScriptBase.h" />
@@ -163,8 +164,10 @@
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Fire.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Reload.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Idle.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_Jump.h" />
     <ClInclude Include="Gameplay\State\Public\PlayerState.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Jump_Down.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Jump_Loop.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Jump_Up.h" />
     <ClInclude Include="Gameplay\TestSound.h" />
     <ClInclude Include="Gameplay\UI\Public\KillinfoUIScript.h" />
     <ClInclude Include="Gameplay\UI\Public\MinimapCameraScript.h" />
@@ -187,6 +190,7 @@
     <ClCompile Include="Factory\Private\GameFactory.cpp" />
     <ClCompile Include="Gameplay\Character\Private\CameraEffect.cpp" />
     <ClCompile Include="Gameplay\Character\Private\EnemyVisionScript.cpp" />
+    <ClCompile Include="Gameplay\Character\Private\GroundCheck.cpp" />
     <ClCompile Include="Gameplay\Character\Private\InteractionHandler.cpp" />
     <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp" />
     <ClCompile Include="Gameplay\Event\Private\EventScriptBase.cpp" />
@@ -211,8 +215,10 @@
     <ClCompile Include="Gameplay\State\Private\Player_Gun_Fire.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Gun_Reload.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Idle.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_Jump.cpp" />
     <ClCompile Include="Gameplay\State\Private\PlayerState.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Jump_Down.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Jump_Loop.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Jump_Up.cpp" />
     <ClCompile Include="Gameplay\TestSound.cpp" />
     <ClCompile Include="Gameplay\UI\Private\KillinfoUIScript.cpp" />
     <ClCompile Include="Gameplay\UI\Private\MinimapCameraScript.cpp" />

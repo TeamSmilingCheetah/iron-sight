@@ -17,7 +17,9 @@ enum class PLAYER_STATE
 {
 	Player_Dead,
 	Player_Idle,
-	Player_Jump,
+	Player_Jump_Up,
+	Player_Jump_Loop,
+	Player_Jump_Down,
 	Player_Grenade_Prepare,
 	Player_Grenade_Throw_High,
 	Player_Grenade_Throw_Low,
@@ -31,6 +33,13 @@ enum class MOTION_STATE : uint8_t
 	STAND,	// 서 있음
 	CROUCH,	// 앉아 있음
 	PRONE,	// 엎드려 있음
+};
+
+enum class GROUND_STATE : uint8_t
+{
+	OnGround,
+	InAir,
+	Landing,
 };
 
 class PlayerCharacter :
@@ -49,15 +58,14 @@ private:
 	Vec3 m_Force;				// 누적 힘
 	Vec3 m_Velocity;			// 속도
 	Vec3 m_Accel;				// 가속도
-	Vec3 m_GravityVelocity;		// 중력 속도
 	float m_Mass;				// 질량
 	float m_Friction;			// 마찰계수
-	float m_MaxSpeed;			// 최대 속력 제한
+	float m_MaxSpeed;			// 최대 속력 제한 (x,z)
 	float m_GravityAccel;		// 중력가속도 크기
-	float m_GravityMaxSpeed;	// 중력으로 인해서 발생하는 속도의 최대 제한치
+	float m_GravityMaxSpeed;	// 중력으로 인해서 발생하는 속도의 최대 제한치 (y)
 	float m_JumpPower;			// 점프용
 
-	bool m_IsGround;				// 지상위에 서있는지 판정
+	GROUND_STATE m_GroundState;
 	bool m_bLean;
 	bool m_bMouseActive;			//  마우스 활성화
 
@@ -159,8 +167,13 @@ public:
 	}
 
 	bool IsInventoryOpened() const { return m_InventoryOpened; }
-	bool IsGround() const { return m_IsGround; }
 	void SetOptionUIOpened(bool _Opened) { m_OptionUIOpened = _Opened; }
+	void SetGroundState(GROUND_STATE PState) { m_GroundState = PState; }
+
+	GROUND_STATE GetGroundState() const { return m_GroundState; }
+	bool IsGround() const { return m_GroundState == GROUND_STATE::OnGround; }
+	bool IsInAir() const { return m_GroundState == GROUND_STATE::InAir; }
+	bool IsLanding() const { return m_GroundState == GROUND_STATE::Landing; }
 
 	// Heal
 	void TriggerHeal(ITEM_TYPE PHealType);
@@ -179,6 +192,7 @@ public:
 	InventoryController* GetInventory() const { return m_InventoryScript; }
 
 	Vec3 GetPlayerVelocity() const { return m_Velocity; }
+	float GetGravityAccel() const { return m_GravityAccel; }
 
 	PLAYER_STATE GetStateEnum() const;
 
