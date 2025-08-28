@@ -33,7 +33,7 @@ void FSoundManager::Init()
 	FMOD_RESULT result = FMODSystem->createDSPByType(FMOD_DSP_TYPE_LOWPASS, &GlobalLowPassDSP);
 	if (result != FMOD_OK || !GlobalLowPassDSP)
 	{
-		assert(false && "Low-pass DSP 생성 실패");
+		assert(false && u8"Low-pass DSP 생성 실패");
 	}
 	// 초기에는 효과가 없도록 컷오프 주파수를 최대로 설정
 	GlobalLowPassDSP->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, 22050.0f);
