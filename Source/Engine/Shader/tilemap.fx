@@ -62,7 +62,7 @@ float4 PS_TileMap(VS_OUT _in) : SV_Target
 
     for (int i = 0; i < g_Light2DCount; ++i)
     {
-        CalcLight2D(i, _in.vWorldPos, LightColor);
+        Phong2D(i, _in.vWorldPos, LightColor);
     }
 
     vOutColor.rgb *= LightColor;

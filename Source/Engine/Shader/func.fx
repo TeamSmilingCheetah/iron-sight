@@ -29,7 +29,7 @@ float4 GetDebugColor(float2 _UV, int _Level)
     }
 }
 
-void CalcLight2D(int _LightIdx, float3 _WorldPos, inout float3 _LightColor)
+void Phong2D(int _LightIdx, float3 _WorldPos, inout float3 _LightColor)
 {
     float DistRatio = 1.f;
 
@@ -56,7 +56,7 @@ void CalcLight2D(int _LightIdx, float3 _WorldPos, inout float3 _LightColor)
     }
 }
 
-void CalcLight3D(int _LightIdx, float3 _ViewPos, float3 _ViewNormal
+void Phong3D(int _LightIdx, float3 _ViewPos, float3 _ViewNormal
                , inout float3 _LightColor, inout float3 _vSpecPow)
 {
     tLight3DInfo Light = g_Light3DInfo[_LightIdx];

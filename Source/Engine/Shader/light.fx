@@ -55,7 +55,7 @@ PS_OUT PS_DirLight(VS_OUT _in)
                 
     float3 vLightColor = (float3) 0.f;
     float3 vSpecPow = 0.f;    
-    CalcLight3D(g_int_0, vViewPos.xyz, vViewNormal, vLightColor, vSpecPow);
+    Phong3D(g_int_0, vViewPos.xyz, vViewNormal, vLightColor, vSpecPow);
     
     output.vDiffuse = float4(vLightColor, 1.f);
     output.vSpecular = float4(vSpecPow, 1.f);
@@ -114,7 +114,7 @@ PS_OUT PS_PointLight(VS_OUT _in)
                 
     float3 vLightColor = (float3) 0.f;
     float3 vSpecPow = 0.f;
-    CalcLight3D(g_int_0, vViewPos.xyz, vViewNormal, vLightColor, vSpecPow);
+	Phong3D(g_int_0, vViewPos.xyz, vViewNormal, vLightColor, vSpecPow);
     
     output.vDiffuse = float4(vLightColor, 1.f);
     output.vSpecular = float4(vSpecPow, 1.f);
