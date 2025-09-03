@@ -132,26 +132,26 @@ float NDF_GGX(float _NoH, float _Roughness)
 {
 	const float alpha = _Roughness * _Roughness;
 	const float alphaSq = alpha * alpha;
-	const float denom = _NoH * _NoH * (alphaSq - 1) + 1;
+	const float denom = _NoH * _NoH * (alphaSq - 1.0) + 1.0;
 
 	return alphaSq / (PI * denom * denom);
 }
 
 // Equation 4, only used for analytic light sources, not for Environment IBL
-float Smith_SchlickGGX(float _NoL, float _NoO, float _Roughness)
+float Smith_SchlickGGX(float _NoL, float _NoV, float _Roughness)
 {
-	const float k = (_Roughness + 1) * (_Roughness + 1) / 8.f;
+	const float k = (_Roughness + 1.0) * (_Roughness + 1.0) / 8.0;
     
-	const float Gl = _NoL / (_NoL * (1 - k) + k);
-	const float Gv = _NoO / (_NoO * (1 - k) + k);
+	const float Gl = _NoL / (_NoL * (1.0 - k) + k);
+	const float Gv = _NoV / (_NoV * (1.0 - k) + k);
     
 	return Gl * Gv;
 }
 
 // Equation 5, Fresnel Function
-float3 SchlickFresnel(float3 _F0, float _NoH)
+float3 SchlickFresnel(float3 _F0, float _LoH)
 {
-	return _F0 + (1 - _F0) * pow(1 - _NoH, 5);
+	return _F0 + (1.0 - _F0) * pow(1.0 - _LoH, 5);
 }
 
 int IntersectsRay(float3 _Pos[3], float3 _vStart, float3 _vDir

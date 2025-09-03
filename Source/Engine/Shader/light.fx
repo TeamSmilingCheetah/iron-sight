@@ -75,22 +75,25 @@ PS_OUT PS_DirLight(VS_OUT _in)
 	float3 vViewLight = normalize(mul(float4(-Light.vDir, 0.f), g_matView).xyz);
 	float3 vViewHalfway = normalize(vViewLight + pixelToEye);
 
+	//normalize(vViewNormal);
+
 	float NoL = max(0.f, dot(vViewNormal, vViewLight));
 	float NoH = max(0.f, dot(vViewNormal, vViewHalfway));
-	float NoO = max(0.f, dot(vViewNormal, pixelToEye));
+	float NoV = max(0.f, dot(vViewNormal, pixelToEye));
+	float LoH = max(0.f, dot(vViewLight, vViewHalfway));
 
     // Diffuse Term
 	const float3 Fdielectric = (float3) 0.04;
 	float3 F0 = lerp(Fdielectric, vBaseColor, Metallic);
-	float3 F = SchlickFresnel(F0, max(0.f, dot(vViewHalfway, pixelToEye)));
-	float3 kd = ((float3) 1.f - F) * ((float3) 1.f - Metallic);
-	float3 diffuseBRDF = kd * vBaseColor;
+	float3 F = SchlickFresnel(F0, LoH);
+	float3 kd = ((float3) 1.f - F) * (1.f - Metallic);
+	float3 diffuseBRDF = kd * vBaseColor;   // divide with PI ? 
 
     // Specular Term
 	float D = NDF_GGX(NoH, Roughness);
-	float G = Smith_SchlickGGX(NoL, NoO, Roughness);
+	float G = Smith_SchlickGGX(NoL, NoV, Roughness);
 
-	float3 specularBRDF = (F * D * G) / max(1e-5, 4.f * NoL * NoO);
+	float3 specularBRDF = (F * D * G) / max(1e-5, 4.0 * NoL * NoV);
 
     // 빛 세기
 	float3 Li = Light.info.vColor * NoL;
@@ -99,7 +102,7 @@ PS_OUT PS_DirLight(VS_OUT _in)
 
     // TEST(Ssio): Diffuse Texture에 DirectLighting 누적
     // TODO(Ssio) : LightMRT -> PBR 고려하여 RT 하나로 줄이기 고려
-	output.vDiffuse += float4(finalColor, 1.f);
+	output.vDiffuse.rgb += finalColor;
     
     return output;
 }
@@ -175,27 +178,28 @@ PS_OUT PS_PointLight(VS_OUT _in)
 	float3 vLightViewPos = (mul(float4(Light.WorldPos, 1.f), g_matView)).xyz;
 	float3 vViewLight = normalize(vLightViewPos - vViewPos.xyz);
 	float3 vViewHalfway = normalize(vViewLight + pixelToEye);
-
+    
 	float NoL = max(0.f, dot(vViewNormal, vViewLight));
 	float NoH = max(0.f, dot(vViewNormal, vViewHalfway));
-	float NoO = max(0.f, dot(vViewNormal, pixelToEye));
+	float NoV = max(0.f, dot(vViewNormal, pixelToEye));
+	float LoH = max(0.f, dot(vViewLight, vViewHalfway));
+
+    // Diffuse Term
+	const float3 Fdielectric = (float3) 0.04;
+	float3 F0 = lerp(Fdielectric, vBaseColor, Metallic);
+	float3 F = SchlickFresnel(F0, LoH);
+	float3 kd = ((float3) 1.f - F) * (1.f - Metallic);
+	float3 diffuseBRDF = kd * vBaseColor; // divide with PI ? 
 
     // Distance attenuation
 	float fDist = length(vLightViewPos - vViewPos.xyz);
 	float fDistRatio = saturate(1.f - (fDist / Light.Radius));
 
-    // Diffuse Term
-	const float3 Fdielectric = (float3) 0.04;
-	float3 F0 = lerp(Fdielectric, vBaseColor, Metallic);
-	float3 F = SchlickFresnel(F0, max(0.f, dot(vViewHalfway, pixelToEye)));
-	float3 kd = ((float3) 1.f - F) * ((float3) 1.f - Metallic);
-	float3 diffuseBRDF = kd * vBaseColor;
-
     // Specular Term
 	float D = NDF_GGX(NoH, Roughness);
-	float3 G = Smith_SchlickGGX(NoL, NoO, Roughness);
+	float3 G = Smith_SchlickGGX(NoL, NoV, Roughness);
 
-	float3 specularBRDF = (F * D * G) / max(1e-5, 4.f * NoL * NoO);
+	float3 specularBRDF = (F * D * G) / max(1e-5, 4.0 * NoL * NoV);
 
     // 빛 세기
 	float3 Li = Light.info.vColor * NoL * fDistRatio;

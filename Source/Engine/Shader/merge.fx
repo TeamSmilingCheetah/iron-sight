@@ -64,33 +64,37 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
         // Environment Lighting
 		Matrix matViewInv = g_mat_0;
 		float3 vWorldNormal = mul(float4(vViewNormal, 0.f), matViewInv);
-		float3 vPixelToEye = normalize(-vViewPos.xyz);
-		float3 vViewReflect = reflect(vPixelToEye, vViewNormal);
-		float3 vWorldReflect = mul(float4(vViewReflect, 0.f), matViewInv);
+		float3 vViewPixelToEye = normalize(-vViewPos.xyz);
+		float3 vWorldPixelToEye = mul(float4(vViewPixelToEye, 0.f), matViewInv).xyz;
+		float3 vWorldReflect = reflect(-vWorldPixelToEye, vWorldNormal);
+
+		float NoV = dot(vWorldNormal, vWorldPixelToEye);
 
         // DiffuseBRDF
-		const float3 Fdielectric = (float3) 0.04f;
+		const float3 Fdielectric = (float3) 0.04;
 		float3 F0 = lerp(Fdielectric, vColor, Metallic);
-		float3 F = SchlickFresnel(F0, max(0.0, dot(vViewNormal, vPixelToEye)));
-		float3 kd = (1.f - F) * (1.f - Metallic);
+		float3 F = SchlickFresnel(F0, max(0.0, NoV));
+		float3 kd = ((float3) 1.0 - F) * (1.0 - Metallic);
 
 		float3 diffuseIrradiance = g_texcube_0.Sample(g_sam_0, vWorldNormal).rgb;
 
-		float3 diffuseBRDF = kd * vColor * diffuseIrradiance / PI;
+		float3 diffuseIBL = kd * vColor * diffuseIrradiance;    // divide by PI ?
 
         // SpecularBRDF 
-		const uint mipLevels = 5;
+		const uint mipLevels = 5;   // Specular Cubemap의 mipmap 수 .. 너무 높은 레벨까지 사용하면 specular가 잘 드러나지 않음.
 		float3 specularIrradiance = g_texcube_1.SampleLevel(g_sam_0, vWorldReflect, Roughness * mipLevels).rgb;
 
         // LUT는 Clamp Sampler (g_sam_2) 사용
-		float2 LUT = LUTTex.Sample(g_sam_2, float2(dot(vPixelToEye, vViewNormal), Roughness)).rg;
+		float2 LUT = LUTTex.Sample(g_sam_2, float2(NoV, Roughness)).rg;
 
-		float3 specularBRDF = (LUT.r * F0 + LUT.g) * specularIrradiance;
-        
+		float3 specularIBL = (LUT.r * F0 + LUT.g) * specularIrradiance;
+
+        // Light 단계에서 계산한 직접광
 		float3 vDirectLighting = DirectLightingTex.Sample(g_sam_0, _in.vUV).rgb;
 
         // 환경광에 Ambient Occlusion 적용
-		float3 vEnvironmentLighting = (diffuseBRDF + specularBRDF) * AO;
+        // TEST(Ssio) : 환경광이 너무 강하게 적용되어서 0.8 곱해 둠
+		float3 vEnvironmentLighting = (diffuseIBL + specularIBL) * AO;
 
 		float4 Output = float4(vDirectLighting + vEnvironmentLighting, 1.f);
         
