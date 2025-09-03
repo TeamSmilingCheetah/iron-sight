@@ -1,20 +1,21 @@
 #include "pch.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Component/Light/CLight2D.h"
-#include "Runtime/Public/Component/Light/CLight3D.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/AssetManager.h"
-#include "System/Public/Manager/CFontMgr.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
-#include "System/Public/Manager/CUIMgr.h"
-#include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Light/CLight2D.h"
+#include "Engine/Runtime/Public/Component/Light/CLight3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
+#include "Engine/System/Public/Manager/CFontMgr.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Manager/CUIMgr.h"
+#include "Engine/System/Public/Rendering/Buffer/CConstBuffer.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 
 class CConstBuffer;
 
@@ -444,13 +445,35 @@ void CRenderMgr::Render_Clear()
 void CRenderMgr::MergeDeferredTarget()
 {
 	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
+
+	// Phong Shading
+	//m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+	//m_MergeMtrl->SetScalarParam(INT_0, 0);	// 0: Phong, 1: PBR, 2: Copy
+
+	// PBR
 	m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
-	m_MergeMtrl->SetScalarParam(INT_0, 0);
+	m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"MetallicTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"RoughnessTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_5, FAssetManager::GetInst()->FindAsset<CTexture>(L"AOTargetTex"));
+
+	m_MergeMtrl->SetTexParam(TEX_CUBE_0, m_Environment->GetDiffuseTex());
+	m_MergeMtrl->SetTexParam(TEX_CUBE_1, m_Environment->GetSpecularTex());
+
+	// TEST(Ssio): editor cam 우선 테스트
+	m_MergeMtrl->SetScalarParam(MAT_0, m_EditorCam->GetViewInvMat());
+	m_MergeMtrl->SetScalarParam(INT_0, 1);	// 0: Phong, 1: PBR, 2: Copy
+
 	m_MergeMtrl->Binding();
+
+	m_Environment->GetLUT()->Binding(26);
+	FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex")->Binding(27);
+
 
 	pRectMesh->Render(0);
 
@@ -458,6 +481,8 @@ void CRenderMgr::MergeDeferredTarget()
 	{
 		CTexture::Clear(i);
 	}
+	CTexture::Clear(26);
+	CTexture::Clear(27);
 }
 
 void CRenderMgr::MergeSpecifyTarget()

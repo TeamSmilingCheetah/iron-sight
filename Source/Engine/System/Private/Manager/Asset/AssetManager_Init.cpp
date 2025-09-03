@@ -105,8 +105,10 @@ void FAssetManager::CreateEngineGraphicShader()
 	pShader->AddTexParam("Normal", TEX_1);
 	pShader->AddTexParam("Metallic", TEX_2);
 	pShader->AddTexParam("Roughness", TEX_3);
+	pShader->AddTexParam("AO", TEX_4);
 	pShader->AddScalarParam("Metallic", FLOAT_0);
 	pShader->AddScalarParam("Roughness", FLOAT_1);
+	pShader->AddScalarParam("AO", FLOAT_2);
 	AddAsset(L"Std3D_DeferredShader", pShader);
 
 

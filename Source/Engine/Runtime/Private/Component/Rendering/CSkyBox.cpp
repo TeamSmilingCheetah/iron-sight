@@ -1,7 +1,9 @@
 #include "pch.h"
-#include "Runtime/Public/Component/Rendering/CSkyBox.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/AssetManager.h"
+#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
+
+#include "Engine/System/Public/Manager/CRenderMgr.h"
 
 CSkyBox::CSkyBox()
     : FRenderComponent(COMPONENT_TYPE::SKYBOX)
@@ -17,20 +19,22 @@ CSkyBox::~CSkyBox()
 
 void CSkyBox::FinalTick()
 {
+	// TEST(Ssio) : Environment
+	CRenderMgr::GetInst()->RegisterEnvironment(this);
 }
 
 void CSkyBox::Render()
 {
     Transform()->Binding();
 
-    if (SPHERE == m_Mode && nullptr != m_SkyBoxTex && !m_SkyBoxTex->IsCubeMap())
+    if (SPHERE == m_Mode && nullptr != m_EnvTex && !m_EnvTex->IsCubeMap())
     {
-        GetMaterial(0)->SetTexParam(TEX_0, m_SkyBoxTex);
+        GetMaterial(0)->SetTexParam(TEX_0, m_EnvTex);
     }
 
-    else if (CUBE == m_Mode && nullptr != m_SkyBoxTex && m_SkyBoxTex->IsCubeMap())
+    else if (CUBE == m_Mode && nullptr != m_EnvTex && m_EnvTex->IsCubeMap())
     {
-        GetMaterial(0)->SetTexParam(TEX_CUBE_0, m_SkyBoxTex);
+        GetMaterial(0)->SetTexParam(TEX_CUBE_0, m_EnvTex);
     }
 
     GetMaterial(0)->SetScalarParam(INT_0, static_cast<int>(m_Mode));
@@ -87,13 +91,13 @@ void CSkyBox::SetMode(SKYBOX_MODE _Mode)
 
 void CSkyBox::SaveComponent(FILE* _File)
 {
-	SaveAssetRef(m_SkyBoxTex, _File);
+	SaveAssetRef(m_EnvTex, _File);
 	fwrite(&m_Mode, sizeof(SKYBOX_MODE), 1, _File);
 }
 
 void CSkyBox::LoadComponent(FILE* _File)
 {
-	LoadAssetRef(m_SkyBoxTex, _File);
+	LoadAssetRef(m_EnvTex, _File);
 	fread(&m_Mode, sizeof(SKYBOX_MODE), 1, _File);
 	SetMode(m_Mode);
 	Transform()->SetFrustumCheck(false);

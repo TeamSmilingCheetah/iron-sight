@@ -402,6 +402,15 @@ int CDevice::CreateSamplerState()
 	Desc.MaxLOD = D3D11_FLOAT32_MAX;
 	DEVICE->CreateSamplerState(&Desc, m_Sampler[1].GetAddressOf());
 
+	// Clamp 필터
+	Desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	Desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	Desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	Desc.Filter = D3D11_FILTER_ANISOTROPIC;
+	Desc.MinLOD = 0;
+	Desc.MaxLOD = D3D11_FLOAT32_MAX;
+	DEVICE->CreateSamplerState(&Desc, m_Sampler[2].GetAddressOf());
+
 	CONTEXT->VSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
 	CONTEXT->HSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
 	CONTEXT->DSSetSamplers(1, 1, m_Sampler[0].GetAddressOf());
@@ -415,6 +424,13 @@ int CDevice::CreateSamplerState()
 	CONTEXT->GSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
 	CONTEXT->PSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
 	CONTEXT->CSSetSamplers(2, 1, m_Sampler[1].GetAddressOf());
+
+	CONTEXT->VSSetSamplers(3, 1, m_Sampler[2].GetAddressOf());
+	CONTEXT->HSSetSamplers(3, 1, m_Sampler[2].GetAddressOf());
+	CONTEXT->DSSetSamplers(3, 1, m_Sampler[2].GetAddressOf());
+	CONTEXT->GSSetSamplers(3, 1, m_Sampler[2].GetAddressOf());
+	CONTEXT->PSSetSamplers(3, 1, m_Sampler[2].GetAddressOf());
+	CONTEXT->CSSetSamplers(3, 1, m_Sampler[2].GetAddressOf());
 
 	return S_OK;
 }

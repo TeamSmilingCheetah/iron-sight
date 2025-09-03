@@ -96,9 +96,10 @@ PS_OUT PS_DirLight(VS_OUT _in)
 	float3 Li = Light.info.vColor * NoL;
     
     float3 finalColor = (diffuseBRDF + specularBRDF) * Li;
-    
-	output.vDiffuse = float4(finalColor, 1.f);
-	output.vSpecular = float4(0.f, 0.f, 0.f, 1.f); // Combined into diffuse for now
+
+    // TEST(Ssio): Diffuse Texture에 DirectLighting 누적
+    // TODO(Ssio) : LightMRT -> PBR 고려하여 RT 하나로 줄이기 고려
+	output.vDiffuse += float4(finalColor, 1.f);
     
     return output;
 }
@@ -201,8 +202,9 @@ PS_OUT PS_PointLight(VS_OUT _in)
     
     float3 finalColor = (diffuseBRDF + specularBRDF) * Li;
     
-	output.vDiffuse = float4(finalColor, 1.f);
-	output.vSpecular = float4(0.f, 0.f, 0.f, 1.f); // Combined into diffuse for now
+	// TEST(Ssio): Diffuse Texture에 DirectLighting 누적
+    // TODO(Ssio) : LightMRT -> PBR 고려하여 RT 하나로 줄이기 고려
+	output.vDiffuse += float4(finalColor, 1.f);
     
     return output;
 }

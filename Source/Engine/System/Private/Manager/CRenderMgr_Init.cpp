@@ -83,6 +83,12 @@ void CRenderMgr::CreateMRT()
 												, DXGI_FORMAT_R32_FLOAT,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
+			FAssetManager::GetInst()->CreateTexture(L"AOTargetTex"
+												, static_cast<UINT>(vResolution.x),
+												static_cast<UINT>(vResolution.y)
+												, DXGI_FORMAT_R32_FLOAT,
+												D3D11_BIND_RENDER_TARGET |
+												D3D11_BIND_SHADER_RESOURCE),
 			FAssetManager::GetInst()->CreateTexture(L"EmissiveTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
@@ -99,7 +105,7 @@ void CRenderMgr::CreateMRT()
 
 		Ptr<CTexture> pDSTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
 
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Create(arrTex, 7, pDSTex);
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Create(arrTex, 8, pDSTex);
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->SetClearColor(
 			0, Vec4(0.f, 0.f, 0.f, 0.f), false);
 	}
