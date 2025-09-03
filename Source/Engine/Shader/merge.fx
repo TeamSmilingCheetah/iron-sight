@@ -29,8 +29,9 @@ VS_OUT VS_Merge(VS_IN _in)
 }
 
 float4 PS_Merge(VS_OUT _in) : SV_Target
-{    
-    if(g_int_0 == 0)
+{
+    // Phong
+    if (g_int_0 == 0)
     {
         float4 vColor = g_tex_0.Sample(g_sam_1, _in.vUV);
         float4 vViewPos = g_tex_1.Sample(g_sam_1, _in.vUV);
@@ -43,7 +44,22 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
 
         return float4(vColor.rgb * (vDiffuse.rgb + vEmissive.rgb) + vSpecular.rgb, 1.f);
     }
-    
+
+    // PBR
+    else if (g_int_0 == 1)
+	{
+		float4 vViewPos = g_tex_1.Sample(g_sam_1, _in.vUV);
+		float4 vDiffuse = g_tex_2.Sample(g_sam_1, _in.vUV);
+		//float4 vSpecular = g_tex_3.Sample(g_sam_1, _in.vUV);
+
+		if (vViewPos.a == 0.f)
+			discard;
+
+		//return vDiffuse + vSpecular;
+		return vDiffuse;
+	}
+
+    // Copy
     else
     {
         float4 vTarget = g_tex_0.Sample(g_sam_1, _in.vUV);

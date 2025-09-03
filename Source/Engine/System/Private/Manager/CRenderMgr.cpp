@@ -466,7 +466,7 @@ void CRenderMgr::MergeSpecifyTarget()
 	{
 		Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
 		m_MergeMtrl->SetTexParam(TEX_0, m_SpecifyTarget);
-		m_MergeMtrl->SetScalarParam(INT_0, 1);
+		m_MergeMtrl->SetScalarParam(INT_0, 2);	// 0:Phong, 1:PBR, 2:Copy
 		m_MergeMtrl->Binding();
 
 		pRectMesh->Render(0);

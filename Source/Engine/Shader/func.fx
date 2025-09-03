@@ -124,8 +124,35 @@ float3 GetRandom(in Texture2D _NoiseTexture, uint _ID, uint _maxId)
     return vRandom;
 }
 
+// PBR Functions
+// https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
 
+// Equation 3, GGX/Towbridge-Reitz
+float NDF_GGX(float _NoH, float _Roughness)
+{
+	const float alpha = _Roughness * _Roughness;
+	const float alphaSq = alpha * alpha;
+	const float denom = _NoH * _NoH * (alphaSq - 1) + 1;
 
+	return alphaSq / (PI * denom * denom);
+}
+
+// Equation 4, only used for analytic light sources, not for Environment IBL
+float Smith_SchlickGGX(float _NoL, float _NoO, float _Roughness)
+{
+	const float k = (_Roughness + 1) * (_Roughness + 1) / 8.f;
+    
+	const float Gl = _NoL / (_NoL * (1 - k) + k);
+	const float Gv = _NoO / (_NoO * (1 - k) + k);
+    
+	return Gl * Gv;
+}
+
+// Equation 5, Fresnel Function
+float3 SchlickFresnel(float3 _F0, float _NoH)
+{
+	return _F0 + (1 - _F0) * pow(1 - _NoH, 5);
+}
 
 int IntersectsRay(float3 _Pos[3], float3 _vStart, float3 _vDir
                   , out float3 _CrossPos, out uint _Dist)

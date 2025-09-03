@@ -103,6 +103,10 @@ void FAssetManager::CreateEngineGraphicShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
 	pShader->AddTexParam("Base Color", TEX_0);
 	pShader->AddTexParam("Normal", TEX_1);
+	pShader->AddTexParam("Metallic", TEX_2);
+	pShader->AddTexParam("Roughness", TEX_3);
+	pShader->AddScalarParam("Metallic", FLOAT_0);
+	pShader->AddScalarParam("Roughness", FLOAT_1);
 	AddAsset(L"Std3D_DeferredShader", pShader);
 
 

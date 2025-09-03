@@ -64,14 +64,28 @@ int CTexture::Load(const wstring& PFilePath)
 	//// 생성된 Texture2D 의 Desc 정보를 알아낸다.
 	//m_Tex2D->GetDesc(&m_Desc);
 
+	const auto& MetaData = m_Image.GetMetadata();
+
+		
 	// MipMap이 포함되어 있다면 (.dds)
-	if (m_Image.GetMetadata().mipLevels > 1)
+	if (MetaData.mipLevels > 1 || (MetaData.miscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE))
 	{
 		// SRV 생성 (DirectX Tex 함수)
-		if (FAILED(CreateShaderResourceView(DEVICE, m_Image.GetImages(), m_Image.GetImageCount(), m_Image.GetMetadata(), m_SRV.GetAddressOf())))
+		if (FAILED(CreateShaderResourceView(DEVICE, m_Image.GetImages(), m_Image.GetImageCount(), MetaData, m_SRV.GetAddressOf())))
 		{
 			return E_FAIL;
 		}
+
+		m_Desc = {};
+		m_Desc.Width = static_cast<UINT>(MetaData.width);
+		m_Desc.Height = static_cast<UINT>(MetaData.height);
+		m_Desc.MipLevels = static_cast<UINT>(MetaData.mipLevels);
+		m_Desc.ArraySize = static_cast<UINT>(MetaData.arraySize);
+		m_Desc.Format = MetaData.format;
+		m_Desc.SampleDesc.Count = 1;
+		m_Desc.Usage = D3D11_USAGE_DEFAULT;
+		m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;	// 왜인지 모르겠으나 render target도 해줘야 함
+		m_Desc.MiscFlags = MetaData.miscFlags;
 	}
 
 	// MipMap이 포함되어 있지 않다면
@@ -79,11 +93,11 @@ int CTexture::Load(const wstring& PFilePath)
 	{
 		// MipMap 생성
 		m_Desc = {};
-		m_Desc.Width = static_cast<UINT>(m_Image.GetMetadata().width);
-		m_Desc.Height = static_cast<UINT>(m_Image.GetMetadata().height);
+		m_Desc.Width = static_cast<UINT>(MetaData.width);
+		m_Desc.Height = static_cast<UINT>(MetaData.height);
 		m_Desc.MipLevels = 0; // 자동 생성
 		m_Desc.ArraySize = 1;
-		m_Desc.Format = m_Image.GetMetadata().format;
+		m_Desc.Format = MetaData.format;
 		m_Desc.SampleDesc.Count = 1;
 		m_Desc.Usage = D3D11_USAGE_DEFAULT;
 		m_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;	// 왜인지 모르겠으나 render target도 해줘야 함
