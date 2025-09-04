@@ -473,7 +473,7 @@ void CRenderMgr::MergeDeferredTarget()
 
 	m_Environment->GetLUT()->Binding(26);
 	FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex")->Binding(27);
-
+	FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex")->Binding(28);
 
 	pRectMesh->Render(0);
 
@@ -483,6 +483,7 @@ void CRenderMgr::MergeDeferredTarget()
 	}
 	CTexture::Clear(26);
 	CTexture::Clear(27);
+	CTexture::Clear(28);
 }
 
 void CRenderMgr::MergeSpecifyTarget()

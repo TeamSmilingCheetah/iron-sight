@@ -129,6 +129,7 @@ struct PS_OUT
 // g_tex_2 : Metallic Tex
 // g_tex_3 : Roughness Tex
 // g_tex_4 : Ambient Occlusion (AO) Tex
+// g_tex_5 : Emissive Tex
 // g_float_0 : Metallic
 // g_float_1 : Roughness
 // g_float_2 : AO
@@ -137,11 +138,12 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 {
     PS_OUT output = (PS_OUT) 0.f;
 
-    float4 vColor   = float4(1.f, 0.f, 1.f, 1.f);
-    float3 vNormal  = _in.vViewNormal;
-	float Metallic  = g_float_0;
-	float Roughness = g_float_1;
-	float AO        = g_float_2;
+    float4 vColor       = float4(1.f, 0.f, 1.f, 1.f);
+    float3 vNormal      = _in.vViewNormal;
+	float  Metallic     = g_float_0;
+	float  Roughness    = g_float_1;
+	float  AO           = g_float_2;
+	float3 Emissive     = (float3) 0.f;
     
 	float2 dx = ddx(_in.vUV);
 	float2 dy = ddy(_in.vUV);
@@ -191,13 +193,19 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 		AO = g_tex_4.SampleGrad(g_sam_0, _in.vUV, dx, dy).x;
 	}
 
+    // Emissive Tex
+    if (g_btex_5)
+	{
+		Emissive = g_tex_5.SampleGrad(g_sam_0, _in.vUV, dx, dy).rgb;
+	}
+
 	output.Color = vColor;
     output.Normal = float4(vNormal, 1.f);
     output.Position = float4(_in.vViewPos, 1.f);
 	output.Metallic = Metallic;
 	output.Roughness = Roughness;
 	output.AO = AO;
-    output.Emissive = (float4) 0.f;
+	output.Emissive = float4(Emissive, 1.f);
     output.Data = float4((float) _in.parentID, (float) _in.objectID, 0.f, 0.f);
 
     return output;

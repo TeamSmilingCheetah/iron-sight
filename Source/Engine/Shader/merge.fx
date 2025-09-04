@@ -6,6 +6,7 @@
 
 Texture2D LUTTex : register(t26);
 Texture2D DirectLightingTex : register(t27);
+Texture2D EmissiveTex : register(t28);
 
 // Vertex Shader 
 struct VS_IN
@@ -57,6 +58,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
 		float  Metallic     = g_tex_3.Sample(g_sam_0, _in.vUV).x;
 		float  Roughness    = g_tex_4.Sample(g_sam_0, _in.vUV).x;
 		float  AO           = g_tex_5.Sample(g_sam_0, _in.vUV).x;
+		float3 Emissive     = EmissiveTex.Sample(g_sam_0, _in.vUV).rgb;
 
 		if (vViewPos.a == 0.f)
 			discard;
@@ -81,7 +83,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
 		float3 diffuseIBL = kd * vColor * diffuseIrradiance;    // divide by PI ?
 
         // SpecularBRDF 
-		const uint mipLevels = 5;   // Specular Cubemap의 mipmap 수 .. 너무 높은 레벨까지 사용하면 specular가 잘 드러나지 않음.
+		const uint mipLevels = 1;   // Specular Cubemap의 mipmap 수 .. 너무 높은 레벨까지 사용하면 specular가 잘 드러나지 않음.
 		float3 specularIrradiance = g_texcube_1.SampleLevel(g_sam_0, vWorldReflect, Roughness * mipLevels).rgb;
 
         // LUT는 Clamp Sampler (g_sam_2) 사용
@@ -96,7 +98,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
         // TEST(Ssio) : 환경광이 너무 강하게 적용되어서 0.8 곱해 둠
 		float3 vEnvironmentLighting = (diffuseIBL + specularIBL) * AO;
 
-		float4 Output = float4(vDirectLighting + vEnvironmentLighting, 1.f);
+		float4 Output = float4(vDirectLighting + vEnvironmentLighting + Emissive, 1.f);
         
 		return Output;
 	}
