@@ -2,6 +2,8 @@
 #include "Game/Gameplay/State/Public/Player_Gun_Fire.h"
 
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 
 Player_Gun_Fire::Player_Gun_Fire()
@@ -15,6 +17,25 @@ Player_Gun_Fire::~Player_Gun_Fire()
 }
 
 void Player_Gun_Fire::Enter_Override()
+{
+	Play_Fire_Anim();
+}
+
+void Player_Gun_Fire::FinalTick_Override()
+{
+	GetPlayerScript()->ProgressFireState();
+	MOTION_STATE eCurState = GetPlayerScript()->GetMotionState();
+
+	// 단발 사격 애니메이션 보장
+	Play_Fire_Anim();
+}
+
+void Player_Gun_Fire::Exit_Override()
+{
+}
+
+
+void Player_Gun_Fire::Play_Fire_Anim()
 {
 	MOTION_STATE eCurState = GetPlayerScript()->GetMotionState();
 
@@ -34,14 +55,5 @@ void Player_Gun_Fire::Enter_Override()
 
 	// 애니메이션 실행
 	AdjustAnim();
-}
-
-void Player_Gun_Fire::FinalTick_Override()
-{
-	GetPlayerScript()->ProgressFireState();
-}
-
-void Player_Gun_Fire::Exit_Override()
-{
 }
 

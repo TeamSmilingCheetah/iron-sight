@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Runtime/Public/Component/Script/CScript.h"
 
+
 class CameraController :
 	public CScript
 {
@@ -21,7 +22,6 @@ class CameraController :
 
 	float m_CameraSpeed;
 	float m_CameraYOffset;
-
 	float m_CurClipAccTime;
 	float m_RecoilTime;
 	float m_ObstacleResetTime;
@@ -45,6 +45,17 @@ class CameraController :
 	float m_VerticalSmoothTime;
 	float m_CurrentVerticalVelocity;
 
+	// 반동 관련
+	int m_CurStep;
+	int m_CurSingleStep;
+	float m_StepTimer;
+	float m_SingleTimer;
+	bool  m_SingleFire;
+	bool  m_SingleTargetValid;
+
+	float m_SingleTargetCameraRotX;
+	float m_SingleTargetPlayerRotY;
+
 	UINT m_CameraFlag;
 	bool m_bLevelChanged;
 	float m_LevelChangeTime;
@@ -63,7 +74,16 @@ public:
 	bool GetFlag(CAM_FLAG _flag) const { return (m_CameraFlag & _flag) != 0; }
 
 	void ChangePS(bool _bTPS);
-	void ApplyRecoil();
+
+	void SetSingleRecoilOn(){
+		m_CameraFlag |= SINGLE_RECOIL_UPDATE;
+		m_SingleTimer = 0.f;
+		m_SingleTargetValid = false;
+	}
+	void SetSingleFireOn() {
+		if(m_CameraFlag & SINGLE_RECOIL_UPDATE)
+			m_SingleFire = true;
+	}
 
 private:
 	void CameraOrthgraphicMove();
@@ -74,8 +94,11 @@ private:
 
 	void ApplyZoom(bool _IsADS);
 
+	float ApplyRecoilNoise(float _value, float _noiseScale);
+	void ResetRecoilPattern();
 	void UpdateRecoil();
-
+	void UpdateSingleRecoil();
+	
 	void HandleRightClickInput();
 
 	void UpdateShoulderMode();
@@ -84,10 +107,7 @@ private:
 
 	void UpdateTPSLean();
 	void UpdateFPSLean();
-
 	void UpdateStance();
-
-
 public:
 	CLONE(CameraController);
 	CameraController();

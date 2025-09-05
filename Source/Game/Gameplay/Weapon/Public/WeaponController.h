@@ -18,6 +18,7 @@ protected:
 	CGameObject* m_EquippedOwner;
 
 	class CameraController* m_CamScript;
+	class ItemScript*		m_ItemScript;
 
 	WEAPON_TYPE m_WeaponType;
 

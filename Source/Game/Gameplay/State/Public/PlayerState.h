@@ -12,6 +12,7 @@ class PlayerState
 private:
 	PlayerCharacter*	m_PlayerScript;
 	bool				m_CanExitDuringAnimation;
+	bool				m_PlayerIdle;
 
 protected:
 	void ControlMoveAnimation();

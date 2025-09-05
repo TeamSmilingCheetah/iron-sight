@@ -2,6 +2,15 @@
 #include "Game/Gameplay/Weapon/Public/WeaponController.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 
+
+struct RecoilPatternStep
+{
+	float pitch;
+	float yaw;
+	float time;
+};
+
+
 class PlayerCharacter;
 class InventoryController;
 
@@ -21,12 +30,11 @@ private:
 	int			m_ReloadSoundIdx;
 	int			m_ClipSoundIdx;
 
-	float m_HorizontalRecoilPower;
-	float m_VerticalRecoilPower;
 
 	float m_InitFirePower;
 	float m_BulletDmg;
 
+	float m_SingleRecoilPower;
 	float m_FireDelay;
 	float m_ReloadingTime;
 	float m_AccTime_Fire;
@@ -41,6 +49,8 @@ private:
 	bool m_bReload;
 	bool m_bAuto;
 
+	vector<RecoilPatternStep> m_vecRecoilPattern;
+
 	PlayerCharacter*		m_PlayerScript;
 	InventoryController*	m_InventoryScript;
 
@@ -51,10 +61,10 @@ public:
 
 
 public:
-	float GetHorizontalPower() const { return m_HorizontalRecoilPower; }
-	float GetVerticalPower() const { return m_VerticalRecoilPower; }
+	float GetSingleRecoilPower() const { return m_SingleRecoilPower; }
 	float GetFireDelay() const { return m_FireDelay; }
 	float GetReloadingTime() const { return m_ReloadingTime; }
+	vector<RecoilPatternStep> GetRecoilPattern() const { return m_vecRecoilPattern; }
 
 	int GetCurRound() const { return m_CurRounds; }
 	int GetMaxRound() const { return m_MaxRounds; }
@@ -75,6 +85,9 @@ private:
 
 	bool CanReload();
 
+
+	void InitWeaponVariable();
+	void InitRecoilPattern(ITEM_TYPE _type);
 public:
 	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT)
 	CLONE(GunController)

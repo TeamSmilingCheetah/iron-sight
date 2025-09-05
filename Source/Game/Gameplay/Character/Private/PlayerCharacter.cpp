@@ -15,6 +15,7 @@
 #include "Engine/Runtime/Public/Component/UI/CUI.h"
 #include "Engine/Runtime/Public/Component/StateMachine/CStateMachine.h"
 #include "Engine/Runtime/Public/State/CState.h"
+#include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
 
 #include "Game/System/Public/CGameMgr.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
@@ -119,7 +120,9 @@ void PlayerCharacter::Tick()
 	// 항상 작동하는 로직
 	// =================
 
+
 	// 이동 로직
+
 	//PlayerMove();
 
 	// UI 관리
@@ -460,25 +463,26 @@ void PlayerCharacter::PlayerControlWeapon()
 		// 우클릭
 		// ======
 
-		if (KEY_TAP(KEY::RBTN))
+					// 현재 투척무기라면 Grenade Prepare State 로 변경
+		if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
 		{
-			// 현재 투척무기라면 Grenade Prepare State 로 변경
-			if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
+			if (KEY_TAP(KEY::RBTN))
 			{
 				StateMachine()->SetChange(L"Player_Grenade_Prepare");
+				pWeaponController->SetCurKey(KEY::RBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+
 			}
-			pWeaponController->SetCurKey(KEY::RBTN);
-			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
-		}
-		else if (KEY_PRESSED(KEY::RBTN))
-		{
-			pWeaponController->SetCurKey(KEY::RBTN);
-			pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
-		}
-		else if (KEY_RELEASED(KEY::RBTN))
-		{
-			pWeaponController->SetCurKey(KEY::RBTN);
-			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
+			else if (KEY_PRESSED(KEY::RBTN))
+			{
+				pWeaponController->SetCurKey(KEY::RBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
+			}
+			else if (KEY_RELEASED(KEY::RBTN))
+			{
+				pWeaponController->SetCurKey(KEY::RBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
+			}
 		}
 
 		// ===
@@ -914,13 +918,22 @@ void PlayerCharacter::ProgressFireState()
 	// PRESSED KEY 입력은 Gun에게만 넘긴다
 	if (KEY_PRESSED(KEY::LBTN))
 	{
-
 		curWeaponScript->SetCurKey(KEY::LBTN);
 		curWeaponScript->SetCurKeyState(KEY_STATE::PRESSED);
 	}
 
+
 	m_StateAccTime += DT;
-	if (!bPullTigger && 0.2f < m_StateAccTime)
+	// 단발 사격시 애니메이션 유지 보장
+	if (m_StateAccTime < 0.3f)
+	{
+		if (KEY_TAP(KEY::LBTN))
+		{
+			m_StateAccTime = 0.f;
+		}
+	}
+
+	if (!bPullTigger && 0.3f < m_StateAccTime)
 	{
 		// State 전환
 		StateMachine()->SetChange(L"Player_Idle");

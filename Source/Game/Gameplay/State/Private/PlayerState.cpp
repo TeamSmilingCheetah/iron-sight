@@ -11,6 +11,7 @@
 PlayerState::PlayerState(const wstring& _Name)
 	: CState(_Name)
 	, m_CanExitDuringAnimation(true)
+	, m_PlayerIdle(false)
 {
 }
 
@@ -122,9 +123,12 @@ void PlayerState::ControlMoveAnimation()
 		{
 			m_ClipName = L"Animation\\Armature_run_right.anim";
 		}
+		m_PlayerIdle = false;
+		// 애니메이션 적용
+		AdjustAnim();
 	}
 	// 만약 플레이어가 움직이는 중이라면
-	else // if (1.f < m_PlayerScript->GetPlayerVelocity().Length())
+	else if (1.f < m_PlayerScript->GetPlayerVelocity().Length() && m_PlayerScript->GetPlayerVelocity().Length() < 1500.f)
 	{
 		MOTION_STATE eCurState = m_PlayerScript->GetMotionState();
 
@@ -164,8 +168,15 @@ void PlayerState::ControlMoveAnimation()
 			else
 				m_ClipName = L"Animation\\Armature_walk_right.anim";
 		}
+		m_PlayerIdle = false;
+		// 애니메이션 적용
+		AdjustAnim();
+	}
+	else
+	{
+		MOTION_STATE eCurState = m_PlayerScript->GetMotionState();
 
-		else
+		if (!m_PlayerIdle)
 		{
 			switch (eCurState)
 			{
@@ -179,10 +190,10 @@ void PlayerState::ControlMoveAnimation()
 				m_ClipName = L"Animation\\Armature_prone_idle.anim";
 				break;
 			}
+			m_PlayerIdle = true;
+			// 애니메이션 적용
+			AdjustAnim();
 		}
-	}
-	
 
-	// 애니메이션 적용
-	AdjustAnim();
+	}
 }

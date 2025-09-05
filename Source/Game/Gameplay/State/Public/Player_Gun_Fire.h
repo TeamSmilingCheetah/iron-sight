@@ -12,6 +12,8 @@ public:
 	virtual void FinalTick_Override() override;
 	virtual void Exit_Override() override;
 
+private:
+	void Play_Fire_Anim();
 
 public:
 	CLONE(Player_Gun_Fire)

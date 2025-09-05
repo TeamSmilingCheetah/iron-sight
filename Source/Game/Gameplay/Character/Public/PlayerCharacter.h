@@ -224,7 +224,6 @@ public:
 	void ExitReloadState();
 
 
-
 public:
 	CLONE(PlayerCharacter)
 	PlayerCharacter();

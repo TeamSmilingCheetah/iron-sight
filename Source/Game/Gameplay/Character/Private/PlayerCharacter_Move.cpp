@@ -199,7 +199,7 @@ void PlayerCharacter::UpdateMove()
 		}
 	}
 	// 걷기
-	else if (5.f < v2DVelocity.Length())
+	else if (10.f < v2DVelocity.Length())
 	{
 		// 일정 속도 이상이 되면 소리를 재생시킨다.
 		m_FootstepSoundIdx = FSoundManager::GetInst()->Play3DSound(m_FootstepSound, Transform()->GetRelativePos(), 1.f,
@@ -219,6 +219,7 @@ void PlayerCharacter::UpdateMove()
 	{
 		m_FootStepSoundAccTime = 0.f;
 		FSoundManager::GetInst()->Stop3DSound(m_FootstepSoundIdx);
+		FSoundManager::GetInst()->Stop3DSound(m_RunFootstepSoundIdx);
 	}
 	else if (v2DVelocity.Length() <= 10.f)
 	{
