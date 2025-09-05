@@ -622,6 +622,11 @@ void InventoryController::ActivateSlot(int _SlotIdx)
 	{
 		AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(0.f, 30.f, 32.f), Vec3(-97.f, 228.f, 0.f));
 	}
+	else if (_SlotIdx == THROWABLE_FIRST || _SlotIdx == THROWABLE_SECOND)
+	{
+		SetObjectActive(m_vecWeaponSlot[_SlotIdx].Object, true);
+		AttachItem(m_CurWeapon, m_HandMeshObj, Vec3(-20.f, 1.f, 46.f), Vec3(8.f, 0.f, -62.f));
+	}
 	else
 	{
 		// 슬롯 오브젝트 활성화

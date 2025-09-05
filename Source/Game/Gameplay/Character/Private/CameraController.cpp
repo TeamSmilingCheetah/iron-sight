@@ -51,7 +51,15 @@ CameraController::CameraController()
 	, m_VerticalSmoothTime(0.15f) // 150ms의 스무딩 시간
 	, m_CurrentVerticalVelocity(0.f)
 	, m_CameraFlag(0)
+	, m_CurStep(0)
+	, m_CurSingleStep(0)
+	, m_StepTimer(0.f)
+	, m_SingleTimer(0.f)
 	, m_bLevelChanged(false)
+	, m_SingleFire(false)
+	, m_SingleTargetValid(false)
+	, m_SingleTargetCameraRotX(0.f)
+	, m_SingleTargetPlayerRotY(0.f)	
 {
 }
 
@@ -81,10 +89,10 @@ void CameraController::Tick()
 				AddChild(nullptr, GetOwner());
 				Transform()->SetRelativePos(
 					CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->
-					                      GetRelativePos());
+					GetRelativePos());
 				Transform()->SetRelativeRotation(
 					CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera")->Transform()->
-					                      GetRelativeRotation());
+					GetRelativeRotation());
 			}
 			else
 			{
@@ -295,14 +303,16 @@ void CameraController::CameraPerspectiveMove()
 	// 플레이어가 총기를 발사하는 중이라면
 	if (m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Gun_Fire)
 	{
-		m_RecoilTime += DT;
-		ApplyRecoil();
+		UpdateRecoil();
+	}
+	else
+	{
+		ResetRecoilPattern();
 	}
 
-	// 반동 적용
-	if (m_CameraFlag & RECOIL_UPDATE)
+	if (m_CameraFlag & SINGLE_RECOIL_UPDATE)
 	{
-		UpdateRecoil();
+		UpdateSingleRecoil();
 	}
 
 	Transform()->SetRelativeRotation(m_CameraRot);
@@ -341,7 +351,7 @@ void CameraController::ApplyZoom(bool _IsADS)
 		float fChangeSpeed = 300.f;
 
 		fCurFOV = MoveToward(fCurFOV, fDestFOV, fChangeSpeed);
-			//fCurFOV + (fDestFOV - fCurFOV) * fChangeSpeed * DT;
+		//fCurFOV + (fDestFOV - fCurFOV) * fChangeSpeed * DT;
 		GetOwner()->Camera()->SetFOV(fCurFOV);
 
 		// 특정 구간에 도달하면 변환을 종료시킨다.
@@ -353,111 +363,176 @@ void CameraController::ApplyZoom(bool _IsADS)
 	}
 }
 
-void CameraController::ApplyRecoil()
-{
-	GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
-	if (pGunScript == nullptr)
-	{
-		return;
-	}
-
-	// 실제로 발사중이 아니라면 반동을 적용하지 않는다.
-	if (!pGunScript->IsFire())
-	{
-		return;
-	}
-
-	// 총기의 발사 딜레이 시간을 가져와 반동 텀으로 둔다.
-	float FireDelay = pGunScript->GetFireDelay();
-
-	if (!pGunScript->IsAuto())
-	{
-		// 반동 적용
-		float recoilPower_vertical = 1.2f;
-		float recoilPower_horizontal = 0.5f;
-		float maxRecoli_vertical = 2.5f;
-		float maxRecoli_horizontal = 1.5f;
-		float maxTotalYaw = 10.f;
-
-		// 현재 Player가 들고 있는 무기의 반동 변수 값을 가져온다.
-		recoilPower_horizontal = pGunScript->GetHorizontalPower();
-		recoilPower_vertical = pGunScript->GetVerticalPower();
-
-
-		// 랜덤한 수직 반동값을 만들어준다
-		float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;
-		m_RecoilAmount_vertical = m_RecoilAmount_vertical * (1.f - 0.1f) + randomRecoil_vertical * 0.1f;
-
-
-		// 랜덤한 수평 반동값을 반들어준다
-		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal *
-			recoilPower_horizontal;
-
-		// 반동값 보정 (한쪽으로 치우치지 않게)
-		if (abs(m_RecoilAmount_horizontal + randomRecoil_horizontal) > maxTotalYaw)
-		{
-			randomRecoil_horizontal = -randomRecoil_horizontal * 0.5f;
-		}
-		m_RecoilAmount_horizontal = m_RecoilAmount_horizontal * (1.f - 0.7f) + randomRecoil_horizontal * 0.7f;
-
-		m_TargetRecoilRotX = m_CameraRot.x - m_RecoilAmount_vertical;
-		m_TargetRecoilRotY = m_PlayerRot.y - m_RecoilAmount_horizontal;
-
-		m_CameraFlag |= RECOIL_UPDATE;
-	}
-
-	if (FireDelay < m_RecoilTime)
-	{
-		m_RecoilTime = 0.0f; // 타이머 초기화
-
-		// 반동 적용
-		float recoilPower_vertical = 1.2f;
-		float recoilPower_horizontal = 0.5f;
-		float maxRecoli_vertical = 2.5f;
-		float maxRecoli_horizontal = 1.5f;
-		float maxTotalYaw = 10.f;
-
-		// 현재 Player가 들고 있는 무기의 반동 변수 값을 가져온다.
-		recoilPower_horizontal = pGunScript->GetHorizontalPower();
-		recoilPower_vertical = pGunScript->GetVerticalPower();
-
-
-		// 랜덤한 수직 반동값을 만들어준다
-		float randomRecoil_vertical = (rand() % 100 / 100.f) * maxRecoli_vertical * recoilPower_vertical;
-		m_RecoilAmount_vertical = m_RecoilAmount_vertical * (1.f - 0.1f) + randomRecoil_vertical * 0.1f;
-
-		// 랜덤한 수평 반동값을 반들어준다
-		float randomRecoil_horizontal = ((rand() % 200) - 100.f) / 100.f * maxRecoli_horizontal *
-			recoilPower_horizontal;
-
-		// 반동값 보정 (한쪽으로 치우치지 않게)
-		if (abs(m_RecoilAmount_horizontal + randomRecoil_horizontal) > maxTotalYaw)
-		{
-			randomRecoil_horizontal = -randomRecoil_horizontal * 0.5f;
-		}
-		m_RecoilAmount_horizontal = m_RecoilAmount_horizontal * (1.f - 0.7f) + randomRecoil_horizontal * 0.7f;
-
-		m_TargetRecoilRotX = m_CameraRot.x - m_RecoilAmount_vertical;
-		m_TargetRecoilRotY = m_PlayerRot.y - m_RecoilAmount_horizontal;
-
-		m_CameraFlag |= RECOIL_UPDATE;
-	}
-}
 
 void CameraController::UpdateRecoil()
 {
-	m_CameraRot.x = MoveToward(m_CameraRot.x, m_TargetRecoilRotX, 1000.f);
-	m_PlayerRot.y = MoveToward(m_PlayerRot.y, m_TargetRecoilRotY, 1000.f);
+	GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
+	if (!pGunScript->IsFire() || !pGunScript)
+		return;
 
-	m_CameraRot.x = max(m_CameraRot.x, -90.f);
+	vector<RecoilPatternStep> vecPattern = pGunScript->GetRecoilPattern();
+	if (vecPattern.empty())
+		return;
+
+	m_CameraFlag |= RECOIL_UPDATE;
+
+	// Step 진행
+	m_StepTimer += DT;
+	const auto& step = vecPattern[m_CurStep];
+
+	// Step Time 이 지나면 다음으로
+	if (step.time <= m_StepTimer)
+	{
+		m_StepTimer -= step.time;
+		m_CurStep++;
+		m_StepTimer = 0.f;
+		if (vecPattern.size() <= m_CurStep)
+		{
+			m_CurStep = 0;
+			m_CameraFlag &= ~RECOIL_UPDATE;
+			return;
+		}
+	}
+
+	// 랜덤한 노이즈값을 반동에 더해준다
+	float pitch = ApplyRecoilNoise(step.pitch, 0.25f);
+	float yaw = ApplyRecoilNoise(step.yaw, 0.5f);
+
+	float pitchOffset = 0.f;
+	float yawOffset = 0.f;
+
+	float singlePower = pGunScript->GetSingleRecoilPower();
+	float autoPower = 1.5f;
+	float lerpSpeed = 10.f;
+
+	// 최종 반동 목표 위치값을 구해준다
+	if (pGunScript->IsAuto())
+	{
+		pitchOffset = pitch * autoPower;// *(DT / step.time);
+		yawOffset = yaw * autoPower;// *(DT / step.time);
+
+		m_CameraRot.x = FloatLerp(m_CameraRot.x, m_CameraRot.x - pitchOffset, lerpSpeed);
+		m_PlayerRot.y = FloatLerp(m_PlayerRot.y, m_PlayerRot.y - yawOffset, lerpSpeed);
+	}
+	else
+	{
+		// 단발이면 한 번에 목표값 적용
+		pitchOffset = pitch * singlePower;
+		yawOffset = yaw * singlePower;
+
+		m_CameraRot.x -= pitchOffset;
+		m_PlayerRot.y -= yawOffset;
+	}
+
 
 	Transform()->SetRelativeRotation(m_CameraRot);
 	m_Player->Transform()->SetRelativeRotation(m_PlayerRot);
+}
 
-	if (fabs(m_CameraRot.x - m_TargetRecoilRotX) < 1.f)
+void CameraController::UpdateSingleRecoil()
+{
+	GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
+	if (!pGunScript)
 	{
-		m_CameraFlag &= ~RECOIL_UPDATE;
+		m_CameraFlag &= ~SINGLE_RECOIL_UPDATE;
+		return;
 	}
+
+	const vector<RecoilPatternStep> vecPattern = pGunScript->GetRecoilPattern();
+	if (vecPattern.empty())
+	{
+		m_CameraFlag &= ~SINGLE_RECOIL_UPDATE;
+		return;
+	}
+
+	// Step 진행
+	const auto& step = vecPattern[m_CurSingleStep];
+
+	// 타이머 갱신
+	m_SingleTimer += DT;
+
+	// 만약 플레이어가 방금 발사했다면 (한 발 들어온 프레임)
+	if (m_SingleFire)
+	{
+		// 랜덤 노이즈 + 파워
+		float pitch = ApplyRecoilNoise(step.pitch, 0.25f);
+		float yaw = ApplyRecoilNoise(step.yaw, 0.5f);
+		float singlePower = pGunScript->GetSingleRecoilPower();
+
+		float pitchOffset = pitch * singlePower;
+		float yawOffset = yaw * singlePower;
+
+		// 현재 카메라,플레이어 회전에서 목표 회전 저장
+		m_SingleTargetCameraRotX = m_CameraRot.x; // 복사
+		m_SingleTargetPlayerRotY = m_PlayerRot.y;
+
+		m_SingleTargetCameraRotX -= pitchOffset;
+		m_SingleTargetPlayerRotY -= yawOffset;
+
+		m_SingleTargetValid = true;
+
+		// 발사 신호 소비 (다음 발사가 들어올 때 다시 true로 설정됨)
+		m_SingleFire = false;
+
+		// 연속 단발(다음 샷이 0.5초 이내 들어오면 step++)
+		if (m_SingleTimer < 0.5f)
+		{
+			m_CurSingleStep++;
+			if (vecPattern.size() <= m_CurSingleStep)
+			{
+				m_CurSingleStep = 0;
+			}
+		}
+		m_SingleTimer = 0.f;
+	}
+
+	// 만약 Targer이 없으면 초기화
+	if (!m_SingleTargetValid)
+	{
+		// target이 없고 타이머가 길어지면 해제
+		if (m_SingleTimer > 0.5f)
+		{
+			m_CurSingleStep = 0;
+			m_SingleTimer = 0.f;
+			m_CameraFlag &= ~SINGLE_RECOIL_UPDATE;
+		}
+		return;
+	}
+
+	float lerpSpeed = 10.0f; // 튜닝
+	// lerp로 적용 (프레임 독립적)
+	m_CameraRot.x = FloatLerp(m_CameraRot.x, m_SingleTargetCameraRotX, lerpSpeed);
+	m_PlayerRot.y = FloatLerp(m_PlayerRot.y, m_SingleTargetPlayerRotY, lerpSpeed);
+
+	
+	Transform()->SetRelativeRotation(m_CameraRot);
+	m_Player->Transform()->SetRelativeRotation(m_PlayerRot);
+
+	const float threshold = 0.001f; // 각도 단위에 따라 조절
+	bool reachedPitch = fabsf(m_CameraRot.x - m_SingleTargetCameraRotX) < threshold;
+	bool reachedYaw = fabsf(m_PlayerRot.y - m_SingleTargetPlayerRotY) < threshold;
+
+	// 목표에 도달 또는 타임 아웃
+	if ((reachedPitch && reachedYaw) || (m_SingleTimer > 0.4f))
+	{
+		m_SingleTargetValid = false;
+		m_CurSingleStep = 0;
+		m_SingleTimer = 0.f;
+		m_CameraFlag &= ~SINGLE_RECOIL_UPDATE;
+	}
+}
+
+float CameraController::ApplyRecoilNoise(float _value, float _noiseScale)
+{
+	float noise = ((rand() % 200) - 100) / 100.f; // -1.0 ~ +1.0
+	return _value + _value * noise * _noiseScale;
+}
+
+void CameraController::ResetRecoilPattern()
+{
+	m_CurStep = 0;
+	m_StepTimer = 0.f;
+	m_CameraFlag &= ~RECOIL_UPDATE;
 }
 
 void CameraController::UpdateTPSCameraAdjustments()
@@ -872,7 +947,6 @@ void CameraController::UpdateStance()
 	}
 }
 
-
 void CameraController::ChangePS(bool _IsTps)
 {
 	// TPS로 전환
@@ -1060,3 +1134,5 @@ void CameraController::EndOverlap(IColliderBase* InCollider, IColliderBase* InOt
 		}
 	}
 }
+
+

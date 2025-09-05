@@ -11,15 +11,16 @@
 #include "Engine/System/Public/Manager/CTimeMgr.h"
 #include "Engine/System/Public/Manager/SoundManager.h"
 #include "Engine/System/Public/Manager/CObjectPoolMgr.h"
+#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+#include "Engine/Runtime/Public/Component/UI/CUI.h"
 
 #include "Game/Gameplay/Character/Public/PlayerCharacter.h"
 #include "Game/Gameplay/Character/Public/CameraController.h"
 #include "Game/Gameplay/Projectile/Public/MissileProjectile.h"
 #include "Game/Gameplay/Inventory/Public/InventoryController.h"
 
-#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
-#include "Engine/Runtime/Public/Component/UI/CUI.h"
 
+#include "Game/Gameplay/Inventory/Public/Item.h"
 #include "Game/System/Public/CGameMgr.h"
 
 GunController::GunController()
@@ -29,8 +30,6 @@ GunController::GunController()
 	, m_EmptyReloadSoundIdx(-1)
 	, m_ReloadSoundIdx(-1)
 	, m_ClipSoundIdx(-1)
-	, m_HorizontalRecoilPower(0.f)
-	, m_VerticalRecoilPower(0.f)
 	, m_FireDelay(0.f)
 	, m_InitFirePower(0.f)
 	, m_BulletDmg(25.f)
@@ -45,19 +44,7 @@ GunController::GunController()
 	, m_InventoryScript(nullptr)
 	, m_WeaponRoundType()
 {
-	// 무기 종류에 따라 변수 값 설정
-	m_VerticalRecoilPower = 2.2f;
-	m_HorizontalRecoilPower = 1.f;
 
-	m_InitFirePower = 20000.f;
-
-	m_FireDelay = 0.1f;
-	m_MaxRounds = 30;
-
-	m_ReloadingTime = 2.8f;
-
-	// 무기의 총알 타입 정의
-	m_WeaponRoundType = ITEM_TYPE::AMMO_5;
 }
 
 GunController::~GunController()
@@ -68,6 +55,12 @@ GunController::~GunController()
 void GunController::Begin()
 {
 	WeaponController::Begin();
+
+	// 무기 종류에 따라 변수 값 설정
+	InitWeaponVariable();
+
+	
+	
 
 	// Sound
 	m_AkSound = FAssetManager::GetInst()->Load<FSound>(L"Sound\\akm_reverb.mp3");
@@ -225,7 +218,6 @@ void GunController::ActiveTrigger()
 			m_bFire = false;
 			return;
 		}
-
 	}
 	// 플레이어가 사용중인 사격
 	else
@@ -302,7 +294,8 @@ void GunController::ActiveTrigger()
 		m_AkSoundIdx = FSoundManager::GetInst()->Play3DSound(m_AkSound, vRayPos, 1.f, 10000.f, 1, 1.f, true, true, -1);
 
 		// 단발이라면 한발을 소모하고 사격을 비활성화 한다.
-		m_CamScript->ApplyRecoil();
+		m_CamScript->SetSingleRecoilOn();
+		m_CamScript->SetSingleFireOn();
 		StopFiring();
 	}
 	else
@@ -448,3 +441,76 @@ void GunController::StopFiring()
 }
 
 
+
+
+// 변수 설정
+void GunController::InitWeaponVariable()
+{
+	switch (m_ItemScript->GetItemType())
+	{
+	case ITEM_TYPE::AKM:
+		m_SingleRecoilPower = 1.5f;
+		m_InitFirePower = 20000.f;
+		m_FireDelay = 0.1f;
+		m_MaxRounds = 30;
+		m_ReloadingTime = 2.8f;
+
+		InitRecoilPattern(ITEM_TYPE::AKM);
+
+		// 무기의 총알 타입 정의
+		m_WeaponRoundType = ITEM_TYPE::AMMO_5;
+		break;
+
+	}
+}
+
+
+// 총기별 반동 패턴
+
+void GunController::InitRecoilPattern(ITEM_TYPE _type)
+{
+
+	switch (_type)
+	{
+	case ITEM_TYPE::AKM:
+		m_vecRecoilPattern =
+		{
+			{1.50f,  0.10f, 0.1f}, // 1
+			{1.48f,  0.05f, 0.1f}, // 2
+			{1.47f, -0.03f, 0.1f}, // 3
+			{1.46f,  0.06f, 0.1f}, // 4
+			{1.45f, -0.04f, 0.1f}, // 5
+
+			{1.44f,  0.20f, 0.1f}, // 6
+			{1.42f, -0.16f, 0.1f}, // 7
+			{1.40f,  0.24f, 0.1f}, // 8
+			{1.38f, -0.20f, 0.1f}, // 9
+			{1.36f,  0.30f, 0.1f}, // 10
+			 
+			{1.34f, -0.45f, 0.1f}, // 11
+			{1.32f,  0.76f, 0.1f}, // 12
+			{1.30f, -0.80f, 0.1f}, // 13
+			{1.28f,  0.90f, 0.1f}, // 14
+			{1.26f, -0.96f, 0.1f}, // 15
+			 
+			{1.24f,  0.94f, 0.1f}, // 16
+			{1.23f, -0.90f, 0.1f}, // 17
+			{1.22f,  0.90f, 0.1f}, // 18
+			{1.21f, -0.94f, 0.1f}, // 19
+			{1.20f,  0.74f, 0.1f}, // 20
+			 
+			{1.19f, -1.00f, 0.1f}, // 21
+			{1.18f,  1.06f, 0.1f}, // 22
+			{1.17f, -1.02f, 0.1f}, // 23
+			{1.16f,  1.20f, 0.1f}, // 24
+			{1.15f, -1.02f, 0.1f}, // 25
+			 
+			{1.14f,  1.28f, 0.1f}, // 26
+			{1.13f, -1.20f, 0.1f}, // 27
+			{1.12f,  1.36f, 0.1f}, // 28
+			{1.11f, -1.28f, 0.1f}, // 29
+			{1.10f,  1.40f, 0.1f}, // 30
+		};
+		break;
+	}
+}

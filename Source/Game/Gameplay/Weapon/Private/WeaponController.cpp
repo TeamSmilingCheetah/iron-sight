@@ -4,9 +4,11 @@
 #include "Engine/Runtime/Public/Component/Transform/CTransform.h"
 #include "Engine/System/Public/Manager/CLevelMgr.h"
 #include "Engine/Runtime/Public/Actor/CLevel.h"
-
 #include "Engine/Runtime/Public/Actor/CGameObject.h"
+
 #include "Game/Gameplay/Character/Public/CameraController.h"
+#include "Game/Gameplay/Inventory/Public/Item.h"
+
 
 WeaponController::WeaponController(SCRIPT_TYPE _Type)
 	: CScript(_Type)
@@ -33,6 +35,7 @@ void WeaponController::Begin()
 {
 	m_MainCamera = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"MainCamera");
 	m_CamScript = static_cast<CameraController*>(GetScriptWithType(m_MainCamera, SCRIPT_TYPE::CAMERASCRIPT));
+	m_ItemScript = static_cast<ItemScript*>(GetScriptWithType(GetOwner(), SCRIPT_TYPE::ITEMSCRIPT));
 
 	Transform()->SetIndependentScale(true);
 }

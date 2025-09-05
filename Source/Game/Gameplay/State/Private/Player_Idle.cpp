@@ -21,13 +21,6 @@ void Player_Idle::Enter_Override()
 
 void Player_Idle::FinalTick_Override()
 {
-	// 움직임이 없다 (멈춤)
-	if (GetPlayerScript()->GetPlayerVelocity().Length() <= 0.f)
-	{
-		Play_Idle_Anim();
-	}
-
-	//ControlMoveAnimation();
 }
 
 void Player_Idle::Exit_Override()

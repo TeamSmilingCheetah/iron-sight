@@ -485,9 +485,19 @@ Vec3 CalcColiisionDir(CGameObject* _TargetObj, CGameObject* _SubObj)
 
 float FloatLerp(float _Cur, float _Des, float _Speed)
 {
-	float t = 1.f - expf(_Speed * DT);
-	return _Cur + (_Des - _Cur) * _Speed * t;
+	float t = 1.f - expf(-_Speed * DT);
+
+	if (!isfinite(t))
+		t = 1.0f;
+	const float MIN_ALPHA = 0.0f;
+	const float MAX_ALPHA = 0.99f;
+
+	if (t < MIN_ALPHA) t = MIN_ALPHA;
+	if (t > MAX_ALPHA) t = MAX_ALPHA;
+
+	return _Cur + (_Des - _Cur) * t;
 }
+
 
 float MoveToward(float _Cur, float _Des, float _maxDelta)
 {
