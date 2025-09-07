@@ -359,12 +359,12 @@ void TestLevel::CreateTestLevel()
 	pVision->AddComponent(new EnemyVisionScript);
 	pVision->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 10.f));
 
-	pVision->AddComponent(new FBoxCollider);
-	Engine::Collider::SetColliderDynamic(pVision, EColliderType::BoxCollider);
-	pVision->BoxCollider()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
-	pVision->BoxCollider()->SetOffset(Vec3(0.f, 0.f, 2500.f));
-	pVision->BoxCollider()->SetIndependentScale(true);
-	pVision->BoxCollider()->SetTrigger(true);
+	//pVision->AddComponent(new FBoxCollider);
+	//Engine::Collider::SetColliderDynamic(pVision, EColliderType::BoxCollider);
+	//pVision->BoxCollider()->SetScale(Vec3(1000.f, 1000.f, 4000.f));
+	//pVision->BoxCollider()->SetOffset(Vec3(0.f, 0.f, 2500.f));
+	//pVision->BoxCollider()->SetIndependentScale(true);
+	//pVision->BoxCollider()->SetTrigger(true);
 
 	pVision->AddComponent(new FRayCollider);
 	pVision->RayCollider()->SetLength(1000);
@@ -450,6 +450,20 @@ void TestLevel::CreateTestLevel()
 	//	1,
 	//	true
 	//);
+
+
+	 // PostProcess
+	 CGameObject* pCameraPost = new CGameObject;
+	 pCameraPost->SetName(L"CameraPost");
+	 pCameraPost->Transform()->SetFrustumCheck(false);
+	 pCameraPost->AddComponent(new CMeshRender);
+	 pCameraPost->MeshRender()->SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	 pCameraPost->MeshRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"CameraPostMtrl"), 0);
+	 pCameraPost->AddComponent(new CameraEffect);
+
+
+	 LevelRawPtr->AddObject(20, pCameraPost, false);
+
 }
 
 // TODO(KHJ): 이하의 내용 Factory Pattern 처리해서 추후 CLI 게임 개발 시 활용할 수 있도록 할 것
@@ -467,7 +481,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	assert(PLevel->GetLayer(8)->GetName() == L"UI");
 	UICamera->Camera()->LayerOn(8);
-
+	UICamera->Camera()->LayerOn(20);
 	PLevel->AddObject(0, UICamera, false);
 
 	// "Inventory CanvasUI"
@@ -882,21 +896,6 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	childUI->UIRender()->GetMaterial(0)->SetScalarParam(VEC4_1, Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 	MainCanvasUI->AddChild(childUI);
-
-
-	// PostProcess
-	CGameObject* pCameraPost = new CGameObject;
-	pCameraPost->SetName(L"CameraPost");
-	pCameraPost->AddComponent(new CUI);
-	pCameraPost->UI()->SetRectPos(Vec2(0.f, 0.f));
-	pCameraPost->UI()->SetRectSize(Vec2(1280.f, 768.f));
-	pCameraPost->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	pCameraPost->AddComponent(new CUIRender);
-	pCameraPost->UIRender()->SetMesh(FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	pCameraPost->UIRender()->SetMaterial(FAssetManager::GetInst()->FindAsset<CMaterial>(L"CameraPostMtrl"), 0);
-	pCameraPost->AddComponent(new CameraEffect);
-
-	InventoryCanvasUI->AddChild(pCameraPost);
 
 	// Restart UI
 	CGameObject* RestartUI = new CGameObject;

@@ -56,8 +56,9 @@ float4 PS_CameraPostProcess(VS_OUT _in) : SV_Target
         return float4(0.f, 0.f, 0.f, fadeAmount);
     }
 
+
         // 피격 효과
-    if (DamageEffect == 1)
+    if (DamageEffect >= 1)
     {
         float elapsedTime = g_Time - DamageTime;
         
@@ -137,7 +138,7 @@ float4 PS_CameraPostProcess(VS_OUT _in) : SV_Target
    
     
     // 효과가 없는 경우 픽셀 무시
-    //discard;
+    discard;
 
 
     float4 output = Color;

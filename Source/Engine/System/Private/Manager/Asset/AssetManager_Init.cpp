@@ -288,9 +288,9 @@ void FAssetManager::CreateEngineGraphicShader()
 
 	pShader->SetRSState(RS_TYPE::CULL_NONE);
 	pShader->SetBSState(BS_TYPE::ALPHABLEND);
-	pShader->SetDSState(DS_TYPE::LESS_EQUAL);
+	pShader->SetDSState(DS_TYPE::NO_TEST_NO_WRITE);
 
-	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_UI);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
 
 	AddAsset(L"CameraPostShader", pShader);
 
