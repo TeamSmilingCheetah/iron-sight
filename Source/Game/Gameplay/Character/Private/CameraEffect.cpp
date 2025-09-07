@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
-#include "Engine/Runtime/Public/Component/Rendering/CUIRender.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
 
 
 CameraEffect::CameraEffect()
@@ -25,7 +25,7 @@ void CameraEffect::Tick()
 	// 페이드 인/아웃 상태 체크
 	if (m_FadeIn || m_FadeOut)
 	{
-		Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+		Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 		void* pStartTime = pMtrl->GetScalarParam(SCALAR_PARAM::FLOAT_0);
 		float startTime = *(float*)pStartTime;
 		float currentTime = g_Data.Time;
@@ -54,7 +54,7 @@ void CameraEffect::FadeIn()
 {
 	// shader코드 내에서 진행됨.
 	// 시간은 1초동안 지속됨.
-	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 2);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, g_Data.Time);
@@ -65,7 +65,7 @@ void CameraEffect::FadeOut()
 {
 	// shader코드 내에서 진행됨.
 	// 시간은 1초동안 지속됨.
-	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 1);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, g_Data.Time);
@@ -74,7 +74,7 @@ void CameraEffect::FadeOut()
 
 void CameraEffect::FadeInOutOff()
 {
-	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, 0);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, g_Data.Time);
@@ -96,7 +96,7 @@ void CameraEffect::HitEffect()
 	// DamageTexture g_tex_0   // 피격 효과 텍스쳐
 
 	// 피격 효과 활성화
-	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_2, 1);
 
 	// 색상 설정
@@ -109,14 +109,14 @@ void CameraEffect::HitEffect()
 
 void CameraEffect::HPLow()
 {
-	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_1, 1);
 }
 
 void CameraEffect::HPFine()
 {
-	Ptr<CMaterial> pMtrl = UIRender()->GetMaterial(0);
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_1, 0);
 }

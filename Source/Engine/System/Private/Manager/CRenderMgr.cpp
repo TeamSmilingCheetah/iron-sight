@@ -372,7 +372,6 @@ void CRenderMgr::Render_Play()
 
 			// Forward
 			m_vecCam[i]->render_forward();
-			m_vecCam[i]->render_postprocess();
 
 			m_vecCam[i]->render_clear();
 		}
@@ -381,6 +380,7 @@ void CRenderMgr::Render_Play()
 			// SwapChain
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 
+			m_vecCam[i]->render_postprocess();
 			m_vecCam[i]->render_ui();
 			m_vecCam[i]->render_clear();
 		}
