@@ -29,6 +29,7 @@
 #include "Game/Gameplay/Character/Public/CameraEffect.h"
 #include "Game/Gameplay/Event/Public/TestFadeInOutReset.h"
 #include "Game/Gameplay/Event/Public/PlayerRevive.h"
+#include "Game/Gameplay/Event/Public/LevelRestart.h"
 
 
 
@@ -128,7 +129,7 @@ void PlayerCharacter::Tick()
 	// UI 관리
 	PlayerControlUI();
 
-	if (GetStateEnum() == PLAYER_STATE::Player_Dead)
+	if (GetStateEnum() == PLAYER_STATE::Player_Dead || m_bGameResetting == true)
 	{
 		return;
 	}
@@ -993,6 +994,7 @@ void PlayerCharacter::ProgressDeadState()
 		if (KEY_TAP(KEY::R))
 		{
 			CGameMgr::GetInst()->GetPlayerRevive()->SetEventStart();
+			CGameMgr::GetInst()->GetLevelRestart()->SetEventStart();
 		}
 	}
 }

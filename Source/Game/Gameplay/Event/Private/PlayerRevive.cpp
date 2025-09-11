@@ -43,7 +43,6 @@ void PlayerRevive::OnEvent()
 void PlayerRevive::OnEventStart()
 {
 	// 페이드 인
-	m_bCanEvent = false;
 	m_CameraEffect->FadeIn();
 
 	// 플레이어 위치 변경
@@ -52,7 +51,7 @@ void PlayerRevive::OnEventStart()
 }
 
 void PlayerRevive::OnEventEnd()
-{
+{	
 	// 재 호출이 가능하도록 리셋
 	ForceReset();
 }

@@ -26,6 +26,7 @@
 #include "Game/Gameplay/Interaction/Public/InteractableScript.h"
 #include "Game/Gameplay/Event/Public/TestFadeInOutReset.h"
 #include "Game/Gameplay/Event/Public/PlayerRevive.h"
+#include "Game/Gameplay/Event/Public/LevelRestart.h"
 #include "Game/Gameplay/PauseMenu/Public/PauseUIScript.h"
 #include "Game/Gameplay/UI/Public/OptionUIScript.h"
 #include "Game/Gameplay/Character/Public/GroundCheck.h"

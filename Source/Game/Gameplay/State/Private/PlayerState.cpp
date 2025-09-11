@@ -54,7 +54,7 @@ void PlayerState::FinalTick()
 	}
 
 	// Player의 움직임 조작 & DeadState 에선 무시
-	if (m_PlayerScript->GetStateEnum() != PLAYER_STATE::Player_Dead)
+	if ((m_PlayerScript->GetStateEnum() != PLAYER_STATE::Player_Dead) && !m_PlayerScript->IsGameResetting())
 	{
 		m_PlayerScript->ProgressPlayerMove();
 	}

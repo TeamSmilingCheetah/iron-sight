@@ -140,6 +140,7 @@
     <ClInclude Include="Gameplay\Character\Public\InteractionHandler.h" />
     <ClInclude Include="Gameplay\Door\Public\DoorScript.h" />
     <ClInclude Include="Gameplay\Event\Public\EventScriptBase.h" />
+    <ClInclude Include="Gameplay\Event\Public\LevelRestart.h" />
     <ClInclude Include="Gameplay\Event\Public\PlayerRevive.h" />
     <ClInclude Include="Gameplay\Event\Public\TestFadeInOutReset.h" />
     <ClInclude Include="Gameplay\Interaction\Public\InteractableScript.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Gameplay\Character\Private\InteractionHandler.cpp" />
     <ClCompile Include="Gameplay\Door\Private\DoorScript.cpp" />
     <ClCompile Include="Gameplay\Event\Private\EventScriptBase.cpp" />
+    <ClCompile Include="Gameplay\Event\Private\LevelRestart.cpp" />
     <ClCompile Include="Gameplay\Event\Private\PlayerRevive.cpp" />
     <ClCompile Include="Gameplay\Event\Private\TestFadeInOutReset.cpp" />
     <ClCompile Include="Gameplay\Interaction\Private\InteractableScript.cpp" />

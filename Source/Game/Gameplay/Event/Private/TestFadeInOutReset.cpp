@@ -41,7 +41,6 @@ void TestFadeInOutReset::OnEventStart()
 {
 	// 페이드 아웃
 	m_CameraEffect->FadeOut();
-	m_bCanEvent = false;
 }
 
 void TestFadeInOutReset::OnEventEnd()
@@ -51,7 +50,7 @@ void TestFadeInOutReset::OnEventEnd()
 
 	// 플레이어 위치 변경
 	m_Player->Transform()->SetRelativePos(4000.f, 500.f, 1500.f);
-	m_PlayerScript->SetFullHP();
+	m_PlayerScript->SetRevive();
 
 	// 재 호출이 가능하도록 리셋
 	ForceReset();

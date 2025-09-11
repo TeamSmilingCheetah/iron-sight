@@ -146,6 +146,9 @@
     <ClCompile Include="Gameplay\Character\Private\GroundCheck.cpp">
       <Filter>03. Gameplay\GroundCheck</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Event\Private\LevelRestart.cpp">
+      <Filter>03. Gameplay\Event\Restart</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -299,6 +302,9 @@
     <ClInclude Include="Gameplay\Character\Public\GroundCheck.h">
       <Filter>03. Gameplay\GroundCheck</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Event\Public\LevelRestart.h">
+      <Filter>03. Gameplay\Event\Restart</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -366,6 +372,9 @@
     </Filter>
     <Filter Include="03. Gameplay\GroundCheck">
       <UniqueIdentifier>{79efeac8-b8c5-4bcd-8843-ba3b58b788ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Gameplay\Event\Restart">
+      <UniqueIdentifier>{18e0d80a-e95c-440c-a2e6-dcf5d126d15c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

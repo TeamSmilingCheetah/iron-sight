@@ -4,10 +4,12 @@
 class CGameObject;
 class CameraController;
 class KillinfoUIScript;
+class InventoryController;
 class CameraEffect;
 class PlayerCharacter;
 class TestFadeInOutReset;
 class PlayerRevive;
+class LevelRestart;
 
 class CGameMgr
 	: public singleton<CGameMgr>
@@ -34,12 +36,14 @@ private:
 	// Event
 	TestFadeInOutReset* m_FadeInOutEvent;			// Player Reset
 	PlayerRevive*		m_PlayerReviveEvent;		// Player Revive
+	LevelRestart*		m_LevelRestartEvevnt;		// Level Restart;
 
 	// Script
 	CameraController*		m_CamScript;
 	KillinfoUIScript*		m_KillinfoScript;
 	CameraEffect*			m_CameraEffect;
 	PlayerCharacter*		m_PlayerScript;
+	InventoryController*	m_InventoryScript;
 
 public:
 	CGameObject* GetPlayer() const { return m_Player; }
@@ -57,10 +61,11 @@ public:
 	KillinfoUIScript* GetKillInfoUI() const { return m_KillinfoScript; }
 	CameraEffect* GetCamEffect() const { return m_CameraEffect; }
 	PlayerCharacter* GetPlayerScript() const { return m_PlayerScript; }
-
+	InventoryController* GetInventoryScript() const { return m_InventoryScript; }
 
 	TestFadeInOutReset* GetFadeInOut() const { return m_FadeInOutEvent; }
 	PlayerRevive* GetPlayerRevive() const { return m_PlayerReviveEvent; }
+	LevelRestart* GetLevelRestart() const { return m_LevelRestartEvevnt; }
 
 public:
 	// Game Callback Function -> 위치 고려 필요성

@@ -26,6 +26,7 @@ CGameMgr::CGameMgr()
 	, m_RestartUI(nullptr)
 	, m_FadeInOutEvent(nullptr)
 	, m_PlayerReviveEvent(nullptr)
+	, m_LevelRestartEvevnt(nullptr)
 	, m_CamScript(nullptr)
 	, m_KillinfoScript(nullptr)
 	, m_CameraEffect(nullptr)
@@ -156,10 +157,12 @@ void CGameMgr::Begin()
 
 	// Player Script
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
+	m_InventoryScript = static_cast<InventoryController*>(GetScriptWithType(m_Player, SCRIPT_TYPE::INVENTORYSCRIPT));
 
 	// Event
 	m_FadeInOutEvent = static_cast<TestFadeInOutReset*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"FadeInOut_Event"), SCRIPT_TYPE::TESTFADEINOUTRESET));
 	m_PlayerReviveEvent = static_cast<PlayerRevive*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"PlayerRevive_Event"), SCRIPT_TYPE::PLAYERREVIVE));
+	m_LevelRestartEvevnt = static_cast<LevelRestart*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"LevelRestart_Event"), SCRIPT_TYPE::LEVELRESTART));
 }
 
 void CGameMgr::ResumeGame()
@@ -192,11 +195,17 @@ void CGameMgr::RestartGame()
 {
 	// Restart Event
 	m_FadeInOutEvent->SetEventStart();
+	m_LevelRestartEvevnt->SetEventStart();
 
 	// PauseUI 비활성화
-	SetObjectActive(CGameMgr::GetInst()->GetPauseCanvasUI(), false);
+	SetObjectActive(m_PauseCanvasUI, false);
+
+	// 인벤토리 UI 비활성화
+	SetObjectActive(m_InventoryCanvasUI, false);
+
 	// Mouse 커서 비활성화
 	m_PlayerScript->SetMouseActive(false);
+	m_PlayerScript->SetGameResetting(true);
 }
 
 void CGameMgr::OpenOption()

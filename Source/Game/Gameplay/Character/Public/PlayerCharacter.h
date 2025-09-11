@@ -46,6 +46,7 @@ class PlayerCharacter :
 	public CScript
 {
 private:
+	// 사운드 관련
 	Ptr<FSound>		m_HitSound;
 	Ptr<FSound>		m_FootstepSound;
 	Ptr<FSound>		m_RunFootstepSound;
@@ -53,6 +54,12 @@ private:
 	int				m_HitSoundIdx;
 	int				m_FootstepSoundIdx;
 	int				m_RunFootstepSoundIdx;
+
+	bool m_bHitSoundPlayed;
+	bool m_bFirstFootStep;
+
+	float m_HitSoundAccTime;
+	float m_FootStepSoundAccTime;
 
 	// 질량 시스템
 	Vec3 m_Force;				// 누적 힘
@@ -64,19 +71,7 @@ private:
 	float m_GravityAccel;		// 중력가속도 크기
 	float m_GravityMaxSpeed;	// 중력으로 인해서 발생하는 속도의 최대 제한치 (y)
 	float m_JumpPower;			// 점프용
-
-	GROUND_STATE m_GroundState;
-	bool m_bLean;
-	bool m_bMouseActive;			//  마우스 활성화
-
-	float m_MouseSensitivity;
-
-	bool m_bHitSoundPlayed;
-	bool m_bFirstFootStep;
-
-	float m_HitSoundAccTime;
-	float m_FootStepSoundAccTime;
-	float m_StateAccTime;
+	
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
@@ -124,6 +119,19 @@ private:
 	bool			m_PauseUIOpened;
 	bool			m_OptionUIOpened;
 
+
+	// 기타
+	GROUND_STATE m_GroundState;
+	bool m_bLean;
+	bool m_bMouseActive;			//  마우스 활성화
+	bool m_bGameResetting;
+
+	float m_MouseSensitivity;
+
+	float m_StateAccTime;
+
+
+
 public:
 	void Begin() override;
 	void Tick() override;
@@ -157,6 +165,9 @@ public:
 	void SetMouseActive(bool _b);
 	void SetPasueUIOff() { m_PauseUIOpened = false; }
 	void ResetAccTime() { m_StateAccTime = 0.f; }
+	void SetGameResetting(bool _b) { m_bGameResetting = _b; }
+
+	bool IsGameResetting() { return m_bGameResetting; }
 
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	void PlusMouseSensitivity() { m_MouseSensitivity += 0.01f; }
@@ -203,6 +214,8 @@ public:
 	void LoadComponent(FILE* PFile) override;
 	void LoadComponentReference() override;
 
+	void UpdatePosition();
+
 	// State Functions
 	// Enter
 	void EnterDeadState();
@@ -214,8 +227,7 @@ public:
 	void ProgressThrowPrepareState(bool _InputThrow, bool _LBTN);
 	void ProgressThrowState();
 	void ProgressDeadState();
-	void ProgressJumpState();
-	void UpdatePosition();
+	void ProgressJumpState();	
 	void ProgressPlayerMove();
 
 
