@@ -81,7 +81,7 @@ public:
 	int GetItemCount(ITEM_TYPE _Type) const { return m_arrInventory[(UINT)_Type]; }
 
 	void PlayerInteractWeapon();
-
+	void ClearInventory();
 
 	// TODO(Ssio): 데이터 구조 개선
 	void AttachItem(CGameObject* _Item, CGameObject* _BoneObject, Vec3 _RelativePos, Vec3 _RelativeRot);

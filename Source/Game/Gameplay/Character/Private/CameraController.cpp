@@ -367,7 +367,7 @@ void CameraController::ApplyZoom(bool _IsADS)
 void CameraController::UpdateRecoil()
 {
 	GunController* pGunScript = static_cast<GunController*>(m_InventoryScript->GetCurWeaponController());
-	if (!pGunScript->IsFire() || !pGunScript)
+	if (!pGunScript || !pGunScript->IsFire())
 		return;
 
 	vector<RecoilPatternStep> vecPattern = pGunScript->GetRecoilPattern();

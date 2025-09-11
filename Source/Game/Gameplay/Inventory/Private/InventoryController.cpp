@@ -163,8 +163,14 @@ void InventoryController::DisplayUI_Vicinity()
 {
 	const vector<CGameObject*>& vecVicinityUI = m_VicinityUI->GetChild();
 
+	// m_vecVicinity -> 주변
+	// vecVicinityUI -> UI 최대 개수
 	for (UINT i = 0; i < static_cast<UINT>(m_vecVicinity.size()); ++i)
 	{
+		// 주변 아이템이 20개가 넘는 상황은 어떻게 처리해야 하는지?
+		if (i == 20)
+			break;
+
 		ItemScript* pItem = static_cast<ItemScript*>(GetScriptWithType(m_vecVicinity[i], SCRIPT_TYPE::ITEMSCRIPT));
 		assert(pItem != nullptr);
 
@@ -173,6 +179,8 @@ void InventoryController::DisplayUI_Vicinity()
 		// UI 활성화
 		SetObjectActive(vecVicinityUI[i], true);
 	}
+
+
 
 	// 대응되는 범위를 초과하는 UI는 비활성화
 	for (UINT i = static_cast<UINT>(m_vecVicinity.size()); i < static_cast<UINT>(vecVicinityUI.size()); ++i)
@@ -224,7 +232,7 @@ void InventoryController::AcquireItem(CGameObject* _Item)
 	UINT type = static_cast<UINT>(pItem->GetItemType());
 
 	// 장착할 수 있는 무기인 경우
-	if(IS_WEAPON(type) || IS_THROWABLE(type))
+	if (IS_WEAPON(type) || IS_THROWABLE(type))
 	{
 		EquipWeapon(_Item);
 	}
@@ -731,7 +739,7 @@ void InventoryController::DetachItem(CGameObject* _Item, bool _Disconnect, int _
 	}
 
 	// 아이템 레이어로 변경
-	if(_Layer == 6)
+	if (_Layer == 6)
 		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_Layer)->GetName() == L"Item");
 	else if (_Layer == 4)
 		assert(CLevelMgr::GetInst()->GetCurrentLevel()->GetLayer(_Layer)->GetName() == L"PlayerFPS");
@@ -820,5 +828,26 @@ void InventoryController::PlayerInteractWeapon()
 			m_bWeaponChange = true;
 		}
 	}
+
+}
+
+void InventoryController::ClearInventory()
+{
+	// 모든 타입의 아이템 개수 초기화
+	for (int i = 0; i < static_cast<UINT>(ITEM_TYPE::END); ++i)
+	{
+		m_arrInventory[i] = 0;
+	}
+
+	for (int i = 0; i < m_vecWeaponSlot.size(); ++i)
+	{
+		if (m_vecWeaponSlot[i].Object)
+		{
+			DestroyObject(m_vecWeaponSlot[i].Object);
+		}		
+		ClearSlot(i);
+	}
+
+	m_InventoryChanged = true;
 
 }

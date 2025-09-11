@@ -4,27 +4,10 @@
 #include "Engine/API/Public/EngineFacade.h"
 
 #include "Game/Factory/Public/GameFactory.h"
-#include "Game/Gameplay/Inventory/Public/Item.h"
-#include "Game/Gameplay/Inventory/Public/UI_Inventory.h"
-#include "Game/Gameplay/Inventory/Public/UI_Item.h"
-#include "Game/Gameplay/Inventory/Public/UI_Vicinity.h"
-#include "Game/Gameplay/Inventory/Public/InventoryController.h"
-#include "Game/Gameplay/UI/Public/KillinfoUIScript.h"
-#include "Game/Gameplay/UI/Public/RoundsUIScript.h"
-#include "Game/Gameplay/Weapon/Public/GunController.h"
-#include "Game/Gameplay/Weapon/Public/ThrowableController.h"
-#include "Game/Gameplay/Character/Public/TestCharacter.h"
-#include "Game/Gameplay/Character/Public/EnemyVisionScript.h"
-#include "Game/Gameplay/Character/Public/InteractionHandler.h"
-#include "Game/Gameplay/Door/Public/DoorScript.h"
-#include "Game/Gameplay/UI/Public/MinimapUIScript.h"
-#include "Game/Gameplay/UI/Public/MinimapCameraScript.h"
-#include "Game/Gameplay/Character/Public/CameraEffect.h"
-#include "Game/Gameplay/Event/Public/TestFadeInOutReset.h"
-#include "Game/Gameplay/Event/Public/PlayerRevive.h"
-#include "Game/Gameplay/PauseMenu/Public/PauseUIScript.h"
-#include "Gameplay/UI/Public/OptionUIScript.h"
+#include "Game/Gameplay/states.h"
+#include "Game/Gameplay/scripts.h"
 #include "Game/System/Public/CGameMgr.h"
+#include "Game/Gameplay/Event/Public/LevelRestart.h"
 
 // TODO(KHJ): 이하 헤더 배제 시도
 #include "Engine/Runtime/Public/Component/Animation/CAnimator3D.h"
@@ -1045,4 +1028,10 @@ void TestLevel::SetUpEvent(CLevel* PLevel)
 
 	PLevel->AddObject(8, PlayerReviveEvent, false);
 
+	// RestartLevel
+	CGameObject* LevelRestartEvent = new CGameObject;
+	LevelRestartEvent->SetName(L"LevelRestart_Event");
+	LevelRestartEvent->AddComponent(new LevelRestart);
+
+	PLevel->AddObject(8, LevelRestartEvent, false);
 }

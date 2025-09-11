@@ -78,6 +78,9 @@ void EventScriptBase::StartEvent()
 	// 이벤트 시간 초기화
 	m_Eventtime = m_EventDuration;
 
+	// 이벤트 시작 트리거 OFF
+	m_bCanEvent = false;
+
 	// 자식 클래스의 추가 시작 로직
 	OnEventStart();
 }
