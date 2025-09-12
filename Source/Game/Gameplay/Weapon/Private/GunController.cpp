@@ -378,14 +378,17 @@ void GunController::Reload()
 		// 재장전 사운드 재생
 		if (bEmptyReload)
 		{
-			m_EmptyReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_EmptyReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_EmptyReloadSoundIdx);
+			m_EmptyReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_EmptyReloadSound, m_EquippedOwner->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_EmptyReloadSoundIdx);
+			FSoundManager::GetInst()->Update3DSoundPosition(m_EmptyReloadSoundIdx, m_EquippedOwner->Transform()->GetRelativePos());
 		}
 		else
 		{
-			m_ReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ReloadSound, Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
+			m_ReloadSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ReloadSound, m_EquippedOwner->Transform()->GetRelativePos(), 1.f, 10000.f, 1, 1.f, false, false, m_ReloadSoundIdx);
+			FSoundManager::GetInst()->Update3DSoundPosition(m_ReloadSoundIdx, m_EquippedOwner->Transform()->GetRelativePos());
 		}
 	}
 
+	
 
 	// 장전 시간이 지나면
 	if (m_ReloadingTime < m_AccTime_Reload)

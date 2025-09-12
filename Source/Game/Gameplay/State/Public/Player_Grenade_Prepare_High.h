@@ -1,7 +1,7 @@
 #pragma once
 #include "Game/Gameplay/State/Public/PlayerState.h"
 
-class Player_Grenade_Prepare :
+class Player_Grenade_Prepare_High :
 	public PlayerState
 {
 private:
@@ -15,8 +15,8 @@ public:
 
 
 public:
-	CLONE(Player_Grenade_Prepare)
-	Player_Grenade_Prepare();
-	~Player_Grenade_Prepare() override;
+	CLONE(Player_Grenade_Prepare_High)
+	Player_Grenade_Prepare_High();
+	~Player_Grenade_Prepare_High() override;
 };
 

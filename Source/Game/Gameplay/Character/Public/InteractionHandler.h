@@ -18,6 +18,7 @@ private:
 public:
 	void SetPlayer(CGameObject* _Player);
 	void SetInteractionUI(CGameObject* _UI) { m_InteractionUI = _UI; }
+	void SetInteractionUIString(const wstring& _str);
 
 	void SetInteractable(bool _b);
 

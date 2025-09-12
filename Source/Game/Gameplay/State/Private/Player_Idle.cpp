@@ -21,6 +21,11 @@ void Player_Idle::Enter_Override()
 
 void Player_Idle::FinalTick_Override()
 {
+	if (GetPlayerScript()->IsMotionChanged())
+	{
+		Play_Idle_Anim();
+		GetPlayerScript()->ReSetMotionChanged();
+	}
 }
 
 void Player_Idle::Exit_Override()
