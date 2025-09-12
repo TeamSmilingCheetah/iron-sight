@@ -199,7 +199,8 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Jump_Down"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Dead"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Heal"));
-	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Prepare"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Prepare_High"));
+	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Prepare_Low"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Throw_Low"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Grenade_Throw_High"));
 	StateMachine::AddState(Player, Common::LoadState(L"Player_Gun_Reload"));
@@ -216,12 +217,13 @@ CGameObject* GameFactory::LoadDefaultPlayer(CLevel* PLevel, const Vec3& PPositio
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Heal");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Fire");
 	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Gun_Reload");
-	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Grenade_Prepare");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Grenade_Prepare_High");
+	StateMachine::AddTransition(Player, L"Player_Idle", L"Player_Grenade_Prepare_Low");
 
 	StateMachine::AddTransition(Player, L"Player_Gun_Fire", L"Player_Gun_Reload");
 
-	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_Low");
-	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare", L"Player_Grenade_Throw_High");
+	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare_High", L"Player_Grenade_Throw_High");
+	StateMachine::AddTransition(Player, L"Player_Grenade_Prepare_Low", L"Player_Grenade_Throw_Low");
 
 	Common::AddComponentToObject<FRayCollider>(Player);
 	Collider::SetRayColliderProperties(Player, {0.f, 0.f, -1.f}, {0.f, 970.f, 0.f}, 5000.f, true);

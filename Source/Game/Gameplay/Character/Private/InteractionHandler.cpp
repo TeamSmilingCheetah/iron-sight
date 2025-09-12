@@ -29,6 +29,11 @@ void InteractionHandler::SetPlayer(CGameObject* _Player)
 	m_PlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_Player, SCRIPT_TYPE::PLAYERSCRIPT));
 }
 
+void InteractionHandler::SetInteractionUIString(const wstring& _str)
+{
+	m_InteractionUI->UI()->GetTextInfoRef()[0].Text = _str;
+}
+
 void InteractionHandler::SetInteractable(bool _b)
 {
 	m_Interactable = _b;

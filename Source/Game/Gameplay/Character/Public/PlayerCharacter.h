@@ -20,7 +20,8 @@ enum class PLAYER_STATE
 	Player_Jump_Up,
 	Player_Jump_Loop,
 	Player_Jump_Down,
-	Player_Grenade_Prepare,
+	Player_Grenade_Prepare_High,
+	Player_Grenade_Prepare_Low,
 	Player_Grenade_Throw_High,
 	Player_Grenade_Throw_Low,
 	Player_Gun_Fire,
@@ -71,7 +72,7 @@ private:
 	float m_GravityAccel;		// 중력가속도 크기
 	float m_GravityMaxSpeed;	// 중력으로 인해서 발생하는 속도의 최대 제한치 (y)
 	float m_JumpPower;			// 점프용
-	
+
 
 	Ptr<CTexture> m_TargetTex;
 	Ptr<CPrefab> m_Prefab;
@@ -84,15 +85,15 @@ private:
 	// ======
 	// Script
 	// ======
-	InventoryController*	m_InventoryScript;
-	InteractionHandler*		m_InteractionScript;
+	InventoryController* m_InventoryScript;
+	InteractionHandler* m_InteractionScript;
 
 	// ======
 	// Status
 	// ======
-	static constexpr float	m_MaxHP		= 100.f;	// 최대 체력
+	static constexpr float	m_MaxHP = 100.f;	// 최대 체력
 	static constexpr float	m_SemiMaxHP = 75.f;		// 붕대, 구급상자로 회복할 수 있는 최대 체력
-	static constexpr float	m_MaxBoost	= 100.f;	// 최대 Boost
+	static constexpr float	m_MaxBoost = 100.f;	// 최대 Boost
 	static constexpr float	m_BoostUnit = 0.3f;		// 시간 지나면 boost가 빠질 단위
 
 	float					m_CurHP;		// 현재 체력
@@ -125,6 +126,7 @@ private:
 	bool m_bLean;
 	bool m_bMouseActive;			//  마우스 활성화
 	bool m_bGameResetting;
+	bool m_bMotionChanged;
 
 	float m_MouseSensitivity;
 
@@ -162,13 +164,8 @@ private:
 
 public:
 	CGameObject* GetRayTarget() const { return m_CollObject; }
-	void SetMouseActive(bool _b);
-	void SetPasueUIOff() { m_PauseUIOpened = false; }
-	void ResetAccTime() { m_StateAccTime = 0.f; }
-	void SetGameResetting(bool _b) { m_bGameResetting = _b; }
 
-	bool IsGameResetting() { return m_bGameResetting; }
-
+	// Mouse Sensi
 	float GetCurMouseSensitivity() const { return m_MouseSensitivity; }
 	void PlusMouseSensitivity() { m_MouseSensitivity += 0.01f; }
 	void MinusMouseSensitivity() {
@@ -177,8 +174,12 @@ public:
 			m_MouseSensitivity = 0.01f;
 	}
 
-	bool IsInventoryOpened() const { return m_InventoryOpened; }
-	void SetOptionUIOpened(bool _Opened) { m_OptionUIOpened = _Opened; }
+	// Move
+	Vec3 GetPlayerVelocity() const { return m_Velocity; }
+	float GetGravityAccel() const { return m_GravityAccel; }
+	void UpdatePosition();
+
+	// Ground
 	void SetGroundState(GROUND_STATE PState) { m_GroundState = PState; }
 
 	GROUND_STATE GetGroundState() const { return m_GroundState; }
@@ -193,30 +194,41 @@ public:
 
 	ITEM_TYPE GetHealType() const { return m_HealType; }
 
+	// Kill Count
 	void PlusKillCount() { m_KillCounts += 1; }
 	int GetKillCount() const { return m_KillCounts; }
 
-	void SetMotionState(MOTION_STATE _State) { m_MotionState = _State; }
 
+	// State
+	void SetMotionState(MOTION_STATE _State) { m_MotionState = _State; m_bMotionChanged = true; }
+	void ReSetMotionChanged() { m_bMotionChanged = false; }
 	MOTION_STATE GetMotionState() const { return m_MotionState; }
+	PLAYER_STATE GetStateEnum() const;
+	void ResetStateAccTime() { m_StateAccTime = 0.f; }
 
+	// Script
 	InventoryController* GetInventory() const { return m_InventoryScript; }
 
-	Vec3 GetPlayerVelocity() const { return m_Velocity; }
-	float GetGravityAccel() const { return m_GravityAccel; }
+	// UI
+	bool IsInventoryOpened() const { return m_InventoryOpened; }
 
-	PLAYER_STATE GetStateEnum() const;
+	void SetOptionUIOpened(bool _Opened) { m_OptionUIOpened = _Opened; }
+	void SetPasueUIOff() { m_PauseUIOpened = false; }
+	void ResetUIbool() { m_PauseUIOpened = false; m_OptionUIOpened = false; m_InventoryOpened = false; }
 
+	// Hp
 	void SetFullHP() { m_CurHP = m_MaxHP; }
 	void SetRevive();
 
-	void SaveComponent(FILE* PFile) override;
-	void LoadComponent(FILE* PFile) override;
-	void LoadComponentReference() override;
+	// ETC bool
+	bool IsGameResetting() { return m_bGameResetting; }
+	bool IsMotionChanged() { return m_bMotionChanged; }
+	void SetGameResetting(bool _b) { m_bGameResetting = _b; }
+	void SetMouseActive(bool _b);
 
-	void UpdatePosition();
 
 	// State Functions
+	// 
 	// Enter
 	void EnterDeadState();
 
@@ -227,14 +239,17 @@ public:
 	void ProgressThrowPrepareState(bool _InputThrow, bool _LBTN);
 	void ProgressThrowState();
 	void ProgressDeadState();
-	void ProgressJumpState();	
+	void ProgressJumpState();
 	void ProgressPlayerMove();
-
 
 	// Exit
 	void ExitThrowPrepareState();
 	void ExitReloadState();
 
+public:
+	void SaveComponent(FILE* PFile) override;
+	void LoadComponent(FILE* PFile) override;
+	void LoadComponentReference() override;
 
 public:
 	CLONE(PlayerCharacter)

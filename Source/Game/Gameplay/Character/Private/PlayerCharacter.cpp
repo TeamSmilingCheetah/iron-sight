@@ -70,6 +70,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_PauseUIOpened(false)
 	, m_OptionUIOpened(false)
 	, m_bMouseActive(false)
+	, m_bMotionChanged(false)
 	, m_StateAccTime(0.f)
 	, m_InteractionScript(nullptr)
 {
@@ -120,6 +121,13 @@ void PlayerCharacter::Tick()
 	// =================
 	// 항상 작동하는 로직
 	// =================
+
+	if (KEY_TAP(KEY::F2))
+	{
+		static bool bmouse = false;
+		bmouse = !bmouse;
+		SetMouseActive(bmouse);
+	}
 
 
 	// 이동 로직
@@ -439,47 +447,69 @@ void PlayerCharacter::PlayerControlWeapon()
 		// 좌클릭
 		// ======
 
-		if (KEY_TAP(KEY::LBTN))
+		// 현재 총기라면 Fire State 로 변경
+		if (PRIMARY_FIRST <= curSlot && curSlot <= SECONDARY_FIRST)
 		{
-			// 현재 총기라면 Fire State 로 변경
-			if (PRIMARY_FIRST <= curSlot && curSlot <= SECONDARY_FIRST)
+			if (KEY_TAP(KEY::LBTN))
 			{
 				StateMachine()->SetChange(L"Player_Gun_Fire");
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 			}
-			// 현재 투척무기라면 Grenade Prepare State 로 변경
-			if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
+			// PRESSED KEY 입력은 Gun에게만 넘긴다
+			if (KEY_PRESSED(KEY::LBTN))
 			{
-				StateMachine()->SetChange(L"Player_Grenade_Prepare");
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
 			}
-			pWeaponController->SetCurKey(KEY::LBTN);
-			pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+			if (KEY_RELEASED(KEY::LBTN))
+			{
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
+			}
 		}
-		else if (KEY_RELEASED(KEY::LBTN))
+
+
+		// 현재 투척무기라면 Grenade Prepare State 로 변경
+		if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
 		{
-			pWeaponController->SetCurKey(KEY::LBTN);
-			pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
+			if ((GetStateEnum() != PLAYER_STATE::Player_Grenade_Throw_High) && (GetStateEnum() != PLAYER_STATE::Player_Grenade_Throw_Low))
+			{
+				// 현재 이미 투척이 진행중이라면 투척을 하지 못한다.
+				if (KEY_TAP(KEY::LBTN))
+				{
+					StateMachine()->SetChange(L"Player_Grenade_Prepare_High");
+					pWeaponController->SetCurKey(KEY::LBTN);
+					pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+				}				
+			}
+			if (KEY_RELEASED(KEY::LBTN))
+			{
+				pWeaponController->SetCurKey(KEY::LBTN);
+				pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
+			}
 		}
+
 
 		// ======
 		// 우클릭
 		// ======
 
-					// 현재 투척무기라면 Grenade Prepare State 로 변경
+		// 현재 투척무기라면 Grenade Prepare State 로 변경
 		if (THROWABLE_FIRST <= curSlot && curSlot <= THROWABLE_SECOND)
 		{
-			if (KEY_TAP(KEY::RBTN))
+			// 현재 이미 투척이 진행중이라면 투척을 하지 못한다.
+			if ((GetStateEnum() != PLAYER_STATE::Player_Grenade_Throw_High) && (GetStateEnum() != PLAYER_STATE::Player_Grenade_Throw_Low))
 			{
-				StateMachine()->SetChange(L"Player_Grenade_Prepare");
-				pWeaponController->SetCurKey(KEY::RBTN);
-				pWeaponController->SetCurKeyState(KEY_STATE::TAP);
+				if (KEY_TAP(KEY::RBTN))
+				{
+					StateMachine()->SetChange(L"Player_Grenade_Prepare_Low");
+					pWeaponController->SetCurKey(KEY::RBTN);
+					pWeaponController->SetCurKeyState(KEY_STATE::TAP);
 
+				}				
 			}
-			else if (KEY_PRESSED(KEY::RBTN))
-			{
-				pWeaponController->SetCurKey(KEY::RBTN);
-				pWeaponController->SetCurKeyState(KEY_STATE::PRESSED);
-			}
-			else if (KEY_RELEASED(KEY::RBTN))
+			if (KEY_RELEASED(KEY::RBTN))
 			{
 				pWeaponController->SetCurKey(KEY::RBTN);
 				pWeaponController->SetCurKeyState(KEY_STATE::RELEASED);
@@ -844,6 +874,8 @@ void PlayerCharacter::EnterDeadState()
 	FSoundManager::GetInst()->Stop3DSound(m_RunFootstepSoundIdx);
 }
 
+
+
 void PlayerCharacter::ProgressHealState()
 {
 	// 회복 아이템 사용중이면
@@ -869,6 +901,7 @@ void PlayerCharacter::ProgressHealState()
 
 void PlayerCharacter::ProgressReloadState()
 {
+	m_InteractionScript->SetInteractionUIString(L"취소");
 	m_InteractionScript->SetInteractable(true);
 
 	// 재장전 진행
@@ -916,12 +949,7 @@ void PlayerCharacter::ProgressFireState()
 	bool bPullTigger = curWeaponScript->IsPullTrigger();
 
 
-	// PRESSED KEY 입력은 Gun에게만 넘긴다
-	if (KEY_PRESSED(KEY::LBTN))
-	{
-		curWeaponScript->SetCurKey(KEY::LBTN);
-		curWeaponScript->SetCurKeyState(KEY_STATE::PRESSED);
-	}
+
 
 
 	m_StateAccTime += DT;
@@ -975,7 +1003,9 @@ void PlayerCharacter::ProgressThrowPrepareState(bool _InputThrow, bool _LBTN)
 void PlayerCharacter::ProgressThrowState()
 {
 	m_StateAccTime += DT;
-	if (1.7f < m_StateAccTime)
+	int aframe = Animator3D()->GetCurClip()->GetFrameLength();
+	int bframe = Animator3D()->GetCurFrameIdx();
+	if (aframe - bframe <= 1)
 	{
 		StateMachine()->SetChange(L"Player_Idle");
 	}

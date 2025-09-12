@@ -34,10 +34,13 @@ private:
 
 	bool m_bGround;
 	bool m_bCanThrow;
+	bool m_bHighThrow;
+	bool m_bLowThrow;
 	bool m_bThrow;
 	bool m_bAfterThrow;
 	bool m_bTrigger;
 	bool m_bUseFirstBounceSound;
+	bool m_bThrowTriggered;
 
 	CGameObject* m_ThownOwner;
 	CGameObject* m_Player;
@@ -63,7 +66,7 @@ public:
 
 	bool IsThrow() { return m_bThrow; }
 	bool IsAfterThrow() { return m_bAfterThrow; }
-	const float GetActionEndTime() { return m_ActionEndTime; }
+	float GetActionEndTime() const { return m_ActionEndTime; }
 
 public:
 	SET_PARENT_SCRIPT(SCRIPT_TYPE::WEAPONSCRIPT)

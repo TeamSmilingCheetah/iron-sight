@@ -118,7 +118,8 @@ int CGameMgr::Init()
 	CStateMgr::GetInst()->RegisterState(L"Player_Heal", []() { return new Player_Heal; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Throw_Low", []() { return new Player_Grenade_Throw_Low; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Throw_High", []() { return new Player_Grenade_Throw_High; });
-	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Prepare", []() { return new Player_Grenade_Prepare; });
+	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Prepare_High", []() { return new Player_Grenade_Prepare_High; });
+	CStateMgr::GetInst()->RegisterState(L"Player_Grenade_Prepare_Low", []() { return new Player_Grenade_Prepare_Low; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Gun_Reload", []() { return new Player_Gun_Reload; });
 	CStateMgr::GetInst()->RegisterState(L"Player_Gun_Fire", []() { return new Player_Gun_Fire; });
 
@@ -206,6 +207,9 @@ void CGameMgr::RestartGame()
 	// Mouse 커서 비활성화
 	m_PlayerScript->SetMouseActive(false);
 	m_PlayerScript->SetGameResetting(true);
+
+	// UI 값 초기화
+	m_PlayerScript->ResetUIbool();
 }
 
 void CGameMgr::OpenOption()

@@ -98,7 +98,7 @@
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_Low.cpp">
       <Filter>03. Gameplay\State\Grenade</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare.cpp">
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare_High.cpp">
       <Filter>03. Gameplay\State\Grenade</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\State\Private\Player_Gun_Fire.cpp">
@@ -148,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="Gameplay\Event\Private\LevelRestart.cpp">
       <Filter>03. Gameplay\Event\Restart</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare_Low.cpp">
+      <Filter>03. Gameplay\State\Grenade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,7 +254,7 @@
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_Low.h">
       <Filter>03. Gameplay\State\Grenade</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare.h">
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare_High.h">
       <Filter>03. Gameplay\State\Grenade</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Fire.h">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="Gameplay\Event\Public\LevelRestart.h">
       <Filter>03. Gameplay\Event\Restart</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare_Low.h">
+      <Filter>03. Gameplay\State\Grenade</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

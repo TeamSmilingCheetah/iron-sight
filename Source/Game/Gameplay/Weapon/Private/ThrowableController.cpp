@@ -19,29 +19,32 @@
 
 ThrowableController::ThrowableController()
 	: WeaponController(SCRIPT_TYPE::THROWABLESCRIPT)
-	  , m_BombSoundIdx(-1)
-	  , m_SmokeSoundIdx(-1)
-	  , m_PinSoundIdx(-1)
-	  , m_ThrowSoundIdx(-1)
-	  , m_BounceSoundIdx_1(-1)
-	  , m_BounceSoundIdx_2(-1)
-	  , m_Velocity()
-	  , m_Dir()
-	  , m_Mass(0.f)
-	  , m_Speed(8000.f)
-	  , m_GravityAccel(1000.f)
-	  , m_CurClipAccTime(0.f)
-	  , m_TriggeredTime(6.f)
-	  , m_ThrowAngle(0.f)
-	  , m_bGround(false)
-	  , m_bCanThrow(false)
-	  , m_bThrow(false)
-	  , m_bTrigger(false)
-	  , m_bUseFirstBounceSound(true)
-	  , m_ThownOwner(nullptr)
-	  , m_Player(nullptr)
-	  , m_PlayerScript(nullptr)
-	  , m_AfterThrowAccTime(0.f)
+	, m_BombSoundIdx(-1)
+	, m_SmokeSoundIdx(-1)
+	, m_PinSoundIdx(-1)
+	, m_ThrowSoundIdx(-1)
+	, m_BounceSoundIdx_1(-1)
+	, m_BounceSoundIdx_2(-1)
+	, m_Velocity()
+	, m_Dir()
+	, m_Mass(0.f)
+	, m_Speed(8000.f)
+	, m_GravityAccel(1000.f)
+	, m_CurClipAccTime(0.f)
+	, m_TriggeredTime(6.f)
+	, m_ThrowAngle(0.f)
+	, m_bGround(false)
+	, m_bHighThrow(false)
+	, m_bLowThrow(false)
+	, m_bCanThrow(false)
+	, m_bThrow(false)
+	, m_bTrigger(false)
+	, m_bUseFirstBounceSound(true)
+	, m_bThrowTriggered(false)
+	, m_ThownOwner(nullptr)
+	, m_Player(nullptr)
+	, m_PlayerScript(nullptr)
+	, m_AfterThrowAccTime(0.f)
 
 {
 	m_Mass = 4.f;
@@ -84,13 +87,10 @@ void ThrowableController::Begin()
 
 void ThrowableController::Tick()
 {
-	PlayerCharacter* pPlayerScript = nullptr;
-
 	// 소유주가 있다면 위치를 0으로 초기화
 	if (m_EquippedOwner != nullptr)
 	{
 		Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-		pPlayerScript = static_cast<PlayerCharacter*>(GetScriptWithType(m_EquippedOwner, SCRIPT_TYPE::PLAYERSCRIPT));
 		m_ThownOwner = m_EquippedOwner;
 	}
 	// 소유주가 없다면 return
@@ -103,31 +103,50 @@ void ThrowableController::Tick()
 		AdjustFPSPos();
 
 	// 투척 준비 상태 진입
-	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP)
+	if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::TAP && !m_bLowThrow)
 	{
 		m_bCanThrow = true;
+		m_bHighThrow = true;
 		ClearKey();
 	}
 
 
 	// 투척 준비
-	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP)
+	if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::TAP && !m_bHighThrow)
 	{
 		m_bCanThrow = true;
+		m_bLowThrow = true;
 		ClearKey();
 	}
 
-	// 투척 상태 진입 가능한 지 판정
-	if (m_EquippedOwner && m_bCanThrow)
+	// Release 클릭을 감지한다
+	if (m_EquippedOwner && m_bCanThrow && m_bHighThrow)
+	{
+		if (m_CurKey == KEY::LBTN && m_CurKeyState == KEY_STATE::RELEASED)
+		{
+			m_bThrowTriggered = true;
+		}
+	}
+
+	if (m_EquippedOwner && m_bCanThrow && m_bLowThrow)
+	{
+		if (m_CurKey == KEY::RBTN && m_CurKeyState == KEY_STATE::RELEASED)
+		{
+			m_bThrowTriggered = true;
+		}
+	}
+
+	// 투척 상태 진입 가능한 지 판정 + 현재 투척무기를 사용하는 대상은 Player만 있다고 가정
+	if (m_EquippedOwner && m_bCanThrow && m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Grenade_Throw_High)
 	{
 		bool readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetFrameLength() - 1 == m_EquippedOwner->
 			Animator3D()->GetCurFrameIdx();
 
+
 		// 준비 자세가 된 경우
 		if (readyToThrow)
 		{
-			if (m_CurKey == KEY::LBTN &&
-				(m_CurKeyState == KEY_STATE::RELEASED || m_CurKeyState == KEY_STATE::NONE))
+			if (m_bThrowTriggered)
 			{
 				// Player의 위치와 방향 정보
 				Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
@@ -155,14 +174,39 @@ void ThrowableController::Tick()
 
 				// 던지는 사운드 재생 (중복 x)
 				m_ThrowSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ThrowSound,
-				                                                    m_Player->Transform()->GetRelativePos(), 1.f,
-				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
+					m_Player->Transform()->GetRelativePos(), 1.f,
+					10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
 			}
 
-			// 투척 한다.
-			else if (m_CurKey == KEY::RBTN &&
-				(m_CurKeyState == KEY_STATE::RELEASED || m_CurKeyState == KEY_STATE::NONE))
+			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
+			{
+				if (!m_bTrigger)
+				{
+					// 핀소리
+					m_PinSoundIdx = FSoundManager::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
+						10000.f, 1, 1.f, true, true, -1);
+
+					m_bTrigger = true;
+				}
+				ClearKey();
+			}
+
+		}
+	}
+
+
+	if (m_EquippedOwner && m_bCanThrow && m_PlayerScript->GetStateEnum() == PLAYER_STATE::Player_Grenade_Throw_Low)
+	{
+
+		bool readyToThrow = m_EquippedOwner->Animator3D()->GetCurClip()->GetFrameLength() - 1 == m_EquippedOwner->
+			Animator3D()->GetCurFrameIdx();
+
+
+		// 준비 자세가 된 경우
+		if (readyToThrow)
+		{
+			if (m_bThrowTriggered)
 			{
 				// Player의 위치와 방향 정보
 				Vec3 vPlayerPos = m_EquippedOwner->Transform()->GetRelativePos();
@@ -190,30 +234,25 @@ void ThrowableController::Tick()
 
 				// 던지는 사운드 재생 (중복 x)
 				m_ThrowSoundIdx = FSoundManager::GetInst()->Play3DSound(m_ThrowSound,
-				                                                    m_Player->Transform()->GetRelativePos(), 1.f,
-				                                                    10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
+					m_Player->Transform()->GetRelativePos(), 1.f,
+					10000.f, 1, 1.f, false, false, m_ThrowSoundIdx);
 				ClearKey();
 			}
+		}
 
-			if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
+		if (m_CurKey == KEY::R && m_CurKeyState == KEY_STATE::TAP)
+		{
+			if (!m_bTrigger)
 			{
-				if (!m_bTrigger)
-				{
-					// 핀소리
-					m_PinSoundIdx = FSoundManager::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
-						10000.f, 1, 1.f, true, true, -1);
+				// 핀소리
+				m_PinSoundIdx = FSoundManager::GetInst()->Play3DSound(m_PinSound, m_Player->Transform()->GetRelativePos(), 1.f,
+					10000.f, 1, 1.f, true, true, -1);
 
-					m_bTrigger = true;
-				}
-				ClearKey();
+				m_bTrigger = true;
 			}
-
+			ClearKey();
 		}
 	}
-
-
-	//
-
 
 	if (m_bTrigger)
 	{
@@ -237,7 +276,6 @@ void ThrowableController::Tick()
 		}
 	}
 }
-
 
 void ThrowableController::Triggered()
 {

@@ -157,9 +157,10 @@
     <ClInclude Include="Gameplay\PauseMenu\Public\PauseUIScript.h" />
     <ClInclude Include="Gameplay\scripts.h" />
     <ClInclude Include="Gameplay\states.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare_Low.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Heal.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Dead.h" />
-    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare.h" />
+    <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare_High.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_High.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Throw_Low.h" />
     <ClInclude Include="Gameplay\State\Public\Player_Gun_Fire.h" />
@@ -209,9 +210,10 @@
     <ClCompile Include="Gameplay\Character\Private\TestCharacter.cpp" />
     <ClCompile Include="Gameplay\Particle\Private\ParticleController.cpp" />
     <ClCompile Include="Gameplay\PauseMenu\Private\PauseUIScript.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare_Low.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Heal.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Dead.cpp" />
-    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare.cpp" />
+    <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare_High.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_High.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Throw_Low.cpp" />
     <ClCompile Include="Gameplay\State\Private\Player_Gun_Fire.cpp" />
