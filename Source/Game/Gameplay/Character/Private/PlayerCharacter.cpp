@@ -71,6 +71,7 @@ PlayerCharacter::PlayerCharacter()
 	, m_OptionUIOpened(false)
 	, m_bMouseActive(false)
 	, m_bMotionChanged(false)
+	, m_mouse(true)
 	, m_StateAccTime(0.f)
 	, m_InteractionScript(nullptr)
 {
@@ -112,6 +113,8 @@ void PlayerCharacter::Begin()
 
 	// State Machine Base Set
 	StateMachine()->SetChange(L"Player_Idle");
+
+	SetMouseActive(m_mouse);
 }
 
 void PlayerCharacter::Tick()
@@ -124,9 +127,8 @@ void PlayerCharacter::Tick()
 
 	if (KEY_TAP(KEY::F2))
 	{
-		static bool bmouse = false;
-		bmouse = !bmouse;
-		SetMouseActive(bmouse);
+		m_mouse = !m_mouse;
+		SetMouseActive(m_mouse);
 	}
 
 

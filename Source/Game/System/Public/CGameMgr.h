@@ -10,6 +10,7 @@ class PlayerCharacter;
 class TestFadeInOutReset;
 class PlayerRevive;
 class LevelRestart;
+class GameStart;
 
 class CGameMgr
 	: public singleton<CGameMgr>
@@ -26,6 +27,7 @@ private:
 	CGameObject*	m_InventoryCanvasUI;	// 인벤토리 UI
 	CGameObject*	m_CardinalCanvasUI;		// 방위 UI
 	CGameObject*	m_MainCanvasUI;			// Main UI
+	CGameObject*	m_MainTitleCanvasUI;			// MainTitle UI
 
 
 	CGameObject*	m_CardinalImageUI;		// 방위 이미지 UI
@@ -37,6 +39,7 @@ private:
 	TestFadeInOutReset* m_FadeInOutEvent;			// Player Reset
 	PlayerRevive*		m_PlayerReviveEvent;		// Player Revive
 	LevelRestart*		m_LevelRestartEvevnt;		// Level Restart;
+	GameStart*			m_GameStartEvent;			// MainTitle Start;
 
 	// Script
 	CameraController*		m_CamScript;
@@ -73,6 +76,7 @@ public:
 	void RestartGame();
 	void OpenOption();
 	void ExitGame();
+	void StartGame();
 
 	void UpSensi();
 	void DownSensi();

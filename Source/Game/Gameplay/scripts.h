@@ -30,3 +30,4 @@
 #include "Game/Gameplay/PauseMenu/Public/PauseUIScript.h"
 #include "Game/Gameplay/UI/Public/OptionUIScript.h"
 #include "Game/Gameplay/Character/Public/GroundCheck.h"
+#include "Game/GameStart.h"

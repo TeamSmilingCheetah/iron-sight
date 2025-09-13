@@ -20,6 +20,7 @@ CGameMgr::CGameMgr()
 	, m_InventoryCanvasUI(nullptr)
 	, m_CardinalCanvasUI(nullptr)
 	, m_MainCanvasUI(nullptr)
+	, m_MainTitleCanvasUI(nullptr)
 	, m_CardinalImageUI(nullptr)
 	, m_HPUI(nullptr)
 	, m_TimerUI(nullptr)
@@ -27,6 +28,7 @@ CGameMgr::CGameMgr()
 	, m_FadeInOutEvent(nullptr)
 	, m_PlayerReviveEvent(nullptr)
 	, m_LevelRestartEvevnt(nullptr)
+	, m_GameStartEvent(nullptr)
 	, m_CamScript(nullptr)
 	, m_KillinfoScript(nullptr)
 	, m_CameraEffect(nullptr)
@@ -108,6 +110,7 @@ int CGameMgr::Init()
 	CScriptMgr::GetInst()->RegisterScript(L"OptionUIScript", []() { return new OptionUIScript; });
 	CScriptMgr::GetInst()->RegisterScript(L"PlayerRevive", []() { return new PlayerRevive; });
 	CScriptMgr::GetInst()->RegisterScript(L"GroundCheck", []() { return new GroundCheck; });
+	CScriptMgr::GetInst()->RegisterScript(L"GameStart", []() { return new GameStart; });
 
 	// StateMgr 등록
 	CStateMgr::GetInst()->RegisterState(L"Player_Idle", []() { return new Player_Idle; });
@@ -143,6 +146,7 @@ void CGameMgr::Begin()
 	m_InventoryCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Inventory_CanvasUI");
 	m_CardinalCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_CanvasUI");
 	m_MainCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"Main_CanvasUI");
+	m_MainTitleCanvasUI = CLevelMgr::GetInst()->FindObjectByName(L"MainTitleUI");
 
 	m_CardinalImageUI = CLevelMgr::GetInst()->FindObjectByName(L"Cardinal_ImageUI");
 	m_HPUI = CLevelMgr::GetInst()->FindObjectByName(L"HP_UI");
@@ -164,6 +168,7 @@ void CGameMgr::Begin()
 	m_FadeInOutEvent = static_cast<TestFadeInOutReset*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"FadeInOut_Event"), SCRIPT_TYPE::TESTFADEINOUTRESET));
 	m_PlayerReviveEvent = static_cast<PlayerRevive*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"PlayerRevive_Event"), SCRIPT_TYPE::PLAYERREVIVE));
 	m_LevelRestartEvevnt = static_cast<LevelRestart*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"LevelRestart_Event"), SCRIPT_TYPE::LEVELRESTART));
+	m_GameStartEvent = static_cast<GameStart*>(GetScriptWithType(CLevelMgr::GetInst()->FindObjectByName(L"GameStart_Event"), SCRIPT_TYPE::GAMESTART));
 }
 
 void CGameMgr::ResumeGame()
@@ -225,6 +230,18 @@ void CGameMgr::ExitGame()
 {
 	// 프로그램 종료
 	PostQuitMessage(0);
+}
+
+void CGameMgr::StartGame()
+{
+	// Level Start
+	// 이벤트에게 시작을 알림
+
+	//m_FadeInOutEvent->SetEventStart();
+	m_GameStartEvent->SetEventStart();
+
+	SetObjectActive(m_MainTitleCanvasUI, false);
+
 }
 
 
