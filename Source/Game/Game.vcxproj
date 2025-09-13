@@ -180,6 +180,7 @@
     <ClInclude Include="Gameplay\Weapon\Public\GunController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\ThrowableController.h" />
     <ClInclude Include="Gameplay\Weapon\Public\WeaponController.h" />
+    <ClInclude Include="GameStart.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="System\Public\CGameMgr.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="Gameplay\Weapon\Private\ThrowableController.cpp" />
     <ClCompile Include="Gameplay\Weapon\Private\WeaponController.cpp" />
     <ClCompile Include="Gameplay\Character\Private\PlayerCharacter_Move.cpp" />
+    <ClCompile Include="GameStart.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

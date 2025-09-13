@@ -152,6 +152,9 @@
     <ClCompile Include="Gameplay\State\Private\Player_Grenade_Prepare_Low.cpp">
       <Filter>03. Gameplay\State\Grenade</Filter>
     </ClCompile>
+    <ClCompile Include="GameStart.cpp">
+      <Filter>03. Gameplay\Event\Start</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -311,6 +314,9 @@
     <ClInclude Include="Gameplay\State\Public\Player_Grenade_Prepare_Low.h">
       <Filter>03. Gameplay\State\Grenade</Filter>
     </ClInclude>
+    <ClInclude Include="GameStart.h">
+      <Filter>03. Gameplay\Event\Start</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -381,6 +387,9 @@
     </Filter>
     <Filter Include="03. Gameplay\Event\Restart">
       <UniqueIdentifier>{18e0d80a-e95c-440c-a2e6-dcf5d126d15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Gameplay\Event\Start">
+      <UniqueIdentifier>{aad97d64-9040-48a0-8d73-d4ff42975a2d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

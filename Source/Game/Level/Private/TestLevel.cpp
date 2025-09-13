@@ -454,6 +454,68 @@ void TestLevel::CreateTestLevel()
 // UI Preset
 vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 {
+	// 시작 화면 UI
+	CGameObject* MainTitleCanvasUI = new CGameObject;
+	MainTitleCanvasUI->SetName(L"MainTitleUI");
+	MainTitleCanvasUI->AddComponent(new CUI(UI_CANVAS));
+	
+	MainTitleCanvasUI->AddComponent(new CUIRender);
+	MainTitleCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 1.f));
+	MainTitleCanvasUI->UI()->SetPriority(0);
+	MainTitleCanvasUI->UI()->SetRectPos(0.f, 0.f);
+	MainTitleCanvasUI->UI()->SetRectSize(1280.f, 768.f);
+	
+	PLevel->AddObject(8, MainTitleCanvasUI, false); // UI layer
+
+	// Main Title
+	CGameObject* MainTitle = new CGameObject;
+	MainTitle->AddComponent(new CUI);
+
+	MainTitle->AddComponent(new CUIRender);
+	MainTitle->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
+	MainTitle->SetName(L"MainTitle");
+	MainTitle->UI()->ClearText();
+	MainTitle->UI()->AddText(L"Project Iron Sight", 360.f, -5.f, 80, FONT_RGBA(255, 255, 255, 255));
+	MainTitle->UI()->SetRectSize(1280.f, 200.f);
+	MainTitle->UI()->SetRectPos(0.f, 120.f);
+
+	MainTitle->AddComponent(new OptionUIScript);
+
+	MainTitleCanvasUI->AddChild(MainTitle);
+
+
+	// start
+	CGameObject* MainRestart = new CGameObject;
+	MainRestart->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	MainRestart->AddComponent(new CUIRender);
+	MainRestart->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	MainRestart->SetName(L"MainStartUI");
+	MainRestart->UI()->ClearText();
+	MainRestart->UI()->AddText(L"START", 100.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	MainRestart->UI()->SetRectSize(320.f, 50.f);
+	MainRestart->UI()->SetRectPos(0.f, 10.f);
+
+	MainRestart->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->StartGame(); }));
+
+	MainTitleCanvasUI->AddChild(MainRestart);
+
+	// Exit
+	CGameObject* MainExit = new CGameObject;
+	MainExit->AddComponent(new CUI(UI_HOVER | UI_CLICK));
+
+	MainExit->AddComponent(new CUIRender);
+	MainExit->UI()->SetColor(Vec4(0.8f, 0.8f, 0.8f, 0.5f));
+	MainExit->SetName(L"MainExitUI");
+	MainExit->UI()->ClearText();
+	MainExit->UI()->AddText(L"GAME EXIT", 85.f, 0.f, 32, FONT_RGBA(0, 0, 0, 188));
+	MainExit->UI()->SetRectSize(320.f, 50.f);
+	MainExit->UI()->SetRectPos(0.f, -100.f);
+
+	MainExit->AddComponent(new PauseUIScript([]() { CGameMgr::GetInst()->ExitGame(); }));
+
+	MainTitleCanvasUI->AddChild(MainExit);
+
 	// UI Camera
 	CGameObject* UICamera = new CGameObject;
 	UICamera->SetName(L"UICamera");
@@ -474,7 +536,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	InventoryCanvasUI->AddComponent(new CUIRender);
 	InventoryCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.3f));
-	InventoryCanvasUI->UI()->SetPriority(2);
+	InventoryCanvasUI->UI()->SetPriority(3);
 	InventoryCanvasUI->UI()->SetRectPos(0.f, 0.f);
 	InventoryCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
@@ -589,7 +651,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	PauseMenuCanvasUI->AddComponent(new CUIRender);
 	PauseMenuCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
-	PauseMenuCanvasUI->UI()->SetPriority(0);
+	PauseMenuCanvasUI->UI()->SetPriority(1);
 	PauseMenuCanvasUI->UI()->SetRectPos(0.f, 0.f);
 	PauseMenuCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
@@ -668,7 +730,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	OptionMenuCanvasUI->AddComponent(new CUIRender);
 	OptionMenuCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.5f));
-	OptionMenuCanvasUI->UI()->SetPriority(1);
+	OptionMenuCanvasUI->UI()->SetPriority(2);
 	OptionMenuCanvasUI->UI()->SetRectPos(0.f, 0.f);
 	OptionMenuCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
@@ -762,7 +824,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 	MainCanvasUI->SetName(L"Main_CanvasUI");
 	MainCanvasUI->AddComponent(new CUI(UI_CANVAS));
 	MainCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.f));
-	MainCanvasUI->UI()->SetPriority(4);
+	MainCanvasUI->UI()->SetPriority(5);
 	MainCanvasUI->UI()->SetRectPos(0.f, 0.f);
 	MainCanvasUI->UI()->SetRectSize(1280.f, 768.f);
 
@@ -906,7 +968,7 @@ vector<CGameObject*> TestLevel::SetUpUI(CLevel* PLevel)
 
 	CardinalCanvasUI->AddComponent(new CUIRender);
 	CardinalCanvasUI->UI()->SetColor(Vec4(0.f, 0.f, 0.f, 0.1f));
-	CardinalCanvasUI->UI()->SetPriority(3);
+	CardinalCanvasUI->UI()->SetPriority(4);
 
 	PLevel->AddObject(8, CardinalCanvasUI, false);
 
@@ -1034,4 +1096,11 @@ void TestLevel::SetUpEvent(CLevel* PLevel)
 	LevelRestartEvent->AddComponent(new LevelRestart);
 
 	PLevel->AddObject(8, LevelRestartEvent, false);
+
+	// GameStart
+	CGameObject* startEvent = new CGameObject;
+	startEvent->SetName(L"GameStart_Event");
+	startEvent->AddComponent(new GameStart);
+
+	PLevel->AddObject(8, startEvent, false);
 }

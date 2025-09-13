@@ -127,6 +127,7 @@ private:
 	bool m_bMouseActive;			//  마우스 활성화
 	bool m_bGameResetting;
 	bool m_bMotionChanged;
+	bool m_mouse;
 
 	float m_MouseSensitivity;
 
@@ -225,6 +226,7 @@ public:
 	bool IsMotionChanged() { return m_bMotionChanged; }
 	void SetGameResetting(bool _b) { m_bGameResetting = _b; }
 	void SetMouseActive(bool _b);
+
 
 
 	// State Functions
