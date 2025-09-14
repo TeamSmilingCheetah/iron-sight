@@ -83,7 +83,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
 		float3 diffuseIBL = kd * vColor * diffuseIrradiance;    // divide by PI ?
 
         // SpecularBRDF 
-		const uint mipLevels = 1;   // Specular Cubemap의 mipmap 수 .. 너무 높은 레벨까지 사용하면 specular가 잘 드러나지 않음.
+		const uint mipLevels = 5;   // Specular Cubemap의 mipmap 수 .. 너무 높은 레벨까지 사용하면 specular가 잘 드러나지 않음.
 		float3 specularIrradiance = g_texcube_1.SampleLevel(g_sam_0, vWorldReflect, Roughness * mipLevels).rgb;
 
         // LUT는 Clamp Sampler (g_sam_2) 사용

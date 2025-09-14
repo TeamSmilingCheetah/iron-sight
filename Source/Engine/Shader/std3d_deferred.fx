@@ -183,8 +183,7 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
     // Roughness Tex
 	if (g_btex_3)
 	{
-        // TEST(Ssio) : IBL Baker는 roughness를 반대로 설정
-		Roughness = 1.f - g_tex_3.SampleGrad(g_sam_0, _in.vUV, dx, dy).x;
+		Roughness = g_tex_3.SampleGrad(g_sam_0, _in.vUV, dx, dy).x;
 	}
 
     // Ambient Occlusion Tex
