@@ -3,6 +3,32 @@
 #include "Engine/System/Public/Asset/Base/Asset.h"
 #include "Engine/System/Public/Rendering/Device/CDevice.h"
 
+
+/**
+ * @brief 텍스쳐에 설정한 세부 옵션을 저장하는 구조체
+ *
+ * @param m_Image 이미지 파일 로딩 및 저장 기능
+ * @param m_Tex2D (ScratchImage)SysMem -> GPUMem
+ * @param m_RTV Render Target View
+ * @param m_DSV Depth Stencil View
+ * @param m_SRV Shader Resource View
+ * @param m_UAV Unordered Access View
+ * @param m_Desc
+ * @param m_RecentSRVNum
+ * @param m_RecentUAVNum
+ * @param m_IsMemoryReleased 시스템 메모리 관리를 위한 변수
+ */
+struct MetaOpts
+{
+	bool sRGB;
+	bool mipGen;
+
+	MetaOpts()
+		: sRGB(false)
+		, mipGen(true)
+	{}
+};
+
 /**
  * @brief 표면에 입힐 이미지 데이터를 담당하는 클래스
  *
@@ -34,20 +60,40 @@ private:
 	int m_RecentUAVNum;
 	bool m_IsMemoryReleased;
 
+	MetaOpts m_MetaOpts;
+
 private:
 	int Load(const wstring& PFilePath) override;
+	[[deprecated]]
 	int Save(const wstring& PRelativePath) override;
 	int Create(UINT PWidth, UINT PHeight, DXGI_FORMAT PPixelFormat, UINT PBindFlag,
 	           D3D11_USAGE PUsage = D3D11_USAGE_DEFAULT);
 	int Create(ComPtr<ID3D11Texture2D> P2DTexture);
 	int CreateArrayTexture(const vector<Ptr<CTexture>>& PTextureVector);
 
+
+
+
+
+	int LoadMetaOpts(const wstring& PFilePath);
+	int SaveMetaOpts(const wstring& PFilePath);
+
+
+	// Format 관련
+	static DXGI_FORMAT GetTypeLessFormat(DXGI_FORMAT InFormat);
+	static DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT InFormat, bool bSRGB);
+	static bool CanUseSRGB(DXGI_FORMAT InFormat);
+
 public:
 	const TexMetadata& GetMetaData();
+	const MetaOpts& GetMetaOpts() { return m_MetaOpts; }
+	void SetMetaOpts(const MetaOpts& POpts);
 	tPixel* GetPixels();
 	size_t GetRowPitch();
 	size_t GetSlicePitch();
 	void ReleaseSystemMemory();
+
+	bool IsSupportSRGB() const { return m_Desc.Format == DXGI_FORMAT_R8G8B8A8_UNORM || m_Desc.Format == DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; }
 
 	void Binding(int PRegisterNum);
 	static void Clear(int PRegisterNum);
@@ -57,7 +103,7 @@ public:
 	void Clear_UAV_CS();
 	int GenerateMip(UINT PLevel);
 
-	CLONE_DISABLE(CTexture);
+	CLONE_DISABLE(CTexture)
 	CTexture();
 	~CTexture() override;
 

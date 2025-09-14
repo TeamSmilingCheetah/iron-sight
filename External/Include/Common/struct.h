@@ -332,15 +332,20 @@ struct GlobalData
 
 struct tScalarParam
 {
+	bool Enabled;	// 파라미터 활성화 여부
+
 	string Desc;
-	SCALAR_PARAM eParam;
 	bool Drag;
 };
 
 struct tTexParam
 {
+	bool Enabled;	// 파라미터 활성화 여부
+
 	string Desc;
-	TEX_PARAM eParam;
+
+	// Default Options
+	TEX_DEFAULT_OPT		sRGB;
 };
 
 extern GlobalData g_Data;

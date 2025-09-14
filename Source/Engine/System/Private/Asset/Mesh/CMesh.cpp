@@ -238,9 +238,8 @@ int CMesh::Save(const wstring& _RelativePath)
 
 	// 정점 데이터 저장
 	fwrite(&m_VtxCount, sizeof(UINT), 1, pFile);
-	int iByteSize = m_VBDesc.ByteWidth;
-	fwrite(&iByteSize, sizeof(int), 1, pFile);
-	fwrite(m_VtxSysMem, iByteSize, 1, pFile);
+	fwrite(&m_VBDesc.ByteWidth, sizeof(UINT), 1, pFile);
+	fwrite(m_VtxSysMem, m_VBDesc.ByteWidth, 1, pFile);
 
 	// 인덱스 정보
 	UINT iMtrlCount = static_cast<UINT>(m_vecIdxInfo.size());
@@ -277,16 +276,14 @@ int CMesh::Load(const wstring& _strFilePath)
 
 	// 정점데이터
 	fread(&m_VtxCount, sizeof(UINT), 1, pFile);
-	UINT iByteSize = 0;
-	fread(&iByteSize, sizeof(int), 1, pFile);
-
-	m_VtxSysMem = static_cast<Vtx*>(malloc(iByteSize));
-	fread(m_VtxSysMem, 1, iByteSize, pFile);
+	fread(&m_VBDesc.ByteWidth, sizeof(UINT), 1, pFile);
+	m_VtxSysMem = static_cast<Vtx*>(malloc(m_VBDesc.ByteWidth));
+	fread(m_VtxSysMem, m_VBDesc.ByteWidth, 1, pFile);
 
 
 	D3D11_BUFFER_DESC tDesc = {};
 	tDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	tDesc.ByteWidth = iByteSize;
+	tDesc.ByteWidth = m_VBDesc.ByteWidth;
 	tDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	D3D11_SUBRESOURCE_DATA tSubData = {};

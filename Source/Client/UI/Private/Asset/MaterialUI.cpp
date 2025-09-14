@@ -14,6 +14,7 @@ class CMaterial;
 
 MaterialUI::MaterialUI()
 	: AssetUI("Material", MATERIAL)
+	, m_OpenTexType(TEX_END)
 {
 }
 
@@ -99,23 +100,29 @@ void MaterialUI::ShaderParameter()
 	if (nullptr == pShader)
 		return;
 
-	const vector<tScalarParam>& vecScalar = pShader->GetScalarParam();
+	const array<tScalarParam, SCALAR_END>& arrScalar = pShader->GetScalarParam();
 
-	for (size_t i = 0; i < vecScalar.size(); ++i)
+	for (size_t i = 0; i < arrScalar.size(); ++i)
 	{
-		switch (vecScalar[i].eParam)
+		if (!arrScalar[i].Enabled)
+		{
+			continue;
+		}
+
+		SCALAR_PARAM eParam = static_cast<SCALAR_PARAM>(i);
+		switch (eParam)
 		{
 		case INT_0:
 		case INT_1:
 		case INT_2:
 		case INT_3:
 			{
-				auto pData = static_cast<int*>(pMtrl->GetScalarParam(vecScalar[i].eParam));
+				auto pData = static_cast<int*>(pMtrl->GetScalarParam(eParam));
 				int Data = *pData;
 
-				if (ParamUI::Param_Int(vecScalar[i].Desc, &Data, vecScalar[i].Drag))
+				if (ParamUI::Param_Int(arrScalar[i].Desc, &Data, arrScalar[i].Drag))
 				{
-					pMtrl->SetScalarParam(vecScalar[i].eParam, Data);
+					pMtrl->SetScalarParam(eParam, Data);
 				}
 			}
 			break;
@@ -124,12 +131,12 @@ void MaterialUI::ShaderParameter()
 		case FLOAT_2:
 		case FLOAT_3:
 			{
-				auto pData = static_cast<float*>(pMtrl->GetScalarParam(vecScalar[i].eParam));
+				auto pData = static_cast<float*>(pMtrl->GetScalarParam(eParam));
 				float Data = *pData;
 
-				if (ParamUI::Param_Float(vecScalar[i].Desc, &Data, vecScalar[i].Drag))
+				if (ParamUI::Param_Float(arrScalar[i].Desc, &Data, arrScalar[i].Drag))
 				{
-					pMtrl->SetScalarParam(vecScalar[i].eParam, Data);
+					pMtrl->SetScalarParam(eParam, Data);
 				}
 			}
 			break;
@@ -138,12 +145,12 @@ void MaterialUI::ShaderParameter()
 		case VEC2_2:
 		case VEC2_3:
 			{
-				auto pData = static_cast<Vec2*>(pMtrl->GetScalarParam(vecScalar[i].eParam));
+				auto pData = static_cast<Vec2*>(pMtrl->GetScalarParam(eParam));
 				Vec2 Data = *pData;
 
-				if (ParamUI::Param_Vec2(vecScalar[i].Desc, &Data, vecScalar[i].Drag))
+				if (ParamUI::Param_Vec2(arrScalar[i].Desc, &Data, arrScalar[i].Drag))
 				{
-					pMtrl->SetScalarParam(vecScalar[i].eParam, Data);
+					pMtrl->SetScalarParam(eParam, Data);
 				}
 			}
 			break;
@@ -152,12 +159,12 @@ void MaterialUI::ShaderParameter()
 		case VEC4_2:
 		case VEC4_3:
 			{
-				auto pData = static_cast<Vec4*>(pMtrl->GetScalarParam(vecScalar[i].eParam));
+				auto pData = static_cast<Vec4*>(pMtrl->GetScalarParam(eParam));
 				Vec4 Data = *pData;
 
-				if (ParamUI::Param_Vec4(vecScalar[i].Desc, &Data, vecScalar[i].Drag))
+				if (ParamUI::Param_Vec4(arrScalar[i].Desc, &Data, arrScalar[i].Drag))
 				{
-					pMtrl->SetScalarParam(vecScalar[i].eParam, Data);
+					pMtrl->SetScalarParam(eParam, Data);
 				}
 			}
 			break;
@@ -168,16 +175,22 @@ void MaterialUI::ShaderParameter()
 		}
 	}
 
-	const vector<tTexParam>& vecTex = pShader->GetTexParam();
-	for (size_t i = 0; i < vecTex.size(); ++i)
+	const array<tTexParam, TEX_END>& arrTex = pShader->GetTexParam();
+	for (size_t i = 0; i < arrTex.size(); ++i)
 	{
-		Ptr<CTexture> pTex = pMtrl->GetTexParam(vecTex[i].eParam);
+		if (!arrTex[i].Enabled)
+		{
+			continue;
+		}
 
-		if (ParamUI::Param_Tex(vecTex[i].Desc, pTex
+		TEX_PARAM eParam = static_cast<TEX_PARAM>(i);
+		Ptr<CTexture> pTex = pMtrl->GetTexParam(eParam);
+
+		if (ParamUI::Param_Tex(arrTex[i].Desc, pTex
 		                       , this, static_cast<EUI_DELEGATE_2>(&MaterialUI::SelectTexture)))
 		{
-			m_OpenTexType = vecTex[i].eParam;
-			pMtrl->SetTexParam(vecTex[i].eParam, pTex);
+			m_OpenTexType = eParam;
+			pMtrl->SetTexParam(eParam, pTex);
 		}
 	}
 }

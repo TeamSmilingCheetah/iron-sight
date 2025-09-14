@@ -45,7 +45,7 @@ CGameObject* CPrefab::Instantiate()
 
 int CPrefab::Save(const wstring& _RelativePath)
 {
-	wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(_RelativePath);
+	wstring strRelativePath = CPathMgr::GetInst()->MakeFileName(_RelativePath);
 	SetRelativePath(strRelativePath);
 
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
@@ -77,8 +77,8 @@ int CPrefab::Load(const wstring& _FilePath)
     FILE* File = nullptr;
     _wfopen_s(&File, _FilePath.c_str(), L"rb");
 
-    wstring key = GetKey();
-    wstring path = GetRelativePath();
+    wstring key;
+    wstring path;
 
     LoadWString(key, File);
     LoadWString(path, File);

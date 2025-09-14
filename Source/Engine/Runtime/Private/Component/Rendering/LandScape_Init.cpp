@@ -106,7 +106,7 @@ void FLandscape::CreateMaterial()
 	pShader->SetBSState(BS_TYPE::DEFAULT);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
 
-	pShader->AddScalarParam("TessLevel", INT_2);
+	pShader->SetScalarParam("TessLevel", INT_2);
 
 	FAssetManager::GetInst()->AddAsset<CGraphicShader>(L"LandScapeShader", pShader);
 

@@ -4,6 +4,7 @@
 class MaterialUI :
 	public AssetUI
 {
+private:
 	TEX_PARAM m_OpenTexType;
 
 public:

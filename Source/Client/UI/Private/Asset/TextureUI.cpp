@@ -45,4 +45,26 @@ void TextureUI::Render_Update()
 	ImVec4 border_col = ImGui::GetStyleColorVec4(ImGuiCol_Border);
 	ImGui::Image(pAsset->GetSRV().Get(), ImVec2(150.f, 150.f), uv_min, uv_max, tint_col,
 	             border_col);
+
+	// MetaOpts
+	ImGui::Text("sRGB");
+	ImGui::SameLine(100);
+	ImGui::Checkbox("##sRGB", &m_MetaOpts.sRGB);
+
+	ImGui::Text("MipMap");
+	ImGui::SameLine(100);
+	ImGui::Checkbox("##mipGen", &m_MetaOpts.mipGen);
+
+	// 옵션 저장 및 적용
+	if (ImGui::Button("Save and Apply"))
+	{
+		pAsset->SetMetaOpts(m_MetaOpts);
+	}
+
+}
+
+void TextureUI::OnSelected()
+{
+	Ptr<CTexture> pAsset = dynamic_cast<CTexture*>(GetAsset().Get());
+	m_MetaOpts = pAsset->GetMetaOpts();	// 사본으로 받음
 }

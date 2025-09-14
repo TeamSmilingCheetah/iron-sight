@@ -212,6 +212,10 @@ void Inspector::SetTargetObject(CGameObject* _Target)
 
 void Inspector::SetTargetAsset(Ptr<FAsset> _Asset)
 {
+	// 동일한 애셋 선택이면 해당 없음
+	if (m_TargetAsset == _Asset)
+		return;
+
 	m_TargetAsset = _Asset;
 
 	for (UINT i = 0; i < static_cast<UINT>(ASSET_TYPE::END); ++i)
@@ -222,6 +226,7 @@ void Inspector::SetTargetAsset(Ptr<FAsset> _Asset)
 		{
 			m_arrAssetUI[i]->SetAsset(m_TargetAsset);
 			m_arrAssetUI[i]->SetActive(true);
+			static_cast<AssetUI*>(m_arrAssetUI[i])->OnSelected();
 		}
 	}
 

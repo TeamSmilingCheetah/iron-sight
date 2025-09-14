@@ -35,13 +35,13 @@ int CFlipbook::Save(const wstring& _RelativePath)
 
 	fclose(pFile);
 
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
-	int FindIdx = static_cast<int>(strFilePath.find(strContentPath));
-	if (FindIdx != -1)
-	{
-		wstring RelativePath = strFilePath.substr(strContentPath.length(), strFilePath.length());
-		SetRelativePath(RelativePath);
-	}
+	//wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	//int FindIdx = static_cast<int>(strFilePath.find(strContentPath));
+	//if (FindIdx != -1)
+	//{
+	//	wstring RelativePath = strFilePath.substr(strContentPath.length(), strFilePath.length());
+	//	SetRelativePath(RelativePath);
+	//}
 
 	return S_OK;
 }

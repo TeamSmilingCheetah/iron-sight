@@ -25,7 +25,7 @@ CParticleSystem::CParticleSystem()
 
 	// Particle Texture
 	m_ParticleTex = FAssetManager::GetInst()->Load<CTexture>(
-		L"texture\\particle\\TX_GlowScene_2.png");
+		L"Texture\\particle\\TX_GlowScene_2.png");
 
 	// Particle Buffer
 	m_ParticleBuffer = new CStructuredBuffer;

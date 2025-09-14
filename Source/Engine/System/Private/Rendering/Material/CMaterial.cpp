@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "System/Public/Rendering/Material/CMaterial.h"
-#include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/Material/CMaterial.h"
+#include "Engine/System/Public/Rendering/Buffer/CConstBuffer.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
 
 class CConstBuffer;
 
 CMaterial::CMaterial(bool _EngineRes)
 	: FAsset(MATERIAL, _EngineRes)
-	  , m_Const{}
+	, m_Const{}
 {
 	m_Const.v4Arr[0] = Vec4(1.f, 0.f, 0.f, 1.f);
 }
@@ -180,6 +180,48 @@ int CMaterial::Load(const wstring& _strFilePath)
 	}
 
 	fclose(pFile);
+
+	// Material 파이프라인에 대해 Texture Option이 적절한지 확인
+	const array<tTexParam, TEX_END> arrTexParam = m_Shader->GetTexParam();
+
+	for (int i=0; i<TEX_END; ++i)
+	{
+		if (!arrTexParam[i].Enabled || m_arrTex[i] == nullptr)
+			continue;
+
+		MetaOpts metaOpts = m_arrTex[i]->GetMetaOpts();
+
+		// sRGB
+		if (arrTexParam[i].sRGB != INHERIT && m_arrTex[i]->IsSupportSRGB())
+		{
+			wstring Message;
+			int result;
+			if (arrTexParam[i].sRGB == ENABLED && metaOpts.sRGB == false)
+			{
+				Message = m_arrTex[i]->GetKey() + L"가 "
+					+ StringToWString(arrTexParam[i].Desc) + L"에 바인딩 되려면 sRGB가 true여야 합니다.";
+				result = MessageBox(nullptr, Message.c_str(), L"sRGB 옵션 변경 제안", MB_OKCANCEL);
+				metaOpts.sRGB = true;
+			}
+			else if (arrTexParam[i].sRGB == DISABLED && metaOpts.sRGB == true)
+			{
+				Message = m_arrTex[i]->GetKey() + L"가 "
+					+ StringToWString(arrTexParam[i].Desc) + L"에 바인딩 되려면 sRGB가 false여야 합니다.";
+				result = MessageBox(nullptr, Message.c_str(), L"sRGB 옵션 변경 제안", MB_OKCANCEL);
+				metaOpts.sRGB = false;
+			}
+			else
+			{
+				continue;
+			}
+
+			if (result == IDOK)
+			{
+				m_arrTex[i]->SetMetaOpts(metaOpts);
+			}
+			
+		}
+	}
 
 	return S_OK;
 }
