@@ -99,7 +99,7 @@ int CDevice::CreateSwapChain()
 
 	Desc.BufferDesc.Width = static_cast<UINT>(m_Resolution.x); // 백버퍼 해상도 Width
 	Desc.BufferDesc.Height = static_cast<UINT>(m_Resolution.y); // 백버퍼 해상도 Height
-	Desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	Desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
 	Desc.BufferDesc.RefreshRate.Denominator = 1; // 화면 갱신 속도, 분모
 	Desc.BufferDesc.RefreshRate.Numerator = 60; // 화면 갱신 속도, 분자

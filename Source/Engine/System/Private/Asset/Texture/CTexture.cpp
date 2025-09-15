@@ -22,7 +22,6 @@ int CTexture::Load(const wstring& PFilePath)
 	wstring strExt = szExt;
 
 	HRESULT hr;
-
 	TexMetadata MetaData;
 
 	if (strExt == L".dds" || strExt == L".DDS")

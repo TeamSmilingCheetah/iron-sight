@@ -184,7 +184,7 @@ int CMaterial::Load(const wstring& _strFilePath)
 	// Material 파이프라인에 대해 Texture Option이 적절한지 확인
 	const array<tTexParam, TEX_END> arrTexParam = m_Shader->GetTexParam();
 
-	for (int i=0; i<TEX_END; ++i)
+	for (int i = 0; i < TEX_END; ++i)
 	{
 		if (!arrTexParam[i].Enabled || m_arrTex[i] == nullptr)
 			continue;

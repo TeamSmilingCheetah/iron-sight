@@ -87,13 +87,14 @@ private:
 public:
 	const TexMetadata& GetMetaData();
 	const MetaOpts& GetMetaOpts() { return m_MetaOpts; }
+	// TODO(Ssio) : Method Chaining 방식으로 변경 고려
 	void SetMetaOpts(const MetaOpts& POpts);
 	tPixel* GetPixels();
 	size_t GetRowPitch();
 	size_t GetSlicePitch();
 	void ReleaseSystemMemory();
 
-	bool IsSupportSRGB() const { return m_Desc.Format == DXGI_FORMAT_R8G8B8A8_UNORM || m_Desc.Format == DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; }
+	bool IsSupportSRGB() const { return CanUseSRGB(m_Desc.Format); }
 
 	void Binding(int PRegisterNum);
 	static void Clear(int PRegisterNum);
