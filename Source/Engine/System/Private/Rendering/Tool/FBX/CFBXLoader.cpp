@@ -424,7 +424,7 @@ void CFBXLoader::LoadTexture()
 {
 	path path_content = CPathMgr::GetInst()->GetContentPath();
 
-	path path_fbx_texture = path_content.wstring() + L"texture\\FBXTexture\\";
+	path path_fbx_texture = path_content.wstring() + L"Texture\\FBXTexture\\";
 	if (false == exists(path_fbx_texture))
 	{
 		create_directory(path_fbx_texture);

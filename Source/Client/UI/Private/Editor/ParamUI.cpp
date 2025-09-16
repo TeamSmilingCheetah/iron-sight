@@ -145,8 +145,26 @@ bool ParamUI::Param_Tex(const string& _Desc, Ptr<CTexture>& _Tex
 	if (nullptr == _Tex)
 		ImGui::Image(nullptr, ImVec2(100.f, 100.f), uv_min, uv_max, tint_col, border_col);
 	else
+	{
 		ImGui::Image(_Tex->GetSRV().Get(), ImVec2(100.f, 100.f), uv_min, uv_max, tint_col,
 					 border_col);
+
+		string TexName = WStringToString(_Tex->GetKey());
+
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip))
+		{
+			if (ImGui::BeginTooltip())
+			{
+				ImGui::Text(TexName.c_str());
+
+				ImGui::EndTooltip();
+			}
+		}
+
+		
+	}
+
+	
 
 	if (ImGui::BeginDragDropTarget())
 	{

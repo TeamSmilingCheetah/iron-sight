@@ -5,12 +5,12 @@
 
 CGraphicShader::CGraphicShader()
 	: CShader(GRAPHIC_SHADER)
-	  , m_Topology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-	  , m_RSType(RS_TYPE::CULL_BACK)
-	  , m_BSType(BS_TYPE::DEFAULT)
-	  , m_DSType(DS_TYPE::LESS)
-	  , m_StencilRef(0)
-	  , m_Domain(SHADER_DOMAIN::DOMAIN_NONE)
+	, m_Topology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	, m_RSType(RS_TYPE::CULL_BACK)
+	, m_BSType(BS_TYPE::DEFAULT)
+	, m_DSType(DS_TYPE::LESS)
+	, m_StencilRef(0)
+	, m_Domain(SHADER_DOMAIN::DOMAIN_NONE)
 {
 }
 

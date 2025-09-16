@@ -75,7 +75,7 @@ float4 PS_Std2D(VS_OUT _in) : SV_Target
 
     for (int i = 0; i < g_Light2DCount; ++i)
     {
-        CalcLight2D(i, _in.vWorldPos, LightColor);
+        Phong2D(i, _in.vWorldPos, LightColor);
     }
 
     vColor.rgb *= LightColor;
@@ -121,7 +121,7 @@ float4 PS_Std2D_AlphaBlend(VS_OUT _in) : SV_Target
 
     for (int i = 0; i < g_Light2DCount; ++i)
     {
-        CalcLight2D(i, _in.vWorldPos, LightColor);
+        Phong2D(i, _in.vWorldPos, LightColor);
     }
 
     vColor.rgb *= LightColor;
@@ -180,7 +180,7 @@ float4 PS_Std2D_PaperBurn(VS_OUT _in) : SV_Target
 
     for (int i = 0; i < g_Light2DCount; ++i)
     {
-        CalcLight2D(i, _in.vWorldPos, LightColor);
+        Phong2D(i, _in.vWorldPos, LightColor);
     }
 
     vColor.rgb *= LightColor;

@@ -49,9 +49,6 @@
     <ClInclude Include="UI\Public\Editor\Inspector.h">
       <Filter>03. EditorUI\Inspector</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Public\Component\Collider2DUI.h">
-      <Filter>03. EditorUI\Inspector\ComponentUI\Collider2DUI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Public\Component\ComponentUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI</Filter>
     </ClInclude>
@@ -156,12 +153,6 @@
     <ClInclude Include="UI\Public\Component\Animator3DUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Public\Component\Collider3DUI.h">
-      <Filter>03. EditorUI\Inspector\ComponentUI\Collider3DUI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Public\Component\ColliderRayUI.h">
-      <Filter>03. EditorUI\Inspector\ComponentUI\ColliderRayUI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Public\Component\DecalUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\Decal</Filter>
     </ClInclude>
@@ -177,8 +168,6 @@
     <ClInclude Include="Script\Public\CEditorSpaceCamScript.h">
       <Filter>02. EditorMgr\EditorCamScript</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Public\FClientApp.h" />
-    <ClInclude Include="Core\Public\FWindow.h" />
     <ClInclude Include="UI\Public\Component\MeshColliderUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\MeshColliderUI</Filter>
     </ClInclude>
@@ -186,14 +175,15 @@
     <ClInclude Include="UI\Public\Component\StateMachineUI.h">
       <Filter>03. EditorUI\Inspector\ComponentUI\StateMachineUI</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Public\ClientApp.h" />
+    <ClInclude Include="Core\Public\AppWindow.h" />
+    <ClInclude Include="UI\Public\Component\PlaneColliderUI.h" />
+    <ClInclude Include="UI\Public\Component\BoxColliderUI.h" />
+    <ClInclude Include="UI\Public\Component\RayColliderUI.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Build\Client.ico">
-      <Filter>00. Default</Filter>
-    </Image>
-    <Image Include="Build\small.ico">
-      <Filter>00. Default</Filter>
-    </Image>
+    <Image Include="Build\MainIcon.ico" />
+    <Image Include="Build\TitleBarIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Default">
@@ -346,6 +336,9 @@
     <Filter Include="03. EditorUI\Inspector\ComponentUI\StateMachineUI">
       <UniqueIdentifier>{20666ef1-1280-4244-b9e4-da856e3c10c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. EditorUI\EngineAssetUI">
+      <UniqueIdentifier>{6c4378ae-bdcc-4d97-bf0b-0ce329861430}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -389,9 +382,6 @@
     </ClCompile>
     <ClCompile Include="UI\Private\Editor\Inspector.cpp">
       <Filter>03. EditorUI\Inspector</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Private\Component\Collider2DUI.cpp">
-      <Filter>03. EditorUI\Inspector\ComponentUI\Collider2DUI</Filter>
     </ClCompile>
     <ClCompile Include="UI\Private\Component\ComponentUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI</Filter>
@@ -500,12 +490,6 @@
     <ClCompile Include="UI\Private\Component\Animator3DUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\Animator3DUI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Private\Component\Collider3DUI.cpp">
-      <Filter>03. EditorUI\Inspector\ComponentUI\Collider3DUI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Private\Component\ColliderRayUI.cpp">
-      <Filter>03. EditorUI\Inspector\ComponentUI\ColliderRayUI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Private\Component\DecalUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\Decal</Filter>
     </ClCompile>
@@ -518,8 +502,6 @@
     <ClCompile Include="Script\Private\CEditorSpaceCamScript.cpp">
       <Filter>02. EditorMgr\EditorCamScript</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Private\FClientApp.cpp" />
-    <ClCompile Include="Core\Private\FWindow.cpp" />
     <ClCompile Include="UI\Private\Component\MeshColliderUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\MeshColliderUI</Filter>
     </ClCompile>
@@ -527,5 +509,10 @@
     <ClCompile Include="UI\Private\Component\StateMachineUI.cpp">
       <Filter>03. EditorUI\Inspector\ComponentUI\StateMachineUI</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Private\ClientApp.cpp" />
+    <ClCompile Include="Core\Private\AppWindow.cpp" />
+    <ClCompile Include="UI\Private\Component\RayColliderUI.cpp" />
+    <ClCompile Include="UI\Private\Component\PlaneColliderUI.cpp" />
+    <ClCompile Include="UI\Private\Component\BoxColliderUI.cpp" />
   </ItemGroup>
 </Project>

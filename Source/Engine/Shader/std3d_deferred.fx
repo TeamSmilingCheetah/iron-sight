@@ -114,28 +114,47 @@ VS_OUT VS_Std3D_Deferred_Inst(VS_IN_Inst _in)
 
 struct PS_OUT
 {
-    float4 Color        : SV_Target;
+    float4 Color        : SV_Target0;
     float4 Normal       : SV_Target1;
     float4 Position     : SV_Target2;
-    float4 Emissive     : SV_Target3;
-    float4 Data         : SV_Target4;
+	float  Metallic     : SV_Target3;
+	float  Roughness    : SV_Target4;
+	float  AO           : SV_Target5;
+    float4 Emissive     : SV_Target6;
+    float4 Data         : SV_Target7;
 };
+
+// g_tex_0 : Color Tex
+// g_tex_1 : Normal Map
+// g_tex_2 : Metallic Tex
+// g_tex_3 : Roughness Tex
+// g_tex_4 : Ambient Occlusion (AO) Tex
+// g_tex_5 : Emissive Tex
+// g_float_0 : Metallic
+// g_float_1 : Roughness
+// g_float_2 : AO
 
 PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 {
     PS_OUT output = (PS_OUT) 0.f;
 
-    float4 vColor = float4(1.f, 0.f, 1.f, 1.f);
-    float3 vNormal = _in.vViewNormal;
+    float4 vColor       = float4(1.f, 0.f, 1.f, 1.f);
+    float3 vNormal      = _in.vViewNormal;
+	float  Metallic     = g_float_0;
+	float  Roughness    = g_float_1;
+	float  AO           = g_float_2;
+	float3 Emissive     = (float3) 0.f;
     
 	float2 dx = ddx(_in.vUV);
 	float2 dy = ddy(_in.vUV);
 
+    // Base Color
     if (g_btex_0)
     {
 		vColor = g_tex_0.SampleGrad(g_sam_0, _in.vUV, dx, dy);
 	}
 
+    // Normal Map
     if (g_btex_1)
     {
 		vNormal = g_tex_1.SampleGrad(g_sam_0, _in.vUV, dx, dy).xyz;
@@ -155,10 +174,37 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
         vNormal = normalize(mul(vNormal, matRot));
     }
 
+    // Metallic Tex
+	if (g_btex_2)
+	{
+		Metallic = g_tex_2.SampleGrad(g_sam_0, _in.vUV, dx, dy).x;
+	}
+
+    // Roughness Tex
+	if (g_btex_3)
+	{
+		Roughness = g_tex_3.SampleGrad(g_sam_0, _in.vUV, dx, dy).x;
+	}
+
+    // Ambient Occlusion Tex
+	if (g_btex_4)
+	{
+		AO = g_tex_4.SampleGrad(g_sam_0, _in.vUV, dx, dy).x;
+	}
+
+    // Emissive Tex
+    if (g_btex_5)
+	{
+		Emissive = g_tex_5.SampleGrad(g_sam_0, _in.vUV, dx, dy).rgb;
+	}
+
 	output.Color = vColor;
     output.Normal = float4(vNormal, 1.f);
     output.Position = float4(_in.vViewPos, 1.f);
-    output.Emissive = (float4) 0.f;
+	output.Metallic = Metallic;
+	output.Roughness = Roughness;
+	output.AO = AO;
+	output.Emissive = float4(Emissive, 1.f);
     output.Data = float4((float) _in.parentID, (float) _in.objectID, 0.f, 0.f);
 
     return output;

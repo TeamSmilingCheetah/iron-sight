@@ -17,6 +17,8 @@ public:
 
 	bool IsDirty() const { return m_DirtyFlag; }
 
+	virtual void OnSelected() {}	// 처음 선택한 시점에 처리하는 로직
+
 protected:
 	void AssetTitle();
 	void SaveButton();

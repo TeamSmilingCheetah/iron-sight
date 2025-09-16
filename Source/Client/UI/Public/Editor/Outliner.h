@@ -7,6 +7,7 @@ class CGameObject;
 class Outliner :
 	public EditorUI
 {
+private:
 	class TreeUI* m_Tree;
 	CGameObject* m_TargetObject;
 

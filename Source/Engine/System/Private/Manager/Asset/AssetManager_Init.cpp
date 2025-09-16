@@ -63,9 +63,6 @@ void FAssetManager::CreateEngineGraphicShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 	//pShader->SetDomain(SHADER_DOMAIN::DOMAIN_EFFECT);
 
-	pShader->AddScalarParam("Test Parameter", VEC2_2, true);
-	pShader->AddTexParam("Output Texture", TEX_0);
-
 	AddAsset(L"Std2DShader", pShader);
 
 
@@ -90,7 +87,7 @@ void FAssetManager::CreateEngineGraphicShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
 	//pShader->SetRSState(RS_TYPE::WIRE_FRAME);
 
-	pShader->AddScalarParam("Shading Type", INT_0);
+	pShader->SetScalarParam("Shading Type", INT_0);
 
 	AddAsset(L"Std3DShader", pShader);
 
@@ -101,8 +98,15 @@ void FAssetManager::CreateEngineGraphicShader()
 	pShader->CreateVertexShader(L"std3d_deferred_vs.cso", L"std3d_deferred.fx", L"VS_Std3D_Deferred");
 	pShader->CreatePixelShader(L"std3d_deferred_ps.cso", L"std3d_deferred.fx", L"PS_Std3D_Deferred");
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
-	pShader->AddTexParam("Base Color", TEX_0);
-	pShader->AddTexParam("Normal", TEX_1);
+	pShader->SetTexParam("Base Color", TEX_0, ENABLED);
+	pShader->SetTexParam("Normal", TEX_1, DISABLED);
+	pShader->SetTexParam("Metallic", TEX_2, DISABLED);
+	pShader->SetTexParam("Roughness", TEX_3, DISABLED);
+	pShader->SetTexParam("AO", TEX_4, DISABLED);
+	pShader->SetTexParam("Emissive", TEX_5, ENABLED);
+	pShader->SetScalarParam("Metallic", FLOAT_0);
+	pShader->SetScalarParam("Roughness", FLOAT_1);
+	pShader->SetScalarParam("AO", FLOAT_2);
 	AddAsset(L"Std3D_DeferredShader", pShader);
 
 
@@ -358,8 +362,8 @@ void FAssetManager::CreateEngineGraphicShader()
 	pShader->SetRSState(RS_TYPE::WIRE_FRAME);
 	pShader->SetDSState(DS_TYPE::LESS);
 	pShader->SetBSState(BS_TYPE::DEFAULT);
-	pShader->AddScalarParam("Tess Level", INT_0, true);
-	pShader->AddScalarParam("Tess Level", FLOAT_0, true);
+	pShader->SetScalarParam("Tess Level", INT_0, true);
+	pShader->SetScalarParam("Tess Level", FLOAT_0, true);
 
 	AddAsset(L"TessShader", pShader);
 }

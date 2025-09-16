@@ -33,6 +33,8 @@ private:
 
 	bool m_IsEditor; // 에디터모드 뷰 or 인게임 뷰
 
+	class CSkyBox* m_Environment;
+
 	Ptr<CTexture> m_SpecifyTarget; // 출력시킬 지정타겟
 	Ptr<CMaterial> m_MergeMtrl;
 
@@ -50,6 +52,8 @@ public:
 		m_vecLight3D.push_back(_Light3D);
 		return static_cast<int>(m_vecLight3D.size()) - 1;
 	}
+
+	void RegisterEnvironment(CSkyBox* _Skybox) { m_Environment = _Skybox; }
 
 	void AddDebugShape(const tDebugShapeInfo& _info)
 	{

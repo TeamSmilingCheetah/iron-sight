@@ -15,7 +15,7 @@ public:
     void Binding();
     void Binding_CS();
 
-    CLONE_DISABLE(CConstBuffer);
+    CLONE_DISABLE(CConstBuffer)
     CConstBuffer(CB_TYPE _Type);
     ~CConstBuffer() override;
 };

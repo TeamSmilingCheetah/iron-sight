@@ -210,7 +210,7 @@ void MenuUI::Asset()
 	}
 }
 
-#define TARGET_COUNT 7
+#define TARGET_COUNT 10
 
 void MenuUI::RenderTarget()
 {
@@ -218,13 +218,16 @@ void MenuUI::RenderTarget()
 	{
 		static bool bTarget[TARGET_COUNT] = {};
 
-		SelectRenderTarget("ColorTarget", L"ColorTargetTex", bTarget, 0);
-		SelectRenderTarget("NormalTarget", L"NormalTargetTex", bTarget, 1);
-		SelectRenderTarget("PositionTarget", L"PositionTargetTex", bTarget, 2);
-		SelectRenderTarget("EmissiveTarget", L"EmissiveTargetTex", bTarget, 3);
-		SelectRenderTarget("DataTarget", L"DataTargetTex", bTarget, 4);
-		SelectRenderTarget("DiffuseTarget", L"DiffuseTargetTex", bTarget, 5);
-		SelectRenderTarget("SpecularTarget", L"SpecularTargetTex", bTarget, 6);
+		SelectRenderTarget("ColorTarget",	 L"ColorTargetTex"		, bTarget, 0);
+		SelectRenderTarget("NormalTarget"	, L"NormalTargetTex"	, bTarget, 1);
+		SelectRenderTarget("PositionTarget"	, L"PositionTargetTex"	, bTarget, 2);
+		SelectRenderTarget("MetallicTarget"	, L"MetallicTargetTex"	, bTarget, 3);
+		SelectRenderTarget("RoughnessTarget", L"RoughnessTargetTex"	, bTarget, 4);
+		SelectRenderTarget("AOTarget"		, L"AOTargetTex"		, bTarget, 5);
+		SelectRenderTarget("EmissiveTarget"	, L"EmissiveTargetTex"	, bTarget, 6);
+		SelectRenderTarget("DataTarget"		, L"DataTargetTex"		, bTarget, 7);
+		SelectRenderTarget("DiffuseTarget"	, L"DiffuseTargetTex"	, bTarget, 8);
+		SelectRenderTarget("SpecularTarget"	, L"SpecularTargetTex"	, bTarget, 9);
 
 		ImGui::EndMenu();
 	}

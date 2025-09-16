@@ -134,6 +134,9 @@ void CImGuiMgr::Render()
 		pair.second->Render();
 	}
 
+	// TEST(Ssio) : demo 실행
+	//ImGui::ShowDemoWindow();
+
 	// 화면 내부 UI 들 렌더링
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

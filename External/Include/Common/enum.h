@@ -179,6 +179,8 @@ enum SCALAR_PARAM
 
 	MAT_0,
 	MAT_1,
+
+	SCALAR_END,
 };
 
 enum TEX_PARAM
@@ -201,6 +203,13 @@ enum TEX_PARAM
 	TEX_END,
 };
 
+// Graphic Shader에서 텍스쳐가 필요로 하는 조건을 설정하는 enum
+enum TEX_DEFAULT_OPT : uint8_t
+{
+	INHERIT		= 0,	// 상관없음. 현재 설정을 따라감
+	ENABLED		= 1,	// TRUE 여야 함
+	DISABLED	= 2,	// FALSE 여야 함
+};
 
 // Task
 enum class TASK_TYPE

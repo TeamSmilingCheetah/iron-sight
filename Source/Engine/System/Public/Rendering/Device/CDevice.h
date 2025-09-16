@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Common/singleton.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
 
@@ -22,7 +22,7 @@ class CDevice :
 	ComPtr<ID3D11BlendState> m_BSState[static_cast<UINT>(BS_TYPE::END)];
 	ComPtr<ID3D11DepthStencilState> m_DSState[static_cast<UINT>(DS_TYPE::END)];
 
-	ComPtr<ID3D11SamplerState> m_Sampler[2];
+	ComPtr<ID3D11SamplerState> m_Sampler[3];
 
 public:
 	Vec2 GetRenderResolution() { return m_Resolution; }

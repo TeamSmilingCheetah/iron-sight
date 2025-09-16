@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/System/Public/Asset/Base/Asset.h"
 #include "Engine/System/Public/Rendering/Shader/CGraphicShader.h"
 #include "Engine/System/Public/Asset/Texture/CTexture.h"
@@ -6,9 +6,10 @@
 class CMaterial :
 	public FAsset
 {
+private:
 	Ptr<CGraphicShader> m_Shader;
-	MtrlConst m_Const;
-	Ptr<CTexture> m_arrTex[TEX_END];
+	MtrlConst			m_Const;
+	Ptr<CTexture>		m_arrTex[TEX_END];
 
 	// 원본 재질을 가리키는 포인터(nullptr 인 경우 자신이 원본)
 	Ptr<CMaterial> m_SharedMtrl;
@@ -53,8 +54,6 @@ public:
 	Ptr<CGraphicShader> GetShader() { return m_Shader; }
 	void Binding();
 	void Binding_Inst();
-
-
 	int Save(const wstring& _FilePath) override;
 
 private:

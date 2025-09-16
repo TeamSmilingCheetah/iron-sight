@@ -32,8 +32,8 @@ private:
 
 	SHADER_DOMAIN m_Domain;
 
-	vector<tScalarParam> m_vecScalarParam;
-	vector<tTexParam> m_vecTexParam;
+	array<tScalarParam, SCALAR_END>		m_arrScalarParam;
+	array<tTexParam, TEX_END>			m_arrTexParam;
 
 private:
 	int CreateInputLayout();
@@ -53,20 +53,24 @@ public:
 	int CreatePixelShader(const wstring& PBlobFilePath,
 	                      const wstring& PEffectsFilePath, const wstring& PEntryPointName);
 
-	void AddScalarParam(const string& PDesc, SCALAR_PARAM PParam, bool PDrag = false)
+	void SetScalarParam(const string& PDesc, SCALAR_PARAM PParam, bool PDrag = false)
 	{
-		m_vecScalarParam.push_back(tScalarParam{PDesc, PParam, PDrag});
+		m_arrScalarParam[PParam].Enabled = true;
+		m_arrScalarParam[PParam].Desc = PDesc;
+		m_arrScalarParam[PParam].Drag = PDrag;
 	}
 
-	void AddTexParam(const string& PDesc, TEX_PARAM PParam)
+	void SetTexParam(const string& PDesc, TEX_PARAM PParam, TEX_DEFAULT_OPT sRGB)
 	{
-		m_vecTexParam.push_back(tTexParam{PDesc, PParam});
+		m_arrTexParam[PParam].Enabled = true;
+		m_arrTexParam[PParam].Desc = PDesc;
+		m_arrTexParam[PParam].sRGB = sRGB;
 	}
 
 	// Getter & Setter
 	SHADER_DOMAIN GetDomain() const { return m_Domain; }
-	const vector<tScalarParam>& GetScalarParam() { return m_vecScalarParam; }
-	const vector<tTexParam>& GetTexParam() { return m_vecTexParam; }
+	const array<tScalarParam, SCALAR_END>& GetScalarParam() { return m_arrScalarParam; }
+	const array<tTexParam, TEX_END>& GetTexParam() { return m_arrTexParam; }
 	ComPtr<ID3D11VertexShader> GetVSInst() { return m_VSInst; }
 
 	void SetTopology(D3D11_PRIMITIVE_TOPOLOGY PTopology) { m_Topology = PTopology; }
@@ -77,7 +81,7 @@ public:
 	void SetDomain(SHADER_DOMAIN PDomain) { m_Domain = PDomain; }
 
 	// Special Member Function
-	CLONE_DISABLE(CGraphicShader);
+	CLONE_DISABLE(CGraphicShader)
 	CGraphicShader();
 	~CGraphicShader() override;
 };

@@ -1,30 +1,31 @@
 #include "pch.h"
-#include "System/Public/Manager/CRenderMgr.h"
-#include "Runtime/Public/Actor/CGameObject.h"
-#include "Runtime/Public/Component/Camera/CCamera.h"
-#include "Runtime/Public/Component/Light/CLight2D.h"
-#include "Runtime/Public/Component/Light/CLight3D.h"
-#include "Runtime/Public/Component/Rendering/CMeshRender.h"
-#include "Runtime/Public/Component/Transform/CTransform.h"
-#include "System/Public/Manager/AssetManager.h"
-#include "System/Public/Manager/CFontMgr.h"
-#include "System/Public/Manager/CKeyMgr.h"
-#include "System/Public/Manager/CTimeMgr.h"
-#include "System/Public/Manager/CUIMgr.h"
-#include "System/Public/Rendering/Buffer/CConstBuffer.h"
-#include "System/Public/Rendering/Buffer/CStructuredBuffer.h"
-#include "System/Public/Rendering/Device/CDevice.h"
-#include "System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/System/Public/Manager/CRenderMgr.h"
+#include "Engine/Runtime/Public/Actor/CGameObject.h"
+#include "Engine/Runtime/Public/Component/Camera/CCamera.h"
+#include "Engine/Runtime/Public/Component/Light/CLight2D.h"
+#include "Engine/Runtime/Public/Component/Light/CLight3D.h"
+#include "Engine/Runtime/Public/Component/Rendering/CMeshRender.h"
+#include "Engine/Runtime/Public/Component/Transform/CTransform.h"
+#include "Engine/System/Public/Manager/AssetManager.h"
+#include "Engine/System/Public/Manager/CFontMgr.h"
+#include "Engine/System/Public/Manager/CKeyMgr.h"
+#include "Engine/System/Public/Manager/CTimeMgr.h"
+#include "Engine/System/Public/Manager/CUIMgr.h"
+#include "Engine/System/Public/Rendering/Buffer/CConstBuffer.h"
+#include "Engine/System/Public/Rendering/Buffer/CStructuredBuffer.h"
+#include "Engine/System/Public/Rendering/Device/CDevice.h"
+#include "Engine/System/Public/Rendering/RenderTarget/CMRT.h"
+#include "Engine/Runtime/Public/Component/Rendering/CSkyBox.h"
 
 class CConstBuffer;
 
 CRenderMgr::CRenderMgr()
 	: m_arrMRT{}
-	  , m_EditorCam(nullptr)
-	  , m_Light2DBuffer(nullptr)
-	  , m_DbgObj(nullptr)
-	  , m_IsEditor(false)
-	  , m_DebugRender(false)
+	, m_EditorCam(nullptr)
+	, m_Light2DBuffer(nullptr)
+	, m_DbgObj(nullptr)
+	, m_IsEditor(false)
+	, m_DebugRender(false)
 {
 	m_Light2DBuffer = new CStructuredBuffer;
 	m_Light2DBuffer->Create(sizeof(tLight2DInfo), 2, SRV_ONLY, true);
@@ -318,7 +319,6 @@ void CRenderMgr::Render_Play()
 
 		if (i == 0) // 메인 카메라
 		{
-
 			// Deferred
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
 			m_vecCam[i]->render_deferred();
@@ -334,10 +334,8 @@ void CRenderMgr::Render_Play()
 				m_vecLight3D[i]->Render();
 			}
 
-
 			// SwapChain
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
-
 
 			// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
 			MergeDeferredTarget();
@@ -404,6 +402,7 @@ void CRenderMgr::Render_Editor()
 	m_EditorCam->render_decal();
 
 	// Lighting
+	// TODO(Ssio) : 파이프라인 깔끔하게 정리하기
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
@@ -413,11 +412,8 @@ void CRenderMgr::Render_Editor()
 	// SwapChain
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 
-
 	// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
 	MergeDeferredTarget();
-
-
 
 	m_EditorCam->render_forward();
 	m_EditorCam->render_particle();
@@ -444,13 +440,45 @@ void CRenderMgr::Render_Clear()
 void CRenderMgr::MergeDeferredTarget()
 {
 	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
+
+	// Phong Shading
+	//m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	//m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
+	//m_MergeMtrl->SetScalarParam(INT_0, 0);	// 0: Phong, 1: PBR, 2: Copy
+
+	// PBR
 	m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
-	m_MergeMtrl->SetScalarParam(INT_0, 0);
+	m_MergeMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"MetallicTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"RoughnessTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_5, FAssetManager::GetInst()->FindAsset<CTexture>(L"AOTargetTex"));
+
+	m_MergeMtrl->SetTexParam(TEX_CUBE_0, m_Environment->GetDiffuseTex());
+	m_MergeMtrl->SetTexParam(TEX_CUBE_1, m_Environment->GetSpecularTex());
+
+	// View Inverse matrix를 binding 해줌
+	if (m_IsEditor)
+	{
+		m_MergeMtrl->SetScalarParam(MAT_0, m_EditorCam->GetViewInvMat());
+	}
+	else
+	{
+		// 0번이 Maincam
+		m_MergeMtrl->SetScalarParam(MAT_0, m_vecCam[0]->GetViewInvMat());
+	}
+
+	m_MergeMtrl->SetScalarParam(INT_0, 1);	// 0: Phong, 1: PBR, 2: Copy
+
 	m_MergeMtrl->Binding();
+
+	// TODO(Ssio): 텍스쳐 슬롯 추가하기
+	m_Environment->GetLUT()->Binding(26);
+	FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex")->Binding(27);
+	FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex")->Binding(28);
 
 	pRectMesh->Render(0);
 
@@ -458,6 +486,9 @@ void CRenderMgr::MergeDeferredTarget()
 	{
 		CTexture::Clear(i);
 	}
+	CTexture::Clear(26);
+	CTexture::Clear(27);
+	CTexture::Clear(28);
 }
 
 void CRenderMgr::MergeSpecifyTarget()
@@ -466,7 +497,7 @@ void CRenderMgr::MergeSpecifyTarget()
 	{
 		Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
 		m_MergeMtrl->SetTexParam(TEX_0, m_SpecifyTarget);
-		m_MergeMtrl->SetScalarParam(INT_0, 1);
+		m_MergeMtrl->SetScalarParam(INT_0, 2);	// 0:Phong, 1:PBR, 2:Copy
 		m_MergeMtrl->Binding();
 
 		pRectMesh->Render(0);

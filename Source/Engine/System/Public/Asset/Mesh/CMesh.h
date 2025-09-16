@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/System/Public/Asset/Base/Asset.h"
 
 class CStructuredBuffer;
@@ -65,7 +65,7 @@ public:
 	void Render_Object_Instancing(UINT _iSubset);
 
 public:
-	CLONE_DISABLE(CMesh);
+	CLONE_DISABLE(CMesh)
 	CMesh(bool _bEngineRes = false);
 	~CMesh() override;
 };

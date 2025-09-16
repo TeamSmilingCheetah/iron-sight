@@ -91,7 +91,7 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
 
     for (int i = 0; i < g_Light3DCount; ++i)
     {
-        CalcLight3D(i, _in.vViewPos, vNormal, vLightColor, vSpecuPow);
+        Phong3D(i, _in.vViewPos, vNormal, vLightColor, vSpecuPow);
     }
 
     // 물체의 색상에 광원을 적용시킨다.

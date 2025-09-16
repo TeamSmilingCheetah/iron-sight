@@ -71,6 +71,24 @@ void CRenderMgr::CreateMRT()
 												, DXGI_FORMAT_R32G32B32A32_FLOAT,
 												D3D11_BIND_RENDER_TARGET |
 												D3D11_BIND_SHADER_RESOURCE),
+			FAssetManager::GetInst()->CreateTexture(L"MetallicTargetTex"
+												, static_cast<UINT>(vResolution.x),
+												static_cast<UINT>(vResolution.y)
+												, DXGI_FORMAT_R32_FLOAT,
+												D3D11_BIND_RENDER_TARGET |
+												D3D11_BIND_SHADER_RESOURCE),
+			FAssetManager::GetInst()->CreateTexture(L"RoughnessTargetTex"
+												, static_cast<UINT>(vResolution.x),
+												static_cast<UINT>(vResolution.y)
+												, DXGI_FORMAT_R32_FLOAT,
+												D3D11_BIND_RENDER_TARGET |
+												D3D11_BIND_SHADER_RESOURCE),
+			FAssetManager::GetInst()->CreateTexture(L"AOTargetTex"
+												, static_cast<UINT>(vResolution.x),
+												static_cast<UINT>(vResolution.y)
+												, DXGI_FORMAT_R32_FLOAT,
+												D3D11_BIND_RENDER_TARGET |
+												D3D11_BIND_SHADER_RESOURCE),
 			FAssetManager::GetInst()->CreateTexture(L"EmissiveTargetTex"
 												, static_cast<UINT>(vResolution.x),
 												static_cast<UINT>(vResolution.y)
@@ -87,7 +105,7 @@ void CRenderMgr::CreateMRT()
 
 		Ptr<CTexture> pDSTex = FAssetManager::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
 
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Create(arrTex, 5, pDSTex);
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->Create(arrTex, 8, pDSTex);
 		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->SetClearColor(
 			0, Vec4(0.f, 0.f, 0.f, 0.f), false);
 	}
@@ -258,8 +276,11 @@ void CRenderMgr::CreateRenderMtrl()
 	Ptr<CMaterial> pLightMtrl = new CMaterial(true);
 	pLightMtrl->SetName(L"DirLightMtrl");
 	pLightMtrl->SetShader(pShader);
-	pLightMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	pLightMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	pLightMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	pLightMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pLightMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	pLightMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"MetallicTargetTex"));
+	pLightMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"RoughnessTargetTex"));
 	FAssetManager::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
 
 
@@ -277,8 +298,11 @@ void CRenderMgr::CreateRenderMtrl()
 	pLightMtrl = new CMaterial(true);
 	pLightMtrl->SetName(L"PointLightMtrl");
 	pLightMtrl->SetShader(pShader);
-	pLightMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	pLightMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	pLightMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
+	pLightMtrl->SetTexParam(TEX_1, FAssetManager::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pLightMtrl->SetTexParam(TEX_2, FAssetManager::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	pLightMtrl->SetTexParam(TEX_3, FAssetManager::GetInst()->FindAsset<CTexture>(L"MetallicTargetTex"));
+	pLightMtrl->SetTexParam(TEX_4, FAssetManager::GetInst()->FindAsset<CTexture>(L"RoughnessTargetTex"));
 	FAssetManager::GetInst()->AddAsset<CMaterial>(pLightMtrl->GetName(), pLightMtrl);
 }
 
