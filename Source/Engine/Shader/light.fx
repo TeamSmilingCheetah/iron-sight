@@ -87,7 +87,7 @@ PS_OUT PS_DirLight(VS_OUT _in)
 	float3 F0 = lerp(Fdielectric, vBaseColor, Metallic);
 	float3 F = SchlickFresnel(F0, LoH);
 	float3 kd = ((float3) 1.f - F) * (1.f - Metallic);
-	float3 diffuseBRDF = kd * vBaseColor;   // divide with PI ? 
+	float3 diffuseBRDF = kd * vBaseColor;   // divide by PI ? 
 
     // Specular Term
 	float D = NDF_GGX(NoH, Roughness);

@@ -80,7 +80,7 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
 
 		float3 diffuseIrradiance = g_texcube_0.Sample(g_sam_0, vWorldNormal).rgb;
 
-		float3 diffuseIBL = kd * vColor * diffuseIrradiance;    // divide by PI ?
+		float3 diffuseIBL = kd * vColor * diffuseIrradiance / PI;    // divide by PI ?
 
         // SpecularBRDF 
 		const uint mipLevels = 10;   // Specular Cubemap의 mipmap 수 .. 너무 높은 레벨까지 사용하면 specular가 잘 드러나지 않음.
@@ -95,7 +95,6 @@ float4 PS_Merge(VS_OUT _in) : SV_Target
 		float3 vDirectLighting = DirectLightingTex.Sample(g_sam_0, _in.vUV).rgb;
 
         // 환경광에 Ambient Occlusion 적용
-        // TEST(Ssio) : 환경광이 너무 강하게 적용되어서 0.8 곱해 둠
 		float3 vEnvironmentLighting = (diffuseIBL + specularIBL) * AO;
 
 		float4 Output = float4(vDirectLighting + vEnvironmentLighting + Emissive, 1.f);

@@ -416,6 +416,18 @@ void TestLevel::CreateTestLevel()
 	 	true
 	 );
 
+	 GameFactory::MakeFBXObject(
+		 LevelRawPtr,
+		 L"FBX\\helmet.fbx",
+		 L"Helmet",
+		 Vec3(0.f, 0.f, 0.f),
+		 Vec3(0.f, 0.f, 0.f),
+		 Vec3(200.f, 200.f, 200.f),
+		 {},
+		 1,
+		 true
+	 );
+
 	//GameFactory::MakeFBXObject(
 	//	LevelRawPtr,
 	//	L"FBX\\Downtown_Alley_Scene.fbx",

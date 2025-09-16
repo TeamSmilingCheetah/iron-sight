@@ -21,11 +21,11 @@ class CConstBuffer;
 
 CRenderMgr::CRenderMgr()
 	: m_arrMRT{}
-	  , m_EditorCam(nullptr)
-	  , m_Light2DBuffer(nullptr)
-	  , m_DbgObj(nullptr)
-	  , m_IsEditor(false)
-	  , m_DebugRender(false)
+	, m_EditorCam(nullptr)
+	, m_Light2DBuffer(nullptr)
+	, m_DbgObj(nullptr)
+	, m_IsEditor(false)
+	, m_DebugRender(false)
 {
 	m_Light2DBuffer = new CStructuredBuffer;
 	m_Light2DBuffer->Create(sizeof(tLight2DInfo), 2, SRV_ONLY, true);
@@ -319,7 +319,6 @@ void CRenderMgr::Render_Play()
 
 		if (i == 0) // 메인 카메라
 		{
-
 			// Deferred
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
 			m_vecCam[i]->render_deferred();
@@ -335,10 +334,8 @@ void CRenderMgr::Render_Play()
 				m_vecLight3D[i]->Render();
 			}
 
-
 			// SwapChain
 			m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
-
 
 			// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
 			MergeDeferredTarget();
@@ -405,6 +402,7 @@ void CRenderMgr::Render_Editor()
 	m_EditorCam->render_decal();
 
 	// Lighting
+	// TODO(Ssio) : 파이프라인 깔끔하게 정리하기
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
@@ -414,11 +412,8 @@ void CRenderMgr::Render_Editor()
 	// SwapChain
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 
-
 	// Deferred MRT 에 그려진 정보를 SwapChain 으로 이동
 	MergeDeferredTarget();
-
-
 
 	m_EditorCam->render_forward();
 	m_EditorCam->render_particle();
@@ -465,12 +460,22 @@ void CRenderMgr::MergeDeferredTarget()
 	m_MergeMtrl->SetTexParam(TEX_CUBE_0, m_Environment->GetDiffuseTex());
 	m_MergeMtrl->SetTexParam(TEX_CUBE_1, m_Environment->GetSpecularTex());
 
-	// TEST(Ssio): editor cam 우선 테스트
-	m_MergeMtrl->SetScalarParam(MAT_0, m_EditorCam->GetViewInvMat());
+	// View Inverse matrix를 binding 해줌
+	if (m_IsEditor)
+	{
+		m_MergeMtrl->SetScalarParam(MAT_0, m_EditorCam->GetViewInvMat());
+	}
+	else
+	{
+		// 0번이 Maincam
+		m_MergeMtrl->SetScalarParam(MAT_0, m_vecCam[0]->GetViewInvMat());
+	}
+
 	m_MergeMtrl->SetScalarParam(INT_0, 1);	// 0: Phong, 1: PBR, 2: Copy
 
 	m_MergeMtrl->Binding();
 
+	// TODO(Ssio): 텍스쳐 슬롯 추가하기
 	m_Environment->GetLUT()->Binding(26);
 	FAssetManager::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex")->Binding(27);
 	FAssetManager::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex")->Binding(28);

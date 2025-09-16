@@ -49,7 +49,9 @@ void TextureUI::Render_Update()
 	// MetaOpts
 	ImGui::Text("sRGB");
 	ImGui::SameLine(100);
+ImGui::BeginDisabled(!pAsset->IsSupportSRGB());	// sRGB support하는 포맷에서만 설정 가능
 	ImGui::Checkbox("##sRGB", &m_MetaOpts.sRGB);
+ImGui::EndDisabled();
 
 	ImGui::Text("MipMap");
 	ImGui::SameLine(100);

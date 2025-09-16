@@ -143,12 +143,12 @@ void GameFactory::LoadDefaultSkyBox(CLevel* PLevel)
 	Common::SetObjectName(RawSkyBoxPtr, L"SkyBox");
 
 	Common::AddComponentToObject<CSkyBox>(RawSkyBoxPtr);
-	auto SkyBoxTexture = IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\sky01EnvHDR.dds");
+	auto SkyBoxTexture = IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\DAEnvHDR.dds");
 	SkyBox::SetSkyBoxProperties(RawSkyBoxPtr, SKYBOX_MODE::CUBE, SkyBoxTexture);
 
-	RawSkyBoxPtr->SkyBox()->SetDiffuseTex(IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\sky01DiffuseHDR.dds"));
-	RawSkyBoxPtr->SkyBox()->SetSpecularTex(IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\sky01SpecularHDR.dds"));
-	RawSkyBoxPtr->SkyBox()->SetLUT(IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\sky01Brdf.dds"));
+	RawSkyBoxPtr->SkyBox()->SetDiffuseTex(IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\DADiffuseHDR.dds"));
+	RawSkyBoxPtr->SkyBox()->SetSpecularTex(IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\DASpecularHDR.dds"));
+	RawSkyBoxPtr->SkyBox()->SetLUT(IO::LoadAsset<CTexture>(L"Texture\\skybox\\PBR Environment\\DABrdf.dds"));
 
 	// FrustumCheck 비활성화
 	Transform::SetFrustumCheck(RawSkyBoxPtr, false);

@@ -597,19 +597,17 @@ void CTexture::SetMetaOpts(const MetaOpts& POpts)
 	{
 		if (m_MetaOpts.sRGB != POpts.sRGB)
 		{
-			DXGI_FORMAT SRVFormat = GetShaderResourceFormat(m_Desc.Format, POpts.sRGB);
-
-			if (SRVFormat != m_Desc.Format)
-			{
-				m_MetaOpts.sRGB = POpts.sRGB;
-				Regenerate = true;
-				DirtyFlag = true;
-			}
+			m_MetaOpts.sRGB = POpts.sRGB;
+			Regenerate = true;
+			DirtyFlag = true;
 		}
 	}
 	else
 	{
-		LOG_INFO("SRGB is not supported with this texture format.");
+		if (POpts.sRGB)
+		{
+			LOG_WARNING("SRGB is not supported with this texture format.");
+		}
 	}
 
 	// mipmap
