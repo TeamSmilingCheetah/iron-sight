@@ -164,7 +164,7 @@ void CRenderMgr::CreateMRT()
 
 		Ptr<CTexture> pMinimapTex = FAssetManager::GetInst()->CreateTexture(
 			L"MinimapTargetTex", 256, 256,
-			DXGI_FORMAT_R8G8B8A8_UNORM,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
 			D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 
 		Ptr<CTexture> pMinimapDepth = FAssetManager::GetInst()->CreateTexture(
