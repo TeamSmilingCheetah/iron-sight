@@ -514,7 +514,7 @@ void CRenderMgr::MergeMinimapTarget()
 	Ptr<CMesh> pRectMesh = FAssetManager::GetInst()->FindAsset<CMesh>(L"RectMesh");
 
 	m_MergeMtrl->SetTexParam(TEX_0, FAssetManager::GetInst()->FindAsset<CTexture>(L"ColorTargetTex"));
-	m_MergeMtrl->SetScalarParam(INT_0, 1);
+	m_MergeMtrl->SetScalarParam(INT_0, 2);
 	m_MergeMtrl->Binding();
 
 	pRectMesh->Render(0);
